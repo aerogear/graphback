@@ -6,7 +6,7 @@
 
 ## GQLBG - Apollo GraphQL Backend generator
 
-![](resources/logo.png)
+![](resources/gqlb.png)
 
 Auto generate resolvers on top of the graphql and database of your choice 🚀
 
