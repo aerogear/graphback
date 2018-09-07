@@ -1,23 +1,90 @@
 [![TypeScript version][ts-badge]][typescript-30]
 [![Node.js version][nodejs-badge]][nodejs]
 [![APLv2][license-badge]][LICENSE]
-[![Build Status][travis-badge]][travis-ci]
 [![PRs Welcome][prs-badge]][prs]
 
-[![Watch on GitHub][github-watch-badge]][github-watch]
-[![Star on GitHub][github-star-badge]][github-star]
-[![Tweet][twitter-badge]][twitter]
 
-## Apollo GraphQL assisted resolver generator
+## GQLBG - Apollo GraphQL Backend generator
+
+![](./resources/logo.png)
 
 Auto generate resolvers on top of the graphql and database of your choice 🚀
 
-## Top level API
+## Motivation 
+
+GraphQL can be hard and intimidating and hard initially.
+GQLBG helps you to kickstart your experience with any existing GraphQL implementation
+by generating backend layer using your predefined types.
+
+## What it does
+
+- Generates required queries and mutations automatically using proven GraphQL patterns
+- Generates unopiniated resolvers layer using https://www.npmjs.com/package/apollo-resolvers
+- Generates database DDL statements that can be used to store data (optional)
+
+## Why to use it
+
+- Plain and most canonical GraphQL implementation
+Generated resolvers will work with plain GraphQL solutions.
+
+- Works out of the box with Apollo GraphQL framework
+Apollo GraphQL is often 
+
+- Full freedom - generated resources can be edited and reconfigured later 
+
+- Custom directives out of the box
+Provides set of useful directives and input types that are resolving standard use cases
+
+- Auto generated schema basing on best GraphQL patterns 
+
+- Pick your own server framework and clients (works with Apollo Express and Hapi) 
+
+- Pick your own database
+Solution abstract from database storage possibly allows to support any existing storage, by 
+implementing available interface
+
+## Getting Started
+
+1) Create GraphQL schema
+```graphql
+const exampleDefinition = 
+    type Note {
+        title: String!
+        description: String!
+    }
+```
+
+2) Configure generator
+
+```typescript
+const backendGenerator = new GraphQLBackend(exampleDefinition);
+backendGenerator.setTargetFolder()
+backendGenerator.includeAdditionalHelpers(false)
+backendGenerator.registerDDL(new PostgresDDL())
+backendGenerator.registerResolver(new PostgresResolver());
+backendGenerator.registerMethods([CREATE, FIND, DELETE])
+```
+
+3) Generate resources
+
+```typescript
+const targetFolder = './resolvers'
+backendGenerator.generate(targetFolder);
+```
+
+
+## Supported databases
+
+- Postgress
+- MongoDB
 
 ## Command line client
 
-## Integration with Apollo 
+WIP
 
+## Integration with Apollo GraphQL
+
+WIP
 
 ## Development Quick start
 

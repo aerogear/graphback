@@ -4,8 +4,21 @@
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "index.js",
   "author": "wtrocki@redhat.com",
+  "scripts": {
+    "clean": "rimraf coverage build tmp",
+    "build": "tsc -p tsconfig.release.json",
+    "watch": "tsc -w -p tsconfig.release.json",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "pretest": "npm run lint",
+    "test": "npm run test-only",
+    "test-only": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
   "engines": {
     "node": ">= 8.9.0"
+  },
+  "repository": {
+    "url": "https://github.com/wtrocki/apollo-resolver-gen"
   },
   "devDependencies": {
     "@types/jest": "~23.3.1",
@@ -20,16 +33,6 @@
     "tslint-microsoft-contrib": "~5.2.0",
     "tsutils": "~3.0.0",
     "typescript": "~3.0.1"
-  },
-  "scripts": {
-    "clean": "rimraf coverage build tmp",
-    "build": "tsc -p tsconfig.release.json",
-    "watch": "tsc -w -p tsconfig.release.json",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "pretest": "npm run lint",
-    "test": "npm run test-only",
-    "test-only": "jest --coverage",
-    "test:watch": "jest --watch"
   },
   "license": "APLv2",
   "dependencies": {
