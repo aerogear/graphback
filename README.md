@@ -72,6 +72,14 @@ const targetFolder = './resolvers'
 backendGenerator.generate(targetFolder);
 ```
 
+4) Review generated files
+
+```bash
+╰─$ ls
+NoteDDL.sql  
+NoteResolvers.js 
+NoteSchema.json
+```
 
 ## Supported databases
 
