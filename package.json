@@ -21,6 +21,7 @@
     "url": "https://github.com/wtrocki/apollo-resolver-gen"
   },
   "devDependencies": {
+    "@types/debug": "0.0.30",
     "@types/jest": "~23.3.1",
     "@types/node": "~8.10.25",
     "@types/graphql": "^0.13.4",
@@ -36,10 +37,9 @@
   },
   "license": "APLv2",
   "dependencies": {
-    "tslib": "~1.9.3",
     "debug": "^3.1.0",
     "graphql": "^0.13.2",
     "graphql-tools": "^3.1.1",
-    "pino": "^5.0.0"
+    "tslib": "~1.9.3"
   }
 }
