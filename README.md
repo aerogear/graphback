@@ -58,17 +58,30 @@ const exampleDefinition =
 
 ```typescript
 const backendGenerator = new GraphQLBackend(exampleDefinition);
-backendGenerator.setTargetFolder()
+
+// Register generator for DDL SQL queries
+backendGenerator.registerDDL(new SQLSchemaCreator())
+
+// Register resolver generator
+backendGenerator.registerResolver(new SQLResolver());
+
+// Set strategy for building relationships between types
+backendGenerator.setRelationshipStrategy(new AdditionalTypeStrategy());
+
+// Allow to register what type of operations will be provided
+backendGenerator.registerMethods([Method.CREATE, Method.FIND])
+
+// Adds pagination helpers for large amounts of data
+backendGenerator.supportPagination(false)
+
+// Flag used to not include query helpers and types (by default true)
 backendGenerator.includeAdditionalHelpers(false)
-backendGenerator.registerDDL(new PostgresDDL())
-backendGenerator.registerResolver(new PostgresResolver());
-backendGenerator.registerMethods([CREATE, FIND, DELETE])
 ```
 
 3) Generate resources
 
 ```typescript
-const targetFolder = './resolvers'
+const targetFolder = './output'
 backendGenerator.generate(targetFolder);
 ```
 
@@ -76,9 +89,9 @@ backendGenerator.generate(targetFolder);
 
 ```bash
 ╰─$ ls
-NoteDDL.sql  
+NoteDDL.sql
 NoteResolvers.js 
-NoteSchema.json
+NoteSchema.graphql
 ```
 
 ## Supported databases
