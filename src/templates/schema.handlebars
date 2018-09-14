@@ -1,0 +1,51 @@
+
+{{#each types}}
+     {{!Interface - we may not generate it and make every schema to have it}}
+    interface Node {
+        id: ID
+    }
+
+    type {{name}} implements Node  {
+        {{#each fields}}
+        {{ name }}: {{type}}
+        {{/each}}
+    }
+
+    input {{name}}Input {
+        {{#each fields}}
+        {{#ifCond name "!==" 'id'}}
+        {{ name }}: {{ this.type }}
+        {{/ifCond}}
+        {{/each}}
+    }
+
+    {{! TODO query filter}}
+    input {{name}}QueryFilter {
+        fields: [String!]!
+    }
+
+    {{! TODO allPaginatedNotes(nextToken: String): NotePage! }}
+    type {{name}}Page {
+        note: [{{name}}!]
+        nextToken: String
+    }
+
+    {{! TODO Generate fields basing on resolvers }}
+    {{#ifQuery this }}extend {{/ifQuery}}type Query {
+        findAll{{name}}: [{{name}}!]!
+        find{{name}}(query: {{name}}QueryFilter): [{{name}}!]!
+    }
+
+    {{#ifMutation this }}extend {{/ifMutation}} type Mutation {
+        create{{name}}(note: {{name}}Input!):{{name}}!
+        updateNote(id: ID!, note: {{name}}Input!): {{name}}!
+        deleteNote(id: ID!): {{name}}!
+    }
+
+    {{! TODO Apply subscription directives }}
+    {{#ifSubscription this }}extend {{/ifSubscription}} type Subscription {
+        new{{name}}: {{name}}!
+        updated{{name}}: {{name}}!
+        deleted{{name}}: {{name}}!
+    }
+{{/each}}
