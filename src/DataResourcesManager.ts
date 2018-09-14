@@ -37,7 +37,6 @@ export interface IDataLayerResourcesManager {
  * Manager for Postgres database
  */
 export class PostgresSchemaManager implements IDataLayerResourcesManager {
-
   private dbConnection: Knex;
   private tablePrefix: string;
 
@@ -50,8 +49,11 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     ID: 'increments'
   }
 
-  constructor(dbConnection: Knex, tablePrefix: string = "gen_") {
-    this.dbConnection = dbConnection;
+  constructor(dbConnectionOptions: Knex.ConnectionConfig, tablePrefix: string = "gen_") {
+    this.dbConnection = Knex({
+      client: 'pg',
+      connection: dbConnectionOptions
+    });
     this.tablePrefix = tablePrefix;
   }
 
@@ -87,6 +89,10 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
 
   public updateDatabaseResourcesFor(updates: IDataLayerUpdate[]): Promise<void> {
     throw new Error("Method not implemented by Dara.");
+  }
+
+  public getConnection(): Knex {
+    return this.dbConnection;
   }
 
   private getTableName(name: string): string {
