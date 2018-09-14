@@ -8,7 +8,7 @@
 
 ![](resources/gqlb.png)
 
-Auto generate resolvers on top of the graphql and database of your choice 🚀
+Auto generate Your database structure, GraphQL resolvers and queries from graphql types 🚀
 
 ## Motivation 
 

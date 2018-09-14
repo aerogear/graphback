@@ -4,22 +4,24 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "allowJs": true,
     "importHelpers": true,
     "jsx": "react",
-    "alwaysStrict": true,
+    "alwaysStrict": false,
     "sourceMap": true,
+    "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "lib": [
+      "esnext"
+    ]
   },
   "include": [
     "src/**/*",
-    "__tests__/**/*"
   ]
 }
