@@ -13,7 +13,8 @@
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "pretest": "npm run lint"
+    "pretest": "npm run lint",
+    "postinstall": "cp -Rf ./src/templates ./lib/src/templates"
   },
   "engines": {
     "node": ">= 8.9.0"
