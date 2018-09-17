@@ -57,33 +57,31 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     this.tablePrefix = tablePrefix;
   }
 
-  public createDatabaseResources(types: Type[]): Promise<void> {
-    types.forEach((gqlType: Type) => {
+  public async createDatabaseResources(types: Type[]): Promise<void> {
+    for (const gqlType of types) {
       const tableName = this.getTableName(gqlType.name);
-      if (this.dbConnection.schema.hasTable(tableName)) {
+      const hasTable = await this.dbConnection.schema.hasTable(tableName)
+      if (hasTable) {
         logger.warn(`Table exist! Skipping table creation for ${tableName}`)
-
-        return;
-      }
-
-      this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
-        table.increments();
-        gqlType.fields.forEach((gqlField: Field) => {
-          const method = this.primitiveTypesMapping[gqlField.fieldType];
-          if (method) {
-            table[method](gqlField.name);
-          } else {
-            // DEBT: Relationships :)
-            // DEBT: Mapping scalars
-            // DEBT: Input type support
-            logger.error(`Using unsupported field ${gqlField.name} in ${gqlType.name} type`)
-          }
+      } else {
+        await this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
+          table.increments();
+          gqlType.fields.forEach((gqlField: Field) => {
+            const method = this.primitiveTypesMapping[gqlField.fieldType];
+            if (method) {
+              table[method](gqlField.name);
+            } else {
+              // DEBT: Relationships :)
+              // DEBT: Mapping scalars
+              // DEBT: Input type support
+              logger.error(`Using unsupported field ${gqlField.name} in ${gqlType.name} type`)
+            }
+          })
+          table.timestamps();
         })
-        table.timestamps();
-      })
-    })
+      }
+    }
 
-    // DEBT: Return data that can be used later
     return Promise.resolve();
   }
 
@@ -96,6 +94,6 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
   }
 
   private getTableName(name: string): string {
-    return this.tablePrefix + name;
+    return this.tablePrefix + name.toLowerCase();
   }
 }
