@@ -33,7 +33,8 @@
     {{! TODO Generate fields basing on resolvers }}
     {{#ifQuery this }}extend {{/ifQuery}}type Query {
         findAll{{name}}: [{{name}}!]!
-        find{{name}}(query: {{name}}QueryFilter): [{{name}}!]!
+        find{{name}}By(query: {{name}}QueryFilter): [{{name}}!]!
+        find{{name}}(id: ID!): {{name}}!
     }
 
     {{#ifMutation this }}extend {{/ifMutation}} type Mutation {
