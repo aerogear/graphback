@@ -11,3 +11,5 @@ export enum ResolverType {
   FIND_ALL = 'findAll',
   DELETE = 'delete',
 }
+
+export const allTypes = [ResolverType.CREATE, ResolverType.READ, ResolverType.UPDATE, ResolverType.FIND, ResolverType.FIND_ALL, ResolverType.DELETE]

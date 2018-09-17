@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
-import * as knex from 'knex'
 import { join } from 'path'
 import { PostgresSchemaManager } from '../src/DataResourcesManager';
 import { GraphQLBackendCreator, IGraphQLBackend } from "../src/GraphQLBackend";
+import { KnexResolverManager } from "../src/ResolverManager";
 
 const schemaText = readFileSync(join(__dirname, './Note.graphql'), 'utf8');
 const backend = new GraphQLBackendCreator(schemaText, { generateGraphQLSchema: true, createDatabaseSchema: true })
@@ -17,8 +17,10 @@ const connectionConfig = {
 }
 
 const manager = new PostgresSchemaManager(connectionConfig, 'test_');
-
 backend.registerDataResourcesManager(manager);
+
+const resolverManager = new KnexResolverManager('test_');
+backend.registerResolverManager(resolverManager);
 
 backend.createBackend().then((generated: IGraphQLBackend) => {
   console.error("Query")
@@ -26,11 +28,11 @@ backend.createBackend().then((generated: IGraphQLBackend) => {
   console.error("Resolvers")
   console.error(JSON.stringify(generated.resolvers, undefined, 4))
 
+  // FIX ME add asserts
   manager.getConnection().schema.hasTable('test_note').then((exists: boolean) => {
     if (exists) {
       console.error("Schema created")
     }
   });
 });
-
 

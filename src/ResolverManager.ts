@@ -1,4 +1,4 @@
-import { Field, Type } from 'graphql-codegen-core';
+import { Type } from 'graphql-codegen-core';
 import { logger } from './logger';
 import { ResolverType } from './ResolverType'
 
@@ -55,10 +55,19 @@ export class KnexResolverManager implements IResolverManager {
 
   // context in which db is
   private knexContext: String;
+  private prefix: String;
 
-  constructor(argumentContext: string = 'resolve.args', knexContext: String = 'db') {
+  /**
+   * Creates resolver manager for knex
+   *
+   * @param argumentContext context for generated arguments
+   * @param knexContext name of knex object that was exposed
+   * @param prefix table prefix
+   */
+  constructor(prefix: String = "", argumentContext: string = 'resolve.args', knexContext: String = 'db') {
     this.argumentContext = argumentContext;
     this.knexContext = knexContext
+    this.prefix = prefix;
   }
 
   public build(types: Type[], resolverTypes: ResolverType[]): Promise<IResolverFormat[]> {
@@ -78,7 +87,7 @@ export class KnexResolverManager implements IResolverManager {
         } else if (resolverType === ResolverType.DELETE) {
           resolverFormats.push(this.buildDelete(gqlType));
         } else {
-          logger.error(`Unsupported format when generating resolver ${gqlType.name} for resolver type ${resolverType} `)
+          logger.error(`Unsupported format when generating resolver ${this.prefix}${gqlType.name} for resolver type ${resolverType} `)
         }
       })
     })
@@ -90,7 +99,7 @@ export class KnexResolverManager implements IResolverManager {
     return {
       fieldName: gqlType.name,
       action: ResolverType.CREATE,
-      implementation: `return ${this.knexContext}(${gqlType.name}).insert(${this.argumentContext}).returning('*')`
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name}).insert(${this.argumentContext}).returning('*')`
     }
   }
 
@@ -98,7 +107,7 @@ export class KnexResolverManager implements IResolverManager {
     return {
       fieldName: gqlType.name,
       action: ResolverType.FIND_ALL,
-      implementation: `${this.knexContext}.select().from('${gqlType.name}')`
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name}')`
     }
   }
 
@@ -107,7 +116,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.DELETE,
       // Needs fix for id etc.
-      implementation: `return ${this.knexContext}(${gqlType.name}).where('id', ${this.argumentContext}.id).del()`
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name}).where('id', ${this.argumentContext}.id).del()`
     }
   }
   private buildUpdate(gqlType: Type): IResolverFormat {
@@ -115,7 +124,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.UPDATE,
       // Needs fix
-      implementation: `return ${this.knexContext}(${gqlType.name}).insert(${this.argumentContext}).returning('*')`
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name}).insert(${this.argumentContext}).returning('*')`
     }
   }
   private buildFind(gqlType: Type): IResolverFormat {
@@ -123,7 +132,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.FIND,
       // Needs fix
-      implementation: `${this.knexContext}.select().from('${gqlType.name}')`
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name}')`
     }
   }
   private buildRead(gqlType: Type): IResolverFormat {
@@ -131,7 +140,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.READ,
       // Needs fix
-      implementation: `${this.knexContext}.select().from('${gqlType.name}')`
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name}')`
     };
   }
 

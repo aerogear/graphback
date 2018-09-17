@@ -2,7 +2,7 @@ import { IDataLayerResourcesManager } from './DataResourcesManager';
 import { IGraphQLConfig } from './GraphQLConfig'
 import { logger } from './logger'
 import { IResolverFormat, IResolverManager, KnexResolverManager } from './ResolverManager';
-import { ResolverType } from './ResolverType'
+import { allTypes, ResolverType } from './ResolverType'
 import { GraphQLSchemaGenerator } from './SchemaGenerator'
 import { SchemaParser } from './SchemaParser'
 /**
@@ -28,9 +28,7 @@ export class GraphQLBackendCreator {
     this.schemaParser = new SchemaParser();
     this.schemaParser.build(graphQLSchema, config)
     // Default resolvers
-    this.resolverTypes = [ResolverType.CREATE, ResolverType.FIND_ALL]
-    // Default resolver manager
-    this.resolverManager = new KnexResolverManager();
+    this.resolverTypes = allTypes;
   }
 
   /**
@@ -72,7 +70,9 @@ export class GraphQLBackendCreator {
   public async createBackend(): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
     const context = this.schemaParser.getContext()
-    backend.resolvers = await this.resolverManager.build(context.types, this.resolverTypes);
+    if (this.resolverManager) {
+      backend.resolvers = await this.resolverManager.build(context.types, this.resolverTypes);
+    }
     if (this.config.generateGraphQLSchema) {
       logger.info("Generating schema")
       const generator = new GraphQLSchemaGenerator();
