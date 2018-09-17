@@ -87,7 +87,7 @@ export class KnexResolverManager implements IResolverManager {
         } else if (resolverType === ResolverType.DELETE) {
           resolverFormats.push(this.buildDelete(gqlType));
         } else {
-          logger.error(`Unsupported format when generating resolver ${this.prefix}${gqlType.name} for resolver type ${resolverType} `)
+          logger.error(`Unsupported format when generating resolver ${this.prefix}${gqlType.name.toLowerCase()} for resolver type ${resolverType} `)
         }
       })
     })
@@ -99,7 +99,7 @@ export class KnexResolverManager implements IResolverManager {
     return {
       fieldName: gqlType.name,
       action: ResolverType.CREATE,
-      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name}).insert(${this.argumentContext}).returning('*')`
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).insert(${this.argumentContext}).returning('*')`
     }
   }
 
@@ -107,7 +107,7 @@ export class KnexResolverManager implements IResolverManager {
     return {
       fieldName: gqlType.name,
       action: ResolverType.FIND_ALL,
-      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name}')`
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
     }
   }
 
@@ -116,7 +116,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.DELETE,
       // Needs fix for id etc.
-      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name}).where('id', ${this.argumentContext}.id).del()`
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).where('id', ${this.argumentContext}.id).del()`
     }
   }
   private buildUpdate(gqlType: Type): IResolverFormat {
@@ -124,7 +124,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.UPDATE,
       // Needs fix
-      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name}).insert(${this.argumentContext}).returning('*')`
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).insert(${this.argumentContext}).returning('*')`
     }
   }
   private buildFind(gqlType: Type): IResolverFormat {
@@ -132,7 +132,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.FIND,
       // Needs fix
-      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name}')`
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
     }
   }
   private buildRead(gqlType: Type): IResolverFormat {
@@ -140,7 +140,7 @@ export class KnexResolverManager implements IResolverManager {
       fieldName: gqlType.name,
       action: ResolverType.READ,
       // Needs fix
-      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name}')`
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
     };
   }
 
