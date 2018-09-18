@@ -1,10 +1,12 @@
 import { IDataLayerResourcesManager } from './DataResourcesManager';
 import { IGraphQLConfig } from './GraphQLConfig'
 import { logger } from './logger'
-import { IResolverFormat, IResolverManager, KnexResolverManager } from './ResolverManager';
-import { allTypes, ResolverType } from './ResolverType'
-import { GraphQLSchemaGenerator } from './SchemaGenerator'
-import { SchemaParser } from './SchemaParser'
+import { ResolverInstance } from './resolvers/ResolverInstance';
+import { ResolverManager } from './resolvers/ResolverManager';
+import { allTypes, ResolverType } from './resolvers/ResolverType'
+import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
+import { SchemaParser } from './schema/SchemaParser'
+
 /**
  * GraphQLBackend
  *
@@ -16,7 +18,7 @@ export class GraphQLBackendCreator {
   private schemaParser: SchemaParser
   private dataLayerManager: IDataLayerResourcesManager;
   private resolverTypes: ResolverType[];
-  private resolverManager: IResolverManager;
+  private resolverManager: ResolverManager;
   private config: IGraphQLConfig;
 
   /**
@@ -42,7 +44,7 @@ export class GraphQLBackendCreator {
   /**
    * Register manager for creating resolver layer
    */
-  public registerResolverManager(manager: IResolverManager) {
+  public registerResolverManager(manager: ResolverManager) {
     this.resolverManager = manager;
   }
 
@@ -100,5 +102,5 @@ export interface IGraphQLBackend {
   // Human redable schema that should be replaced with current one
   schema?: string,
   // Resolvers that should be mounted to schema`
-  resolvers?: IResolverFormat[]
+  resolvers?: ResolverInstance[]
 }

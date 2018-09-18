@@ -2,6 +2,10 @@
 /**
  * Configuration options for generator
  */
+
+/**
+ * Represents configuration for resolver creator
+ */
 export interface IGraphQLConfig {
 
   /**

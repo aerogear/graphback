@@ -1,10 +1,12 @@
 
 import { readFileSync } from 'fs';
+import { GlobSync } from 'glob';
 import { SchemaTemplateContext, Type } from 'graphql-codegen-core';
 import * as handlebars from 'handlebars';
-import { join } from 'path';
-import { IGraphQLConfig } from './GraphQLConfig';
-import { IResolverFormat } from './ResolverManager';
+import { basename, join } from 'path';
+import { IGraphQLConfig } from '../GraphQLConfig';
+import { logger } from '../logger';
+import { ResolverInstance } from '../resolvers/ResolverInstance';
 
 /**
  * Generates human readable schema from AST
@@ -112,11 +114,26 @@ export class GraphQLSchemaGenerator {
    *
    * @param context input context that will be used to generate schema
    */
-  public generateNewSchema(context: SchemaTemplateContext, resolvers: IResolverFormat[], config: IGraphQLConfig) {
-    const schemaTemplateFile = join(__dirname, `./templates/schema.handlebars`);
-    const schemaContent = readFileSync(schemaTemplateFile, { encoding: "UTF8" });
-    const template = handlebars.compile(schemaContent);
+  public generateNewSchema(context: SchemaTemplateContext, resolvers: ResolverInstance[], config: IGraphQLConfig): string {
+    const partialsPath = join(__dirname, `templates`);
+    const templates = new GlobSync('./*.handlebars', { cwd: partialsPath })
 
+    templates.found.forEach((path: string) => {
+      logger.debug("Adding new partial", path)
+      // tslint:disable-next-line:no-any
+      let name: any = basename(path).split('.')
+      if (name.length > 0) {
+        name = name[0];
+      }
+      const location = join(partialsPath, path)
+      const content = readFileSync(location, { encoding: "UTF8" });
+      handlebars.registerPartial(name, content)
+    });
+
+    const rootSchema = `{{> schema}}`;
+    const template = handlebars.compile(rootSchema);
+
+    // FIXME Reorganize templates input
     // tslint:disable-next-line:no-any
     const input: any = context;
     input.config = config;

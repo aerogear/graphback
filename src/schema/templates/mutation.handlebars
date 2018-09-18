@@ -1,0 +1,8 @@
+
+type Mutation {
+{{#each types}}
+    create{{name}}(note: {{name}}Input!):{{name}}!
+    updateNote(id: ID!, note: {{name}}Input!): {{name}}!
+    deleteNote(id: ID!): {{name}}!
+{{/each}}
+}

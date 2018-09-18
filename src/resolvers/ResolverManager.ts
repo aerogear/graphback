@@ -1,54 +1,27 @@
 import { Type } from 'graphql-codegen-core';
-import { logger } from './logger';
+import { logger } from '../logger';
+import { ResolverInstance } from './ResolverInstance'
 import { ResolverType } from './ResolverType'
 
-/**
- * Defines format for created resolvers
- */
-export interface IResolverFormat {
-
-  /**
-   * Name of filed that should be used for this resolver.
-   * For example for:
-   *
-   * type Query {
-   *  getUser: User!
-   * }
-   *
-   * Field name will be getUser
-   */
-  fieldName: String,
-
-  /**
-   * Type of action for resolver
-   */
-  action: ResolverType,
-
-  /**
-   * String that contains implementation
-   * This could be javascript source code, sql query or json
-   */
-  implementation: String
-}
 
 
 /**
  * Manager interface responsible for creating resolvers for specified types
  */
-export interface IResolverManager {
+export interface ResolverManager {
   /**
    * Ge
    * @param types types that should be source for generating resolvers
    * @param resolverTypes determines what resolvers should be generated
    */
-  build(types: Type[], resolverTypes: ResolverType[]): Promise<IResolverFormat[]>
+  build(types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]>
 }
 
 
 /**
  * Resolver that builds queries using knex library
  */
-export class KnexResolverManager implements IResolverManager {
+export class KnexResolverManager implements ResolverManager {
 
   // GraphQL object that will be used to retrieve all arguments passed to resolver.
   private argumentContext: string;
@@ -70,8 +43,8 @@ export class KnexResolverManager implements IResolverManager {
     this.prefix = prefix;
   }
 
-  public build(types: Type[], resolverTypes: ResolverType[]): Promise<IResolverFormat[]> {
-    const resolverFormats: IResolverFormat[] = [];
+  public build(types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]> {
+    const resolverFormats: ResolverInstance[] = [];
     types.forEach((gqlType: Type) => {
       resolverTypes.forEach((resolverType: ResolverType) => {
         if (resolverType === ResolverType.FIND_ALL) {
@@ -95,57 +68,72 @@ export class KnexResolverManager implements IResolverManager {
     return Promise.resolve(resolverFormats);
   }
 
-  private buildCreate(gqlType: Type): IResolverFormat {
+  // Notes: Server side needs to be refactored to properly implement methods bellow
+  // 1. We need to drop request/response pattern and have just implementation field.
+  // 2. Formalize input (resolve.parent.id/resolve.args.email etc.)
+  // 3. Argument context should be an interface (see above)
+  private buildCreate(gqlType: Type): ResolverInstance {
     return {
-      fieldName: gqlType.name,
+      fieldName: this.getFieldName(gqlType.name, ResolverType.CREATE),
       action: ResolverType.CREATE,
+      resolverType: "Mutation",
       implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).insert(${this.argumentContext}).returning('*')`
     }
   }
 
-  private buildFindAll(gqlType: Type): IResolverFormat {
+  private buildUpdate(gqlType: Type): ResolverInstance {
     return {
-      fieldName: gqlType.name,
-      action: ResolverType.FIND_ALL,
-      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
+      fieldName: this.getFieldName(gqlType.name, ResolverType.UPDATE),
+      action: ResolverType.UPDATE,
+      resolverType: "Mutation",
+      // Needs fix
+      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).insert(${this.argumentContext}).returning('*')`
     }
   }
 
-  private buildDelete(gqlType: Type): IResolverFormat {
+  private buildDelete(gqlType: Type): ResolverInstance {
     return {
-      fieldName: gqlType.name,
+      fieldName: this.getFieldName(gqlType.name, ResolverType.DELETE),
+      resolverType: "Mutation",
       action: ResolverType.DELETE,
       // Needs fix for id etc.
       implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).where('id', ${this.argumentContext}.id).del()`
     }
   }
-  private buildUpdate(gqlType: Type): IResolverFormat {
+
+  private buildFindAll(gqlType: Type): ResolverInstance {
     return {
-      fieldName: gqlType.name,
-      action: ResolverType.UPDATE,
-      // Needs fix
-      implementation: `return ${this.knexContext}(${this.prefix}${gqlType.name.toLowerCase()}).insert(${this.argumentContext}).returning('*')`
+      fieldName: this.getFieldName(gqlType.name, ResolverType.FIND_ALL),
+      resolverType: "Query",
+      action: ResolverType.FIND_ALL,
+      implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
     }
   }
-  private buildFind(gqlType: Type): IResolverFormat {
+  private buildFind(gqlType: Type): ResolverInstance {
     return {
-      fieldName: gqlType.name,
+      fieldName: this.getFieldName(gqlType.name, ResolverType.FIND),
       action: ResolverType.FIND,
+      resolverType: "Query",
       // Needs fix
       implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
     }
   }
-  private buildRead(gqlType: Type): IResolverFormat {
+  private buildRead(gqlType: Type): ResolverInstance {
     return {
-      fieldName: gqlType.name,
+      fieldName: this.getFieldName(gqlType.name, ResolverType.READ),
       action: ResolverType.READ,
+      resolverType: "Query",
       // Needs fix
       implementation: `${this.knexContext}.select().from('${this.prefix}${gqlType.name.toLowerCase()}')`
     };
   }
 
-  // Notes: Server side needs to be refactored to implement this properly
-  // 1. We need to drop request/response pattern and have just implementation field.
-  // 2. Formalize input (resolve.parent.id/resolve.args.email etc.)
-  // 3. Argument context should be an interface (see above)
+  // Helper function for building the right names
+  private getFieldName(typeName: string, action: ResolverType, plural: string = ''): string {
+    const camelizedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
+
+    return `${action}${camelizedType}${plural}`
+  }
+
+
 }

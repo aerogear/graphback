@@ -17,6 +17,8 @@
     "no-void-expression": false,
     "no-redundant-jsdoc": false,
     "prefer-type-cast": false,
+    "no-suspicious-comment": false,
+    "interface-name": false,
     "typedef": [
       true,
       "parameter",

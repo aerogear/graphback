@@ -1,0 +1,8 @@
+{{! TODO Apply subscription directives }}
+type Subscription {
+{{#each types}}
+    new{{name}}: {{name}}!
+    updated{{name}}: {{name}}!
+    deleted{{name}}: {{name}}!
+{{/each}}
+}

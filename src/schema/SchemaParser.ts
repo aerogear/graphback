@@ -1,8 +1,8 @@
 import { buildSchema, graphql, GraphQLSchema, introspectionFromSchema, IntrospectionQuery, introspectionQuery, printSchema, validate } from "graphql";
 import { SchemaTemplateContext, schemaToTemplateContext } from 'graphql-codegen-core'
 import { mergeSchemas } from 'graphql-tools';
-import { IGraphQLConfig } from './GraphQLConfig'
-import { logger } from './logger'
+import { IGraphQLConfig } from '../GraphQLConfig'
+import { logger } from '../logger'
 
 
 /**

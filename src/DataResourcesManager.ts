@@ -86,7 +86,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
   }
 
   public updateDatabaseResourcesFor(updates: IDataLayerUpdate[]): Promise<void> {
-    throw new Error("Method not implemented by Dara.");
+    throw new Error("Method not implemented.");
   }
 
   public getConnection(): Knex {

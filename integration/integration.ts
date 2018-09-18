@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path'
 import { PostgresSchemaManager } from '../src/DataResourcesManager';
 import { GraphQLBackendCreator, IGraphQLBackend } from "../src/GraphQLBackend";
-import { KnexResolverManager } from "../src/ResolverManager";
+import { KnexResolverManager } from "../src/resolvers/ResolverManager";
 
 const schemaText = readFileSync(join(__dirname, './Note.graphql'), 'utf8');
 const backend = new GraphQLBackendCreator(schemaText, { generateGraphQLSchema: true, createDatabaseSchema: true })

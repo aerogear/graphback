@@ -1,0 +1,21 @@
+ {{#each types}}
+{{! TODO query filter}}
+input {{name}}QueryFilter {
+    fields: [String!]!
+}
+
+{{! TODO allPaginatedNotes(nextToken: String): NotePage! }}
+type {{name}}Page {
+    note: [{{name}}!]
+    nextToken: String
+}
+{{/each}}
+
+type Query {
+{{#each types}}
+    {{! TODO Generate fields basing on resolvers }}
+    findAll{{name}}: [{{name}}!]!
+    find{{name}}By(query: {{name}}QueryFilter): [{{name}}!]!
+    find{{name}}(id: ID!): {{name}}!
+{{/each}}
+}
