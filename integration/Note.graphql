@@ -3,4 +3,11 @@ type Note {
   id: ID!
   title: String!
   description: String!
+  comment: NoteComment!
+}
+
+type NoteComment {
+  id: ID!
+  title: String!
+  description: String!
 }
