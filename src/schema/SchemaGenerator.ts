@@ -9,11 +9,12 @@ import { logger } from '../logger';
 import { ResolverInstance } from '../resolvers/ResolverInstance';
 import { HandlebarsHelpers } from './Helpers';
 
+import * as rootSchema from './root.handlebars'
+
 /**
  * Generates human readable schema from AST
  */
 export class GraphQLSchemaGenerator {
-  private rootSchema: string = `{{> schema}}`;
   constructor() {
     new HandlebarsHelpers().registerHelpers();
   }
@@ -25,11 +26,11 @@ export class GraphQLSchemaGenerator {
    */
   public generateNewSchema(context: SchemaTemplateContext, resolvers: ResolverInstance[], config: IGraphQLConfig): string {
     this.registerPartials();
+    if (!context.hasTypes) {
+      logger.warn("Schema generation was executed without top level types. Generation will not return any valid results.")
+    }
+    const template = handlebars.compile(rootSchema);
 
-
-    const template = handlebars.compile(this.rootSchema);
-
-    // FIXME Reorganize templates input
     // tslint:disable-next-line:no-any
     const input: any = context;
     input.config = config;
@@ -39,7 +40,7 @@ export class GraphQLSchemaGenerator {
   }
 
   private registerPartials() {
-    const partialsPath = join(__dirname, `templates`);
+    const partialsPath = join(__dirname, `partials`);
     const templates = new GlobSync('./*.handlebars', { cwd: partialsPath });
     templates.found.forEach((path: string) => {
       logger.debug("Adding new partial", path);
