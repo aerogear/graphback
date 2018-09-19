@@ -28,7 +28,7 @@ export class GraphQLBackendCreator {
    * @param config configuration for backend generator
    */
   constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
-    // tslint:disable-next-line:prefer-object-spread
+    // tslint:disable-next-line:
     this.config = Object.assign(defaultConfig, config);
     this.schemaParser = new SchemaParser(graphQLSchema);
     this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
