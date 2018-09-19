@@ -59,9 +59,9 @@ export class SchemaParser {
     }
 
     let preValidationSchema = this.schema;
-    // Definition has no Query type
-    // To validate schema we need to merge definition with example query type
     if (!this.schema.getQueryType()) {
+      // Definition has no Query type
+      // To validate schema we need to merge definition with example query type
       const placeholderSchema = new GraphQLSchema({
         query: new GraphQLObjectType({
           name: 'RootQueryType',
@@ -77,7 +77,7 @@ export class SchemaParser {
         schemas: [placeholderSchema, this.schema]
       })
     }
-
+    // Schema needed to compare results
     this.introspectionSchema = introspectionFromSchema(preValidationSchema, { descriptions: false })
 
     return graphql(preValidationSchema, introspectionQuery)

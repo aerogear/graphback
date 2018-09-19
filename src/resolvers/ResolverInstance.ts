@@ -18,6 +18,18 @@ export interface ResolverInstance {
   fieldName: string,
 
   /**
+   * Name of the type
+   * For example User
+   */
+  typeName: string,
+
+
+  /**
+   * Raw user schema that will be used to generate schema
+   */
+  schemaDefinition: string,
+
+  /**
    * Type of resolver
    */
   resolverType: 'Mutation' | 'Query',

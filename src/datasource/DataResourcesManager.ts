@@ -1,4 +1,3 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { Field, Type } from 'graphql-codegen-core';
 import * as Knex from 'knex'
 import { logger } from '../logger'

@@ -1,22 +1,18 @@
  {{#each types}}
-
-{{! TODO disable when no queries generated}}
+{{! TODO disable when no pagination enabled}}
 input {{name}}QueryFilter {
-    fields: [String!]!
+    name: String!
+    value: String!
 }
 
-{{! TODO allPaginatedNotes(nextToken: String): NotePage! }}
 type {{name}}Page {
-    note: [{{name}}!]!
+    {{lowercase name}}: [{{name}}!]!
     nextToken: String
 }
 {{/each}}
 
 type Query {
-{{#each types}}
-    {{! TODO Generate fields basing on resolvers }}
-    findAll{{name}}: [{{name}}!]!
-    find{{name}}By(query: {{name}}QueryFilter): [{{name}}!]!
-    find{{name}}(id: ID!): {{name}}!
+{{#each resolvers.query}}
+    {{schemaDefinition}}
 {{/each}}
 }

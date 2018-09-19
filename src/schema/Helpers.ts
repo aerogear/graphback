@@ -33,6 +33,14 @@ export class HandlebarsHelpers {
           return options.inverse(this);
       }
     });
+
+    handlebars.registerHelper('lowercase', (str: string) => {
+      if (str && typeof str === "string") {
+        return str.toLowerCase();
+      }
+
+      return '';
+    });
   }
 }
 

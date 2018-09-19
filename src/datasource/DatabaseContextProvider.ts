@@ -1,11 +1,10 @@
 import { Type } from 'graphql-codegen-core';
 
 
-// FIXME use this class for data/resolver context instead of arguments
 /**
  * Provides context for database execution parameters.
  */
-export interface IDatabaseContextProvider {
+export interface DatabaseContextProvider {
 
   /**
    * Get namespace (for relational systems it could be an table name or collection for non sql databases.)
@@ -17,11 +16,11 @@ export interface IDatabaseContextProvider {
 /**
  * Allows to build prefixed references to the database
  */
-export class PrefixedDataContextProvider implements IDatabaseContextProvider {
+export class DefaultDataContextProvider implements DatabaseContextProvider {
 
   private prefix: string;
 
-  constructor(prefix: string) {
+  constructor(prefix: string = '') {
     this.prefix = prefix;
   }
 

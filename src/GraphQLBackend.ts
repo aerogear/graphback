@@ -57,6 +57,15 @@ export class GraphQLBackendCreator {
     this.resolverTypes = types;
   }
 
+  /**
+   * Set resolver operations that will be generated
+   *
+   * @param types - array of resolver operations that should be supported
+   */
+  public setDatabaseContext(types: ResolverType[]) {
+    this.resolverTypes = types;
+  }
+
   // NOTES: Two approaches to generate backend
   // 1. Generate user visible schema and then parse it the same way as users will save it
   // Connect resolvers back to generated schema.

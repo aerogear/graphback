@@ -1,8 +1,8 @@
-{{! TODO Apply subscription directives }}
+{{! TODO Apply subscription directives and define subscriptions based on operations }}
 type Subscription {
 {{#each types}}
     new{{name}}: {{name}}!
     updated{{name}}: {{name}}!
-    deleted{{name}}: {{name}}!
+    deleted{{name}}: ID!
 {{/each}}
 }
