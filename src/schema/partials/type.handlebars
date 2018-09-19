@@ -11,7 +11,7 @@ type {{name}} implements Node  {
 input {{name}}Input {
     {{#each fields}}
     {{#ifCond name "!==" 'id'}}
-    {{ name }}: {{raw}}
+    {{ name }}: {{type}}
     {{/ifCond}}
     {{/each}}
 }
