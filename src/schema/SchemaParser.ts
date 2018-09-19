@@ -1,8 +1,9 @@
-import { buildSchema, graphql, GraphQLSchema, introspectionFromSchema, IntrospectionQuery, introspectionQuery, printSchema, validate } from "graphql";
+import { buildSchema, graphql, GraphQLObjectType, GraphQLSchema, GraphQLString, introspectionFromSchema, IntrospectionQuery, introspectionQuery, printSchema } from "graphql";
 import { SchemaTemplateContext, schemaToTemplateContext } from 'graphql-codegen-core'
 import { mergeSchemas } from 'graphql-tools';
-import { IGraphQLConfig } from '../GraphQLConfig'
+import { GeneratorConfig } from '../GeneratorConfig'
 import { logger } from '../logger'
+import { setScheduler } from 'bluebird';
 
 
 /**
@@ -15,15 +16,22 @@ export class SchemaParser {
   // Processed schema that can be used to build elements
   private schemaContext: SchemaTemplateContext
 
-  // Schema that has additional types that are required to build AST
-  private validSchema: GraphQLSchema
-
   // Introspection schema used to compare schemas between each other
   private introspectionSchema: IntrospectionQuery;
+  private schemaText: string;
 
-  public async build(schemaString: string, config: IGraphQLConfig) {
-    logger.debug(`Input schema: ${schemaString}`);
-    this.schema = buildSchema(schemaString);
+  /**
+   * Creates new parser for schema text
+   *
+   * @param schemaText - human readable schema text
+   */
+  constructor(schemaText: string) {
+    this.schemaText = schemaText
+  }
+
+  public async build(config: GeneratorConfig) {
+    logger.debug(`Input schema: ${this.schemaText}`);
+    this.schema = buildSchema(this.schemaText);
 
     this.schemaContext = schemaToTemplateContext(this.schema)
 
@@ -44,23 +52,35 @@ export class SchemaParser {
     if (this.schemaContext.hasInterfaces) {
       logger.warn(`Interfaces are not supported in schema generation`);
     }
+    if (!this.schemaContext.types) {
+      logger.error(`Schema is missing types that can be used in generation`);
 
-    // TO FIX review if still needed
-    // Stitch schema with Query type to validate it
-    //this.validSchema = mergeSchemas({ schemas: [schemaString, placeHolderSchema] })
-    // this.introspectionSchema = introspectionFromSchema(this.schema, { descriptions: false })
-    //logger.error(`Output introspection query: ${this.introspectionSchema}`)
-    // printSchema(this.schema)
-    // logger.error(`schema: ${this.schema.getTypeMap()}`)
-    // try {
-    //   const result = await graphql(this.schema, introspectionQuery)
-    //   if (result.errors) {
-    //     return logger.error(`Schema has errors ${result.errors}`);
-    //   }
-    // } catch (err) {
-    //   return  logger.error(`Error when parsing schema ${err}`);
-    // }
+      return Promise.reject();
+    }
+
+    let preValidationSchema = this.schema;
+    // Definition has no Query type
+    // To validate schema we need to merge definition with example query type
+    if (!this.schema.getQueryType()) {
+      const placeholderSchema = new GraphQLSchema({
+        query: new GraphQLObjectType({
+          name: 'RootQueryType',
+          fields: {
+            sample: {
+              type: GraphQLString
+            }
+          }
+        }),
+      });
+
+      preValidationSchema = mergeSchemas({
+        schemas: [placeholderSchema, this.schema]
+      })
+    }
+
+    this.introspectionSchema = introspectionFromSchema(preValidationSchema, { descriptions: false })
+
+    return graphql(preValidationSchema, introspectionQuery)
   }
-
 
 }

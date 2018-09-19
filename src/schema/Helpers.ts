@@ -1,5 +1,4 @@
 import * as handlebars from 'handlebars';
-import { Field } from 'graphql-codegen-core';
 
 /**
  * Contains helpers used in all templates
@@ -33,20 +32,6 @@ export class HandlebarsHelpers {
         default:
           return options.inverse(this);
       }
-    });
-
-    handlebars.registerHelper('fieldType', function(definedField: Field, options: any) {
-      if (!definedField) {
-        return '';
-      }
-
-      if (definedField.isArray) {
-        return options.fn(this);
-      } else {
-        return options.inverse(this);
-      }
-
-      //return options.fn(this)
     });
   }
 }

@@ -1,5 +1,5 @@
-import { IDataLayerResourcesManager } from './DataResourcesManager';
-import { IGraphQLConfig } from './GraphQLConfig'
+import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
+import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
 import { ResolverInstance } from './resolvers/ResolverInstance';
 import { ResolverManager } from './resolvers/ResolverManager';
@@ -19,16 +19,16 @@ export class GraphQLBackendCreator {
   private dataLayerManager: IDataLayerResourcesManager;
   private resolverTypes: ResolverType[];
   private resolverManager: ResolverManager;
-  private config: IGraphQLConfig;
+  private config: GeneratorConfig;
 
   /**
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(graphQLSchema: string, config: IGraphQLConfig = {}) {
-    this.config = config;
-    this.schemaParser = new SchemaParser();
-    this.schemaParser.build(graphQLSchema, config)
+  constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
+    // tslint:disable-next-line:prefer-object-spread
+    this.config = Object.assign(defaultConfig, config);
+    this.schemaParser = new SchemaParser(graphQLSchema);
     // Default resolvers
     this.resolverTypes = allTypes;
   }
@@ -71,23 +71,30 @@ export class GraphQLBackendCreator {
    */
   public async createBackend(): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
-    const context = this.schemaParser.getContext()
-    if (this.resolverManager) {
-      backend.resolvers = await this.resolverManager.build(context.types, this.resolverTypes);
-    }
-    if (this.config.generateGraphQLSchema) {
-      logger.info("Generating schema")
-      const generator = new GraphQLSchemaGenerator();
-      const outputSchema = generator.generateNewSchema(context, backend.resolvers, this.config);
-      backend.schema = outputSchema;
-    } else {
-      logger.info("Schema generation skipped.")
-    }
-    if (this.config.createDatabaseSchema && this.dataLayerManager) {
-      logger.info("Creating database structure")
-      this.dataLayerManager.createDatabaseResources(context.types);
-    } else {
-      logger.info("Database structure generation skipped.")
+
+    try {
+      await this.schemaParser.build(this.config);
+      const context = this.schemaParser.getContext()
+
+      if (this.resolverManager) {
+        backend.resolvers = await this.resolverManager.build(context.types, this.resolverTypes);
+      }
+      if (this.config.generateGraphQLSchema) {
+        logger.info("Generating schema")
+        const generator = new GraphQLSchemaGenerator();
+        const outputSchema = generator.generateNewSchema(context, backend.resolvers, this.config);
+        backend.schema = outputSchema;
+      } else {
+        logger.info("Schema generation skipped.")
+      }
+      if (this.config.createDatabase && this.dataLayerManager) {
+        logger.info("Creating database structure")
+        this.dataLayerManager.createDatabaseResources(context.types);
+      } else {
+        logger.info("Database structure generation skipped.")
+      }
+    } catch (error) {
+      logger.error(`Error on generation ${error}`)
     }
 
     return backend;
@@ -99,7 +106,7 @@ export class GraphQLBackendCreator {
  * Represents generated graphql backend
  */
 export interface IGraphQLBackend {
-  // Human redable schema that should be replaced with current one
+  // Human readable schema that should be replaced with current one
   schema?: string,
   // Resolvers that should be mounted to schema`
   resolvers?: ResolverInstance[]
