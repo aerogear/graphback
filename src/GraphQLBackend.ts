@@ -90,7 +90,10 @@ export class GraphQLBackendCreator {
 
       if (this.resolverManager) {
         backend.resolvers = await this.resolverManager.build(this.dbContextProvider, context.types, this.resolverTypes);
+      } else {
+        logger.info("Resolver generation skipped.")
       }
+
       if (this.config.generateGraphQLSchema) {
         logger.info("Generating schema")
         const generator = new GraphQLSchemaGenerator();
@@ -99,6 +102,7 @@ export class GraphQLBackendCreator {
       } else {
         logger.info("Schema generation skipped.")
       }
+
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
         this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);

@@ -106,7 +106,7 @@ export class ResolverBuilder {
 
   public buildRead(gqlType: Type): ResolverInstance {
     const tableName = this.context.getFieldName(gqlType)
-    const fieldName = this.getFieldName(gqlType.name, ResolverType.READ, 's');
+    const fieldName = this.getFieldName(gqlType.name, ResolverType.READ);
 
     return {
       fieldName: fieldName,
