@@ -7,7 +7,7 @@ input {{name}}QueryFilter {
 
 {{! TODO allPaginatedNotes(nextToken: String): NotePage! }}
 type {{name}}Page {
-    note: [{{name}}!]
+    note: [{{name}}!]!
     nextToken: String
 }
 {{/each}}

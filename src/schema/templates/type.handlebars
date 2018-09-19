@@ -1,15 +1,17 @@
 {{#each types}}
-
 type {{name}} implements Node  {
     {{#each fields}}
-    {{ name }}: {{type}}
+    {{ name }}: {{raw}}
     {{/each}}
 }
 
+{{/each}}
+
+{{#each types}}
 input {{name}}Input {
     {{#each fields}}
     {{#ifCond name "!==" 'id'}}
-    {{ name }}: {{ this.type }}
+    {{ name }}: {{raw}}
     {{/ifCond}}
     {{/each}}
 }

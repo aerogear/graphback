@@ -15,7 +15,7 @@ export interface ResolverInstance {
    *
    * Field name will be getUser
    */
-  fieldName: String,
+  fieldName: string,
 
   /**
    * Type of resolver
@@ -31,5 +31,5 @@ export interface ResolverInstance {
    * String that contains implementation
    * This could be javascript source code, sql query or json
    */
-  implementation: String
+  implementation: string
 }

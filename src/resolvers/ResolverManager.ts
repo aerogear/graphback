@@ -3,8 +3,6 @@ import { logger } from '../logger';
 import { ResolverInstance } from './ResolverInstance'
 import { ResolverType } from './ResolverType'
 
-
-
 /**
  * Manager interface responsible for creating resolvers for specified types
  */
@@ -17,7 +15,6 @@ export interface ResolverManager {
   build(types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]>
 }
 
-
 /**
  * Resolver that builds queries using knex library
  */
@@ -27,8 +24,8 @@ export class KnexResolverManager implements ResolverManager {
   private argumentContext: string;
 
   // context in which db is
-  private knexContext: String;
-  private prefix: String;
+  private knexContext: string;
+  private prefix: string;
 
   /**
    * Creates resolver manager for knex
@@ -37,7 +34,7 @@ export class KnexResolverManager implements ResolverManager {
    * @param knexContext name of knex object that was exposed
    * @param prefix table prefix
    */
-  constructor(prefix: String = "", argumentContext: string = 'resolve.args', knexContext: String = 'db') {
+  constructor(prefix: string = "", argumentContext: string = 'resolve.args', knexContext: string = 'db') {
     this.argumentContext = argumentContext;
     this.knexContext = knexContext
     this.prefix = prefix;
@@ -130,9 +127,9 @@ export class KnexResolverManager implements ResolverManager {
 
   // Helper function for building the right names
   private getFieldName(typeName: string, action: ResolverType, plural: string = ''): string {
-    const camelizedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
+    const upperCasedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
 
-    return `${action}${camelizedType}${plural}`
+    return `${action}${upperCasedType}${plural}`
   }
 
 
