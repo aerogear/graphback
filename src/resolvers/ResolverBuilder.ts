@@ -35,10 +35,10 @@ export class ResolverBuilder {
     return {
       fieldName: fieldName,
       typeName: gqlType.name,
-      schemaDefinition: `${fieldName}(input: ${gqlType.name}Input!) ${gqlType.name}!`,
+      schemaDefinition: `${fieldName}(input: ${gqlType.name}Input!): ${gqlType.name}!`,
       action: ResolverType.CREATE,
       resolverType: "Mutation",
-      implementation: `return ${this.knexContext}(${tableName}).insert(${this.argumentContext}.input).returning('*')`
+      implementation: `return ${this.knexContext}('${tableName}').insert(${this.argumentContext}.input).returning('*')`
     }
   }
 
@@ -82,7 +82,7 @@ export class ResolverBuilder {
     return {
       fieldName: fieldName,
       typeName: gqlType.name,
-      schemaDefinition: `${fieldName}(): [${gqlType.name}!]!`,
+      schemaDefinition: `${fieldName}: [${gqlType.name}]!`,
       action: ResolverType.FIND_ALL,
       resolverType: "Query",
       implementation: `return ${this.knexContext}.select().from('${tableName}')`
@@ -97,10 +97,10 @@ export class ResolverBuilder {
     return {
       fieldName: fieldName,
       typeName: gqlType.name,
-      schemaDefinition: `${fieldName}(fields: QueryFilter): [${gqlType.name}!]!`,
+      schemaDefinition: `${fieldName}(fields: QueryFilter): [${gqlType.name}]!`,
       action: ResolverType.FIND,
       resolverType: "Query",
-      implementation: `return ${this.knexContext}.select().from('${tableName}').where(${this.argumentContext}.field.name, '=', '${this.argumentContext}.field.value)`
+      implementation: `return ${this.knexContext}.select().from('${tableName}').where(${this.argumentContext}.field.name, '=', ${this.argumentContext}.field.value)`
     }
   }
 
@@ -111,7 +111,7 @@ export class ResolverBuilder {
     return {
       fieldName: fieldName,
       typeName: gqlType.name,
-      schemaDefinition: `${fieldName}(): ${gqlType.name}!`,
+      schemaDefinition: `${fieldName}: ${gqlType.name}!`,
       action: ResolverType.READ,
       resolverType: "Query",
       implementation: `return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);`
