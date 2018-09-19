@@ -2,15 +2,18 @@ import { Type } from 'graphql-codegen-core';
 
 
 /**
- * Provides context for database execution parameters.
+ * Provides context for database creation and queries.
+ * Common object used to
  */
 export interface DatabaseContextProvider {
 
   /**
-   * Get namespace (for relational systems it could be an table name or collection for non sql databases.)
+   * Get field name with namespace (for relational systems it could be an table name or collection for non sql databases.)
+   * This can be used to separate existing schemas to separate projects
+   *
    * @param field GraphQL Type used to retrieve namespace
    */
-  getNamespace(field: Type)
+  getFieldName(field: Type)
 }
 
 /**
@@ -24,7 +27,7 @@ export class DefaultDataContextProvider implements DatabaseContextProvider {
     this.prefix = prefix;
   }
 
-  public getNamespace(field: Type) {
+  public getFieldName(field: Type) {
     return this.prefix + field.name.toLowerCase();
   }
 }

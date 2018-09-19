@@ -45,7 +45,7 @@ export class GraphQLSchemaGenerator {
       return value.resolverType === "Mutation"
     })
     computedResolvers.query = resolvers.filter((value: ResolverInstance) => {
-      return value.resolverType === "Mutation"
+      return value.resolverType === "Query"
     })
 
     return computedResolvers;

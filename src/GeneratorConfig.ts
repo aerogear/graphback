@@ -24,6 +24,12 @@ export interface GeneratorConfig {
    * Create database schema
    */
   createDatabase?: boolean
+
+  /**
+   * Project namespace used to generate database and resolver queries.
+   * For example: `myproject`
+   */
+  namespace?: string
 }
 
 /**

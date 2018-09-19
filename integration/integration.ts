@@ -6,7 +6,7 @@ import { enableDebug, GraphQLBackendCreator, IGraphQLBackend, KnexResolverManage
 enableDebug();
 
 const schemaText = readFileSync(join(__dirname, './Note.graphql'), 'utf8');
-const backend = new GraphQLBackendCreator(schemaText, { generateGraphQLSchema: true, createDatabaseSchema: true })
+const backend = new GraphQLBackendCreator(schemaText, { generateGraphQLSchema: true })
 
 // UI part
 const connectionConfig = {
@@ -17,7 +17,7 @@ const connectionConfig = {
   'port': '15432'
 }
 
-const manager = new PostgresSchemaManager(connectionConfig, 'test_');
+const manager = new PostgresSchemaManager(connectionConfig);
 backend.registerDataResourcesManager(manager);
 
 const resolverManager = new KnexResolverManager('test_');

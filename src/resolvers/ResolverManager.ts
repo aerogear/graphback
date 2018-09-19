@@ -1,19 +1,25 @@
 import { Type } from 'graphql-codegen-core';
+import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
 import { logger } from '../logger';
+import { ResolverBuilder } from './ResolverBuilder';
 import { ResolverInstance } from './ResolverInstance'
 import { ResolverType } from './ResolverType'
-import { ResolverBuilder } from './ResolverBuilder';
 
 /**
  * Manager interface responsible for creating resolvers for specified types
  */
 export interface ResolverManager {
   /**
-   * Ge
+   * Build resolvers for specified graphql types
+   *
+   * @param context database context
    * @param types types that should be source for generating resolvers
    * @param resolverTypes determines what resolvers should be generated
+   *
+   * Limitation: Method do allows only to define ResolverType's for all GraphQL object
+   * which means that the same operations will be generated for all the types
    */
-  build(types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]>
+  build(context: DatabaseContextProvider, types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]>
 }
 
 /**
@@ -30,11 +36,12 @@ export class KnexResolverManager implements ResolverManager {
    * @param knexContext name of knex object that was exposed
    * @param prefix table prefix
    */
-  constructor(prefix: string = "", argumentContext: string = 'resolve.args', knexContext: string = 'db') {
-    this.builder = new ResolverBuilder(prefix, argumentContext, knexContext);
+  constructor(argumentContext: string = 'resolve.args', knexContext: string = 'db') {
+    this.builder = new ResolverBuilder(argumentContext, knexContext);
   }
 
-  public build(types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]> {
+  public build(context: DatabaseContextProvider, types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]> {
+    this.builder.setContext(context);
     const resolverFormats: ResolverInstance[] = [];
     types.forEach((gqlType: Type) => {
       resolverTypes.forEach((resolverType: ResolverType) => {

@@ -3,7 +3,6 @@ import { SchemaTemplateContext, schemaToTemplateContext } from 'graphql-codegen-
 import { mergeSchemas } from 'graphql-tools';
 import { GeneratorConfig } from '../GeneratorConfig'
 import { logger } from '../logger'
-import { setScheduler } from 'bluebird';
 
 
 /**

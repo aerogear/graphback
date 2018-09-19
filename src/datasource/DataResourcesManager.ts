@@ -1,6 +1,7 @@
 import { Field, Type } from 'graphql-codegen-core';
 import * as Knex from 'knex'
 import { logger } from '../logger'
+import { DatabaseContextProvider } from './DatabaseContextProvider'
 
 /**
  * Represents update for data type
@@ -21,7 +22,7 @@ export interface IDataLayerResourcesManager {
    *
    * @param types that should be used to gather resources
    */
-  createDatabaseResources(types: Type[]): Promise<void>;
+  createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void>;
 
   /**
    * Update database resources after they are created
@@ -37,7 +38,6 @@ export interface IDataLayerResourcesManager {
  */
 export class PostgresSchemaManager implements IDataLayerResourcesManager {
   private dbConnection: Knex;
-  private tablePrefix: string;
 
   // tslint:disable-next-line:typedef
   private primitiveTypesMapping = {
@@ -48,17 +48,16 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     ID: 'increments'
   }
 
-  constructor(dbConnectionOptions: Knex.ConnectionConfig, tablePrefix: string = "gen_") {
+  constructor(dbConnectionOptions: Knex.ConnectionConfig) {
     this.dbConnection = Knex({
       client: 'pg',
       connection: dbConnectionOptions
     });
-    this.tablePrefix = tablePrefix;
   }
 
-  public async createDatabaseResources(types: Type[]): Promise<void> {
+  public async createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void> {
     for (const gqlType of types) {
-      const tableName = this.getTableName(gqlType.name);
+      const tableName = context.getFieldName(gqlType)
       const hasTable = await this.dbConnection.schema.hasTable(tableName)
       if (hasTable) {
         logger.warn(`Table exist! Skipping table creation for ${tableName}`)
@@ -92,7 +91,4 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     return this.dbConnection;
   }
 
-  private getTableName(name: string): string {
-    return this.tablePrefix + name.toLowerCase();
-  }
 }

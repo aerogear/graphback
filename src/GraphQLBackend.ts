@@ -1,3 +1,4 @@
+import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
@@ -20,6 +21,7 @@ export class GraphQLBackendCreator {
   private resolverTypes: ResolverType[];
   private resolverManager: ResolverManager;
   private config: GeneratorConfig;
+  private dbContextProvider: DatabaseContextProvider;
 
   /**
    * @param graphQLSchema string containing graphql types
@@ -29,6 +31,7 @@ export class GraphQLBackendCreator {
     // tslint:disable-next-line:prefer-object-spread
     this.config = Object.assign(defaultConfig, config);
     this.schemaParser = new SchemaParser(graphQLSchema);
+    this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
     // Default resolvers
     this.resolverTypes = allTypes;
   }
@@ -62,8 +65,8 @@ export class GraphQLBackendCreator {
    *
    * @param types - array of resolver operations that should be supported
    */
-  public setDatabaseContext(types: ResolverType[]) {
-    this.resolverTypes = types;
+  public setDatabaseContext(provider: DatabaseContextProvider) {
+    this.dbContextProvider = provider;
   }
 
   // NOTES: Two approaches to generate backend
@@ -86,7 +89,7 @@ export class GraphQLBackendCreator {
       const context = this.schemaParser.getContext()
 
       if (this.resolverManager) {
-        backend.resolvers = await this.resolverManager.build(context.types, this.resolverTypes);
+        backend.resolvers = await this.resolverManager.build(this.dbContextProvider, context.types, this.resolverTypes);
       }
       if (this.config.generateGraphQLSchema) {
         logger.info("Generating schema")
@@ -98,7 +101,7 @@ export class GraphQLBackendCreator {
       }
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
-        this.dataLayerManager.createDatabaseResources(context.types);
+        this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
       } else {
         logger.info("Database structure generation skipped.")
       }
@@ -108,7 +111,6 @@ export class GraphQLBackendCreator {
 
     return backend;
   }
-
 }
 
 /**

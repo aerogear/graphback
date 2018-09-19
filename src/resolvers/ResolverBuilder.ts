@@ -1,5 +1,5 @@
-
 import { Type } from 'graphql-codegen-core';
+import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
 import { logger } from '../logger';
 import { ResolverInstance } from './ResolverInstance'
 import { ResolverType } from './ResolverType'
@@ -10,19 +10,18 @@ export class ResolverBuilder {
   public argumentContext: string;
   // context for knex object
   public knexContext: string;
-  public prefix: string;
+
+  private context: DatabaseContextProvider;
 
   /**
    * Creates resolver manager for knex
    *
    * @param argumentContext context for generated arguments
    * @param knexContext name of knex object that was exposed
-   * @param prefix table prefix
    */
-  constructor(prefix: string = "", argumentContext: string = 'resolve.args', knexContext: string = 'db') {
+  constructor(argumentContext: string = 'resolve.args', knexContext: string = 'db') {
     this.argumentContext = argumentContext;
     this.knexContext = knexContext
-    this.prefix = prefix;
   }
 
   // Notes: Server side needs to be refactored to properly implement methods bellow
@@ -30,7 +29,7 @@ export class ResolverBuilder {
   // 2. Formalize input (resolve.parent.id/resolve.args.email etc.)
   // 3. Argument context should be an interface (see above)
   public buildCreate(gqlType: Type): ResolverInstance {
-    const tableName = `${this.prefix}${gqlType.name.toLowerCase()}`;
+    const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.CREATE);
 
     return {
@@ -44,7 +43,7 @@ export class ResolverBuilder {
   }
 
   public buildUpdate(gqlType: Type): ResolverInstance {
-    const tableName = `${this.prefix}${gqlType.name.toLowerCase()}`;
+    const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.UPDATE);
 
     return {
@@ -60,7 +59,7 @@ export class ResolverBuilder {
   }
 
   public buildDelete(gqlType: Type): ResolverInstance {
-    const tableName = `${this.prefix}${gqlType.name.toLowerCase()}`;
+    const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.DELETE);
 
     return {
@@ -76,7 +75,7 @@ export class ResolverBuilder {
   }
 
   public buildFindAll(gqlType: Type): ResolverInstance {
-    const tableName = `${this.prefix}${gqlType.name.toLowerCase()}`;
+    const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.FIND_ALL, 's');
 
     // TODO Pagination support
@@ -91,7 +90,7 @@ export class ResolverBuilder {
   }
 
   public buildFind(gqlType: Type): ResolverInstance {
-    const tableName = `${this.prefix}${gqlType.name.toLowerCase()}`;
+    const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.FIND, 's');
 
     // TODO Pagination support
@@ -106,7 +105,7 @@ export class ResolverBuilder {
   }
 
   public buildRead(gqlType: Type): ResolverInstance {
-    const tableName = `${this.prefix}${gqlType.name.toLowerCase()}`;
+    const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.READ, 's');
 
     return {
@@ -126,4 +125,7 @@ export class ResolverBuilder {
     return `${action}${upperCasedType}${plural}`
   }
 
+  public setContext(context: DatabaseContextProvider): void {
+    this.context = context;
+  }
 }
