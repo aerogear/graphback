@@ -10,11 +10,11 @@
   "author": "wtrocki@redhat.com",
   "scripts": {
     "clean": "rimraf coverage lib tmp",
-    "build": "tsc -p tsconfig.release.json",
+    "build": "tsc -p tsconfig.release.json && cp -Rf ./src/schema/partials ./lib/src/schema/partials",
     "watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "pretest": "npm run lint",
-    "postinstall": "cp -Rf ./src/templates ./lib/src/templates"
+    "postinstall": ""
   },
   "engines": {
     "node": ">= 8.9.0"
@@ -23,14 +23,6 @@
     "url": "https://github.com/wtrocki/apollo-resolver-gen"
   },
   "devDependencies": {
-    "@types/glob": "^5.0.35",
-    "@types/graphql": "~0.13.2",
-    "@types/handlebars": "^4.0.39",
-    "@types/knex": "^0.14.24",
-    "@types/node": "~8.10.25",
-    "@types/pino": "^5.20.0",
-    "graphql-codegen-typescript-template": "^0.11.0",
-    "graphql-import": "^0.7.0",
     "prettier": "~1.14.2",
     "rimraf": "~2.6.2",
     "ts-node": "^7.0.1",
@@ -42,6 +34,13 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@types/glob": "^5.0.35",
+    "@types/graphql": "~0.13.2",
+    "@types/handlebars": "^4.0.39",
+    "@types/knex": "^0.14.24",
+    "@types/node": "~8.10.25",
+    "@types/pino": "^5.20.0",
+    "graphql-import": "^0.7.0",
     "glob": "^7.1.3",
     "graphql": "^0.13.2",
     "graphql-code-generator": "^0.11.0",
