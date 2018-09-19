@@ -1,0 +1,18 @@
+ {{#each types}}
+{{! TODO disable when no pagination enabled}}
+input {{name}}QueryFilter {
+    name: String!
+    value: String!
+}
+
+type {{name}}Page {
+    {{lowercase name}}: [{{name}}!]!
+    nextToken: String
+}
+{{/each}}
+
+type Query {
+{{#each resolvers.query}}
+    {{schemaDefinition}}
+{{/each}}
+}

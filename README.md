@@ -8,7 +8,7 @@
 
 ![](resources/gqlb.png)
 
-Auto generate resolvers on top of the graphql and database of your choice 🚀
+Auto generate Your database structure, GraphQL resolvers and queries from graphql types 🚀
 
 ## Motivation 
 
@@ -58,46 +58,23 @@ const exampleDefinition =
 
 ```typescript
 const backendGenerator = new GraphQLBackend(exampleDefinition);
-
-// Register generator for DDL SQL queries
-backendGenerator.registerDDL(new SQLSchemaCreator())
-
-// Register resolver generator
-backendGenerator.registerResolver(new SQLResolver());
-
-// Set strategy for building relationships between types
-backendGenerator.setRelationshipStrategy(new AdditionalTypeStrategy());
-
-// Allow to register what type of operations will be provided
-backendGenerator.registerMethods([Method.CREATE, Method.FIND])
-
-// Adds pagination helpers for large amounts of data
-backendGenerator.supportPagination(false)
-
-// Flag used to not include query helpers and types (by default true)
-backendGenerator.includeAdditionalHelpers(false)
 ```
 
 3) Generate resources
 
 ```typescript
-const targetFolder = './output'
-backendGenerator.generate(targetFolder);
+backend.createBackend().then((generated: IGraphQLBackend) => {
+  console.log(generated)
+});
 ```
 
-4) Review generated files
+See [example](./integration/integration.ts) for more advanced use case
 
-```bash
-╰─$ ls
-NoteDDL.sql
-NoteResolvers.js 
-NoteSchema.graphql
-```
 
 ## Supported databases
 
-- Postgress
-- MongoDB
+- Postgress (V)
+- MongoDB (WIP)
 
 ## Command line client
 
@@ -105,9 +82,9 @@ WIP
 
 ## Integration with Apollo GraphQL
 
-WIP
 
-## Development Quick start
+
+## Contribution
 
 This project is intended to be used with v8 (LTS Carbon) release of [Node.js][nodejs] or newer and [NPM][npm]. Make sure you have those installed. Then just type following commands:
 
@@ -115,13 +92,7 @@ This project is intended to be used with v8 (LTS Carbon) release of [Node.js][no
 npm install
 ```
 
-### Unit tests in JavaScript
-
-Writing unit tests in TypeScript can sometimes be troublesome and confusing. Especially when mocking dependencies and using spies.
-
-This is **optional**, but if you want to learn how to write JavaScript tests for TypeScript modules, read the [corresponding wiki page][wiki-js-tests].
-
-## Available scripts
+### Available scripts
 
 + `clean` - remove coverage data, Jest cache and transpiled files,
 + `build` - transpile TypeScript to ES6,

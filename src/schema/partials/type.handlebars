@@ -1,0 +1,18 @@
+{{#each types}}
+type {{name}} implements Node  {
+    {{#each fields}}
+    {{ name }}: {{raw}}
+    {{/each}}
+}
+
+{{/each}}
+
+{{#each types}}
+input {{name}}Input {
+    {{#each fields}}
+    {{#ifCond name "!==" 'id'}}
+    {{ name }}: {{raw}}
+    {{/ifCond}}
+    {{/each}}
+}
+{{/each}}
