@@ -44,8 +44,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     String: 'string',
     Int: 'decimal',
     Float: 'float',
-    Boolean: 'boolean',
-    ID: 'increments'
+    Boolean: 'boolean'
   }
 
   constructor(dbConnectionOptions: Knex.ConnectionConfig) {
@@ -65,7 +64,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
         await this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
           table.increments();
           gqlType.fields.forEach((gqlField: Field) => {
-            const method = this.primitiveTypesMapping[gqlField.fieldType];
+            const method = this.primitiveTypesMapping[gqlField.type];
             if (method) {
               table[method](gqlField.name);
             } else {

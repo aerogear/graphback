@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path'
-import { enableDebug, GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager , PostgresSchemaManager } from '../src/index';
+import { enableDebug, GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager, PostgresSchemaManager } from '../src/index';
 
 // Enable debug logger
 enableDebug();
