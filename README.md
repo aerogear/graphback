@@ -4,15 +4,15 @@
 [![PRs Welcome][prs-badge]][prs]
 
 
-## GQLBG - Apollo GraphQL Backend generator
+## GQLBG - GraphQL Backend generator
 
 ![](resources/gqlb.png)
 
-Auto generate Your database structure, GraphQL resolvers and queries from graphql types 🚀
+Auto generate Your database structure, GraphQL resolvers and queries from GraphQL types 🚀
 
 ## Motivation 
 
-GraphQL can be hard and intimidating and hard initially.
+GraphQL can be hard and intimidating initially.
 GQLBG helps you to kickstart your experience with any existing GraphQL implementation
 by generating backend layer using your predefined types.
 
@@ -70,19 +70,14 @@ backend.createBackend().then((generated: IGraphQLBackend) => {
 
 See [example](./integration/integration.ts) for more advanced use case
 
-
 ## Supported databases
 
-- Postgress (V)
+- Postgress
 - MongoDB (WIP)
 
 ## Command line client
 
 WIP
-
-## Integration with Apollo GraphQL
-
-
 
 ## Contribution
 
