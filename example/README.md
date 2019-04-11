@@ -2,4 +2,4 @@
 
 ### Running
 
-ts-node integration.ts
+ts-node index.ts

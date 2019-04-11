@@ -68,7 +68,7 @@ backend.createBackend().then((generated: IGraphQLBackend) => {
 });
 ```
 
-See [example](./integration/integration.ts) for more advanced use case
+See [example](./example/index.ts) for more advanced use case.
 
 ## Supported databases
 
@@ -111,3 +111,11 @@ generator.
 ## License
 Licensed under the APLv2. See the [LICENSE](https://github.com/wtrocki/graphql-resolver-gen/blob/master/LICENSE) file for details.
 
+[ts-badge]: https://img.shields.io/badge/TypeScript-3.0-blue.svg
+[nodejs-badge]: https://img.shields.io/badge/Node.js->=%208.9-blue.svg
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[license-badge]: https://img.shields.io/badge/license-APLv2-blue.svg
+[typescript-30]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html
+[nodejs]: https://nodejs.org/dist/latest-v8.x/docs/api/
+[license]: https://github.com/wtrocki/graphql-resolver-gen/blob/master/LICENSE
+[prs]: http://makeapullrequest.com
