@@ -67,16 +67,32 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
             const method = this.primitiveTypesMapping[gqlField.type];
             if (method) {
               table[method](gqlField.name);
-            } else {
-              // DEBT: Relationships :)
-              // DEBT: Mapping scalars
-              // DEBT: Input type support
-              logger.error(`Using unsupported field ${gqlField.name} in ${gqlType.name} type`)
             }
           })
           table.timestamps();
         })
       }
+    }
+
+    for (const gqlType of types) {
+      let tableName = context.getFieldName(gqlType)
+      let currentTable = tableName
+      gqlType.fields.forEach(async(gqlField: Field) => {
+        if(gqlField.isType) {
+          if("OneToMany" in gqlField.directives) {
+            let fieldname = gqlField.directives['OneToMany'].field
+            if(gqlField.isArray) {
+              tableName = gqlField.type.toLowerCase()
+            } else {
+              currentTable = gqlField.type.toLowerCase()
+            }
+            await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+              table.integer(fieldname)
+              table.foreign(fieldname).references('id').inTable(currentTable)
+            })
+          }
+        }
+      })
     }
 
     return Promise.resolve();

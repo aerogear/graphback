@@ -1,10 +1,13 @@
+directive @OneToOne(field: String) on FIELD
+directive @OneToMany(field: String!) on FIELD
+directive @ManyToMany(tablename: String!) on FIELD
 
 type Note {
   id: ID!
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment]!
+  comment: [Comment]! @OneToMany(field: "comments_note")
 }
 
 type Comment {
