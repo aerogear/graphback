@@ -105,7 +105,8 @@ export class GraphQLBackendCreator {
 
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
-        this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
+        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
+        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context.types);
       } else {
         logger.info("Database structure generation skipped.")
       }

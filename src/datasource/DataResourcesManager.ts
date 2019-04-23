@@ -24,6 +24,10 @@ export interface IDataLayerResourcesManager {
    */
   createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void>;
 
+  //Create relations among tables in database.
+
+  createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void>;
+
   /**
    * Update database resources after they are created
    *
@@ -74,6 +78,11 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       }
     }
 
+    return Promise.resolve();
+  }
+
+  public createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void> {
+    logger.info("Creating relations")
     for (const gqlType of types) {
       let tableName = context.getFieldName(gqlType)
       let currentTable = tableName
