@@ -9,7 +9,12 @@ import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
 import { SchemaParser } from './schema/SchemaParser'
 
 //import directives
-import directives from './directives' 
+import directives from './directives'
+
+//merge directives with schema
+function applyGeneratorDirectives(directives: string, graphQLSchema: string) {
+  return directives + `\n\n` + graphQLSchema
+}
 
 /**
  * GraphQLBackend
@@ -33,7 +38,7 @@ export class GraphQLBackendCreator {
   constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
     // tslint:disable-next-line:
     this.config = Object.assign(defaultConfig, config);
-    this.schemaParser = new SchemaParser(directives + `\n\n` + graphQLSchema);
+    this.schemaParser = new SchemaParser(applyGeneratorDirectives(directives,graphQLSchema));
     this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
     // Default resolvers
     this.resolverTypes = allTypes;

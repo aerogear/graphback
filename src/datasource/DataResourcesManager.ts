@@ -97,7 +97,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
                 table.foreign(fieldname).references('id').inTable(currentTable)
               })
             } else {
-              logger.warn("Check relation syntax!")
+              throw new Error("Incorrect syntax declaration. Declaration should be an array.")
             }
           }
         }
