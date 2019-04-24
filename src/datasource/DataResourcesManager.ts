@@ -96,7 +96,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
               currentTable = gqlField.type.toLowerCase()
             }
             await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
-              table.integer(fieldname)
+              table.integer(fieldname).unsigned()
               table.foreign(fieldname).references('id').inTable(currentTable)
             })
           }

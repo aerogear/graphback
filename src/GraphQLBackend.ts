@@ -7,11 +7,9 @@ import { ResolverManager } from './resolvers/ResolverManager';
 import { allTypes, ResolverType } from './resolvers/ResolverType'
 import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
 import { SchemaParser } from './schema/SchemaParser'
-import { readFileSync } from 'fs'
-import { join } from 'path'
 
 //import directives
-const directives = readFileSync(join(__dirname, 'directives.gql'), 'utf8')
+import directives from './directives' 
 
 /**
  * GraphQLBackend
@@ -35,7 +33,7 @@ export class GraphQLBackendCreator {
   constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
     // tslint:disable-next-line:
     this.config = Object.assign(defaultConfig, config);
-    this.schemaParser = new SchemaParser(directives + '\n\n' + graphQLSchema);
+    this.schemaParser = new SchemaParser(directives + `\n\n` + graphQLSchema);
     this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
     // Default resolvers
     this.resolverTypes = allTypes;
