@@ -92,13 +92,13 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
             let fieldname = gqlField.directives['OneToMany'].field
             if(gqlField.isArray) {
               tableName = gqlField.type.toLowerCase()
+              await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+                table.integer(fieldname).unsigned()
+                table.foreign(fieldname).references('id').inTable(currentTable)
+              })
             } else {
-              currentTable = gqlField.type.toLowerCase()
+              logger.warn("Check relation syntax!")
             }
-            await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
-              table.integer(fieldname).unsigned()
-              table.foreign(fieldname).references('id').inTable(currentTable)
-            })
           }
         }
       })
