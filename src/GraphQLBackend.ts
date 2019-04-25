@@ -8,6 +8,9 @@ import { allTypes, ResolverType } from './resolvers/ResolverType'
 import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
 import { SchemaParser } from './schema/SchemaParser'
 
+//import directives
+import applyGeneratorDirectives from './directives'
+
 /**
  * GraphQLBackend
  *
@@ -30,7 +33,7 @@ export class GraphQLBackendCreator {
   constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
     // tslint:disable-next-line:
     this.config = Object.assign(defaultConfig, config);
-    this.schemaParser = new SchemaParser(graphQLSchema);
+    this.schemaParser = new SchemaParser(applyGeneratorDirectives(graphQLSchema));
     this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
     // Default resolvers
     this.resolverTypes = allTypes;
@@ -105,7 +108,8 @@ export class GraphQLBackendCreator {
 
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
-        this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
+        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
+        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context.types);
       } else {
         logger.info("Database structure generation skipped.")
       }

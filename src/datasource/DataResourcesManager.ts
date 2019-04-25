@@ -24,6 +24,10 @@ export interface IDataLayerResourcesManager {
    */
   createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void>;
 
+  //Create relations among tables in database.
+
+  createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void>;
+
   /**
    * Update database resources after they are created
    *
@@ -67,16 +71,42 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
             const method = this.primitiveTypesMapping[gqlField.type];
             if (method) {
               table[method](gqlField.name);
-            } else {
-              // DEBT: Relationships :)
-              // DEBT: Mapping scalars
-              // DEBT: Input type support
-              logger.error(`Using unsupported field ${gqlField.name} in ${gqlType.name} type`)
             }
           })
           table.timestamps();
         })
       }
+    }
+
+    return Promise.resolve();
+  }
+
+  public createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void> {
+    logger.info("Creating relations")
+    for (const gqlType of types) {
+      let tableName = context.getFieldName(gqlType)
+      let currentTable = tableName
+      gqlType.fields.forEach(async(gqlField: Field) => {
+        if(gqlField.isType) {
+          if("OneToMany" in gqlField.directives) {
+            let fieldname = gqlField.directives['OneToMany'].field
+            if(gqlField.isArray) {
+              tableName = gqlField.type.toLowerCase()
+              const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
+              if(hasColumn) {
+                logger.info("skipping relation creation")
+              } else {
+                await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+                  table.integer(fieldname).unsigned()
+                  table.foreign(fieldname).references('id').inTable(currentTable)
+                })
+              }
+            } else {
+              throw new Error("Incorrect syntax declaration. Declaration should be an array.")
+            }
+          }
+        }
+      })
     }
 
     return Promise.resolve();
