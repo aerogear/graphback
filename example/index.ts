@@ -22,17 +22,19 @@ backend.registerDataResourcesManager(manager);
 const resolverManager = new KnexResolverManager();
 backend.registerResolverManager(resolverManager);
 
-backend.createBackend().then((generated: IGraphQLBackend) => {
+backend.createBackend().then(async(generated: IGraphQLBackend) => {
   console.error("Query")
   console.error(generated.schema)
   console.error("Resolvers")
   console.error(JSON.stringify(generated.resolvers, undefined, 4))
 
-  // FIX ME add asserts
-  manager.getConnection().schema.hasTable('test_note').then((exists: boolean) => {
-    if (exists) {
-      console.error("Schema created")
-    }
-  });
+  //TEST FOR RELATION
+
+  await manager.getConnection().table('note').insert({ title: 'first note', description: 'this is a new note' })
+  await manager.getConnection().table('comment').insert({ title: 'comment', description: 'new comment', comments_note: 1 })
+  const query = await manager.getConnection().table('comment').innerJoin('note', 'comment.comments_note', '=', 'note.id')
+  if(query) {
+    console.error('Relation exists. Test passed')
+  }
 });
 

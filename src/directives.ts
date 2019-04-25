@@ -5,5 +5,5 @@ const directives = `
 `
 
 export default (schema) => {
-  return directives + `\n\n` + schema;
+  return `${directives}\n\n${schema}`
 }

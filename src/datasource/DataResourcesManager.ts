@@ -92,10 +92,15 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
             let fieldname = gqlField.directives['OneToMany'].field
             if(gqlField.isArray) {
               tableName = gqlField.type.toLowerCase()
-              await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
-                table.integer(fieldname).unsigned()
-                table.foreign(fieldname).references('id').inTable(currentTable)
-              })
+              const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
+              if(hasColumn) {
+                logger.info("skipping relation creation")
+              } else {
+                await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+                  table.integer(fieldname).unsigned()
+                  table.foreign(fieldname).references('id').inTable(currentTable)
+                })
+              }
             } else {
               throw new Error("Incorrect syntax declaration. Declaration should be an array.")
             }
