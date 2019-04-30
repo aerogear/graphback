@@ -2,7 +2,6 @@ import { Field, Type } from 'graphql-codegen-core';
 import * as Knex from 'knex'
 import { logger } from '../logger'
 import { DatabaseContextProvider } from './DatabaseContextProvider'
-
 /**
  * Represents update for data type
  */
@@ -99,6 +98,25 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
                 await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
                   table.integer(fieldname).unsigned()
                   table.foreign(fieldname).references('id').inTable(currentTable)
+                })
+              }
+            } else {
+              throw new Error("Incorrect syntax declaration. Declaration should be an array.")
+            }
+          }
+          else if("ManyToMany" in gqlField.directives) {
+            let newTable = gqlField.directives['ManyToMany'].tablename
+            const hasTable = await this.dbConnection.schema.hasTable(newTable)
+            if(gqlField.isArray) {
+              if(hasTable) {
+                await this.dbConnection.schema.alterTable(newTable, (table: Knex.TableBuilder) => {
+                  table.integer(gqlField.name).unsigned()
+                  table.foreign(gqlField.name).references('id').inTable(currentTable)
+                })
+              } else {
+                await this.dbConnection.schema.createTable(newTable, (table: Knex.TableBuilder) => {
+                  table.integer(gqlField.name).unsigned()
+                  table.foreign(gqlField.name).references('id').inTable(currentTable)
                 })
               }
             } else {

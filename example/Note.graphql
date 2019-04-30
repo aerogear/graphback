@@ -4,10 +4,17 @@ type Note {
   description: String!
   ## Relationship
   comment: [Comment]! @OneToMany(field: "comments_note")
+  users: [User]! @ManyToMany(tablename: "users_notes")
 }
 
 type Comment {
   id: ID!
   title: String!
   description: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  notes: [Note]! @ManyToMany(tablename: "users_notes")
 }
