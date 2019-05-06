@@ -109,14 +109,17 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
             const hasTable = await this.dbConnection.schema.hasTable(newTable)
             if(gqlField.isArray) {
               if(hasTable) {
-                await this.dbConnection.schema.alterTable(newTable, (table: Knex.TableBuilder) => {
-                  table.integer(gqlField.name).unsigned()
-                  table.foreign(gqlField.name).references('id').inTable(currentTable)
-                })
+                logger.info("skipping relation creation")
               } else {
+                let tableOne = gqlField.type.toLowerCase()
+                let tableTwo = currentTable
+                let fieldOne = `${tableOne}Id`
+                let fieldTwo = `${currentTable}Id`
                 await this.dbConnection.schema.createTable(newTable, (table: Knex.TableBuilder) => {
-                  table.integer(gqlField.name).unsigned()
-                  table.foreign(gqlField.name).references('id').inTable(currentTable)
+                  table.integer(fieldOne).unsigned()
+                  table.foreign(fieldOne).references('id').inTable(tableOne)
+                  table.integer(fieldTwo).unsigned()
+                  table.foreign(fieldTwo).references('id').inTable(tableTwo)
                 })
               }
             } else {

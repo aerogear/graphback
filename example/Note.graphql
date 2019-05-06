@@ -16,5 +16,4 @@ type Comment {
 type User {
   id: ID!
   name: String!
-  notes: [Note]! @ManyToMany(tablename: "users_notes")
 }
