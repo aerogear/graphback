@@ -31,8 +31,8 @@ backend.createBackend().then(async(generated: IGraphQLBackend) => {
   //TEST FOR RELATION
 
   await manager.getConnection().table('note').insert({ title: 'first note', description: 'this is a new note' })
-  await manager.getConnection().table('comment').insert({ title: 'comment', description: 'new comment', comments_note: 1 })
-  const query = await manager.getConnection().table('comment').innerJoin('note', 'comment.comments_note', '=', 'note.id')
+  await manager.getConnection().table('comment').insert({ title: 'comment', description: 'new comment', noteId: 1 })
+  const query = await manager.getConnection().table('comment').innerJoin('note', 'comment.noteId', '=', 'note.id')
   if(query) {
     console.error('Relation exists. Test passed')
   }
