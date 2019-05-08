@@ -89,6 +89,9 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
         if(gqlField.isType) {
           if("OneToMany" in gqlField.directives) {
             let fieldname = gqlField.directives['OneToMany'].field
+            if(!fieldname) {
+              fieldname = `${currentTable}Id`
+            }
             if(gqlField.isArray) {
               tableName = gqlField.type.toLowerCase()
               const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
@@ -106,6 +109,9 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
           }
           else if("ManyToMany" in gqlField.directives) {
             let newTable = gqlField.directives['ManyToMany'].tablename
+            if(!newTable) {
+              newTable = `${currentTable}${gqlField.type}`
+            }
             const hasTable = await this.dbConnection.schema.hasTable(newTable)
             if(gqlField.isArray) {
               if(hasTable) {
