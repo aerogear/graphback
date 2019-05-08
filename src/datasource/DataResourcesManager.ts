@@ -110,7 +110,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
           else if("ManyToMany" in gqlField.directives) {
             let newTable = gqlField.directives['ManyToMany'].tablename
             if(!newTable) {
-              newTable = `${currentTable}${gqlField.type}`
+              newTable = `${currentTable}_${gqlField.type}`
             }
             const hasTable = await this.dbConnection.schema.hasTable(newTable)
             if(gqlField.isArray) {
