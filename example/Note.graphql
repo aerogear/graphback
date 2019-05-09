@@ -5,6 +5,7 @@ type Note {
   ## Relationship
   comment: [Comment]! @OneToMany
   users: [User]! @ManyToMany
+
 }
 
 type Comment {
@@ -16,4 +17,11 @@ type Comment {
 type User {
   id: ID!
   name: String!
+}
+
+type Board {
+  id: ID!
+  name: String!
+  ## Relationship
+  note: [Note]! @OneToOne
 }
