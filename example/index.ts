@@ -11,7 +11,7 @@ const backend = new GraphQLBackendCreator(schemaText)
 const connectionConfig = {
   'user': 'postgresql',
   'password': 'postgres',
-  'database': 'memeolist_db',
+  'database': 'users',
   'host': '127.0.0.1',
   'port': '5432'
 }

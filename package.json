@@ -13,8 +13,21 @@
     "build": "tsc -p tsconfig.release.json && cp -Rf ./src/schema/partials ./lib/src/schema/partials",
     "watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "pretest": "npm run lint",
+    "test": "ava",
+    "pretest": "npm run build",
     "postinstall": ""
+  },
+  "ava": {
+    "files": [
+			"tests/**/*"
+		],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
   },
   "engines": {
     "node": ">= 8.9.0"
@@ -30,7 +43,7 @@
     "tslint-config-prettier": "1.14.0",
     "tslint-microsoft-contrib": "~5.2.0",
     "tsutils": "~3.0.0",
-    "typescript": "~3.0.1"
+    "typescript": "^3.0.3"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -40,11 +53,12 @@
     "@types/knex": "^0.14.24",
     "@types/node": "~8.10.25",
     "@types/pino": "^5.20.0",
-    "graphql-import": "^0.7.0",
+    "ava": "^1.4.1",
     "glob": "^7.1.3",
     "graphql": "^0.13.2",
     "graphql-code-generator": "^0.11.0",
     "graphql-codegen-core": "^0.12.1",
+    "graphql-import": "^0.7.0",
     "graphql-tools": "^3.1.1",
     "handlebars": "^4.0.12",
     "knex": "^0.15.2",
