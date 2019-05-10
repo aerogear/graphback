@@ -3,17 +3,12 @@ type Note {
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment]! @OneToMany
-  users: [User]! @ManyToMany
+  comment: [Comment]!
+
 }
 
 type Comment {
   id: ID!
   title: String!
   description: String!
-}
-
-type User {
-  id: ID!
-  name: String!
 }

@@ -87,27 +87,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       let currentTable = tableName
       gqlType.fields.forEach(async(gqlField: Field) => {
         if(gqlField.isType) {
-          if("OneToMany" in gqlField.directives) {
-            let fieldname = gqlField.directives['OneToMany'].field
-            if(!fieldname) {
-              fieldname = `${currentTable}Id`
-            }
-            if(gqlField.isArray) {
-              tableName = gqlField.type.toLowerCase()
-              const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
-              if(hasColumn) {
-                logger.info("skipping relation creation")
-              } else {
-                await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
-                  table.integer(fieldname).unsigned()
-                  table.foreign(fieldname).references('id').inTable(currentTable)
-                })
-              }
-            } else {
-              throw new Error("Incorrect syntax declaration. Declaration should be an array.")
-            }
-          }
-          else if("ManyToMany" in gqlField.directives) {
+          if("ManyToMany" in gqlField.directives) {
             let newTable = gqlField.directives['ManyToMany'].tablename
             if(!newTable) {
               newTable = `${currentTable}_${gqlField.type}`
@@ -130,6 +110,46 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
               }
             } else {
               throw new Error("Incorrect syntax declaration. Declaration should be an array.")
+            }
+          }
+          else if("OneToMany" in gqlField.directives || gqlField.isArray) {
+            let fieldname = `${currentTable}Id`
+            if(gqlField.usesDirectives && gqlField.directives['OneToMany'].field) {
+              fieldname = gqlField.directives['OneToMany'].field
+            }
+            if(gqlField.isArray) {
+              tableName = gqlField.type.toLowerCase()
+              const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
+              if(hasColumn) {
+                logger.info("skipping relation creation")
+              } else {
+                await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+                  table.integer(fieldname).unsigned()
+                  table.foreign(fieldname).references('id').inTable(currentTable)
+                })
+              }
+            } else {
+              throw new Error("Incorrect syntax declaration. Declaration should be an array.")
+            }
+          } 
+          else if ('OneToOne' in gqlField.directives || !gqlField.isArray) {
+            let fieldname = `${currentTable}Id`
+            if(gqlField.usesDirectives && gqlField.directives['OneToOne'].field) {
+              fieldname = gqlField.directives['OneToOne'].field
+            }
+            if(!gqlField.isArray) {
+              tableName = gqlField.type.toLowerCase()
+              const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
+              if(hasColumn) {
+                logger.info("skipping relation creation")
+              } else {
+                await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+                  table.integer(fieldname).unique().unsigned()
+                  table.foreign(fieldname).references('id').inTable(currentTable)
+                })
+              }
+            } else {
+              throw new Error("Incorrext syntax declaration. Declaration should not be an array")
             }
           }
         }
