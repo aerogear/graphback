@@ -1,0 +1,27 @@
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+  ## Relationship
+  comment: [Comment]! @OneToMany
+  users: [User]! @ManyToMany
+
+}
+
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+}
+
+type Board {
+  id: ID!
+  name: String!
+  ## Relationship
+  note: Note! @OneToOne
+}
