@@ -9,6 +9,10 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/postgres:latest
+        environment:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgresql
+          POSTGRES_DB: users
 
     working_directory: ~/repo
 
@@ -32,4 +36,4 @@ jobs:
       # run tests!
       # - run: npm run lint
       - run: npm run build
-      ## TODO add integration tests
+      - run: npm run test
