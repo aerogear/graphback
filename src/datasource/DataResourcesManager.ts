@@ -84,11 +84,11 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     logger.info("Creating relations")
     for (const gqlType of types) {
       let tableName = context.getFieldName(gqlType)
-      let currentTable = tableName
+      const currentTable = tableName
       gqlType.fields.forEach(async(gqlField: Field) => {
         if(gqlField.isType) {
           if("ManyToMany" in gqlField.directives) {
-            let newTable = gqlField.directives['ManyToMany'].tablename
+            let newTable = gqlField.directives.ManyToMany.tablename
             if(!newTable) {
               newTable = `${currentTable}_${gqlField.type}`
             }
@@ -97,10 +97,10 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
               if(hasTable) {
                 logger.info("skipping relation creation")
               } else {
-                let tableOne = gqlField.type.toLowerCase()
-                let tableTwo = currentTable
-                let fieldOne = `${tableOne}Id`
-                let fieldTwo = `${currentTable}Id`
+                const tableOne = gqlField.type.toLowerCase()
+                const tableTwo = currentTable
+                const fieldOne = `${tableOne}Id`
+                const fieldTwo = `${currentTable}Id`
                 await this.dbConnection.schema.createTable(newTable, (table: Knex.TableBuilder) => {
                   table.integer(fieldOne).unsigned()
                   table.foreign(fieldOne).references('id').inTable(tableOne)
@@ -114,8 +114,8 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
           }
           else if("OneToMany" in gqlField.directives || gqlField.isArray) {
             let fieldname = `${currentTable}Id`
-            if(gqlField.usesDirectives && gqlField.directives['OneToMany'].field) {
-              fieldname = gqlField.directives['OneToMany'].field
+            if(gqlField.usesDirectives && gqlField.directives.OneToMany.field) {
+              fieldname = gqlField.directives.OneToMany.field
             }
             if(gqlField.isArray) {
               tableName = gqlField.type.toLowerCase()
@@ -134,8 +134,8 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
           } 
           else if ('OneToOne' in gqlField.directives || !gqlField.isArray) {
             let fieldname = `${currentTable}Id`
-            if(gqlField.usesDirectives && gqlField.directives['OneToOne'].field) {
-              fieldname = gqlField.directives['OneToOne'].field
+            if(gqlField.usesDirectives && gqlField.directives.OneToOne.field) {
+              fieldname = gqlField.directives.OneToOne.field
             }
             if(!gqlField.isArray) {
               tableName = gqlField.type.toLowerCase()
