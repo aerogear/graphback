@@ -27,8 +27,7 @@ by generating backend layer using your predefined types.
 - Plain and most canonical GraphQL implementation
 Generated resolvers will work with plain GraphQL solutions.
 
-- Works out of the box with Apollo GraphQL framework
-Apollo GraphQL is often 
+- Works out of the box with Apollo GraphQL
 
 - Full freedom - generated resources can be edited and reconfigured later 
 
@@ -85,6 +84,7 @@ This project is intended to be used with v8 (LTS Carbon) release of [Node.js][no
 
 ```sh
 npm install
+npm run build
 ```
 
 ### Available scripts
@@ -102,10 +102,6 @@ npm install
 - Support schema first and resolver first approach
 Currently supporting only schema first aproach for generation.
 We should allow users to define their relationships by defining types.
-
-- Support generation for relationships 
-Support relationships generation by providing custom directive processed by
-generator.
 
 
 ## License
