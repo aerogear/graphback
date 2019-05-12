@@ -66,12 +66,12 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       } else {
         await this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
           table.increments();
-          gqlType.fields.forEach((gqlField: Field) => {
+          for (const gqlField of gqlType.fields) {
             const method = this.primitiveTypesMapping[gqlField.type];
             if (method) {
               table[method](gqlField.name);
             }
-          })
+          }
           table.timestamps();
         })
       }
@@ -80,17 +80,17 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     return Promise.resolve();
   }
 
-  public createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void> {
+  public async createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void> {
     logger.info("Creating relations")
     for (const gqlType of types) {
       let tableName = context.getFieldName(gqlType)
       const currentTable = tableName
-      gqlType.fields.forEach(async(gqlField: Field) => {
+      for (const gqlField of gqlType.fields) {
         if(gqlField.isType) {
           if("ManyToMany" in gqlField.directives) {
             let newTable = gqlField.directives.ManyToMany.tablename
             if(!newTable) {
-              newTable = `${currentTable}_${gqlField.type}`
+              newTable = `${currentTable}_${gqlField.type.toLowerCase()}`
             }
             const hasTable = await this.dbConnection.schema.hasTable(newTable)
             if(gqlField.isArray) {
@@ -102,10 +102,12 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
                 const fieldOne = `${tableOne}Id`
                 const fieldTwo = `${currentTable}Id`
                 await this.dbConnection.schema.createTable(newTable, (table: Knex.TableBuilder) => {
+                  table.increments()
                   table.integer(fieldOne).unsigned()
                   table.foreign(fieldOne).references('id').inTable(tableOne)
                   table.integer(fieldTwo).unsigned()
                   table.foreign(fieldTwo).references('id').inTable(tableTwo)
+                  table.timestamps()
                 })
               }
             } else {
@@ -153,7 +155,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
             }
           }
         }
-      })
+      }
     }
 
     return Promise.resolve();
