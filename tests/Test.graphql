@@ -10,8 +10,7 @@ type Note {
 
 type Comment {
   id: ID!
-  title: String!
-  description: String!
+  text: String!
 }
 
 type User {
