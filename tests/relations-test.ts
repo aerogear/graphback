@@ -1,5 +1,5 @@
 import ava, { ExecutionContext } from 'ava';
-import knexCleaner from 'knex-cleaner'
+
 import { readFileSync } from 'fs';
 import { join } from 'path'
 import { enableDebug, GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager, PostgresSchemaManager } from '../src/index';
