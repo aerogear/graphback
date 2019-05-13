@@ -8,7 +8,7 @@
 
 ![](docs/gqlb.png)
 
-Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://graphql-heroes.github.io/graphql-resolver-gen) for usage and more.
+Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://graphql-heroes.github.io/graphql-backend-gen) for usage and more.
 
 ## Motivation 
 
