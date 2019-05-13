@@ -1,1 +1,159 @@
-## Placeholder for readme
+<!-- [![TypeScript version][ts-badge]][typescript-30]
+[![Node.js version][nodejs-badge]][nodejs]
+[![APLv2][license-badge]][LICENSE]
+[![PRs Welcome][prs-badge]][prs] -->
+
+
+## GQLBG - GraphQL Backend generator
+
+![](gqlb.png)
+
+Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀
+
+## Motivation 
+
+GraphQL can be hard and intimidating initially.
+GQLBG helps you to kickstart your experience with any existing GraphQL implementation
+by generating backend layer using your predefined types.
+
+## What it does
+
+- Generates required queries and mutations automatically using proven GraphQL patterns
+- Generates unopiniated resolvers layer using https://www.npmjs.com/package/apollo-resolvers
+- Generates database DDL statements that can be used to store data (optional)
+
+## Why to use it
+
+- Plain and most canonical GraphQL implementation
+Generated resolvers will work with plain GraphQL solutions.
+
+- Works out of the box with Apollo GraphQL
+
+- Full freedom - generated resources can be edited and reconfigured later 
+
+- Custom directives out of the box
+Provides set of useful directives and input types that are resolving standard use cases
+
+- Auto generated schema basing on best GraphQL patterns 
+
+- Pick your own server framework and clients (works with Apollo Express and Hapi) 
+
+- Pick your own database
+Solution abstract from database storage possibly allows to support any existing storage, by 
+implementing available interface
+
+## Getting Started
+
+1) Create GraphQL schema
+```graphql
+const exampleDefinition = 
+    type Note {
+        title: String!
+        description: String!
+    }
+```
+
+2) Configure generator
+
+```typescript
+const backendGenerator = new GraphQLBackend(exampleDefinition);
+```
+
+3) Generate resources
+
+```typescript
+backend.createBackend().then((generated: IGraphQLBackend) => {
+  console.log(generated)
+});
+```
+
+See [example](https://github.com/graphql-heroes/graphql-backend-gen/tree/master/example/index.ts) for more advanced use case.
+
+## Database Relationships
+
+All types of database relationships - `1:1, 1:m and n:m` - are supported by the generator.
+
+The `1:1` relation can be simply declared by:
+```graphql
+type Profile {
+  user: User!
+}
+```
+which will create the relationship via a column in the `user` table using column `profileId`. You can customize the field which tracks the relationship using directives.
+```graphql
+type Profile {
+  user: User! @OneToOne(field: "yourCustomField")
+}
+```
+
+The `1:m` relation is declared with array syntax.
+```graphql
+type Note {
+  comment: [Comment!]!
+}
+```
+This creates a column `noteId` in table `comment` to track the relationship. You can similarily customize the column name as follows:
+```graphql
+type Note {
+  comment: [Comment!]! @OneToMany(field: "yourCustomField")
+}
+```
+
+The `n:m` relation requires you to define it using directives as default.
+```graphql
+type Note {
+  users: [User!]! @ManyToMany //array syntax required  
+}
+```
+This will create a separate table `user_note` to track the relationship using columns `userId` and `noteId`. You can customize the table name as such:
+```graphql
+type Note {
+  users: [User!]! @ManyToMany(tablename: "yourCustomTable")  
+}
+```
+See [tests](https://github.com/graphql-heroes/graphql-backend-gen/tree/master/tests) for use cases and tests on relations.
+## Supported databases
+
+- Postgress
+- MongoDB (WIP)
+
+## Command line client
+
+WIP
+
+## Contribution
+
+This project is intended to be used with v8 (LTS Carbon) release of [Node.js](https://nodejs.org/dist/latest-v8.x/docs/api/) or newer and [NPM](https://npmjs.com). Make sure you have those installed. Then just type following commands:
+
+```sh
+npm install
+npm run build
+```
+
+### Available scripts
+
++ `clean` - remove coverage data, Jest cache and transpiled files,
++ `build` - transpile TypeScript to ES6,
++ `watch` - interactive watch mode to automatically transpile source files,
++ `lint` - lint source files and tests,
++ `test` - run tests,
++ `test:watch` - interactive watch mode to automatically re-run tests
+
+
+## Roadmap
+
+- Support schema first and resolver first approach
+Currently supporting only schema first aproach for generation.
+
+
+## License
+Licensed under the APLv2. See the [LICENSE](https://github.com/wtrocki/graphql-resolver-gen/blob/master/LICENSE) file for details.
+
+<!-- [ts-badge]: https://img.shields.io/badge/TypeScript-3.0-blue.svg
+[nodejs-badge]: https://img.shields.io/badge/Node.js->=%208.9-blue.svg
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[license-badge]: https://img.shields.io/badge/license-APLv2-blue.svg
+[typescript-30]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html
+[nodejs]: https://nodejs.org/dist/latest-v8.x/docs/api/
+[license]: https://github.com/wtrocki/graphql-resolver-gen/blob/master/LICENSE
+[prs]: http://makeapullrequest.com -->
