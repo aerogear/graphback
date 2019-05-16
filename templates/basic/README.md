@@ -1,7 +1,6 @@
-## Basic Example
+## Basic Template
 
-`basic/index.js` is the simplest example of how to use the `voyager-server` framework.
-
+`basic/index.js` is the simplest example of how to use generator
 ```
 $ node basic/index.js
 🚀 Server ready at http://localhost:4000/graphql
