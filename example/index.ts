@@ -24,7 +24,7 @@ backend.registerResolverManager(resolverManager);
 
 backend.createBackend().then(async(generated: IGraphQLBackend) => {
   console.error("Query")
-  console.error(generated.schema)
+  ///console.error(generated.schema)
   console.error("Resolvers")
   console.error(JSON.stringify(generated.resolvers, undefined, 4))
 });
