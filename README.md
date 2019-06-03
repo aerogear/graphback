@@ -4,16 +4,15 @@
 [![PRs Welcome][prs-badge]][prs]
 
 
-## GQLBG - GraphQL Backend generator
-
-![](docs/gqlb.png)
+## Graphback
+![](docs/graphback.png)
 
 Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://graphql-heroes.github.io/graphql-backend-gen) for usage and more.
 
 ## Motivation 
 
-GraphQL can be hard and intimidating initially.
-GQLBG helps you to kickstart your experience with any existing GraphQL implementation
+Graphback can be hard and intimidating initially.
+Graphback helps you to kickstart your experience with any existing GraphQL implementation
 by generating backend layer using your predefined types.
 
 ## What it does
@@ -44,7 +43,7 @@ implementing available interface
 
 
 ## License
-Licensed under the APLv2. See the [LICENSE](https://github.com/wtrocki/graphql-resolver-gen/blob/master/LICENSE) file for details.
+Licensed under the APLv2. 
 
 [ts-badge]: https://img.shields.io/badge/TypeScript-3.0-blue.svg
 [nodejs-badge]: https://img.shields.io/badge/Node.js->=%208.9-blue.svg
