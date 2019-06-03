@@ -23,7 +23,7 @@ backend.createBackend().then((generated: IGraphQLBackend) => {
 });
 ```
 
-See [example](https://github.com/graphql-heroes/graphql-backend-gen/tree/master/example/index.ts) for more advanced use case.
+See ./example/index.ts for more advanced use case.
 
 ## Database Relationships
 
@@ -67,4 +67,4 @@ type Note {
   users: [User!]! @ManyToMany(tablename: "yourCustomTable")  
 }
 ```
-See [tests](https://github.com/graphql-heroes/graphql-backend-gen/tree/master/tests) for use cases and tests on relations.
+See ./testss for use cases and tests on relations.

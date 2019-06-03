@@ -7,7 +7,7 @@
 ## Graphback
 ![](docs/graphback.png)
 
-Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://graphql-heroes.github.io/graphql-backend-gen) for usage and more.
+Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://aerogear.github.io/graphback) for usage and more.
 
 ## Motivation 
 
