@@ -1,13 +1,13 @@
-## GQLBG - GraphQL Backend generator
+## Graphback - GraphQL Backend generator
 
-![](gqlb.png)
+![](graphback.png)
 
 Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀
 
 ## Motivation 
 
 GraphQL can be hard and intimidating initially.
-GQLBG helps you to kickstart your experience with any existing GraphQL implementation
+Graphback helps you to kickstart your experience with any existing GraphQL implementation
 by generating backend layer using your predefined types.
 
 ## What it does
