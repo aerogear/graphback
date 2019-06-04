@@ -6,7 +6,7 @@ import * as handlebars from 'handlebars';
 import { basename, join } from 'path';
 import { GeneratorConfig } from '../GeneratorConfig';
 import { logger } from '../logger';
-import { ResolverInstance } from '../resolvers/ResolverInstance';
+import { ResolverInstance } from '../resolvers/NewResolverInstance';
 import { HandlebarsHelpers } from './Helpers';
 
 /**

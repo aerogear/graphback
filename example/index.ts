@@ -1,6 +1,9 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFile } from 'fs';
+import { promisify } from 'util'
 import { join } from 'path'
 import { enableDebug, GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager, PostgresSchemaManager } from '../src/index';
+
+const writeFileAsync = promisify(writeFile)
 
 // Enable debug logger
 enableDebug();
@@ -26,6 +29,8 @@ backend.createBackend().then(async(generated: IGraphQLBackend) => {
   console.error("Query")
   console.error(generated.schema)
   console.error("Resolvers")
-  console.error(JSON.stringify(generated.resolvers, undefined, 4))
+  console.error(generated.resolvers)
+  await writeFileAsync(`${process.cwd()}/Schema.graphql`, generated.schema)
+  await writeFileAsync(`${process.cwd()}/Resolvers.json`, JSON.stringify(generated.resolvers, undefined, 2))
 });
 
