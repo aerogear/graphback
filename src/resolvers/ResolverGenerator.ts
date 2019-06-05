@@ -1,44 +1,42 @@
-
 import { readFileSync } from 'fs';
 import { GlobSync } from 'glob';
-import { SchemaTemplateContext, Type } from 'graphql-codegen-core';
 import * as handlebars from 'handlebars';
 import { basename, join } from 'path';
-import { GeneratorConfig } from '../GeneratorConfig';
-import { logger } from '../logger';
 import { ResolverInstance } from '../resolvers/ResolverInstance';
-import { HandlebarsHelpers } from './Helpers';
+import { HandlebarsHelpers } from '../schema/Helpers';
 
 /**
- * Generates human readable schema from AST
+ * Generate Typescript compatible schema
  */
-export class GraphQLSchemaGenerator {
-  private rootTemplate: string = `{{> schema}}`
+export class GraphQLResolverGenerator {
+  private rootTemplate: string = `{{> resolvers}}`
 
+  /**
+   * Register helper functions for Handlebars
+   */
   constructor() {
-    new HandlebarsHelpers().registerHelpers();
+    new HandlebarsHelpers().registerHelpers()
   }
 
   /**
-   * Generate human readable schema using context
-   *
-   * @param context input context that will be used to generate schema
+   * Generate Typescript compatible schema
+   * @param resolvers Array of ResolverInstance
    */
-  public generateNewSchema(context: SchemaTemplateContext, resolvers: ResolverInstance[], config: GeneratorConfig): string {
-    this.registerPartials();
-    if (!context.hasTypes) {
-      logger.warn("Schema generation was executed without top level types. Generation will not return any valid results.")
-    }
-    const template = handlebars.compile(this.rootTemplate);
+  public generateResolvers(resolvers: ResolverInstance[]): string {
+    this.registerPartials()
 
-    // tslint:disable-next-line:no-any
-    const input: any = context;
-    input.config = config;
-    input.resolvers = this.splitByTypes(resolvers);
+    const template = handlebars.compile(this.rootTemplate)
+    
+    const input: any = {}
+    input.resolvers = this.splitByTypes(resolvers)
 
-    return template(input);
+    return template(input)
   }
 
+  /**
+   * Split resolvers into Query and Mutations
+   * @param resolvers Array of ResolverInstance
+   */
   private splitByTypes(resolvers: ResolverInstance[]) {
     const computedResolvers = { query: [], mutation: [] };
     computedResolvers.mutation = resolvers.filter((value: ResolverInstance) => {
@@ -51,12 +49,13 @@ export class GraphQLSchemaGenerator {
     return computedResolvers;
   }
 
+  /**
+   * Read partials for the template
+   */
   private registerPartials() {
     const partialsPath = join(__dirname, `partials`);
     const templates = new GlobSync('./*.handlebars', { cwd: partialsPath });
     templates.found.forEach((path: string) => {
-      logger.debug("Adding new partial", path);
-      // tslint:disable-next-line:no-any
       let name: any = basename(path).split('.');
       if (name.length > 0) {
         name = name[0];
