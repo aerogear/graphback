@@ -2,8 +2,9 @@ import { DatabaseContextProvider, DefaultDataContextProvider } from './datasourc
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
-import { ResolverInstance } from './resolvers/NewResolverInstance';
+import { ResolverInstance } from './resolvers/ResolverInstance';
 import { ResolverManager } from './resolvers/ResolverManager';
+import { GraphQLResolverGenerator } from './resolvers/ResolverGenerator' 
 import { allTypes, ResolverType } from './resolvers/ResolverType'
 import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
 import { SchemaParser } from './schema/SchemaParser'
@@ -107,18 +108,12 @@ export class GraphQLBackendCreator {
         logger.info("Schema generation skipped.")
       }
 
-      backend.resolvers = {}
-      backend.resolvers["Query"] = {}
-      backend.resolvers["Mutation"] = {}
-      for (const value of this.resolvers) {
-        if(value.resolverType === 'Query') {
-          backend.resolvers["Query"][value.fieldName] = value.implementation
-        }
-        if(value.resolverType === 'Mutation') {
-          backend.resolvers["Mutation"][value.fieldName] = value.implementation
-        }
-      }
-
+      /**
+       * Generate TS resolvers from the ResolverInstance[] generated
+       */
+      const generator = new GraphQLResolverGenerator()
+      backend.resolvers = generator.generateResolvers(this.resolvers)
+      
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
         await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
@@ -141,5 +136,5 @@ export interface IGraphQLBackend {
   // Human readable schema that should be replaced with current one
   schema?: string,
   // Resolvers that should be mounted to schema`
-  resolvers?: object
+  resolvers?: string
 }

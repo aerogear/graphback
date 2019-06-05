@@ -1,6 +1,5 @@
-import { Type } from 'graphql-codegen-core';
+import { Type, gql } from 'graphql-codegen-core';
 import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
-import { logger } from '../logger';
 import { ResolverInstance } from './ResolverInstance'
 import { ResolverType } from './ResolverType'
 
@@ -19,14 +18,14 @@ export class ResolverBuilder {
    * @param argumentContext context for generated arguments
    * @param knexContext name of knex object that was exposed
    */
-  constructor(argumentContext: string = 'resolve.args', knexContext: string = 'db') {
+  constructor(argumentContext: string = 'args', knexContext: string = 'db') {
     this.argumentContext = argumentContext;
     this.knexContext = knexContext
   }
 
   // Notes: Server side needs to be refactored to properly implement methods bellow
   // 1. We need to drop request/response pattern and have just implementation field.
-  // 2. Formalize input (resolve.parent.id/resolve.args.email etc.)
+  // 2. Formalize input (root.id/args.email etc.)
   // 3. Argument context should be an interface (see above)
   public buildCreate(gqlType: Type): ResolverInstance {
     const tableName = this.context.getFieldName(gqlType)
@@ -38,7 +37,9 @@ export class ResolverBuilder {
       schemaDefinition: `${fieldName}(input: ${gqlType.name}Input!): ${gqlType.name}!`,
       action: ResolverType.CREATE,
       resolverType: "Mutation",
-      implementation: `return ${this.knexContext}('${tableName}').insert(${this.argumentContext}.input).returning('*')`
+      implementation: `(root, args, context, info) => {
+        return ${this.knexContext}('${tableName}').insert(${this.argumentContext}.input).returning('*')
+      }`
     }
   }
 
@@ -49,12 +50,13 @@ export class ResolverBuilder {
     return {
       fieldName: fieldName,
       typeName: gqlType.name,
-      schemaDefinition: `${fieldName}(id: ID!, input: ${gqlType.name}Input!): ${gqlType.name}!`,
+      schemaDefinition: `${fieldName}(id: ID!, input: ${gqlType.name}Input!): ${gqlType.name}!`,  
       action: ResolverType.UPDATE,
       resolverType: "Mutation",
-      implementation: `return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).update(${this.argumentContext}.input).then( () => {
+      implementation: `(root, args, context, info) => {
+      return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).update(${this.argumentContext}.input).then( () => {
         return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);
-      });`
+      })}`
     }
   }
 
@@ -66,11 +68,12 @@ export class ResolverBuilder {
       fieldName: fieldName,
       typeName: gqlType.name,
       schemaDefinition: `${fieldName}(id: ID!): ID!`,
-      action: ResolverType.DELETE,
+      action: ResolverType.UPDATE,
       resolverType: "Mutation",
-      implementation: `return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).del().then( () => {
+      implementation: `(root, args, context, info) => {
+        return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).del().then( () => {
         return ${this.argumentContext}.id;
-      });`
+      })}`
     }
   }
 
@@ -85,7 +88,9 @@ export class ResolverBuilder {
       schemaDefinition: `${fieldName}: [${gqlType.name}]!`,
       action: ResolverType.FIND_ALL,
       resolverType: "Query",
-      implementation: `return ${this.knexContext}.select().from('${tableName}')`
+      implementation: `(root, args, context, info) => {
+        return ${this.knexContext}.select().from('${tableName}')
+      }`
     }
   }
 
@@ -100,7 +105,9 @@ export class ResolverBuilder {
       schemaDefinition: `${fieldName}(fields: QueryFilter): [${gqlType.name}]!`,
       action: ResolverType.FIND,
       resolverType: "Query",
-      implementation: `return ${this.knexContext}.select().from('${tableName}').where(${this.argumentContext}.field.name, '=', ${this.argumentContext}.field.value)`
+      implementation: `(root, args, context, info) => {
+        return ${this.knexContext}.select().from('${tableName}').where(${this.argumentContext}.field.name, '=', ${this.argumentContext}.field.value)
+      }`
     }
   }
 
@@ -114,7 +121,9 @@ export class ResolverBuilder {
       schemaDefinition: `${fieldName}: ${gqlType.name}!`,
       action: ResolverType.READ,
       resolverType: "Query",
-      implementation: `return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);`
+      implementation: `(root, args, context, info) => {
+        return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);
+      }`
     }
   }
 

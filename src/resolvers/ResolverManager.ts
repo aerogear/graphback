@@ -1,8 +1,8 @@
 import { Type } from 'graphql-codegen-core';
 import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
 import { logger } from '../logger';
-import { ResolverBuilder } from './NewResolverBuilder';
-import { ResolverInstance } from './NewResolverInstance'
+import { ResolverBuilder } from './ResolverBuilder';
+import { ResolverInstance } from './ResolverInstance'
 import { ResolverType } from './ResolverType'
 
 /**
@@ -36,7 +36,7 @@ export class KnexResolverManager implements ResolverManager {
    * @param knexContext name of knex object that was exposed
    * @param prefix table prefix
    */
-  constructor(argumentContext: string = 'resolve.args', knexContext: string = 'db') {
+  constructor(argumentContext: string = 'args', knexContext: string = 'db') {
     this.builder = new ResolverBuilder(argumentContext, knexContext);
   }
 
