@@ -53,7 +53,7 @@ export class ResolverBuilder {
       schemaDefinition: `${fieldName}(id: ID!, input: ${gqlType.name}Input!): ${gqlType.name}!`,  
       action: ResolverType.UPDATE,
       resolverType: "Mutation",
-      implementation: `(root, args, context, info) => {
+      implementation: `${fieldName} = (root, args, context, info) => {
       return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).update(${this.argumentContext}.input).then( () => {
         return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);
       })}`
