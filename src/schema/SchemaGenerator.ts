@@ -39,6 +39,7 @@ export class GraphQLSchemaGenerator {
     return template(input);
   }
 
+  // TODO remove this 
   private splitByTypes(resolvers: ResolverInstance[]) {
     const computedResolvers = { query: [], mutation: [] };
     computedResolvers.mutation = resolvers.filter((value: ResolverInstance) => {

@@ -23,8 +23,9 @@ export interface IDataLayerResourcesManager {
    */
   createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void>;
 
-  //Create relations among tables in database.
-
+  /**
+   *  Create relations among tables in database.
+   */
   createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void>;
 
   /**
@@ -88,6 +89,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       for (const gqlField of gqlType.fields) {
         if(gqlField.isType) {
           if("ManyToMany" in gqlField.directives) {
+            // tslint:disable-next-line: no-unsafe-any
             let newTable = gqlField.directives.ManyToMany.tablename
             if(!newTable) {
               newTable = `${currentTable}_${gqlField.type.toLowerCase()}`

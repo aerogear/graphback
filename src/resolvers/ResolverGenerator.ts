@@ -33,6 +33,7 @@ export class GraphQLResolverGenerator {
     return template(input)
   }
 
+  // TODO remove this.
   /**
    * Split resolvers into Query and Mutations
    * @param resolvers Array of ResolverInstance

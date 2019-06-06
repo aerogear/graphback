@@ -3,6 +3,8 @@ import { ResolverType } from './ResolverType'
 /**
  * Defines format for created resolvers
  */
+// FIXME maybe diferent name - this is not resolver specific
+/// GeratorMEtadataInstance
 export interface ResolverInstance {
 
   /**
