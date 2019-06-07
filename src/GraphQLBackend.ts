@@ -2,7 +2,7 @@ import { DatabaseContextProvider, DefaultDataContextProvider } from './datasourc
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
-import { ResolverInstance } from './resolvers/ResolverInstance';
+import { MetadataFormat } from './resolvers/MetadataInstance';
 import { ResolverManager } from './resolvers/ResolverManager';
 import { GraphQLResolverGenerator } from './resolvers/ResolverGenerator' 
 import { allTypes, ResolverType } from './resolvers/ResolverType'
@@ -22,7 +22,7 @@ export class GraphQLBackendCreator {
 
   private schemaParser: SchemaParser
   private dataLayerManager: IDataLayerResourcesManager;
-  private resolvers: ResolverInstance[]
+  private resolvers: MetadataFormat
   private resolverTypes: ResolverType[];
   private resolverManager: ResolverManager;
   private config: GeneratorConfig;
@@ -109,11 +109,11 @@ export class GraphQLBackendCreator {
       }
 
       /**
-       * Generate TS resolvers from the ResolverInstance[] generated
+       * Generate TS resolvers from the MetadataFormat generated
        */
       const generator = new GraphQLResolverGenerator()
       backend.resolvers = generator.generateResolvers(this.resolvers)
-      
+
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
         await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
@@ -121,6 +121,7 @@ export class GraphQLBackendCreator {
       } else {
         logger.info("Database structure generation skipped.")
       }
+
     } catch (error) {
       logger.error(`Error on generation ${error}`)
     }

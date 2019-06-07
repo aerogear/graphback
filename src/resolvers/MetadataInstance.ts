@@ -5,7 +5,7 @@ import { ResolverType } from './ResolverType'
  */
 // FIXME maybe diferent name - this is not resolver specific
 /// GeratorMEtadataInstance
-export interface ResolverInstance {
+export interface MetadataInstance {
 
   /**
    * Name of filed that should be used for this resolver.
@@ -20,30 +20,19 @@ export interface ResolverInstance {
   fieldName: string,
 
   /**
-   * Name of the type
-   * For example User
-   */
-  typeName: string,
-
-
-  /**
    * Raw user schema that will be used to generate schema
    */
   schemaDefinition: string,
-
-  /**
-   * Type of resolver
-   */
-  resolverType: 'Mutation' | 'Query',
-
-  /**
-   * Type of action for resolver
-   */
-  action: ResolverType,
 
   /**
    * String that contains implementation
    * This could be javascript source code, sql query or json
    */
   implementation: string
+}
+
+
+export interface MetadataFormat {
+  query: MetadataInstance[]
+  mutation: MetadataInstance[]
 }

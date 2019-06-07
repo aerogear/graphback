@@ -1,0 +1,5 @@
+export const findTemplate = (fieldName: string, tableName: string, knexContext: string, argumentContext: string): string => {
+  return `${fieldName}: (root, args, context, info) => {
+    return ${knexContext}.select().from('${tableName}').where(${argumentContext}.field.name, '=', ${argumentContext}.field.value)
+  }`
+}

@@ -12,7 +12,7 @@ export * from './datasource/DataResourcesManager'
 // Resolvers api
 export * from './resolvers/ResolverType'
 export * from './resolvers/ResolverManager'
-export * from './resolvers/ResolverInstance'
+export * from './resolvers/MetadataInstance'
 export * from './resolvers/ResolverBuilder'
 
 // Logger management

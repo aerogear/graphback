@@ -1,69 +1,35 @@
-import { readFileSync } from 'fs';
-import { GlobSync } from 'glob';
-import * as handlebars from 'handlebars';
-import { basename, join } from 'path';
-import { ResolverInstance } from '../resolvers/ResolverInstance';
-import { HandlebarsHelpers } from '../schema/Helpers';
+import { MetadataFormat } from './MetadataInstance';
 
 /**
  * Generate Typescript compatible schema
  */
 export class GraphQLResolverGenerator {
-  private rootTemplate: string = `{{> resolvers}}`
-
-  /**
-   * Register helper functions for Handlebars
-   */
-  constructor() {
-    new HandlebarsHelpers().registerHelpers()
-  }
 
   /**
    * Generate Typescript compatible schema
-   * @param resolvers Array of ResolverInstance
+   * @param resolvers Array of MetadataInstance
    */
-  public generateResolvers(resolvers: ResolverInstance[]): string {
-    this.registerPartials()
-
-    const template = handlebars.compile(this.rootTemplate)
+  public generateResolvers(resolvers: MetadataFormat): string {
+    let queryResolvers = resolvers.query.map(value => value.implementation)
+    let mutationResolvers = resolvers.mutation.map(value => value.implementation)
+    let queryString = queryResolvers.join(',\n')
+    let mutationString = mutationResolvers.join(',\n')
     
-    const input: any = {}
-    input.resolvers = this.splitByTypes(resolvers)
-
-    return template(input)
+    return this.generateString(queryString, mutationString)
   }
-
-  // TODO remove this.
   /**
-   * Split resolvers into Query and Mutations
-   * @param resolvers Array of ResolverInstance
+   * 
+   * @param queryString joined query resolvers as a string
+   * @param mutationString joined mutation resolvers as a string
    */
-  private splitByTypes(resolvers: ResolverInstance[]) {
-    const computedResolvers = { query: [], mutation: [] };
-    computedResolvers.mutation = resolvers.filter((value: ResolverInstance) => {
-      return value.resolverType === "Mutation"
-    })
-    computedResolvers.query = resolvers.filter((value: ResolverInstance) => {
-      return value.resolverType === "Query"
-    })
-
-    return computedResolvers;
-  }
-
-  /**
-   * Read partials for the template
-   */
-  private registerPartials() {
-    const partialsPath = join(__dirname, `partials`);
-    const templates = new GlobSync('./*.handlebars', { cwd: partialsPath });
-    templates.found.forEach((path: string) => {
-      let name: any = basename(path).split('.');
-      if (name.length > 0) {
-        name = name[0];
-      }
-      const location = join(partialsPath, path);
-      const content = readFileSync(location, { encoding: "UTF8" });
-      handlebars.registerPartial(name, content);
-    });
+  public generateString(queryString, mutationString) {
+    return `export const resolvers = {
+      Query: {
+        ${queryString}
+      },
+      Mutation: {
+        ${mutationString}
+      },
+    }`
   }
 }
