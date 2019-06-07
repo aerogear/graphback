@@ -1,13 +1,16 @@
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 class Config {
+  port: any
+  db: any
+  altairConfig: any
   constructor() {
     this.port = process.env.PORT || 4000
     this.db = {
       database: process.env.DB_NAME || 'users',
-      user: process.env.DB_USERNAME || 'postgresql',
-      password: process.env.DB_PASSWORD || 'postgres',
+      user: process.env.DB_USERNAME || 'postgres',
+      password: process.env.DB_PASSWORD || 'password',
       host: process.env.DB_HOSTNAME || '127.0.0.1',
       port: process.env.DB_PORT || '5432'
     }
@@ -21,5 +24,4 @@ class Config {
   }
 }
 
-
-module.exports = new Config()
+export default new Config()

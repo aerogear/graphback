@@ -1,0 +1,19 @@
+{
+  "name": "apollo-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "license": "Apache 2.0",
+  "dependencies": {
+    "altair-express-middleware": "2.1.9",
+    "apollo-server-express": "^2.6.2",
+    "cors": "2.8.5",
+    "express": "4.17.1",
+    "graphql": "14.3.1",
+    "graphql-tag": "^2.10.1",
+    "knex": "0.17.3"
+  }
+}
