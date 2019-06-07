@@ -3,6 +3,12 @@ logs
 *.log
 npm-debug.log*
 
+## Distribution folder
+dist/
+
+## Types
+types/
+
 # Dependencies
 node_modules/
 
@@ -29,3 +35,5 @@ build/
 
 ## Compiled sources
 lib
+
+.nyc_output/

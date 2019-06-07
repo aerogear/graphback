@@ -21,7 +21,7 @@
       "esnext"
     ]
   },
-  "include": [
-    "src/**/*",
+  "exclude": [
+    "node_modules"
   ]
 }
