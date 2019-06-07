@@ -1,21 +1,20 @@
 {
   "name": "graphback",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
-  "main": "lib/src/index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "typescript": {
     "definition": "dist/index.d.ts"
   },
   "author": "wtrocki@redhat.com",
   "scripts": {
-    "clean": "rimraf coverage lib tmp",
-    "build": "tsc -p tsconfig.release.json && cp -Rf ./src/schema/partials ./lib/src/schema/partials",
-    "watch": "tsc -w -p tsconfig.release.json",
+    "clean": "rimraf coverage dist types",
+    "build": "tsc && cp -Rf ./src/schema/partials ./dist/schema/partials",
+    "watch": "tsc -w ",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
-    "pretest": "npm run build",
-    "postinstall": ""
+    "pretest": "npm run build"
   },
   "ava": {
     "files": [
@@ -32,29 +31,24 @@
   "engines": {
     "node": ">= 8.9.0"
   },
-  "repository": {
-    "url": "https://github.com/wtrocki/apollo-resolver-gen"
-  },
   "devDependencies": {
-    "lerna": "^3.14.1",
-    "prettier": "~1.14.2",
     "rimraf": "~2.6.2",
     "ts-node": "^7.0.1",
     "tslint": "~5.11.0",
     "tslint-config-prettier": "1.14.0",
     "tslint-microsoft-contrib": "~5.2.0",
     "tsutils": "~3.0.0",
-    "typescript": "^3.0.3"
-  },
-  "license": "Apache-2.0",
-  "dependencies": {
+    "typescript": "^3.0.3",
     "@types/glob": "^5.0.35",
     "@types/graphql": "~0.13.2",
     "@types/handlebars": "^4.0.39",
     "@types/knex": "^0.14.24",
     "@types/node": "~8.10.25",
     "@types/pino": "^5.20.0",
-    "ava": "^1.4.1",
+    "ava": "^1.4.1"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
     "glob": "^7.1.3",
     "graphql": "^0.13.2",
     "graphql-code-generator": "^0.11.0",
@@ -63,9 +57,7 @@
     "graphql-tools": "^3.1.1",
     "handlebars": "^4.0.12",
     "knex": "^0.15.2",
-    "pg": "^7.4.3",
     "pino": "^5.5.0",
-    "tslib": "~1.9.3",
-    "vm2": "^3.6.3"
+    "tslib": "~1.9.3"
   }
 }
