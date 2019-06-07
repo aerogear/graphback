@@ -1,0 +1,71 @@
+{
+  "name": "graphback-cli",
+  "version": "1.0.0",
+  "description": "Auto generate resolvers on top of the graphql and database of your choice",
+  "main": "lib/src/index.js",
+  "types": "dist/index.d.ts",
+  "typescript": {
+    "definition": "dist/index.d.ts"
+  },
+  "author": "wtrocki@redhat.com",
+  "scripts": {
+    "clean": "rimraf coverage dist types",
+    "build": "tsc",
+    "cmd": "node ./dist/index.js hello",
+    "watch": "tsc -w -p --help",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "test": "ava",
+    "pretest": "npm run build"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "engines": {
+    "node": ">= 8.9.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/inquirer": "^0.0.35",
+    "@types/node": "^8.0.14",
+    "@types/node-emoji": "^1.4.0",
+    "@types/yargs": "^8.0.1",
+    "lint-staged": "^4.0.2",
+    "typescript-eslint-parser": "^4.0.0",
+    "rimraf": "~2.6.2",
+    "ts-node": "^7.0.1",
+    "tslint": "~5.11.0",
+    "tslint-config-prettier": "1.14.0",
+    "tslint-microsoft-contrib": "~5.2.0",
+    "tsutils": "~3.0.0",
+    "typescript": "^3.0.3",
+    "ava": "^1.4.1"
+  },
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "inquirer": "^6.3.1",
+    "node-emoji": "^1.7.0",
+    "yargs": "^13.2.4"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
+  }
+}
