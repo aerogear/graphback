@@ -9,6 +9,9 @@
 
 Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://aerogear.github.io/graphback) for usage and more.
 
+
+WIP: In progress.
+
 ## Motivation 
 
 Graphback can be hard and intimidating initially.
