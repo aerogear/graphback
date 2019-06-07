@@ -1,12 +1,12 @@
-const express = require('express')
-const cors = require('cors')
+import express = require('express')
+import cors = require('cors')
 
-const { VoyagerServer } = require('@aerogear/voyager-server')
-const { altairExpress } = require('altair-express-middleware')
+import { ApolloServer } from 'apollo-server-express'
+import { altairExpress } from 'altair-express-middleware'
 
-const config = require('./config/config')
-const connect = require('./db')
-const {typeDefs, resolvers} = require('./mapping')
+import config from './config/config'
+import { connect } from './db'
+import { typeDefs, resolvers } from './mapping'
 
 async function start() {
   const app = express()
@@ -24,21 +24,19 @@ async function start() {
     typeDefs,
     resolvers,
     playground: false,
-    context: async ({
+    context: async (
       req
-    }) => {
+    ) => {
       // pass request + db ref into context for each resolver
       return {
         req: req,
-        db: client
+        db: client,
+        serverName: "graphback"
       }
     }
   }
 
-  const voyagerConfig = {
-  }
-
-  const apolloServer = VoyagerServer(apolloConfig, voyagerConfig)
+  const apolloServer = new ApolloServer(apolloConfig)
 
   apolloServer.applyMiddleware({ app })
 

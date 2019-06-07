@@ -5,27 +5,21 @@ const gql = require('graphql-tag')
 /**
  * This file connects to 
  */
-const typeDefs = gql`
+export const typeDefs = gql`
 type Query {
   hello: String
 }
 `
 
 // Resolver functions. This is our business logic
-const resolvers = {
+export const resolvers = {
     Query: {
         hello: (obj, args, context, info) => {
             // we can access the request object provided by the Voyager framework
-            console.log(context.request.body)
 
             // we can access the context added below also
-            console.log(context.serverName)
+            // console.log(context.serverName)
             return `Hello world from ${context.serverName}`
         }
     }
-}
-
-module.exports = {
-    typeDefs,
-    resolvers
 }
