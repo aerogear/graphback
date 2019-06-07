@@ -41,7 +41,9 @@ Provides set of useful directives and input types that are resolving standard us
 Solution abstract from database storage possibly allows to support any existing storage, by 
 implementing available interface
 
+## Contributing
 
+See ./Contributing.md file for more information
 ## License
 Licensed under the APLv2. 
 
