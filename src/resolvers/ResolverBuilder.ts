@@ -1,7 +1,8 @@
 import { Type, gql } from 'graphql-codegen-core';
 import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
-import { ResolverInstance } from './ResolverInstance'
+import { MetadataInstance } from './MetadataInstance'
 import { ResolverType } from './ResolverType'
+import * as knexTemplates from './knex'
 
 
 export class ResolverBuilder {
@@ -18,7 +19,7 @@ export class ResolverBuilder {
    * @param argumentContext context for generated arguments
    * @param knexContext name of knex object that was exposed
    */
-  constructor(argumentContext: string = 'args', knexContext: string = 'db') {
+  constructor(argumentContext: string = 'args', knexContext: string = 'context.db') {
     this.argumentContext = argumentContext;
     this.knexContext = knexContext
   }
@@ -27,103 +28,71 @@ export class ResolverBuilder {
   // 1. We need to drop request/response pattern and have just implementation field.
   // 2. Formalize input (root.id/args.email etc.)
   // 3. Argument context should be an interface (see above)
-  public buildCreate(gqlType: Type): ResolverInstance {
+  public buildCreate(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.CREATE);
 
     return {
       fieldName: fieldName,
-      typeName: gqlType.name,
       schemaDefinition: `${fieldName}(input: ${gqlType.name}Input!): ${gqlType.name}!`,
-      action: ResolverType.CREATE,
-      resolverType: "Mutation",
-      implementation: `(root, args, context, info) => {
-        return ${this.knexContext}('${tableName}').insert(${this.argumentContext}.input).returning('*')
-      }`
+      implementation: knexTemplates.createTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
-  public buildUpdate(gqlType: Type): ResolverInstance {
+  public buildUpdate(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.UPDATE);
 
     return {
       fieldName: fieldName,
-      typeName: gqlType.name,
-      schemaDefinition: `${fieldName}(id: ID!, input: ${gqlType.name}Input!): ${gqlType.name}!`,  
-      action: ResolverType.UPDATE,
-      resolverType: "Mutation",
-      implementation: `${fieldName} = (root, args, context, info) => {
-      return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).update(${this.argumentContext}.input).then( () => {
-        return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);
-      })}`
+      schemaDefinition: `${fieldName}(id: ID!, input: ${gqlType.name}Input!): ${gqlType.name}!`,
+      implementation: knexTemplates.updateTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
-  public buildDelete(gqlType: Type): ResolverInstance {
+  public buildDelete(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.DELETE);
 
     return {
       fieldName: fieldName,
-      typeName: gqlType.name,
       schemaDefinition: `${fieldName}(id: ID!): ID!`,
-      action: ResolverType.UPDATE,
-      resolverType: "Mutation",
-      implementation: `(root, args, context, info) => {
-        return ${this.knexContext}('${tableName}').where('id', '=' , ${this.argumentContext}.id).del().then( () => {
-        return ${this.argumentContext}.id;
-      })}`
+      implementation: knexTemplates.deleteTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
-  public buildFindAll(gqlType: Type): ResolverInstance {
+  public buildFindAll(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.FIND_ALL, 's');
 
     // TODO Pagination support
     return {
       fieldName: fieldName,
-      typeName: gqlType.name,
       schemaDefinition: `${fieldName}: [${gqlType.name}]!`,
-      action: ResolverType.FIND_ALL,
-      resolverType: "Query",
-      implementation: `(root, args, context, info) => {
-        return ${this.knexContext}.select().from('${tableName}')
-      }`
+      implementation: knexTemplates.findAllTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
-  public buildFind(gqlType: Type): ResolverInstance {
+  public buildFind(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.FIND, 's');
 
     // TODO Pagination support
     return {
       fieldName: fieldName,
-      typeName: gqlType.name,
       schemaDefinition: `${fieldName}(fields: QueryFilter): [${gqlType.name}]!`,
-      action: ResolverType.FIND,
-      resolverType: "Query",
-      implementation: `(root, args, context, info) => {
-        return ${this.knexContext}.select().from('${tableName}').where(${this.argumentContext}.field.name, '=', ${this.argumentContext}.field.value)
-      }`
+      implementation: knexTemplates.findTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
-  public buildRead(gqlType: Type): ResolverInstance {
+  public buildRead(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
     const fieldName = this.getFieldName(gqlType.name, ResolverType.READ);
 
     return {
       fieldName: fieldName,
-      typeName: gqlType.name,
       schemaDefinition: `${fieldName}: ${gqlType.name}!`,
-      action: ResolverType.READ,
-      resolverType: "Query",
-      implementation: `(root, args, context, info) => {
-        return ${this.knexContext}.select().from('${tableName}').where('id', '=' , ${this.argumentContext}.id);
-      }`
+      implementation: knexTemplates.readTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 

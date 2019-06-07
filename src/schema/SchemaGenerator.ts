@@ -6,7 +6,7 @@ import * as handlebars from 'handlebars';
 import { basename, join } from 'path';
 import { GeneratorConfig } from '../GeneratorConfig';
 import { logger } from '../logger';
-import { ResolverInstance } from '../resolvers/ResolverInstance';
+import { MetadataFormat } from '../resolvers/MetadataInstance';
 import { HandlebarsHelpers } from './Helpers';
 
 /**
@@ -24,7 +24,7 @@ export class GraphQLSchemaGenerator {
    *
    * @param context input context that will be used to generate schema
    */
-  public generateNewSchema(context: SchemaTemplateContext, resolvers: ResolverInstance[], config: GeneratorConfig): string {
+  public generateNewSchema(context: SchemaTemplateContext, resolvers: MetadataFormat, config: GeneratorConfig): string {
     this.registerPartials();
     if (!context.hasTypes) {
       logger.warn("Schema generation was executed without top level types. Generation will not return any valid results.")
@@ -34,22 +34,9 @@ export class GraphQLSchemaGenerator {
     // tslint:disable-next-line:no-any
     const input: any = context;
     input.config = config;
-    input.resolvers = this.splitByTypes(resolvers);
+    input.resolvers = resolvers
 
     return template(input);
-  }
-
-  // TODO remove this 
-  private splitByTypes(resolvers: ResolverInstance[]) {
-    const computedResolvers = { query: [], mutation: [] };
-    computedResolvers.mutation = resolvers.filter((value: ResolverInstance) => {
-      return value.resolverType === "Mutation"
-    })
-    computedResolvers.query = resolvers.filter((value: ResolverInstance) => {
-      return value.resolverType === "Query"
-    })
-
-    return computedResolvers;
   }
 
   private registerPartials() {

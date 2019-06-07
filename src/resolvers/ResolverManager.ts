@@ -2,7 +2,7 @@ import { Type } from 'graphql-codegen-core';
 import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
 import { logger } from '../logger';
 import { ResolverBuilder } from './ResolverBuilder';
-import { ResolverInstance } from './ResolverInstance'
+import { MetadataFormat } from './MetadataInstance'
 import { ResolverType } from './ResolverType'
 
 /**
@@ -19,7 +19,7 @@ export interface ResolverManager {
    * Limitation: Method do allows only to define ResolverType's for all GraphQL object
    * which means that the same operations will be generated for all the types
    */
-  build(context: DatabaseContextProvider, types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]>
+  build(context: DatabaseContextProvider, types: Type[], resolverTypes: ResolverType[]): Promise<MetadataFormat>
 }
 
 /**
@@ -36,27 +36,30 @@ export class KnexResolverManager implements ResolverManager {
    * @param knexContext name of knex object that was exposed
    * @param prefix table prefix
    */
-  constructor(argumentContext: string = 'args', knexContext: string = 'db') {
+  constructor(argumentContext: string = 'args', knexContext: string = 'context.db') {
     this.builder = new ResolverBuilder(argumentContext, knexContext);
   }
 
-  public build(context: DatabaseContextProvider, types: Type[], resolverTypes: ResolverType[]): Promise<ResolverInstance[]> {
+  public build(context: DatabaseContextProvider, types: Type[], resolverTypes: ResolverType[]): Promise<MetadataFormat> {
     this.builder.setContext(context);
-    const resolverFormats: ResolverInstance[] = [];
+    const resolverFormats: MetadataFormat = {
+      query: [],
+      mutation: []
+    };
     types.forEach((gqlType: Type) => {
       resolverTypes.forEach((resolverType: ResolverType) => {
         if (resolverType === ResolverType.FIND_ALL) {
-          resolverFormats.push(this.builder.buildFindAll(gqlType));
+          resolverFormats.query.push(this.builder.buildFindAll(gqlType));
         } else if (resolverType === ResolverType.CREATE) {
-          resolverFormats.push(this.builder.buildCreate(gqlType));
+          resolverFormats.mutation.push(this.builder.buildCreate(gqlType));
         } else if (resolverType === ResolverType.READ) {
-          resolverFormats.push(this.builder.buildRead(gqlType));
+          resolverFormats.query.push(this.builder.buildRead(gqlType));
         } else if (resolverType === ResolverType.FIND) {
-          resolverFormats.push(this.builder.buildFind(gqlType));
+          resolverFormats.query.push(this.builder.buildFind(gqlType));
         } else if (resolverType === ResolverType.UPDATE) {
-          resolverFormats.push(this.builder.buildUpdate(gqlType));
+          resolverFormats.mutation.push(this.builder.buildUpdate(gqlType));
         } else if (resolverType === ResolverType.DELETE) {
-          resolverFormats.push(this.builder.buildDelete(gqlType));
+          resolverFormats.mutation.push(this.builder.buildDelete(gqlType));
         } else {
           logger.error(`Unsupported format when generating resolver ${gqlType.name.toLowerCase()} for resolver type ${resolverType} `)
         }
