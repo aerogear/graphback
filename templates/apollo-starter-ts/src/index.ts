@@ -1,8 +1,8 @@
-import express = require('express')
-import cors = require('cors')
+import * as cors from 'cors'
+import * as express from 'express'
 
-import { ApolloServer } from 'apollo-server-express'
 import { altairExpress } from 'altair-express-middleware'
+import { ApolloServer } from 'apollo-server-express'
 
 import config from './config/config'
 import { connect } from './db'

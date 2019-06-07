@@ -1,10 +1,13 @@
-import fs from 'fs'
-import path from 'path'
+import * as fs from 'fs'
+import * as path from 'path'
 
+/**
+ * config class
+ */
 class Config {
-  port: any
-  db: any
-  altairConfig: any
+  public port: any
+  public db: object
+  public altairConfig: object
   constructor() {
     this.port = process.env.PORT || 4000
     this.db = {

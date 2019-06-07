@@ -1,9 +1,8 @@
-import knex = require('knex')
+import * as knex from 'knex'
 
-export async function connect(options) {
-  const db = knex({
+export async function connect(options: object) {
+  return knex({
     client: 'pg',
     connection: options
   })
-  return db
 }
