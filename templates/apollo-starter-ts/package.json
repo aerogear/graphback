@@ -2,7 +2,7 @@
   "name": "apollo-template",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts"
   },
@@ -15,5 +15,10 @@
     "graphql": "14.3.1",
     "graphql-tag": "^2.10.1",
     "knex": "0.17.3"
+  },
+  "devDependencies": {
+    "ts-node": "^8.2.0",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.1"
   }
 }
