@@ -1,10 +1,12 @@
-import { Type, gql } from 'graphql-codegen-core';
+import { Type } from 'graphql-codegen-core';
 import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
+import * as knexTemplates from './knex'
 import { MetadataInstance } from './MetadataInstance'
 import { ResolverType } from './ResolverType'
-import * as knexTemplates from './knex'
 
-
+/**
+ * Build metadata to create schema and resolver
+ */
 export class ResolverBuilder {
   // GraphQL object that will be used to retrieve all arguments passed to resolver.
   public argumentContext: string;

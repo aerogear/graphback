@@ -10,10 +10,10 @@ export class GraphQLResolverGenerator {
    * @param resolvers Array of MetadataInstance
    */
   public generateResolvers(resolvers: MetadataFormat): string {
-    let queryResolvers = resolvers.query.map(value => value.implementation)
-    let mutationResolvers = resolvers.mutation.map(value => value.implementation)
-    let queryString = queryResolvers.join(',\n')
-    let mutationString = mutationResolvers.join(',\n')
+    const queryResolvers = resolvers.query.map(value => value.implementation)
+    const mutationResolvers = resolvers.mutation.map(value => value.implementation)
+    const queryString = queryResolvers.join(',\n')
+    const mutationString = mutationResolvers.join(',\n')
     
     return this.generateString(queryString, mutationString)
   }
@@ -22,7 +22,7 @@ export class GraphQLResolverGenerator {
    * @param queryString joined query resolvers as a string
    * @param mutationString joined mutation resolvers as a string
    */
-  public generateString(queryString, mutationString) {
+  public generateString(queryString: string, mutationString: string) {
     return `export const resolvers = {
       Query: {
         ${queryString}

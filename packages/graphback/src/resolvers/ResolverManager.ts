@@ -1,8 +1,8 @@
 import { Type } from 'graphql-codegen-core';
 import { DatabaseContextProvider } from '../datasource/DatabaseContextProvider';
 import { logger } from '../logger';
-import { ResolverBuilder } from './ResolverBuilder';
 import { MetadataFormat } from './MetadataInstance'
+import { ResolverBuilder } from './ResolverBuilder';
 import { ResolverType } from './ResolverType'
 
 /**
