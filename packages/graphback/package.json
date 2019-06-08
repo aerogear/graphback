@@ -32,20 +32,20 @@
     "node": "12.4.0"
   },
   "devDependencies": {
-    "rimraf": "2.6.2",
-    "ts-node": "7.0.1",
-    "tslint": "5.11.0",
-    "tslint-config-prettier": "1.14.0",
-    "tslint-microsoft-contrib": "5.2.0",
-    "tsutils": "3.0.0",
-    "typescript": "3.0.3",
     "@types/glob": "5.0.35",
     "@types/graphql": "0.13.4",
     "@types/handlebars": "4.0.39",
     "@types/knex": "0.14.24",
     "@types/node": "8.10.25",
     "@types/pino": "5.20.0",
-    "ava": "1.4.1"
+    "ava": "1.4.1",
+    "rimraf": "2.6.2",
+    "ts-node": "7.0.1",
+    "tslint": "5.11.0",
+    "tslint-config-prettier": "^1.14.0",
+    "tslint-microsoft-contrib": "^5.2.0",
+    "tsutils": "3.0.0",
+    "typescript": "3.0.3"
   },
   "license": "Apache-2.0",
   "dependencies": {
