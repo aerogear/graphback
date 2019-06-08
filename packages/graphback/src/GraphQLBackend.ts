@@ -3,14 +3,14 @@ import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
 import { MetadataFormat } from './resolvers/MetadataInstance';
-import { ResolverManager } from './resolvers/ResolverManager';
 import { GraphQLResolverGenerator } from './resolvers/ResolverGenerator' 
+import { ResolverManager } from './resolvers/ResolverManager';
 import { allTypes, ResolverType } from './resolvers/ResolverType'
 import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
 import { SchemaParser } from './schema/SchemaParser'
 
 //import directives
-import applyGeneratorDirectives from './directives'
+import {applyGeneratorDirectives} from './directives'
 
 /**
  * GraphQLBackend
@@ -87,7 +87,7 @@ export class GraphQLBackendCreator {
    * Create backend with all related resources
    */
   public async createBackend(): Promise<IGraphQLBackend> {
-    let backend: IGraphQLBackend = {};
+    const backend: IGraphQLBackend = {};
     
     try {
       await this.schemaParser.build(this.config);
@@ -111,8 +111,8 @@ export class GraphQLBackendCreator {
       /**
        * Generate TS resolvers from the MetadataFormat generated
        */
-      const generator = new GraphQLResolverGenerator()
-      backend.resolvers = generator.generateResolvers(this.resolvers)
+      const resolverGen = new GraphQLResolverGenerator()
+      backend.resolvers = resolverGen.generateResolvers(this.resolvers)
 
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")

@@ -22,7 +22,7 @@ class Config {
       endpointURL: '/graphql',
       subscriptionsEndpoint: 'ws://localhost:4000/graphql',
       // TODO generate client side queries
-      //initialQuery: fs.readFileSync(path.resolve(__dirname, '../genererated/client/playground.gql'), 'utf8'),
+      // initialQuery: fs.readFileSync(path.resolve(__dirname, '../genererated/client/playground.gql'), 'utf8'),
     }
   }
 }

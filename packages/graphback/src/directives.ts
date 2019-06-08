@@ -4,6 +4,6 @@ const directives = `
   directive @ManyToMany(tablename: String) on FIELD
 `
 
-export default (schema) => {
+export const applyGeneratorDirectives = (schema: string) => {
   return `${directives}\n\n${schema}`
 }

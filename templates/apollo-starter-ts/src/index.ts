@@ -1,21 +1,21 @@
-import * as cors from 'cors'
-import * as express from 'express'
+import * as cors from "cors"
+import * as express from "express"
 
-import { altairExpress } from 'altair-express-middleware'
-import { ApolloServer } from 'apollo-server-express'
+import { altairExpress } from "altair-express-middleware"
+import { ApolloServer } from "apollo-server-express"
 
-import config from './config/config'
-import { connect } from './db'
-import { typeDefs, resolvers } from './mapping'
+import config from "./config/config"
+import { connect } from "./db"
+import { resolvers, typeDefs } from "./mapping"
 
 async function start() {
   const app = express()
 
   app.use(cors())
 
-  app.get('/health', (req, res) => res.sendStatus(200))
+  app.get("/health", (req, res) => res.sendStatus(200))
 
-  app.use('/graphql', altairExpress(config.altairConfig))
+  app.use("/graphql", altairExpress(config.altairConfig))
 
   // connect to db
   const client = await connect(config.db);
@@ -24,9 +24,9 @@ async function start() {
     typeDefs,
     resolvers,
     playground: false,
-    context: async (
+    context: async ({
       req
-    ) => {
+    }) => {
       // pass request + db ref into context for each resolver
       return {
         req: req,

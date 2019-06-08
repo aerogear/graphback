@@ -94,7 +94,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
   public async createDatabaseRelations(context: DatabaseContextProvider, types: Type[]): Promise<void> {
     logger.info("Creating relations")
     for (const gqlType of types) {
-      let tableName = context.getFieldName(gqlType)
+      const tableName = context.getFieldName(gqlType)
       const currentTable = tableName
       for (const gqlField of gqlType.fields) {
         if(gqlField.isType) {
@@ -126,6 +126,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       fieldname = gqlField.directives.OneToOne.field
     }
     if(!gqlField.isArray) {
+      // tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase()
       const hasColumn = this.dbConnection.schema.hasColumn(tableName, fieldname)
       if(hasColumn) {
@@ -153,6 +154,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       fieldname = gqlField.directives.OneToMany.field
     }
     if(gqlField.isArray) {
+      // tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase()
       const hasColumn = this.dbConnection.schema.hasColumn(tableName, fieldname)
       if(hasColumn) {
