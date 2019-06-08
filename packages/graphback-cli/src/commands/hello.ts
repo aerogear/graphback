@@ -1,7 +1,7 @@
-import { logInfo } from '../utils';
 import { prompt as ask } from 'inquirer';
+import { logInfo } from '../utils';
 
-import * as yargs from 'yargs'; // eslint-disable-line no-unused-vars
+import * as yargs from 'yargs';
 
 async function askName(): Promise<string> {
   logInfo(':wave:  Hello stranger!');
@@ -12,6 +12,7 @@ async function askName(): Promise<string> {
       message: "What's your name?"
     }
   ]);
+  
   return name;
 }
 
