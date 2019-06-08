@@ -14,7 +14,8 @@
     "express": "4.17.1",
     "graphql": "14.3.1",
     "graphql-tag": "2.10.1",
-    "knex": "0.17.3"
+    "knex": "0.17.3",
+    "pg": "^7.11.0"
   },
   "devDependencies": {
     "ts-node": "8.2.0",

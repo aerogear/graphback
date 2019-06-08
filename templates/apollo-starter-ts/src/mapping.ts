@@ -1,15 +1,15 @@
-const gql = require('graphql-tag')
+import gql from "graphql-tag";
 
 
 // FIXME - those are just examples to compile project
 /**
- * This file connects to 
+ * This file connects to
  */
 export const typeDefs = gql`
 type Query {
   hello: String
 }
-`
+`;
 
 // Resolver functions. This is our business logic
 export const resolvers = {
@@ -19,7 +19,7 @@ export const resolvers = {
 
             // we can access the context added below also
             // console.log(context.serverName)
-            return `Hello world from ${context.serverName}`
+            return `Hello world from ${context.serverName}`;
         }
     }
 }

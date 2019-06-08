@@ -3,11 +3,17 @@
     "tslint-microsoft-contrib",
     "tslint-config-prettier"
   ],
+  "linterOptions": {
+    "exclude": [
+        "node_modules"
+    ]
+  },
   "rules": {
     "mocha-no-side-effect-code": false,
     "missing-jsdoc": false,
     "no-relative-imports": false,
     "export-name": false,
+    "semicolon": false,
     "promise-function-async": false,
     "no-void-expression": false,
     "no-redundant-jsdoc": false,
@@ -15,6 +21,9 @@
     "no-suspicious-comment": false,
     "interface-name": false,
     "prefer-object-spread": false,
+    "prefer-readonly": false,
+    "no-unsafe-any": false,
+    "strict-boolean-expressions": false,
     "typedef": [
       true,
       "parameter",
