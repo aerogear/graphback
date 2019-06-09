@@ -7,7 +7,7 @@
   "dependencies": {},
   "devDependencies": {
     "del-cli": "1.1.0",
-    "lerna": "3.14.1",
+    "lerna": "3.14.2",
     "npm-run-all": "4.1.5",
     "nyc": "13.3.0",
     "replace": "1.1.0",
