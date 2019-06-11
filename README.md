@@ -46,7 +46,7 @@ implementing available interface
 
 ## Contributing
 
-See ./Contributing.md file for more information
+See [contribution guidelines](./CONTRIBUTING.md) file for more information
 ## License
 Licensed under the APLv2. 
 
