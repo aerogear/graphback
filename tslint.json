@@ -18,6 +18,7 @@
     "prefer-object-spread": false,
     "prefer-readonly": false,
     "no-unsafe-any": false,
+    "no-shadowed-variable": false,
     "strict-boolean-expressions": false,
     "typedef": [
       true,
