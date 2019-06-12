@@ -1,6 +1,6 @@
 {
   "name": "graphback-cli",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "bin": {
@@ -41,8 +41,8 @@
     "@types/node": "8.10.49",
     "@types/node-emoji": "1.8.1",
     "@types/yargs": "8.0.3",
+    "ava": "1.4.1",
     "lint-staged": "4.3.0",
-    "typescript-eslint-parser": "4.0.0",
     "rimraf": "2.6.3",
     "ts-node": "7.0.1",
     "tslint": "5.11.0",
@@ -50,7 +50,7 @@
     "tslint-microsoft-contrib": "5.2.1",
     "tsutils": "3.0.0",
     "typescript": "3.5.1",
-    "ava": "1.4.1"
+    "typescript-eslint-parser": "4.0.0"
   },
   "dependencies": {
     "chalk": "2.4.2",
