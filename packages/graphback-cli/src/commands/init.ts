@@ -1,37 +1,43 @@
 import * as execa from 'execa'
-import { lstatSync, readdirSync } from 'fs'
+import { mkdirSync, accessSync } from 'fs'
 import { prompt as ask } from 'inquirer'
-import { ncp } from 'ncp'
-import { join } from 'path'
-import { promisify } from 'util'
+import ora from 'ora'
 import * as yargs from 'yargs'
-import { logInfo } from '../utils'
-
-const copyAsync = promisify(ncp)
+import { extractTemplate } from '../helpers/extractTemplate'
+import { allTemplates, Template } from '../helpers/template'
+import { logInfo, logError } from '../utils'
 
 type Params = { name?: string }
 
-function getTemplateDir(): string {
-  return `${__dirname.split('packages')[0]}templates`
+
+async function installDependencies(name: string): Promise<void> {
+  process.chdir(name)
+  const spinner = ora('Installing dependencies').start()
+  await execa('npm', ['i'])
+  spinner.succeed()
 }
 
-const isDirectory = (dir: string) => lstatSync(dir).isDirectory()
-
-function getDirectories(templateDir: string): string[] {  
-  return readdirSync(templateDir).filter((name: string) => isDirectory(join(templateDir, name)))
+async function makeDirectory(path: string, name: string): Promise<void> {
+  try {
+    accessSync(path)
+    logError(`A folder with name ${name} exists. Remove it or try another name.`)
+    process.exit(0)
+  } catch (error) {
+    mkdirSync(path)
+  }
 }
 
-async function chooseTemplate(): Promise<string> {
+async function chooseTemplate(): Promise<Template> {
   const { templateName } = await ask([
     {
       type: 'list',
       name: 'templateName',
       message: 'Choose a template to bootstrap',
-      choices: getDirectories(getTemplateDir())
+      choices: allTemplates.map((t: Template) => t.name)
     }
   ])
 
-  return templateName
+  return allTemplates.find((t: Template) => t.name === templateName)
 }
 
 export const command = 'init <name>'
@@ -46,12 +52,11 @@ export const builder = (yargs: yargs.Arguments) => {
 }
 
 export async function handler({ name }: Params) {
-  const templateName = await chooseTemplate()
-  const templateDir = getTemplateDir()
+  const path = `${process.cwd()}/${name}`
+  await makeDirectory(path, name)
   logInfo(`Bootstraping graphql server :dizzy: :sparkles:`)
-  await copyAsync(`${templateDir}/${templateName}`, `${process.cwd()}/${name}`)
-  await execa.shell(`cd ${name}`)
-  logInfo(`Installing dependencies...`)
-  await execa.shell(`npm i`)
+  const template = await chooseTemplate()
+  await extractTemplate(template, name)
+  await installDependencies(name)
   logInfo('GraphQL server successfully bootstrapped :rocket:')
 }
