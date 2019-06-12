@@ -1,11 +1,11 @@
 import * as execa from 'execa'
-import { mkdirSync, accessSync } from 'fs'
+import { accessSync, mkdirSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
 import * as yargs from 'yargs'
 import { extractTemplate } from '../helpers/extractTemplate'
 import { allTemplates, Template } from '../helpers/template'
-import { logInfo, logError } from '../utils'
+import { logError, logInfo } from '../utils'
 
 type Params = { name?: string }
 
