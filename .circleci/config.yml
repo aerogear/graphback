@@ -1,39 +1,70 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/graphback
     docker:
-      # specify the version you desire here
-      - image: circleci/node:lts
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # Node 8 LTS
+      - image: circleci/node:lts-browsers
       - image: circleci/postgres:latest
         environment:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgresql
           POSTGRES_DB: users
-
-    working_directory: ~/repo
-
     steps:
       - checkout
-
-      # Download and cache dependencies
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: yarn install
-
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-dependencies
+          command: npm install
+      - run:
+          name: install-package-dependencies
+          command: npm run bootstrap
       - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ./node_modules
+      - run:
+          # Hoisting will cache some of the packages, but rest needs to be installed separtely
+          name: install-package-dependencies-after-cache
+          command: npm run bootstrap
+      - run:
+          name: run-build
+          command: npm run build
+      - run:
+          name: run lint
+          command: npm run lint
+      - run:
+          name: test
+          command: npm test
+  npm_publish:
+    working_directory: ~/graphqlheroes
+    docker:
+      # Node 8 LTS
+      - image: circleci/node:lts
+    steps:
+      - checkout
+        # Allows us to authenticate with the npm registry
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - run: CI=true npm run release:prep
+      - run: TAG=$CIRCLE_TAG npm run release:validate
+      - run: TAG=$CIRCLE_TAG npm run publish
 
-      # run tests!
-      - run: npm run lint
-      - run: npm run bootstrap
-      - run: npm run test
+  version: 2
+  build_and_release:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - npm_publish:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/ # allow anything because tag syntax is validated as part of validate-release.sh
+            branches:
+              ignore: /.*/
