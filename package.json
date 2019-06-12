@@ -28,7 +28,6 @@
     "watch": "lerna run watch",
     "release:prep": "./scripts/prepareRelease.sh",
     "release:validate": "./scripts/validateRelease.sh",
-    "updateXml": "lerna exec -- \\$LERNA_ROOT_PATH/scripts/updateCordovaVersions.sh",
     "publish:canary": "lerna publish --canary",
     "publish": "./scripts/publishRelease.sh",
     "link": "lerna exec npm link .",
