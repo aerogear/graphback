@@ -33,18 +33,5 @@ for package in $PACKAGES; do
   fi
 done
 
-for package in $PACKAGES; do
-  package_dir=$(lerna --loglevel=silent ls -l | grep $package | awk -F ' ' '{print $3}')
-  package_dist_dir="${package_dir}/dist"
-  package_plugin_xml="${package_dir}/plugin.xml"
-  if [ -d "${package_dist_dir}" ]; then
-    echo "dist dir ${package_dist_dir} present"
-  elif [ -f "${package_plugin_xml}" ]; then
-    echo "dist dir ${package_dist_dir} not present but package is a Cordova plugin"
-  else
-    echo "dist dir ${package_dist_dir} not present and the package is not a Cordova plugin, possible compilation error"
-    exit 1
-  fi
-done
 
 echo "TAG and PACKAGE_VERSION are valid"
