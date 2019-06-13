@@ -3,8 +3,9 @@ import * as execa from 'execa'
 import { accessSync, mkdirSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
-import { Template } from '../templates/templateMetadata'
-import { allTemplates, extractTemplate } from '../templates/templates'
+import { addModel, createModel } from '../templates/modelTemplates';
+import { allTemplates, extractTemplate } from '../templates/starterTemplates'
+import { Model, Template } from '../templates/templateMetadata'
 import { logError, logInfo } from './index'
 
 /**
@@ -80,13 +81,14 @@ async function assignTemplate(templateName: string): Promise<Template> {
 
 function postSetupMessage(name: string): string {
   return `
-  GraphQL server successfully bootstrapped :rocket:
-  Next Steps:
-  1. change directory into project folder - ${chalk.cyan(`cd ${name}`)}
-  2. Create a graphql file inside ${chalk.cyan(`model`)} containing your Types
-  3. run ${chalk.cyan(`graphback build`)} to generate schema and resolvers
-  4. run ${chalk.cyan(`graphback db`)} to create database resources in postgres
-  y`
+GraphQL server successfully bootstrapped :rocket:
+Next Steps:
+1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
+2. Edit the .graphql file inside ${chalk.cyan(`model`)} with your GraphQL types.
+3. Run ${chalk.cyan(`graphback build`)} to generate schema and resolvers
+4. Run ${chalk.cyan(`graphback db`)} to create database resources in postgres
+5. Run ${chalk.cyan(`npm start`)}
+`
 }
 
 /**
@@ -95,12 +97,15 @@ function postSetupMessage(name: string): string {
  * @param templateName name of the template provided(if any)
  */
 export async function init(name: string, templateName?: string) {
-  const path = `${process.cwd()}/${name}`
+  const path: string = `${process.cwd()}/${name}`
   await checkDirectory(path, name)
-  const template = await assignTemplate(templateName)
+  const template: Template = await assignTemplate(templateName)
+  const [modelName, content] = await createModel()
   mkdirSync(path)
-  logInfo(`Bootstraping graphql server :dizzy: :sparkles:`)
+  logInfo(`
+Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
+  addModel(name, modelName, content)
   await installDependencies(name)
   logInfo(postSetupMessage(name))
 }

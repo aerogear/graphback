@@ -9,3 +9,8 @@ export interface TemplateRepository {
   branch: string
   path: string
 }
+
+export interface Model {
+  name: string
+  content: string
+}
