@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import * as execa from 'execa'
 import { accessSync, mkdirSync } from 'fs'
 import { prompt as ask } from 'inquirer'
@@ -5,7 +6,6 @@ import ora from 'ora'
 import { Template } from '../templates/templateMetadata'
 import { allTemplates, extractTemplate } from '../templates/templates'
 import { logError, logInfo } from './index'
-import chalk from 'chalk';
 
 /**
  * Install dependencies, currently only npm
@@ -86,7 +86,7 @@ function postSetupMessage(name: string): string {
   2. Create a graphql file inside ${chalk.cyan(`model`)} containing your Types
   3. run ${chalk.cyan(`graphback build`)} to generate schema and resolvers
   4. run ${chalk.cyan(`graphback db`)} to create database resources in postgres
-  `
+  y`
 }
 
 /**
