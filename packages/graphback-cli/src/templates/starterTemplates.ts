@@ -5,7 +5,7 @@ import * as github from 'parse-github-url'
 import * as request from 'request'
 import * as tar from 'tar'
 import * as tmp from 'tmp'
-import { Template } from '../templates/templateMetadata'
+import { Template } from './templateMetadata'
 
 /**
  * available templates
