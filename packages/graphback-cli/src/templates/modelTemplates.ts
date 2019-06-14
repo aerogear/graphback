@@ -60,7 +60,7 @@ type Customer {
 type Product {
   id: ID!
   name: String!
-  quantity: Number!
+  quantity: Int!
 }
 `
   }
