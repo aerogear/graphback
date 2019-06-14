@@ -113,21 +113,29 @@ export class GraphQLBackendCreator {
        */
       const resolverGen = new GraphQLResolverGenerator()
       backend.resolvers = resolverGen.generateResolvers(this.resolvers)
-
-      if (this.config.createDatabase && this.dataLayerManager) {
-        logger.info("Creating database structure")
-        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
-        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context.types);
-      } else {
-        logger.info("Database structure generation skipped.")
-      }
-
     } catch (error) {
       logger.error(`Error on generation ${error}`)
-    }
-
+    }   
+    
     return backend;
   }
+
+
+    public async createDatabase(): Promise<void> {
+      try {        
+        const context = this.schemaParser.getContext()
+        if (this.config.createDatabase && this.dataLayerManager) {
+          logger.info("Creating database structure")
+          await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
+          await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context.types);
+        } else {
+          logger.info("Database structure generation skipped.")
+        }
+      } catch (error) {
+        logger.error(`Error on Database creation ${error}`)
+      }
+
+    }
 }
 
 /**
