@@ -5,7 +5,7 @@ import { prompt as ask } from 'inquirer'
 import ora from 'ora'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
-import { Model, Template } from '../templates/templateMetadata'
+import { Template } from '../templates/templateMetadata'
 import { logError, logInfo } from './index'
 
 /**
