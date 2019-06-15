@@ -1,4 +1,4 @@
-import { generate } from '../utils/generateHelper'
+import { generate } from '../helpers/generateHelper'
 
 export const command = 'generate'
 

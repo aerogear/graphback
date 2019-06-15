@@ -6,7 +6,7 @@ import ora from 'ora'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
 import { Template } from '../templates/templateMetadata'
-import { logError, logInfo } from './index'
+import { logError, logInfo } from '../utils'
 
 /**
  * Install dependencies, currently only npm
