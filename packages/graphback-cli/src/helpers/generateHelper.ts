@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { accessSync, readFileSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager } from 'graphback-core'
+import { GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager } from 'graphback'
 import { logError, logInfo } from '../utils';
 
 /**

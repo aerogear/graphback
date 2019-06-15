@@ -1,5 +1,5 @@
 {
-  "name": "graphback-core",
+  "name": "graphback",
   "version": "0.2.0",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
@@ -8,9 +8,6 @@
     "definition": "types/index.d.ts"
   },
   "author": "wtrocki@redhat.com",
-  "bin": {
-    "graphback-core": "dist/index.js"
-  },
   "scripts": {
     "clean": "rimraf coverage dist types",
     "build": "tsc && cp -Rf ./src/schema/partials ./dist/schema/partials",
