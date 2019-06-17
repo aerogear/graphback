@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import * as execa from 'execa'
-import { accessSync, mkdirSync } from 'fs'
+import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
+import { homedir } from 'os'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
 import { Template } from '../templates/templateMetadata'
@@ -79,6 +80,18 @@ async function assignTemplate(templateName: string): Promise<Template> {
   return template
 }
 
+function createDBConfig(name: string) {
+  const configPath = `${homedir}/.db.json`
+  const connectionConfig = {
+    'user': 'postgresql',
+    'password': 'postgres',
+    'database': `${name}`,
+    'host': '127.0.0.1',
+    'port': '5432'
+  }
+  writeFileSync(configPath, JSON.stringify(connectionConfig))
+}
+
 function postSetupMessage(name: string): string {
   return `
 GraphQL server successfully bootstrapped :rocket:
@@ -107,5 +120,6 @@ Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
   await installDependencies(name)
+  createDBConfig(name)
   logInfo(postSetupMessage(name))
 }
