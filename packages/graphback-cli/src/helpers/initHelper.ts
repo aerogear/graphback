@@ -3,7 +3,7 @@ import * as execa from 'execa'
 import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
-import { homedir } from 'os'
+import { chooseDB, createDBConfig } from '../templates/configTemplates'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
 import { Template } from '../templates/templateMetadata'
@@ -80,18 +80,6 @@ async function assignTemplate(templateName: string): Promise<Template> {
   return template
 }
 
-function createDBConfig(name: string) {
-  const configPath = `${homedir}/.db.json`
-  const connectionConfig = {
-    'user': 'postgresql',
-    'password': 'postgres',
-    'database': `${name}`,
-    'host': '127.0.0.1',
-    'port': '5432'
-  }
-  writeFileSync(configPath, JSON.stringify(connectionConfig))
-}
-
 function postSetupMessage(name: string): string {
   return `
 GraphQL server successfully bootstrapped :rocket:
@@ -114,12 +102,13 @@ export async function init(name: string, templateName?: string) {
   await checkDirectory(path, name)
   const template: Template = await assignTemplate(templateName)
   const [modelName, content] = await createModel()
+  const config = await chooseDB(name)
   mkdirSync(path)
   logInfo(`
 Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
   await installDependencies(name)
-  createDBConfig(name)
+  await createDBConfig(config)
   logInfo(postSetupMessage(name))
 }
