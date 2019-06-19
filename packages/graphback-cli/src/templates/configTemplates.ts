@@ -1,49 +1,52 @@
 import { writeFileSync } from 'fs';
-import { prompt as ask } from 'inquirer'
-import { Config } from '../templates/templateMetadata'
 
 /**
  * Different database choices
  */
-export const dbChoices: Config[] = [
-  {
-    name: 'postgres',
-    config: (projectName: string) => {
-      return {
-        'user': 'postgresql',
-        'password': 'postgres',
-        'database': `${projectName}`,
-        'host': '127.0.0.1',
-        'port': '5432'
-      }
+export const defaultDB = {
+  name: 'postgres',
+  config: (projectName: string) => {
+    return {
+      'user': 'postgresql',
+      'password': 'postgres',
+      'database': `${projectName}`,
+      'host': '127.0.0.1',
+      'port': '5432'
     }
   }
-]
+}
 
+const pgDockerCompose = (projectName: string) => {
+  return `version: '3'
 
-/**
- * Choose from the available db choices
- */
-export async function chooseDB(projectName: string): Promise<object> {
-  const { dbName } = await ask([
-    {
-      type: 'list',
-      name: 'dbName',
-      message: 'Choose a db of your choice',
-      choices: dbChoices.map((d: Config) => d.name)
-    }
-  ])
+services:
+  postgres:
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgresql
+      POSTGRES_DB: ${projectName}
 
-  return dbChoices.find((d:Config) => d.name === dbName).config(projectName)
+  # Mosca is a simple MQTT Broker
+  # In OpenShift/Production we would use the Red Hat AMQ broker
+  mosca:
+    image: matteocollina/mosca
+    ports:
+      - "1883:1883" # MQTT
+      - "80:80" # web interface`
 }
 
 /**
  * Create config file with db info
  */
-export async function createDBConfig(dbConfig: object) {
-  const path = `${process.cwd()}/config.json`
+export const createDBConfig = (projectName: string) => {
+  const configPath = `${process.cwd()}/config.json`
+  const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {
-    dbConfig: dbConfig
+    dbConfig: defaultDB.config(projectName)
   }
-  writeFileSync(path, JSON.stringify(config))
+  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
+  writeFileSync(dockerComposePath, pgDockerCompose(projectName))
 }

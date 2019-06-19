@@ -23,11 +23,3 @@ export interface GraphQLModel {
   name: string
   content: string
 }
-
-/**
- * db config
- */
-export interface Config {
-  name: string
-  config(projectName: string): object
-}
