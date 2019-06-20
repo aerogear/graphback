@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import * as execa from 'execa'
-import { accessSync, mkdirSync } from 'fs'
+import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
+import { createDBConfig } from '../templates/configTemplates'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
 import { Template } from '../templates/templateMetadata'
@@ -24,7 +25,7 @@ async function installDependencies(name: string): Promise<void> {
  * @param path path of the directory
  * @param name name of the project folder
  */
-async function checkDirectory(path: string, name: string): Promise<void> {
+function checkDirectory(path: string, name: string): void {
   try {
     accessSync(path)
     logError(`A folder with name ${name} exists. Remove it or try another name.`)
@@ -98,7 +99,7 @@ Next Steps:
  */
 export async function init(name: string, templateName?: string) {
   const path: string = `${process.cwd()}/${name}`
-  await checkDirectory(path, name)
+  checkDirectory(path, name)
   const template: Template = await assignTemplate(templateName)
   const [modelName, content] = await createModel()
   mkdirSync(path)
@@ -107,5 +108,6 @@ Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
   await installDependencies(name)
+  createDBConfig(name)
   logInfo(postSetupMessage(name))
 }
