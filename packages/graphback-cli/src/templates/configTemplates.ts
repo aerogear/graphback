@@ -22,9 +22,9 @@ const pgDockerCompose = () => {
 export const createDBConfig = (projectName: string) => {
   const configPath = `${process.cwd()}/config.json`
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
-  const config = {
-    dbConfig: defaultDB.config
-  }
-  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
+  const config = `{
+  "dbConfig": ${defaultDB.config}
+}`
+  writeFileSync(configPath, config)
   writeFileSync(dockerComposePath, pgDockerCompose())
 }

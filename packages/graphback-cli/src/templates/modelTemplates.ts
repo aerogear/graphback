@@ -1,68 +1,26 @@
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
 import { GraphQLModel } from './templateMetadata'
 
+const modelsPath = `${__dirname}/resources/models`
+
 /**
  * Default model
  */
-export const defaultModel: string = `# type Note {
-#   id: ID!
-#   title: String!
-#   description: String!
-#   ## Relationship
-#   comment: [Comment]!
+export const defaultModel: string = readFileSync(`${modelsPath}/Default.graphql`, 'utf8')
 
-# }
-
-# type Comment {
-#   id: ID!
-#   title: String!
-#   description: String!
-# }
-`
 /**
  * Available example models
  */
 export const allModels: GraphQLModel[] = [
   {
     name: 'Note',
-    content: `type Note {
-  id: ID!
-  title: String!
-  description: String!
-  ## Relationship
-  comment: [Comment]!
-
-}
-
-type Comment {
-  id: ID!
-  title: String!
-  description: String!
-}
-`
+    content: readFileSync(`${modelsPath}/Note.graphql`, 'utf8')
   },
   {
     name: 'Shop',
-    content: `type Shop {
-  id: ID!
-  name: String!
-  ## Relationship
-  product: [Product!]!
-}
-
-type Customer {
-  id: ID!
-  name: String!
-}
-
-type Product {
-  id: ID!
-  name: String!
-  quantity: Int!
-}
-`
+    content: readFileSync(`${modelsPath}/Shop.graphql`, 'utf8')
   }
 ]
 

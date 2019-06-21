@@ -13,7 +13,7 @@
   "author": "wtrocki@redhat.com",
   "scripts": {
     "clean": "rimraf coverage dist types",
-    "build": "tsc && cp -Rf ./src/resources ./dist/resources",
+    "build": "tsc && cp -Rf ./src/templates/resources ./dist/templates/resources",
     "cmd": "node ./dist/index.js hello",
     "watch": "tsc -w -p --help",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
