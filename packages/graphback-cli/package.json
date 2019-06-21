@@ -37,20 +37,20 @@
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
-    "@types/inquirer": "0.0.35",
+    "@types/inquirer": "6.0.3",
     "@types/node": "8.10.49",
     "@types/node-emoji": "1.8.1",
-    "@types/yargs": "8.0.3",
-    "ava": "1.4.1",
-    "lint-staged": "4.3.0",
+    "@types/yargs": "13.0.0",
+    "ava": "2.1.0",
+    "lint-staged": "8.2.1",
     "rimraf": "2.6.3",
-    "ts-node": "7.0.1",
+    "ts-node": "8.3.0",
     "tslint": "5.11.0",
     "tslint-config-prettier": "1.14.0",
-    "tslint-microsoft-contrib": "5.2.1",
+    "tslint-microsoft-contrib": "6.2.0",
     "tsutils": "3.0.0",
     "typescript": "3.5.1",
-    "typescript-eslint-parser": "4.0.0"
+    "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
     "chalk": "2.4.2",
