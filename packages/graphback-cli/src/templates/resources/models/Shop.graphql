@@ -1,0 +1,17 @@
+type Shop {
+  id: ID!
+  name: String!
+  ## Relationship
+  product: [Product!]!
+}
+
+type Customer {
+  id: ID!
+  name: String!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  quantity: Int!
+}
