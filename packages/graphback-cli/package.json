@@ -37,13 +37,10 @@
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
-<<<<<<< HEAD
-    "@types/inquirer": "0.0.44",
-=======
     "@types/inquirer": "6.0.3",
->>>>>>> chore(deps): update all
-    "@types/node": "8.10.49",
+    "@types/node": "12.0.10",
     "@types/node-emoji": "1.8.1",
+    "@types/through": "0.0.29",
     "@types/yargs": "13.0.0",
     "ava": "2.1.0",
     "lint-staged": "8.2.1",
