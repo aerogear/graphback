@@ -9,18 +9,18 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "altair-express-middleware": "2.1.9",
+    "altair-express-middleware": "2.2.0",
     "apollo-server-express": "2.6.4",
     "cors": "2.8.5",
     "express": "4.17.1",
     "graphql": "14.3.1",
     "graphql-tag": "2.10.1",
-    "knex": "0.17.3",
+    "knex": "0.17.6",
     "pg": "7.11.0"
   },
   "devDependencies": {
-    "ts-node": "8.2.0",
-    "tslint": "5.17.0",
-    "typescript": "3.5.1"
+    "ts-node": "8.3.0",
+    "tslint": "5.18.0",
+    "typescript": "3.5.2"
   }
 }
