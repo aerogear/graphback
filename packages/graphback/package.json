@@ -34,7 +34,6 @@
   "devDependencies": {
     "@types/glob": "5.0.36",
     "@types/graphql": "0.13.4",
-    "@types/handlebars": "4.0.40",
     "@types/knex": "0.15.2",
     "@types/node": "8.10.49",
     "@types/pino": "5.20.0",
