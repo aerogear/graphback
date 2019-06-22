@@ -7,7 +7,7 @@ export const command = 'init <name> [templateName]'
 
 export const desc = 'Create project'
 
-export const builder = (args: yargs.Arguments) => {
+export const builder = (args: yargs.Argv) => {
   args.positional('name', {
     describe: 'Project name',
     type: 'string',
