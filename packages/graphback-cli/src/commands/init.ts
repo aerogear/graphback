@@ -1,4 +1,4 @@
-import { init } from '../helpers/initHelper'
+import { init } from '../helpers/init'
 
 type Params = { name?: string, templateName?: string }
 

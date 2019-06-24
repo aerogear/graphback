@@ -1,4 +1,4 @@
-import { createDB } from '../helpers/dbHelper'
+import { createDB } from '../helpers/db'
 
 export const command = 'db'
 
