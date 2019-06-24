@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/glob": "7.1.1",
-    "@types/graphql": "14.2.1",
+    "@types/graphql": "14.2.2",
     "@types/knex": "0.15.2",
     "@types/node": "8.10.49",
     "@types/pino": "5.20.0",
