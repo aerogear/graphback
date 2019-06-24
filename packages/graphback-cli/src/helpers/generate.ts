@@ -1,8 +1,9 @@
 import chalk from 'chalk';
-import { accessSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
 import { GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager } from 'graphback'
 import { logError, logInfo } from '../utils';
+import { checkDirectory } from './common';
 
 /**
  * Message after command execution
@@ -21,9 +22,8 @@ Next steps:
  * Generate schema and resolvers using graphback-core and
  * write them into generated folder
  */
-async function generateBackend(): Promise<void> {
+export async function generateBackend(): Promise<void> {
   try{
-    accessSync(`${process.cwd()}/model`)
     const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
     
     if(models.found.length === 0) {
@@ -47,7 +47,7 @@ async function generateBackend(): Promise<void> {
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(outputResolverPath, generated.resolvers)
   } catch(err) {
-    logError(`model directory not found. Make you sure you are in the root of your project.`)
+    logError(err.messsage)
   }
 }
 
@@ -55,6 +55,8 @@ async function generateBackend(): Promise<void> {
  * exported generate handler
  */
 export async function generate(): Promise<void> {
+  checkDirectory()
   await generateBackend()
   postCommandMessage()
+  process.exit(0)
 }

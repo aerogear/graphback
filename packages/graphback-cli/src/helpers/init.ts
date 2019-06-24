@@ -114,4 +114,5 @@ Bootstraping graphql server :dizzy: :sparkles:`)
   await installDependencies(name)
   createDBConfig(name)
   logInfo(postSetupMessage(name))
+  process.exit(0)
 }
