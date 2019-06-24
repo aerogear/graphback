@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import * as execa from 'execa'
+import * as figlet from 'figlet'
 import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
@@ -98,6 +99,9 @@ Next Steps:
  * @param templateName name of the template provided(if any)
  */
 export async function init(name: string, templateName?: string) {
+  logInfo(chalk.yellow(
+    figlet.textSync('Graphback', { horizontalLayout: 'full' })
+  ))
   const path: string = `${process.cwd()}/${name}`
   checkDirectory(path, name)
   const template: Template = await assignTemplate(templateName)

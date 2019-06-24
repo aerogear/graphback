@@ -27,7 +27,7 @@ async function generateBackend(): Promise<void> {
     const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
     
     if(models.found.length === 0) {
-      logError(`No graphql file found inside ./model folder.`)
+      logError(`No graphql file found inside ${process.cwd()}/model folder.`)
       process.exit(0)
     }
 

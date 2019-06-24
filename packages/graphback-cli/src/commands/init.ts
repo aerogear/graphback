@@ -1,4 +1,3 @@
-import * as yargs from 'yargs'
 import { init } from '../helpers/initHelper'
 
 type Params = { name?: string, templateName?: string }
@@ -7,7 +6,8 @@ export const command = 'init <name> [templateName]'
 
 export const desc = 'Create project'
 
-export const builder = (args: yargs.Argv) => {
+// tslint:disable-next-line: typedef
+export const builder = (args) => {
   args.positional('name', {
     describe: 'Project name',
     type: 'string',
