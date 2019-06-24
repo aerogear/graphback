@@ -16,8 +16,7 @@ export const watch = async(): Promise<void> => {
   checkDirectory()
   execa('npm', ['run', 'start']).stdout.pipe(process.stdout);
   watcher.on('change', async(path: string, stats: Stats) => {
-    await generateBackend()
-    await createResources()
-    execa('npm', ['run', 'start']).stdout.pipe(process.stdout);
+    await Promise.all([generateBackend(),createResources()])
+    execa('npm', ['run', 'start']).stdout.pipe(process.stdout)
   })
 }
