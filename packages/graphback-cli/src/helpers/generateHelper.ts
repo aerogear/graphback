@@ -31,7 +31,7 @@ async function generateBackend(): Promise<void> {
       process.exit(0)
     }
 
-    const path: string = `${process.cwd()}`
+    const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
     const outputSchemaPath: string = `${process.cwd()}/generated/schema.graphql`
