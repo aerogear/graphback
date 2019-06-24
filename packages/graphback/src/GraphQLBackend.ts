@@ -123,7 +123,9 @@ export class GraphQLBackendCreator {
 
     public async createDatabase(): Promise<void> {
       try {        
+        await this.schemaParser.build(this.config);
         const context = this.schemaParser.getContext()
+        
         if (this.config.createDatabase && this.dataLayerManager) {
           logger.info("Creating database structure")
           await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
