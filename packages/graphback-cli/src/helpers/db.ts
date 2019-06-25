@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { readFileSync } from 'fs'
 import { GlobSync } from 'glob'
 import { GraphQLBackendCreator, PostgresSchemaManager } from 'graphback';
@@ -51,10 +52,17 @@ export const createDBResources = async(): Promise<void> => {
   }
 }
 
+const postCommandMessage = () => {
+  logInfo(`
+Database resources created.
+Run ${chalk.cyan(`graphback watch`)} to start the server and watch for changes.
+  `)
+}
+
 export const createDB = async(): Promise<void> => {
   checkDirectory()
   await dropDBResources()
   await createDBResources()
-  logInfo("Database resources created")
+  postCommandMessage()
   process.exit(0)
 }
