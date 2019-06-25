@@ -1,3 +1,4 @@
+// tslint:disable: await-promise
 import { Field, Type } from 'graphql-codegen-core';
 import * as Knex from 'knex'
 import { logger } from '../logger'
@@ -71,11 +72,11 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
   public async createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void> {
     for (const gqlType of types) {
       const tableName: string = context.getFieldName(gqlType)
-      const hasTable = this.dbConnection.schema.hasTable(tableName)
+      const hasTable = await this.dbConnection.schema.hasTable(tableName)
       if (hasTable) {
         logger.warn(`Table exist! Skipping table creation for ${tableName}`)
       } else {
-        this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
+        await this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
           table.increments();
           for (const gqlField of gqlType.fields) {
             const method = this.primitiveTypesMapping[gqlField.type];
@@ -99,18 +100,18 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
       for (const gqlField of gqlType.fields) {
         if(gqlField.isType) {
           if(Relation.manyToMany in gqlField.directives) {
-            this.createManyToManyRelation(currentTable, gqlField)
+            await this.createManyToManyRelation(currentTable, gqlField)
           }
           else if(Relation.oneToMany in gqlField.directives || gqlField.isArray) {
-            this.createOneToManyRelation(currentTable, gqlField, tableName)
+            await this.createOneToManyRelation(currentTable, gqlField, tableName)
           } 
           else if (Relation.oneToOne in gqlField.directives || !gqlField.isArray) {
-            this.createOneToOneRelation(currentTable, gqlField, tableName)
+            await this.createOneToOneRelation(currentTable, gqlField, tableName)
           }
         }
       }
     }
-
+    
     return Promise.resolve();
   }
 
@@ -120,7 +121,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
    * @param gqlField properties of the field
    * @param tableName table to create relation in
    */
-  public createOneToOneRelation(currentTable: string, gqlField: Field, tableName: string): void {
+  public async createOneToOneRelation(currentTable: string, gqlField: Field, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
     if(gqlField.usesDirectives && gqlField.directives.OneToOne.field) {
       fieldname = gqlField.directives.OneToOne.field
@@ -128,11 +129,11 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     if(!gqlField.isArray) {
       // tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase()
-      const hasColumn = this.dbConnection.schema.hasColumn(tableName, fieldname)
+      const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
       if(hasColumn) {
         logger.info("skipping relation creation")
       } else {
-        this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+        await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
           table.integer(fieldname).unique().unsigned()
           table.foreign(fieldname).references('id').inTable(currentTable)
         })
@@ -148,7 +149,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
    * @param gqlField properties of the field
    * @param tableName table to create relation in
    */
-  public createOneToManyRelation(currentTable: string, gqlField: Field, tableName: string): void {
+  public async createOneToManyRelation(currentTable: string, gqlField: Field, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
     if(gqlField.usesDirectives && gqlField.directives.OneToMany.field) {
       fieldname = gqlField.directives.OneToMany.field
@@ -156,11 +157,12 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     if(gqlField.isArray) {
       // tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase()
-      const hasColumn = this.dbConnection.schema.hasColumn(tableName, fieldname)
+      // tslint:disable-next-line: await-promise
+      const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
       if(hasColumn) {
         logger.info("skipping relation creation")
       } else {
-        this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
+        await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
           table.integer(fieldname).unsigned()
           table.foreign(fieldname).references('id').inTable(currentTable)
         })
@@ -175,12 +177,14 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
    * @param currentTable current table being parsed
    * @param gqlField properties of the field
    */
-  public createManyToManyRelation(currentTable: string, gqlField: Field): void {
+  public async createManyToManyRelation(currentTable: string, gqlField: Field): Promise<void> {
     let newTable = gqlField.directives.ManyToMany.tablename
     if(!newTable) {
       newTable = `${currentTable}_${gqlField.type.toLowerCase()}`
     }
-    const hasTable = this.dbConnection.schema.hasTable(newTable)
+    
+    // tslint:disable-next-line: await-promise
+    const hasTable = await this.dbConnection.schema.hasTable(newTable)
     if(gqlField.isArray) {
       if(hasTable) {
         logger.info("skipping relation creation")
@@ -189,7 +193,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
         const tableTwo = currentTable
         const fieldOne = `${tableOne}Id`
         const fieldTwo = `${currentTable}Id`
-        this.dbConnection.schema.createTable(newTable, (table: Knex.TableBuilder) => {
+        await this.dbConnection.schema.createTable(newTable, (table: Knex.TableBuilder) => {
           table.increments()
           table.integer(fieldOne).unsigned()
           table.foreign(fieldOne).references('id').inTable(tableOne)

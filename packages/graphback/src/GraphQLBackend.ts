@@ -134,7 +134,8 @@ export class GraphQLBackendCreator {
           logger.info("Database structure generation skipped.")
         }
       } catch (error) {
-        logger.error(`Error on Database creation ${error}`)
+        // logger.error(`Error on Database creation ${error}`)
+        throw error
       }
 
     }

@@ -3,7 +3,7 @@ import * as execa from 'execa'
 import { Stats } from 'fs';
 import { logInfo } from '../utils';
 import { checkDirectory } from './common';
-import { createDBResources } from './db';
+import { createDBResources, dropDBResources } from './db';
 import { generateBackend } from './generate';
 
 const modelsPath = `${process.cwd()}/model`
@@ -27,7 +27,10 @@ export const watchForChanges = async(): Promise<void> => {
    * createDBResources - creates database
    */
   watcher.on('change', async(path: string, stats: Stats) => {
+    await dropDBResources()
     await Promise.all([generateBackend(),createDBResources()])
+    logInfo("Regenerating schema and resolvers")
+    logInfo("Recreating database resources")
     execa('npm', ['run', 'start']).stdout.pipe(process.stdout)
   })
 }
