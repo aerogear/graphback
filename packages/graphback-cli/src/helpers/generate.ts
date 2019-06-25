@@ -13,8 +13,9 @@ function postCommandMessage(): void {
 Successfully generated schema and resolvers :tada:.  
 
 Next steps:
-1. Run ${chalk.cyan(`graphback db`)} to create postgres database.
-2. Run ${chalk.cyan(`docker-compose up -d`)} followed by ${chalk.cyan(`npm start`)}
+1. Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
+   followed by ${chalk.cyan(`graphback db`)} to create database.
+2. Run ${chalk.cyan(`graphback watch`)} to start the server.
 `)
 }
 
