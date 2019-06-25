@@ -88,7 +88,8 @@ Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
 2. Edit the .graphql file inside ${chalk.cyan(`model`)} with your GraphQL types.
 3. Run ${chalk.cyan(`graphback generate`)} to generate schema and resolvers
-4. Run ${chalk.cyan(`graphback db`)} to create database resources in postgres
+4. Run ${chalk.cyan(`docker-compose up -d`)} to run your database
+   and ${chalk.cyan(`graphback db`)} to create database resources in postgres
 5. Run ${chalk.cyan(`npm start`)}
 `
 }

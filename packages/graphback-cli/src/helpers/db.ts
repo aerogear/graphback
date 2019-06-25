@@ -4,13 +4,26 @@ import { GraphQLBackendCreator, PostgresSchemaManager } from 'graphback';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
+const handleError = (err: { code: string; message: string; }): void => {
+  if(err.code === 'ECONNREFUSED') {
+    logError('Database not running. Run docker-compose up -d or docker-compose start to start the database.')
+  } else {
+    logError(err.message)
+  }
+  process.exit(0)
+}
+
 export const dropDBResources = async(): Promise<void> => {
-  const { dbConfig } = JSON.parse(readFileSync(`${process.cwd()}/config.json`, 'utf8'))
-  const manager = new PostgresSchemaManager(dbConfig);
-  // tslint:disable-next-line: await-promise
-  await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
-  // tslint:disable-next-line: await-promise
-  await manager.getConnection().raw('CREATE SCHEMA public;')
+  try {
+    const { dbConfig } = JSON.parse(readFileSync(`${process.cwd()}/config.json`, 'utf8'))
+    const manager = new PostgresSchemaManager(dbConfig);
+    // tslint:disable-next-line: await-promise
+    await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
+    // tslint:disable-next-line: await-promise
+    await manager.getConnection().raw('CREATE SCHEMA public;')
+  } catch (err) {
+    handleError(err)
+  }
 }
 
 export const createDBResources = async(): Promise<void> => {
@@ -34,12 +47,7 @@ export const createDBResources = async(): Promise<void> => {
     await backend.createDatabase()
     
   } catch(err) {
-    if(err.code === 'ECONNREFUSED') {
-      logError('Database not running. Run docker-compose up -d or docker-compose start to start the database.')
-    } else {
-      logError(err.message)
-    }
-    process.exit(0)
+    handleError(err)
   }
 }
 
@@ -47,5 +55,6 @@ export const createDB = async(): Promise<void> => {
   checkDirectory()
   await dropDBResources()
   await createDBResources()
-  logInfo("Database created")
+  logInfo("Database resources created")
+  process.exit(0)
 }
