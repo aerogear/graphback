@@ -4,6 +4,15 @@ import { GraphQLBackendCreator, PostgresSchemaManager } from 'graphback';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
+export const dropDBResources = async(): Promise<void> => {
+  const { dbConfig } = JSON.parse(readFileSync(`${process.cwd()}/config.json`, 'utf8'))
+  const manager = new PostgresSchemaManager(dbConfig);
+  // tslint:disable-next-line: await-promise
+  await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
+  // tslint:disable-next-line: await-promise
+  await manager.getConnection().raw('CREATE SCHEMA public;')
+}
+
 export const createDBResources = async(): Promise<void> => {
   try{
     const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
@@ -21,16 +30,22 @@ export const createDBResources = async(): Promise<void> => {
     
     const manager = new PostgresSchemaManager(dbConfig);
     backend.registerDataResourcesManager(manager);
-
+    
     await backend.createDatabase()
-
+    
   } catch(err) {
-    logError(err.message)
+    if(err.code === 'ECONNREFUSED') {
+      logError('Database not running. Run docker-compose up -d or docker-compose start to start the database.')
+    } else {
+      logError(err.message)
+    }
+    process.exit(0)
   }
 }
 
 export const createDB = async(): Promise<void> => {
   checkDirectory()
+  await dropDBResources()
   await createDBResources()
-  logInfo("Database Created")
+  logInfo("Database created")
 }
