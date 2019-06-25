@@ -4,7 +4,7 @@ import { GraphQLBackendCreator, PostgresSchemaManager } from 'graphback';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
-export const createResources = async(): Promise<void> => {
+export const createDBResources = async(): Promise<void> => {
   try{
     const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
     
@@ -31,7 +31,6 @@ export const createResources = async(): Promise<void> => {
 
 export const createDB = async(): Promise<void> => {
   checkDirectory()
-  await createResources()
+  await createDBResources()
   logInfo("Database Created")
-  process.exit(0)
 }

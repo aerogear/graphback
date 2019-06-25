@@ -58,5 +58,4 @@ export async function generate(): Promise<void> {
   checkDirectory()
   await generateBackend()
   postCommandMessage()
-  process.exit(0)
 }
