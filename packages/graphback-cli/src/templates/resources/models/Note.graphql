@@ -4,7 +4,6 @@ type Note {
   description: String!
   ## Relationship
   comment: [Comment]!
-
 }
 
 type Comment {
