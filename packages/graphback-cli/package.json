@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "chalk": "2.4.2",
-    "execa": "1.0.0",
+    "execa": "2.0.0",
     "figlet": "1.2.3",
     "glob": "7.1.4",
     "graphback": "0.2.0",
