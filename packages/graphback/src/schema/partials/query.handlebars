@@ -1,8 +1,8 @@
- {{#each types}}
+{{#each types}}
 {{! TODO disable when no pagination enabled}}
-type {{name}}Page {
-    {{lowercase name}}: [{{name}}!]!
-    nextToken: String
+type {{name}}Pagination {
+    items: [{{name}}]!
+    pageInfo: PaginationInfo!
 }
 {{/each}}
 

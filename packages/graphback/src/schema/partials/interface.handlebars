@@ -11,3 +11,12 @@ input {{name}}Filter {
     {{/each}}
 }
 {{/each}}
+
+type PaginationInfo {
+    totalPages: Int!
+    totalItems: Int!
+    page: Int!
+    perPage: Int!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+}
