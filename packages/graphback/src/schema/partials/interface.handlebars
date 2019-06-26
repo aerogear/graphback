@@ -4,7 +4,10 @@ interface Node {
 }
 
 {{!TODO enable complex queries }}
-input QueryFilter {
-    name: String!
-    value: String!
+{{#each types}}
+input {{name}}Filter {
+    {{#each fields}}
+    {{ name }}: {{type}}
+    {{/each}}
 }
+{{/each}}
