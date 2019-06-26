@@ -82,7 +82,7 @@ export class ResolverBuilder {
     // TODO Pagination support
     return {
       fieldName: fieldName,
-      schemaDefinition: `${fieldName}(fields: QueryFilter): [${gqlType.name}]!`,
+      schemaDefinition: `${fieldName}(fields: ${gqlType.name}Filter): [${gqlType.name}]!`,
       implementation: knexTemplates.findTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
