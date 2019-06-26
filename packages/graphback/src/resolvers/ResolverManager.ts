@@ -52,8 +52,6 @@ export class KnexResolverManager implements ResolverManager {
           resolverFormats.query.push(this.builder.buildFindAll(gqlType));
         } else if (resolverType === ResolverType.CREATE) {
           resolverFormats.mutation.push(this.builder.buildCreate(gqlType));
-        } else if (resolverType === ResolverType.READ) {
-          resolverFormats.query.push(this.builder.buildRead(gqlType));
         } else if (resolverType === ResolverType.FIND) {
           resolverFormats.query.push(this.builder.buildFind(gqlType));
         } else if (resolverType === ResolverType.UPDATE) {

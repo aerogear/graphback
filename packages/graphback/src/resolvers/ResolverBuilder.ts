@@ -70,31 +70,20 @@ export class ResolverBuilder {
     // TODO Pagination support
     return {
       fieldName: fieldName,
-      schemaDefinition: `${fieldName}: [${gqlType.name}]!`,
+      schemaDefinition: `${fieldName}: ${gqlType.name}Pagination`,
       implementation: knexTemplates.findAllTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
   public buildFind(gqlType: Type): MetadataInstance {
     const tableName = this.context.getFieldName(gqlType)
-    const fieldName = this.getFieldName(gqlType.name, ResolverType.FIND, 's');
+    const fieldName = this.getFieldName(gqlType.name, ResolverType.FIND);
 
     // TODO Pagination support
     return {
       fieldName: fieldName,
-      schemaDefinition: `${fieldName}(fields: ${gqlType.name}Filter): [${gqlType.name}]!`,
+      schemaDefinition: `${fieldName}(fields: ${gqlType.name}Filter): ${gqlType.name}!`,
       implementation: knexTemplates.findTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
-    }
-  }
-
-  public buildRead(gqlType: Type): MetadataInstance {
-    const tableName = this.context.getFieldName(gqlType)
-    const fieldName = this.getFieldName(gqlType.name, ResolverType.READ);
-
-    return {
-      fieldName: fieldName,
-      schemaDefinition: `${fieldName}: ${gqlType.name}!`,
-      implementation: knexTemplates.readTemplate(fieldName, tableName, this.knexContext, this.argumentContext)
     }
   }
 
