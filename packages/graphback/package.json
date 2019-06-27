@@ -29,7 +29,7 @@
     ]
   },
   "engines": {
-    "node": "12.4.0"
+    "node": "12.5.0"
   },
   "devDependencies": {
     "@types/glob": "7.1.1",
