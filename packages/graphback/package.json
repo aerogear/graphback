@@ -47,7 +47,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "glob": "7.1.4",
-    "graphql": "14.4.0",
+    "graphql": "14.4.1",
     "graphql-code-generator": "0.18.2",
     "graphql-codegen-core": "0.18.2",
     "graphql-import": "0.7.1",
