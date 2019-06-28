@@ -5,6 +5,7 @@ import { logger } from './logger'
 import { MetadataFormat } from './resolvers/MetadataInstance';
 import { GraphQLResolverGenerator } from './resolvers/ResolverGenerator' 
 import { ResolverManager } from './resolvers/ResolverManager';
+import { ResolverTypeGenerator } from './resolvers/ResolversTypeGenerator';
 import { allTypes, ResolverType } from './resolvers/ResolverType'
 import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
 import { SchemaParser } from './schema/SchemaParser'
@@ -108,11 +109,14 @@ export class GraphQLBackendCreator {
         logger.info("Schema generation skipped.")
       }
 
+      const resolverTypeGen = new ResolverTypeGenerator(backend.schema)
+      const resolverTypes = await resolverTypeGen.generateTypes()
+      
       /**
        * Generate TS resolvers from the MetadataFormat generated
        */
       const resolverGen = new GraphQLResolverGenerator()
-      backend.resolvers = resolverGen.generateResolvers(this.resolvers)
+      backend.resolvers = resolverGen.generateResolvers(resolverTypes, this.resolvers)
     } catch (error) {
       logger.error(`Error on generation ${error}`)
     }   

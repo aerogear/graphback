@@ -28,7 +28,7 @@ async function main() {
   // tslint:disable-next-line: no-console
   console.log(generated.resolvers)
 
-  await backend.createDatabase()
+  // await backend.createDatabase()
 }
 
 // tslint:disable-next-line: no-floating-promises
