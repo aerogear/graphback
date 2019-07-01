@@ -1,0 +1,50 @@
+{
+  "name": "graphback-schema",
+  "version": "0.2.0",
+  "description": "Generate GraphQL schema",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "typescript": {
+    "definition": "types/index.d.ts"
+  },
+  "author": "wtrocki@redhat.com",
+  "scripts": {
+    "clean": "rimraf coverage dist types",
+    "build": "tsc",
+    "watch": "tsc -w ",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "test": "ava",
+    "pretest": "npm run build"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "engines": {
+    "node": "12.5.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.2.2",
+    "@types/node": "8.10.49",
+    "ava": "2.1.0",
+    "rimraf": "2.6.3",
+    "ts-node": "8.3.0",
+    "tslint": "5.18.0",
+    "tsutils": "3.14.0",
+    "typescript": "3.5.2"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "graphql": "14.4.1",
+    "graphql-tools": "4.0.5",
+    "tslib": "1.10.0"
+  }
+}
