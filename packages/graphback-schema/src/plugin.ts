@@ -1,4 +1,5 @@
 import { GraphQLSchema, parse, printSchema, visit } from 'graphql';
+import { buildContext } from './context';
 import { generateSchema } from './schema';
 import { visitor } from './visitor'
 
@@ -10,5 +11,7 @@ export const plugin = (schema: GraphQLSchema) => {
   
   const result = visit(astNode, { leave: visitor })
 
-  return generateSchema(result.definitions.reverse())
+  const context = buildContext(result.definitions.reverse())
+
+  return generateSchema(context)
 }
