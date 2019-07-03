@@ -1,7 +1,4 @@
-interface Definition {
-  name: string
-  fields: string[]
-}
+import { Context, Definition } from './context';
 
 enum Crud {
   CREATE = "create",
@@ -40,56 +37,23 @@ ${types.map((name: string) => `type ${name}Pagination {
 `
 }
 
-const scalars = ['ID', 'String', 'Boolean', 'Int', 'Float']
-
-const validateFields = (types: string[], fields: string[]): string[] => {  
-  return fields.filter((s: string) => {
-    const removedDefs = s.replace('[]','').replace('!','')
-    const splitType = removedDefs.split(': ')[1]
-    if(types.includes(splitType)) {
-      return false
-    }
-    if(scalars.includes(splitType)) {
-      return true
-    }
-
-    return false
-  })
-}
-
-const inputFields = (fields: string[]): string[] => {
-  return fields.filter((f: string) => !f.startsWith('id'))
-}
-
 const inputs = (defs: Definition[]): string => {
-  const types = defs.map((d: Definition) => d.name)
-  const newDefs = defs.map((d: Definition) => {
-    return {
-      "name": d.name,
-      "fields": inputFields(validateFields(types, d.fields))
-    }
-  })
-
   return `${defs.map((d: Definition) => `input ${d.name}Input {
-  ${inputFields(validateFields(types, d.fields)).join('\n  ')}
+  ${d.fields.join('\n  ')}
 }`).join('\n\n')}
 `
 }
 
 const nodeTypes = (defs: Definition[]): string => {
-  const types = defs.map((d: Definition) => d.name)
-  
   return `${defs.map((d: Definition) => `type ${d.name} implements Node {
-  ${validateFields(types, d.fields).join('\n  ')}
+  ${d.fields.join('\n  ')}
 }`).join('\n\n')}
 `
 }
 
 const filters = (defs: Definition[]): string => {
-  const types = defs.map((d: Definition) => d.name)
-
   return `${defs.map((d: Definition) => `type ${d.name}Filter {
-  ${validateFields(types, d.fields).map((s:string) => s.replace('!','')).join('\n  ')}
+  ${d.fields.join('\n  ')}
 }`).join('\n\n')}
 ` 
 }
@@ -154,8 +118,8 @@ const subscriptions = (types: string[]): string => {
 }`
 }
 
-export const generateSchema = (definitions: Definition[]): string => {
-  const types = definitions.map((d: Definition) => d.name)
-
-  return [node, inputs(definitions), nodeTypes(definitions), filters(definitions), pagination(types), query(types), mutations(types), subscriptions(types)].join('\n')
+export const generateSchema = (context: Context): string => {
+  const { inputFields, nodes, filterFields, types} = context
+  
+  return [node, inputs(inputFields), nodeTypes(nodes), filters(filterFields), pagination(types), query(types), mutations(types), subscriptions(types)].join('\n')
 }
