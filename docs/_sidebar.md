@@ -1,4 +1,4 @@
 * [Home](/)
 * [Usage](usage.md)
-* [Features](features.md)
+* [Defining your datamodel](datamodel.md)
 * [Contributing](contributing.md)

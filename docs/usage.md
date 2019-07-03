@@ -1,71 +1,37 @@
 ## Getting Started
 
-1) Create GraphQL schema
-```graphql
-const exampleDefinition = 
-    type Note {
-        title: String!
-        description: String!
-    }
+```bash
+npm i -g graphback-cli
 ```
 
-2) Configure generator
+## Commands
+### Init
+  ```bash
+  graphback init <project-name>
+  ```
+  The command will guide you through a series of questions - choosing a template, bootstraping model - and setup your project for you.
 
-```typescript
-const backendGenerator = new GraphQLBackend(exampleDefinition);
-```
+  Example:
 
-3) Generate resources
+  ![](init.png)
 
-```typescript
-backend.createBackend().then((generated: IGraphQLBackend) => {
-  console.log(generated)
-});
-```
+  You can also provide the template name as argument which will skip the template selection part.
+  ```bash
+  graphback init <project-name> [template-name]
+  ```
+### Generate
+  ```bash
+  graphback generate
+  ```
+  Generate command will generate schema and resolvers for your GraphQL server based on your datamodel.
 
-See ./example/index.ts for more advanced use case.
-
-## Database Relationships
-
-All types of database relationships - `1:1, 1:m and n:m` - are supported by the generator.
-
-The `1:1` relation can be simply declared by:
-```graphql
-type Profile {
-  user: User!
-}
-```
-which will create the relationship via a column in the `user` table using column `profileId`. You can customize the field which tracks the relationship using directives.
-```graphql
-type Profile {
-  user: User! @OneToOne(field: "yourCustomField")
-}
-```
-
-The `1:m` relation is declared with array syntax.
-```graphql
-type Note {
-  comment: [Comment!]!
-}
-```
-This creates a column `noteId` in table `comment` to track the relationship. You can similarily customize the column name as follows:
-```graphql
-type Note {
-  comment: [Comment!]! @OneToMany(field: "yourCustomField")
-}
-```
-
-The `n:m` relation requires you to define it using directives as default.
-```graphql
-type Note {
-  users: [User!]! @ManyToMany //array syntax required  
-}
-```
-This will create a separate table `user_note` to track the relationship using columns `userId` and `noteId`. You can customize the table name as such:
-```graphql
-type Note {
-  users: [User!]! @ManyToMany(tablename: "yourCustomTable")  
-}
-```
-See ./testss for use cases and tests on relations.
-git
+### DB
+  ```bash
+  graphback db
+  ```
+  Create databases resources based on your datamodel. Currently supports PostgreSQL only
+### Watch
+  ```bash
+  graphback watch
+  ```
+  Watches for changes in yout datamodel and regenerates your schema and resolvers along with modifying your database.
