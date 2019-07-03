@@ -7,7 +7,7 @@ import { plugin } from './plugin'
  * generate schema using graphql-codegen and visitor pattern
  * using string templates
  */
-class SchemaGenerator {
+export class SchemaGenerator {
   private schema: GraphQLSchema
   private parsedSchema: DocumentNode
   private config: Types.GenerateOptions
