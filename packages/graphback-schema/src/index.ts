@@ -1,30 +1,47 @@
 import { codegen } from '@graphql-codegen/core'
-import { readFileSync } from "fs";
-import { buildSchema, parse, printSchema } from 'graphql';
+import { Types } from '@graphql-codegen/plugin-helpers';
+import { buildSchema, DocumentNode, GraphQLSchema, parse, printSchema } from 'graphql';
 import { plugin } from './plugin'
 
-const schemaText = readFileSync(`${__dirname}/schema.graphql`, 'utf8')
-const schema = buildSchema(schemaText)
-const parsedSchema = parse(printSchema(schema))
+/**
+ * generate schema using graphql-codegen and visitor pattern
+ * using string templates
+ */
+class SchemaGenerator {
+  private schema: GraphQLSchema
+  private parsedSchema: DocumentNode
+  private config: Types.GenerateOptions
+  private output: string
 
-const config = {
-  filename: '',
-  schema: parsedSchema,
-  plugins: [
-    {schema: {}}
-  ],
-  config: {},
-  documents: [],
-  pluginMap: {
-    schema: {
-      plugin: plugin
+  /**
+   * Set config for graphql-codegen
+   * @param schemaText schema input as text
+   */
+  constructor(schemaText: string) {
+    this.schema = buildSchema(schemaText)
+    this.parsedSchema = parse(printSchema(this.schema))
+    this.config = {
+      filename: '',
+      schema: this.parsedSchema,
+      plugins: [
+        {schema: {}}
+      ],
+      config: {},
+      documents: [],
+      pluginMap: {
+        schema: {
+          plugin: plugin
+        }
+      }
     }
   }
-}
 
-export const generate = async() => {
-  // tslint:disable-next-line: no-unnecessary-local-variable
-  const output = await codegen(config)
-
-  return output
+  /**
+   * Generate output schema as string
+   */
+  public async generate() {
+    this.output = await codegen(this.config)
+    
+    return this.output
+  }
 }

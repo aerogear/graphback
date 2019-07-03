@@ -9,7 +9,6 @@ export const plugin = (schema: GraphQLSchema) => {
   const astNode = parse(printedSchema)
   
   const result = visit(astNode, { leave: visitor })
-  result.definitions.reverse()
 
-  return generateSchema(result.definitions)
+  return generateSchema(result.definitions.reverse())
 }

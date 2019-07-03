@@ -1,3 +1,22 @@
+interface Definition {
+  name: string
+  fields: string[]
+}
+
+enum Crud {
+  CREATE = "create",
+  UPDATE = "update",
+  DELETE = "delete",
+  FIND = "find",
+  FIND_ALL = "findAll"
+}
+
+const getFieldName = (typeName: string, action: Crud, plural: string = ''): string => {
+  const upperCasedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
+
+  return `${action}${upperCasedType}${plural}`
+}
+
 const node = `interface Node {
   id: ID!
 }
@@ -19,6 +38,60 @@ ${types.map((name: string) => `type ${name}Pagination {
 }
 `).join('\n')}
 `
+}
+
+const scalars = ['ID', 'String', 'Boolean', 'Int', 'Float']
+
+const validateFields = (types: string[], fields: string[]): string[] => {  
+  return fields.filter((s: string) => {
+    const removedDefs = s.replace('[]','').replace('!','')
+    const splitType = removedDefs.split(': ')[1]
+    if(types.includes(splitType)) {
+      return false
+    }
+    if(scalars.includes(splitType)) {
+      return true
+    }
+
+    return false
+  })
+}
+
+const inputFields = (fields: string[]): string[] => {
+  return fields.filter((f: string) => !f.startsWith('id'))
+}
+
+const inputs = (defs: Definition[]): string => {
+  const types = defs.map((d: Definition) => d.name)
+  const newDefs = defs.map((d: Definition) => {
+    return {
+      "name": d.name,
+      "fields": inputFields(validateFields(types, d.fields))
+    }
+  })
+
+  return `${defs.map((d: Definition) => `input ${d.name}Input {
+  ${inputFields(validateFields(types, d.fields)).join('\n  ')}
+}`).join('\n\n')}
+`
+}
+
+const nodeTypes = (defs: Definition[]): string => {
+  const types = defs.map((d: Definition) => d.name)
+  
+  return `${defs.map((d: Definition) => `type ${d.name} implements Node {
+  ${validateFields(types, d.fields).join('\n  ')}
+}`).join('\n\n')}
+`
+}
+
+const filters = (defs: Definition[]): string => {
+  const types = defs.map((d: Definition) => d.name)
+
+  return `${defs.map((d: Definition) => `type ${d.name}Filter {
+  ${validateFields(types, d.fields).map((s:string) => s.replace('!','')).join('\n  ')}
+}`).join('\n\n')}
+` 
 }
 
 
@@ -54,19 +127,19 @@ const findAll = (name: string): string => {
 
 const query = (types: string[]): string => {
   return `type Query {
-    ${types.map(find).join('\n  ')}
-    ${types.map(findAll).join('\n  ')}
-  }
+  ${types.map(find).join('\n  ')}
+  ${types.map(findAll).join('\n  ')}
+}
   `
 }
 
 const mutations = (types: string[]): string => {
   return `type Mutation {
-    ${types.map(create).join('\n  ')}
-    ${types.map(update).join('\n  ')}
-    ${types.map(del).join('\n  ')}
-  }
-  `
+  ${types.map(create).join('\n  ')}
+  ${types.map(update).join('\n  ')}
+  ${types.map(del).join('\n  ')}
+}
+`
 }
 
 const newSub = (name: string) => `new${name}: ${name}!`
@@ -81,18 +154,8 @@ const subscriptions = (types: string[]): string => {
 }`
 }
 
-export const generateSchema = (definitions: string[]): string => [node, pagination(definitions), query(definitions), mutations(definitions), subscriptions(definitions)].join('\n')
+export const generateSchema = (definitions: Definition[]): string => {
+  const types = definitions.map((d: Definition) => d.name)
 
-enum Crud {
-  CREATE = "create",
-  UPDATE = "update",
-  DELETE = "delete",
-  FIND = "find",
-  FIND_ALL = "findAll"
-}
-
-const getFieldName = (typeName: string, action: Crud, plural: string = ''): string => {
-  const upperCasedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
-
-  return `${action}${upperCasedType}${plural}`
+  return [node, inputs(definitions), nodeTypes(definitions), filters(definitions), pagination(types), query(types), mutations(types), subscriptions(types)].join('\n')
 }
