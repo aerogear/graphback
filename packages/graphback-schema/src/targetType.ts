@@ -1,3 +1,7 @@
+/**
+ * Field contains visited information like name, type and properties
+ * like array and nullableType
+ */
 export interface Field {
   name: string
   // tslint:disable-next-line
@@ -7,6 +11,9 @@ export interface Field {
   isType: boolean
 }
 
+/**
+ * Input context object from the vistor function
+ */
 export interface InputContext {
   name: string
   fields: Field[]
@@ -17,6 +24,10 @@ export interface Type {
   fields: string[]
 }
 
+/**
+ * Generate arrays of definitions as string
+ * for respective type in the schema
+ */
 export interface TargetContext {
   types: string[]
   nodes: Type[]

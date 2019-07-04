@@ -3,8 +3,6 @@ import { GraphQLSchema, parse, printSchema, visit } from 'graphql';
 import { generateSchema } from './schemaTemplate';
 import { buildTargetContext } from './targetType';
 
-
-
 export const plugin = (schema: GraphQLSchema) => {
   const printedSchema = printSchema(schema)
   const astNode = parse(printedSchema)
