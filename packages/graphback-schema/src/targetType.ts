@@ -1,34 +1,30 @@
-export interface Definition {
+export interface Field {
+  name: string
+  // tslint:disable-next-line
+  type: string
+  isArray: boolean
+  isNull: boolean
+  isType: boolean
+}
+
+export interface InputContext {
+  name: string
+  fields: Field[]
+}
+
+export interface Type {
   name: string
   fields: string[]
 }
 
-export interface Context {
+export interface TargetContext {
   types: string[]
-  nodes: Definition[]
-  inputFields: Definition[]
-  filterFields: Definition[]  
-  queries: string[]
-  mutations: string[]
+  nodes: Type[]
+  inputFields: Type[]
+  filterFields: Type[],
+  queries: string[],
+  mutations: string[],
   subscriptions: string[]
-}
-
-const scalars = ['ID', 'String', 'Boolean', 'Int', 'Float']
-
-const validateFields = (fields: string[]): string[] => {  
-  return fields.filter((s: string) => {
-    const removedDefs = s.replace('[]','').replace('!','')
-    const splitType = removedDefs.split(': ')[1]
-    if(scalars.includes(splitType)) {
-      return true
-    }
-
-    return false
-  })
-}
-
-const inputFields = (fields: string[]): string[] => {
-  return fields.filter((f: string) => !f.startsWith('id'))
 }
 
 enum Crud {
@@ -79,8 +75,17 @@ const newSub = (name: string) => `new${name}: ${name}!`
 const updatedSub = (name: string) => `updated${name}: ${name}!`
 const deletedSub = (name: string) => `deleted${name}: ID!`
 
-export const buildContext = (definitions: Definition[]) => {
-  const context: Context = {
+const arrayField = (f: Field) => {
+  if(f.isArray) {
+    return `[${f.name}: ${f.type}]${f.isNull ? '!': ''}`
+  }
+  else {
+    return `${f.name}: ${f.type}${f.isNull ? '!': ''}`
+  }
+}
+
+export const buildTargetContext = (inputContext: InputContext[]) => {
+  const context: TargetContext = {
     types: [],
     nodes: [],
     inputFields: [],
@@ -89,23 +94,26 @@ export const buildContext = (definitions: Definition[]) => {
     mutations: [],
     subscriptions: []
   }
-  context.types = definitions.map((d: Definition) => d.name)
-  context.nodes = definitions.map((d: Definition) => {
+  context.types = inputContext.map((c: InputContext) => c.name)
+  context.nodes = inputContext.map((c: InputContext) => {
     return {
-      "name": d.name,
-      "fields": validateFields(d.fields)
+      "name": c.name,
+      "fields": c.fields.filter((f: Field) => !f.isType)
+                  .map(arrayField)
     }
   })
-  context.inputFields = definitions.map((d: Definition) => {
+  context.inputFields = inputContext.map((c: InputContext) => {
     return {
-      "name": d.name,
-      "fields": inputFields(validateFields(d.fields))
+      "name": c.name,
+      "fields": c.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
+                  .map(arrayField)
     }
   })
-  context.filterFields = definitions.map((d: Definition) => {
+  context.filterFields = inputContext.map((c: InputContext) => {
     return {
-      "name": d.name,
-      "fields": validateFields(d.fields).map((s: string) => s.replace('!',''))
+      "name": c.name,
+      "fields": c.fields.filter((f: Field) => !f.isType)
+                  .map(arrayField)
     }
   })
   context.queries = [...context.types.map(find), ...context.types.map(findAll)]
