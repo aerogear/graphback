@@ -1,10 +1,13 @@
-## Getting Started
+## What is Graphback?
 
+Graphback is a CLI tool that can help you bootstrap a GraphQL server for you including GraphQL schema, type safe resolvers and generating database structure for you. It addresses the difficulty in configuring a GraphQL server from scratch.
+
+## Installation
 ```bash
 npm i -g graphback-cli
 ```
 
-## Commands
+## Usage
 ### Init
   ```bash
   graphback init <project-name>
@@ -13,7 +16,7 @@ npm i -g graphback-cli
 
   Example:
 
-  ![](init.png)
+  ![](images/init.png)
 
   You can also provide the template name as argument which will skip the template selection part.
   ```bash
@@ -34,4 +37,4 @@ npm i -g graphback-cli
   ```bash
   graphback watch
   ```
-  Watches for changes in yout datamodel and regenerates your schema and resolvers along with modifying your database.
+  Watches for changes in your datamodel and regenerates your schema and resolvers along with modifying your database.

@@ -1,3 +1,6 @@
+## Model
+The Data model file is written in GraphQL syntax where you define your types along with custom directives for additional use cases.
+
 ## Example
 
 ```graphql
