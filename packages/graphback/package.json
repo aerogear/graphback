@@ -29,13 +29,13 @@
     ]
   },
   "engines": {
-    "node": "12.5.0"
+    "node": "12.6.0"
   },
   "devDependencies": {
     "@types/glob": "7.1.1",
     "@types/graphql": "14.2.2",
     "@types/knex": "0.15.2",
-    "@types/node": "8.10.49",
+    "@types/node": "8.10.50",
     "@types/pino": "5.20.0",
     "ava": "2.1.0",
     "rimraf": "2.6.3",
@@ -47,13 +47,13 @@
   "license": "Apache-2.0",
   "dependencies": {
     "glob": "7.1.4",
-    "graphql": "14.4.1",
+    "graphql": "14.4.2",
     "graphql-code-generator": "0.18.2",
     "graphql-codegen-core": "0.18.2",
     "graphql-import": "0.7.1",
     "graphql-tools": "4.0.5",
     "handlebars": "4.1.2",
-    "knex": "0.18.0",
+    "knex": "0.18.3",
     "pg": "7.11.0",
     "pino": "5.12.6",
     "tslib": "1.10.0"
