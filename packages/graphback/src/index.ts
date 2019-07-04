@@ -17,3 +17,5 @@ export * from './resolvers/ResolverBuilder'
 
 // Logger management
 export * from './logger'
+
+export * from './InputTypeVisitor'

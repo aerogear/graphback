@@ -1,4 +1,4 @@
-import { Context, Definition } from './context';
+import { Type, TargetContext } from './targetType';
 
 const pagination = (types: string[]): string => {
   return `type PaginationInfo {
@@ -16,25 +16,25 @@ ${types.map((name: string) => `type ${name}Pagination {
 }`).join('\n\n')}`
 }
 
-const inputs = (defs: Definition[]): string => {
-  return `${defs.map((d: Definition) => `input ${d.name}Input {
+const inputs = (defs: Type[]): string => {
+  return `${defs.map((d: Type) => `input ${d.name}Input {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}`
 }
 
-const nodeTypes = (defs: Definition[]): string => {
-  return `${defs.map((d: Definition) => `type ${d.name} implements Node {
+const nodeTypes = (defs: Type[]): string => {
+  return `${defs.map((d: Type) => `type ${d.name} implements Node {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}`
 }
 
-const filters = (defs: Definition[]): string => {
-  return `${defs.map((d: Definition) => `type ${d.name}Filter {
+const filters = (defs: Type[]): string => {
+  return `${defs.map((d: Type) => `type ${d.name}Filter {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}` 
 }
 
-const outputSchema = (context: Context): string =>  `interface Node {
+const outputSchema = (context: TargetContext): string =>  `interface Node {
   id: ID!
 }
 
@@ -59,6 +59,6 @@ type Subscription {
 }
 `
 
-export const generateSchema = (context: Context): string => {
+export const generateSchema = (context: TargetContext): string => {
   return outputSchema(context)
 }
