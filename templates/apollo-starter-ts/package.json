@@ -13,9 +13,9 @@
     "apollo-server-express": "2.6.7",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "graphql": "14.4.1",
+    "graphql": "14.4.2",
     "graphql-tag": "2.10.1",
-    "knex": "0.18.0",
+    "knex": "0.18.3",
     "pg": "7.11.0"
   },
   "devDependencies": {
