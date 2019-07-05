@@ -34,7 +34,9 @@ export const inputTypeVisitor = {
   FieldDefinition: (node: FieldDefinitionNode) => {
     return {
       ...node.type,
-      "name": node.name
+      "name": node.name,
+      "directives": node.directives,
+      "hasDirectives": node.directives.length > 0
     }
   },
 

@@ -77,7 +77,7 @@ const del = (name: string): string => {
 }
 
 const findAll = (name: string): string => {
-  const fieldName = getFieldName(name, Crud.FIND_ALL)
+  const fieldName = getFieldName(name, Crud.FIND_ALL, 's')
   
   return `${fieldName}: ${name}Pagination`
 }
