@@ -1,15 +1,15 @@
 import { inputTypeVisitor } from 'graphback'
-import { GraphQLSchema, parse, printSchema, visit } from 'graphql';
+import { DocumentNode, GraphQLSchema, parse, printSchema, visit } from 'graphql';
 import { generateSchema } from './schemaTemplate';
-import { buildTargetContext } from './targetType';
+import { buildTargetContext, InputContext, TargetContext } from './targetType';
 
 export const plugin = (schema: GraphQLSchema) => {
-  const printedSchema = printSchema(schema)
-  const astNode = parse(printedSchema)
+  const printedSchema: string = printSchema(schema)
+  const astNode: DocumentNode = parse(printedSchema)
   
   const inputTypes = visit(astNode, { leave: inputTypeVisitor })
 
-  const context = buildTargetContext(inputTypes.definitions.reverse())
+  const context: TargetContext = buildTargetContext(inputTypes.definitions.reverse())
 
   return generateSchema(context)
 }
