@@ -29,11 +29,11 @@
     ]
   },
   "engines": {
-    "node": "12.5.0"
+    "node": "12.6.0"
   },
   "devDependencies": {
     "@types/graphql": "14.2.2",
-    "@types/node": "8.10.49",
+    "@types/node": "8.10.50",
     "ava": "2.1.0",
     "rimraf": "2.6.3",
     "ts-node": "8.3.0",
@@ -45,7 +45,7 @@
   "dependencies": {
     "@graphql-codegen/core": "1.3.1",
     "@graphql-codegen/plugin-helpers": "1.3.1",
-    "graphql": "14.4.1",
+    "graphql": "14.4.2",
     "graphback": "0.2.0",
     "graphql-tools": "4.0.5",
     "tslib": "1.10.0"
