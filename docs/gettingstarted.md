@@ -8,6 +8,28 @@ npm i -g graphback-cli
 ```
 
 ## Usage
+To start with Graphback run
+```bash
+graphback init <project-name>
+```
+
+Change directory into your project folder. To generate schema and resolvers run 
+```bash
+graphback generate
+``` 
+
+To setup database resources
+```bash
+docker-compose up -d
+graphback db
+```
+
+To start the server and watch for changes in your datamodel run
+```bash
+graphback watch
+```
+
+## Commands
 ### Init
   ```bash
   graphback init <project-name>
