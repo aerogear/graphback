@@ -1,6 +1,6 @@
 ## Contribution
 
-This project is intended to be used with v8 (LTS Carbon) release of [Node.js](https://nodejs.org/dist/latest-v8.x/docs/api/) or newer and [NPM](https://npmjs.com). Make sure you have those installed. Then just type following commands:
+This project is intended to be used with v8 (LTS Carbon) release of [Node.js](https://nodejs.org/dist/latest-v8.x/docs/api/) or newer and [NPM](https://npmjs.com). Make sure you have those installed. The project uses lerna for a monorepo structure. Run the following commands to get started.
 
 ```sh
 npm install

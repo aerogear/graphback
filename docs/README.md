@@ -1,19 +1,19 @@
 ## Graphback - GraphQL Backend generator
 
-![](graphback.png)
+![](images/graphback.png)
 
-Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀
+Auto generate database structure, GraphQL resolvers and schema from GraphQL types 🚀
 
 ## Motivation 
 
 GraphQL can be hard and intimidating initially.
 Graphback helps you to kickstart your experience with any existing GraphQL implementation
-by generating backend layer using your predefined types.
+by generating backend layer using your predefined types. It makes it easy to get started with GraphQL.
 
 ## What it does
 
 - Generates required queries and mutations automatically using proven GraphQL patterns
-- Generates unopiniated resolvers layer using https://www.npmjs.com/package/apollo-resolvers
+- Generates unopiniated type safe resolvers layer using https://www.npmjs.com/package/@graphql-codegen/cli
 - Generates database DDL statements that can be used to store data (optional)
 
 ## Why to use it

@@ -1,29 +1,23 @@
-## Getting Started
+## Model
+The Data model file is written in GraphQL syntax where you define your types along with custom directives for additional use cases.
 
-1) Create GraphQL schema
+## Example
+
 ```graphql
-const exampleDefinition = 
-    type Note {
-        title: String!
-        description: String!
-    }
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+  ## Relationship
+  comment: [Comment]!
+}
+
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+}
 ```
-
-2) Configure generator
-
-```typescript
-const backendGenerator = new GraphQLBackend(exampleDefinition);
-```
-
-3) Generate resources
-
-```typescript
-backend.createBackend().then((generated: IGraphQLBackend) => {
-  console.log(generated)
-});
-```
-
-See ./example/index.ts for more advanced use case.
 
 ## Database Relationships
 
@@ -67,5 +61,3 @@ type Note {
   users: [User!]! @ManyToMany(tablename: "yourCustomTable")  
 }
 ```
-See ./testss for use cases and tests on relations.
-git
