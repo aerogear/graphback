@@ -43,7 +43,7 @@
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.0",
     "ava": "2.1.0",
-    "lint-staged": "9.0.2",
+    "lint-staged": "9.1.0",
     "rimraf": "2.6.3",
     "ts-node": "8.3.0",
     "tslint": "5.18.0",
@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "chalk": "2.4.2",
-    "chokidar": "3.0.1",
+    "chokidar": "3.0.2",
     "execa": "2.0.3",
     "figlet": "1.2.3",
     "glob": "7.1.4",
