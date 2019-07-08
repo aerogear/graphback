@@ -54,6 +54,7 @@
     "graphql-codegen-core": "0.18.2",
     "graphql-import": "0.7.1",
     "graphql-tools": "4.0.5",
+    "graphback-schema": "0.2.0",
     "handlebars": "4.1.2",
     "knex": "0.18.3",
     "pg": "7.11.0",

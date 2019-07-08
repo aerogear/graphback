@@ -3,7 +3,7 @@ import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode,
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
 const defaultConfig = {
-  paginate: false,
+  paginate: true,
   create: true,
   update: true,
   delete: true,
@@ -53,7 +53,7 @@ export const inputTypeVisitor = {
     return {
       "name": node.name,
       "fields": node.fields,
-      "config": {...defaultConfig, ...Object.assign({}, ...node.directives).config}
+      "config": {...defaultConfig, ...Object.assign({}, ...node.directives).Model}
     }
   },
 

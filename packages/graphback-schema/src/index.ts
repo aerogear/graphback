@@ -1,47 +1,26 @@
-import { codegen } from '@graphql-codegen/core'
-import { Types } from '@graphql-codegen/plugin-helpers';
-import { buildSchema, DocumentNode, GraphQLSchema, parse, printSchema } from 'graphql';
-import { plugin } from './plugin'
+import { InputContext } from 'graphback';
+import { generateSchema } from './schemaTemplate';
+import { buildTargetContext, TargetContext } from './targetType';
+
 
 /**
  * generate schema using graphql-codegen and visitor pattern
  * using string templates
  */
 export class SchemaGenerator {
-  private schema: GraphQLSchema
-  private parsedSchema: DocumentNode
-  private config: Types.GenerateOptions
-  private output: string
+  private context: TargetContext
+  private inputContext: InputContext[]
 
-  /**
-   * Set config for graphql-codegen
-   * @param schemaText schema input as text
-   */
-  constructor(schemaText: string) {
-    this.schema = buildSchema(schemaText)
-    this.parsedSchema = parse(printSchema(this.schema))
-    this.config = {
-      filename: '',
-      schema: this.parsedSchema,
-      plugins: [
-        {schema: {}}
-      ],
-      config: {},
-      documents: [],
-      pluginMap: {
-        schema: {
-          plugin: plugin
-        }
-      }
-    }
+  constructor(inputContext: InputContext[]) {
+    this.inputContext = inputContext
   }
 
   /**
    * Generate output schema as string
    */
-  public async generate() {
-    this.output = await codegen(this.config)
+  public generate() {
+    this.context = buildTargetContext(this.inputContext)
     
-    return this.output
+    return generateSchema(this.context)
   }
 }

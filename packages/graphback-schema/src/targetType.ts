@@ -10,10 +10,10 @@ export interface Type {
  * for respective type in the schema
  */
 export interface TargetContext {
-  types: string[]
   nodes: Type[]
   inputFields: Type[]
   filterFields: Type[],
+  pagination: InputContext[],
   queries: string[],
   mutations: string[],
   subscriptions: string[]
@@ -33,34 +33,49 @@ const getFieldName = (typeName: string, action: Crud, plural: string = ''): stri
   return `${action}${upperCasedType}${plural}`
 }
 
-const find = (name: string): string => {
-  const fieldName = getFieldName(name, Crud.FIND)
+const findQueries = (inputContext: InputContext[]): string[] => {
+  return inputContext.filter((i: InputContext) => i.config.find)
+                    .map((i: InputContext) => {
+                      const fieldName = getFieldName(i.name, Crud.FIND)
   
-  return `${fieldName}(fields: ${name}Filter!): ${name}!`
+                      return `${fieldName}(fields: ${i.name}Filter!): ${i.name}!`
+                    })
 }
 
-const update = (name: string): string => {
-  const fieldName = getFieldName(name, Crud.UPDATE)
+const updateQueries = (inputContext: InputContext[]): string[] => {
+  return inputContext.filter((i: InputContext) => i.config.update)
+                    .map((i: InputContext) => {
+                      const fieldName = getFieldName(i.name, Crud.UPDATE)
 
-  return `${fieldName}(id: ID!, input: ${name}Input!): ${name}!`
+                      return `${fieldName}(id: ID!, input: ${i.name}Input!): ${i.name}!`
+                    })
 }
 
-const create = (name: string): string => {
-  const fieldName = getFieldName(name, Crud.CREATE)
+const createQueries = (inputContext: InputContext[]): string[] => {
+ return inputContext.filter((i: InputContext) => i.config.create)
+                    .map((i: InputContext) => {
+                      const fieldName = getFieldName(i.name, Crud.CREATE)
   
-  return `${fieldName}(input: ${name}Input!): ${name}!`
+                      return `${fieldName}(input: ${i.name}Input!): ${i.name}!`
+                    })
 }
 
-const del = (name: string): string => {
-  const fieldName = getFieldName(name, Crud.DELETE)
-  
-  return `${fieldName}(id: ID!): ID!`
+const delQueries = (inputContext: InputContext[]): string[] => {
+  return inputContext.filter((i: InputContext) => i.config.delete)
+                    .map((i: InputContext) => {
+                      const fieldName = getFieldName(i.name, Crud.DELETE)
+
+                      return `${fieldName}(id: ID!): ID!`
+                    })
 }
 
-const findAll = (name: string): string => {
-  const fieldName = getFieldName(name, Crud.FIND_ALL, 's')
-  
-  return `${fieldName}: ${name}Pagination`
+const findAllQueries = (inputContext: InputContext[]): string[] => {
+  return inputContext.filter((i: InputContext) => i.config.findAll)
+                    .map((i: InputContext) => {
+                      const fieldName = getFieldName(i.name, Crud.FIND_ALL, 's')
+
+                      return `${fieldName}: ${i.config.paginate ? `${i.name}Page`: `[${i.name}!]!`}`
+                    })
 }
 
 const newSub = (name: string) => `new${name}: ${name}!`
@@ -78,15 +93,15 @@ const arrayField = (f: FieldContext) => {
 
 export const buildTargetContext = (inputContext: InputContext[]) => {
   const context: TargetContext = {
-    types: [],
     nodes: [],
     inputFields: [],
     filterFields: [],
+    pagination: [],
     queries: [],
     mutations: [],
     subscriptions: []
   }
-  context.types = inputContext.map((c: InputContext) => c.name)
+
   context.nodes = inputContext.map((c: InputContext) => {
     return {
       "name": c.name,
@@ -108,9 +123,10 @@ export const buildTargetContext = (inputContext: InputContext[]) => {
                   .map(arrayField)
     }
   })
-  context.queries = [...context.types.map(find), ...context.types.map(findAll)]
-  context.mutations = [...context.types.map(create), ...context.types.map(update), ...context.types.map(del)]
-  context.subscriptions = [...context.types.map(newSub), ...context.types.map(updatedSub), ...context.types.map(deletedSub)]
+  context.pagination = inputContext.filter((i: InputContext) => i.config.paginate)
+  context.queries = [...findQueries(inputContext), ...findAllQueries(inputContext)]
+  context.mutations = [...createQueries(inputContext), ...updateQueries(inputContext), ...delQueries(inputContext)]
+  context.subscriptions = [...inputContext.map((c: InputContext) => newSub(c.name)), ...inputContext.map((c: InputContext) => updatedSub(c.name)), ...inputContext.map((c: InputContext) => deletedSub(c.name))]
 
   return context
 }

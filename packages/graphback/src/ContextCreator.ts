@@ -13,10 +13,20 @@ export interface FieldContext {
   hasDirectives: boolean
 }
 
+export interface Config {
+  paginate: boolean
+  create: boolean
+  update: boolean
+  //tslint:disable-next-line
+  delete: boolean
+  find: boolean
+  findAll: boolean
+}
+
 export interface InputContext {
   name: string
   fields: FieldContext[]
-  config: object
+  config: Config
 }
 
 /**
