@@ -1,6 +1,15 @@
-import { DirectiveDefinitionNode, FieldDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode } from 'graphql';
+import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
+
+const defaultConfig = {
+  paginate: false,
+  create: true,
+  update: true,
+  delete: true,
+  find: true,
+  findAll: true
+}
 
 export const inputTypeVisitor = {
   
@@ -35,7 +44,7 @@ export const inputTypeVisitor = {
     return {
       ...node.type,
       "name": node.name,
-      "directives": node.directives,
+      "directives": Object.assign({}, ...node.directives),
       "hasDirectives": node.directives.length > 0
     }
   },
@@ -43,7 +52,8 @@ export const inputTypeVisitor = {
   ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => {
     return {
       "name": node.name,
-      "fields": node.fields
+      "fields": node.fields,
+      "config": {...defaultConfig, ...Object.assign({}, ...node.directives).config}
     }
   },
 
@@ -51,4 +61,33 @@ export const inputTypeVisitor = {
     // tslint:disable-next-line: no-null-keyword
     return null
   },
+
+  Directive: (node: DirectiveNode) => {
+    return {
+      [node.name.toString()]: Object.assign({}, ...node.arguments)
+    }
+  },
+
+  Argument: (node: ArgumentNode) => {
+    let value
+    if(node.value.toString() === "true") {
+      value = true
+    } else if(node.value.toString() === "false") {
+      value = false
+    } else {
+      value = node.value
+    }
+
+    return {
+      [node.name.toString()]: value
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  },
+
+  BooleanValue: (node: BooleanValueNode) => {
+    return `${node.value}`
+  },
+
+  StringValue: (node: StringValueNode): string => {
+    return node.value
+  }
 }

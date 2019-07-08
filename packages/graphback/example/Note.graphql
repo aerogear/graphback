@@ -1,9 +1,9 @@
-type Note {
+type Note @config(paginate: true){
   id: ID!
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment]!
+  comment: [Comment]! @OnetoMany(field: "noteComment")
 
 }
 

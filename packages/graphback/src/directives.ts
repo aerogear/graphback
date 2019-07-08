@@ -1,7 +1,12 @@
-const directives = `
-  directive @OneToOne(field: String) on FIELD
-  directive @OneToMany(field: String) on FIELD
-  directive @ManyToMany(tablename: String) on FIELD
+const directives = `directive @OnetoMany(field: String) on FIELD_DEFINITION
+directive @OneToOne(field: String) on FIELD_DEFINITION
+directive @ManyToMany(tablename: String) on FIELD_DEFINITION
+directive @config(paginate: Boolean, 
+                  findAll: Boolean, 
+                  create: Boolean, 
+                  update: Boolean, 
+                  find: Boolean,
+                  delete: Boolean ) on OBJECT
 `
 
 export const applyGeneratorDirectives = (schema: string) => {
