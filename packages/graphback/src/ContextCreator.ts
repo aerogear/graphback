@@ -16,8 +16,7 @@ export interface FieldContext {
 export interface InputContext {
   name: string
   fields: FieldContext[]
-  directives: object
-  hasDirectives: boolean
+  config: object
 }
 
 /**
