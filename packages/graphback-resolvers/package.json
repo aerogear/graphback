@@ -34,12 +34,12 @@
   "devDependencies": {
     "@types/graphql": "14.2.2",
     "@types/node": "8.10.50",
-    "ava": "2.1.0",
+    "ava": "2.2.0",
     "rimraf": "2.6.3",
     "ts-node": "8.3.0",
     "tslint": "5.18.0",
     "tsutils": "3.14.0",
-    "typescript": "3.5.2"
+    "typescript": "3.5.3"
   },
   "license": "Apache-2.0",
   "dependencies": {
