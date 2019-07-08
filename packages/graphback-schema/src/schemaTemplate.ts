@@ -23,13 +23,13 @@ const inputs = (defs: Type[]): string => {
 }
 
 const nodeTypes = (defs: Type[]): string => {
-  return `${defs.map((d: Type) => `type ${d.name} implements Node {
+  return `${defs.map((d: Type) => `type ${d.name} {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}`
 }
 
 const filters = (defs: Type[]): string => {
-  return `${defs.map((d: Type) => `type ${d.name}Filter {
+  return `${defs.map((d: Type) => `input ${d.name}Filter {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}` 
 }
@@ -40,13 +40,9 @@ const filters = (defs: Type[]): string => {
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
-const outputSchema = (context: TargetContext): string =>  `interface Node {
-  id: ID!
-}
+const outputSchema = (context: TargetContext): string =>  `${nodeTypes(context.nodes)}
 
 ${inputs(context.inputFields)}
-
-${nodeTypes(context.nodes)}
 
 ${filters(context.filterFields)}
 

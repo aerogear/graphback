@@ -1,23 +1,4 @@
-/**
- * Field contains visited information like name, type and properties
- * like array and nullableType
- */
-export interface Field {
-  name: string
-  // tslint:disable-next-line
-  type: string
-  isArray: boolean
-  isNull: boolean
-  isType: boolean
-}
-
-/**
- * Input context object from the vistor function
- */
-export interface InputContext {
-  name: string
-  fields: Field[]
-}
+import { FieldContext, InputContext } from 'graphback'
 
 export interface Type {
   name: string
@@ -86,7 +67,7 @@ const newSub = (name: string) => `new${name}: ${name}!`
 const updatedSub = (name: string) => `updated${name}: ${name}!`
 const deletedSub = (name: string) => `deleted${name}: ID!`
 
-const arrayField = (f: Field) => {
+const arrayField = (f: FieldContext) => {
   if(f.isArray) {
     return `[${f.name}: ${f.type}]${f.isNull ? '!': ''}`
   }
@@ -109,21 +90,21 @@ export const buildTargetContext = (inputContext: InputContext[]) => {
   context.nodes = inputContext.map((c: InputContext) => {
     return {
       "name": c.name,
-      "fields": c.fields.filter((f: Field) => !f.isType)
+      "fields": c.fields.filter((f: FieldContext) => !f.isType)
                   .map(arrayField)
     }
   })
   context.inputFields = inputContext.map((c: InputContext) => {
     return {
       "name": c.name,
-      "fields": c.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
+      "fields": c.fields.filter((f: FieldContext) => f.type !== 'ID' && !f.isType)
                   .map(arrayField)
     }
   })
   context.filterFields = inputContext.map((c: InputContext) => {
     return {
       "name": c.name,
-      "fields": c.fields.filter((f: Field) => !f.isType)
+      "fields": c.fields.filter((f: FieldContext) => !f.isType)
                   .map(arrayField)
     }
   })

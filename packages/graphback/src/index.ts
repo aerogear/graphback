@@ -19,3 +19,4 @@ export * from './resolvers/ResolverBuilder'
 export * from './logger'
 
 export * from './InputTypeVisitor'
+export * from './ContextCreator'
