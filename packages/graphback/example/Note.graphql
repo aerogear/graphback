@@ -1,4 +1,4 @@
-type Note @config(paginate: true){
+type Note {
   id: ID!
   title: String!
   description: String!
@@ -7,7 +7,7 @@ type Note @config(paginate: true){
 
 }
 
-type Comment {
+type Comment @Model(paginate: false){
   id: ID!
   title: String!
   description: String!

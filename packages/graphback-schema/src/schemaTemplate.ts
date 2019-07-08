@@ -1,19 +1,13 @@
+import { InputContext } from 'graphback';
 import { TargetContext, Type } from './targetType';
 
-const pagination = (types: string[]): string => {
-  return `type PaginationInfo {
-  totalPages: Int!
-  totalItems: Int!
-  page: Int!
-  perPage: Int!
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-}
-
-${types.map((name: string) => `type ${name}Pagination {
-  items: [${name}]!
+const pagination = (inputContext: InputContext[]): string => {
+  return `
+${inputContext.map((i: InputContext) => `type ${i.name}Page {
+  items: [${i.name}]!
   pageInfo: PaginationInfo!
-}`).join('\n\n')}`
+}`).join('\n\n')}
+`
 }
 
 const inputs = (defs: Type[]): string => {
@@ -46,8 +40,15 @@ ${inputs(context.inputFields)}
 
 ${filters(context.filterFields)}
 
-${pagination(context.types)}
-
+type PaginationInfo {
+  totalPages: Int!
+  totalItems: Int!
+  page: Int!
+  perPage: Int!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+${pagination(context.pagination)}
 type Query {
   ${context.queries.join('\n  ')}
 }
