@@ -5,6 +5,7 @@ This project is intended to be used with v8 (LTS Carbon) release of [Node.js](ht
 ```sh
 npm install
 npm run build
+npm run bootstrap
 ```
 
 ### Available scripts
