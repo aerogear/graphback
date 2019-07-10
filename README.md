@@ -5,7 +5,7 @@
 
 
 ## Graphback
-![](docs/graphback.png)
+![](docs/images/graphback.png)
 
 Auto generate database structure, GraphQL resolvers and queries from GraphQL types 🚀. See [documentation](https://aerogear.github.io/graphback) for usage and more.
 

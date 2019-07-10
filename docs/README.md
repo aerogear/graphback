@@ -2,13 +2,13 @@
 
 ![](images/graphback.png)
 
-Auto generate database structure, GraphQL resolvers and schema from GraphQL types 🚀
+Auto generate database structure, GraphQL resolvers and schema from GraphQL types 🚀 (Not yet production ready, still under development)
 
 ## Motivation 
 
 GraphQL can be hard and intimidating initially.
 Graphback helps you to kickstart your experience with any existing GraphQL implementation
-by generating backend layer using your predefined types. It makes it easy to get started with GraphQL.
+by generating backend layer of SDL and resolvers using your predefined types. It makes it easy to get started with GraphQL.
 
 ## What it does
 
