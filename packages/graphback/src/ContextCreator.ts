@@ -29,24 +29,19 @@ export interface InputContext {
   config: Config
 }
 
+ 
 /**
  * create input context to be reused for 
  * schema, resolvers generation 
  * and database creation
  */
-export class GraphbackContextCreator {
-  private schema: string
-  private astNode: DocumentNode
-  private inputContext: InputContext[]
+export const createInputContext =  (schemaText: string) => {
+    const schema = applyGeneratorDirectives(schemaText)
+    try {
+      const astNode = parse(schema)
 
-  constructor(schemaText: string) {
-    this.schema = applyGeneratorDirectives(schemaText)
-    this.astNode = parse(this.schema)
-  }
-
-  public createInputContext() {
-    this.inputContext = visit(this.astNode, { leave: inputTypeVisitor }).definitions
-    
-    return this.inputContext
-  }
+      return visit(astNode, { leave: inputTypeVisitor }).definitions
+    } catch (error) {
+      return;
+    }
 }
