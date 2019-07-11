@@ -1,13 +1,15 @@
 ## Templates
-Graphback provides users with choice of setting up custom environment with features with the help of templates. We plan to provides templates with multiple use cases including various server frameworks like GraphQL server frameworks like Apollo, Voyager and others.
+Graphback provides users with the choice of setting up a custom environment with features with the help of templates. We plan to provide
+templates with multiple use cases including various server frameworks like GraphQL server frameworks like Apollo GraphQL, GraphQL-js and others.
 
 Currently we provide `apollo-typescript-starter` only, and we'll be supporting more soon.
 
 #### [apollo-typescript-starter](https://github.com/aerogear/graphback/tree/master/templates/apollo-starter-ts)
-Basic typescript implementation of GraphQL server using apollo-express framework. Uses knex for database connection.
+Production ready typescript implementation of GraphQL server using apollo-express framework. Uses knex.js library for database access.
 
 ## Databases
-Graphback allows you to configure your database according to your needs. We plan to provide support to multiple databases(MySQL, MongoDB etc). Currently we are supporting `PostgreSQL` only.
+Graphback allows you to configure your database according to your needs. Graphback provides support to multiple databases(MySQL, MongoDB etc).
+Currently, we are supporting `PostgreSQL`.
 
 ## Commands
 ### Init
