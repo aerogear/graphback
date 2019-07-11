@@ -24,10 +24,10 @@ Next steps:
  * write them into generated folder
  */
 export async function generateBackend(): Promise<void> {
-  try{
-    const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
-    
-    if(models.found.length === 0) {
+  try {
+    const models = new GlobSync('model/*.graphql', { cwd: process.cwd() })
+
+    if (models.found.length === 0) {
       logError(`No graphql file found inside ${process.cwd()}/model folder.`)
       process.exit(0)
     }
@@ -35,19 +35,22 @@ export async function generateBackend(): Promise<void> {
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
+    // TODO location of the generated content should not be hardcoded
     const outputSchemaPath: string = `${process.cwd()}/generated/schema.graphql`
     const outputResolverPath: string = `${process.cwd()}/generated/resolvers.ts`
-    
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText)
-    
+
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText);
+
+    // TODO Abstraction to connect resolver managers
+    // Add ability to discover and pick what implementation should be used
     const resolverManager = new KnexResolverManager();
     backend.registerResolverManager(resolverManager);
-    
+
     const generated: IGraphQLBackend = await backend.createBackend()
-    
+
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(outputResolverPath, generated.resolvers)
-  } catch(err) {
+  } catch (err) {
     logError(err.messsage)
   }
 }
