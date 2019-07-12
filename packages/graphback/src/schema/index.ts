@@ -1,4 +1,4 @@
-import { InputContext } from 'graphback';
+import { InputContext } from '../ContextCreator';
 import { generateSchema } from './schemaTemplate';
 import { buildTargetContext, TargetContext } from './targetType';
 

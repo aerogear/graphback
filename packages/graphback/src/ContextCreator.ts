@@ -1,4 +1,4 @@
-import { DocumentNode, parse, visit } from 'graphql';
+import { parse, visit } from 'graphql';
 import { applyGeneratorDirectives } from './directives';
 import { inputTypeVisitor } from './InputTypeVisitor';
 
@@ -34,19 +34,14 @@ export interface InputContext {
  * schema, resolvers generation 
  * and database creation
  */
-export class GraphbackContextCreator {
-  private schema: string
-  private astNode: DocumentNode
-  private inputContext: InputContext[]
 
-  constructor(schemaText: string) {
-    this.schema = applyGeneratorDirectives(schemaText)
-    this.astNode = parse(this.schema)
-  }
-
-  public createInputContext() {
-    this.inputContext = visit(this.astNode, { leave: inputTypeVisitor }).definitions
+export const createInputContext = (schemaText: string): InputContext[] => {
+  const schema = applyGeneratorDirectives(schemaText)
+  try {
+    const astNode = parse(schema)
     
-    return this.inputContext
+    return visit(astNode, { leave: inputTypeVisitor }).definitions
+  } catch(err) {
+    return;
   }
 }
