@@ -40,15 +40,6 @@ ${inputs(context.inputFields)}
 
 ${filters(context.filterFields)}
 
-type PaginationInfo {
-  totalPages: Int!
-  totalItems: Int!
-  page: Int!
-  perPage: Int!
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-}
-${pagination(context.pagination)}
 type Query {
   ${context.queries.join('\n  ')}
 }

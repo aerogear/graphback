@@ -3,7 +3,7 @@ import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode,
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
 const defaultConfig = {
-  paginate: true,
+  paginate: false,
   create: true,
   update: true,
   delete: true,
