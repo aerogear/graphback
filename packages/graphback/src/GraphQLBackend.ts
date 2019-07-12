@@ -6,8 +6,6 @@ import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
 import { ResolverGenerator } from './resolvers';
 import { SchemaGenerator } from './schema';
-import { ResolverType } from './utils'
-
 /**
  * GraphQLBackend
  *
@@ -17,7 +15,6 @@ import { ResolverType } from './utils'
 export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
-  private resolverTypes: ResolverType[];
   private config: GeneratorConfig;
   private dbContextProvider: DatabaseContextProvider;
   private inputContext: Type[]
@@ -28,7 +25,7 @@ export class GraphQLBackendCreator {
    */
   constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
     // tslint:disable-next-line:
-    // this.config = Object.assign(defaultConfig, config);
+    this.config = Object.assign(defaultConfig, config);
     this.inputContext = createInputContext(graphQLSchema)
     this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
   }
@@ -77,7 +74,6 @@ export class GraphQLBackendCreator {
 
   public async createDatabase(): Promise<void> {
     try {
-      
       if (this.config.createDatabase && this.dataLayerManager) {
         logger.info("Creating database structure")
         await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, this.inputContext);
