@@ -1,21 +1,36 @@
+/**
+ * 1:1 relationship directive
+ */
 export interface OneToOne {
-  field: string
+  field?: string
 }
 
+/**
+ * 1:m relation directive
+ */
 export interface OneToMany {
-  field: string
+  field?: string
 }
 
+/**
+ * n:m relation directive
+ */
 export interface ManyToMany {
-  tablename: string
+  tablename?: string
 }
 
+/**
+ * All relation directive definitions
+ */
 export interface Directive {
   OneToOne?: OneToOne
   OneToMany?: OneToMany
   ManyToMany?: ManyToMany
 }
 
+/**
+ * Field context of parsed GraphQL type
+ */
 export interface Field {
   name: string
   // tslint:disable-next-line
@@ -27,6 +42,11 @@ export interface Field {
   hasDirectives: boolean
 }
 
+/**
+ * Schema and resolver config
+ * paginate - create pagination
+ * rest describe crud methods
+ */
 export interface Config {
   paginate: boolean
   create: boolean
@@ -37,6 +57,9 @@ export interface Config {
   findAll: boolean
 }
 
+/**
+ * Context type returned from InputTypeVisitor
+ */
 export interface Type {
   name: string
   fields: Field[]
