@@ -1,6 +1,6 @@
 // tslint:disable: await-promise
-import { Field, Type } from 'graphql-codegen-core';
 import * as Knex from 'knex'
+import { Field,  Type } from '../ContextTypes';
 import { logger } from '../logger'
 import { DatabaseContextProvider } from './DatabaseContextProvider'
 /**
@@ -123,7 +123,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
    */
   public async createOneToOneRelation(currentTable: string, gqlField: Field, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
-    if(gqlField.usesDirectives && gqlField.directives.OneToOne.field) {
+    if(gqlField.hasDirectives && gqlField.directives.OneToOne.field) {
       fieldname = gqlField.directives.OneToOne.field
     }
     if(!gqlField.isArray) {
@@ -151,7 +151,7 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
    */
   public async createOneToManyRelation(currentTable: string, gqlField: Field, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
-    if(gqlField.usesDirectives && gqlField.directives.OneToMany.field) {
+    if(gqlField.hasDirectives && gqlField.directives.OneToMany.field) {
       fieldname = gqlField.directives.OneToMany.field
     }
     if(gqlField.isArray) {

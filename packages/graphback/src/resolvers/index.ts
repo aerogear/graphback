@@ -1,7 +1,6 @@
-import { InputContext, createInputContext } from '../ContextCreator'
+import { Type } from '../ContextTypes'
 import { generateResolvers } from './resolverTemplate';
 import { buildResolverTargetContext, TargetResolverContext } from './targetResolverContext';
-import { readFileSync } from 'fs';
 
 /**
  * generate schema using context created using visitor pattern
@@ -9,9 +8,9 @@ import { readFileSync } from 'fs';
  */
 export class ResolverGenerator {
   private context: TargetResolverContext
-  private inputContext: InputContext[]
+  private inputContext: Type[]
 
-  constructor(inputContext: InputContext[]) {
+  constructor(inputContext: Type[]) {
     this.inputContext = inputContext
   }
 
