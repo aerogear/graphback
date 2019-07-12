@@ -1,4 +1,4 @@
-import { Type } from 'graphql-codegen-core';
+import { Type } from '../ContextTypes'
 
 
 /**

@@ -1,29 +1,29 @@
-import { InputContext } from '../ContextCreator';
-import { TargetContext, Type } from './targetSchemaContext';
+import { Type } from '../ContextTypes';
+import { TargetContext, TargetType } from './targetSchemaContext';
 
-const pagination = (inputContext: InputContext[]): string => {
+const pagination = (inputContext: Type[]): string => {
   return `
-${inputContext.map((i: InputContext) => `type ${i.name}Page {
+${inputContext.map((i: Type) => `type ${i.name}Page {
   items: [${i.name}]!
   pageInfo: PaginationInfo!
 }`).join('\n\n')}
 `
 }
 
-const inputs = (defs: Type[]): string => {
-  return `${defs.map((d: Type) => `input ${d.name}Input {
+const inputs = (defs: TargetType[]): string => {
+  return `${defs.map((d: TargetType) => `input ${d.name}Input {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}`
 }
 
-const nodeTypes = (defs: Type[]): string => {
-  return `${defs.map((d: Type) => `type ${d.name} {
+const nodeTypes = (defs: TargetType[]): string => {
+  return `${defs.map((d: TargetType) => `type ${d.name} {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}`
 }
 
-const filters = (defs: Type[]): string => {
-  return `${defs.map((d: Type) => `input ${d.name}Filter {
+const filters = (defs: TargetType[]): string => {
+  return `${defs.map((d: TargetType) => `input ${d.name}Filter {
   ${d.fields.join('\n  ')}
 }`).join('\n\n')}` 
 }

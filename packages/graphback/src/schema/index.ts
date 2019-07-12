@@ -1,4 +1,4 @@
-import { InputContext } from '../ContextCreator';
+import { Type } from '../ContextTypes';
 import { generateSchema } from './schemaTemplate';
 import { buildTargetContext, TargetContext } from './targetSchemaContext';
 
@@ -9,9 +9,9 @@ import { buildTargetContext, TargetContext } from './targetSchemaContext';
  */
 export class SchemaGenerator {
   private context: TargetContext
-  private inputContext: InputContext[]
+  private inputContext: Type[]
 
-  constructor(inputContext: InputContext[]) {
+  constructor(inputContext: Type[]) {
     this.inputContext = inputContext
   }
 
