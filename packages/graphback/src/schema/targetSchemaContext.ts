@@ -1,4 +1,5 @@
 import { FieldContext, InputContext } from '../ContextCreator'
+import { getFieldName, ResolverType } from '../utils'
 
 export interface Type {
   name: string
@@ -19,24 +20,10 @@ export interface TargetContext {
   subscriptions: string[]
 }
 
-enum Crud {
-  CREATE = "create",
-  UPDATE = "update",
-  DELETE = "delete",
-  FIND = "find",
-  FIND_ALL = "findAll"
-}
-
-const getFieldName = (typeName: string, action: Crud, plural: string = ''): string => {
-  const upperCasedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
-
-  return `${action}${upperCasedType}${plural}`
-}
-
 const findQueries = (inputContext: InputContext[]): string[] => {
   return inputContext.filter((i: InputContext) => i.config.find)
                     .map((i: InputContext) => {
-                      const fieldName = getFieldName(i.name, Crud.FIND)
+                      const fieldName = getFieldName(i.name, ResolverType.FIND)
   
                       return `${fieldName}(fields: ${i.name}Filter!): ${i.name}!`
                     })
@@ -45,7 +32,7 @@ const findQueries = (inputContext: InputContext[]): string[] => {
 const updateQueries = (inputContext: InputContext[]): string[] => {
   return inputContext.filter((i: InputContext) => i.config.update)
                     .map((i: InputContext) => {
-                      const fieldName = getFieldName(i.name, Crud.UPDATE)
+                      const fieldName = getFieldName(i.name, ResolverType.UPDATE)
 
                       return `${fieldName}(id: ID!, input: ${i.name}Input!): ${i.name}!`
                     })
@@ -54,7 +41,7 @@ const updateQueries = (inputContext: InputContext[]): string[] => {
 const createQueries = (inputContext: InputContext[]): string[] => {
  return inputContext.filter((i: InputContext) => i.config.create)
                     .map((i: InputContext) => {
-                      const fieldName = getFieldName(i.name, Crud.CREATE)
+                      const fieldName = getFieldName(i.name, ResolverType.CREATE)
   
                       return `${fieldName}(input: ${i.name}Input!): ${i.name}!`
                     })
@@ -63,7 +50,7 @@ const createQueries = (inputContext: InputContext[]): string[] => {
 const delQueries = (inputContext: InputContext[]): string[] => {
   return inputContext.filter((i: InputContext) => i.config.delete)
                     .map((i: InputContext) => {
-                      const fieldName = getFieldName(i.name, Crud.DELETE)
+                      const fieldName = getFieldName(i.name, ResolverType.DELETE)
 
                       return `${fieldName}(id: ID!): ID!`
                     })
@@ -72,7 +59,7 @@ const delQueries = (inputContext: InputContext[]): string[] => {
 const findAllQueries = (inputContext: InputContext[]): string[] => {
   return inputContext.filter((i: InputContext) => i.config.findAll)
                     .map((i: InputContext) => {
-                      const fieldName = getFieldName(i.name, Crud.FIND_ALL, 's')
+                      const fieldName = getFieldName(i.name, ResolverType.FIND_ALL, 's')
 
                       return `${fieldName}: ${i.config.paginate ? `${i.name}Page`: `[${i.name}!]!`}`
                     })

@@ -42,6 +42,6 @@ export const createInputContext = (schemaText: string): InputContext[] => {
     
     return visit(astNode, { leave: inputTypeVisitor }).definitions
   } catch(err) {
-    return;
+    throw err
   }
 }

@@ -1,5 +1,5 @@
 import { InputContext } from '../ContextCreator';
-import { TargetContext, Type } from './targetType';
+import { TargetContext, Type } from './targetSchemaContext';
 
 const pagination = (inputContext: InputContext[]): string => {
   return `
