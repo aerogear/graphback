@@ -1,16 +1,12 @@
+import { createInputContext } from './ContextCreator';
+import { Type } from './ContextTypes';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
-import { MetadataFormat } from './resolvers/MetadataInstance';
-import { GraphQLResolverGenerator } from './resolvers/ResolverGenerator' 
-import { ResolverManager } from './resolvers/ResolverManager';
-import { allTypes, ResolverType } from './resolvers/ResolverType'
-import { GraphQLSchemaGenerator } from './schema/SchemaGenerator'
-import { SchemaParser } from './schema/SchemaParser'
-
-//import directives
-import {applyGeneratorDirectives} from './directives'
+import { ResolverGenerator } from './resolvers';
+import { SchemaGenerator } from './schema';
+import { ResolverType } from './utils'
 
 /**
  * GraphQLBackend
@@ -20,13 +16,11 @@ import {applyGeneratorDirectives} from './directives'
  */
 export class GraphQLBackendCreator {
 
-  private schemaParser: SchemaParser
   private dataLayerManager: IDataLayerResourcesManager;
-  private resolvers: MetadataFormat
   private resolverTypes: ResolverType[];
-  private resolverManager: ResolverManager;
   private config: GeneratorConfig;
   private dbContextProvider: DatabaseContextProvider;
+  private inputContext: Type[]
 
   /**
    * @param graphQLSchema string containing graphql types
@@ -34,11 +28,9 @@ export class GraphQLBackendCreator {
    */
   constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
     // tslint:disable-next-line:
-    this.config = Object.assign(defaultConfig, config);
-    this.schemaParser = new SchemaParser(applyGeneratorDirectives(graphQLSchema));
+    // this.config = Object.assign(defaultConfig, config);
+    this.inputContext = createInputContext(graphQLSchema)
     this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
-    // Default resolvers
-    this.resolverTypes = allTypes;
   }
 
   /**
@@ -47,22 +39,6 @@ export class GraphQLBackendCreator {
    */
   public registerDataResourcesManager(manager: IDataLayerResourcesManager) {
     this.dataLayerManager = manager;
-  }
-
-  /**
-   * Register manager for creating resolver layer
-   */
-  public registerResolverManager(manager: ResolverManager) {
-    this.resolverManager = manager;
-  }
-
-  /**
-   * Set resolver operations that will be generated
-   *
-   * @param types - array of resolver operations that should be supported
-   */
-  public registerResolverTypes(types: ResolverType[]) {
-    this.resolverTypes = types;
   }
 
   /**
@@ -88,57 +64,33 @@ export class GraphQLBackendCreator {
    */
   public async createBackend(): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
-    
-    try {
-      await this.schemaParser.build(this.config);
-      const context = this.schemaParser.getContext()
 
-      if (this.resolverManager) {
-        this.resolvers = await this.resolverManager.build(this.dbContextProvider, context.types, this.resolverTypes);
-      } else {
-        logger.info("Resolver generation skipped.")
-      }
+    const schemaGenerator = new SchemaGenerator(this.inputContext)
+    backend.schema = schemaGenerator.generate()
 
-      if (this.config.generateGraphQLSchema) {
-        logger.info("Generating schema")
-        const generator = new GraphQLSchemaGenerator();
-        const outputSchema = generator.generateNewSchema(context, this.resolvers, this.config);
-        backend.schema = outputSchema;
-      } else {
-        logger.info("Schema generation skipped.")
-      }
-
-      /**
-       * Generate TS resolvers from the MetadataFormat generated
-       */
-      const resolverGen = new GraphQLResolverGenerator()
-      backend.resolvers = resolverGen.generateResolvers(this.resolvers)
-    } catch (error) {
-      logger.error(`Error on generation ${error}`)
-    }   
+    const resolverGenerator = new ResolverGenerator(this.inputContext)
+    backend.resolvers = resolverGenerator.generate()  
     
     return backend;
   }
 
 
-    public async createDatabase(): Promise<void> {
-      try {        
-        await this.schemaParser.build(this.config);
-        const context = this.schemaParser.getContext()
-        
-        if (this.config.createDatabase && this.dataLayerManager) {
-          logger.info("Creating database structure")
-          await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context.types);
-          await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context.types);
-        } else {
-          logger.info("Database structure generation skipped.")
-        }
-      } catch (error) {
-        // logger.error(`Error on Database creation ${error}`)
-        throw error
+  public async createDatabase(): Promise<void> {
+    try {
+      
+      if (this.config.createDatabase && this.dataLayerManager) {
+        logger.info("Creating database structure")
+        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, this.inputContext);
+        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, this.inputContext);
+      } else {
+        logger.info("Database structure generation skipped.")
       }
-
+    } catch (error) {
+      // logger.error(`Error on Database creation ${error}`)
+      throw error
     }
+
+  }
 }
 
 /**

@@ -7,7 +7,7 @@ type Note {
 
 }
 
-type Comment @Model(paginate: false){
+type Comment {
   id: ID!
   title: String!
   description: String!
