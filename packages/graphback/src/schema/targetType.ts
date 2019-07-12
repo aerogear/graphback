@@ -1,4 +1,4 @@
-import { FieldContext, InputContext } from 'graphback'
+import { FieldContext, InputContext } from '../ContextCreator'
 
 export interface Type {
   name: string

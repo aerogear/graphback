@@ -1,4 +1,4 @@
-import { InputContext } from 'graphback';
+import { InputContext } from '../ContextCreator';
 import { TargetContext, Type } from './targetType';
 
 const pagination = (inputContext: InputContext[]): string => {
