@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { readFileSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphQLBackendCreator, IGraphQLBackend, KnexResolverManager } from 'graphback'
+import { GraphQLBackendCreator, IGraphQLBackend } from 'graphback'
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
 
@@ -35,13 +35,10 @@ export async function generateBackend(): Promise<void> {
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
-    const outputSchemaPath: string = `${process.cwd()}/generated/schema.graphql`
+    const outputSchemaPath: string = `${process.cwd()}/generated/schema.ts`
     const outputResolverPath: string = `${process.cwd()}/generated/resolvers.ts`
     
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText)
-    
-    const resolverManager = new KnexResolverManager();
-    backend.registerResolverManager(resolverManager);
     
     const generated: IGraphQLBackend = await backend.createBackend()
     

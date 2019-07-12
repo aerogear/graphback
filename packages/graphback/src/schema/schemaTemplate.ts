@@ -12,21 +12,23 @@ ${inputContext.map((i: Type) => `type ${i.name}Page {
 
 const inputs = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `input ${d.name}Input {
-  ${d.fields.join('\n  ')}
-}`).join('\n\n')}`
+    ${d.fields.join('\n    ')}
+  }`).join('\n\n  ')}`
 }
 
 const nodeTypes = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `type ${d.name} {
-  ${d.fields.join('\n  ')}
-}`).join('\n\n')}`
+    ${d.fields.join('\n    ')}
+  }`).join('\n\n  ')}`
 }
 
 const filters = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `input ${d.name}Filter {
-  ${d.fields.join('\n  ')}
-}`).join('\n\n')}` 
+    ${d.fields.join('\n    ')}
+  }`).join('\n\n  ')}` 
 }
+
+const imports = `import gql from 'graphql-tag'`
 
 /**
  * String template having placeholders for definitions which is received 
@@ -34,23 +36,27 @@ const filters = (defs: TargetType[]): string => {
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
-const outputSchema = (context: TargetContext): string =>  `${nodeTypes(context.nodes)}
+const outputSchema = (context: TargetContext): string =>  `${imports}
 
-${inputs(context.inputFields)}
+export const typeDefs = gql\`
+  ${nodeTypes(context.nodes)}
 
-${filters(context.filterFields)}
+  ${inputs(context.inputFields)}
 
-type Query {
-  ${context.queries.join('\n  ')}
-}
+  ${filters(context.filterFields)}
 
-type Mutation {
-  ${context.mutations.join('\n  ')}
-}
+  type Query {
+    ${context.queries.join('\n    ')}
+  }
 
-type Subscription {
-  ${context.subscriptions.join('\n  ')}
-}
+  type Mutation {
+    ${context.mutations.join('\n    ')}
+  }
+
+  type Subscription {
+    ${context.subscriptions.join('\n    ')}
+  }
+\`
 `
 /**
  * Generate the output schema
