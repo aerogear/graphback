@@ -1,6 +1,6 @@
-import { Type } from '../ContextTypes';
-import { getFieldName, getTableName, ResolverType } from '../utils';
-import * as knex from './knexImplementation'
+import { Type } from '../../ContextTypes';
+import { getFieldName, getTableName, ResolverType } from '../../utils';
+import * as knex from './resolverImplementation'
 
 export interface TargetResolverContext {
   queries: string[]

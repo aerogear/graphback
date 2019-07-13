@@ -1,4 +1,4 @@
-import { TargetResolverContext } from './targetResolverContext';
+import { TargetResolverContext } from './knex/targetResolverContext';
 
 export const generateResolvers = (context: TargetResolverContext): string => {
   return `export const resolvers = {
