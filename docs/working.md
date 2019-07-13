@@ -1,3 +1,7 @@
+---
+id: working
+title: How Graphback works
+---
 ## Templates
 Graphback provides users with the choice of setting up a custom environment with features with the help of templates. We plan to provide
 templates with multiple use cases including various server frameworks like GraphQL server frameworks like Apollo GraphQL, GraphQL-js and others.
@@ -18,7 +22,7 @@ Currently, we are supporting `PostgreSQL`.
   ```
   The command will guide you through a series of questions - choosing a template, bootstraping model - and setup your project for you.
 
-  ![](images/init.gif)
+  ![](/img/init.gif)
 
   You can also provide the template name as argument which will skip the template selection part.
   ```bash
