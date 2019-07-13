@@ -1,4 +1,8 @@
-## What is Graphback?
+---
+id: getting-started
+title: What is Graphback
+sidebar_label: What is Graphback
+---
 
 Graphback is a CLI tool that can help you bootstrap a GraphQL server for you including GraphQL schema, type safe resolvers and generating database structure for you. It addresses the difficulty in configuring a GraphQL server from scratch.
 

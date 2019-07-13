@@ -1,3 +1,8 @@
+---
+id: datamodel
+title: Defining your Data Model
+---
+
 ## Model
 The Data model file is written in GraphQL syntax where you define your types along with custom directives for additional use cases.
 
@@ -23,6 +28,8 @@ type Comment {
 
 All types of database relationships - `1:1, 1:m and n:m` - are supported by the generator.
 
+### One To One
+
 The `1:1` relation can be simply declared by:
 ```graphql
 type Profile {
@@ -36,6 +43,8 @@ type Profile {
 }
 ```
 
+### One To Many
+
 The `1:m` relation is declared with array syntax.
 ```graphql
 type Note {
@@ -48,6 +57,8 @@ type Note {
   comment: [Comment!]! @OneToMany(field: "yourCustomField")
 }
 ```
+
+### Many To Many
 
 The `n:m` relation requires you to define it using directives as default.
 ```graphql
