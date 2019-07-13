@@ -1,6 +1,6 @@
 import { Type } from '../ContextTypes'
+import { buildResolverTargetContext, TargetResolverContext } from './knex/targetResolverContext';
 import { generateResolvers } from './resolverTemplate';
-import { buildResolverTargetContext, TargetResolverContext } from './targetResolverContext';
 
 /**
  * generate schema using context created using visitor pattern
