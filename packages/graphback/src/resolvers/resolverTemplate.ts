@@ -6,7 +6,7 @@ export const generateResolvers = (context: TargetResolverContext): string => {
     ${context.queries.join(',\n    ')}
   },
 
-  Mutations: {
+  Mutation: {
     ${context.mutations.join(',\n    ')}
   }
 }`

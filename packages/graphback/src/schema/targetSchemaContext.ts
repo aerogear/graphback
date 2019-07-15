@@ -23,9 +23,9 @@ export interface TargetContext {
 const findQueries = (inputContext: Type[]): string[] => {
   return inputContext.filter((t: Type) => t.config.find)
                     .map((t: Type) => {
-                      const fieldName = getFieldName(t.name, ResolverType.FIND)
+                      const fieldName = getFieldName(t.name, ResolverType.FIND, 's')
   
-                      return `${fieldName}(fields: ${t.name}Filter!): ${t.name}!`
+                      return `${fieldName}(fields: ${t.name}Filter!): [${t.name}!]!`
                     })
 }
 
