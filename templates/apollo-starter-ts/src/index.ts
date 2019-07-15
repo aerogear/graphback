@@ -1,5 +1,6 @@
 import * as cors from "cors"
 import * as express from "express"
+import * as http from "http"
 
 import { altairExpress } from "altair-express-middleware"
 import { ApolloServer } from "apollo-server-express"
@@ -40,7 +41,10 @@ async function start() {
 
   apolloServer.applyMiddleware({ app })
 
-  const server = app.listen(config.port, () => {
+  const httpServer = http.createServer(app)
+  apolloServer.installSubscriptionHandlers(httpServer)
+
+  httpServer.listen({ port: config.port }, () => {
     console.log(`🚀  Server ready at http://localhost:${config.port}/graphql`)
   })
 }
