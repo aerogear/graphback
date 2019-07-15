@@ -10,10 +10,7 @@ services:
       POSTGRES_USER: postgresql
       POSTGRES_DB: users
 
-  # Mosca is a simple MQTT Broker
-  # In OpenShift/Production we would use the Red Hat AMQ broker
-  mosca:
-    image: matteocollina/mosca
+  redis:
+    image: redis:3.2
     ports:
-      - "1883:1883" # MQTT
-      - "80:80" # web interface
+      - "6379:6379"
