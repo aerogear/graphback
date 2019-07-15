@@ -38,7 +38,7 @@
   "devDependencies": {
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.0.3",
-    "@types/node": "12.6.2",
+    "@types/node": "12.6.3",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.0",
@@ -68,7 +68,7 @@
     "request": "2.88.0",
     "tar": "4.4.10",
     "tmp": "0.1.0",
-    "yargs": "13.2.4"
+    "yargs": "13.3.0"
   },
   "jest": {
     "transform": {
