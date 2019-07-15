@@ -24,7 +24,7 @@ const deleteResolvers = (context: Type[]): string[] => {
 
 const findResolvers = (context: Type[]): string[] => {
   return context.filter((i: Type) => i.config.find)
-                .map((i: Type) => knex.findTemplate(getFieldName(i.name, ResolverType.FIND), getTableName(i.name)))
+                .map((i: Type) => knex.findTemplate(getFieldName(i.name, ResolverType.FIND, 's'), getTableName(i.name)))
 }
 
 const findAllResolvers = (context: Type[]): string[] => {
