@@ -3,7 +3,26 @@
 This file contains changes and migration steps for GraphBack project. 
 Please follow indidivudal releases for more information
 
+## 0.3.0 (16 July, 2019)
+### Graphback
+#### Fixes
+- Revamp core to use visitor pattern
+- Generate schema with opinionated schema patterns
+- Edited resolvers implementations(working)
 
-## 1.0.0 
+#### Deprecations
+- removed dependency of `graphql-codegen` version `0.18.2`
 
-TOOD - Put the most important elements we introduced
+### Graphback-cli
+#### Features
+- added `db` and `watch` command
+#### Fixes
+- added more options in `init` command, to inject config 
+
+## 0.2.0 (12 June, 2019)
+### Graphback
+#### Features
+- Initial `schema` and `resolvers` generation
+### Graphback-cli
+#### Features
+- added `init` and `generate` command
