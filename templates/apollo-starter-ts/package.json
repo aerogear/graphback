@@ -10,7 +10,7 @@
   "license": "Apache 2.0",
   "dependencies": {
     "altair-express-middleware": "2.2.1",
-    "apollo-server-express": "2.6.9",
+    "apollo-server-express": "2.7.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "graphql": "14.4.2",
