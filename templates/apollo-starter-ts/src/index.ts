@@ -8,6 +8,7 @@ import { ApolloServer } from "apollo-server-express"
 import config from "./config/config"
 import { connect } from "./db"
 import { resolvers, typeDefs } from "./mapping"
+import { pubsub } from './subscriptions'
 
 async function start() {
   const app = express()
@@ -32,6 +33,7 @@ async function start() {
       return {
         req: req,
         db: client,
+        pubsub,
         serverName: "graphback"
       }
     }

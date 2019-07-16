@@ -1,11 +1,7 @@
 import { TargetResolverContext } from './knex/targetResolverContext';
 
-const imports = `import { pubsub } from '../src/subscriptions'`
-
 export const generateResolvers = (context: TargetResolverContext): string => {
-  return `${imports}
-
-enum Subscriptions {
+  return `enum Subscriptions {
   ${context.subscriptionTypes.join(',\n  ')}
 }
 
