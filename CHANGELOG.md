@@ -5,6 +5,14 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
+## 0.3.1 (17 July, 2019)
+### Graphback
+#### Fixes
+- Strict typing in resolvers.
+### Templates
+#### Fixes
+- Added ts config and check compilation.
+
 ## 0.3.0 (16 July, 2019)
 ### Graphback
 #### Fixes
