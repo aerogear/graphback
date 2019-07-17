@@ -1,6 +1,6 @@
 import { TargetResolverContext } from './knex/targetResolverContext';
 
-const imports = `import { Context } from '../src/context'`
+const imports = `import { GraphQLContext } from '../src/context'`
 
 export const generateResolvers = (context: TargetResolverContext): string => {
   return `${imports}
