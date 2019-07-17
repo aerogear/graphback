@@ -1,12 +1,11 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import knex from 'knex'
 
 /**
  * config class
  */
 class Config {
   public port: any
-  public db: object
+  public db: knex.MySqlConnectionConfig
   public altairConfig: object
   constructor() {
     this.port = process.env.PORT || 4000
@@ -15,14 +14,12 @@ class Config {
       user: process.env.DB_USERNAME || 'postgresql',
       password: process.env.DB_PASSWORD || 'postgres',
       host: process.env.DB_HOSTNAME || '127.0.0.1',
-      port: process.env.DB_PORT || '5432'
+      port: Number(process.env.DB_PORT) || 5432
     }
 
     this.altairConfig = {
       endpointURL: '/graphql',
-      subscriptionsEndpoint: 'ws://localhost:4000/graphql',
-      // TODO generate client side queries
-      // initialQuery: fs.readFileSync(path.resolve(__dirname, '../genererated/client/playground.gql'), 'utf8'),
+      subscriptionsEndpoint: 'ws://localhost:4000/graphql'
     }
   }
 }

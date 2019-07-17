@@ -1,6 +1,6 @@
-import * as cors from "cors"
-import * as express from "express"
-import * as http from "http"
+import cors from "cors"
+import express from "express"
+import http from "http"
 
 import { altairExpress } from "altair-express-middleware"
 import { ApolloServer } from "apollo-server-express"
@@ -28,13 +28,12 @@ async function start() {
     playground: false,
     context: async ({
       req
-    }) => {
+    }: {req: express.Request}) => {
       // pass request + db ref into context for each resolver
       return {
         req: req,
         db: client,
-        pubsub,
-        serverName: "graphback"
+        pubsub
       }
     }
   }
