@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:9.6
     ports:
-      - "5432:5432"
+      - "55432:5432"
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgresql
@@ -13,4 +13,4 @@ services:
   redis:
     image: redis:3.2
     ports:
-      - "6379:6379"
+      - "6789:6379"

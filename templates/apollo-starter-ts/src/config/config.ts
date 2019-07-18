@@ -14,7 +14,7 @@ class Config {
       user: process.env.DB_USERNAME || 'postgresql',
       password: process.env.DB_PASSWORD || 'postgres',
       host: process.env.DB_HOSTNAME || '127.0.0.1',
-      port: Number(process.env.DB_PORT) || 5432
+      port: Number(process.env.DB_PORT) || 55432
     }
 
     this.altairConfig = {
