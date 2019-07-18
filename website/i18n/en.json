@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "A website for testing",
+    "tagline": "A backpack for your GraphQL needs",
     "docs": {
       "datamodel": {
         "title": "Defining your Data Model"
