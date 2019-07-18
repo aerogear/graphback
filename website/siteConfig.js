@@ -22,7 +22,7 @@ const users = [
 
 const siteConfig = {
   title: 'Graphback', // Title for your website.
-  tagline: 'A website for testing',
+  tagline: 'A backpack for your GraphQL needs',
   url: 'https://your-docusaurus-test-site.com', // Your website URL
   baseUrl: '/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
@@ -53,8 +53,8 @@ const siteConfig = {
 
   /* Colors for website */
   colors: {
-    primaryColor: '#852b4a',
-    secondaryColor: '#5d1e33',
+    primaryColor: '#3F51B5',
+    secondaryColor: '#303F9F',
   },
 
   /* Custom fonts for website */
