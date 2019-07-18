@@ -8,7 +8,8 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "serve": "node dist/src/index.js",
-    "watch": "graphback watch"
+    "watch": "graphback watch",
+    "docker": "docker build -t nodeserv"
   },
   "license": "Apache 2.0",
   "dependencies": {
