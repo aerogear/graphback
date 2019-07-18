@@ -5,9 +5,9 @@
   "private": true,
   "main": "dist/src/index.js",
   "scripts": {
-    "start": "node dist/src/index.js",
+    "start": "ts-node src/index.ts",
     "build": "tsc",
-    "dev": "ts-node src/index.ts",
+    "serve": "node dist/src/index.js",
     "watch": "graphback watch"
   },
   "license": "Apache 2.0",
