@@ -12,14 +12,14 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "altair-express-middleware": "2.2.1",
+    "altair-express-middleware": "2.2.2",
     "apollo-server-express": "2.7.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "graphql": "14.4.2",
     "graphql-redis-subscriptions": "2.1.0",
     "graphql-tag": "2.10.1",
-    "ioredis": "4.12.2",
+    "ioredis": "4.13.0",
     "knex": "0.19.0",
     "pg": "7.11.0"
   },
