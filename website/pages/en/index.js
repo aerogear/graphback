@@ -64,7 +64,6 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
           <PromoSection>
-            {/* <Button href="#try">Try It Out</Button> */}
             <Button href="/docs/getting-started">View Docs</Button>
             <Button href={siteConfig.repoUrl}>Github</Button>
           </PromoSection>
@@ -118,14 +117,14 @@ class Index extends React.Component {
     );
 
     const Description = () => (
-      <Block background="dark">
+      <Block background="light">
         {[
           {
             content:
               'This is another description of how this project is useful',
             image: `${baseUrl}img/undraw_note_list.svg`,
             imageAlign: 'right',
-            title: 'Description',
+            title: 'Principles',
           },
         ]}
       </Block>
@@ -197,12 +196,12 @@ class Index extends React.Component {
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
+          {/* <FeatureCallout /> */}
           {/* <Features /> */}
-          {/* <FeatureCallout />
-          <LearnHow />
-          <TryOut />
-          <Description />
-          <Showcase /> */}
+          {/* <LearnHow />
+          <TryOut /> */}
+          {/* <Description /> */}
+          {/* <Showcase /> */}
         </div>
       </div>
     );
