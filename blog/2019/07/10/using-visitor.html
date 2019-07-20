@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Using Visitor Pattern to parse GraphQL AST · Graphback</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC&#x27;19 I have been working on [Graphback](https://aerogear.github.io/graphback). For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Using Visitor Pattern to parse GraphQL AST · Graphback"/><meta property="og:type" content="website"/><meta property="og:url" content="https://aerogear.github.io/graphback/blog/2019/07/10/using-visitor"/><meta property="og:description" content="GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC&#x27;19 I have been working on [Graphback](https://aerogear.github.io/graphback). For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this"/><meta property="og:image" content="https://aerogear.github.io/graphback/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://aerogear.github.io/graphback/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/graphback/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://aerogear.github.io/graphback/blog/atom.xml" title="Graphback Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://aerogear.github.io/graphback/blog/feed.xml" title="Graphback Blog RSS Feed"/><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/graphback/js/scrollSpy.js"></script><link rel="stylesheet" href="/graphback/css/main.css"/><script src="/graphback/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/graphback/"><img class="logo" src="/graphback/img/favicon.ico" alt="Graphback"/><h2 class="headerTitleWithLogo">Graphback</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/graphback/docs/getting-started" target="_self">Documentation</a></li><li class="siteNavGroupActive"><a href="/graphback/blog/" target="_self">Blog</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/graphback/blog/2019/07/10/using-visitor">Using Visitor Pattern to parse GraphQL AST</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/graphback/blog/2019/07/10/using-visitor">Using Visitor Pattern to parse GraphQL AST</a></h1><p class="post-meta">July 10, 2019</p><div class="authorBlock"><p class="post-authorName"><a href="http://twitter.com/ankitjey" target="_blank" rel="noreferrer noopener">Ankit Jena</a></p><div class="authorPhoto"><a href="http://twitter.com/ankitjey" target="_blank" rel="noreferrer noopener"><img src="https://graph.facebook.com/100002617764210/picture/?height=200&amp;width=200" alt="Ankit Jena"/></a></div></div></header><div><span><p>GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC'19 I have been working on <a href="https://aerogear.github.io/graphback">Graphback</a>. For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this</p>
+<!--truncate-->
+<pre><code class="hljs"><span class="hljs-keyword">type</span> <span class="hljs-type">User</span>{
+  username: <span class="hljs-type">String</span>!
+  email: <span class="hljs-type">String</span>
+}
+</code></pre>
+<p>to something like</p>
+<pre><code class="hljs">{
+  <span class="hljs-type">name</span>: "User",
+  fields: [
+    {
+      <span class="hljs-type">name</span>: "username",
+      <span class="hljs-keyword">type</span>: "String",
+      <span class="hljs-keyword">isNull</span>: <span class="hljs-keyword">false</span>
+    },
+    {
+      <span class="hljs-type">name</span>: "email",
+      <span class="hljs-keyword">type</span>: "String",
+      <span class="hljs-keyword">isNull</span>: <span class="hljs-keyword">true</span>
+    }
+  ]
+}
+</code></pre>
+<p>When schema is read by GraphQL it doesn't store it as a string, it does a lot of parsing to convert it into an AST(will talk more about it).</p>
+<p>The best way to do this is using Visitor pattern. In this blog post I'm going to explain how GraphQL converts schema to ASTs and using Visitor Pattern.</p>
+<h2><a class="anchor" aria-hidden="true" id="abstract-syntax-treeast"></a><a href="#abstract-syntax-treeast" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Abstract Syntax Tree(AST)</strong></h2>
+<blockquote>
+<p><em>When a GraphQL server receives a query to process it generally comes in as a String. This string must be tokenized and parsed into a representation that the machine understands. This representation is called an abstract syntax tree.</em></p>
+</blockquote>
+<p>A great tool to inspect abstract syntax trees is <a href="https://astexplorer.net">AST Explorer</a>. The site lets you quickly paste code from JavaScript to PHP to TypeScript and even GraphQL types into the UI and then provides the resulting abstract syntax tree. For the above example, the AST is</p>
+<pre><code class="hljs">{
+  <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"Document"</span>,
+  <span class="hljs-attr">"definitions"</span>: [
+    {
+      <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"ObjectTypeDefinition"</span>,
+      <span class="hljs-attr">"name"</span>: {
+        <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"Name"</span>,
+        <span class="hljs-attr">"value"</span>: <span class="hljs-string">"User"</span>,
+        <span class="hljs-attr">"loc"</span>: {
+          <span class="hljs-attr">"start"</span>: <span class="hljs-number">133</span>,
+          <span class="hljs-attr">"end"</span>: <span class="hljs-number">137</span>
+        }
+      },
+      <span class="hljs-attr">"interfaces"</span>: [],
+      <span class="hljs-attr">"directives"</span>: [],
+      <span class="hljs-attr">"fields"</span>: [
+        {
+          <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"FieldDefinition"</span>,
+          <span class="hljs-attr">"name"</span>: {
+            <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"Name"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"username"</span>,
+            <span class="hljs-attr">"loc"</span>: {
+              <span class="hljs-attr">"start"</span>: <span class="hljs-number">141</span>,
+              <span class="hljs-attr">"end"</span>: <span class="hljs-number">149</span>
+            }
+          },
+          <span class="hljs-attr">"arguments"</span>: [],
+          <span class="hljs-attr">"type"</span>: {
+            <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"NonNullType"</span>,
+            <span class="hljs-attr">"type"</span>: {
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"NamedType"</span>,
+              <span class="hljs-attr">"name"</span>: {
+                <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"Name"</span>,
+                <span class="hljs-attr">"value"</span>: <span class="hljs-string">"String"</span>,
+                <span class="hljs-attr">"loc"</span>: {
+                  <span class="hljs-attr">"start"</span>: <span class="hljs-number">151</span>,
+                  <span class="hljs-attr">"end"</span>: <span class="hljs-number">157</span>
+                }
+              },
+              <span class="hljs-attr">"loc"</span>: {
+                <span class="hljs-attr">"start"</span>: <span class="hljs-number">151</span>,
+                <span class="hljs-attr">"end"</span>: <span class="hljs-number">157</span>
+              }
+            },
+            <span class="hljs-attr">"loc"</span>: {
+              <span class="hljs-attr">"start"</span>: <span class="hljs-number">151</span>,
+              <span class="hljs-attr">"end"</span>: <span class="hljs-number">158</span>
+            }
+          },
+          <span class="hljs-attr">"directives"</span>: [],
+          <span class="hljs-attr">"loc"</span>: {
+            <span class="hljs-attr">"start"</span>: <span class="hljs-number">141</span>,
+            <span class="hljs-attr">"end"</span>: <span class="hljs-number">158</span>
+          }
+        },
+        {
+          <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"FieldDefinition"</span>,
+          <span class="hljs-attr">"name"</span>: {
+            <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"Name"</span>,
+            <span class="hljs-attr">"value"</span>: <span class="hljs-string">"email"</span>,
+            <span class="hljs-attr">"loc"</span>: {
+              <span class="hljs-attr">"start"</span>: <span class="hljs-number">162</span>,
+              <span class="hljs-attr">"end"</span>: <span class="hljs-number">167</span>
+            }
+          },
+          <span class="hljs-attr">"arguments"</span>: [],
+          <span class="hljs-attr">"type"</span>: {
+            <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"NamedType"</span>,
+            <span class="hljs-attr">"name"</span>: {
+              <span class="hljs-attr">"kind"</span>: <span class="hljs-string">"Name"</span>,
+              <span class="hljs-attr">"value"</span>: <span class="hljs-string">"String"</span>,
+              <span class="hljs-attr">"loc"</span>: {
+                <span class="hljs-attr">"start"</span>: <span class="hljs-number">169</span>,
+                <span class="hljs-attr">"end"</span>: <span class="hljs-number">175</span>
+              }
+            },
+            <span class="hljs-attr">"loc"</span>: {
+              <span class="hljs-attr">"start"</span>: <span class="hljs-number">169</span>,
+              <span class="hljs-attr">"end"</span>: <span class="hljs-number">175</span>
+            }
+          },
+          <span class="hljs-attr">"directives"</span>: [],
+          <span class="hljs-attr">"loc"</span>: {
+            <span class="hljs-attr">"start"</span>: <span class="hljs-number">162</span>,
+            <span class="hljs-attr">"end"</span>: <span class="hljs-number">175</span>
+          }
+        }
+      ],
+      <span class="hljs-attr">"loc"</span>: {
+        <span class="hljs-attr">"start"</span>: <span class="hljs-number">128</span>,
+        <span class="hljs-attr">"end"</span>: <span class="hljs-number">177</span>
+      }
+    }
+  ],
+  <span class="hljs-attr">"loc"</span>: {
+    <span class="hljs-attr">"start"</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">"end"</span>: <span class="hljs-number">178</span>
+  }
+}
+</code></pre>
+<p>The AST includes a lot of metadata, such as location in the source, or identifiers, such as argument names; and thanks to this deeply-nested JSON object, we now have all the power we need to work with GraphQL schemas.</p>
+<h2><a class="anchor" aria-hidden="true" id="visitor-pattern"></a><a href="#visitor-pattern" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>Visitor Pattern</strong></h2>
+<blockquote>
+<p><em>visit() will walk through an AST using a depth first traversal, calling the visitor's enter function at each node in the traversal, and calling the leave function after visiting that node and all of its child nodes.</em></p>
+</blockquote>
+<blockquote>
+<p><em>By returning different values from the enter and leave functions, the behavior of the visitor can be altered, including skipping over a sub-tree of the AST (by returning false), editing the AST by returning a value or null to remove the value, or to stop the whole traversal by returning BREAK.</em></p>
+</blockquote>
+<blockquote>
+<p><em>– GraphQL Documentation</em></p>
+</blockquote>
+<p>Visit function does a depth first traversal and it calls the <code>enter</code> function each time it encounters and node and <code>leave</code> function after a node's traversal. When we return a value from a node in the leave function the node is changed to a return value.</p>
+<p>Plus we can visit specific nodes we want using Named visitors.</p>
+<pre><code class="hljs">visit(ast, {
+  leave: {
+    Kind(<span class="hljs-keyword">node</span><span class="hljs-title">) {
+      // leave</span> the <span class="hljs-string">"Kind"</span> <span class="hljs-keyword">node</span>
+    <span class="hljs-title">}
+  }
+})
+</span></code></pre>
+<p>That's all we need for parsing the AST. Let's write the code.</p>
+<p>For this case, we get to see a few kind of nodes, <code>ObjectTypeDefinition</code>, <code>FieldDefinition</code>, <code>NotNullType</code>, <code>NamedType</code> and <code>Name</code>. Let's go through them in order from smaller nodes to larger ones to write our visitor.</p>
+<pre><code class="hljs">const visitor = {
+  Name: (<span class="hljs-keyword">node</span><span class="hljs-title">) =&gt; {
+    return</span> <span class="hljs-keyword">node</span>.<span class="hljs-title">value</span>
+  },
+  NamedType: (<span class="hljs-keyword">node</span><span class="hljs-title">) =&gt; {
+    return</span> {
+      <span class="hljs-string">"type"</span>: <span class="hljs-keyword">node</span>.<span class="hljs-title">name</span>,  //returns the value
+      <span class="hljs-string">"isNull"</span>: <span class="hljs-literal">true</span>
+    }
+  },
+  NonNullType: (<span class="hljs-keyword">node</span><span class="hljs-title">) =&gt; {
+    return</span> {
+      //spread returned object from NamedType
+      ...node.<span class="hljs-keyword">type</span>,     
+      <span class="hljs-string">"isNull"</span>: <span class="hljs-literal">false</span>
+    }
+  },
+  FieldDefinition: (<span class="hljs-keyword">node</span><span class="hljs-title">) =&gt; {
+    return</span> {
+      //spread returned object from NamedType <span class="hljs-keyword">or</span> NotNullType
+      ...node.<span class="hljs-keyword">type</span>,     
+      <span class="hljs-string">"name"</span>: <span class="hljs-keyword">node</span>.<span class="hljs-title">name</span>
+    }
+  },
+  ObjectTypeDefinition: (<span class="hljs-keyword">node</span><span class="hljs-title">) =&gt; {
+    return</span> {
+      <span class="hljs-string">"name"</span>: <span class="hljs-keyword">node</span>.<span class="hljs-title">name</span>,
+      <span class="hljs-string">"fields"</span>: <span class="hljs-keyword">node</span>.<span class="hljs-title">fields</span>
+    }
+  }
+}
+</code></pre>
+<p>When we user this in the leave function of visitor. We get our required output in the definitions field of the result.</p>
+<p>Now to actually do the visit and get the result.</p>
+<pre><code class="hljs">const ast = parse(<span class="hljs-name">schemaText</span>)
+const result = visit(<span class="hljs-name">ast</span>, { leave: visitor })
+</code></pre>
+<p>Visitor pattern is really helpful as you can adept it to your use cases. This is one of the few great tools within GraphQL. Hope this helps.</p>
+<h3><a class="anchor" aria-hidden="true" id="references"></a><a href="#references" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>References</h3>
+<ol>
+<li><a href="https://graphql.org/graphql-js/language/#visitor">https://graphql.org/graphql-js/language/#visitor</a></li>
+<li><a href="https://graphql-code-generator.com/docs/custom-codegen/using-visitor">https://graphql-code-generator.com/docs/custom-codegen/using-visitor</a></li>
+</ol>
+</span></div></div><div class="blogSocialSection"></div></div><div class="blog-recent"><a class="button" href="/graphback/blog">Recent Posts</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#abstract-syntax-treeast"><strong>Abstract Syntax Tree(AST)</strong></a></li><li><a href="#visitor-pattern"><strong>Visitor Pattern</strong></a><ul class="toc-headings"><li><a href="#references">References</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2019 Graphback</section></footer></div></body></html>
