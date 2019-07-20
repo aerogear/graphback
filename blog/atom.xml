@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://aerogear.github.io/graphback/blog</id>
+    <id>https://graphback.offix.devblog</id>
     <title>Graphback Blog</title>
     <updated>2019-07-10T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
-    <link rel="alternate" href="https://aerogear.github.io/graphback/blog"/>
+    <link rel="alternate" href="https://graphback.offix.devblog"/>
     <subtitle>The best place to stay up-to-date with the latest Graphback news and events.</subtitle>
-    <logo>https://aerogear.github.io/graphback/img/favicon.ico</logo>
-    <rights>Copyright © 2019 Graphback</rights>
+    <logo>https://graphback.offix.devimg/favicon.ico</logo>
+    <rights>Copyright © 2019 Graphback Contributors</rights>
     <entry>
         <title type="html"><![CDATA[Using Visitor Pattern to parse GraphQL AST]]></title>
-        <id>https://aerogear.github.io/graphback/blog/2019/07/10/using-visitor.html</id>
-        <link href="https://aerogear.github.io/graphback/blog/2019/07/10/using-visitor.html">
+        <id>https://graphback.offix.devblog/2019/07/10/using-visitor.html</id>
+        <link href="https://graphback.offix.devblog/2019/07/10/using-visitor.html">
         </link>
         <updated>2019-07-10T06:00:00Z</updated>
         <summary type="html"><![CDATA[<p>GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC'19 I have been working on <a href="https://aerogear.github.io/graphback">Graphback</a>. For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this</p>
