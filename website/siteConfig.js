@@ -23,8 +23,8 @@ const users = [
 const siteConfig = {
   title: 'Graphback', // Title for your website.
   tagline: 'A backpack for your GraphQL needs',
-  url: 'https://aerogear.github.io', // Your website URL
-  baseUrl: '/graphback/', // Base URL for your project */
+  url: 'https://graphback.offix.dev', // Your website URL
+  baseUrl: '', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
   //   baseUrl: '/test-site/',
@@ -72,7 +72,7 @@ const siteConfig = {
   */
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
-  copyright: `Copyright © ${new Date().getFullYear()} Graphback`,
+  copyright: `Copyright © ${new Date().getFullYear()} Graphback Contributors`,
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
