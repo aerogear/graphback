@@ -2,8 +2,5 @@
   "docs": {
     "Getting Started": ["getting-started", "datamodel"],
     "Features": ["working"]
-  },
-  "docs-other": {
-    "First Category": ["doc4", "doc5"]
   }
 }
