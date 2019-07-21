@@ -2,21 +2,21 @@
 <rss version="2.0">
     <channel>
         <title>Graphback Blog</title>
-        <link>https://graphback.offix.devblog</link>
+        <link>https://graphback.offix.dev/blog</link>
         <description>The best place to stay up-to-date with the latest Graphback news and events.</description>
         <lastBuildDate>Wed, 10 Jul 2019 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
             <title>Graphback Blog</title>
-            <url>https://graphback.offix.devimg/favicon.ico</url>
-            <link>https://graphback.offix.devblog</link>
+            <url>https://graphback.offix.dev/img/favicon.ico</url>
+            <link>https://graphback.offix.dev/blog</link>
         </image>
         <copyright>Copyright © 2019 Graphback Contributors</copyright>
         <item>
             <title><![CDATA[Using Visitor Pattern to parse GraphQL AST]]></title>
-            <link>https://graphback.offix.devblog/2019/07/10/using-visitor.html</link>
-            <guid>https://graphback.offix.devblog/2019/07/10/using-visitor.html</guid>
+            <link>https://graphback.offix.dev/blog/2019/07/10/using-visitor.html</link>
+            <guid>https://graphback.offix.dev/blog/2019/07/10/using-visitor.html</guid>
             <pubDate>Wed, 10 Jul 2019 06:00:00 GMT</pubDate>
             <description><![CDATA[<p>GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC'19 I have been working on <a href="https://aerogear.github.io/graphback">Graphback</a>. For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this</p>
 ]]></description>
