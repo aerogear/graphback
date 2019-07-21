@@ -1,5 +1,5 @@
 ---
-id: getting-started
+id: gettingstarted
 title: What is Graphback
 sidebar_label: What is Graphback
 ---

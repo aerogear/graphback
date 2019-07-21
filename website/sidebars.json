@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Getting Started": ["getting-started", "datamodel"],
+    "Getting Started": ["gettingstarted", "datamodel"],
     "Features": ["working"]
   }
 }
