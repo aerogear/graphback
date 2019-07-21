@@ -60,7 +60,7 @@ class HomeSplash extends React.Component {
 
     return (
       <SplashContainer>
-        <image height="550px" src={`${baseUrl}img/graphback.png`} />
+        <image src={`${baseUrl}img/graphback.png`} />
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
           <PromoSection>
