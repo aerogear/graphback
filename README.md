@@ -13,8 +13,6 @@
   GraphQL Resolvers and Queries from GraphQL types 🚀
 </p>
 
-See [documentation](https://graphback.dev) for usage and more.
-
 ## Motivation 
 
 Graphback can be hard and intimidating initially.
@@ -46,6 +44,11 @@ Provides set of useful directives and input types that are resolving standard us
 - Pick your own database
 Solution abstract from database storage possibly allows to support any existing storage, by 
 implementing available interface
+
+
+## Documentation
+
+ See [GraphBack.dev](https://graphback.dev) for usage and more.
 
 ## Contributing
 
