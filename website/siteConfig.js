@@ -6,7 +6,7 @@
 const siteConfig = {
   title: 'Graphback', // Title for your website.
   tagline: 'A backpack for your GraphQL needs',
-  url: 'https://graphback.offix.dev', // Your website URL
+  url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
 
 
