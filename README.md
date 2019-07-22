@@ -13,8 +13,7 @@
   GraphQL Resolvers and Queries from GraphQL types 🚀
 </p>
 
-. See [documentation](https://aerogear.github.io/graphback) for usage and more.
-
+See [documentation](https://graphback.dev) for usage and more.
 
 ## Motivation 
 
@@ -25,7 +24,7 @@ by generating backend layer using your predefined types.
 ## What it does
 
 - Generates required queries and mutations automatically using proven GraphQL patterns
-- Generates unopiniated resolvers layer using https://www.npmjs.com/package/apollo-resolvers
+- Generates unopiniated resolvers layer
 - Generates database DDL statements that can be used to store data (optional)
 
 ## Why to use it
@@ -33,7 +32,7 @@ by generating backend layer using your predefined types.
 - Plain and most canonical GraphQL implementation
 Generated resolvers will work with plain GraphQL solutions.
 
-- Works out of the box with Apollo GraphQL
+- Works out of the box with Apollo GraphQL and GraphQL JS
 
 - Full freedom - generated resources can be edited and reconfigured later 
 
