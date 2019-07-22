@@ -6,6 +6,13 @@ export interface TargetType {
   fields: string[]
 }
 
+interface RelationInfo {
+  name: string
+  //tslint:disable-next-line
+  type: string
+  relation: string
+}
+
 /**
  * Generate arrays of definitions as string
  * for respective type in the schema
@@ -69,16 +76,49 @@ const newSub = (name: string) => `new${name}: ${name}!`
 const updatedSub = (name: string) => `updated${name}: ${name}!`
 const deletedSub = (name: string) => `deleted${name}: ID!`
 
+
 const arrayField = (f: Field) => {
   if(f.isArray) {
-    return `[${f.name}: ${f.type}]${f.isNull ? '!': ''}`
+    return `${f.name}: [${f.type}]${f.isNull ? '': '!'}`
   }
   else {
-    return `${f.name}: ${f.type}${f.isNull ? '!': ''}`
+    return `${f.name}: ${f.type}${f.isNull ? '': '!'}`
   }
 }
 
 export const buildTargetContext = (inputContext: Type[]) => {
+  const relations = []
+
+  inputContext.forEach((t: Type) => {
+    t.fields.forEach((f: Field) => {
+      if(f.isType){
+        if(f.directives.OneToOne || !f.isArray) {
+          relations.push({
+            "name": t.name,
+            "type": 'Type',
+            "relation": `${f.name}: ${f.type}!`
+          })
+          relations.push({
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${t.name.toLowerCase()}Id: ID!`
+          })
+        } else if(f.directives.OneToMany || f.isArray) {
+          relations.push({
+            "name": t.name,
+            "type": 'Type',
+            "relation": `${f.name}: [${f.type}]!`
+          })
+          relations.push({
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${t.name.toLowerCase()}Id: ID!`
+          })
+        }
+      }
+    })
+  });
+
   const context: TargetContext = {
     nodes: [],
     inputFields: [],
@@ -92,28 +132,31 @@ export const buildTargetContext = (inputContext: Type[]) => {
   context.nodes = inputContext.map((t: Type) => {
     return {
       "name": t.name,
-      "fields": t.fields.filter((f: Field) => !f.isType)
-                  .map(arrayField)
+      "fields": [...t.fields.filter((f: Field) => !f.isType).map(arrayField), ...relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation)]
     }
   })
   context.inputFields = inputContext.map((t: Type) => {
     return {
       "name": t.name,
-      "fields": t.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
-                  .map(arrayField)
+      "fields": [...t.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
+                  .map(arrayField),
+                  ...relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation)]
     }
   })
   context.filterFields = inputContext.map((t: Type) => {
     return {
       "name": t.name,
-      "fields": t.fields.filter((f: Field) => !f.isType)
-                  .map(arrayField)
+      "fields": [...t.fields.filter((f: Field) => !f.isType)
+                  .map(arrayField),
+                  ...relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation)]
     }
   })
   context.pagination = inputContext.filter((t: Type) => t.config.paginate)
   context.queries = [...findQueries(inputContext), ...findAllQueries(inputContext)]
   context.mutations = [...createQueries(inputContext), ...updateQueries(inputContext), ...delQueries(inputContext)]
-  context.subscriptions = [...inputContext.map((t: Type) => newSub(t.name)), ...inputContext.map((t: Type) => updatedSub(t.name)), ...inputContext.map((t: Type) => deletedSub(t.name))]
+  context.subscriptions = [...inputContext.filter((t: Type) => t.config.create).map((t: Type) => newSub(t.name)), 
+                          ...inputContext.filter((t: Type) => t.config.update).map((t: Type) => updatedSub(t.name)), 
+                          ...inputContext.filter((t: Type) => t.config.delete).map((t: Type) => deletedSub(t.name))]
 
   return context
 }
