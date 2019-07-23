@@ -16,6 +16,17 @@ const pgDockerCompose = () => {
   return readFileSync(`${dockerFilesPath}/pg-docker-compose.yml`, 'utf8')
 }
 
+const generationConfig = `{
+  "create": true,
+  "update": true,
+  "findAll": true,
+  "find": true,
+  "delete": false,
+  "subCreate": false,
+  "subUpdate": false,
+  "subDelete": false,
+}`
+
 /**
  * Create config file with db info
  */
@@ -24,6 +35,7 @@ export const createDBConfig = (projectName: string) => {
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = `{
   "dbConfig": ${defaultDB.config}
+  "generation": ${generationConfig}
 }`
   writeFileSync(configPath, config)
   writeFileSync(dockerComposePath, pgDockerCompose())
