@@ -1,12 +1,18 @@
-import { Type } from '../../ContextTypes';
+import { Field, Type } from '../../ContextTypes';
 import { getFieldName, getTableName, ResolverType } from '../../utils';
 import * as knex from './resolverImplementation'
 
 export interface TargetResolverContext {
+  relations: string[]
   queries: string[]
   mutations: string[]
   subscriptions: string[],
   subscriptionTypes: string[]
+}
+
+interface RelationImplementation {
+  typeName: string
+  implementation: string
 }
 
 const createResolvers = (context: Type[]): string[] => {
@@ -55,14 +61,45 @@ const createSubscriptionTypes = (context: Type[]): string[] => {
   DELETED_${i.name.toUpperCase()} = 'deleted${i.name.toLowerCase()}'`)
 }
 
+const createRelationResolvers = (types: string[], relations: RelationImplementation[]): string[] => {
+  return types.map((relationType: string) => `${relationType}: {
+    ${relations.filter((r: RelationImplementation) => r.typeName === relationType).map((r: RelationImplementation) => r.implementation).join(',\n    ')}
+  }`)
+}
+
 export const buildResolverTargetContext = (inputContext: Type[]): TargetResolverContext => {
+  const relationImplementations = []
+  const relationTypes = []
+
+  inputContext.forEach((t: Type) => {
+    t.fields.forEach((f: Field) => {
+      if(f.isType){createRelationResolvers([...new Set(relationTypes)], relationImplementations)
+        if(f.directives.OneToOne || !f.isArray) {
+          relationTypes.push(t.name)
+          relationImplementations.push({
+            typeName: t.name,
+            implementation: knex.typeRelation('OneToOne', t.name, f.name, f.type.toLowerCase())
+          })
+        } else if(f.directives.OneToMany || f.isArray) {
+          relationTypes.push(t.name)
+          relationImplementations.push({
+            typeName: t.name,
+            implementation: knex.typeRelation('OneToMany', t.name, f.name, f.type.toLowerCase())
+          })
+        }
+      }
+    })
+  });
+
   const context = {
+    relations: [],
     queries: [],
     mutations: [],
     subscriptions: [],
     subscriptionTypes: []
   }
 
+  context.relations = createRelationResolvers([...new Set(relationTypes)], relationImplementations)
   context.queries = [...findResolvers(inputContext), ...findAllResolvers(inputContext)]
   context.mutations = [...createResolvers(inputContext), ...updateResolvers(inputContext), ...deleteResolvers(inputContext)]
   context.subscriptions = [...newSubs(inputContext), ...updatedSubs(inputContext), ...deletedSubs(inputContext)]

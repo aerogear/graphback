@@ -67,3 +67,18 @@ export const deletedSub = (typeName: string): string => {
       }
     }`
 }
+
+export const typeRelation = (relation: string, typeName: string, fieldName: string, tableName: string): string => {
+  if(relation === 'OneToOne') {
+    return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
+      return context.db.select().from('${tableName}').where('${typeName.toLowerCase()}Id', '=', parent.id)
+                                .then((result) => result[0])
+    }`
+  } else if(relation === 'OneToMany') {
+    return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
+      return context.db.select().from('${tableName}').where('${typeName.toLowerCase()}Id', '=', parent.id)
+    }`
+  } else {
+    return undefined
+  }
+}
