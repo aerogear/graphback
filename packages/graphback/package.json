@@ -29,10 +29,10 @@
     ]
   },
   "engines": {
-    "node": "12.6.0"
+    "node": "12.7.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.2",
+    "@types/graphql": "14.2.3",
     "@types/knex": "0.15.2",
     "@types/node": "8.10.51",
     "@types/pino": "5.20.0",
@@ -46,9 +46,9 @@
   "license": "Apache-2.0",
   "dependencies": {
     "graphql": "14.4.2",
-    "knex": "0.19.0",
+    "knex": "0.19.1",
     "pg": "7.11.0",
-    "pino": "5.13.0",
+    "pino": "5.13.1",
     "tslib": "1.10.0"
   }
 }
