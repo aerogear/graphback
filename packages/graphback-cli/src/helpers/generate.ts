@@ -24,12 +24,19 @@ Next steps:
  * write them into generated folder
  */
 export async function generateBackend(): Promise<void> {
-  try{
-    const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
-    
-    if(models.found.length === 0) {
+  try {
+    const models = new GlobSync('model/*.graphql', { cwd: process.cwd() })
+
+    if (models.found.length === 0) {
       logError(`No graphql file found inside ${process.cwd()}/model folder.`)
       process.exit(0)
+    }
+    const configPath = `${process.cwd()}/config.json`
+
+    const file = readFileSync(configPath, "utf8");
+    let genConfig = {};
+    if (file) {
+      genConfig = JSON.parse(file).generation
     }
 
     const path: string = process.cwd()
@@ -37,14 +44,14 @@ export async function generateBackend(): Promise<void> {
 
     const outputSchemaPath: string = `${process.cwd()}/generated/schema.ts`
     const outputResolverPath: string = `${process.cwd()}/generated/resolvers.ts`
-    
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText)
-    
+
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, genConfig)
+
     const generated: IGraphQLBackend = await backend.createBackend()
-    
+
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(outputResolverPath, generated.resolvers)
-  } catch(err) {
+  } catch (err) {
     logError(err.messsage)
   }
 }
