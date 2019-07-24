@@ -2,6 +2,14 @@
 id: working
 title: How Graphback works
 ---
+
+## Introduction
+
+The target of GraphBack is to bind industry templates and sample applications with business logic.
+GraphBack making prototyping applications very easy. You can think about your business objects that will be represented as GraphQL schema and objects you want to map and what kind of stack and requirements you want to from set of the predefined base templates and databases we support. 
+
+Graphback generates Node.js application with an entire codebase that is editable and can be later deployed to your own server.  By default, GraphBack will follow the best patterns of the writing database schema and allow users to benefit from the rich environment of GraphQL modules that can be applied out of the box giving developers Authentication, Logging and Monitoring features out of the box.
+
 ## GraphQL Schema Input
 
 Graphback is processing GraphQL Schema DSL language to generate server and client side artifacts to speed up development.
