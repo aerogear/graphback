@@ -17,7 +17,7 @@ To start with Graphback run
 graphback init <project-name>
 ```
 
-Change directory into your project folder. To generate schema and resolvers run 
+Change directory into your project folder. Edit your [`datamodel`](/docs/datamodel) file inside the `model` folder. To generate schema and resolvers run 
 ```bash
 graphback generate
 ``` 
