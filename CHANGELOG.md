@@ -5,6 +5,11 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
+## 0.3.2 (24 July, 2019)
+### Graphback
+#### Features
+- Added relationship support to schema and resolvers.
+
 ## 0.3.1 (17 July, 2019)
 ### Graphback
 #### Fixes
