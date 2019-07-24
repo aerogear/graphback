@@ -8,7 +8,7 @@ const siteConfig = {
   tagline: 'A backpack for your GraphQL needs',
   url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
-
+  cname: 'graphback.dev',
 
   // Used for publishing and more
   projectName: 'graphback',
