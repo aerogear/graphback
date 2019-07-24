@@ -36,10 +36,12 @@ Input model can contain custom queries and mutations that can be implemented man
 Graphback provides users with the choice of setting up a custom environment with features with the help of templates. We plan to provide
 templates with multiple use cases including various server frameworks like GraphQL server frameworks like Apollo GraphQL, GraphQL-js and others.
 
-Currently we provide `apollo-typescript-starter` only, and we'll be supporting more soon.
-
 #### [apollo-typescript-starter](https://github.com/aerogear/graphback/tree/master/templates/apollo-starter-ts)
 Production ready typescript implementation of GraphQL server using apollo-express framework. Uses knex.js library for database access.
+
+#### [apollo-rest-starter](https://github.com/aerogear/graphback/tree/master/templates/apollo-rest-starter)
+Production ready typescript implementation of GraphQL server using apollo-express framework and Sofa library. Sofa enables exposing REST API along with GraphQL based endpoint. 
+Uses knex.js library for database access.
 
 ## Generated source code
 
