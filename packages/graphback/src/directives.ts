@@ -1,6 +1,5 @@
 const directives = `directive @OneToMany(field: String) on FIELD_DEFINITION
 directive @OneToOne(field: String) on FIELD_DEFINITION
-directive @ManyToMany(tablename: String) on FIELD_DEFINITION
 directive @Model(paginate: Boolean, 
                   findAll: Boolean, 
                   create: Boolean, 
