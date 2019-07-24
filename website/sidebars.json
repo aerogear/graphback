@@ -1,6 +1,20 @@
 {
   "docs": {
-    "Getting Started": ["gettingstarted", "datamodel"],
-    "Features": ["working"]
+    "Getting Started": [
+      "gettingstarted",
+      "datamodel"
+    ],
+    "Concepts": [
+      "concepts",
+      "templates",
+      "datasources",
+      "modules"
+    ],
+    "Schema Design": [
+      "relationships"
+    ],
+    "Reference": [
+      "commands"
+    ]
   }
 }
