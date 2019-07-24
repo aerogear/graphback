@@ -13,11 +13,20 @@ import { Template } from './templateMetadata'
 export const allTemplates: Template[] = [
   {
     name: 'apollo-starter-ts',
-    description: 'Basic apollo template in typescript',
+    description: 'Apollo GraphQL template in typescript',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
       branch: 'master',
       path: '/templates/apollo-starter-ts',
+    }
+  },
+  {
+    name: 'apollo-rest-starter-ts',
+    description: 'Apollo GraphQL template exposing additional REST API ',
+    repo: {
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'master',
+      path: '/templates/apollo-rest-starter',
     }
   }
 ]
