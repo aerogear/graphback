@@ -1,0 +1,4 @@
+{
+    "name": "apollo-starter-rest-ts",
+    "description": "TypeScript starter using Apollo framework that will expose Restfull endpoints using Sofa"
+}

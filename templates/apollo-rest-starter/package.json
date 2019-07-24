@@ -1,5 +1,5 @@
 {
-  "name": "apollo-rest-template",
+  "name": "apollo-template",
   "version": "0.3.2",
   "description": "",
   "private": true,
@@ -21,7 +21,8 @@
     "graphql-tag": "2.10.1",
     "ioredis": "4.13.1",
     "knex": "0.19.1",
-    "pg": "7.11.0"
+    "pg": "7.11.0",
+    "sofa-api": "^0.4.0"
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
