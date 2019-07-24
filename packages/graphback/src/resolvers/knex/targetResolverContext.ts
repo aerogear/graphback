@@ -73,18 +73,26 @@ export const buildResolverTargetContext = (inputContext: Type[]): TargetResolver
 
   inputContext.forEach((t: Type) => {
     t.fields.forEach((f: Field) => {
-      if(f.isType){createRelationResolvers([...new Set(relationTypes)], relationImplementations)
+      if(f.isType){
         if(f.directives.OneToOne || !f.isArray) {
+          let columnName = `${t.name.toLowerCase()}Id`
+          if(f.directives.OneToOne) {
+            columnName = f.directives.OneToOne.field
+          }
           relationTypes.push(t.name)
           relationImplementations.push({
             typeName: t.name,
-            implementation: knex.typeRelation('OneToOne', t.name, f.name, f.type.toLowerCase())
+            implementation: knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
           })
         } else if(f.directives.OneToMany || f.isArray) {
+          let columnName = `${t.name.toLowerCase()}Id`
+          if(f.directives.OneToMany) {
+            columnName = f.directives.OneToMany.field
+          }
           relationTypes.push(t.name)
           relationImplementations.push({
             typeName: t.name,
-            implementation: knex.typeRelation('OneToMany', t.name, f.name, f.type.toLowerCase())
+            implementation: knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
           })
         }
       }
