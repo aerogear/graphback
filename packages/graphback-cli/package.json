@@ -1,6 +1,6 @@
 {
   "name": "graphback-cli",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "bin": {
@@ -59,7 +59,7 @@
     "execa": "2.0.3",
     "figlet": "1.2.3",
     "glob": "7.1.4",
-    "graphback": "^0.3.2",
+    "graphback": "^0.4.0",
     "inquirer": "6.5.0",
     "node-emoji": "1.10.0",
     "ora": "3.4.0",
