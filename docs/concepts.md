@@ -11,7 +11,7 @@ With Graphback developers can focus more on delivering business value and their 
 
 Graphback generates Node.js application with an entire codebase that can be edited and customized.
 Server side code will follow the best patterns of the writing database schema and allow users to benefit from the rich environment of GraphQL modules that can be applied out of the box.
-Modules can include Authentication, Logging and Monitoring features without any effort.
+Modules can include Authentication, Logging and Monitoring features.
 
 ## Input Model - GraphQL Schema 
 
