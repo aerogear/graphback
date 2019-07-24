@@ -5,6 +5,15 @@
     "previous": "Previous",
     "tagline": "A backpack for your GraphQL needs",
     "docs": {
+      "commands": {
+        "title": "CLI commands"
+      },
+      "concepts": {
+        "title": "Introduction"
+      },
+      "datasources": {
+        "title": "Data Sources"
+      },
       "datamodel": {
         "title": "Defining your Data Model"
       },
@@ -12,8 +21,14 @@
         "title": "What is Graphback",
         "sidebar_label": "What is Graphback"
       },
-      "working": {
-        "title": "How Graphback works"
+      "modules": {
+        "title": "GraphQL Modules"
+      },
+      "relationships": {
+        "title": "Relationships"
+      },
+      "templates": {
+        "title": "Templates"
       }
     },
     "links": {
@@ -22,7 +37,9 @@
     },
     "categories": {
       "Getting Started": "Getting Started",
-      "Features": "Features"
+      "Concepts": "Concepts",
+      "Schema Design": "Schema Design",
+      "Reference": "Reference"
     }
   },
   "pages-strings": {
