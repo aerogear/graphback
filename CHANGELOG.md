@@ -5,6 +5,12 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
+## 0.4.0 (25 July, 2019)
+## Templates
+### Features
+
+Added Sofa (https://github.com/Urigo/SOFA/) template that allows generating restful API along with GraphQL one. 
+
 ## 0.3.2 (24 July, 2019)
 ### Graphback
 #### Features
