@@ -2,10 +2,12 @@ type Shop {
   id: ID!
   name: String!
   ## Relationship
-  product: [Product!]!
+  products: [Product]!
+  owner: Person!
+  customers: [Person]!
 }
 
-type Customer {
+type Person {
   id: ID!
   name: String!
 }

@@ -27,6 +27,9 @@
       "relationships": {
         "title": "Relationships"
       },
+      "releases": {
+        "title": "Releases"
+      },
       "templates": {
         "title": "Templates"
       }
@@ -39,7 +42,8 @@
       "Getting Started": "Getting Started",
       "Concepts": "Concepts",
       "Schema Design": "Schema Design",
-      "Reference": "Reference"
+      "Reference": "Reference",
+      "Releases": "Releases"
     }
   },
   "pages-strings": {
