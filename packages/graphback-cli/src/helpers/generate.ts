@@ -52,7 +52,7 @@ export async function generateBackend(): Promise<void> {
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(outputResolverPath, generated.resolvers)
   } catch (err) {
-    logError(err.messsage)
+    logError(err)
   }
 }
 
