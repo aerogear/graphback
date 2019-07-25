@@ -24,7 +24,7 @@ const generationConfig = `{
   "delete": false,
   "subCreate": false,
   "subUpdate": false,
-  "subDelete": false,
+  "subDelete": false
 }`
 
 /**
@@ -33,10 +33,9 @@ const generationConfig = `{
 export const createDBConfig = (projectName: string) => {
   const configPath = `${process.cwd()}/config.json`
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
-  const config = `{
-  "dbConfig": ${defaultDB.config}
-  "generation": ${generationConfig}
-}`
-  writeFileSync(configPath, config)
+  const config = {}
+  config["dbConfig"] = JSON.parse(defaultDB.config)
+  config["generation"] = JSON.parse(generationConfig)
+  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
   writeFileSync(dockerComposePath, pgDockerCompose())
 }
