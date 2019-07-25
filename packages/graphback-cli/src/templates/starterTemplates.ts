@@ -16,7 +16,7 @@ export const allTemplates: Template[] = [
     description: 'Apollo GraphQL template in typescript',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
-      branch: 'master',
+      branch: 'graphback-cli',
       path: '/templates/apollo-starter-ts',
     }
   },
@@ -25,7 +25,7 @@ export const allTemplates: Template[] = [
     description: 'Apollo GraphQL template exposing additional REST API ',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
-      branch: 'master',
+      branch: 'graphback-cli',
       path: '/templates/apollo-rest-starter',
     }
   }

@@ -2,7 +2,8 @@ type Shop {
   id: ID!
   name: String!
   ## Relationship
-  product: [Product!]!
+  products: [Product!]!
+  customers: [Customer!]!
 }
 
 type Customer {
