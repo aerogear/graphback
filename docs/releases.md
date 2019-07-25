@@ -1,3 +1,8 @@
+---
+id: releases
+title: Releases
+---
+
 ## What's new in GraphBack
 
 This file contains changes and migration steps for GraphBack project. 

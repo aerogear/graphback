@@ -15,6 +15,9 @@
     ],
     "Reference": [
       "commands"
+    ],
+    "Releases": [
+      "releases"
     ]
   }
 }
