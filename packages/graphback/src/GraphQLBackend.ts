@@ -1,8 +1,7 @@
 import { createInputContext } from './ContextCreator';
-import { Type } from './ContextTypes';
+import { Config, Type } from './ContextTypes';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
-import { defaultConfig, GeneratorConfig } from './GeneratorConfig'
 import { logger } from './logger'
 import { ResolverGenerator } from './resolvers';
 import { SchemaGenerator } from './schema';
@@ -15,7 +14,6 @@ import { SchemaGenerator } from './schema';
 export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
-  private config: GeneratorConfig;
   private dbContextProvider: DatabaseContextProvider;
   private inputContext: Type[]
 
@@ -23,11 +21,9 @@ export class GraphQLBackendCreator {
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(graphQLSchema: string, config: GeneratorConfig = {}) {
-    // tslint:disable-next-line:
-    this.config = Object.assign(defaultConfig, config);
-    this.inputContext = createInputContext(graphQLSchema)
-    this.dbContextProvider = new DefaultDataContextProvider(config.namespace);
+  constructor(graphQLSchema: string, config: Config) {
+    this.inputContext = createInputContext(graphQLSchema, config)
+    this.dbContextProvider = new DefaultDataContextProvider();
   }
 
   /**
@@ -74,7 +70,7 @@ export class GraphQLBackendCreator {
 
   public async createDatabase(): Promise<void> {
     try {
-      if (this.config.createDatabase && this.dataLayerManager) {
+      if (this.dataLayerManager) {
         logger.info("Creating database structure")
         await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, this.inputContext);
         await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, this.inputContext);
