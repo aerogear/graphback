@@ -41,30 +41,30 @@ const findAllResolvers = (context: Type[]): string[] => {
 }
 
 const newSubs = (context: Type[]): string[] => {
-  return context.filter((i: Type) => i.config.subCreate)
+  return context.filter((i: Type) => i.config.create && i.config.subCreate)
                 .map((i: Type) => knex.newSub(i.name))
 }
 
 const updatedSubs = (context: Type[]): string[] => {
-  return context.filter((i: Type) => i.config.subUpdate)
+  return context.filter((i: Type) => i.config.update && i.config.subUpdate)
                 .map((i: Type) => knex.updatedSub(i.name))
 }
 
 const deletedSubs = (context: Type[]): string[] => {
-  return context.filter((i: Type) => i.config.subDelete)
+  return context.filter((i: Type) => i.config.delete && i.config.subDelete)
                 .map((i: Type) => knex.deletedSub(i.name))
 }
 
 const createSubscriptionTypes = (context: Type[]): string => {
   const subscriptionEnum = []
   context.map((t: Type) => {
-    if(t.config.subCreate) {
+    if(t.config.create && t.config.subCreate) {
       subscriptionEnum.push(`NEW_${t.name.toUpperCase()} = 'new${t.name.toLowerCase()}'`)
     }
-    if(t.config.subUpdate) {
+    if(t.config.update && t.config.subUpdate) {
       subscriptionEnum.push(`UPDATED_${t.name.toUpperCase()} = 'updated${t.name.toLowerCase()}'`)
     }
-    if(t.config.subDelete) {
+    if(t.config.delete && t.config.subDelete) {
       subscriptionEnum.push(`DELETED_${t.name.toUpperCase()} = 'deleted${t.name.toLowerCase()}'`)
     }
   })
