@@ -17,15 +17,12 @@ async function start() {
 
   app.get("/health", (req, res) => res.sendStatus(200))
 
-  app.use("/graphql", altairExpress(config.altairConfig))
-
   // connect to db
   const client = await connect(config.db);
 
   const apolloConfig = {
     typeDefs,
     resolvers,
-    playground: false,
     context: async ({
       req
     }: {req: express.Request}) => {

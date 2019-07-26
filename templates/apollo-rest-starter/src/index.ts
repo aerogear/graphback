@@ -19,8 +19,6 @@ async function start() {
 
   app.get("/health", (req, res) => res.sendStatus(200))
 
-  app.use("/graphql", altairExpress(config.altairConfig));
-
   const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
@@ -36,7 +34,6 @@ async function start() {
   const apolloConfig = {
     typeDefs,
     resolvers,
-    playground: false,
     context: async ({
       req
     }: { req: express.Request }) => {
