@@ -3,11 +3,11 @@ import { TargetResolverContext } from './knex/targetResolverContext';
 const imports = `import { GraphQLContext } from '../src/context'`
 
 export const generateResolvers = (context: TargetResolverContext): string => {
-  if(context.relations.length) {
+  if(context.relations.length && context.subscriptions.length) {
     return `${imports}
   
 enum Subscriptions {
-  ${context.subscriptionTypes.join(',\n  ')}
+  ${context.subscriptionTypes}
 }
 
 export const resolvers = {
@@ -26,11 +26,26 @@ export const resolvers = {
   }
 }
 `
-  } else {
+  } else if (context.relations.length){
+    return `${imports}
+
+export const resolvers = {
+  ${context.relations.join(',\n\n  ')},
+
+  Query: {
+    ${context.queries.join(',\n    ')}
+  },
+
+  Mutation: {
+    ${context.mutations.join(',\n    ')}
+  }
+}
+`
+  } else if(context.subscriptions.length) {
     return `${imports}
   
 enum Subscriptions {
-  ${context.subscriptionTypes.join(',\n  ')}
+  ${context.subscriptionTypes}
 }
 
 export const resolvers = {
@@ -47,5 +62,18 @@ export const resolvers = {
   }
 }
 `
+  } else {
+    return `${imports}
+
+export const resolvers = {
+  Query: {
+    ${context.queries.join(',\n    ')}
+  },
+
+  Mutation: {
+    ${context.mutations.join(',\n    ')}
+  }
 }
+`
+  }
 }

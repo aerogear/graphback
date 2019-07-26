@@ -1,3 +1,4 @@
+// tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 
 const configFilesPath = `${__dirname}/resources/config`

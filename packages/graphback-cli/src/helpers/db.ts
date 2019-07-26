@@ -36,11 +36,19 @@ export const createDBResources = async(): Promise<void> => {
       process.exit(0)
     }
 
+    const configPath = `${process.cwd()}/config.json`
+
+    const file = readFileSync(configPath, "utf8");
+    let genConfig = {};
+    if (file) {
+      genConfig = JSON.parse(file).generation
+    }
+
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
     const { dbConfig } = JSON.parse(readFileSync(`${path}/config.json`, 'utf8'))
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, genConfig)
     
     const manager = new PostgresSchemaManager(dbConfig);
     backend.registerDataResourcesManager(manager);

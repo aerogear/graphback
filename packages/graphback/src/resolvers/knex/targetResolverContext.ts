@@ -7,7 +7,7 @@ export interface TargetResolverContext {
   queries: string[]
   mutations: string[]
   subscriptions: string[],
-  subscriptionTypes: string[]
+  subscriptionTypes: string
 }
 
 interface RelationImplementation {
@@ -17,17 +17,17 @@ interface RelationImplementation {
 
 const createResolvers = (context: Type[]): string[] => {
   return context.filter((i: Type) => i.config.create)
-                .map((i: Type) => knex.createTemplate(getFieldName(i.name, ResolverType.CREATE), getTableName(i.name), i.name))
+                .map((i: Type) => knex.createTemplate(i.config.subCreate, getFieldName(i.name, ResolverType.CREATE), getTableName(i.name), i.name))
 }
 
 const updateResolvers = (context: Type[]): string[] => {
   return context.filter((i: Type) => i.config.update)
-                .map((i: Type) => knex.updateTemplate(getFieldName(i.name, ResolverType.UPDATE), getTableName(i.name), i.name))
+                .map((i: Type) => knex.updateTemplate(i.config.subUpdate, getFieldName(i.name, ResolverType.UPDATE), getTableName(i.name), i.name))
 }
 
 const deleteResolvers = (context: Type[]): string[] => {
   return context.filter((i: Type) => i.config.delete)
-                .map((i: Type) => knex.deleteTemplate(getFieldName(i.name, ResolverType.DELETE), getTableName(i.name), i.name))
+                .map((i: Type) => knex.deleteTemplate(i.config.subDelete, getFieldName(i.name, ResolverType.DELETE), getTableName(i.name), i.name))
 }
 
 const findResolvers = (context: Type[]): string[] => {
@@ -41,24 +41,35 @@ const findAllResolvers = (context: Type[]): string[] => {
 }
 
 const newSubs = (context: Type[]): string[] => {
-  return context.filter((i: Type) => i.config.create)
+  return context.filter((i: Type) => i.config.subCreate)
                 .map((i: Type) => knex.newSub(i.name))
 }
 
 const updatedSubs = (context: Type[]): string[] => {
-  return context.filter((i: Type) => i.config.update)
+  return context.filter((i: Type) => i.config.subUpdate)
                 .map((i: Type) => knex.updatedSub(i.name))
 }
 
 const deletedSubs = (context: Type[]): string[] => {
-  return context.filter((i: Type) => i.config.delete)
+  return context.filter((i: Type) => i.config.subDelete)
                 .map((i: Type) => knex.deletedSub(i.name))
 }
 
-const createSubscriptionTypes = (context: Type[]): string[] => {
-  return context.map((i: Type) => `NEW_${i.name.toUpperCase()} = 'new${i.name.toLowerCase()}',
-  UPDATED_${i.name.toUpperCase()} = 'updated${i.name.toLowerCase()}',
-  DELETED_${i.name.toUpperCase()} = 'deleted${i.name.toLowerCase()}'`)
+const createSubscriptionTypes = (context: Type[]): string => {
+  const subscriptionEnum = []
+  context.map((t: Type) => {
+    if(t.config.subCreate) {
+      subscriptionEnum.push(`NEW_${t.name.toUpperCase()} = 'new${t.name.toLowerCase()}'`)
+    }
+    if(t.config.subUpdate) {
+      subscriptionEnum.push(`UPDATED_${t.name.toUpperCase()} = 'updated${t.name.toLowerCase()}'`)
+    }
+    if(t.config.subDelete) {
+      subscriptionEnum.push(`DELETED_${t.name.toUpperCase()} = 'deleted${t.name.toLowerCase()}'`)
+    }
+  })
+
+  return subscriptionEnum.join(`,\n  `)
 }
 
 const createRelationResolvers = (types: string[], relations: RelationImplementation[]): string[] => {
@@ -104,7 +115,7 @@ export const buildResolverTargetContext = (inputContext: Type[]): TargetResolver
     queries: [],
     mutations: [],
     subscriptions: [],
-    subscriptionTypes: []
+    subscriptionTypes: ''
   }
 
   context.relations = createRelationResolvers([...new Set(relationTypes)], relationImplementations)
