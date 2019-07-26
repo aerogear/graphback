@@ -2,7 +2,6 @@
 
 // Top level Api
 export * from './GraphQLBackend'
-export * from './GeneratorConfig'
 
 // DDL layer
 export * from './datasource/DataResourcesManager'

@@ -50,10 +50,18 @@ export const inputTypeVisitor = {
   },
 
   ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => {
+    let config = {}
+    node.directives.map((directive: object) => {
+      config = Object.assign(config, directive)
+    })
+    Object.keys(config).forEach((key: string) => {
+      config[`${key}`] = true
+    })
+
     return {
       "name": node.name,
       "fields": node.fields,
-      "config": {...defaultConfig, ...Object.assign({}, ...node.directives).Model}
+      "config": config
     }
   },
 

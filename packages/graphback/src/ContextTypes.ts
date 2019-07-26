@@ -48,13 +48,16 @@ export interface Field {
  * rest describe crud methods
  */
 export interface Config {
-  paginate: boolean
-  create: boolean
-  update: boolean
+  create?: boolean
+  update?: boolean
   //tslint:disable-next-line
-  delete: boolean
-  find: boolean
-  findAll: boolean
+  delete?: boolean
+  find?: boolean
+  findAll?: boolean
+  subCreate?: boolean
+  subUpdate?: boolean
+  subDelete?: boolean
+  paginate?: boolean
 }
 
 /**
