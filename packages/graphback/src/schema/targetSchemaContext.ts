@@ -163,9 +163,9 @@ export const buildTargetContext = (inputContext: Type[]) => {
   // context.pagination = inputContext.filter((t: Type) => t.config.paginate)
   context.queries = [...findQueries(inputContext), ...findAllQueries(inputContext)]
   context.mutations = [...createQueries(inputContext), ...updateQueries(inputContext), ...delQueries(inputContext)]
-  context.subscriptions = [...inputContext.filter((t: Type) => t.config.subCreate).map((t: Type) => newSub(t.name)), 
-                          ...inputContext.filter((t: Type) => t.config.subUpdate).map((t: Type) => updatedSub(t.name)), 
-                          ...inputContext.filter((t: Type) => t.config.subDelete).map((t: Type) => deletedSub(t.name))]
+  context.subscriptions = [...inputContext.filter((t: Type) => t.config.create && t.config.subCreate).map((t: Type) => newSub(t.name)), 
+                          ...inputContext.filter((t: Type) => t.config.update && t.config.subUpdate).map((t: Type) => updatedSub(t.name)), 
+                          ...inputContext.filter((t: Type) => t.config.delete && t.config.subDelete).map((t: Type) => deletedSub(t.name))]
 
   return context
 }
