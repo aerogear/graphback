@@ -6,7 +6,6 @@ import knex from 'knex'
 class Config {
   public port: any
   public db: knex.MySqlConnectionConfig
-  public altairConfig: object
   constructor() {
     this.port = process.env.PORT || 4000
     this.db = {
@@ -15,11 +14,6 @@ class Config {
       password: process.env.DB_PASSWORD || 'postgres',
       host: process.env.DB_HOSTNAME || '127.0.0.1',
       port: Number(process.env.DB_PORT) || 55432
-    }
-
-    this.altairConfig = {
-      endpointURL: '/graphql',
-      subscriptionsEndpoint: 'ws://localhost:4000/graphql'
     }
   }
 }
