@@ -1,14 +1,14 @@
 import { Type } from '../ContextTypes';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
-const pagination = (inputContext: Type[]): string => {
-  return `
-${inputContext.map((i: Type) => `type ${i.name}Page {
-  items: [${i.name}]!
-  pageInfo: PaginationInfo!
-}`).join('\n\n')}
-`
-}
+// const pagination = (inputContext: Type[]): string => {
+//   return `
+// ${inputContext.map((i: Type) => `type ${i.name}Page {
+//   items: [${i.name}]!
+//   pageInfo: PaginationInfo!
+// }`).join('\n\n')}
+// `
+// }
 
 const inputs = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `input ${d.name}Input {
@@ -36,7 +36,9 @@ const imports = `import gql from 'graphql-tag'`
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
-const outputSchema = (context: TargetContext): string =>  `${imports}
+const outputSchema = (context: TargetContext): string => { 
+  if(context.subscriptions.length) {
+    return `${imports}
 
 export const typeDefs = gql\`
   ${nodeTypes(context.nodes)}
@@ -58,6 +60,28 @@ export const typeDefs = gql\`
   }
 \`
 `
+  } else {
+    return `${imports}
+
+export const typeDefs = gql\`
+  ${nodeTypes(context.nodes)}
+
+  ${inputs(context.inputFields)}
+
+  ${filters(context.filterFields)}
+
+  type Query {
+    ${context.queries.join('\n    ')}
+  }
+
+  type Mutation {
+    ${context.mutations.join('\n    ')}
+  }
+\`
+`
+  }
+}
+
 /**
  * Generate the output schema
  */

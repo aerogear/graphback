@@ -21,7 +21,7 @@ export interface TargetContext {
   nodes: TargetType[]
   inputFields: TargetType[]
   filterFields: TargetType[],
-  pagination: Type[],
+  // pagination: Type[],
   queries: string[],
   mutations: string[],
   subscriptions: string[]
@@ -68,7 +68,7 @@ const findAllQueries = (inputContext: Type[]): string[] => {
                     .map((t: Type) => {
                       const fieldName = getFieldName(t.name, ResolverType.FIND_ALL, 's')
 
-                      return `${fieldName}: ${t.config.paginate ? `${t.name}Page`: `[${t.name}!]!`}`
+                      return `${fieldName}: [${t.name}!]!`
                     })
 }
 
@@ -132,7 +132,7 @@ export const buildTargetContext = (inputContext: Type[]) => {
     nodes: [],
     inputFields: [],
     filterFields: [],
-    pagination: [],
+    // pagination: [],
     queries: [],
     mutations: [],
     subscriptions: []
@@ -141,7 +141,7 @@ export const buildTargetContext = (inputContext: Type[]) => {
   context.nodes = inputContext.map((t: Type) => {
     return {
       "name": t.name,
-      "fields": [...t.fields.filter((f: Field) => !f.isType).map(maybeNullField), ...relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation)]
+      "fields": [...t.fields.filter((f: Field) => !f.isType).map(maybeNullField), ...new Set(relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation))]
     }
   })
   context.inputFields = inputContext.map((t: Type) => {
@@ -149,7 +149,7 @@ export const buildTargetContext = (inputContext: Type[]) => {
       "name": t.name,
       "fields": [...t.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
                   .map(maybeNullField),
-                  ...relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation)]
+                  ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation))]
     }
   })
   context.filterFields = inputContext.map((t: Type) => {
@@ -157,15 +157,15 @@ export const buildTargetContext = (inputContext: Type[]) => {
       "name": t.name,
       "fields": [...t.fields.filter((f: Field) => !f.isType)
                   .map(nullField),
-                  ...relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation.slice(0, -1))]
+                  ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation.slice(0, -1)))]
     }
   })
-  context.pagination = inputContext.filter((t: Type) => t.config.paginate)
+  // context.pagination = inputContext.filter((t: Type) => t.config.paginate)
   context.queries = [...findQueries(inputContext), ...findAllQueries(inputContext)]
   context.mutations = [...createQueries(inputContext), ...updateQueries(inputContext), ...delQueries(inputContext)]
-  context.subscriptions = [...inputContext.filter((t: Type) => t.config.create).map((t: Type) => newSub(t.name)), 
-                          ...inputContext.filter((t: Type) => t.config.update).map((t: Type) => updatedSub(t.name)), 
-                          ...inputContext.filter((t: Type) => t.config.delete).map((t: Type) => deletedSub(t.name))]
+  context.subscriptions = [...inputContext.filter((t: Type) => t.config.subCreate).map((t: Type) => newSub(t.name)), 
+                          ...inputContext.filter((t: Type) => t.config.subUpdate).map((t: Type) => updatedSub(t.name)), 
+                          ...inputContext.filter((t: Type) => t.config.subDelete).map((t: Type) => deletedSub(t.name))]
 
   return context
 }
