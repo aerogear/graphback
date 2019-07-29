@@ -1,2 +1,2 @@
-export * from '../generated/schema'
-export * from '../generated/resolvers'
+export * from './schema/generated'
+export * from './resolvers'
