@@ -1,13 +1,13 @@
 import { Type } from '../ContextTypes'
-import { buildResolverTargetContext, TargetResolverContext } from './knex/targetResolverContext';
-import { generateResolvers } from './resolverTemplate';
+import { buildResolverTargetContext, TypeContext } from './knex/targetResolverContext';
+import { generateIndexFile, generateResolvers } from './outputResolvers/apollo';
 
 /**
  * generate schema using context created using visitor pattern
  * and string templates
  */
 export class ResolverGenerator {
-  private context: TargetResolverContext
+  private context: TypeContext[]
   private inputContext: Type[]
 
   constructor(inputContext: Type[]) {
@@ -17,6 +17,9 @@ export class ResolverGenerator {
   public generate() {
     this.context = buildResolverTargetContext(this.inputContext)
 
-    return generateResolvers(this.context)
+    return {
+      resolvers: generateResolvers(this.context),
+      index: generateIndexFile(this.context)
+    }
   }  
 }

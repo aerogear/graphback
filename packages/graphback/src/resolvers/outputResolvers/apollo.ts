@@ -1,8 +1,8 @@
-import { TargetResolverContext } from './knex/targetResolverContext';
+import { TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
 
 const imports = `import { GraphQLContext } from '../src/context'`
 
-export const generateResolvers = (context: TargetResolverContext): string => {
+export const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
   if(context.relations.length && context.subscriptions.length) {
     return `${imports}
   
@@ -10,7 +10,7 @@ enum Subscriptions {
   ${context.subscriptionTypes}
 }
 
-export const resolvers = {
+export const ${name}Resolvers = {
   ${context.relations.join(',\n\n  ')},
 
   Query: {
@@ -29,7 +29,7 @@ export const resolvers = {
   } else if (context.relations.length){
     return `${imports}
 
-export const resolvers = {
+export const ${name}Resolvers = {
   ${context.relations.join(',\n\n  ')},
 
   Query: {
@@ -48,7 +48,7 @@ enum Subscriptions {
   ${context.subscriptionTypes}
 }
 
-export const resolvers = {
+export const ${name}Resolvers = {
   Query: {
     ${context.queries.join(',\n    ')}
   },
@@ -65,7 +65,7 @@ export const resolvers = {
   } else {
     return `${imports}
 
-export const resolvers = {
+export const ${name}Resolvers = {
   Query: {
     ${context.queries.join(',\n    ')}
   },
@@ -77,3 +77,19 @@ export const resolvers = {
 `
   }
 }
+
+export const generateResolvers = (context: TypeContext[]) => {
+  return context.map((t: TypeContext) => {
+    return {
+      name: t.name,
+      output: generateTypeResolvers(t.context, t.name)
+    }
+  })
+}
+
+export const generateIndexFile = (context: TypeContext[]) => {
+  return `${context.map((t: TypeContext) => `import { ${t.name}Resolvers } from './generated/${t.name}.ts'`).join('\n')}
+  
+export default [${context.map((t: TypeContext) => `${t.name}Resolvers`).join(', ')}]`
+}
+
