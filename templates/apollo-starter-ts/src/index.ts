@@ -2,7 +2,6 @@ import cors from "cors"
 import express from "express"
 import http from "http"
 
-import { altairExpress } from "altair-express-middleware"
 import { ApolloServer } from "apollo-server-express"
 
 import config from "./config/config"
