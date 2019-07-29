@@ -4,6 +4,7 @@ import { DatabaseContextProvider, DefaultDataContextProvider } from './datasourc
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { logger } from './logger'
 import { ResolverGenerator } from './resolvers';
+import { OutputResolver } from './resolvers/outputResolvers/apollo';
 import { SchemaGenerator } from './schema';
 /**
  * GraphQLBackend
@@ -92,5 +93,12 @@ export interface IGraphQLBackend {
   // Human readable schema that should be replaced with current one
   schema?: string,
   // Resolvers that should be mounted to schema`
-  resolvers?: string
+  resolvers?: IGraphbackResolvers
+}
+
+export interface IGraphbackResolvers {
+  // Index file for resolvers stitching
+  index?: string
+  // Resolvers
+  resolvers?: OutputResolver[]
 }

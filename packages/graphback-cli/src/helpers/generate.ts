@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
 import { GraphQLBackendCreator, IGraphQLBackend } from 'graphback'
 import { logError, logInfo } from '../utils';
@@ -42,17 +42,26 @@ export async function generateBackend(): Promise<void> {
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
-    const outputSchemaPath: string = `${process.cwd()}/generated/schema.ts`
-    const outputResolverPath: string = `${process.cwd()}/generated/resolvers.ts`
+    const outputSchemaPath: string = `${process.cwd()}/src/schema/generated.ts`
+    const outputResolverPath: string = `${process.cwd()}/src/resolvers`
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, genConfig)
 
     const generated: IGraphQLBackend = await backend.createBackend()
 
     writeFileSync(outputSchemaPath, generated.schema)
-    writeFileSync(outputResolverPath, generated.resolvers)
+
+    writeFileSync(`${outputResolverPath}/index.ts`, generated.resolvers.index)
+    
+    if(!existsSync(`${outputResolverPath}/custom`)) {
+      mkdirSync(`${outputResolverPath}/custom`)
+    }
+    //tslint:disable-next-line
+    generated.resolvers.resolvers.forEach((output: any) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
+    
   } catch (err) {
     logError(err)
+    process.exit(0)
   }
 }
 

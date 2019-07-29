@@ -4,7 +4,6 @@ import { makeExecutableSchema } from 'graphql-tools';
 import http from "http"
 import { useSofa } from "sofa-api"
 
-import { altairExpress } from "altair-express-middleware"
 import { ApolloServer } from "apollo-server-express"
 
 import config from "./config/config"
