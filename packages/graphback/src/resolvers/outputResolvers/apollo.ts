@@ -1,6 +1,11 @@
 import { TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
 
-const imports = `import { GraphQLContext } from '../src/context'`
+export interface OutputResolver {
+  name: string
+  output: string
+}
+
+const imports = `import { GraphQLContext } from '../../context'`
 
 export const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
   if(context.relations.length && context.subscriptions.length) {
@@ -87,9 +92,21 @@ export const generateResolvers = (context: TypeContext[]) => {
   })
 }
 
+const alphabeticSort = (a: TypeContext, b: TypeContext) => {
+  if(a.name < b.name) {
+    return -1
+  }
+  if(a.name > b.name) {
+    return 1
+  }
+
+  return 0
+}
+
 export const generateIndexFile = (context: TypeContext[]) => {
-  return `${context.map((t: TypeContext) => `import { ${t.name}Resolvers } from './generated/${t.name}.ts'`).join('\n')}
-  
-export default [${context.map((t: TypeContext) => `${t.name}Resolvers`).join(', ')}]`
+  return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name}Resolvers } from './generated/${t.name}'`).join('\n')}
+
+export const resolvers = [${context.map((t: TypeContext) => `${t.name}Resolvers`).join(', ')}]
+`
 }
 
