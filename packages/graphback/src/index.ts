@@ -3,6 +3,9 @@
 // Top level Api
 export * from './GraphQLBackend'
 
+// Resolvers
+export * from './resolvers'
+
 // DDL layer
 export * from './datasource/DataResourcesManager'
 

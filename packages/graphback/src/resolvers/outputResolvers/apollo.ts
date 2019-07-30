@@ -1,10 +1,5 @@
 import { TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
 
-export interface OutputResolver {
-  name: string
-  output: string
-}
-
 const imports = `import { GraphQLContext } from '../../context'`
 
 export const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
@@ -15,8 +10,10 @@ enum Subscriptions {
   ${context.subscriptionTypes}
 }
 
-export const ${name}Resolvers = {
-  ${context.relations.join(',\n\n  ')},
+export const ${name.toLowerCase()}Resolvers = {
+  ${name}: {
+    ${context.relations.join(',\n    ')}
+  },
 
   Query: {
     ${context.queries.join(',\n    ')}
@@ -35,7 +32,9 @@ export const ${name}Resolvers = {
     return `${imports}
 
 export const ${name}Resolvers = {
-  ${context.relations.join(',\n\n  ')},
+  ${name}: {
+    ${context.relations.join(',\n    ')}
+  },
 
   Query: {
     ${context.queries.join(',\n    ')}
@@ -86,7 +85,7 @@ export const ${name}Resolvers = {
 export const generateResolvers = (context: TypeContext[]) => {
   return context.map((t: TypeContext) => {
     return {
-      name: t.name,
+      name: t.name.toLowerCase(),
       output: generateTypeResolvers(t.context, t.name)
     }
   })
@@ -104,9 +103,9 @@ const alphabeticSort = (a: TypeContext, b: TypeContext) => {
 }
 
 export const generateIndexFile = (context: TypeContext[]) => {
-  return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name}Resolvers } from './generated/${t.name}'`).join('\n')}
+  return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
-export const resolvers = [${context.map((t: TypeContext) => `${t.name}Resolvers`).join(', ')}]
+export const resolvers = [${context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
 `
 }
 

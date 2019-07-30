@@ -2,6 +2,11 @@ import { Type } from '../ContextTypes'
 import { buildResolverTargetContext, TypeContext } from './knex/targetResolverContext';
 import { generateIndexFile, generateResolvers } from './outputResolvers/apollo';
 
+export interface OutputResolver {
+  name: string
+  output: string
+}
+
 /**
  * generate schema using context created using visitor pattern
  * and string templates
