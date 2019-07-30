@@ -1,5 +1,5 @@
-import { Type } from '../ContextTypes';
-import { TargetContext, TargetType } from './targetSchemaContext';
+import { Field } from '../ContextTypes';
+import { maybeNullFieldArgs, TargetContext, TargetType } from './targetSchemaContext';
 
 // const pagination = (inputContext: Type[]): string => {
 //   return `
@@ -31,52 +31,106 @@ const filters = (defs: TargetType[]): string => {
 const imports = `import gql from 'graphql-tag'`
 
 /**
+ * Patch together generated and custom queries
+ * @param queries queries generated from the types (CRUD)
+ * @param custom custom queries inputted by the user
+ */
+const generateQueries = (queries: string[], custom: Field[]) => {
+  if(custom.length) {
+    return `type Query {
+    ${queries.join('\n    ')}
+    ## Custom queries
+    ${custom.map((f: Field) => {
+      return maybeNullFieldArgs(f)
+    }).join('\n    ')}
+  }`
+  } else {
+    return `type Query {
+    ${queries.join('\n    ')}
+  }`
+  }
+}
+
+/**
+ * Patch together generated and custom mutations
+ * @param mutations mutations generated from the types (CRUD)
+ * @param custom custom mutations inputted by the user
+ */
+const generateMutations = (mutations: string[], custom: Field[]) => {
+  if(custom.length) {
+    return `type Mutation {
+    ${mutations.join('\n    ')}
+    ## Custom mutations
+    ${custom.map((f: Field) => {
+      return maybeNullFieldArgs(f)
+    }).join('\n    ')}
+  }`
+  } else {
+    return `type Mutation {
+    ${mutations.join('\n    ')}
+  }`
+  }
+}
+
+/**
+ * Patch together generated and custom subscriptions
+ * @param subscriptions subscriptions generated from the types (CRUD)
+ * @param custom custom subscriptions inputted by the user
+ */
+const generateSubscriptions = (subscriptions: string[], custom: Field[]) => {
+  if(custom.length) {
+    return `type Subscription {
+    ${subscriptions.join('\n    ')}
+    ## Custom queries
+    ${custom.map((f: Field) => {
+      return maybeNullFieldArgs(f)
+    }).join('\n    ')}
+  }`
+  } else {
+    return `type Subscription {
+    ${subscriptions.join('\n    ')}
+  }`
+  }
+}
+
+/**
  * String template having placeholders for definitions which is received 
  * from targetcontext
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
-const outputSchema = (context: TargetContext): string => { 
+const outputSchema = (context: TargetContext, customQueries: Field[], customMutations: Field[], customSubscriptions: Field[]): string => {
+  const { inputFields, nodes, filterFields, queries, mutations, subscriptions } = context
   if(context.subscriptions.length) {
     return `${imports}
 
 export const typeDefs = gql\`
-  ${nodeTypes(context.nodes)}
+  ${nodeTypes(nodes)}
 
-  ${inputs(context.inputFields)}
+  ${inputs(inputFields)}
 
-  ${filters(context.filterFields)}
+  ${filters(filterFields)}
 
-  type Query {
-    ${context.queries.join('\n    ')}
-  }
+  ${generateQueries(queries, customQueries)}
 
-  type Mutation {
-    ${context.mutations.join('\n    ')}
-  }
+  ${generateMutations(mutations, customMutations)}
 
-  type Subscription {
-    ${context.subscriptions.join('\n    ')}
-  }
+  ${generateSubscriptions(subscriptions, customSubscriptions)}
 \`
 `
   } else {
     return `${imports}
 
 export const typeDefs = gql\`
-  ${nodeTypes(context.nodes)}
+  ${nodeTypes(nodes)}
 
-  ${inputs(context.inputFields)}
+  ${inputs(inputFields)}
 
-  ${filters(context.filterFields)}
+  ${filters(filterFields)}
 
-  type Query {
-    ${context.queries.join('\n    ')}
-  }
+  ${generateQueries(queries, customQueries)}
 
-  type Mutation {
-    ${context.mutations.join('\n    ')}
-  }
+  ${generateMutations(mutations, customMutations)}
 \`
 `
   }
@@ -85,6 +139,6 @@ export const typeDefs = gql\`
 /**
  * Generate the output schema
  */
-export const generateSchema = (context: TargetContext): string => {
-  return outputSchema(context)
+export const generateSchema = (context: TargetContext, queries: Field[], mutations: Field[], subscriptions: Field[]): string => {
+  return outputSchema(context, queries, mutations, subscriptions)
 }
