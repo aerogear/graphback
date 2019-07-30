@@ -3,8 +3,7 @@ import { Config, Type } from './ContextTypes';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { logger } from './logger'
-import { ResolverGenerator } from './resolvers';
-import { OutputResolver } from './resolvers/outputResolvers/apollo';
+import { OutputResolver, ResolverGenerator } from './resolvers';
 import { SchemaGenerator } from './schema';
 /**
  * GraphQLBackend

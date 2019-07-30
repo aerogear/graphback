@@ -99,15 +99,9 @@ const createSubscriptionTypes = (t: Type): string => {
   return subscriptionEnum.join(`,\n  `)
 }
 
-const createRelationResolvers = (types: string[], relations: RelationImplementation[]): string[] => {
-  return types.map((relationType: string) => `${relationType}: {
-    ${relations.filter((r: RelationImplementation) => r.typeName === relationType).map((r: RelationImplementation) => r.implementation).join(',\n    ')}
-  }`)
-}
-
 export const buildTypeContext = (context: Type): TargetResolverContext => {
   const relationImplementations = []
-  const relationTypes = []
+  let hasRelation = false
 
   context.fields.forEach((f: Field) => {
     if(f.isType){
@@ -116,21 +110,17 @@ export const buildTypeContext = (context: Type): TargetResolverContext => {
         if(f.directives.OneToOne) {
           columnName = f.directives.OneToOne.field
         }
-        relationTypes.push(context.name)
-        relationImplementations.push({
-          typeName: context.name,
-          implementation: knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
-        })
+        // relationTypes.push(context.name)
+        hasRelation = true
+        relationImplementations.push(knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase()))
       } else if(f.directives.OneToMany || f.isArray) {
         let columnName = `${context.name.toLowerCase()}Id`
         if(f.directives.OneToMany) {
           columnName = f.directives.OneToMany.field
         }
-        relationTypes.push(context.name)
-        relationImplementations.push({
-          typeName: context.name,
-          implementation: knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
-        })
+        // relationTypes.push(context.name)
+        hasRelation = true
+        relationImplementations.push(knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase()))
       }
     }
   })
@@ -143,8 +133,8 @@ export const buildTypeContext = (context: Type): TargetResolverContext => {
     subscriptionTypes: ''
   }
 
-  if(relationTypes.length) {
-    typeContext.relations = createRelationResolvers([...new Set(relationTypes)], relationImplementations)
+  if(hasRelation) {
+    typeContext.relations = relationImplementations
   }
   typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s!==undefined)
   typeContext.mutations = [createResolver(context), updateResolver(context), deleteResolver(context)].filter((s: string) => s!==undefined)
@@ -158,7 +148,7 @@ export const buildResolverTargetContext = (inputContext: Type[]) => {
   const output: TypeContext[] = []
   inputContext.forEach((t: Type) => {
     output.push({
-      name: t.name.toLowerCase(),
+      name: t.name,
       context: buildTypeContext(t)
     })
   })
