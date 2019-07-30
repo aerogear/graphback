@@ -5,7 +5,7 @@ const imports = `import { GraphQLContext } from '../../context'`
 export const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
   if(context.relations.length && context.subscriptions.length) {
     return `${imports}
-  
+
 enum Subscriptions {
   ${context.subscriptionTypes}
 }
@@ -31,7 +31,7 @@ export const ${name.toLowerCase()}Resolvers = {
   } else if (context.relations.length){
     return `${imports}
 
-export const ${name}Resolvers = {
+export const ${name.toLowerCase()}Resolvers = {
   ${name}: {
     ${context.relations.join(',\n    ')}
   },
@@ -47,12 +47,12 @@ export const ${name}Resolvers = {
 `
   } else if(context.subscriptions.length) {
     return `${imports}
-  
+
 enum Subscriptions {
   ${context.subscriptionTypes}
 }
 
-export const ${name}Resolvers = {
+export const ${name.toLowerCase()}Resolvers = {
   Query: {
     ${context.queries.join(',\n    ')}
   },
@@ -69,7 +69,7 @@ export const ${name}Resolvers = {
   } else {
     return `${imports}
 
-export const ${name}Resolvers = {
+export const ${name.toLowerCase()}Resolvers = {
   Query: {
     ${context.queries.join(',\n    ')}
   },
