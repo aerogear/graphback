@@ -1,4 +1,4 @@
-import { Field, Type } from '../ContextTypes'
+import { Argument, Field, Type } from '../ContextTypes'
 import { getFieldName, ResolverType } from '../utils'
 
 export interface TargetType {
@@ -76,13 +76,22 @@ const newSub = (name: string) => `new${name}: ${name}!`
 const updatedSub = (name: string) => `updated${name}: ${name}!`
 const deletedSub = (name: string) => `deleted${name}: ID!`
 
-
-const maybeNullField = (f: Field) => {
+export const maybeNullField = (f: Field) => {
   if(f.isArray) {
     return `${f.name}: [${f.type}]${f.isNull ? '': '!'}`
   }
   else {
     return `${f.name}: ${f.type}${f.isNull ? '': '!'}`
+  }
+}
+
+export const maybeNullFieldArgs = (f: Field) => {
+  if(f.arguments) {
+    return `${f.name}(${f.arguments.map((x: Argument) => x.value.isArray ? 
+      `${x.name}: [${x.value.type}]${x.value.isNull ? '': '!'}`: 
+      `${x.name}: ${x.value.type}${x.value.isNull ? '': '!'}`).join(', ')}): ${f.isArray ? `[${f.type}]`: `${f.type}`}${f.isNull ? '': '!'}`
+  } else {
+    return maybeNullField(f)
   }
 }
 
@@ -95,7 +104,9 @@ const nullField = (f: Field) => {
   }
 }
 
-export const buildTargetContext = (inputContext: Type[]) => {
+export const buildTargetContext = (input: Type[]) => {
+  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation')
+
   const relations = []
 
   inputContext.forEach((t: Type) => {

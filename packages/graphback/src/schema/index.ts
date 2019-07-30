@@ -20,7 +20,24 @@ export class SchemaGenerator {
    */
   public generate() {
     this.context = buildTargetContext(this.inputContext)
-    
-    return generateSchema(this.context)
+    const queryType = this.inputContext.filter((t: Type) => t.name === 'Query')
+    let customQueries = []
+    if(queryType.length) {
+      customQueries = queryType[0].fields
+    }
+
+    const mutationType = this.inputContext.filter((t: Type) => t.name === 'Mutation')
+    let customMutations = []
+    if(mutationType.length) {
+      customMutations = mutationType[0].fields
+    }
+
+    const subscriptionType = this.inputContext.filter((t: Type) => t.name === 'Subscription')
+    let customSubscriptions = []
+    if(subscriptionType.length) {
+      customSubscriptions = subscriptionType[0].fields
+    }
+
+    return generateSchema(this.context, customQueries, customMutations, customSubscriptions)
   }
 }

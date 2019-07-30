@@ -1,4 +1,4 @@
-import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
+import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
@@ -41,11 +41,21 @@ export const inputTypeVisitor = {
   },
   
   FieldDefinition: (node: FieldDefinitionNode) => {
-    return {
+    if(node.arguments.length) {
+      return {
       ...node.type,
       "name": node.name,
       "directives": Object.assign({}, ...node.directives),
-      "hasDirectives": node.directives.length > 0
+      "hasDirectives": node.directives.length > 0,
+      "arguments": node.arguments
+      }
+    } else {
+      return {
+        ...node.type,
+        "name": node.name,
+        "directives": Object.assign({}, ...node.directives),
+        "hasDirectives": node.directives.length > 0,
+      }
     }
   },
 
@@ -97,5 +107,12 @@ export const inputTypeVisitor = {
 
   StringValue: (node: StringValueNode): string => {
     return node.value
+  },
+
+  InputValueDefinition: (node: InputValueDefinitionNode) => {
+    return {
+      "name": node.name,
+      "value": node.type
+    }
   }
 }

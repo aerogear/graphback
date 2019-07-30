@@ -28,6 +28,19 @@ export interface Directive {
   ManyToMany?: ManyToMany
 }
 
+export interface Value {
+  // tslint:disable-next-line: no-reserved-keywords
+  type: string
+  isArray: boolean
+  isNull: boolean
+  isType: boolean
+}
+
+export interface Argument {
+  name: string
+  value: Value
+}
+
 /**
  * Field context of parsed GraphQL type
  */
@@ -40,6 +53,8 @@ export interface Field {
   isNull: boolean
   directives: Directive
   hasDirectives: boolean
+  // tslint:disable-next-line: no-banned-terms
+  arguments?: Argument[]
 }
 
 /**
