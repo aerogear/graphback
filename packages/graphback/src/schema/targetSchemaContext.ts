@@ -129,7 +129,7 @@ const nullField = (f: Field) => {
  * @param input input visted object from model
  */
 export const buildTargetContext = (input: Type[]) => {
-  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation')
+  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
 

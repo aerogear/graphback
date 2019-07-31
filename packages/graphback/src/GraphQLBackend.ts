@@ -69,11 +69,12 @@ export class GraphQLBackendCreator {
 
 
   public async createDatabase(): Promise<void> {
+    const context = this.inputContext.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
     try {
       if (this.dataLayerManager) {
         logger.info("Creating database structure")
-        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, this.inputContext);
-        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, this.inputContext);
+        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context);
+        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context);
       } else {
         logger.info("Database structure generation skipped.")
       }
