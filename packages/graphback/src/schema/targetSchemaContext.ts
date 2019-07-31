@@ -205,6 +205,10 @@ export const buildTargetContext = (input: Type[]) => {
   return context
 }
 
+/**
+ * Create custom queries and mutations from user's input
+ * @param inputContext Type[]
+ */
 export const createCustomSchemaContext = (inputContext: Type[]) => {
   const queryType = inputContext.filter((t: Type) => t.name === 'Query')
     let customQueries = []
