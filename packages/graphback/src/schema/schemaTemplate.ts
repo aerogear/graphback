@@ -81,7 +81,7 @@ const generateSubscriptions = (subscriptions: string[], custom: Field[]) => {
   if(custom.length) {
     return `type Subscription {
     ${subscriptions.join('\n    ')}
-    ## Custom queries
+    ## Custom subscriptions
     ${custom.map((f: Field) => {
       return maybeNullFieldArgs(f)
     }).join('\n    ')}

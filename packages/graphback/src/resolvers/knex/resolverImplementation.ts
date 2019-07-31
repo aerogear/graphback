@@ -104,3 +104,17 @@ export const typeRelation = (relation: string, columnName: string, fieldName: st
     return undefined
   }
 }
+
+export const blankResolver = (name: string) => {
+  return `${name}: (_: any, args: any, context: GraphQLContext) => {
+      // Implementation here
+    }`
+}
+
+export const blankSubscription = (name: string) => {
+  return `${name}: {
+      subscribe: (_: any, __: any, context: GraphQLContext) => {
+        // Implementation here
+      }
+    }`
+}

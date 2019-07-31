@@ -3,11 +3,11 @@ import { getFieldName, getTableName, ResolverType } from '../../utils';
 import * as knex from './resolverImplementation'
 
 export interface TargetResolverContext {
-  relations: string[]
-  queries: string[]
-  mutations: string[]
-  subscriptions: string[],
-  subscriptionTypes: string
+  relations?: string[]
+  queries?: string[]
+  mutations?: string[]
+  subscriptions?: string[],
+  subscriptionTypes?: string
 }
 
 export interface TypeContext {
@@ -155,4 +155,30 @@ export const buildResolverTargetContext = (input: Type[]) => {
   })
 
   return output
+}
+
+export const createCustomContext = (inputContext: Type[]) => {
+  const queryType = inputContext.filter((t: Type) => t.name === 'Query')
+  let customQueries = []
+  if(queryType.length) {
+    customQueries = queryType[0].fields.map((f: Field) => knex.blankResolver(f.name))
+  }
+
+  const mutationType = inputContext.filter((t: Type) => t.name === 'Mutation')
+  let customMutations = []
+  if(mutationType.length) {
+    customMutations = mutationType[0].fields.map((f: Field) => knex.blankResolver(f.name))
+  }
+
+  const subscriptionType = inputContext.filter((t: Type) => t.name === 'Subscription')
+  let customSubscriptions = []
+  if(subscriptionType.length) {
+    customSubscriptions = subscriptionType[0].fields.map((f: Field) => knex.blankSubscription(f.name))
+  }
+
+  return {
+    queries: customQueries,
+    mutations: customMutations,
+    subscriptions: customSubscriptions
+  }
 }
