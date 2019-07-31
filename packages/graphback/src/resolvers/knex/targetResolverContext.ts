@@ -20,6 +20,10 @@ interface RelationImplementation {
   implementation: string
 }
 
+/**
+ * Resolver crud methods - create, update, delete, find and findAll
+ */
+
 const createResolver = (t: Type): string => {
   if(t.config.create) {
     return knex.createTemplate(t.config.subCreate, getFieldName(t.name, ResolverType.CREATE), getTableName(t.name), t.name)
@@ -60,6 +64,10 @@ const findAllResolver = (t: Type): string => {
   return undefined
 }
 
+/**
+ * Subscriptions - new, updated and deleted
+ */
+
 const newSub = (t: Type): string => {
   if(t.config.create && t.config.subCreate) {
     return knex.newSub(t.name)
@@ -84,6 +92,10 @@ const deletedSub = (t: Type): string => {
   return undefined
 }
 
+/**
+ * Create enum for subscriptions implementation
+ * @param t Type object
+ */
 const createSubscriptionTypes = (t: Type): string => {
   const subscriptionEnum = []
   if(t.config.create && t.config.subCreate) {
@@ -99,6 +111,10 @@ const createSubscriptionTypes = (t: Type): string => {
   return subscriptionEnum.join(`,\n  `)
 }
 
+/**
+ * Create context object for each individual type
+ * @param context Visited info from the model
+ */
 export const buildTypeContext = (context: Type): TargetResolverContext => {
   const relationImplementations = []
   let hasRelation = false
@@ -144,6 +160,10 @@ export const buildTypeContext = (context: Type): TargetResolverContext => {
   return typeContext
 }
 
+/**
+ * Create context of all the types
+ * @param input Input visited object
+ */
 export const buildResolverTargetContext = (input: Type[]) => {
   const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation')
   const output: TypeContext[] = []
@@ -157,6 +177,10 @@ export const buildResolverTargetContext = (input: Type[]) => {
   return output
 }
 
+/**
+ * Create queries, mutations or subscriptions from custom input provided
+ * @param inputContext Input visited object
+ */
 export const createCustomContext = (inputContext: Type[]) => {
   const queryType = inputContext.filter((t: Type) => t.name === 'Query')
   let customQueries = []
