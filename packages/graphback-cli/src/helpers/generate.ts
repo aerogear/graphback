@@ -55,6 +55,7 @@ export async function generateBackend(): Promise<void> {
     
     if(!existsSync(`${outputResolverPath}/custom`)) {
       mkdirSync(`${outputResolverPath}/custom`)
+      writeFileSync(`${outputResolverPath}/custom/index.ts`, generated.resolvers.custom)
     }
 
     const resolverFiles = readdirSync(`${outputResolverPath}/generated`)

@@ -99,5 +99,7 @@ export interface IGraphbackResolvers {
   // Index file for resolvers stitching
   index?: string
   // Resolvers
-  resolvers?: OutputResolver[]
+  resolvers?: OutputResolver[],
+  // Custom resolvers stubs
+  custom?: string
 }

@@ -102,10 +102,47 @@ const alphabeticSort = (a: TypeContext, b: TypeContext) => {
   return 0
 }
 
-export const generateIndexFile = (context: TypeContext[]) => {
+export const generateIndexFile = (context: TypeContext[], hasCustomElements: boolean) => {
+  if(hasCustomElements) {
+    return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+
+import { customResolvers } from './custom'
+
+export const resolvers = [${[...context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`), 'customResolvers'].join(', ')}]
+`
+  }
+  
   return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 export const resolvers = [${context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
+`
+}
+
+export const generateCustomResolvers = (context: TargetResolverContext) => {
+  const customResolvers = []
+  if(context.queries.length) {
+    customResolvers.push(`Query: {
+    ${context.queries.join(',\n    ')}
+  }`)
+  }
+
+  if(context.mutations.length) {
+    customResolvers.push(`Mutation: {
+    ${context.mutations.join(',\n    ')}
+  }`)
+  }
+
+  if(context.subscriptions.length) {
+    customResolvers.push(`Subscription: {
+    ${context.subscriptions.join(',\n    ')}
+  }`)
+  }
+
+  return `${imports}
+
+export const customResolvers = {
+  ${customResolvers.join(',\n\n  ')}
+}
 `
 }
 
