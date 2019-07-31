@@ -25,12 +25,12 @@ export class ResolverGenerator {
     const customContext = createCustomContext(this.inputContext)
 
     let hasCustomElements = false
-    if(customContext.queries.length || customContext.mutations.length || customContext.subscriptions.length) {
+    if(customContext.length) {
       hasCustomElements = true
     }
 
     return {
-      resolvers: generateResolvers(this.context),
+      types: generateResolvers(this.context),
       index: generateIndexFile(this.context, hasCustomElements),
       custom: generateCustomResolvers(customContext)
     }
