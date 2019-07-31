@@ -165,7 +165,7 @@ export const buildTypeContext = (context: Type): TargetResolverContext => {
  * @param input Input visited object
  */
 export const buildResolverTargetContext = (input: Type[]) => {
-  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation')
+  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: TypeContext[] = []
   inputContext.forEach((t: Type) => {
     output.push({
