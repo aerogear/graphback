@@ -15,8 +15,8 @@ export interface TypeContext {
   context: TargetResolverContext
 }
 
-interface RelationImplementation {
-  typeName: string
+export interface Custom {
+  name: string
   implementation: string
 }
 
@@ -185,24 +185,35 @@ export const createCustomContext = (inputContext: Type[]) => {
   const queryType = inputContext.filter((t: Type) => t.name === 'Query')
   let customQueries = []
   if(queryType.length) {
-    customQueries = queryType[0].fields.map((f: Field) => knex.blankResolver(f.name))
+    customQueries = queryType[0].fields.map((f: Field) => {
+      return {
+        name: f.name,
+        implementation: knex.blankQueryResolver(f.name)
+      }
+    })
   }
 
   const mutationType = inputContext.filter((t: Type) => t.name === 'Mutation')
   let customMutations = []
   if(mutationType.length) {
-    customMutations = mutationType[0].fields.map((f: Field) => knex.blankResolver(f.name))
+    customMutations = mutationType[0].fields.map((f: Field) => {
+      return {
+        name: f.name,
+        implementation: knex.blankMutationResolver(f.name)
+      }
+    })
   }
 
   const subscriptionType = inputContext.filter((t: Type) => t.name === 'Subscription')
   let customSubscriptions = []
   if(subscriptionType.length) {
-    customSubscriptions = subscriptionType[0].fields.map((f: Field) => knex.blankSubscription(f.name))
+    customSubscriptions = subscriptionType[0].fields.map((f: Field) => {
+      return {
+        name: f.name,
+        implementation: knex.blankSubscription(f.name)
+      }
+    })
   }
 
-  return {
-    queries: customQueries,
-    mutations: customMutations,
-    subscriptions: customSubscriptions
-  }
+  return [...customQueries, ...customMutations, ...customSubscriptions]
 }

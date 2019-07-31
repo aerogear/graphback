@@ -1,4 +1,4 @@
-import { TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
+import { Custom, TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
 
 const imports = `import { GraphQLContext } from '../../context'`
 
@@ -91,7 +91,7 @@ export const generateResolvers = (context: TypeContext[]) => {
   })
 }
 
-const alphabeticSort = (a: TypeContext, b: TypeContext) => {
+const alphabeticSort = (a: TypeContext | Custom, b: TypeContext | Custom) => {
   if(a.name < b.name) {
     return -1
   }
@@ -108,7 +108,7 @@ export const generateIndexFile = (context: TypeContext[], hasCustomElements: boo
 
 import { customResolvers } from './custom'
 
-export const resolvers = [${[...context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`), 'customResolvers'].join(', ')}]
+export const resolvers = [${[...context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}]
 `
   }
   
@@ -118,31 +118,28 @@ export const resolvers = [${context.map((t: TypeContext) => `${t.name.toLowerCas
 `
 }
 
-export const generateCustomResolvers = (context: TargetResolverContext) => {
-  const customResolvers = []
-  if(context.queries.length) {
-    customResolvers.push(`Query: {
-    ${context.queries.join(',\n    ')}
-  }`)
-  }
+export const generateCustomResolvers = (customResolvers: Custom[]) => {
+  const index = `${customResolvers.sort(alphabeticSort).map((c: Custom) => `import { ${c.name} } from './${c.name}'`).join('\n')}
 
-  if(context.mutations.length) {
-    customResolvers.push(`Mutation: {
-    ${context.mutations.join(',\n    ')}
-  }`)
-  }
+export const customResolvers = [${customResolvers.map((c: Custom) => c.name).join(', ')}]
+`
+  const outputCustomResolvers = customResolvers.map((c: Custom) => {
+    return {
+      name: c.name,
+      output: `${imports}
 
-  if(context.subscriptions.length) {
-    customResolvers.push(`Subscription: {
-    ${context.subscriptions.join(',\n    ')}
-  }`)
-  }
-
-  return `${imports}
-
-export const customResolvers = {
-  ${customResolvers.join(',\n\n  ')}
+export const ${c.name} = {
+  ${c.implementation}
 }
 `
+    }
+  })
+
+  outputCustomResolvers.push({
+    name: 'index',
+    output: index
+  })
+
+  return outputCustomResolvers
 }
 

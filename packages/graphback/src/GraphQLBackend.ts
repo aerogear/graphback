@@ -100,7 +100,7 @@ export interface IGraphbackResolvers {
   // Index file for resolvers stitching
   index?: string
   // Resolvers
-  resolvers?: OutputResolver[],
+  types?: OutputResolver[],
   // Custom resolvers stubs
-  custom?: string
+  custom?: OutputResolver[]
 }

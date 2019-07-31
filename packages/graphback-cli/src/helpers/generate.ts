@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { Config, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
 
@@ -34,7 +34,7 @@ export async function generateBackend(): Promise<void> {
     const configPath = `${process.cwd()}/config.json`
 
     const configFile = readFileSync(configPath, "utf8");
-    let genConfig = {};
+    let genConfig: Config = {};
     if (configFile) {
       genConfig = JSON.parse(configFile).generation
     }
@@ -55,13 +55,18 @@ export async function generateBackend(): Promise<void> {
     
     if(!existsSync(`${outputResolverPath}/custom`)) {
       mkdirSync(`${outputResolverPath}/custom`)
-      writeFileSync(`${outputResolverPath}/custom/index.ts`, generated.resolvers.custom)
     }
+
+    generated.resolvers.custom.forEach((output: OutputResolver) => {
+      if(!existsSync(`${outputResolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
+        writeFileSync(`${outputResolverPath}/custom/${output.name}.ts`, output.output)
+      }
+    })
 
     const resolverFiles = readdirSync(`${outputResolverPath}/generated`)
     resolverFiles.forEach((file: string) => unlinkSync(`${outputResolverPath}/generated/${file}`))
 
-    generated.resolvers.resolvers.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
+    generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
     
   } catch (err) {
     logError(err)
