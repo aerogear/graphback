@@ -5,11 +5,29 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
+## 0.5.0 (1 August, 2019)
+### Graphback
+#### Features
+- Added ability to choose between methods using config and directives.
+- Added ability for custom Queries and Mutations.
+
+#### Fixes
+- Modularized resolver output into types.
+  
+### Graphback-cli
+#### Fixes
+- Changed resolvers output format in `generate`
+
+### Templates
+#### Fixes
+- Modified template structure for change in `generate`
+
+
 ## 0.4.0 (25 July, 2019)
 ### Templates
 #### Features
 
-Added Sofa (https://github.com/Urigo/SOFA/) template that allows generating restful API along with GraphQL one. 
+- Added Sofa (https://github.com/Urigo/SOFA/) template that allows generating restful API along with GraphQL one. 
 
 ## 0.3.2 (24 July, 2019)
 ### Graphback
