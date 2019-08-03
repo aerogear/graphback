@@ -35,4 +35,4 @@ Execute `graphback` in your shell for more information
   ```bash
   graphback watch
   ```
-  Watches for changes in your datamodel and regenerates your schema and resolvers. The watch commands drops your database and recreates it with everty change to datamodel.
+  Watches for changes in your datamodel and regenerates your schema and resolvers. The watch commands drops your database and recreates it with every change to datamodel.
