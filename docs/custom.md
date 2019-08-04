@@ -30,7 +30,7 @@ and we want to implement a mutation to like a Post, then we can simply
 ...
 ...
 
-#Custom methods
+#Custom mutations
 type Mutation {
   likePost(id: ID!): Post!
 }
@@ -57,4 +57,4 @@ export const likePost = {
 }
 ```
 
->This works similarily for `Query` and `Subscription`.
+> **Note:** This works similarily for `Query` and `Subscription`.
