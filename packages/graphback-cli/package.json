@@ -49,7 +49,7 @@
     "tslint": "5.18.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
-    "tsutils": "3.14.1",
+    "tsutils": "3.15.0",
     "typescript": "3.5.3",
     "typescript-eslint-parser": "21.0.2"
   },
