@@ -5,22 +5,24 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
-## 0.5.0 (1 August, 2019)
+## 0.5.0 (1st August, 2019)
 ### Graphback
 #### Features
-- Added ability to choose between methods using config and directives.
-- Added ability for custom Queries and Mutations.
+- Added ability to perform CRUD generation based on configuration flags
+The generation will now be based on config.json file that will contain properties 
+for all resolver types that need to generated. Please refer to documentation for more information
+- Added ability for custom Queries/Mutations/Subscriptions. Users can generate empty  resolver stubs for their implementation.
 
 #### Fixes
-- Modularized resolver output into types.
+- Modularized resolver output into separate files(based on types) instead of a single one. Also added custom resolvers.
   
 ### Graphback-cli
 #### Fixes
-- Changed resolvers output format in `generate`
+- Changed resolvers output format from a single resolver file to multiple files. Also added custom resolvers in generate
 
 ### Templates
 #### Fixes
-- Modified template structure for change in `generate`
+- Dropped generated folder and change structure for template accordingly. Generated content will be now inside `src` folder instead.
 
 
 ## 0.4.0 (25 July, 2019)

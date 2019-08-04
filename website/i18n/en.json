@@ -11,6 +11,12 @@
       "concepts": {
         "title": "Introduction"
       },
+      "config": {
+        "title": "CRUD Config"
+      },
+      "custom": {
+        "title": "Custom Methods"
+      },
       "datasources": {
         "title": "Data Sources"
       },
@@ -41,7 +47,6 @@
     "categories": {
       "Getting Started": "Getting Started",
       "Concepts": "Concepts",
-      "Schema Design": "Schema Design",
       "Reference": "Reference",
       "Releases": "Releases"
     }

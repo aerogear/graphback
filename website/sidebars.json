@@ -2,16 +2,16 @@
   "docs": {
     "Getting Started": [
       "gettingstarted",
-      "datamodel"
+      "datamodel",
+      "relationships",
+      "config",
+      "custom"
     ],
     "Concepts": [
       "concepts",
       "templates",
       "datasources",
       "modules"
-    ],
-    "Schema Design": [
-      "relationships"
     ],
     "Reference": [
       "commands"
