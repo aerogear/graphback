@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as execa from 'execa'
-import { readFileSync, unlinkSync, existsSync } from 'fs'
+import { existsSync, readFileSync, unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
 import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
 import { logError, logInfo } from '../utils'

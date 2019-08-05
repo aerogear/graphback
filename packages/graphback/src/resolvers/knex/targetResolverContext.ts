@@ -1,6 +1,6 @@
 import { Field, Type } from '../../ContextTypes';
 import { getFieldName, getTableName, ResolverType } from '../../utils';
-import * as knex from './resolverImplementation'
+import { KnexResolver } from './KnexResolver';
 
 export interface TargetResolverContext {
   relations?: string[]
@@ -20,13 +20,15 @@ export interface Custom {
   implementation: string
 }
 
+const knex = new KnexResolver()
+
 /**
  * Resolver crud methods - create, update, delete, find and findAll
  */
 
-const createResolver = (t: Type): string => {
+const createResolver = (t: Type, database: string): string => {
   if(t.config.create) {
-    return knex.createTemplate(t.config.subCreate, getFieldName(t.name, ResolverType.CREATE), getTableName(t.name), t.name)
+    return knex.createTemplate(database, t.config.subCreate, getFieldName(t.name, ResolverType.CREATE), getTableName(t.name), t.name)
   }
 
   return undefined
@@ -115,7 +117,7 @@ const createSubscriptionTypes = (t: Type): string => {
  * Create context object for each individual type
  * @param context Visited info from the model
  */
-export const buildTypeContext = (context: Type): TargetResolverContext => {
+export const buildTypeContext = (context: Type, database: string): TargetResolverContext => {
   const relationImplementations = []
   let hasRelation = false
 
@@ -153,7 +155,7 @@ export const buildTypeContext = (context: Type): TargetResolverContext => {
     typeContext.relations = relationImplementations
   }
   typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s!==undefined)
-  typeContext.mutations = [createResolver(context), updateResolver(context), deleteResolver(context)].filter((s: string) => s!==undefined)
+  typeContext.mutations = [createResolver(context, database), updateResolver(context), deleteResolver(context)].filter((s: string) => s!==undefined)
   typeContext.subscriptions = [newSub(context), updatedSub(context), deletedSub(context)].filter((s: string) => s!==undefined)
   typeContext.subscriptionTypes = createSubscriptionTypes(context)
 
@@ -164,13 +166,13 @@ export const buildTypeContext = (context: Type): TargetResolverContext => {
  * Create context of all the types
  * @param input Input visited object
  */
-export const buildResolverTargetContext = (input: Type[]) => {
+export const buildResolverTargetContext = (input: Type[], database: string) => {
   const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: TypeContext[] = []
   inputContext.forEach((t: Type) => {
     output.push({
       name: t.name,
-      context: buildTypeContext(t)
+      context: buildTypeContext(t, database)
     })
   })
 

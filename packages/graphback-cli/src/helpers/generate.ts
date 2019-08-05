@@ -33,11 +33,7 @@ export async function generateBackend(): Promise<void> {
     }
     const configPath = `${process.cwd()}/config.json`
 
-    const configFile = readFileSync(configPath, "utf8");
-    let genConfig: Config = {};
-    if (configFile) {
-      genConfig = JSON.parse(configFile).generation
-    }
+    const { database, generation } = JSON.parse(readFileSync(configPath, "utf8"))
 
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
@@ -45,9 +41,9 @@ export async function generateBackend(): Promise<void> {
     const outputSchemaPath: string = `${process.cwd()}/src/schema/generated.ts`
     const outputResolverPath: string = `${process.cwd()}/src/resolvers`
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, genConfig)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
 
-    const generated: IGraphQLBackend = await backend.createBackend()
+    const generated: IGraphQLBackend = await backend.createBackend(database)
 
     writeFileSync(outputSchemaPath, generated.schema)
 
