@@ -21,6 +21,10 @@ export const allModels: GraphQLModel[] = [
   {
     name: 'Shop',
     content: readFileSync(`${modelsPath}/Shop.graphql`, 'utf8')
+  },
+  {
+    name: 'Tasks',
+    content: readFileSync(`${modelsPath}/Tasks.graphql`, 'utf8')
   }
 ]
 
