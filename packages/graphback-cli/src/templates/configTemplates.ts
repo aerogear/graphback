@@ -1,21 +1,29 @@
 // tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
+import { prompt as ask } from 'inquirer'
 
 const configFilesPath = `${__dirname}/resources/config`
+
+const dockerFilesPath = `${__dirname}/resources/docker`
 
 /**
  * Different database choices
  */
-export const defaultDB = {
-  name: 'postgres',
-  config: readFileSync(`${configFilesPath}/pgconfig.json`, 'utf8')
+
+const getConfig = (database: string) => {
+  if(database === 'pg') {
+    return [readFileSync(`${configFilesPath}/pg.json`, 'utf8'), readFileSync(`${dockerFilesPath}/pg.yml`, 'utf8')]
+  } else if(database === 'sqlite3') {
+    return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), readFileSync(`${dockerFilesPath}/sqlite3.yml`, 'utf8')]
+  } else {
+    return undefined
+  }
 }
 
-const dockerFilesPath = `${__dirname}/resources/docker`
-
-const pgDockerCompose = () => {
-  return readFileSync(`${dockerFilesPath}/pg-docker-compose.yml`, 'utf8')
-}
+const databases = [
+  'pg',
+  'sqlite3'
+]
 
 const generationConfig = {
   "create": true,
@@ -28,15 +36,27 @@ const generationConfig = {
   "subDelete": false
 }
 
+export const chooseDatabase = async(): Promise<string> => {
+  const { database } = await ask({
+    type: 'list',
+    name: 'database',
+    message: 'Choose your database',
+    choices: databases
+  })
+
+  return database
+}
+
 /**
  * Create config file with db info
  */
-export const createDBConfig = (projectName: string) => {
+export const createConfig = async(database: string) => {
   const configPath = `${process.cwd()}/config.json`
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {}
-  config["dbConfig"] = JSON.parse(defaultDB.config)
+  const [dbConfig, dockerCompose] = getConfig(database)
+  config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
-  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
-  writeFileSync(dockerComposePath, pgDockerCompose())
+  config["database"] = database
+  await Promise.all([writeFileSync(configPath, JSON.stringify(config, undefined, 2)), writeFileSync(dockerComposePath, dockerCompose)])
 }
