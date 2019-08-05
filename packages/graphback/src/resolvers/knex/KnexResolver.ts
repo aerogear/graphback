@@ -8,26 +8,16 @@ import { BaseKnexResolver } from './BaseKnexResolver'
 export class KnexResolver extends BaseKnexResolver {
   public createTemplate = (database: string, subscription: boolean, fieldName: string, tableName: string, typeName: string): string => {
     if(database === 'sqlite3' || database === 'mysql') {
-      if(subscription) {
-        return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
-      const [ id ] = await ${this.knexContext}('${tableName}').insert(args.input).returning('id')
-      const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', id)
-      ${this.pubsub}.publish(Subscriptions.NEW_${typeName.toUpperCase()}, {
-        new${typeName}: result[0]
-      })
-      return result[0]
-    }`
-      } else {
-        return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
-      const [ id ] = await ${this.knexContext}('${tableName}').insert(args.input).returning('id')
-      const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', id)
-      return result[0]
-    }`
-      }
+      return this.createSQLResolver(subscription, fieldName, tableName, typeName)
     }
     else {
-      if(subscription) {
-        return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
+      return this.createResolver(subscription, fieldName, tableName, typeName)
+    }
+  }
+
+  public createSQLResolver = (subscription: boolean, fieldName: string, tableName: string, typeName: string): string => {
+    if(subscription) {
+      return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
       const [ id ] = await ${this.knexContext}('${tableName}').insert(args.input).returning('id')
       const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', id)
       ${this.pubsub}.publish(Subscriptions.NEW_${typeName.toUpperCase()}, {
@@ -35,13 +25,29 @@ export class KnexResolver extends BaseKnexResolver {
       })
       return result[0]
     }`
-      } else {
-        return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
+    } else {
+      return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
       const [ id ] = await ${this.knexContext}('${tableName}').insert(args.input).returning('id')
       const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', id)
       return result[0]
     }`
-      }
+    }
+  }
+
+  public createResolver = (subscription: boolean, fieldName: string, tableName: string, typeName: string): string => {
+    if(subscription) {
+      return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
+      const result = await ${this.knexContext}('${tableName}').insert(args.input).returning('*')
+      ${this.pubsub}.publish(Subscriptions.NEW_${typeName.toUpperCase()}, {
+        new${typeName}: result[0]
+      })
+      return result[0]
+    }`
+    } else {
+      return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
+      const result = await ${this.knexContext}('${tableName}').insert(args.input).returning('*')
+      return result[0]
+    }`
     }
   }
 }

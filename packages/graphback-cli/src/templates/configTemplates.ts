@@ -12,7 +12,7 @@ const dockerFilesPath = `${__dirname}/resources/docker`
 
 const getConfig = (database: string) => {
   if(database === 'pg') {
-    return [readFileSync(`${configFilesPath}/pg.json`, 'utf8'), readFileSync(`${dockerFilesPath}/pg.yml`, 'utf8')]
+    return [readFileSync(`${configFilesPath}/postgres.json`, 'utf8'), readFileSync(`${dockerFilesPath}/postgres.yml`, 'utf8')]
   } else if(database === 'sqlite3') {
     return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), readFileSync(`${dockerFilesPath}/sqlite3.yml`, 'utf8')]
   } else {
@@ -21,7 +21,7 @@ const getConfig = (database: string) => {
 }
 
 const databases = [
-  'pg',
+  'PostgreSQL',
   'sqlite3'
 ]
 
@@ -41,7 +41,14 @@ export const chooseDatabase = async(): Promise<string> => {
     type: 'list',
     name: 'database',
     message: 'Choose your database',
-    choices: databases
+    choices: databases,
+    filter: (input: string) => {
+      if(input === 'PostgreSQL') {
+        return 'pg'
+      } else {
+        return input
+      }
+    }
   })
 
   return database

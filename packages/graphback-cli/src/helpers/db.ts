@@ -21,8 +21,8 @@ export const dropDBResources = async(): Promise<void> => {
   try {
     const { database, dbConfig } = JSON.parse(readFileSync(configPath, 'utf8'))
     if(database === 'sqlite3') {
-      if(existsSync(`${process.cwd()}/db.sqlite`)) {
-        unlinkSync(`${process.cwd()}/db.sqlite`)
+      if(existsSync(`${process.cwd()}/${dbConfig.filename.slice(2)}`)) {
+        unlinkSync(`${process.cwd()}/${dbConfig.filename.slice(2)}`)
       }
     } else {
       const manager = new DatabaseSchemaManager(database, dbConfig);
