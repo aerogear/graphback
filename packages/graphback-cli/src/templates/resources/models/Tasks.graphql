@@ -1,0 +1,32 @@
+type Task {
+  id: ID!
+  version: Int
+  title: String!
+  description: String!
+  status: TaskStatus
+  createdBy: User
+  assignedTo: User
+}
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  title: String!
+  email: String!
+}
+
+enum TaskStatus {
+  OPEN
+  ASSIGNED
+  COMPLETE
+}
+
+## Custom queries and mutations
+type Query {
+  allTasks(first: Int, after: String): [Task],
+}
+
+type Mutation {
+  checkAndUpdateTask(id: ID!, title: String, description: String, version: Int!, status: TaskStatus): Task
+}
