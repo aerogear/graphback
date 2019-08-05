@@ -1,12 +1,17 @@
 /**
+ * Provide knex resolver context to resolver implementations
+ */
+export class KnexContext {
+  protected knexContext:string = `context.db`
+  protected pubsub: string = `context.pubsub`
+}
+
+/**
  * Base resolver class for knex implementation with implementations that
  * doesn't differ across various relation database like sqlite3 or postgresql
  */
 
-export class BaseKnexResolver {
-  protected knexContext: string = `context.db`
-  protected pubsub: string = `context.pubsub`
-
+export class BaseKnexResolver extends KnexContext {
   public deleteTemplate = (subscription: boolean, fieldName: string, tableName: string, typeName: string): string => {
     if(subscription) {  
       return `${fieldName}: (_: any, args: any, context: GraphQLContext) => {

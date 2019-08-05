@@ -9,6 +9,7 @@
       "dom",
       "es2016"
     ],
+    "resolveJsonModule": true,
     "noImplicitAny": true,
     "preserveConstEnums": true,
     "strict": true,

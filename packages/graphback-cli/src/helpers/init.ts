@@ -14,10 +14,15 @@ import { logError, logInfo } from '../utils'
  * Install dependencies, currently only npm
  * @param name project folder name
  */
-async function installDependencies(name: string): Promise<void> {
+async function installDependencies(name: string, database: string): Promise<void> {
   process.chdir(name)
   const spinner = ora('Installing dependencies').start()
   await execa('npm', ['i'])
+  if(database === 'pg') {
+    await execa('npm', ['i', '-S', 'pg'])
+  } else if(database === 'sqlite3') {
+    await execa('npm', ['i', '-S', 'sqlite3'])
+  }
   spinner.succeed()
 }
 
@@ -114,6 +119,6 @@ export async function init(name: string, templateName?: string) {
 Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
-  await Promise.all([installDependencies(name), createConfig(database)])
+  await Promise.all([installDependencies(name, database), createConfig(database)])
   logInfo(postSetupMessage(name))
 }
