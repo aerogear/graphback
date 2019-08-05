@@ -19,8 +19,8 @@ export class ResolverGenerator {
     this.inputContext = inputContext
   }
 
-  public generate() {
-    this.context = buildResolverTargetContext(this.inputContext)
+  public generate(database: string) {
+    this.context = buildResolverTargetContext(this.inputContext, database)
 
     const customContext = createCustomContext(this.inputContext)
 
