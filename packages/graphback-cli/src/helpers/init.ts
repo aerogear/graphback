@@ -4,7 +4,7 @@ import * as figlet from 'figlet'
 import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
 import ora from 'ora'
-import { createDBConfig } from '../templates/configTemplates'
+import { chooseDatabase, createConfig } from '../templates/configTemplates'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
 import { Template } from '../templates/templateMetadata'
@@ -108,12 +108,12 @@ export async function init(name: string, templateName?: string) {
   checkDirectory(path, name)
   const template: Template = await assignTemplate(templateName)
   const [modelName, content] = await createModel()
+  const database = await chooseDatabase()
   mkdirSync(path)
   logInfo(`
 Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
-  await installDependencies(name)
-  createDBConfig(name)
+  await Promise.all([installDependencies(name), createConfig(database)])
   logInfo(postSetupMessage(name))
 }

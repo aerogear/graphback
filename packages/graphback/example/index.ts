@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path'
-import { createInputContext, enableDebug, GraphQLBackendCreator, IGraphQLBackend, PostgresSchemaManager } from '../src/index';
+import { createInputContext, DatabaseSchemaManager, enableDebug, GraphQLBackendCreator  } from '../src/index';
 
 const defautConfig = {
   "create": true,
@@ -20,21 +20,17 @@ async function main() {
   const backend = new GraphQLBackendCreator(schemaText, defautConfig)
   
   const connectionConfig = {
-    'user': 'postgresql',
-    'password': 'postgres',
-    'database': 'users',
-    'host': '127.0.0.1',
-    'port': '5432'
+    filename: "./db.sqlite"
   }
   
-  const manager = new PostgresSchemaManager(connectionConfig);
+  const manager = new DatabaseSchemaManager('sqlite3', connectionConfig);
   backend.registerDataResourcesManager(manager);
   
-  const generated = await backend.createBackend()
+  // const generated = await backend.createBackend()
   // tslint:disable-next-line: no-console
-  console.log(generated.schema)
+  // console.log(generated.schema)
   // tslint:disable-next-line: no-console
-  console.log(generated.resolvers)
+  // console.log(generated.resolvers)
 
   await backend.createDatabase()
 }

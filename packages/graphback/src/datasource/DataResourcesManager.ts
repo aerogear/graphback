@@ -48,10 +48,27 @@ enum Relation {
   manyToMany = "ManyToMany"
 }
 
+const createDBConnectionKnex = (client: string, dbConnectionOptions: Knex.ConnectionConfig | Knex.Sqlite3ConnectionConfig) => {
+  switch (client) {
+    case 'pg':
+      return Knex({
+        client: 'pg',
+        connection: dbConnectionOptions 
+      })
+    case 'sqlite3':
+      return Knex({
+        client: 'sqlite3',
+        connection: dbConnectionOptions
+      })
+    default:
+      return undefined;
+  }
+}
+
 /**
  * Manager for Postgres database
  */
-export class PostgresSchemaManager implements IDataLayerResourcesManager {
+export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   private dbConnection: Knex;
 
   // tslint:disable-next-line:typedef
@@ -62,11 +79,8 @@ export class PostgresSchemaManager implements IDataLayerResourcesManager {
     Boolean: 'boolean'
   }
 
-  constructor(dbConnectionOptions: Knex.ConnectionConfig) {
-    this.dbConnection = Knex({
-      client: 'pg',
-      connection: dbConnectionOptions
-    });
+  constructor(client: string, dbConnectionOptions: Knex.ConnectionConfig | Knex.Sqlite3ConnectionConfig) {
+    this.dbConnection = createDBConnectionKnex(client, dbConnectionOptions)
   }
 
   public async createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void> {
