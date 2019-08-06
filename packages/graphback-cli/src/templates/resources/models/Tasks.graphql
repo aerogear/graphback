@@ -27,5 +27,5 @@ type Query {
 }
 
 type Mutation {
-  checkAndUpdateTask(id: ID!, title: String, description: String, version: Int!, status: TaskStatus): Task
+  checkAndUpdateTask(id: ID!, title: String, description: String, version: Int!, status: String!): Task
 }
