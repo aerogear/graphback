@@ -3,9 +3,10 @@ type Task {
   version: Int
   title: String!
   description: String!
-  status: TaskStatus
+  status: String!
   createdBy: User
   assignedTo: User
+  createdWhen: TimeDetails
 }
 
 type User {
@@ -16,10 +17,10 @@ type User {
   email: String!
 }
 
-enum TaskStatus {
-  OPEN
-  ASSIGNED
-  COMPLETE
+type TimeDetails{
+  date: String!
+  day: String!
+  time: String!
 }
 
 ## Custom queries and mutations
