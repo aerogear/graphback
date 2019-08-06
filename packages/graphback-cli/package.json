@@ -15,7 +15,7 @@
     "clean": "rimraf coverage dist types",
     "build": "tsc && cp -Rf ./src/templates/resources ./dist/templates/resources",
     "cmd": "node ./dist/index.js",
-    "watch": "tsc -w -p --help",
+    "watch": "tsc -w",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
     "pretest": "npm run build"
