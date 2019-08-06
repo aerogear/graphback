@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as execa from 'execa'
-import { existsSync, readFileSync, unlinkSync } from 'fs'
+import { readFileSync, unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
 import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
 import { logError, logInfo } from '../utils'
@@ -21,8 +21,9 @@ export const dropDBResources = async(): Promise<void> => {
   try {
     const { database, dbConfig } = JSON.parse(readFileSync(configPath, 'utf8'))
     if(database === 'sqlite3') {
-      if(existsSync(`${process.cwd()}/${dbConfig.filename.slice(2)}`)) {
-        unlinkSync(`${process.cwd()}/${dbConfig.filename.slice(2)}`)
+      const sqliteFile = new GlobSync('*.sqlite', { cwd: process.cwd() })
+      if(sqliteFile.found.length) {
+        unlinkSync(`${process.cwd()}/${sqliteFile.found[0]}`)
       }
     } else {
       const manager = new DatabaseSchemaManager(database, dbConfig);
