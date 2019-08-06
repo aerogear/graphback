@@ -53,6 +53,10 @@ export async function generateBackend(): Promise<void> {
       mkdirSync(`${outputResolverPath}/custom`)
     }
 
+    if(!existsSync(`${outputResolverPath}/generated`)) {
+      mkdirSync(`${outputResolverPath}/generated`)
+    }
+
     generated.resolvers.custom.forEach((output: OutputResolver) => {
       if(!existsSync(`${outputResolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
         writeFileSync(`${outputResolverPath}/custom/${output.name}.ts`, output.output)
