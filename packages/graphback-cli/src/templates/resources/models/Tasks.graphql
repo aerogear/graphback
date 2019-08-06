@@ -4,10 +4,14 @@ type Task {
   title: String!
   description: String!
   status: String!
-  createdBy: User
+  creationMetadata: CreationMetadata
   assignedTo: User
-  createdWhen: TimeDetails
 }
+
+type CreationMetadata {
+   createdDate: String
+   createdBy: User
+ }
 
 type User {
   id: ID!
@@ -15,12 +19,6 @@ type User {
   lastName: String!
   title: String!
   email: String!
-}
-
-type TimeDetails{
-  date: String!
-  day: String!
-  time: String!
 }
 
 ## Custom queries and mutations
