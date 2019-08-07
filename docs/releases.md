@@ -8,6 +8,18 @@ title: Releases
 This file contains changes and migration steps for GraphBack project. 
 Please follow indidivudal releases for more information.
 
+## 0.6.0 (7st August, 2019)
+
+### Graphback-cli
+#### Features
+
+- Added support for SQLite database inside CLI
+- Added new Tasks model template
+
+#### Fixes
+
+- Configuration in template works now with different databases that are supported by knex library
+
 ## 0.5.0 (1st August, 2019)
 ### Graphback
 #### Features
