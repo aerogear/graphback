@@ -1,13 +1,13 @@
 const directives = `directive @OneToMany(field: String) on FIELD_DEFINITION
 directive @OneToOne(field: String) on FIELD_DEFINITION
-directive @create on OBJECT
-directive @update on OBJECT
-directive @delete on OBJECT
-directive @find on OBJECT
-directive @findAll on OBJECT
-directive @subCreate on OBJECT
-directive @subUpdate on OBJECT
-directive @subDelete on OBJECT
+directive @create(enable: Boolean) on OBJECT
+directive @update(enable: Boolean) on OBJECT
+directive @delete(enable: Boolean) on OBJECT
+directive @find(enable: Boolean) on OBJECT
+directive @findAll(enable: Boolean) on OBJECT
+directive @subCreate(enable: Boolean) on OBJECT
+directive @subUpdate(enable: Boolean) on OBJECT
+directive @subDelete(enable: Boolean) on OBJECT
 `
 
 export const applyGeneratorDirectives = (schema: string) => {
