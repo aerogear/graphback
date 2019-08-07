@@ -5,7 +5,7 @@
 
 const siteConfig = {
   title: 'Graphback', // Title for your website.
-  tagline: 'A backpack for your GraphQL needs',
+  tagline: 'Generate production ready GraphQL backend in less 2 minutes',
   url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
   cname: 'graphback.dev',
