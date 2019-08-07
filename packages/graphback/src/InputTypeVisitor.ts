@@ -61,11 +61,17 @@ export const inputTypeVisitor = {
 
   ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => {
     let config = {}
+    
     node.directives.map((directive: object) => {
       config = Object.assign(config, directive)
     })
+
     Object.keys(config).forEach((key: string) => {
-      config[`${key}`] = true
+      if(Object.keys(config[key]).length) {
+        config[key] = config[key].enable
+      } else {
+        config[key] = true
+      }
     })
 
     return {
