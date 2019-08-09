@@ -129,7 +129,9 @@ export const customResolvers = [${customResolvers.map((c: Custom) => c.name).joi
       output: `${imports}
 
 export const ${c.name} = {
-  ${c.implementation}
+  ${c.operationType}: {
+    ${c.implementation}
+  }
 }
 `
     }

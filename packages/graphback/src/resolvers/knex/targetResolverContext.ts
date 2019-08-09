@@ -18,6 +18,7 @@ export interface TypeContext {
 export interface Custom {
   name: string
   implementation: string
+  operationType?: string
 }
 
 const knex = new KnexResolver()
@@ -190,7 +191,8 @@ export const createCustomContext = (inputContext: Type[], templateType: string) 
     customQueries = queryType[0].fields.map((f: Field) => {
       return {
         name: f.name,
-        implementation: knex.blankQueryResolver(f.name, templateType)
+        implementation: knex.blankResolver(f.name),
+        operationType: 'Query'
       }
     })
   }
@@ -201,7 +203,8 @@ export const createCustomContext = (inputContext: Type[], templateType: string) 
     customMutations = mutationType[0].fields.map((f: Field) => {
       return {
         name: f.name,
-        implementation: knex.blankMutationResolver(f.name, templateType)
+        implementation: knex.blankResolver(f.name),
+        operationType: 'Mutation'
       }
     })
   }
@@ -212,7 +215,8 @@ export const createCustomContext = (inputContext: Type[], templateType: string) 
     customSubscriptions = subscriptionType[0].fields.map((f: Field) => {
       return {
         name: f.name,
-        implementation: knex.blankSubscription(f.name, templateType)
+        implementation: knex.blankSubscription(f.name),
+        operationType: 'Subscription'
       }
     })
   }
