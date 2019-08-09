@@ -1,6 +1,6 @@
-## apollo-rest-starter
+## graphql-server-ts
 
-Starter template using graphback and apollo-server, Uses sofa-api to allow users use REST with GraphQL.
+Starter template using graphback and graphql-js
 
 ### Usage
 The project has been created using `graphback`. Run the project using the following steps. 
@@ -17,7 +17,6 @@ graphback db
 ```
 npm start
 ```
-- The REST api is exposed in `/rest` endpoint.
 
 ### Directory structure
 

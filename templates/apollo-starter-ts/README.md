@@ -4,7 +4,7 @@ Starter template using graphback and apollo-server
 
 ### Usage
 The project has been created using `graphback`. Run the project using the following steps. 
-- Start the databse
+- Start the database
 ```
 docker-compose up -d
 ```

@@ -55,14 +55,14 @@ export class GraphQLBackendCreator {
   /**
    * Create backend with all related resources
    */
-  public async createBackend(database: string): Promise<IGraphQLBackend> {
+  public async createBackend(database: string, templateType: string): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
-    backend.schema = schemaGenerator.generate()
+    backend.schema = schemaGenerator.generate(templateType)
 
     const resolverGenerator = new ResolverGenerator(this.inputContext)
-    backend.resolvers = resolverGenerator.generate(database)  
+    backend.resolvers = resolverGenerator.generate(database, templateType)  
     
     return backend;
   }
