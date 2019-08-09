@@ -28,6 +28,15 @@ export const allTemplates: Template[] = [
       branch: 'master',
       path: '/templates/apollo-rest-starter',
     }
+  },
+  {
+    name: 'graphql-js-starter',
+    description: 'GraphQL.js template in typescript',
+    repo: {
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'master',
+      path: '/templates/graphql-js-starter'
+    }
   }
 ]
 /**
