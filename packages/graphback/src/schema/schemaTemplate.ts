@@ -92,11 +92,42 @@ const generateSubscriptions = (subscriptions: string[], customSubs: string[]) =>
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
-const outputSchema = (context: TargetContext, customQueries: string[], customMutations: string[], customSubscriptions: string[]): string => {
+const outputSchema = (context: TargetContext, customQueries: string[], customMutations: string[], customSubscriptions: string[], templateType: string): string => {
   const { inputFields, nodes, filterFields, queries, mutations, subscriptions } = context
-  if(context.subscriptions.length) {
-    return `${imports}
+  if(templateType === 'graphql-js') {
+    if(context.subscriptions.length) {
+      return `export const typeDefs = \`
+  ${nodeTypes(nodes)}
 
+  ${inputs(inputFields)}
+
+  ${filters(filterFields)}
+
+  ${generateQueries(queries, customQueries)}
+
+  ${generateMutations(mutations, customMutations)}
+
+  ${generateSubscriptions(subscriptions, customSubscriptions)}
+\`
+`
+    } else {
+      return `export const typeDefs = \`
+  ${nodeTypes(nodes)}
+
+  ${inputs(inputFields)}
+
+  ${filters(filterFields)}
+
+  ${generateQueries(queries, customQueries)}
+
+  ${generateMutations(mutations, customMutations)}
+\`
+`
+    }
+  } else {
+    if(context.subscriptions.length) {
+      return `${imports}
+  
 export const typeDefs = gql\`
   ${nodeTypes(nodes)}
 
@@ -111,8 +142,8 @@ export const typeDefs = gql\`
   ${generateSubscriptions(subscriptions, customSubscriptions)}
 \`
 `
-  } else {
-    return `${imports}
+    } else {
+      return `${imports}
 
 export const typeDefs = gql\`
   ${nodeTypes(nodes)}
@@ -122,16 +153,18 @@ export const typeDefs = gql\`
   ${filters(filterFields)}
 
   ${generateQueries(queries, customQueries)}
-
+  
   ${generateMutations(mutations, customMutations)}
 \`
 `
+    }
   }
+  
 }
 
 /**
  * Generate the output schema
  */
-export const generateSchema = (context: TargetContext, queries: string[], mutations: string[], subscriptions: string[]): string => {
-  return outputSchema(context, queries, mutations, subscriptions)
+export const generateSchema = (context: TargetContext, queries: string[], mutations: string[], subscriptions: string[], templateType: string): string => {
+  return outputSchema(context, queries, mutations, subscriptions, templateType)
 }

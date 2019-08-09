@@ -99,29 +99,52 @@ public typeRelation = (relation: string, columnName: string, fieldName: string, 
   }
 }
 
-public blankQueryResolver = (name: string) => {
-  return `Query: {
+public blankQueryResolver = (name: string, templateType: string) => {
+  if(templateType === 'graphql-js') {
+    return `Query: {
     ${name}: (_: any, args: any, context: GraphQLContext) => {
         // Implementation here
       }
     }`
+  } else {
+    return `${name}: (_: any, args: any, context: GraphQLContext) => {
+      // Implementation here
+    }
+    `
+  }
 }
 
-public blankMutationResolver = (name: string) => {
-  return `Mutation: {
-    ${name}: (_: any, args: any, context: GraphQLContext) => {
-        // Implementation here
-      }
+public blankMutationResolver = (name: string, templateType: string) => {
+  if(templateType === 'graphql-js') {
+    return `${name}: (_: any, args: any, context: GraphQLContext) => {
+      // Implementation here
     }`
-}
-
-public blankSubscription = (name: string) => {
-  return `Subscription: {
-    ${name}: {
-        subscribe: (_: any, __: any, context: GraphQLContext) => {
+  } else {
+    return `Mutation: {
+      ${name}: (_: any, args: any, context: GraphQLContext) => {
           // Implementation here
         }
+      }`
+  }
+  
+}
+
+public blankSubscription = (name: string, templateType: string) => {
+  if(templateType === 'graphql-js') {
+    return `${name}: {
+      subscribe: (_: any, __: any, context: GraphQLContext) => {
+        // Implementation here
       }
+    }`
+  } else {
+    return `Subscription: {
+    ${name}: {
+      subscribe: (_: any, __: any, context: GraphQLContext) => {
+        // Implementation here
+      }
+    }
   }`
+  }
+  
 }
 }

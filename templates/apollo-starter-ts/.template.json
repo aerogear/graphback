@@ -1,4 +1,5 @@
 {
     "name": "apollo-starter-ts",
-    "description": "TypeScript starter using Apollo framework"
+    "description": "TypeScript starter using Apollo framework",
+    "templateType": "apollo"
 }

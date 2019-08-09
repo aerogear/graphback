@@ -18,10 +18,10 @@ export class SchemaGenerator {
   /**
    * Generate output schema as string
    */
-  public generate() {
+  public generate(templateType: string) {
     this.context = buildTargetContext(this.inputContext)
     const [ customQueries, customMutations, customSubscriptions ] = createCustomSchemaContext(this.inputContext)
 
-    return generateSchema(this.context, customQueries, customMutations, customSubscriptions)
+    return generateSchema(this.context, customQueries, customMutations, customSubscriptions, templateType)
   }
 }

@@ -183,14 +183,14 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
  * Create queries, mutations or subscriptions from custom input provided
  * @param inputContext Input visited object
  */
-export const createCustomContext = (inputContext: Type[]) => {
+export const createCustomContext = (inputContext: Type[], templateType: string) => {
   const queryType = inputContext.filter((t: Type) => t.name === 'Query')
   let customQueries = []
   if(queryType.length) {
     customQueries = queryType[0].fields.map((f: Field) => {
       return {
         name: f.name,
-        implementation: knex.blankQueryResolver(f.name)
+        implementation: knex.blankQueryResolver(f.name, templateType)
       }
     })
   }
@@ -201,7 +201,7 @@ export const createCustomContext = (inputContext: Type[]) => {
     customMutations = mutationType[0].fields.map((f: Field) => {
       return {
         name: f.name,
-        implementation: knex.blankMutationResolver(f.name)
+        implementation: knex.blankMutationResolver(f.name, templateType)
       }
     })
   }
@@ -212,7 +212,7 @@ export const createCustomContext = (inputContext: Type[]) => {
     customSubscriptions = subscriptionType[0].fields.map((f: Field) => {
       return {
         name: f.name,
-        implementation: knex.blankSubscription(f.name)
+        implementation: knex.blankSubscription(f.name, templateType)
       }
     })
   }

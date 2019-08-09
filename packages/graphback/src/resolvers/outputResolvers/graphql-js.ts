@@ -11,38 +11,24 @@ enum Subscriptions {
 }
 
 export const ${name.toLowerCase()}Resolvers = {
-  ${name}: {
-    ${context.relations.join(',\n    ')}
-  },
+  ${context.relations.join(',\n\n  ')},
+    
+  ${context.queries.join(',\n\n  ')},
 
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
+  ${context.mutations.join(',\n\n  ')},
 
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  },
-
-  Subscription: {
-    ${context.subscriptions.join(',\n    ')}
-  }
+  ${context.subscriptions.join(',\n\n  ')}
 }
 `
   } else if (context.relations.length){
     return `${imports}
 
 export const ${name.toLowerCase()}Resolvers = {
-  ${name}: {
-    ${context.relations.join(',\n    ')}
-  },
+  ${context.relations.join(',\n\n  ')},
 
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
+  ${context.queries.join(',\n\n  ')},
 
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  }
+  ${context.mutations.join(',\n\n  ')}
 }
 `
   } else if(context.subscriptions.length) {
@@ -53,30 +39,20 @@ enum Subscriptions {
 }
 
 export const ${name.toLowerCase()}Resolvers = {
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
+  ${context.queries.join(',\n\n  ')},
 
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  },
+  ${context.mutations.join(',\n\n  ')},
 
-  Subscription: {
-    ${context.subscriptions.join(',\n    ')}
-  }
+  ${context.subscriptions.join(',\n\n  ')}
 }
 `
   } else {
     return `${imports}
 
 export const ${name.toLowerCase()}Resolvers = {
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
+  ${context.queries.join(',\n\n  ')},
 
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  }
+  ${context.mutations.join(',\n\n  ')}
 }
 `
   }
@@ -108,20 +84,20 @@ const generateIndexFile = (context: TypeContext[], hasCustomElements: boolean) =
 
 import { customResolvers } from './custom'
 
-export const resolvers = [${[...context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}]
+export const root = {${[...context.map((t: TypeContext) => `...${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}}
 `
   }
   
   return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
-export const resolvers = [${context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
+export const root = {${context.map((t: TypeContext) => `...${t.name.toLowerCase()}Resolvers`).join(', ')}}
 `
 }
 
 const generateCustomResolvers = (customResolvers: Custom[]) => {
   const index = `${customResolvers.sort(alphabeticSort).map((c: Custom) => `import { ${c.name} } from './${c.name}'`).join('\n')}
 
-export const customResolvers = [${customResolvers.map((c: Custom) => c.name).join(', ')}]
+export const customResolvers = [${customResolvers.map((c: Custom) => `...${c.name}`).join(', ')}]
 `
   const outputCustomResolvers = customResolvers.map((c: Custom) => {
     return {
@@ -143,11 +119,13 @@ export const ${c.name} = {
   return outputCustomResolvers
 }
 
-export const generateApolloResolvers = (context: TypeContext[], customContext: Custom[], hasCustomElements: boolean) => {
+export const generateGraphQLjsResolvers = (context: TypeContext[], customContext: Custom[], hasCustomElements: boolean) => {
   return {
     types: generateResolvers(context),
     index: generateIndexFile(context, hasCustomElements),
     custom: generateCustomResolvers(customContext)
   }
 }
+
+
 
