@@ -3,7 +3,6 @@
 [![APLv2][license-badge]][LICENSE]
 [![PRs Welcome][prs-badge]][prs]
 
-
 ## Graphback
 
 <p align="center">
@@ -13,38 +12,34 @@
   GraphQL Resolvers and Queries from GraphQL types 🚀
 </p>
 
-## Motivation 
+## Motivation
 
 GraphQL can be hard and intimidating initially.
 Graphback helps you to kickstart your experience with any existing GraphQL implementation
-by generating backend layer using your data model.
+by generating a backend layer using your data model.
 
 ## What it does
 
 - Generates required queries and mutations automatically using proven GraphQL patterns
-- Generates unopiniated resolvers layer
+- Generates an unopiniated resolver layer
 - Generates database DDL statements that can be used to store data (optional)
 
-## Why to use it
+## Why use it
 
-- Plain and most canonical GraphQL implementation
-Generated resolvers will work with plain GraphQL solutions.
+- Plain and most canonical GraphQL implementation. Generated resolvers will work with plain GraphQL solutions.
 
 - Works out of the box with Apollo GraphQL and GraphQL JS
 
-- Full freedom - generated resources can be edited and reconfigured later 
+- Full freedom - generated resources can be edited and reconfigured later
 
-- Custom directives out of the box
-Provides set of useful directives and input types that are resolving standard use cases
+- Custom directives out of the box. Provides a set of useful directives and input types that resolve standard use cases
 
-- Auto generated schema basing on best GraphQL patterns 
+- Auto generated schema based on best GraphQL patterns
 
-- Pick your own server framework and clients (works with Apollo Express and Hapi) 
+- Pick your own server framework and clients (works with Apollo Express and Hapi)
 
-- Pick your own database
-Solution abstract from database storage possibly allows to support any existing storage, by 
-implementing available interface
-
+- Pick your own database. The solution abstracts from database storage and allows you to support any existing storage, by
+implementing available interfaces.
 
 ## Documentation
 
@@ -53,8 +48,10 @@ implementing available interface
 ## Contributing
 
 See [contribution guidelines](./CONTRIBUTING.md) file for more information
+
 ## License
-Licensed under the APLv2. 
+
+Licensed under the APLv2.
 
 [ts-badge]: https://img.shields.io/badge/TypeScript-3.0-blue.svg
 [nodejs-badge]: https://img.shields.io/badge/Node.js->=%208.9-blue.svg
