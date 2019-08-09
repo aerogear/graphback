@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/ioredis": "4.0.13",
+    "@types/ioredis": "4.0.14",
     "@types/knex": "0.16.1",
     "ts-node": "8.3.0",
     "tslint": "5.18.0",
