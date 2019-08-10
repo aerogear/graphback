@@ -8,7 +8,7 @@ type Task {
   assignedTo: User
 }
 
-type CreationMetadata {
+type CreationMetadata @disableGen {
    createdDate: String
    createdBy: User
  }
