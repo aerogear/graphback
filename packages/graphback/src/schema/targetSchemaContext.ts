@@ -28,16 +28,16 @@ export interface TargetContext {
 }
 
 const findQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => t.config.find)
+  return inputContext.filter((t: Type) => (t.config.find && !t.config.disableGen))
                     .map((t: Type) => {
                       const fieldName = getFieldName(t.name, ResolverType.FIND, 's')
-  
+
                       return `${fieldName}(fields: ${t.name}Filter!): [${t.name}!]!`
                     })
 }
 
 const updateQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => t.config.update)
+  return inputContext.filter((t: Type) => (t.config.update && !t.config.disableGen))
                     .map((t: Type) => {
                       const fieldName = getFieldName(t.name, ResolverType.UPDATE)
 
@@ -46,16 +46,16 @@ const updateQueries = (inputContext: Type[]): string[] => {
 }
 
 const createQueries = (inputContext: Type[]): string[] => {
- return inputContext.filter((t: Type) => t.config.create)
+ return inputContext.filter((t: Type) => (t.config.create && !t.config.disableGen))
                     .map((t: Type) => {
                       const fieldName = getFieldName(t.name, ResolverType.CREATE)
-  
+
                       return `${fieldName}(input: ${t.name}Input!): ${t.name}!`
                     })
 }
 
 const delQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => t.config.delete)
+  return inputContext.filter((t: Type) => (t.config.delete && !t.config.disableGen))
                     .map((t: Type) => {
                       const fieldName = getFieldName(t.name, ResolverType.DELETE)
 
@@ -64,7 +64,7 @@ const delQueries = (inputContext: Type[]): string[] => {
 }
 
 const findAllQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => t.config.findAll)
+  return inputContext.filter((t: Type) => (t.config.findAll && !t.config.disableGen))
                     .map((t: Type) => {
                       const fieldName = getFieldName(t.name, ResolverType.FIND_ALL, 's')
 
@@ -100,8 +100,8 @@ export const maybeNullField = (f: Field) => {
  */
 export const maybeNullFieldArgs = (f: Field) => {
   if(f.arguments) {
-    return `${f.name}(${f.arguments.map((x: Argument) => x.value.isArray ? 
-      `${x.name}: [${x.value.type}]${x.value.isNull ? '': '!'}`: 
+    return `${f.name}(${f.arguments.map((x: Argument) => x.value.isArray ?
+      `${x.name}: [${x.value.type}]${x.value.isNull ? '': '!'}`:
       `${x.name}: ${x.value.type}${x.value.isNull ? '': '!'}`).join(', ')}): ${f.isArray ? `[${f.type}]`: `${f.type}`}${f.isNull ? '': '!'}`
   } else {
     return maybeNullField(f)
@@ -198,8 +198,8 @@ export const buildTargetContext = (input: Type[]) => {
   // context.pagination = inputContext.filter((t: Type) => t.config.paginate)
   context.queries = [...findQueries(inputContext), ...findAllQueries(inputContext)]
   context.mutations = [...createQueries(inputContext), ...updateQueries(inputContext), ...delQueries(inputContext)]
-  context.subscriptions = [...inputContext.filter((t: Type) => t.config.create && t.config.subCreate).map((t: Type) => newSub(t.name)), 
-                          ...inputContext.filter((t: Type) => t.config.update && t.config.subUpdate).map((t: Type) => updatedSub(t.name)), 
+  context.subscriptions = [...inputContext.filter((t: Type) => t.config.create && t.config.subCreate).map((t: Type) => newSub(t.name)),
+                          ...inputContext.filter((t: Type) => t.config.update && t.config.subUpdate).map((t: Type) => updatedSub(t.name)),
                           ...inputContext.filter((t: Type) => t.config.delete && t.config.subDelete).map((t: Type) => deletedSub(t.name))]
 
   return context

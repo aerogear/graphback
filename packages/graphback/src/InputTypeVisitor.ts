@@ -8,22 +8,23 @@ const defaultConfig = {
   update: true,
   delete: true,
   find: true,
-  findAll: true
+  findAll: true,
+  disableGen: false
 }
 
 export const inputTypeVisitor = {
-  
+
   Name: (node: NameNode): string => {
     return node.value
   },
-  
+
   ListType: (node: ListTypeNode): object => {
     return {
       ...node.type,
       "isArray": true,
     };
   },
-  
+
   NamedType: (node: NamedTypeNode): object => {
     return {
       "type": node.name,
@@ -32,14 +33,14 @@ export const inputTypeVisitor = {
       "isType": !scalars.includes(node.name.toString())
     }
   },
-  
+
   NonNullType: (node: NonNullTypeNode): object => {
     return {
       ...node.type,
       "isNull": false
     }
   },
-  
+
   FieldDefinition: (node: FieldDefinitionNode) => {
     if(node.arguments.length) {
       return {
@@ -61,7 +62,7 @@ export const inputTypeVisitor = {
 
   ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => {
     let config = {}
-    
+
     node.directives.map((directive: object) => {
       config = Object.assign(config, directive)
     })
@@ -104,7 +105,7 @@ export const inputTypeVisitor = {
 
     return {
       [node.name.toString()]: value
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+    }
   },
 
   BooleanValue: (node: BooleanValueNode) => {

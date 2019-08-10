@@ -33,7 +33,8 @@ const generationConfig = {
   "delete": false,
   "subCreate": false,
   "subUpdate": false,
-  "subDelete": false
+  "subDelete": false,
+  "disableGen": false
 }
 
 export const chooseDatabase = async(): Promise<string> => {

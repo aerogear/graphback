@@ -73,6 +73,7 @@ export interface Config {
   subUpdate?: boolean
   subDelete?: boolean
   paginate?: boolean
+  disableGen?: boolean
 }
 
 /**

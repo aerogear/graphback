@@ -8,6 +8,7 @@ directive @findAll(enable: Boolean) on OBJECT
 directive @subCreate(enable: Boolean) on OBJECT
 directive @subUpdate(enable: Boolean) on OBJECT
 directive @subDelete(enable: Boolean) on OBJECT
+directive @disableGen(enable: Boolean) on OBJECT
 `
 
 export const applyGeneratorDirectives = (schema: string) => {
