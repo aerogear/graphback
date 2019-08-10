@@ -10,7 +10,8 @@ const defautConfig = {
   "delete": false,
   "subCreate": false,
   "subUpdate": false,
-  "subDelete": false
+  "subDelete": false,
+  "disableGen": false
 }
 
 // Enable debug logger
@@ -18,14 +19,14 @@ enableDebug();
 async function main() {
   const schemaText = readFileSync(join(__dirname, './Note.graphql'), 'utf8');
   const backend = new GraphQLBackendCreator(schemaText, defautConfig)
-  
+
   const connectionConfig = {
     filename: "./db.sqlite"
   }
-  
+
   const manager = new DatabaseSchemaManager('sqlite3', connectionConfig);
   backend.registerDataResourcesManager(manager);
-  
+
   // const generated = await backend.createBackend()
   // tslint:disable-next-line: no-console
   // console.log(generated.schema)

@@ -13,7 +13,8 @@ const defautConfig = {
   "delete": false,
   "subCreate": false,
   "subUpdate": false,
-  "subDelete": true
+  "subDelete": true,
+  "disableGen": false
 }
 
 let inputContext: Type[]
