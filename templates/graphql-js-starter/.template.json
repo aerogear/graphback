@@ -1,5 +1,4 @@
 {
   "name": "graphql-js-starter",
-  "description": "TypeScript starter using graphql-js library",
-  "templateType": "graphql-js"
+  "description": "TypeScript starter using graphql-js library"
 }

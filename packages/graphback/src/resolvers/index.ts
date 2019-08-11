@@ -1,7 +1,6 @@
 import { Type } from '../ContextTypes'
 import { buildResolverTargetContext, createCustomContext, TypeContext } from './knex/targetResolverContext';
 import { generateApolloResolvers } from './outputResolvers/apollo';
-import { generateGraphQLjsResolvers } from './outputResolvers/graphql-js';
 
 export interface OutputResolver {
   name: string
@@ -20,20 +19,16 @@ export class ResolverGenerator {
     this.inputContext = inputContext
   }
 
-  public generate(database: string, templateType: string) {
+  public generate(database: string) {
     this.context = buildResolverTargetContext(this.inputContext, database)
 
-    const customContext = createCustomContext(this.inputContext, templateType)
+    const customContext = createCustomContext(this.inputContext)
 
     let hasCustomElements = false
     if(customContext.length) {
       hasCustomElements = true
     }
 
-    if(templateType === 'graphql-js') {
-      return generateGraphQLjsResolvers(this.context, customContext, hasCustomElements)
-    } else {
-      return generateApolloResolvers(this.context, customContext, hasCustomElements)
-    }
+    return generateApolloResolvers(this.context, customContext, hasCustomElements)
   }  
 }
