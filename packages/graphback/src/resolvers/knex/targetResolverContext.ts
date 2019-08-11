@@ -184,7 +184,7 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
  * Create queries, mutations or subscriptions from custom input provided
  * @param inputContext Input visited object
  */
-export const createCustomContext = (inputContext: Type[], templateType: string) => {
+export const createCustomContext = (inputContext: Type[]) => {
   const queryType = inputContext.filter((t: Type) => t.name === 'Query')
   let customQueries = []
   if(queryType.length) {
