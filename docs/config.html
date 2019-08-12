@@ -72,7 +72,8 @@ in the root of your project folder under the <code>generation</code> key. The de
     "delete": false,
     "subCreate": false,
     "subUpdate": false,
-    "subDelete": false
+    "subDelete": false,
+    "disableGen": false,
   }
 }
 </code></pre>
@@ -91,7 +92,8 @@ in the root of your project folder under the <code>generation</code> key. The de
 <li><code>@findAll</code></li>
 <li><code>@subCreate</code></li>
 <li><code>@subUpdate</code></li>
-<li><code>@subDelete</code>.</li>
+<li><code>@subDelete</code></li>
+<li><code>@disableGen</code>.</li>
 </ul>
 <p>User can use these directives to have more control on individual elements. For example,</p>
 <pre><code class="hljs">type<span class="hljs-built_in"> Note </span>@delete {
