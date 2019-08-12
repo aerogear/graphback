@@ -1,6 +1,6 @@
 import { Type } from '../ContextTypes'
 import { buildResolverTargetContext, createCustomContext, TypeContext } from './knex/targetResolverContext';
-import { generateApolloResolvers } from './outputResolvers/apollo';
+import { generateGraphbackResolvers } from './outputResolvers/resolverTemplate';
 
 export interface OutputResolver {
   name: string
@@ -29,6 +29,6 @@ export class ResolverGenerator {
       hasCustomElements = true
     }
 
-    return generateApolloResolvers(this.context, customContext, hasCustomElements)
+    return generateGraphbackResolvers(this.context, customContext, hasCustomElements)
   }  
 }

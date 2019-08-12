@@ -18,21 +18,3 @@ graphback db
 npm start
 ```
 - The REST api is exposed in `/rest` endpoint.
-
-### Directory structure
-
-```
-|-----generated
-|-----model                        //Model - type declaration
-|-----src
-       |-----config                //server config
-       |-----db.ts                 //db connection
-       |-----index.ts
-       |-----mapping.ts            //map generated content
-|-----package.json
-|-----Dockerfile
-|-----docker-compose.yml
-|-----package-lock.json
-|-----tslint.json
-|-----README.md
-```

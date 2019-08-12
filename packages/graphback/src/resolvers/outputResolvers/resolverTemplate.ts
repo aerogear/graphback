@@ -2,6 +2,11 @@ import { Custom, TargetResolverContext, TypeContext } from '../knex/targetResolv
 
 const imports = `import { GraphQLContext } from '../../context'`
 
+/**
+ * Generate resolvers for each type
+ * @param context `Type` object
+ * @param name name of the Type
+ */
 const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
   if(context.relations.length && context.subscriptions.length) {
     return `${imports}
@@ -102,6 +107,11 @@ const alphabeticSort = (a: TypeContext | Custom, b: TypeContext | Custom) => {
   return 0
 }
 
+/**
+ * Generate the index file
+ * @param context Array fo `Type`
+ * @param hasCustomElements has custom queries or mutations or not
+ */
 const generateIndexFile = (context: TypeContext[], hasCustomElements: boolean) => {
   if(hasCustomElements) {
     return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
@@ -145,7 +155,16 @@ export const ${c.name} = {
   return outputCustomResolvers
 }
 
-export const generateApolloResolvers = (context: TypeContext[], customContext: Custom[], hasCustomElements: boolean) => {
+/**
+ * Generate resolvers from target context and using string templates
+ * types - contains original generated CRUD resolvers based on the types
+ * custom - contains custom empty stubs if hasCustomElements===true
+ * index - maps together the resolvers from the above.
+ * @param context name and context object of each type from input datamodel
+ * @param customContext custom queries/ mutations/ subscriptions if any
+ * @param hasCustomElements specifies if above mentioned custom elements are present or not
+ */
+export const generateGraphbackResolvers = (context: TypeContext[], customContext: Custom[], hasCustomElements: boolean) => {
   return {
     types: generateResolvers(context),
     index: generateIndexFile(context, hasCustomElements),

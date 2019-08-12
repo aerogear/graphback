@@ -15,4 +15,26 @@ Uses knex.js library for database access.
 Typescript implementation of GraphQL server using apollo-express framework and Sofa library. Sofa enables exposing REST API along with GraphQL based endpoint. 
 Uses knex.js library for database access.
  
+## Folder Structure
+Each template has the following folder structure, which is created as each `graphback` command is used.
 
+```
+|-----model                         // Model - type declaration
+|-----src
+      |-----config                  // config for the server
+      |-----resolvers
+            |-----custom            // empty stubs for custom implementation
+            |-----generated         // generated resolvers from datamodel
+            |-----index.ts
+      |-----schema
+            |-----generated.schema  // generated schema
+      |-----db.ts                   // db connection
+      |-----index.ts
+      |-----mapping.ts              // map generated content
+|-----package.json
+|-----Dockerfile
+|-----docker-compose.yml
+|-----package-lock.json
+|-----tslint.json
+|-----README.md
+```
