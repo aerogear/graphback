@@ -132,36 +132,42 @@ export const buildTargetContext = (input: Type[]) => {
   const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
+  let relation = {}
 
   inputContext.forEach((t: Type) => {
     t.fields.forEach((f: Field) => {
       if(f.isType){
         if(f.directives.OneToOne || !f.isArray) {
-          relations.push({
+          relation = {
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: ${f.type}`
-          })
-          relations.push({
+          }
+          if (!relations.includes(relation)) relations.push(relation)
+          relation = {
             "name": f.type,
             "type": 'ID',
-            "relation": `${t.name.toLowerCase()}Id: ID!`
-          })
+            "relation": `${f.name}Id: ID!`
+          }
+          if (!relations.includes(relation) && f.type.toLowerCase() !== f.name) relations.push(relation)
         } else if(f.directives.OneToMany || f.isArray) {
-          relations.push({
+          relation = {
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: [${f.type}!]`
-          })
-          relations.push({
+          }
+          if (!relations.includes(relation)) relations.push(relation)
+          relation = {
             "name": f.type,
             "type": 'ID',
             "relation": `${t.name.toLowerCase()}Id: ID!`
-          })
+          }
+          if (!relations.includes(relation) && f.type !== t.name) relations.push(relation)
         }
       }
     })
   });
+
 
   const context: TargetContext = {
     nodes: [],
