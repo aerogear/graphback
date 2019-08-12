@@ -5,6 +5,28 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
+## 0.7.0 (12th August, 2019)
+### Graphback
+#### Features
+- Added new `@disableGen` directive that allows user to disable CRUD operation for 
+single type
+
+### Templates
+#### Features
+- Added new GraphQL-js starter template, that uses GraphQL.js library.
+
+## 0.6.0 (7th August, 2019)
+
+### Graphback-cli
+#### Features
+
+- Added support for SQLite database inside CLI
+- Added new Tasks model template
+
+#### Fixes
+
+- Configuration in template works now with different databases that are supported by knex library
+
 ## 0.5.0 (1st August, 2019)
 ### Graphback
 #### Features

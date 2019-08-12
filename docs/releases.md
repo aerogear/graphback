@@ -8,6 +8,16 @@ title: Releases
 This file contains changes and migration steps for GraphBack project. 
 Please follow indidivudal releases for more information.
 
+## 0.7.0 (12th August, 2019)
+### Graphback
+#### Features
+- Added new `@disableGen` directive that allows user to disable CRUD operation for 
+single type
+
+### Templates
+#### Features
+- Added new GraphQL-js starter template, that uses GraphQL.js library.
+
 ## 0.6.0 (7st August, 2019)
 
 ### Graphback-cli
