@@ -28,7 +28,7 @@ const knex = new KnexResolver()
  */
 
 const createResolver = (t: Type, database: string): string => {
-  if(t.config.create && !t.config.disableGen) {
+  if(t.config.create) {
     return knex.createTemplate(database, t.config.subCreate, getFieldName(t.name, ResolverType.CREATE), getTableName(t.name), t.name)
   }
 
@@ -36,7 +36,7 @@ const createResolver = (t: Type, database: string): string => {
 }
 
 const updateResolver = (t: Type): string => {
-  if(t.config.update && !t.config.disableGen) {
+  if(t.config.update) {
     return knex.updateTemplate(t.config.subUpdate, getFieldName(t.name, ResolverType.UPDATE), getTableName(t.name), t.name)
   }
 
@@ -44,7 +44,7 @@ const updateResolver = (t: Type): string => {
 }
 
 const deleteResolver = (t: Type): string => {
-  if(t.config.delete && !t.config.disableGen) {
+  if(t.config.delete) {
     return knex.deleteTemplate(t.config.subDelete, getFieldName(t.name, ResolverType.DELETE), getTableName(t.name), t.name)
   }
 
@@ -52,7 +52,7 @@ const deleteResolver = (t: Type): string => {
 }
 
 const findResolver = (t: Type): string => {
-  if(t.config.find && !t.config.disableGen) {
+  if(t.config.find) {
     return knex.findTemplate(getFieldName(t.name, ResolverType.FIND, 's'), getTableName(t.name))
   }
 
@@ -60,7 +60,7 @@ const findResolver = (t: Type): string => {
 }
 
 const findAllResolver = (t: Type): string => {
-  if(t.config.findAll && !t.config.disableGen) {
+  if(t.config.findAll) {
     return knex.findAllTemplate(getFieldName(t.name, ResolverType.FIND_ALL, 's'), getTableName(t.name))
   }
 
@@ -72,7 +72,7 @@ const findAllResolver = (t: Type): string => {
  */
 
 const newSub = (t: Type): string => {
-  if(t.config.create && t.config.subCreate && !t.config.disableGen) {
+  if(t.config.create && t.config.subCreate) {
     return knex.newSub(t.name)
   }
 
@@ -80,7 +80,7 @@ const newSub = (t: Type): string => {
 }
 
 const updatedSub = (t: Type): string => {
-  if(t.config.update && t.config.subUpdate && !t.config.disableGen) {
+  if(t.config.update && t.config.subUpdate) {
     return knex.updatedSub(t.name)
   }
 
@@ -88,7 +88,7 @@ const updatedSub = (t: Type): string => {
 }
 
 const deletedSub = (t: Type): string => {
-  if(t.config.delete && t.config.subDelete && !t.config.disableGen) {
+  if(t.config.delete && t.config.subDelete) {
     return knex.deletedSub(t.name)
   }
 
@@ -101,7 +101,7 @@ const deletedSub = (t: Type): string => {
  */
 const createSubscriptionTypes = (t: Type): string => {
   const subscriptionEnum = []
-  if(t.config.create && t.config.subCreate && !t.config.disableGen) {
+  if(t.config.create && t.config.subCreate) {
     subscriptionEnum.push(`NEW_${t.name.toUpperCase()} = 'new${t.name.toLowerCase()}'`)
   }
   if(t.config.update && t.config.subUpdate) {
@@ -155,10 +155,12 @@ export const buildTypeContext = (context: Type, database: string): TargetResolve
   if(hasRelation) {
     typeContext.relations = relationImplementations
   }
-  typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s!==undefined)
-  typeContext.mutations = [createResolver(context, database), updateResolver(context), deleteResolver(context)].filter((s: string) => s!==undefined)
-  typeContext.subscriptions = [newSub(context), updatedSub(context), deletedSub(context)].filter((s: string) => s!==undefined)
-  typeContext.subscriptionTypes = createSubscriptionTypes(context)
+  if(!context.config.disableGen) {
+    typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s!==undefined)
+    typeContext.mutations = [createResolver(context, database), updateResolver(context), deleteResolver(context)].filter((s: string) => s!==undefined)
+    typeContext.subscriptions = [newSub(context), updatedSub(context), deletedSub(context)].filter((s: string) => s!==undefined)
+    typeContext.subscriptionTypes = createSubscriptionTypes(context)
+  }
 
   return typeContext
 }

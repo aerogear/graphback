@@ -2,16 +2,6 @@ import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode,
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
-const defaultConfig = {
-  paginate: false,
-  create: true,
-  update: true,
-  delete: true,
-  find: true,
-  findAll: true,
-  disableGen: false
-}
-
 export const inputTypeVisitor = {
 
   Name: (node: NameNode): string => {
