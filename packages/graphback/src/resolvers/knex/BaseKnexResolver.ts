@@ -13,7 +13,7 @@ export class KnexContext {
 
 export class BaseKnexResolver extends KnexContext {
   public deleteTemplate = (subscription: boolean, fieldName: string, tableName: string, typeName: string): string => {
-    if(subscription) {  
+    if(subscription) {
       return `${fieldName}: (_: any, args: any, context: GraphQLContext) => {
       return ${this.knexContext}('${tableName}').where('id', '=' , args.id).del().then( () => {
         ${this.pubsub}.publish(Subscriptions.DELETED_${typeName.toUpperCase()}, {
@@ -50,7 +50,7 @@ public updateTemplate = (subscription: boolean, fieldName: string, tableName: st
           updated${typeName}: result[0]
         })
         return result[0]
-    })}`  
+    })}`
     } else {
       return `${fieldName}: (_: any, args: any, context: GraphQLContext) => {
       return ${this.knexContext}('${tableName}').where('id', '=' , args.id).update(args.input).then( async () => {
@@ -87,7 +87,7 @@ public deletedSub = (typeName: string): string => {
 public typeRelation = (relation: string, columnName: string, fieldName: string, tableName: string): string => {
   if(relation === 'OneToOne') {
     return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
-      return context.db.select().from('${tableName}').where('${columnName}', '=', parent.id)
+      return context.db.select().from('${tableName}').where('id', '=', parent.${fieldName}Id)
                                 .then((result) => result[0])
     }`
   } else if(relation === 'OneToMany') {

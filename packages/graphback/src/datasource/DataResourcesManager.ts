@@ -53,7 +53,7 @@ const createDBConnectionKnex = (client: string, dbConnectionOptions: Knex.Connec
     case 'pg':
       return Knex({
         client: 'pg',
-        connection: dbConnectionOptions 
+        connection: dbConnectionOptions
       })
     case 'sqlite3':
       return Knex({
@@ -118,14 +118,14 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
           }
           else if(Relation.oneToMany in gqlField.directives || gqlField.isArray) {
             await this.createOneToManyRelation(currentTable, gqlField, tableName)
-          } 
-          else if (Relation.oneToOne in gqlField.directives || !gqlField.isArray) {
-            await this.createOneToOneRelation(currentTable, gqlField, tableName)
           }
+          // else if (Relation.oneToOne in gqlField.directives || !gqlField.isArray) {
+            // await this.createOneToOneRelation(currentTable, gqlField, tableName)
+          // }
         }
       }
     }
-    
+
     return Promise.resolve();
   }
 
@@ -196,7 +196,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     if(!newTable) {
       newTable = `${currentTable}_${gqlField.type.toLowerCase()}`
     }
-    
+
     // tslint:disable-next-line: await-promise
     const hasTable = await this.dbConnection.schema.hasTable(newTable)
     if(gqlField.isArray) {

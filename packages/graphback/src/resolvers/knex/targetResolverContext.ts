@@ -125,7 +125,7 @@ export const buildTypeContext = (context: Type, database: string): TargetResolve
   context.fields.forEach((f: Field) => {
     if(f.isType){
       if(f.directives.OneToOne || !f.isArray) {
-        let columnName = `${context.name.toLowerCase()}Id`
+        let columnName = `id`
         if(f.directives.OneToOne) {
           columnName = f.directives.OneToOne.field
         }
