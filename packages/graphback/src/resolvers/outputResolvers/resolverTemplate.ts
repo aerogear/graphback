@@ -7,84 +7,50 @@ const imports = `import { GraphQLContext } from '../../context'`
  * @param context `Type` object
  * @param name name of the Type
  */
+// tslint:disable-next-line: max-func-body-length
 const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
-  if(context.relations.length && context.subscriptions.length) {
-    return `${imports}
+  const { relations, queries, mutations, subscriptions, subscriptionTypes } = context
 
-enum Subscriptions {
-  ${context.subscriptionTypes}
-}
+  const outputResolvers = []
 
-export const ${name.toLowerCase()}Resolvers = {
-  ${name}: {
-    ${context.relations.join(',\n    ')}
-  },
+  if(relations.length) {
+    outputResolvers.push(`${name}: {
+    ${relations.join(',\n    ')}
+  }`)
+  }
 
-  Query: {
+  if(queries.length) {
+    outputResolvers.push(`Query: {
     ${context.queries.join(',\n    ')}
-  },
+  }`)
+  }
 
-  Mutation: {
+  if(mutations.length) {
+    outputResolvers.push(`Mutation: {
     ${context.mutations.join(',\n    ')}
-  },
+  }`)
+  }
 
-  Subscription: {
+  if(subscriptions.length) {
+    outputResolvers.push(`Subscription: {
     ${context.subscriptions.join(',\n    ')}
+  }`)
   }
-}
-`
-  } else if (context.relations.length){
-    return `${imports}
 
-export const ${name.toLowerCase()}Resolvers = {
-  ${name}: {
-    ${context.relations.join(',\n    ')}
-  },
+  let output = `${imports}`
 
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
-
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  }
-}
-`
-  } else if(context.subscriptions.length) {
-    return `${imports}
-
-enum Subscriptions {
+  if(context.subscriptions.length) {
+    output += `\n\n enum Subscriptions {
   ${context.subscriptionTypes}
-}
-
-export const ${name.toLowerCase()}Resolvers = {
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
-
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  },
-
-  Subscription: {
-    ${context.subscriptions.join(',\n    ')}
+}`
   }
+
+  output += `\n\nexport const ${name.toLowerCase()}Resolvers = {
+  ${outputResolvers.join(',\n\n  ')}
 }
 `
-  } else {
-    return `${imports}
 
-export const ${name.toLowerCase()}Resolvers = {
-  Query: {
-    ${context.queries.join(',\n    ')}
-  },
-
-  Mutation: {
-    ${context.mutations.join(',\n    ')}
-  }
-}
-`
-  }
+  return output
 }
 
 const generateResolvers = (context: TypeContext[]) => {

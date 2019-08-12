@@ -55,3 +55,7 @@ will create the `delete` mutation for `Note` type only.
 
 > **Note**: Directives override the configuration flags to `true`, so to enable a operation through directive for a single `type`,
 > the default configuration should be `false`. Otherwise it will effect every `type`, using flags from the configuration.
+
+### `@disableGen`
+User can use this directive to disable CRUD operation generation for that type. Applying this directive will not create any 
+`Query`/`Mutation`/`Subscription` for that type.

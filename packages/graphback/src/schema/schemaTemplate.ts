@@ -35,17 +35,23 @@ const imports = `import gql from 'graphql-tag'`
  * @param custom custom queries inputted by the user
  */
 const generateQueries = (queries: string[], customQueries: string[]) => {
-  if(customQueries.length) {
-    return `type Query {
-    ${queries.join('\n    ')}
-    ## Custom queries
-    ${customQueries.join('\n    ')}
-  }`
-  } else {
-    return `type Query {
-    ${queries.join('\n    ')}
-  }`
+  if(!queries.length && !customQueries.length) {
+    return ``
   }
+  let queryOutput = `type Query {`
+  
+  if(queries.length) {
+    queryOutput += `\n    ${queries.join('\n    ')}`
+  }
+
+  if(customQueries.length) {
+    queryOutput += `\n    ## Custom queries`
+    queryOutput += `\n    ${customQueries.join('\n    ')}`
+  }
+
+  queryOutput += `\n  }`
+
+  return queryOutput
 }
 
 /**
@@ -54,17 +60,23 @@ const generateQueries = (queries: string[], customQueries: string[]) => {
  * @param custom custom mutations inputted by the user
  */
 const generateMutations = (mutations: string[], customMutations: string[]) => {
-  if(customMutations.length) {
-    return `type Mutation {
-    ${mutations.join('\n    ')}
-    ## Custom mutations
-    ${customMutations.join('\n    ')}
-  }`
-  } else {
-    return `type Mutation {
-    ${mutations.join('\n    ')}
-  }`
+  if(!mutations.length && !customMutations.length) {
+    return ``
   }
+  let mutationOutput = `type Mutation {`
+  
+  if(mutations.length) {
+    mutationOutput += `\n    ${mutations.join('\n    ')}`
+  }
+
+  if(customMutations.length) {
+    mutationOutput += `\n    ## Custom mutations`
+    mutationOutput += `\n    ${customMutations.join('\n    ')}`
+  }
+
+  mutationOutput += `\n  }`
+
+  return mutationOutput
 }
 
 /**
@@ -73,17 +85,23 @@ const generateMutations = (mutations: string[], customMutations: string[]) => {
  * @param custom custom subscriptions inputted by the user
  */
 const generateSubscriptions = (subscriptions: string[], customSubs: string[]) => {
-  if(customSubs.length) {
-    return `type Subscription {
-    ${subscriptions.join('\n    ')}
-    ## Custom subscriptions
-    ${customSubs.join('\n    ')}
-  }`
-  } else {
-    return `type Subscription {
-    ${subscriptions.join('\n    ')}
-  }`
+  if(!subscriptions.length && !customSubs.length) {
+    return ``
   }
+  let subsOutput = `type Subscription {`
+  
+  if(subscriptions.length) {
+    subsOutput += `\n    ${subscriptions.join('\n    ')}`
+  }
+
+  if(customSubs.length) {
+    subsOutput += `\n    ## Custom subscriptions`
+    subsOutput += `\n    ${customSubs.join('\n    ')}`
+  }
+
+  subsOutput += `\n  }`
+
+  return subsOutput
 }
 
 /**
@@ -95,39 +113,34 @@ const generateSubscriptions = (subscriptions: string[], customSubs: string[]) =>
 const outputSchema = (context: TargetContext, customQueries: string[], customMutations: string[], customSubscriptions: string[]): string => {
   const { inputFields, nodes, filterFields, queries, mutations, subscriptions } = context
 
-  if(context.subscriptions.length) {
-    return `${imports}
-  
-export const typeDefs = gql\`
-  ${nodeTypes(nodes)}
+  const allQueries = generateQueries(queries, customQueries)
+  const allMutations = generateMutations(mutations, customMutations)
+  const allSubs = generateSubscriptions(subscriptions, customSubscriptions)
 
-  ${inputs(inputFields)}
-
-  ${filters(filterFields)}
-
-  ${generateQueries(queries, customQueries)}
-
-  ${generateMutations(mutations, customMutations)}
-
-  ${generateSubscriptions(subscriptions, customSubscriptions)}
-\`
-`
-  } else {
-    return `${imports}
+  let output = `${imports}
 
 export const typeDefs = gql\`
   ${nodeTypes(nodes)}
 
   ${inputs(inputFields)}
 
-  ${filters(filterFields)}
+  ${filters(filterFields)}`
 
-  ${generateQueries(queries, customQueries)}
-  
-  ${generateMutations(mutations, customMutations)}
-\`
-`
+  if(allQueries) {
+    output += `\n\n  ${allQueries}`
   }
+
+  if(allMutations) {
+    output += `\n\n  ${allMutations}`
+  }
+
+  if(allSubs) {
+    output += `\n\n  ${allSubs}`
+  }
+
+  output += `\n\`\n`
+
+  return output
 }
 
 /**
