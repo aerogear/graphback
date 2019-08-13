@@ -1,7 +1,6 @@
 import cors from "cors"
 import express from "express"
 import graphqlHTTP from 'express-graphql'
-import { buildSchema } from 'graphql'
 
 import config from "./config/config"
 import { connect } from "./db"
@@ -13,7 +12,7 @@ async function start() {
 
   app.use(cors())
 
-  app.get("/health", (req, res) => res.sendStatus(200))
+  app.get("/health", (req: express.Request, res: express.Response) => res.sendStatus(200))
 
   // connect to db
   const client = await connect(config.db);
@@ -24,7 +23,7 @@ async function start() {
     graphiql: true,
     context: async ({
       req
-    }: {req: Express.Request}) => {
+    }: {req: express.Request}) => {
       return {
         req,
         db: client,

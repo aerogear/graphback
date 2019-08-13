@@ -18,7 +18,7 @@ single type
 #### Features
 - Added new GraphQL-js starter template, that uses GraphQL.js library.
 
-## 0.6.0 (7st August, 2019)
+## 0.6.0 (7th August, 2019)
 
 ### Graphback-cli
 #### Features
