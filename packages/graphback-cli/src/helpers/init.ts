@@ -18,9 +18,9 @@ async function installDependencies(name: string, database: string): Promise<void
   process.chdir(name)
   const spinner = ora('Installing dependencies').start()
   await execa('npm', ['i'])
-  if(database === 'pg') {
+  if (database === 'pg') {
     await execa('npm', ['i', '-S', 'pg'])
-  } else if(database === 'sqlite3') {
+  } else if (database === 'sqlite3') {
     await execa('npm', ['i', '-S', 'sqlite3'])
   }
   spinner.succeed()
@@ -63,8 +63,8 @@ async function chooseTemplate(): Promise<Template> {
  */
 function checkTemplateName(templateName: string): void {
   const availableTemplates = allTemplates.map((t: Template) => t.name)
-  if(availableTemplates.includes(templateName)) {
-    return 
+  if (availableTemplates.includes(templateName)) {
+    return
   }
   logError("Template with given name doesn't exist. Give one of available ones or simply choose by not providing a template name")
   process.exit(0)
@@ -76,7 +76,7 @@ function checkTemplateName(templateName: string): void {
  */
 async function assignTemplate(templateName: string): Promise<Template> {
   let template
-  if(templateName) {
+  if (templateName) {
     checkTemplateName(templateName)
     template = allTemplates.find((t: Template) => t.name === templateName)
   } else {
@@ -101,17 +101,40 @@ Next Steps:
 }
 
 /**
+ * Build template from user provided url
+ */
+function buildTemplateFromGithub(templateUrl: string) {
+  const url = templateUrl.split("#")
+  return {
+    name: "Users Github template",
+    description: "User provided template",
+    repo: {
+      uri: url[0],
+      branch: url[1] || "master",
+      path: "/"
+    }
+  };
+}
+
+/**
  * init command handler
  * @param name name of project folder
  * @param templateName name of the template provided(if any)
+ * @param templateUrl github url to the template
  */
-export async function init(name: string, templateName?: string) {
+export async function init(name: string, templateName?: string, templateUrl?: string) {
   logInfo(chalk.yellow(
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
   ))
   const path: string = `${process.cwd()}/${name}`
   checkDirectory(path, name)
-  const template: Template = await assignTemplate(templateName)
+  let template: Template;
+  if (templateUrl) {
+    template = buildTemplateFromGithub(templateUrl);
+  } else {
+    template = await assignTemplate(templateName)
+  }
+
   const [modelName, content] = await createModel()
   const database = await chooseDatabase()
   mkdirSync(path)

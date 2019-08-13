@@ -1,6 +1,6 @@
 import { init } from '../helpers/init'
 
-type Params = { name?: string, templateName?: string }
+type Params = { name?: string, templateName?: string, templateUrl: string }
 
 export const command = 'init <name> [templateName]'
 
@@ -16,8 +16,12 @@ export const builder = (args) => {
     describe: 'Name of the template',
     type: 'string'
   })
+  args.positional('templateUrl', {
+    describe: 'GitHub URL of the template. For example (http://github.com/wtrocki/graphback-hapijs#master)',
+    type: 'string'
+  })
 }
 
-export async function handler({ name, templateName }: Params) {
-  await init(name, templateName)
+export async function handler({ name, templateName, templateUrl }: Params) {
+  await init(name, templateName, templateUrl);
 }
