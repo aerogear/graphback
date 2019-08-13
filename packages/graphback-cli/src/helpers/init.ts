@@ -105,13 +105,14 @@ Next Steps:
  */
 function buildTemplateFromGithub(templateUrl: string) {
   const url = templateUrl.split("#")
+  
   return {
     name: "Users Github template",
     description: "User provided template",
     repo: {
       uri: url[0],
       branch: url[1] || "master",
-      path: "/"
+      path: "/template"
     }
   };
 }
