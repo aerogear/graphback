@@ -3,7 +3,7 @@ import { init } from '../helpers/init'
 
 type Params = { name?: string, templateName?: string, templateUrl: string }
 
-export const command = 'init <name> [templateName]'
+export const command = 'init <name>'
 
 export const desc = 'Create project'
 
@@ -14,7 +14,7 @@ export const builder = (args: yargs.Argv) => {
     type: 'string',
   })
   args.option('templateName', {
-    describe: 'Name of the template',
+    describe: 'Name of the predefined template',
     type: 'string'
   })
   args.option('templateUrl', {
