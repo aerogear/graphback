@@ -22,8 +22,8 @@
     "knex": "0.19.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.5",
-    "@types/express": "^4.17.0",
+    "@types/cors": "2.8.5",
+    "@types/express": "4.17.0",
     "@types/graphql": "14.2.3",
     "@types/ioredis": "4.0.14",
     "@types/knex": "0.16.1",
