@@ -147,7 +147,7 @@ export const buildTargetContext = (input: Type[]) => {
           relation = {
             "name": f.type,
             "type": 'ID',
-            "relation": `${f.name}Id: ID!`
+            "relation": `${f.type.toLowerCase()}Id: ID!`
           }
           if (!relations.includes(relation) && f.type.toLowerCase() !== f.name) relations.push(relation)
         } else if(f.directives.OneToMany || f.isArray) {
