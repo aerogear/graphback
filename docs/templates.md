@@ -15,6 +15,16 @@ Uses knex.js library for database access.
 Typescript implementation of GraphQL server using apollo-express framework and Sofa library. Sofa enables exposing REST API along with GraphQL based endpoint. 
 Uses knex.js library for database access.
  
+### Custom templates
+
+Graphback supports custom templates by providing `templateUrl` parameter for init command.
+
+```
+graphback init name --templateUrl=https://github.com/aerogear/modern-appdev-workshop#master
+```
+
+> NOTE: Template needs to be located in repository `/template` folder
+
 ## Folder Structure
 Each template has the following folder structure, which is created as each `graphback` command is used.
 

@@ -17,6 +17,11 @@ single type
 ### Templates
 #### Features
 - Added new GraphQL-js starter template, that uses GraphQL.js library.
+- Added ability to use custom templates
+
+```
+graphback init name --templateUrl=https://github.com/aerogear/modern-appdev-workshop
+```
 
 ## 0.6.0 (7th August, 2019)
 
