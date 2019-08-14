@@ -44,7 +44,7 @@
     "@types/yargs": "13.0.2",
     "ava": "2.2.0",
     "lint-staged": "9.2.1",
-    "rimraf": "2.6.3",
+    "rimraf": "2.7.0",
     "ts-node": "8.3.0",
     "tslint": "5.18.0",
     "tslint-config-prettier": "1.18.0",
