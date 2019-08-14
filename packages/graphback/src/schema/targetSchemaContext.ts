@@ -11,6 +11,7 @@ interface RelationInfo {
   //tslint:disable-next-line
   type: string
   relation: string
+  idField?: string
 }
 
 /**
@@ -132,37 +133,34 @@ export const buildTargetContext = (input: Type[]) => {
   const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
-  let relation = {}
 
   inputContext.forEach((t: Type) => {
     t.fields.forEach((f: Field) => {
       if(f.isType){
         if(f.directives.OneToOne || !f.isArray) {
-          relation = {
+          relations.push({
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: ${f.type}`
-          }
-          if (!relations.includes(relation)) relations.push(relation)
-          relation = {
+          })
+          relations.push({
             "name": f.type,
             "type": 'ID',
-            "relation": `${f.type.toLowerCase()}Id: ID!`
-          }
-          if (!relations.includes(relation) && f.type.toLowerCase() !== f.name) relations.push(relation)
+            "relation": `${t.name.toLowerCase()}: ${t.name}!`,
+            "idField": `${t.name.toLowerCase()}Id: ID!`
+          })
         } else if(f.directives.OneToMany || f.isArray) {
-          relation = {
+          relations.push({
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: [${f.type}!]`
-          }
-          if (!relations.includes(relation)) relations.push(relation)
-          relation = {
+          })
+          relations.push({
             "name": f.type,
             "type": 'ID',
-            "relation": `${t.name.toLowerCase()}Id: ID!`
-          }
-          if (!relations.includes(relation) && f.type !== t.name) relations.push(relation)
+            "relation": `${t.name.toLowerCase()}: ${t.name}!`,
+            "idField": `${t.name.toLowerCase()}Id: ID!`
+          })
         }
       }
     })
@@ -190,7 +188,7 @@ export const buildTargetContext = (input: Type[]) => {
       "name": t.name,
       "fields": [...t.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
                   .map(maybeNullField),
-                  ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation))]
+                  ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField))]
     }
   })
   context.filterFields = inputContext.map((t: Type) => {
@@ -198,7 +196,7 @@ export const buildTargetContext = (input: Type[]) => {
       "name": t.name,
       "fields": [...t.fields.filter((f: Field) => !f.isType)
                   .map(nullField),
-                  ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.relation.slice(0, -1)))]
+                  ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))]
     }
   })
   // context.pagination = inputContext.filter((t: Type) => t.config.paginate)

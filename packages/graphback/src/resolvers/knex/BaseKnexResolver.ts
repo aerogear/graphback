@@ -87,16 +87,23 @@ public deletedSub = (typeName: string): string => {
 public typeRelation = (relation: string, columnName: string, fieldName: string, tableName: string): string => {
   if(relation === 'OneToOne') {
     return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
-      return context.db.select().from('${tableName}').where('id', '=', parent.${fieldName}Id)
+      return ${this.knexContext}.select().from('${tableName}').where('${columnName}', '=', parent.id)
                                 .then((result) => result[0])
     }`
   } else if(relation === 'OneToMany') {
     return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
-      return context.db.select().from('${tableName}').where('${columnName}', '=', parent.id)
+      return ${this.knexContext}.select().from('${tableName}').where('${columnName}', '=', parent.id)
     }`
   } else {
     return undefined
   }
+}
+
+public invertTypeRelation = (columnName: string, fieldName: string, tableName: string): string => {
+  return `${fieldName}: async (parent: any, _: any, context: GraphQLContext) => {
+      const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', parent.${columnName})
+      return result[0]
+    }`
 }
 
 public blankResolver = (name: string) => {

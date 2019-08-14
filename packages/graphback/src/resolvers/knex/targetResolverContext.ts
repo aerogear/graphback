@@ -21,6 +21,11 @@ export interface Custom {
   operationType?: string
 }
 
+interface Relation {
+  typeName: string
+  implementation: string
+}
+
 const knex = new KnexResolver()
 
 /**
@@ -118,32 +123,7 @@ const createSubscriptionTypes = (t: Type): string => {
  * Create context object for each individual type
  * @param context Visited info from the model
  */
-export const buildTypeContext = (context: Type, database: string): TargetResolverContext => {
-  const relationImplementations = []
-  let hasRelation = false
-
-  context.fields.forEach((f: Field) => {
-    if(f.isType){
-      if(f.directives.OneToOne || !f.isArray) {
-        let columnName = `id`
-        if(f.directives.OneToOne) {
-          columnName = f.directives.OneToOne.field
-        }
-        // relationTypes.push(context.name)
-        hasRelation = true
-        relationImplementations.push(knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase()))
-      } else if(f.directives.OneToMany || f.isArray) {
-        let columnName = `${context.name.toLowerCase()}Id`
-        if(f.directives.OneToMany) {
-          columnName = f.directives.OneToMany.field
-        }
-        // relationTypes.push(context.name)
-        hasRelation = true
-        relationImplementations.push(knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase()))
-      }
-    }
-  })
-
+export const buildTypeContext = (context: Type, database: string, relations: string[]): TargetResolverContext => {
   const typeContext = {
     relations: [],
     queries: [],
@@ -152,8 +132,8 @@ export const buildTypeContext = (context: Type, database: string): TargetResolve
     subscriptionTypes: ''
   }
 
-  if(hasRelation) {
-    typeContext.relations = relationImplementations
+  if(relations.length) {
+    typeContext.relations = relations
   }
   if(!context.config.disableGen) {
     typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s!==undefined)
@@ -172,10 +152,47 @@ export const buildTypeContext = (context: Type, database: string): TargetResolve
 export const buildResolverTargetContext = (input: Type[], database: string) => {
   const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: TypeContext[] = []
+  
+  const relations = []
+
+  inputContext.forEach((t: Type) => {
+    t.fields.forEach((f: Field) => {
+      if(f.isType) {
+        if(f.directives.OneToOne || !f.isArray) {
+          let columnName = `${t.name.toLowerCase()}Id`
+          if(f.directives.OneToOne) {
+            columnName = f.directives.OneToOne.field
+          }
+          relations.push({
+            typeName: t.name,
+            implementation: knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
+          })
+          relations.push({
+            typeName: f.type,
+            implementation: knex.invertTypeRelation(columnName, t.name.toLowerCase(), t.name.toLowerCase())
+          })
+        } else if(f.directives.OneToMany || f.isArray) {
+          let columnName = `${t.name.toLowerCase()}Id`
+          if(f.directives.OneToMany) {
+            columnName = f.directives.OneToMany.field
+          }
+          relations.push({
+            typeName: t.name,
+            implementation: knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
+          })
+          relations.push({
+            typeName: f.type,
+            implementation: knex.invertTypeRelation(columnName, t.name.toLowerCase(), t.name.toLowerCase())
+          })
+        }
+      }
+    })
+  })
+
   inputContext.forEach((t: Type) => {
     output.push({
       name: t.name,
-      context: buildTypeContext(t, database)
+      context: buildTypeContext(t, database, relations.filter((r: Relation) => r.typeName === t.name).map((r: Relation) => r.implementation))
     })
   })
 
