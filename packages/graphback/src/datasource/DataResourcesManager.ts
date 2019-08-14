@@ -119,9 +119,9 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
           else if(Relation.oneToMany in gqlField.directives || gqlField.isArray) {
             await this.createOneToManyRelation(currentTable, gqlField, tableName)
           }
-          // else if (Relation.oneToOne in gqlField.directives || !gqlField.isArray) {
-            // await this.createOneToOneRelation(currentTable, gqlField, tableName)
-          // }
+          else if (Relation.oneToOne in gqlField.directives || !gqlField.isArray) {
+            await this.createOneToOneRelation(currentTable, gqlField, tableName)
+          }
         }
       }
     }
