@@ -42,7 +42,7 @@
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.2",
-    "ava": "2.2.0",
+    "ava": "2.3.0",
     "lint-staged": "9.2.3",
     "rimraf": "3.0.0",
     "ts-node": "8.3.0",
