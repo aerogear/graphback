@@ -74,7 +74,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   // tslint:disable-next-line:typedef
   private primitiveTypesMapping = {
     String: 'string',
-    Int: 'decimal',
+    Int: 'integer',
     Float: 'float',
     Boolean: 'boolean'
   }
