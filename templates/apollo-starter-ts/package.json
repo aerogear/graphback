@@ -1,6 +1,6 @@
 {
   "name": "apollo-rest-template",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "",
   "private": true,
   "main": "dist/src/index.js",
