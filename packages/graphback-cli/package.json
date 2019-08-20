@@ -33,7 +33,7 @@
     ]
   },
   "engines": {
-    "node": "12.8.1"
+    "node": "12.9.0"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
@@ -46,7 +46,7 @@
     "lint-staged": "9.2.3",
     "rimraf": "3.0.0",
     "ts-node": "8.3.0",
-    "tslint": "5.18.0",
+    "tslint": "5.19.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
     "tsutils": "3.17.1",
