@@ -8,6 +8,16 @@ title: Releases
 This file contains changes and migration steps for GraphBack project. 
 Please follow indidivudal releases for more information.
 
+## 0.7.2 (20th August, 2019)
+### Graphback-cli
+#### Fixes
+- Removed watch command from cli which caused a lot of bugs.
+
+## 0.7.1 (20th August, 2019)
+### Graphback
+#### Fixes
+- Fixed problem with creating tables for Int type
+
 ## 0.7.0 (12th August, 2019)
 ### Graphback
 #### Features

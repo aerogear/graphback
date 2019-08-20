@@ -24,7 +24,7 @@ Change directory into your project folder. Edit your [`datamodel`](/docs/datamod
 graphback generate
 ``` 
 
-To setup database resources
+To setup database resources and start required services
 ```bash
 docker-compose up -d
 graphback db
@@ -32,5 +32,5 @@ graphback db
 
 To start the server and watch for changes in your datamodel run
 ```bash
-graphback watch
+npm run start
 ```

@@ -30,9 +30,5 @@ Execute `graphback` in your shell for more information
   ```bash
   graphback db
   ```
-  Create databases resources based on your datamodel. Currently supports PostgreSQL only
-### Watch
-  ```bash
-  graphback watch
-  ```
-  Watches for changes in your datamodel and regenerates your schema and resolvers. The watch commands drops your database and recreates it with every change to datamodel.
+  Create databases resources based on your datamodel. Currently supports PostgreSQL and sqlite3.
+> **Note** - *Running `graphback db` drops your database and recreates it with tables and relationships.*
