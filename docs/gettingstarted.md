@@ -30,7 +30,10 @@ docker-compose up -d
 graphback db
 ```
 
-To start the server and watch for changes in your datamodel run
+To compile the TypeScript code and start the server
 ```bash
+npm run build
 npm run start
 ```
+
+> You can run the development version using `npm run develop`, for available templates of graphback.

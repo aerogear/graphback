@@ -5,10 +5,10 @@
   "private": true,
   "main": "dist/src/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
     "build": "tsc",
-    "serve": "node dist/src/index.js",
-    "watch": "graphback watch"
+    "develop": "ts-node src/index.ts",
+    "start": "node dist/src/index.js",
+    "watch": "tsc -w"
   },
   "license": "Apache 2.0",
   "dependencies": {
