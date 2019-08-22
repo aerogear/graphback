@@ -21,7 +21,7 @@ async function installDependencies(name: string, database: string): Promise<void
   if (database === 'pg') {
     await execa('npm', ['i', '-S', 'pg'])
   } else if (database === 'sqlite3') {
-    await execa('npm', ['i', '-S', 'sqlite3'])
+    await execa('npm', ['i', '-S', 'sqlite3', 'graphql-subscriptions'])
   }
   spinner.succeed()
 }
