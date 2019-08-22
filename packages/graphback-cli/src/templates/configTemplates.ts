@@ -1,6 +1,7 @@
 // tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
+import { inMemorySubscription } from '../templates/resources/subscriptions'
 
 const configFilesPath = `${__dirname}/resources/config`
 
@@ -14,7 +15,7 @@ const getConfig = (database: string) => {
   if(database === 'pg') {
     return [readFileSync(`${configFilesPath}/postgres.json`, 'utf8'), readFileSync(`${dockerFilesPath}/postgres.yml`, 'utf8')]
   } else if(database === 'sqlite3') {
-    return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), readFileSync(`${dockerFilesPath}/sqlite3.yml`, 'utf8')]
+    return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
   } else {
     return undefined
   }
@@ -61,10 +62,17 @@ export const chooseDatabase = async(): Promise<string> => {
 export const createConfig = async(database: string) => {
   const configPath = `${process.cwd()}/config.json`
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
+  const subscriptionPath = `${process.cwd()}/src/subscriptions.ts`
   const config = {}
   const [dbConfig, dockerCompose] = getConfig(database)
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
   config["database"] = database
-  await Promise.all([writeFileSync(configPath, JSON.stringify(config, undefined, 2)), writeFileSync(dockerComposePath, dockerCompose)])
+  if(dockerCompose) {
+    writeFileSync(dockerComposePath, dockerCompose)
+  }
+  if(database === 'sqlite3') {
+    writeFileSync(subscriptionPath, inMemorySubscription)
+  }
+  writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }
