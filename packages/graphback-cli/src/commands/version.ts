@@ -1,10 +1,8 @@
 import yargs from 'yargs';
 import { init } from '../helpers/init'
-
-type Params = { name?: string, templateName?: string, templateUrl: string }
+import { logInfo } from '../utils'
 
 export const command = 'version'
-import { logInfo } from '../utils'
 export const desc = 'Print version'
 
 // tslint:disable-next-line: typedef
