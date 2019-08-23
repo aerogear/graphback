@@ -60,7 +60,7 @@
     "figlet": "1.2.3",
     "glob": "7.1.4",
     "graphback": "^0.7.2",
-    "inquirer": "6.5.1",
+    "inquirer": "6.5.2",
     "node-emoji": "1.10.0",
     "ora": "3.4.0",
     "parse-github-url": "1.0.2",
