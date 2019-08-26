@@ -6,6 +6,9 @@ export * from './GraphQLBackend'
 // Resolvers
 export * from './resolvers'
 
+// Client
+export * from './client'
+
 // DDL layer
 export * from './datasource/DataResourcesManager'
 
