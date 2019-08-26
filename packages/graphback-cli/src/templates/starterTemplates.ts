@@ -12,12 +12,12 @@ import { Template } from './templateMetadata'
  */
 export const allTemplates: Template[] = [
   {
-    name: 'apollo-starter-ts',
-    description: 'Apollo GraphQL template in typescript',
+    name: 'apollo-starter-js',
+    description: 'Apollo GraphQL template in JavaScript',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
       branch: 'master',
-      path: '/templates/apollo-starter-ts',
+      path: '/templates/apollo-starter-js',
     }
   },
   {

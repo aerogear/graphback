@@ -5,13 +5,15 @@
   "private": true,
   "main": "dist/src/index.js",
   "scripts": {
-    "build": "tsc",
     "develop": "ts-node src/index.ts",
-    "start": "node dist/src/index.js",
+    "start": "node src/start.js",
     "watch": "tsc -w"
   },
   "license": "Apache 2.0",
   "dependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/register": "^7.5.5",
     "apollo-server-express": "2.9.0",
     "cors": "2.8.5",
     "express": "4.17.1",

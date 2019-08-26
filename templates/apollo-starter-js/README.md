@@ -1,4 +1,4 @@
-## apollo-starter-ts
+## apollo-starter-js
 
 Starter template using graphback and apollo-server
 

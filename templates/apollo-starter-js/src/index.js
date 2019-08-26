@@ -22,9 +22,7 @@ async function start() {
   const apolloConfig = {
     typeDefs,
     resolvers,
-    context: async ({
-      req
-    }: {req: express.Request}) => {
+    context: async ({ req }) => {
       // pass request + db ref into context for each resolver
       return {
         req: req,
