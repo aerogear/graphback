@@ -33,7 +33,7 @@
     ]
   },
   "engines": {
-    "node": "12.9.0"
+    "node": "12.9.1"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
@@ -43,7 +43,7 @@
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.2",
     "ava": "2.3.0",
-    "lint-staged": "9.2.4",
+    "lint-staged": "9.2.5",
     "rimraf": "3.0.0",
     "ts-node": "8.3.0",
     "tslint": "5.19.0",
