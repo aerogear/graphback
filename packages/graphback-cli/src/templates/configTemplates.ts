@@ -56,10 +56,20 @@ export const chooseDatabase = async(): Promise<string> => {
   return database
 }
 
+export const askForClient = async(): Promise<boolean> => {
+  const { client } = await ask({
+    type: 'confirm',
+    name: 'client',
+    message: 'Do you want to generate client?'
+  })
+
+  return client
+}
+
 /**
  * Create config file with db info
  */
-export const createConfig = async(database: string) => {
+export const createConfig = async(database: string, client: boolean) => {
   const configPath = `${process.cwd()}/config.json`
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const subscriptionPath = `${process.cwd()}/src/subscriptions.ts`
@@ -68,6 +78,7 @@ export const createConfig = async(database: string) => {
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
   config["database"] = database
+  config["client"] = client
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)
   }

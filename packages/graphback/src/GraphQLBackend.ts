@@ -1,3 +1,4 @@
+import { Client, ClientGenerator } from './client';
 import { createInputContext } from './ContextCreator';
 import { Config, Type } from './ContextTypes';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
@@ -65,6 +66,12 @@ export class GraphQLBackendCreator {
     backend.resolvers = resolverGenerator.generate(database)  
     
     return backend;
+  }
+
+  public async createClient(): Promise<Client> {
+    const clientGenerator = new ClientGenerator(this.inputContext)
+
+    return clientGenerator.generate()
   }
 
 
