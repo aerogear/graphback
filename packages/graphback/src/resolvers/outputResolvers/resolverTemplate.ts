@@ -40,7 +40,7 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
   let output = `${imports}`
 
   if(context.subscriptions.length) {
-    output += `\n\n enum Subscriptions {
+    output += `\n\nenum Subscriptions {
   ${context.subscriptionTypes}
 }`
   }
