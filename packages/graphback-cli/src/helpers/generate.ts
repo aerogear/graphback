@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { Config, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
 
@@ -33,7 +33,7 @@ export async function generateBackend(): Promise<void> {
     }
     const configPath = `${process.cwd()}/config.json`
 
-    const { database, generation } = JSON.parse(readFileSync(configPath, "utf8"))
+    const { database, generation, client } = JSON.parse(readFileSync(configPath, "utf8"))
 
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
@@ -44,6 +44,16 @@ export async function generateBackend(): Promise<void> {
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
 
     const generated: IGraphQLBackend = await backend.createBackend(database)
+    
+    let generatedClient
+    let clientPath: string
+    if(client) {
+      generatedClient = await backend.createClient()
+      clientPath = `${process.cwd()}/client`
+      if(!existsSync(clientPath)) {
+        mkdirSync(clientPath)
+      }
+    }
 
     writeFileSync(outputSchemaPath, generated.schema)
 
@@ -68,6 +78,16 @@ export async function generateBackend(): Promise<void> {
 
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
     
+    if(client) {
+      Object.keys(generatedClient).forEach((folder: string) => {
+        const currentFolder = `${clientPath}/${folder}`
+        if(!existsSync(currentFolder)) {
+          mkdirSync(currentFolder)
+        }
+        generatedClient[folder].forEach((c: ClientImplementation) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))
+      })
+    }
+
   } catch (err) {
     logError(err)
     process.exit(0)

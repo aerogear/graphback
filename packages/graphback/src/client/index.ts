@@ -1,6 +1,18 @@
 import { Type } from '../ContextTypes';
 import { createSampleQueries } from './targetContext';
 
+export interface ClientImplementation {
+  name: string
+  implementation: string
+}
+
+export interface Client {
+  queries?: ClientImplementation[]
+  mutations?: ClientImplementation[]
+  fragments?: ClientImplementation[]
+  subscriptions?: ClientImplementation[]
+}
+
 /**
  * Generate sample queries from the datamodel
  */

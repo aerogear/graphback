@@ -9,6 +9,12 @@ const variableFields = (t: Type) => {
                   .join(', ')
 }
 
+const inputVariableFields = (t: Type) => {
+  return t.fields.filter((f: Field) => !f.isType && !f.isArray && f.type!=='ID')
+                  .map((f: Field) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
+                  .join(', ')
+}
+
 const variables = (t: Type) => {
   return t.fields.filter((f: Field) => !f.isType && !f.isArray)
                   .map((f: Field) => `${f.name}: \$${f.name}`)
@@ -34,7 +40,8 @@ export const ${fieldName} = gql\`
   }
 
   \$\{${t.name}Fragment}
-\``
+\`
+`
 }
 
 const findQuery = (t: Type, imports: string) => {
@@ -50,7 +57,8 @@ export const ${fieldName} = gql\`
   }
 
   \$\{${t.name}Fragment}
-\``
+\`
+`
 }
 
 
@@ -67,6 +75,7 @@ export const ${fieldName} = gql\`
   }
 
   \$\{${t.name}Fragment}
+\`
 `
 }
 
@@ -76,11 +85,14 @@ const updateMutation = (t: Type, imports: string) => {
   return `${imports}
 
 export const ${fieldName} = gql\`
-  mutation ${fieldName}($id: ID!, ${variableFields(t)}) {
-    ${fieldName}(id: $id, input: {${inputVariables(t)}})
+  mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
+    ${fieldName}(id: $id, input: {${inputVariables(t)}}) {4
+      ...${t.name}Fields
+    }
   }
 
   \$\{${t.name}Fragment}
+\`
 `
 }
 
@@ -95,6 +107,7 @@ export const ${fieldName} = gql\`
       id
     }
   }  
+\`
 `
 }
 
@@ -105,6 +118,7 @@ export const ${t.name}Fragment = gql\`
   fragment ${t.name}Fields on ${t.name} {
     ${t.fields.filter((f: Field) => !f.isArray && !f.isType).map((f: Field) => `${f.name}`).join('\n    ')}
   }
+\`
 `
 }
 
