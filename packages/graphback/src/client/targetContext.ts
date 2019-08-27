@@ -111,6 +111,23 @@ export const ${fieldName} = gql\`
 `
 }
 
+const subscription = (t: Type, imports: string, subscriptionType: string) => {
+  const fieldName = `${subscriptionType}${t.name}`
+
+  return `${imports}
+
+export const ${fieldName} = gql\`
+  subscription ${fieldName} {
+    ${fieldName} {
+      ...${t.name}Fields
+    }
+  }
+
+  \$\{${t.name}Fragment}
+\`
+`
+}
+
 const fragment = (t: Type) => {
   return `${gqlImport}
 
@@ -190,6 +207,37 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
   return mutations
 }
 
+const createSubscriptions = (types: Type[]) => {
+  const subscriptions = []
+
+  types.forEach((t: Type) => {
+    const imports = `import gql from "graphql-tag"
+import { ${t.name}Fragment } from "../fragments/${t.name}"`
+
+    if(t.config.create && t.config.subCreate) {
+      subscriptions.push({
+        name: `new${t.name}`,
+        implementation: subscription(t, imports, 'new')
+      })
+    }
+
+    if(t.config.update && t.config.subUpdate) {
+      subscriptions.push({
+        name: `updated${t.name}`,
+        implementation: subscription(t, imports, 'updated')
+      })
+    }
+
+    if(t.config.delete && t.config.subDelete) {
+      subscriptions.push({
+        name: `deleted${t.name}`,
+        implementation: subscription(t, imports, 'deleted')
+      })
+    }
+  })
+
+  return subscriptions
+}
 
 
 export const createSampleQueries = (inputContext: Type[]) => {
@@ -198,6 +246,7 @@ export const createSampleQueries = (inputContext: Type[]) => {
   return {
     fragments: createFragments(context),
     queries: createQueries(context),
-    mutations: createMutations(context)
+    mutations: createMutations(context),
+    subscriptions: createSubscriptions(context)
   }
 }
