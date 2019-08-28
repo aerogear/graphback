@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Generate production ready GraphQL backend in less 2 minutes",
+    "tagline": "Generate production ready GraphQL backend in less 5 minutes",
     "docs": {
       "clientqueries": {
         "title": "Client-side Queries"

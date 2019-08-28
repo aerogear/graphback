@@ -84,7 +84,7 @@ class Index extends React.Component {
         id={props.id}
         background={props.background}>
         <GridBlock
-          align="center"
+          align={props.align}
           contents={props.children}
           layout={props.layout}
         />
@@ -94,14 +94,14 @@ class Index extends React.Component {
 
 
     const Demo = () => (
-      <Block>
+      <Block align="center">
         {[
           {
-            content: `<iframe frameBorder="0" scrolling="no" marginHeight="0"
-              marginWidth="0" width="788.54" height="443"
-              type="text/html"
-              src="https://www.youtube.com/embed/tB_SPNckiEA?autoplay=0&fs=0&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0&origin=https://youtubeembedcode.com">
-             </iframe>`,
+            content: `<div class="yt-frame">
+              <iframe frameBorder="0" width="560" height="310" scrolling="no" marginHeight="0" marginWidth="0" 
+              src="https://www.youtube.com/embed/tB_SPNckiEA" 
+              frameborder="0" allowfullscreen align="middle"></iframe>
+            </div>`,
             title: 'Graphback in 5 minutes',
           },
         ]}
@@ -109,14 +109,15 @@ class Index extends React.Component {
     );
 
     const LearnHow = () => (
-      <Block background="light">
+      <Block background="light" align="left">
         {[
           {
             content: `Graphback provides command line client for generating fully functional GraphQL enabled Node.js servers.
             Developers can base on rich ecosystem of templates that integrate various open source technologies.
             Graphback will generate production ready application based on your GraphQL types in seconds.
-            Templates can be automatically packaged into containers and deployed to any cloud provider`,
+            Templates can be automatically packaged into containers and deployed to any cloud provider.`,
             image: `${baseUrl}img/diagram.png`,
+            contentAlign: 'right',
             imageAlign: 'right',
             title: 'Graphback Workflow',
           },
