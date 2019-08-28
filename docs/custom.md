@@ -3,7 +3,7 @@ id: custom
 title: Custom Methods
 ---
 
-Graphback also allows people to add custom queries, mutations or subscriptions by generating empty stubs where users can write their resolvers. This can be done by defining `Query`, `Mutation` or `Subscription` in your datamodel. The syntax is similar to SDL syntax.
+Graphback also allows people to add custom queries, mutations or subscriptions by generating empty stubs where users can write their resolvers. This can be done by defining `Query`, `Mutation` or `Subscription` in your data model. The syntax is similar to SDL syntax.
 
 ```
 type Query {

@@ -3,10 +3,10 @@ id: releases
 title: Releases
 ---
 
-## What's new in GraphBack
+## What's new in Graphback
 
-This file contains changes and migration steps for GraphBack project. 
-Please follow indidivudal releases for more information.
+This file contains changes and migration steps for Graphback project. 
+Please follow indidividual releases for more information.
 
 ## 0.7.2 (20th August, 2019)
 ### Graphback-cli
@@ -50,8 +50,8 @@ graphback init name --templateUrl=https://github.com/aerogear/modern-appdev-work
 #### Features
 - Added ability to perform CRUD generation based on configuration flags
 The generation will now be based on config.json file that will contain properties 
-for all resolver types that need to generated. Please refer to documentation for more information
-- Added ability for custom Queries/Mutations/Subscriptions. Users can generate empty  resolver stubs for their implementation.
+for all resolver types that need to generate. Please refer to the documentation for more information
+- Added ability for custom Queries/Mutations/Subscriptions. Users can generate empty resolver stubs for their implementation.
 
 #### Fixes
 - Modularized resolver output into separate files(based on types) instead of a single one. Also added custom resolvers.
