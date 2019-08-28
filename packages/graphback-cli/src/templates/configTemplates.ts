@@ -60,7 +60,7 @@ export const askForClient = async(): Promise<boolean> => {
   const { client } = await ask({
     type: 'confirm',
     name: 'client',
-    message: 'Do you want to generate client?'
+    message: 'Do you want to generate client-side queries?'
   })
 
   return client

@@ -5,6 +5,9 @@
     "previous": "Previous",
     "tagline": "Generate production ready GraphQL backend in less 2 minutes",
     "docs": {
+      "clientqueries": {
+        "title": "Client-side Queries"
+      },
       "commands": {
         "title": "CLI commands"
       },
