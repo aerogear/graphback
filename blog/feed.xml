@@ -18,7 +18,9 @@
             <link>https://graphback.dev/blog/2019/08/21/introduction.html</link>
             <guid>https://graphback.dev/blog/2019/08/21/introduction.html</guid>
             <pubDate>Wed, 21 Aug 2019 06:00:00 GMT</pubDate>
-            <description><![CDATA[<p>GraphQL was created almost 7 years ago at Facebook to resolve specific problems for the Facebook mobile platform. As Query Language, GraphQL offers transport and data exchange layer between server and client, leaving many implementation details to de...</p>]]></description>
+            <description><![CDATA[<p>GraphQL was created almost 7 years ago at Facebook to resolve specific problems for the Facebook mobile platform. As Query Language, GraphQL offers transport and data exchange layer between server and client, leaving many implementation details to developers.
+When comparing with REST, GraphQL technology has a steep learning curve and many pitfalls waiting for beginner developers looking to embrace it.</p>
+]]></description>
         </item>
         <item>
             <title><![CDATA[Using Visitor Pattern to parse GraphQL AST]]></title>
