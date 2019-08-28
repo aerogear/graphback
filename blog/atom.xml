@@ -2,12 +2,24 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://graphback.dev/blog</id>
     <title>Graphback Blog</title>
-    <updated>2019-07-10T06:00:00Z</updated>
+    <updated>2019-08-21T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://graphback.dev/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Graphback news and events.</subtitle>
     <logo>https://graphback.dev/img/favicon.ico</logo>
     <rights>Copyright © 2019 Graphback Contributors</rights>
+    <entry>
+        <title type="html"><![CDATA[Graphback - the evolution of the GraphQL ecosystem]]></title>
+        <id>https://graphback.dev/blog/2019/08/21/introduction.html</id>
+        <link href="https://graphback.dev/blog/2019/08/21/introduction.html">
+        </link>
+        <updated>2019-08-21T06:00:00Z</updated>
+        <summary type="html"><![CDATA[<p>GraphQL was created almost 7 years ago at Facebook to resolve specific problems for the Facebook mobile platform. As Query Language, GraphQL offers transport and data exchange layer between server and client, leaving many implementation details to de...</p>]]></summary>
+        <author>
+            <name>Wojciech Trocki</name>
+            <uri>http://twitter.com/wojtroken</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Using Visitor Pattern to parse GraphQL AST]]></title>
         <id>https://graphback.dev/blog/2019/07/10/using-visitor.html</id>
