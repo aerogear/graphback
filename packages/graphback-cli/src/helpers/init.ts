@@ -96,8 +96,6 @@ Next Steps:
 3. Run ${chalk.cyan(`graphback generate`)} to generate schema and resolvers
 4. Run ${chalk.cyan(`docker-compose up -d`)} to run your database
    and ${chalk.cyan(`graphback db`)} to create database resources in postgres
-5. Run ${chalk.cyan(`graphback watch`)} to start the server and watch for changes
-   in model.
 `
 }
 
