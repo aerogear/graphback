@@ -1,7 +1,6 @@
 // tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
-import { inMemorySubscription } from '../templates/resources/subscriptions'
 
 const configFilesPath = `${__dirname}/resources/config`
 
@@ -71,8 +70,8 @@ export const askForClient = async(): Promise<boolean> => {
  */
 export const createConfig = async(database: string, client: boolean) => {
   const configPath = `${process.cwd()}/config.json`
+
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
-  const subscriptionPath = `${process.cwd()}/src/subscriptions.ts`
   const config = {}
   const [dbConfig, dockerCompose] = getConfig(database)
   config["dbConfig"] = JSON.parse(dbConfig)
@@ -82,8 +81,6 @@ export const createConfig = async(database: string, client: boolean) => {
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)
   }
-  if(database === 'sqlite3') {
-    writeFileSync(subscriptionPath, inMemorySubscription)
-  }
+ 
   writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }
