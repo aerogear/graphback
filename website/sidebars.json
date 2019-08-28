@@ -11,7 +11,8 @@
       "concepts",
       "templates",
       "datasources",
-      "modules"
+      "modules",
+      "clientqueries"
     ],
     "Reference": [
       "commands"
