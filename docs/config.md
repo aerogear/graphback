@@ -3,12 +3,12 @@ id: config
 title: CRUD Config
 ---
 
-GraphBack takes input model and generates CRUD operations as queries and mutations.
+Graphback takes input model and generates CRUD operations as queries and mutations.
  These include `create`, `update`, `delete`, `find` and `findAll`. These operations can be generated for each `type` in your model.
  Further Graphback also generates three predefined subscriptions, namely `new`, `updated` and `deleted`.
 We can use them in clients to receive live updates for every change that is happening on the server.
 
- Graphback allows user to customize the generation process by using `configuration` and `directives`.
+ Graphback allows the user to customize the generation process by using `configuration` and `directives`.
 
 ## Configuration
 Graphback uses flags to allow user to choose between the CRUD operations and subscriptions. These are present in `config.json`, created during `init`,
@@ -45,7 +45,7 @@ Changing the generator config applies the config to all the types in your schema
 - `@subDelete`
 - `@disableGen`.
 
-User can use these directives to have more control on individual elements. For example,
+User can use these directives to have more control over individual elements. For example,
 ```
 type Note @delete {
   ...
@@ -53,8 +53,8 @@ type Note @delete {
 ```
 will create the `delete` mutation for `Note` type only.
 
-> **Note**: Directives override the configuration flags to `true`, so to enable a operation through directive for a single `type`,
-> the default configuration should be `false`. Otherwise it will effect every `type`, using flags from the configuration.
+> **Note**: Directives override the configuration flags to `true`, so to enable operation through directive for a single `type`,
+> the default configuration should be `false`. Otherwise, it will affect every `type`, using flags from the configuration.
 
 ### `@disableGen`
 User can use this directive to disable CRUD operation generation for that type. Applying this directive will not create any 
