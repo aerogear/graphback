@@ -86,5 +86,5 @@ export const newComment = gql`
 
 ## Autogenerating forms based on server-side schema
 
-For react based applications developers can use [uniform.tools](https://uniforms.tools) 
-Unofirms can be used along with generated client queries to automatically build dynamic forms with labales and validation.
+For react based applications developers can use [uniform.tools](https://uniforms.tools).
+Uniforms can be used along with generated client queries to automatically build dynamic forms with labales and validation.
