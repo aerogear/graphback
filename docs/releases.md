@@ -8,6 +8,20 @@ title: Releases
 This file contains changes and migration steps for Graphback project. 
 Please follow indidividual releases for more information.
 
+## 0.8.0 (28th August, 2019)
+### Graphback
+#### Features
+- Added ability to generate client side queries according to data model.
+  
+### Graphback-cli
+#### Fixes
+- Removed dependency from docker when using sqlite3, changed redis subscriptions
+to inmemory subscriptions.
+
+### Templates
+#### Fixes
+- Changed scripts of templates.
+
 ## 0.7.2 (20th August, 2019)
 ### Graphback-cli
 #### Fixes
