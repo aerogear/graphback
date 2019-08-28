@@ -1,9 +1,9 @@
 ---
 title: Graphback - the evolution of the GraphQL ecosystem
-tags: graphql, nodejs, realtimedb
-author: Wojciech trocki
+tags: graphql, nodejs
+author: Wojciech Trocki
 authorURL: http://twitter.com/wojtroken
-authorFBID: wojtekteero
+authorFBID: 2026021350761623
 
 ---
 
