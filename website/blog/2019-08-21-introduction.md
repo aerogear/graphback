@@ -10,6 +10,8 @@ authorFBID: 2026021350761623
 GraphQL was created almost 7 years ago at Facebook to resolve specific problems for the Facebook mobile platform. As Query Language, GraphQL offers transport and data exchange layer between server and client, leaving many implementation details to developers. 
 When comparing with REST, GraphQL technology has a steep learning curve and many pitfalls waiting for beginner developers looking to embrace it.
 
+<!--truncate-->
+
 ## GraphQL ecosystem in 2019
 
 Over the years the ecosystem flourished and evolved towards more production-ready use cases. GraphQL stack became more mature and more developers started to create their applications using this technology. 
