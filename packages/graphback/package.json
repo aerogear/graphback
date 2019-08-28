@@ -1,6 +1,6 @@
 {
   "name": "graphback",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
