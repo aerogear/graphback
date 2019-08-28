@@ -1,7 +1,7 @@
 import cors from "cors"
 import express from "express"
 import graphqlHTTP from 'express-graphql'
-import { buildSchema } from 'graphql';
+import { buildASTSchema } from 'graphql';
 import config from "./config/config"
 import { connect } from "./db"
 import { root, typeDefs } from "./mapping"
@@ -16,7 +16,7 @@ async function start() {
 
   // connect to db
   const client = await connect(config.db);
-  const schema = buildSchema(typeDefs);
+  const schema = buildASTSchema(typeDefs);
   app.use('/graphql', graphqlHTTP({
     schema,
     rootValue: root,
