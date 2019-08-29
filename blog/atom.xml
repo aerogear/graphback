@@ -2,12 +2,25 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://graphback.dev/blog</id>
     <title>Graphback Blog</title>
-    <updated>2019-08-21T06:00:00Z</updated>
+    <updated>2019-08-27T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://graphback.dev/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Graphback news and events.</subtitle>
     <logo>https://graphback.dev/img/favicon.ico</logo>
     <rights>Copyright © 2019 Graphback Contributors</rights>
+    <entry>
+        <title type="html"><![CDATA[Crash course on Graphback]]></title>
+        <id>https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html</id>
+        <link href="https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html">
+        </link>
+        <updated>2019-08-27T06:00:00Z</updated>
+        <summary type="html"><![CDATA[<p>Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted.</p>
+]]></summary>
+        <author>
+            <name>Michal Stokluska</name>
+            <uri>https://www.linkedin.com/in/michal-stokluska-350a72123</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Graphback - the evolution of the GraphQL ecosystem]]></title>
         <id>https://graphback.dev/blog/2019/08/21/introduction.html</id>

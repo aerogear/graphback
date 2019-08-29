@@ -4,7 +4,7 @@
         <title>Graphback Blog</title>
         <link>https://graphback.dev/blog</link>
         <description>The best place to stay up-to-date with the latest Graphback news and events.</description>
-        <lastBuildDate>Wed, 21 Aug 2019 06:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 27 Aug 2019 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
@@ -13,6 +13,14 @@
             <link>https://graphback.dev/blog</link>
         </image>
         <copyright>Copyright © 2019 Graphback Contributors</copyright>
+        <item>
+            <title><![CDATA[Crash course on Graphback]]></title>
+            <link>https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html</link>
+            <guid>https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html</guid>
+            <pubDate>Tue, 27 Aug 2019 06:00:00 GMT</pubDate>
+            <description><![CDATA[<p>Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted.</p>
+]]></description>
+        </item>
         <item>
             <title><![CDATA[Graphback - the evolution of the GraphQL ecosystem]]></title>
             <link>https://graphback.dev/blog/2019/08/21/introduction.html</link>

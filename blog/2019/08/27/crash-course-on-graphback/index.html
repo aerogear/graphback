@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Crash course on Graphback · Graphback</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted. "/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Crash course on Graphback · Graphback"/><meta property="og:type" content="website"/><meta property="og:url" content="https://graphback.dev/blog/2019/08/27/crash-course-on-graphback"/><meta property="og:description" content="Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted. "/><meta property="og:image" content="https://graphback.dev/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://graphback.dev/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://graphback.dev/blog/atom.xml" title="Graphback Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://graphback.dev/blog/feed.xml" title="Graphback Blog RSS Feed"/><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/favicon.ico" alt="Graphback"/><h2 class="headerTitleWithLogo">Graphback</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/gettingstarted" target="_self">Documentation</a></li><li class="siteNavGroupActive"><a href="/blog/" target="_self">Blog</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/blog/2019/08/27/crash-course-on-graphback">Crash course on Graphback</a></li><li class="navListItem"><a class="navItem" href="/blog/2019/08/21/introduction">Graphback - the evolution of the GraphQL ecosystem</a></li><li class="navListItem"><a class="navItem" href="/blog/2019/07/10/using-visitor">Using Visitor Pattern to parse GraphQL AST</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/blog/2019/08/27/crash-course-on-graphback">Crash course on Graphback</a></h1><p class="post-meta">August 27, 2019</p><div class="authorBlock"><p class="post-authorName"><a href="https://www.linkedin.com/in/michal-stokluska-350a72123" target="_blank" rel="noreferrer noopener">Michal Stokluska</a></p></div></header><div><span><p>Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted.</p>
+<!--truncate-->
+<p>As a software engineer, I always wanted to learn more by building things, while having some form of standard I can base on when building an end to end solutions.</p>
+<p>Graphback in a CLI tool that can help build an entire GraphQL server and a client within seconds! It is an open-source project that is currently being available as beta with lots of amazing features to come!</p>
+<p>Graphback will generate schema and resolvers along with generating a database structure. It also addresses the difficulty of configuring a GraphQL server from scratch, and I know that our GraphQL server wasn't particularly difficult to set, but imagine how much work we would have if only we had more types in our server! All graphback needs from you is your schema and it will do everything else for you. However, there's a little bit more that you need to know in order to use full graphback potential.</p>
+<h2><a class="anchor" aria-hidden="true" id="requirements"></a><a href="#requirements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Requirements</h2>
+<p>We are not going to go deep in everything that Graphback has to offer but it would be handy if you could make yourself familiar with:</p>
+<ul>
+<li><a href="https://opensource.com/resources/what-docker">Docker</a></li>
+<li><a href="https://www.apollographql.com/docs/apollo-server/features/subscriptions/">Subscriptions</a></li>
+<li><a href="https://www.typescriptlang.org/">TypeScript</a></li>
+<li><a href="http://knexjs.org/">Knex</a></li>
+</ul>
+<p>However, if you only would like to see how easy it can be to create a GraphQL server, I will explain everything you need to know in this tutorial.</p>
+<h2><a class="anchor" aria-hidden="true" id="lets-start"></a><a href="#lets-start" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Let's start!</h2>
+<ul>
+<li><p>Our very first step is going to be installing Docker. Just follow the steps from <a href="https://runnable.com/docker/getting-started/">here</a>. To give you a brief on Docker, it is a platform that allows building containers that can contain libraries that are required for an application to start. For example, we are going to use Docker as our PostgreSQL provider. Without Docker, you would need to install entire Postgre SQL server on your local machine and then set it up. With docker, all you do is downloading an image of ready to go, out of the box - Postgres!</p></li>
+<li><p>Once done, to double-check if your docker was installed correctly type:</p></li>
+</ul>
+<pre><code class="hljs css language-sh">$ docker -v
+</code></pre>
+<ul>
+<li>Next, create a new folder called <code>graphback</code></li>
+<li>Navigate to that folder and in command line type:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ npm install -g graphback-cli
+</code></pre>
+<ul>
+<li>To start graphback run following command:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback init YOUR_PROJECT_NAME
+</code></pre>
+<p>Where YOUR_PROJECT_NAME is your own name of the project.</p>
+<ul>
+<li><p>Choose &quot;apollo-starter-ts&quot;.</p></li>
+<li><p>&quot;No&quot; for example model and PostgreSQL for your database.</p></li>
+<li><p>Once it's generated, navigate to your newly created project. It is going to be right in your <code>graphback</code> folder.</p></li>
+<li><p>In new folder navigate to <code>src/resolvers/</code>, there should be only one file here called <code>index.ts</code> and as you can see in this file, there are no resolvers generated just yet.</p></li>
+<li><p>Now navigate to <code>model/Default.graphql</code>, delete what's in there and paste our own types that we are well used to:</p></li>
+</ul>
+<pre><code class="hljs">type<span class="hljs-built_in"> User </span>{
+    id: ID!
+    firstName: String!
+    lastName: String!
+    title: String!
+    email: String
+}
+<span class="hljs-built_in">
+type </span>Task {
+    id: ID!
+    title: String!
+    description: String!
+    status: String!
+    assignedTo: [User!]!
+}
+</code></pre>
+<ul>
+<li>Now type in your terminal:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback generate
+</code></pre>
+<ul>
+<li>Next, open your <code>./src/resolvers/generated/</code> and witness the power of Graphback!</li>
+</ul>
+<p>Open your <code>task.ts</code> and <code>user.ts</code> and look through all the hard work Graphback did for you! I know that the code behind the resolvers might not be understandable to you at the moment but I'm sure with a bit of hard work you will be able to write your resolvers the very same way!</p>
+<ul>
+<li>Our next step is to test it out! In your terminal type:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ docker-compose up
+</code></pre>
+<p>This will launch a docker image that has Postgre SQL and Redis set up. We are not going to worry about it too much, however, docker is a very powerful tool and I'm sure understanding it will give you a huge advantage in the future.</p>
+<ul>
+<li>Type in your console:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback db
+</code></pre>
+<p>This command is going to build a database structure in Postgre SQL database based on your schema.</p>
+<ul>
+<li>Next, because Graphback is using Typescript it needs to be compiled before we can run it on our machine. To do that run:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ npm run build
+</code></pre>
+<p>Build is going to use the <code>build</code> script from package.json which simply
+compiles TypeScript code into JavaScript.</p>
+<ul>
+<li>Finally, we can run:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ npm run start
+</code></pre>
+<p>And our server is ready at <a href="http://localhost:4000/graphql">localhost:4000/graphql</a>! From now on you got access to all of the generated resolvers.  You can view all available queries and mutation in the playground by clicking &quot;Schema&quot; sidebar on the right-hand side of the playground!</p>
+<ul>
+<li>Graphback also allows for the use of so-called &quot;Directives&quot; which are extensions that can be attached to types and can affect the execution of a query. Let's re-construct our GraphQL server so that we can delete <code>Task</code>, but we can not delete <code>User</code>. To do that just add <code>@delete</code> to our <code>Task</code> type in <code>model/Default.graphql</code>:</li>
+</ul>
+<pre><code class="hljs">type<span class="hljs-built_in"> User </span>{
+    id: ID!
+    firstName: String!
+    lastName: String!
+    title: String!
+    email: String
+}
+<span class="hljs-built_in">
+type </span>Task @delete {
+    id: ID!
+    title: String!
+    description: String!
+    status: String!
+    assignedTo: [User!]!
+}
+</code></pre>
+<ul>
+<li>Now let's regenerate our resolvers with:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback generate
+</code></pre>
+<ul>
+<li>Navigate again to <code>./src/resolvers/generated</code> and you will have a new <code>delete</code> mutation in <code>task</code>, but not in <code>user</code>. To test it rebuild our database:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback db
+</code></pre>
+<ul>
+<li>Recompile our code:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ npm run build
+</code></pre>
+<ul>
+<li>Launch the server and give it a go!</li>
+</ul>
+<pre><code class="hljs css language-sh">$ npm run start
+</code></pre>
+<ul>
+<li>If you would like a resolver 'Delete' to be created for all your types, navigate to <code>./config.json</code> file and change <code>delete</code> field value to <code>true</code>:</li>
+</ul>
+<pre><code class="hljs css language-js">{
+  <span class="hljs-string">"dbConfig"</span>: {
+    <span class="hljs-string">"user"</span>: <span class="hljs-string">"postgresql"</span>,
+    <span class="hljs-string">"password"</span>: <span class="hljs-string">"postgres"</span>,
+    <span class="hljs-string">"database"</span>: <span class="hljs-string">"users"</span>,
+    <span class="hljs-string">"host"</span>: <span class="hljs-string">"127.0.0.1"</span>,
+    <span class="hljs-string">"port"</span>: <span class="hljs-number">55432</span>
+  },
+  <span class="hljs-string">"generation"</span>: {
+    <span class="hljs-string">"create"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"update"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"findAll"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"find"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-string">"delete"</span>: <span class="hljs-literal">false</span>, &lt;----------------------------------------
+    <span class="hljs-string">"subCreate"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-string">"subUpdate"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-string">"subDelete"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-string">"disableGen"</span>: <span class="hljs-literal">false</span>
+  },
+  <span class="hljs-string">"database"</span>: <span class="hljs-string">"pg"</span>
+}
+</code></pre>
+<p>Treat this file like a settings file for Graphback generator. By default <code>delete</code> generation is disabled hence the need for enabling it one by one in our types specification. However, you can change the value of <code>delete</code> to <code>true</code> and it will be autogenerated for all your types! If your familliar with subscriptions try changing <code>subCreate</code> field to <code>true</code> or use <code>@subCreate</code> directive, regenerate server and enjoy subscription resolvers being written for you!</p>
+<ul>
+<li>Graphack also allows for inserting your own resolvers! Let's give it a go! Go to <code>./model/Default.graphql</code> and add our own query <code>userByName</code>:</li>
+</ul>
+<pre><code class="hljs">type<span class="hljs-built_in"> User </span>{
+    id: ID!
+    firstName: String!
+    lastName: String!
+    title: String!
+    email: String
+}
+<span class="hljs-built_in">
+type </span>Task @delete {
+    id: ID!
+    title: String!
+    description: String!
+    status: String!
+    assignedTo: [User!]!
+}
+<span class="hljs-built_in">
+type </span>Query {
+    userByName(firstName: String!): User!
+}
+</code></pre>
+<ul>
+<li>Now we need to regenerate with:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback generate
+</code></pre>
+<p>And if you navigate to <code>./src/resolvers/custom</code> you will see <code>userByName.ts</code> file. As it is custom resolver we need to implement it ourselves. Change it to:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> { GraphQLContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../context'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> userByName = {
+  <span class="hljs-attr">Query</span>: {
+    <span class="hljs-attr">userByName</span>: <span class="hljs-function">(<span class="hljs-params">_: any, args: any, context: GraphQLContext</span>) =&gt;</span> {
+      <span class="hljs-keyword">return</span> context.db.select().from(<span class="hljs-string">'user'</span>).where(<span class="hljs-string">'firstName'</span>, <span class="hljs-string">'='</span>, args.firstName)
+    }
+  }
+}
+</code></pre>
+<p>Resolver looks different then the ones we did in previous tutorials as it is written in TypeScript and uses knex to communicate with a database, but the idea is generally the same as in previous GraphQL tutorial.</p>
+<ul>
+<li>Next, we need to repeat our 3-step process:</li>
+</ul>
+<pre><code class="hljs css language-sh">$ graphback db
+$ npm run build
+$ npm run start
+</code></pre>
+<p>And navigate to <a href="http://localhost:4000/graphql">localhost:4000/graphql</a> to test it!</p>
+<ul>
+<li>Let's test its functionality and execute the following queries and mutations:</li>
+</ul>
+<p>Our task query should return all tasks:</p>
+<p><img src="https://thepracticaldev.s3.amazonaws.com/i/cy8ssvrsbrgp0oh5bg16.png" alt="All task query"></p>
+<p>However, as our database is empty it will simply return an empty array!</p>
+<ul>
+<li>Let's add some data to our database:</li>
+</ul>
+<p><img src="https://thepracticaldev.s3.amazonaws.com/i/z07djlgen5974ha4uwe0.png" alt="addTask"></p>
+<p>As you can see, Grapback generates mutation in a slightly different way than what we have done, but if you think about, it simply takes in another type called <code>taskInput</code> which consists of <code>title</code> <code>description</code> and <code>status</code> while our <code>ID</code> is auto-generate increment!</p>
+<ul>
+<li>Now we can add our first <code>user</code>:</li>
+</ul>
+<p><img src="https://thepracticaldev.s3.amazonaws.com/i/j3faa4msdtmus5q7i1xv.png" alt="Mutation add user"></p>
+<p>Our database consists of a single user and a single task from now on!</p>
+<ul>
+<li>We can now check if our queries are working the way they should:</li>
+</ul>
+<p><img src="https://thepracticaldev.s3.amazonaws.com/i/y19ahvvnmlrt1besgbjo.png" alt="findByName query"></p>
+<h2><a class="anchor" aria-hidden="true" id="summary"></a><a href="#summary" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Summary</h2>
+<p>Graphback offers a lot of features out of the box. This easy to use, amazing, technology - helped me realize how powerful and life-changing software development can be. Writing an entire GraphQL server line by line which can be very time consuming, setting up subscriptions and using directives can take days or weeks to do! While Graphback can generate it for you within seconds! Imagine how powerful this tool can be in the world where developers are doing their best to provide a working prototype of an application as soon as possible, imagine the time saved that will come from typing <code>graphback generate</code> after populating your <code>typeDefs</code> instead of all the planning, coding and testing your back end. You will still need to
+implement your custom business logic yourself, but the core functionality will be provided saving you time from writing a lot of boilerplate.</p>
+</span></div></div><div class="blogSocialSection"></div></div><div class="blog-recent"><a class="button" href="/blog">Recent Posts</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#requirements">Requirements</a></li><li><a href="#lets-start">Let's start!</a></li><li><a href="#summary">Summary</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2019 Graphback Contributors</section></footer></div></body></html>
