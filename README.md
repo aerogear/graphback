@@ -43,7 +43,7 @@ implementing available interfaces.
 
 ## Documentation
 
- See [GraphBack.dev](https://graphback.dev) for usage and more.
+ See [Graphback.dev](https://graphback.dev) for usage and more.
 
 ## Contributing
 
