@@ -1,7 +1,3 @@
-import { RedisPubSub } from 'graphql-redis-subscriptions'
-import Redis from 'ioredis'
+import { PubSub } from 'graphql-subscriptions'
 
-export const pubsub = new RedisPubSub({
-  publisher: new Redis(6789),
-  subscriber: new Redis(6789)
-})
+export const pubsub = new PubSub()

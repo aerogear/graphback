@@ -8,6 +8,5 @@ type Note {
 
 type Comment @update(enable: false){
   id: ID!
-  title: String!
-  description: String!
+  text: String!
 }
