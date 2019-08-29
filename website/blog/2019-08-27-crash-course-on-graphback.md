@@ -1,15 +1,13 @@
---- 
-title: Crash course on REST, GraphQL and Graphback
+---
+title: Crash course on Graphback
 tags: graphql, nodejs, graphback
 author: Michal Stokluska
-authorURL: https://www.linkedin.com/in/michal-stokluska-350a72123/
+authorURL: https://www.linkedin.com/in/michal-stokluska-350a72123
 ---
 
-----
-# <center>Graphback</center>
-----
-
 Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted. 
+
+<!--truncate-->
 
 As a software engineer, I always wanted to learn more by building things, while having some form of standard I can base on when building an end to end solutions.
  
@@ -238,10 +236,3 @@ Our database consists of a single user and a single task from now on!
 
 Graphback offers a lot of features out of the box. This easy to use, amazing, technology - helped me realize how powerful and life-changing software development can be. Writing an entire GraphQL server line by line which can be very time consuming, setting up subscriptions and using directives can take days or weeks to do! While Graphback can generate it for you within seconds! Imagine how powerful this tool can be in the world where developers are doing their best to provide a working prototype of an application as soon as possible, imagine the time saved that will come from typing `graphback generate` after populating your `typeDefs` instead of all the planning, coding and testing your back end. You will still need to 
 implement your custom business logic yourself, but the core functionality will be provided saving you time from writing a lot of boilerplate.
-
-
-
-
-
-
-
