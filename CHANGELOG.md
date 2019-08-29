@@ -5,6 +5,29 @@ Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
 
+## 0.8.3 (29th August, 2019)
+### Templates
+#### Fixes
+- Removed redis-subscriptions and use im-memory graphql-subscriptions instead.
+
+### Graphback-cli
+#### Fixes
+- Removed redis dependency from docker-compose.
+
+## 0.8.2 (28th August, 2019)
+### Graphback-cli
+#### Fixes
+
+- Fixed instructions for missing watch command and replaced it with develop
+- Fixed issue with not cleaning template and dist folders 
+- Disabled the GraphQL-JS template due to invalid resolver format. 
+
+## 0.8.1 (28th August, 2019)
+### Graphback
+#### Fixes
+
+- Fixed npm release missing template files
+
 ## 0.8.0 (28th August, 2019)
 ### Graphback
 #### Features
