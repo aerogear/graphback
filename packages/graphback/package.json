@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/graphql": "14.2.3",
     "@types/knex": "0.15.2",
-    "@types/node": "8.10.52",
+    "@types/node": "8.10.53",
     "@types/pino": "5.20.0",
     "ava": "2.3.0",
     "rimraf": "3.0.0",
@@ -45,7 +45,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "graphql": "14.5.3",
+    "graphql": "14.5.4",
     "knex": "0.19.3",
     "pg": "7.12.1",
     "pino": "5.13.2",
