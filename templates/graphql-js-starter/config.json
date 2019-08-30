@@ -6,5 +6,16 @@
     "host": "127.0.0.1",
     "port": 55432
   },
+  "generation": {
+    "create": true,
+    "update": true,
+    "findAll": true,
+    "find": true,
+    "delete": false,
+    "subCreate": false,
+    "subUpdate": false,
+    "subDelete": false,
+    "disableGen": false
+  },
   "database": "pg"
 }
