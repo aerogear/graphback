@@ -1,4 +1,4 @@
-import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
+import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, InterfaceTypeDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
@@ -32,13 +32,13 @@ export const inputTypeVisitor = {
   },
 
   FieldDefinition: (node: FieldDefinitionNode) => {
-    if(node.arguments.length) {
+    if (node.arguments.length) {
       return {
-      ...node.type,
-      "name": node.name,
-      "directives": Object.assign({}, ...node.directives),
-      "hasDirectives": node.directives.length > 0,
-      "arguments": node.arguments
+        ...node.type,
+        "name": node.name,
+        "directives": Object.assign({}, ...node.directives),
+        "hasDirectives": node.directives.length > 0,
+        "arguments": node.arguments
       }
     } else {
       return {
@@ -50,15 +50,31 @@ export const inputTypeVisitor = {
     }
   },
 
+  InterfaceTypeDefinition: (node: InterfaceTypeDefinitionNode) => {
+    let config = {};
+
+    node.directives.forEach((directive: object) => {
+      config = Object.assign(config, directive);
+    })
+
+    return {
+      "kind": node.kind,
+      "name": node.name,
+      "fields": node.fields,
+      "config": config
+    }
+  },
+
+
   ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => {
     let config = {}
 
-    node.directives.map((directive: object) => {
+    node.directives.forEach((directive: object) => {
       config = Object.assign(config, directive)
-    })
+    });
 
     Object.keys(config).forEach((key: string) => {
-      if(Object.keys(config[key]).length) {
+      if (Object.keys(config[key]).length) {
         config[key] = config[key].enable
       } else {
         config[key] = true
@@ -66,8 +82,10 @@ export const inputTypeVisitor = {
     })
 
     return {
+      "kind": node.kind,
       "name": node.name,
       "fields": node.fields,
+      "interfaces": node.interfaces,
       "config": config
     }
   },
@@ -85,9 +103,9 @@ export const inputTypeVisitor = {
 
   Argument: (node: ArgumentNode) => {
     let value
-    if(node.value.toString() === "true") {
+    if (node.value.toString() === "true") {
       value = true
-    } else if(node.value.toString() === "false") {
+    } else if (node.value.toString() === "false") {
       value = false
     } else {
       value = node.value

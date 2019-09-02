@@ -1,4 +1,4 @@
-import { Field, Type } from '../../ContextTypes';
+import { Field, OBJECT_TYPE_DEFINITION, Type } from '../../ContextTypes';
 import { getFieldName, getTableName, ResolverType } from '../../utils';
 import { KnexResolver } from './KnexResolver';
 
@@ -150,9 +150,9 @@ export const buildTypeContext = (context: Type, database: string, relations: str
  * @param input Input visited object
  */
 export const buildResolverTargetContext = (input: Type[], database: string) => {
-  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+  const inputContext = input.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: TypeContext[] = []
-  
+
   const relations = []
 
   inputContext.forEach((t: Type) => {
