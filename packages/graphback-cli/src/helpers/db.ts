@@ -40,14 +40,14 @@ export const dropDBResources = async(): Promise<void> => {
 export const createDBResources = async(): Promise<void> => {
   try{
     const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
-    
+
     if(models.found.length === 0) {
       logError(`No graphql file found inside ${process.cwd()}/model folder.`)
       process.exit(0)
     }
 
     const { database, dbConfig, generation } = JSON.parse(readFileSync(configPath, "utf8"))
-    
+
     if(database === 'sqlite3') {
       await execa('touch', ['db.sqlite'])
     }
@@ -56,12 +56,12 @@ export const createDBResources = async(): Promise<void> => {
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
-    
+
     const manager = new DatabaseSchemaManager(database, dbConfig);
     backend.registerDataResourcesManager(manager);
-    
+
     await backend.createDatabase()
-    
+
   } catch(err) {
     handleError(err)
   }

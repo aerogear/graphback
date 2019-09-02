@@ -1,3 +1,5 @@
+import { INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, Type } from '../ContextTypes';
+
 export enum ResolverType {
   CREATE = 'create',
   UPDATE = 'update',
@@ -14,4 +16,19 @@ export const getFieldName = (typeName: string, action: ResolverType, plural: str
 
 export const getTableName = (typeName: string): string => {
   return typeName.toLowerCase()
+}
+
+export const filterObjectTypes = (types: Type[]) => types.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION);
+
+export const filterInterfaceTypes = (types: Type[]) => types.filter((t: Type) => t.kind === INTERFACE_TYPE_DEFINITION);
+
+/**
+ * Generate a string literal with the following format:
+ *
+ * `implements InterfaceA & InterfaceB & Interface C ...`
+ *
+ * @param names String[] - list of interface names
+ */
+export const createImplementsInterfaceString = (names: string[]) => {
+  return `implements ${names.map((name: string) => name).join(' & ')} `;
 }

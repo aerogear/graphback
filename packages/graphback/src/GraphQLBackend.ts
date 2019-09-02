@@ -1,6 +1,6 @@
 import { Client, ClientGenerator } from './client';
 import { createInputContext } from './ContextCreator';
-import { Config, Type } from './ContextTypes';
+import { Config, OBJECT_TYPE_DEFINITION, Type } from './ContextTypes';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { logger } from './logger'
@@ -63,8 +63,8 @@ export class GraphQLBackendCreator {
     backend.schema = schemaGenerator.generate()
 
     const resolverGenerator = new ResolverGenerator(this.inputContext)
-    backend.resolvers = resolverGenerator.generate(database)  
-    
+    backend.resolvers = resolverGenerator.generate(database)
+
     return backend;
   }
 
@@ -76,7 +76,7 @@ export class GraphQLBackendCreator {
 
 
   public async createDatabase(): Promise<void> {
-    const context = this.inputContext.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+    const context = this.inputContext.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
     try {
       if (this.dataLayerManager) {
         logger.info("Creating database structure")

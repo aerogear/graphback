@@ -1,3 +1,4 @@
+import { createImplementsInterfaceString } from '../utils';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
 // const pagination = (inputContext: Type[]): string => {
@@ -9,6 +10,10 @@ import { TargetContext, TargetType } from './targetSchemaContext';
 // `
 // }
 
+const generateImplementsString = (names: string[]) => {
+  return `implements ${names.map((name: string) => name).join(' & ')} `;
+}
+
 const inputs = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `input ${d.name}Input {
     ${d.fields.join('\n    ')}
@@ -16,7 +21,13 @@ const inputs = (defs: TargetType[]): string => {
 }
 
 const nodeTypes = (defs: TargetType[]): string => {
-  return `${defs.map((d: TargetType) => `type ${d.name} {
+  return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces): ''}{
+    ${d.fields.join('\n    ')}
+  }`).join('\n\n  ')}`
+}
+
+const nodeInterfaces = (defs: TargetType[]): string => {
+  return `${defs.map((d: TargetType) => `interface ${d.name} {
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
 }
@@ -24,7 +35,7 @@ const nodeTypes = (defs: TargetType[]): string => {
 const filters = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `input ${d.name}Filter {
     ${d.fields.join('\n    ')}
-  }`).join('\n\n  ')}` 
+  }`).join('\n\n  ')}`
 }
 
 const imports = `import gql from 'graphql-tag'`
@@ -35,16 +46,16 @@ const imports = `import gql from 'graphql-tag'`
  * @param custom custom queries inputted by the user
  */
 const generateQueries = (queries: string[], customQueries: string[]) => {
-  if(!queries.length && !customQueries.length) {
+  if (!queries.length && !customQueries.length) {
     return ``
   }
   let queryOutput = `type Query {`
-  
-  if(queries.length) {
+
+  if (queries.length) {
     queryOutput += `\n    ${queries.join('\n    ')}`
   }
 
-  if(customQueries.length) {
+  if (customQueries.length) {
     queryOutput += `\n    ## Custom queries`
     queryOutput += `\n    ${customQueries.join('\n    ')}`
   }
@@ -60,16 +71,16 @@ const generateQueries = (queries: string[], customQueries: string[]) => {
  * @param custom custom mutations inputted by the user
  */
 const generateMutations = (mutations: string[], customMutations: string[]) => {
-  if(!mutations.length && !customMutations.length) {
+  if (!mutations.length && !customMutations.length) {
     return ``
   }
   let mutationOutput = `type Mutation {`
-  
-  if(mutations.length) {
+
+  if (mutations.length) {
     mutationOutput += `\n    ${mutations.join('\n    ')}`
   }
 
-  if(customMutations.length) {
+  if (customMutations.length) {
     mutationOutput += `\n    ## Custom mutations`
     mutationOutput += `\n    ${customMutations.join('\n    ')}`
   }
@@ -85,16 +96,16 @@ const generateMutations = (mutations: string[], customMutations: string[]) => {
  * @param custom custom subscriptions inputted by the user
  */
 const generateSubscriptions = (subscriptions: string[], customSubs: string[]) => {
-  if(!subscriptions.length && !customSubs.length) {
+  if (!subscriptions.length && !customSubs.length) {
     return ``
   }
   let subsOutput = `type Subscription {`
-  
-  if(subscriptions.length) {
+
+  if (subscriptions.length) {
     subsOutput += `\n    ${subscriptions.join('\n    ')}`
   }
 
-  if(customSubs.length) {
+  if (customSubs.length) {
     subsOutput += `\n    ## Custom subscriptions`
     subsOutput += `\n    ${customSubs.join('\n    ')}`
   }
@@ -105,13 +116,13 @@ const generateSubscriptions = (subscriptions: string[], customSubs: string[]) =>
 }
 
 /**
- * String template having placeholders for definitions which is received 
+ * String template having placeholders for definitions which is received
  * from targetcontext
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
 const outputSchema = (context: TargetContext, customQueries: string[], customMutations: string[], customSubscriptions: string[]): string => {
-  const { inputFields, nodes, filterFields, queries, mutations, subscriptions } = context
+  const { inputFields, types, interfaces, filterFields, queries, mutations, subscriptions } = context
 
   const allQueries = generateQueries(queries, customQueries)
   const allMutations = generateMutations(mutations, customMutations)
@@ -120,21 +131,23 @@ const outputSchema = (context: TargetContext, customQueries: string[], customMut
   let output = `${imports}
 
 export const typeDefs = gql\`
-  ${nodeTypes(nodes)}
+  ${nodeInterfaces(interfaces)}
+
+  ${nodeTypes(types)}
 
   ${inputs(inputFields)}
 
   ${filters(filterFields)}`
 
-  if(allQueries) {
+  if (allQueries) {
     output += `\n\n  ${allQueries}`
   }
 
-  if(allMutations) {
+  if (allMutations) {
     output += `\n\n  ${allMutations}`
   }
 
-  if(allSubs) {
+  if (allSubs) {
     output += `\n\n  ${allSubs}`
   }
 

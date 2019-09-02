@@ -2,7 +2,7 @@ import cors from "cors"
 import express from "express"
 import http from "http"
 
-import { ApolloServer } from "apollo-server-express"
+import { ApolloServer, makeExecutableSchema } from "apollo-server-express"
 
 import config from "./config/config"
 import { connect } from "./db"
@@ -19,9 +19,16 @@ async function start() {
   // connect to db
   const client = await connect(config.db);
 
-  const apolloConfig = {
+  const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
+  });
+
+  const apolloConfig = {
+    schema,
     context: async ({
       req
     }: {req: express.Request}) => {

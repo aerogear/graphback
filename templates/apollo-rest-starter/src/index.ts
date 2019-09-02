@@ -21,6 +21,9 @@ async function start() {
   const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
   });
 
   app.use("/rest", useSofa({
@@ -31,8 +34,7 @@ async function start() {
   const client = await connect(config.db);
 
   const apolloConfig = {
-    typeDefs,
-    resolvers,
+    schema,
     context: async ({
       req
     }: { req: express.Request }) => {

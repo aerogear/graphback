@@ -1,4 +1,4 @@
-import { Field, Type } from "../ContextTypes";
+import { Field, OBJECT_TYPE_DEFINITION, Type } from "../ContextTypes";
 import { getFieldName, ResolverType } from '../utils';
 
 const gqlImport = `import gql from "graphql-tag"`
@@ -29,7 +29,7 @@ const inputVariables = (t: Type) => {
 
 const findAllQuery = (t: Type, imports: string) => {
   const fieldName = getFieldName(t.name, ResolverType.FIND_ALL, 's')
-  
+
   return `${imports}
 
 export const ${fieldName} = gql\`
@@ -106,7 +106,7 @@ export const ${fieldName} = gql\`
     ${fieldName}(id: $id) {
       id
     }
-  }  
+  }
 \`
 `
 }
@@ -241,7 +241,7 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
 
 export const createSampleQueries = (inputContext: Type[]) => {
-  const context = inputContext.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+  const context = inputContext.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   return {
     fragments: createFragments(context),

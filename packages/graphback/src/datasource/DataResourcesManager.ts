@@ -1,6 +1,6 @@
 // tslint:disable: await-promise
 import * as Knex from 'knex'
-import { Field,  Type } from '../ContextTypes';
+import { Field, Type } from '../ContextTypes';
 import { logger } from '../logger'
 import { DatabaseContextProvider } from './DatabaseContextProvider'
 /**
@@ -85,10 +85,11 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
 
   public async createDatabaseResources(context: DatabaseContextProvider, types: Type[]): Promise<void> {
     for (const gqlType of types) {
+
       const tableName: string = context.getFieldName(gqlType)
       const hasTable = await this.dbConnection.schema.hasTable(tableName)
       if (hasTable) {
-        logger.warn(`Table exist! Skipping table creation for ${tableName}`)
+        logger.warn(`Table exists! Skipping table creation for ${tableName}`)
       } else {
         await this.dbConnection.schema.createTable(tableName, (table: Knex.TableBuilder) => {
           table.increments();
@@ -112,11 +113,11 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
       const tableName = context.getFieldName(gqlType)
       const currentTable = tableName
       for (const gqlField of gqlType.fields) {
-        if(gqlField.isType) {
-          if(Relation.manyToMany in gqlField.directives) {
+        if (gqlField.isType) {
+          if (Relation.manyToMany in gqlField.directives) {
             await this.createManyToManyRelation(currentTable, gqlField)
           }
-          else if(Relation.oneToMany in gqlField.directives || gqlField.isArray) {
+          else if (Relation.oneToMany in gqlField.directives || gqlField.isArray) {
             await this.createOneToManyRelation(currentTable, gqlField, tableName)
           }
           else if (Relation.oneToOne in gqlField.directives || !gqlField.isArray) {
@@ -137,14 +138,14 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    */
   public async createOneToOneRelation(currentTable: string, gqlField: Field, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
-    if(gqlField.hasDirectives && gqlField.directives.OneToOne.field) {
+    if (gqlField.hasDirectives && gqlField.directives.OneToOne.field) {
       fieldname = gqlField.directives.OneToOne.field
     }
-    if(!gqlField.isArray) {
+    if (!gqlField.isArray) {
       // tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase()
       const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
-      if(hasColumn) {
+      if (hasColumn) {
         logger.info("skipping relation creation")
       } else {
         await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
@@ -165,15 +166,15 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    */
   public async createOneToManyRelation(currentTable: string, gqlField: Field, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
-    if(gqlField.hasDirectives && gqlField.directives.OneToMany.field) {
+    if (gqlField.hasDirectives && gqlField.directives.OneToMany.field) {
       fieldname = gqlField.directives.OneToMany.field
     }
-    if(gqlField.isArray) {
+    if (gqlField.isArray) {
       // tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase()
       // tslint:disable-next-line: await-promise
       const hasColumn = await this.dbConnection.schema.hasColumn(tableName, fieldname)
-      if(hasColumn) {
+      if (hasColumn) {
         logger.info("skipping relation creation")
       } else {
         await this.dbConnection.schema.alterTable(tableName, (table: Knex.TableBuilder) => {
@@ -193,14 +194,14 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    */
   public async createManyToManyRelation(currentTable: string, gqlField: Field): Promise<void> {
     let newTable = gqlField.directives.ManyToMany.tablename
-    if(!newTable) {
+    if (!newTable) {
       newTable = `${currentTable}_${gqlField.type.toLowerCase()}`
     }
 
     // tslint:disable-next-line: await-promise
     const hasTable = await this.dbConnection.schema.hasTable(newTable)
-    if(gqlField.isArray) {
-      if(hasTable) {
+    if (gqlField.isArray) {
+      if (hasTable) {
         logger.info("skipping relation creation")
       } else {
         const tableOne = gqlField.type.toLowerCase()
@@ -219,7 +220,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     } else {
       throw new Error("Incorrect syntax declaration. Declaration should be an array.")
     }
-}
+  }
 
   public updateDatabaseResourcesFor(updates: IDataLayerUpdate[]): Promise<void> {
     throw new Error("Method not implemented.");
@@ -228,5 +229,4 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   public getConnection(): Knex {
     return this.dbConnection;
   }
-
 }

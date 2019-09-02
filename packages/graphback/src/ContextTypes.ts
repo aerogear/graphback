@@ -1,3 +1,6 @@
+export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
+export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
+
 /**
  * 1:1 relationship directive
  */
@@ -80,7 +83,19 @@ export interface Config {
  * Context type returned from InputTypeVisitor
  */
 export interface Type {
+  kind: string
   name: string
   fields: Field[]
+  interfaces?: InterfaceType[]
   config: Config
 }
+
+
+export interface InterfaceType {
+  // tslint:disable-next-line: no-reserved-keywords
+  type: string
+  isArray: boolean
+  isNull: boolean
+  isType: boolean
+}
+
