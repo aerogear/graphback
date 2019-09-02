@@ -70,7 +70,7 @@ export const createDBResources = async(): Promise<void> => {
 const postCommandMessage = () => {
   logInfo(`
 Database resources created.
-Run ${chalk.cyan(`graphback watch`)} to start the server and watch for changes.
+Run ${chalk.cyan(`npm run develop`)} to start the server.
   `)
 }
 
