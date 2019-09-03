@@ -1,5 +1,5 @@
 import yargs from 'yargs';
-import { init } from '../helpers/init'
+import { init } from '../helpers'
 
 type Params = { name?: string, templateName?: string, templateUrl: string }
 
