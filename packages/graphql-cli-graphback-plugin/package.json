@@ -1,0 +1,59 @@
+{
+  "name": "graphql-cli-graphback-plugin",
+  "version": "0.2.1",
+  "description": "GraphQL CLI plugin for Graphback - Node.js backend generator",
+  "homepage": "https://github.com/aerogear/graphback",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "typescript": {
+    "definition": "types/index.d.ts"
+  },
+  "author": "wtrocki@redhat.com",
+  "scripts": {
+    "clean": "rimraf coverage dist types",
+    "build": "npm run clean && tsc",
+    "cmd": "node ./dist/index.js",
+    "watch": "tsc -w",
+    "lint": "tslint -t stylish --project \"tsconfig.json\""
+  },
+  "engines": {
+    "node": "12.9.1"
+  },
+  "devDependencies": {
+    "@types/chalk": "0.4.31",
+    "@types/inquirer": "6.5.0",
+    "@types/node": "12.7.3",
+    "@types/node-emoji": "1.8.1",
+    "@types/through": "0.0.29",
+    "@types/yargs": "13.0.2",
+    "ava": "2.3.0",
+    "lint-staged": "9.2.4",
+    "rimraf": "3.0.0",
+    "ts-node": "8.3.0",
+    "tslint": "5.19.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-microsoft-contrib": "6.2.0",
+    "tsutils": "3.17.1",
+    "typescript": "3.5.3",
+    "typescript-eslint-parser": "21.0.2"
+  },
+  "dependencies": {
+    "graphback-cli": "^0.8.3",
+    "graphql-cli": "^3.0.14",
+    "yargs": "14.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
+  },
+  "license": "MIT"
+}
