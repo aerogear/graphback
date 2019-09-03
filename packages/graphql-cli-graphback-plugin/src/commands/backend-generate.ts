@@ -1,6 +1,6 @@
 import { generate } from 'graphback-cli'
 
-export const command = 'backend generate'
+export const command = 'backend-generate'
 
 export const desc = 'Generate schema and resolvers'
 

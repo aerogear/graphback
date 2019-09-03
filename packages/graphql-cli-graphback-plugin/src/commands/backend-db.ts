@@ -1,6 +1,6 @@
 import { createDB } from 'graphback-cli'
 
-export const command = 'backend db'
+export const command = 'backend-db'
 
 export const desc = 'Create database resources'
 
