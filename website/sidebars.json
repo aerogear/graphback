@@ -3,9 +3,9 @@
     "Getting Started": [
       "gettingstarted",
       "datamodel",
-      "relationships",
       "config",
-      "custom"
+      "custom",
+      "relationships"
     ],
     "Concepts": [
       "concepts",
