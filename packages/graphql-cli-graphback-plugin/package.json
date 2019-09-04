@@ -17,24 +17,24 @@
     "lint": "tslint -t stylish --project \"tsconfig.json\""
   },
   "engines": {
-    "node": "12.9.1"
+    "node": "12.10.0"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
-    "@types/node": "12.7.3",
+    "@types/node": "12.7.4",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.2",
     "ava": "2.3.0",
-    "lint-staged": "9.2.4",
+    "lint-staged": "9.2.5",
     "rimraf": "3.0.0",
     "ts-node": "8.3.0",
     "tslint": "5.19.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
     "tsutils": "3.17.1",
-    "typescript": "3.5.3",
+    "typescript": "3.6.2",
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
