@@ -1,4 +1,4 @@
-## GraphBack
+## Graphback
 
 <p align="center">
   <img width="400" src="https://github.com/aerogear/graphback/raw/master/website/static/img/graphback.png">
