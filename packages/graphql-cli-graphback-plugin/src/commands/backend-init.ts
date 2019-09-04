@@ -24,6 +24,6 @@ export const builder = (args: yargs.Argv) => {
   })
 }
 
-export async function handler(context: Context , { name, templateName, templateUrl }: Params) {
+export async function handler(context: Context, { name, templateName, templateUrl }: Params) {
   await init(name, templateName, templateUrl);
 }
