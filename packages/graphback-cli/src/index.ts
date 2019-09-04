@@ -2,6 +2,8 @@
 
 import * as yargs from 'yargs';
 
+export * from './helpers'
+
 if (require.main === module) {
   // tslint:disable-next-line: no-unused-expression
   yargs
@@ -11,5 +13,3 @@ if (require.main === module) {
     .version()
     .argv;
 }
-
-export * from './helpers'

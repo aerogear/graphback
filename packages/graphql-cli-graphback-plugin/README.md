@@ -1,3 +1,5 @@
+**Documentation**: https://graphback.dev
+
 ## GraphBack
 
 <p align="center">
@@ -11,7 +13,7 @@
 
 GraphQL can be hard and intimidating initially.
 Graphback helps you to kickstart your experience with any existing GraphQL implementation
-by generating backend layer using your data model.
+by generating a Node.js server using your data model.
 
 ## Commands
 
@@ -30,7 +32,5 @@ To create database resources:
 ```sh
 graphql backend-db
 ```
-
-**Documentation**: https://graphback.dev
 
 **Repository**: https://github.com/aerogear/graphback/
