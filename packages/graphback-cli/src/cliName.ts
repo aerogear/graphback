@@ -1,1 +1,0 @@
-export const CLI_NAME = "graphback "

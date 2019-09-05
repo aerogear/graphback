@@ -1,7 +1,7 @@
 import { init } from 'graphback-cli'
 import { Context } from 'graphql-cli'
 import yargs from 'yargs';
-import { CLI_NAME } from '../cliName'
+import { commandRoot } from '../commandRoot'
 
 type Params = { name?: string, templateName?: string, templateUrl: string }
 
@@ -26,5 +26,5 @@ export const builder = (args: yargs.Argv) => {
 }
 
 export async function handler(context: Context, { name, templateName, templateUrl }: Params) {
-  await init(name, templateName, templateUrl, CLI_NAME);
+  await init(name, templateName, templateUrl, commandRoot);
 }

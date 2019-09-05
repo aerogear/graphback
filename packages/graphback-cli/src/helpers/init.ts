@@ -86,14 +86,14 @@ async function assignTemplate(templateName: string): Promise<Template> {
   return template
 }
 
-function postSetupMessage(name: string, cliName: string): string {
+function postSetupMessage(name: string, commandRoot: string): string {
   return `
 GraphQL server successfully bootstrapped :rocket:
 
 Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
 2. Edit the .graphql file inside ${chalk.cyan(`model`)} with your GraphQL types.
-3. Run ${chalk.cyan(`${cliName}generate`)} to generate schema and resolvers
+3. Run ${chalk.cyan(`${commandRoot}generate`)} to generate schema and resolvers
 `
 }
 
@@ -120,7 +120,7 @@ function buildTemplateFromGithub(templateUrl: string) {
  * @param templateName name of the template provided(if any)
  * @param templateUrl github url to the template
  */
-export async function init(name: string, templateName?: string, templateUrl?: string, cliName?: string) {
+export async function init(name: string, templateName?: string, templateUrl?: string, commandRoot?: string) {
   logInfo(chalk.yellow(
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
   ))
@@ -142,5 +142,5 @@ Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
   await Promise.all([installDependencies(name, database), createConfig(database, client)])
-  logInfo(postSetupMessage(name, cliName))
+  logInfo(postSetupMessage(name, commandRoot))
 }
