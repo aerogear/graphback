@@ -89,6 +89,7 @@ async function assignTemplate(templateName: string): Promise<Template> {
 function postSetupMessage(name: string, cliName: string): string {
   return `
 GraphQL server successfully bootstrapped :rocket:
+
 Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
 2. Edit the .graphql file inside ${chalk.cyan(`model`)} with your GraphQL types.
