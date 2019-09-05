@@ -12,9 +12,8 @@ function postCommandMessage(cliName: string): void {
   logInfo(`
 Successfully generated schema and resolvers :tada:.  
 
-Next steps:
-1. Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
-   followed by ${chalk.cyan(`${cliName}db`)} to create database.
+Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
+followed by ${chalk.cyan(`${cliName}db`)} to create database.
 `)
 }
 
