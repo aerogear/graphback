@@ -14,7 +14,7 @@ Please follow indidividual releases for more information.
 #### Features
 
 - Support for Interfaces in GraphQL schema
-GraphQL Schema supports now interfaces that can be used to ensure consistency of the data.
+GraphQL Schema now supports interfaces that can be used to ensure consistency of the data.
 Example:
 
 ```graphql
