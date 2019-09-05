@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+import { commandRoot } from '../commandRoot'
 import { init } from '../helpers'
 
 type Params = { name?: string, templateName?: string, templateUrl: string }
@@ -24,5 +25,5 @@ export const builder = (args: yargs.Argv) => {
 }
 
 export async function handler({ name, templateName, templateUrl }: Params) {
-  await init(name, templateName, templateUrl);
+  await init(name, templateName, templateUrl, commandRoot);
 }

@@ -8,14 +8,12 @@ import { checkDirectory } from './common';
 /**
  * Message after command execution
  */
-function postCommandMessage(): void {
+function postCommandMessage(cliName: string): void {
   logInfo(`
 Successfully generated schema and resolvers :tada:.  
 
-Next steps:
-1. Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
-   followed by ${chalk.cyan(`graphback db`)} to create database.
-2. Run ${chalk.cyan(`npm run develop`)} to start the server.
+Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
+followed by ${chalk.cyan(`${cliName}db`)} to create database.
 `)
 }
 
@@ -97,8 +95,8 @@ export async function generateBackend(): Promise<void> {
 /**
  * exported generate handler
  */
-export async function generate(): Promise<void> {
+export async function generate(cliName: string = "graphback"): Promise<void> {
   checkDirectory()
   await generateBackend()
-  postCommandMessage()
+  postCommandMessage(cliName)
 }
