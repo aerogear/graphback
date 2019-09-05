@@ -8,6 +8,33 @@ title: Releases
 This file contains changes and migration steps for Graphback project. 
 Please follow indidividual releases for more information.
 
+# Next
+
+### Graphback
+#### Features
+
+- Support for Interfaces in GraphQL schema
+GraphQL Schema now supports interfaces that can be used to ensure consistency of the data.
+Example:
+
+```graphql
+interface Searchable {
+  searchPreviewText: String!
+}
+
+interface Item {
+  price: Int!
+}
+
+type Movie implements Searchable & Item {
+  directory: String!
+  searchPreviewText: String!
+  price: Int!
+}
+```
+
+> NOTE: Interfaces will not be taken into consideration when generating resolvers and database
+
 ## 0.8.3 (29th August, 2019)
 ### Templates
 #### Fixes
