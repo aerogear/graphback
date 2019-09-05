@@ -21,7 +21,7 @@ const inputs = (defs: TargetType[]): string => {
 }
 
 const nodeTypes = (defs: TargetType[]): string => {
-  return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces): ''}{
+  return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces) : ''}{
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
 }
@@ -128,10 +128,7 @@ const outputSchema = (context: TargetContext, customQueries: string[], customMut
   const allMutations = generateMutations(mutations, customMutations)
   const allSubs = generateSubscriptions(subscriptions, customSubscriptions)
 
-  let output = `${imports}
-
-export const typeDefs = gql\`
-  ${nodeInterfaces(interfaces)}
+  let output = `${nodeInterfaces(interfaces)}
 
   ${nodeTypes(types)}
 
@@ -151,7 +148,7 @@ export const typeDefs = gql\`
     output += `\n\n  ${allSubs}`
   }
 
-  output += `\n\`\n`
+  output += `\n\``
 
   return output
 }
@@ -160,5 +157,8 @@ export const typeDefs = gql\`
  * Generate the output schema
  */
 export const generateSchema = (context: TargetContext, queries: string[], mutations: string[], subscriptions: string[]): string => {
-  return outputSchema(context, queries, mutations, subscriptions)
+  return `${imports}
+
+export const typeDefs = gql\`
+  ${outputSchema(context, queries, mutations, subscriptions)}\n`;
 }
