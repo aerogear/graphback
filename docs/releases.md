@@ -8,6 +8,15 @@ title: Releases
 This file contains changes and migration steps for Graphback project. 
 Please follow indidividual releases for more information.
 
+## 0.9.0 (5th September, 2019)
+### Templates
+#### Fixes
+- Replaced `watch` command with `develop`
+- Added default CRUD config to templates
+### Features
+- Added support for GraphQL interfaces
+- Added Graphback plugin to graphql-cli
+
 ## 0.8.3 (29th August, 2019)
 ### Templates
 #### Fixes
