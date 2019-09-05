@@ -5,7 +5,7 @@ For CLI usage we recommend to use Node version manager - NVM.
 
 ## Building
 
-```
+```sh
 npm install
 npm run bootstrap
 ```
@@ -14,15 +14,15 @@ npm run bootstrap
 
 The SDK is made by a group of modules, each one implemented in a different NPM package and all placed under `/packages`.
 
-#### Run tests with coverage
+### Run tests with coverage
 
 `npm run test`
 
-#### Run linter
+### Run linter
 
 `npm run lint`
 
-#### Build
+### Build
 
 `npm run build`
 
@@ -36,11 +36,12 @@ npm link
 ```
 
 > NOTE: if you have graphback installed globally it will need to be uninstalled first
+
 ```bash
-npm uninstall -g graphback-cli 
+npm uninstall -g graphback-cli
 ```
 
 ## Debugging command line tool
 
-When using Visual Studio Code developers can use debugger configurations for command line tool. 
+When using Visual Studio Code developers can use debugger configurations for command line tool.
 Each individual command can be executed and it will stop on breakpoints.
