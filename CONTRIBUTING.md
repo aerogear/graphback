@@ -32,7 +32,7 @@ When developing locally we need to link local cmd to be available globally.
 
 ```bash
 cd packages/graphback-cli
-npm link . 
+npm link  
 ```
 
 > NOTE: if you have graphback installed globally it will need to be uninstalled first
