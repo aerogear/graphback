@@ -1,5 +1,5 @@
 import knex from 'knex'
-import * as config from '../../config.json'
+import * as config from '../../graphback.json'
 
 /**
  * config class

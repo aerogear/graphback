@@ -6,7 +6,7 @@ import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
-const configPath = `${process.cwd()}/.graphback`
+const configPath = `${process.cwd()}/graphback.json`
 
 const handleError = (err: { code: string; message: string; }): void => {
   if(err.code === 'ECONNREFUSED') {

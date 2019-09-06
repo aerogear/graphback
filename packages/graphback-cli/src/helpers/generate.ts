@@ -22,7 +22,7 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
  * write them into generated folder
  */
 export async function generateBackend(): Promise<void> {
-  const configPath = `${process.cwd()}/.graphback`
+  const configPath = `${process.cwd()}/graphback.json`
   const { paths, database, generation, client } = JSON.parse(readFileSync(configPath, "utf8"))
 
   try {
@@ -78,12 +78,8 @@ export async function generateBackend(): Promise<void> {
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputGeneratedResolverPath}/generated/${output.name}.ts`, output.output))
 
     writeFileSync(`${outputSchemaPath}/generated.ts`, generated.schema)
-
-    if (outputCustomResolverPath === outputGeneratedResolverPath){
     writeFileSync(`${outputCustomResolverPath}/index.ts`, generated.resolvers.index)
-    } else {
     writeFileSync(`${outputGeneratedResolverPath}/index.ts`, generated.resolvers.index)
-    }
 
     if(client) {
       Object.keys(generatedClient).forEach((folder: string) => {

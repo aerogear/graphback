@@ -3,7 +3,7 @@ import { logError } from '../utils'
 
 
 export const checkDirectory = (): void => {
-  const configPath = `${process.cwd()}/.graphback`
+  const configPath = `${process.cwd()}/graphback.json`
   const { paths } = JSON.parse(readFileSync(configPath, "utf8"))
 
   try {
