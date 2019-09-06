@@ -17,5 +17,13 @@
     "subDelete": false,
     "disableGen": false
   },
-  "database": "pg"
+  "paths": {
+    "model": "model",
+    "generatedResolvers": "/src/resolvers",
+    "customResolvers": "/src/resolvers",
+    "schema": "/src/schema",
+    "client": "/client"
+  },
+  "database": "pg",
+  "client": true
 }
