@@ -37,7 +37,15 @@ const generationConfig = {
   "disableGen": false
 }
 
-export const chooseDatabase = async(): Promise<string> => {
+const paths = {
+  "model": "model",
+  "generatedResolvers": "/src/resolvers",
+  "customResolvers": "/src/resolvers",
+  "schema": "/src/schema",
+  "client": "/client"
+}
+
+export const chooseDatabase = async (): Promise<string> => {
   const { database } = await ask({
     type: 'list',
     name: 'database',
@@ -69,18 +77,19 @@ export const askForClient = async(): Promise<boolean> => {
  * Create config file with db info
  */
 export const createConfig = async(database: string, client: boolean) => {
-  const configPath = `${process.cwd()}/config.json`
+  const configPath = `${process.cwd()}/.graphback`
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {}
   const [dbConfig, dockerCompose] = getConfig(database)
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
+  config["paths"] = paths
   config["database"] = database
   config["client"] = client
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)
   }
- 
+
   writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }

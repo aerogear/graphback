@@ -6,7 +6,7 @@ import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
-const configPath = `${process.cwd()}/config.json`
+const configPath = `${process.cwd()}/.graphback`
 
 const handleError = (err: { code: string; message: string; }): void => {
   if(err.code === 'ECONNREFUSED') {
@@ -37,12 +37,15 @@ export const dropDBResources = async(): Promise<void> => {
   }
 }
 
-export const createDBResources = async(): Promise<void> => {
+export const createDBResources = async (): Promise<void> => {
+
+  const { paths } = JSON.parse(readFileSync(configPath, "utf8"))
+
   try{
-    const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
+    const models = new GlobSync(`${paths.model}/*.graphql`, { cwd: process.cwd() })
 
     if(models.found.length === 0) {
-      logError(`No graphql file found inside ${process.cwd()}/model folder.`)
+      logError(`No graphql file found inside ${paths.model} folder.`)
       process.exit(0)
     }
 
