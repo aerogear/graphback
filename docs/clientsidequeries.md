@@ -58,7 +58,7 @@ import { NoteFragment } from "../fragments/Note"
 
 export const updateNote = gql`
   mutation updateNote($id: ID!, title: String!, description: String!, published: Boolean!) {
-    updateNote(id: $id, input: {title: $title, description: $description, published: $published}) {4
+    updateNote(id: $id, input: {title: $title, description: $description, published: $published}) {
       ...NoteFields
     }
   }
