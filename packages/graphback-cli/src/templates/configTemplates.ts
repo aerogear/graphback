@@ -37,6 +37,14 @@ const generationConfig = {
   "disableGen": false
 }
 
+const paths = {
+  "model": "/foo/model",
+  "customResolvers": "/src/foo/resolvers",
+  "generatedResolvers": "/src/foo/resovlers",
+  "schema": "/foo/src/schema",
+  "client": "/foo/client"
+}
+
 export const chooseDatabase = async(): Promise<string> => {
   const { database } = await ask({
     type: 'list',
@@ -77,6 +85,7 @@ export const createConfig = async(database: string, client: boolean) => {
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
   config["database"] = database
+  config["paths"] = paths
   config["client"] = client
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)

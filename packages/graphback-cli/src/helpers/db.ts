@@ -37,9 +37,9 @@ export const dropDBResources = async(): Promise<void> => {
   }
 }
 
-export const createDBResources = async(): Promise<void> => {
+export const createDBResources = async(pathProvided: string): Promise<void> => {
   try{
-    const models = new GlobSync('model/*.graphql', { cwd: process.cwd()})
+    const models = new GlobSync(`${pathProvided}/*.graphql`)
 
     if(models.found.length === 0) {
       logError(`No graphql file found inside ${process.cwd()}/model folder.`)
@@ -52,8 +52,7 @@ export const createDBResources = async(): Promise<void> => {
       await execa('touch', ['db.sqlite'])
     }
 
-    const path: string = process.cwd()
-    const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
+    const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
 
@@ -76,9 +75,9 @@ Run ${chalk.cyan(`npm run develop`)} to start the server.
 }
 
 export const createDB = async(): Promise<void> => {
-  checkDirectory()
+  const pathProvided = checkDirectory()
   await dropDBResources()
-  await createDBResources()
+  await createDBResources(pathProvided)
   postCommandMessage()
   process.exit(0)
 }
