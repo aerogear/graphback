@@ -55,7 +55,6 @@
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
-
     "chalk": "2.4.2",
     "execa": "2.0.4",
     "figlet": "1.2.4",
