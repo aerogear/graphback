@@ -22,7 +22,7 @@
     "generatedResolvers": "./src/resolvers",
     "customResolvers": "./src/resolvers",
     "schema": "./src/schema",
-    "client": "./client"
+    "client": "./client/src/graphql"
   },
   "database": "pg"
 }
