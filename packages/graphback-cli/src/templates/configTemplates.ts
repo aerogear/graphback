@@ -42,7 +42,7 @@ const paths = {
   "generatedResolvers": "./src/resolvers",
   "customResolvers": "./src/resolvers",
   "schema": "./src/schema",
-  "client": "./client"
+  "client": "./client/src/graphql"
 }
 
 export const chooseDatabase = async(): Promise<string> => {

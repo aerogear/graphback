@@ -39,7 +39,6 @@ export const dropDBResources = async(): Promise<void> => {
 
 export const createDBResources = async (pathForModel: string): Promise<void> => {
   try {
-
     const { database, dbConfig, generation } = JSON.parse(readFileSync(configPath, "utf8"))
 
     const models = new GlobSync(`${pathForModel}/*.graphql`)
