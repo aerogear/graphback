@@ -3,11 +3,10 @@ import * as execa from 'execa'
 import { readFileSync, unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
 import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
-import { join } from 'path';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
-const configPath = `${process.cwd()}/config.json`
+const configPath = `${process.cwd()}/graphback.json`
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {

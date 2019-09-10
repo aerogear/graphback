@@ -77,7 +77,7 @@ export const askForClient = async(): Promise<boolean> => {
  * Create config file with db info
  */
 export const createConfig = async(database: string, client: boolean) => {
-  const configPath = `${process.cwd()}/config.json`
+  const configPath = `${process.cwd()}/graphback.json`
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {}

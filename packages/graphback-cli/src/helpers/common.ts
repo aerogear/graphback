@@ -9,7 +9,7 @@ export const checkDirectory = (): string => {
 
   try {
 
-    const configPath = `${process.cwd()}/config.json`
+    const configPath = `${process.cwd()}/graphback.json`
 
     const { paths } = JSON.parse(readFileSync(configPath, "utf8"))
   
