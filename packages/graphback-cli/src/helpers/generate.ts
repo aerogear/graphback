@@ -24,7 +24,7 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
  */
 export async function generateBackend(pathForModel: string): Promise<void> {
   try {
-    const configPath = `${process.cwd()}/config.json`
+    const configPath = `${process.cwd()}/graphback.json`
 
     const { paths, database, generation, client } = JSON.parse(readFileSync(configPath, "utf8"))
 
