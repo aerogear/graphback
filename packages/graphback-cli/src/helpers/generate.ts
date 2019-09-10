@@ -41,7 +41,6 @@ export async function generateBackend(pathForModel: string): Promise<void> {
     const outputSchemaPath: string = `${pathForSchema}/generated.ts`
 
     const customResolvers: string = join(process.cwd(), paths.customResolvers)
-
     const generatedResolvers: string = join(process.cwd(), paths.generatedResolvers)
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
@@ -52,25 +51,24 @@ export async function generateBackend(pathForModel: string): Promise<void> {
 
     if (client) {
       generatedClient = await backend.createClient()
-
-        clientPath = join(process.cwd(), paths.client)
-     
-      if (!existsSync(clientPath)) {
+      clientPath = join(process.cwd(), paths.client)
+      if(!existsSync(clientPath)) {
         mkdirSync(clientPath, { recursive: true })
       }
     }
-    if (!existsSync(`${pathForSchema}`)) {
+
+    if(!existsSync(`${pathForSchema}`)) {
       mkdirSync(`${pathForSchema}`, { recursive: true })
     }
-    if (!existsSync(`${customResolvers}/custom`)) {
+    if(!existsSync(`${customResolvers}/custom`)) {
       mkdirSync(`${customResolvers}/custom`, { recursive: true })
     }
-    if (!existsSync(`${generatedResolvers}/generated`)) {
+    if(!existsSync(`${generatedResolvers}/generated`)) {
       mkdirSync(`${generatedResolvers}/generated`, { recursive: true })
     }
 
     generated.resolvers.custom.forEach((output: OutputResolver) => {
-      if (!existsSync(`${customResolvers}/custom/${output.name}.ts`) || output.name === 'index') {
+      if(!existsSync(`${customResolvers}/custom/${output.name}.ts`) || output.name === 'index') {
         writeFileSync(`${customResolvers}/custom/${output.name}.ts`, output.output)
       }
     })
@@ -83,10 +81,10 @@ export async function generateBackend(pathForModel: string): Promise<void> {
 
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${generatedResolvers}/generated/${output.name}.ts`, output.output))
 
-    if (client) {
+    if(client) {
       Object.keys(generatedClient).forEach((folder: string) => {
         const currentFolder = `${clientPath}/${folder}`
-        if (!existsSync(currentFolder)) {
+        if(!existsSync(currentFolder)) {
           mkdirSync(currentFolder)
         }
         generatedClient[folder].forEach((c: ClientImplementation) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))
