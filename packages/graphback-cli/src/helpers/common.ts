@@ -19,7 +19,7 @@ export const checkDirectory = (): string => {
 
   } catch (err) {
     logError(`Model not found, make sure you are in root directory of your project and that you have
-    specified correct path to your .graphql file`)
+    specified the correct path to your .graphql file`)
     process.exit(0)
   }
 
