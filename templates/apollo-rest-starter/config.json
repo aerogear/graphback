@@ -18,7 +18,7 @@
     "disableGen": false
   },
   "paths": {
-    "model": "model",
+    "model": "./model",
     "generatedResolvers": "./src/resolvers",
     "customResolvers": "./src/resolvers",
     "schema": "./src/schema",

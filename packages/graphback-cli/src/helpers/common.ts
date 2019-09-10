@@ -1,21 +1,27 @@
 import { accessSync, readFileSync } from 'fs'
+import { join } from 'path'
 import { logError } from '../utils'
 
 
 export const checkDirectory = (): string => {
 
-  const configPath = `${process.cwd()}/config.json`
-
-  const { paths } = JSON.parse(readFileSync(configPath, "utf8"))
+  let pathForModel
 
   try {
-    accessSync(`${process.cwd()}/${paths.model}`)
 
-    return `${process.cwd()}/${paths.model}`;
+    const configPath = `${process.cwd()}/config.json`
+
+    const { paths } = JSON.parse(readFileSync(configPath, "utf8"))
+  
+    pathForModel = join(process.cwd(), paths.model)
+
+    accessSync(`${pathForModel}`)
+
   } catch (err) {
-    logError(`model directory not found. Make you sure you are in the root of your project.`)
+    logError(`Model not found, make sure you are in root directory of your project and that you have
+    specified correct path to your .graphql file`)
     process.exit(0)
-
-    return " "
   }
+
+  return pathForModel
 }
