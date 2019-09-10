@@ -38,11 +38,11 @@ const generationConfig = {
 }
 
 const paths = {
-  "model": "/foo/model",
-  "customResolvers": "/src/foo/resolvers",
-  "generatedResolvers": "/src/foo/resovlers",
-  "schema": "/foo/src/schema",
-  "client": "/foo/client"
+  "model": "./model",
+  "generatedResolvers": "./src/resolvers",
+  "customResolvers": "./src/resolvers",
+  "schema": "./src/schema",
+  "client": "./client"
 }
 
 export const chooseDatabase = async(): Promise<string> => {
