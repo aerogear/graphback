@@ -1,5 +1,5 @@
 import { parse, visit } from 'graphql';
-import { Config, INTERFACE_TYPE_DEFINITION, InterfaceType, Type } from './ContextTypes'
+import { Config, INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from './ContextTypes'
 import { applyGeneratorDirectives } from './directives';
 import { inputTypeVisitor } from './InputTypeVisitor';
 
@@ -15,12 +15,35 @@ export const createInputContext = (schemaText: string, defaultConfig: Config): T
 
     const schemaDef = visit(astNode, { leave: inputTypeVisitor });
 
-    return schemaDef.definitions.map((t: Type) => {
+    let context =  schemaDef.definitions.map((t: Type) => {
       return {
         ...t,
         config: { ...defaultConfig, ...t.config }
       }
     })
+
+
+
+    const extendNodes = context.filter((t: Type) => t.kind === OBJECT_TYPE_EXTENSION)
+
+    const interfaces = context.filter((t: Type) => t.kind === INTERFACE_TYPE_DEFINITION)
+
+    context = context.filter((t: Type) => t.kind !== OBJECT_TYPE_EXTENSION && t.kind !== INTERFACE_TYPE_DEFINITION)
+
+    return [...context.map((t: Type) => {
+      const extendNode = extendNodes.find((node: Type) => node.name === t.name)
+
+      if(extendNode) {
+        return {
+          ...t,
+          fields: [...t.fields, ...extendNode.fields],
+          config: {...t.config, ...extendNode.config},
+          interfaces: [...t.interfaces, ...extendNode.interfaces]
+        }
+      } else {
+        return t
+      }
+    }), ...interfaces]
   } catch (err) {
     throw err
   }

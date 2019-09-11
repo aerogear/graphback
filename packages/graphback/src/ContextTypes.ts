@@ -1,5 +1,6 @@
 export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
 export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
+export const OBJECT_TYPE_EXTENSION = 'ObjectTypeExtension';
 
 /**
  * 1:1 relationship directive
