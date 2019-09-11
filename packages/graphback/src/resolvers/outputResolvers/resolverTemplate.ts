@@ -1,6 +1,6 @@
 import { Custom, TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
 
-const imports = `import { GraphQLContext } from '../../context'`
+const imports = `import { GraphQLContext } from '../../../../context'`
 
 /**
  * Generate resolvers for each type

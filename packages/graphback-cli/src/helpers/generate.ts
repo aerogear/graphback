@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync, exists } from 'fs';
 import { GlobSync } from 'glob'
 import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
 import { logError, logInfo } from '../utils';
@@ -10,9 +10,9 @@ import { checkDirectory } from './common';
  */
 function postCommandMessage(cliName: string): void {
   logInfo(`
-Successfully generated schema and resolvers :tada:.  
+Successfully generated schema and resolvers :tada:.
 
-Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
+Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)}
 followed by ${chalk.cyan(`${cliName}db`)} to create database.
 `)
 }
@@ -36,13 +36,14 @@ export async function generateBackend(): Promise<void> {
     const path: string = process.cwd()
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
-    const outputSchemaPath: string = `${process.cwd()}/src/schema/generated.ts`
-    const outputResolverPath: string = `${process.cwd()}/src/resolvers`
+    const modulesPath: string = `${path}/src/modules`
+    const outputSchemaPath: string = `${modulesPath}/default`
+    const outputResolverPath: string = `${modulesPath}/default/resolvers`
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
 
     const generated: IGraphQLBackend = await backend.createBackend(database)
-    
+
     let generatedClient
     let clientPath: string
     if(client) {
@@ -53,10 +54,22 @@ export async function generateBackend(): Promise<void> {
       }
     }
 
-    writeFileSync(outputSchemaPath, generated.schema)
+    if (!existsSync(modulesPath)) {
+      mkdirSync(modulesPath);
+    }
+
+    if (!existsSync(outputSchemaPath)) {
+     mkdirSync(outputSchemaPath)
+    }
+
+    writeFileSync(`${outputSchemaPath}/model.ts`, generated.schema)
+
+    if (!existsSync(outputResolverPath)) {
+      mkdirSync(outputResolverPath);
+    }
 
     writeFileSync(`${outputResolverPath}/index.ts`, generated.resolvers.index)
-    
+
     if(!existsSync(`${outputResolverPath}/custom`)) {
       mkdirSync(`${outputResolverPath}/custom`)
     }
@@ -69,13 +82,17 @@ export async function generateBackend(): Promise<void> {
       if(!existsSync(`${outputResolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
         writeFileSync(`${outputResolverPath}/custom/${output.name}.ts`, output.output)
       }
-    })
+    });
 
     const resolverFiles = readdirSync(`${outputResolverPath}/generated`)
     resolverFiles.forEach((file: string) => unlinkSync(`${outputResolverPath}/generated/${file}`))
 
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
-    
+
+    writeFileSync(`${modulesPath}/default/index.ts`, generated.module.index);
+
+    writeFileSync(`${modulesPath}/app.ts`, generated.appModule.index)
+
     if(client) {
       Object.keys(generatedClient).forEach((folder: string) => {
         const currentFolder = `${clientPath}/${folder}`

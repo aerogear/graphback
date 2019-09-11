@@ -6,6 +6,7 @@ import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
 import { logger } from './logger'
 import { OutputResolver, ResolverGenerator } from './resolvers';
 import { SchemaGenerator } from './schema';
+import { ModuleGenerator } from './modules';
 /**
  * GraphQLBackend
  *
@@ -65,6 +66,11 @@ export class GraphQLBackendCreator {
     const resolverGenerator = new ResolverGenerator(this.inputContext)
     backend.resolvers = resolverGenerator.generate(database)
 
+    const moduleGenerator = new ModuleGenerator()
+    backend.module = moduleGenerator.generate()
+
+    backend.appModule = moduleGenerator.generateAppModule()
+
     return backend;
   }
 
@@ -101,6 +107,8 @@ export interface IGraphQLBackend {
   schema?: string,
   // Resolvers that should be mounted to schema`
   resolvers?: IGraphbackResolvers
+  module?: IGraphbackModule
+  appModule?: IGraphbackModule
 }
 
 export interface IGraphbackResolvers {
@@ -110,4 +118,8 @@ export interface IGraphbackResolvers {
   types?: OutputResolver[],
   // Custom resolvers stubs
   custom?: OutputResolver[]
+}
+
+export interface IGraphbackModule {
+  index?: string
 }
