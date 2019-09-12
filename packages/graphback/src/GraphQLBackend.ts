@@ -7,6 +7,9 @@ import { logger } from './logger'
 import { OutputResolver, ResolverGenerator } from './resolvers';
 import { SchemaGenerator } from './schema';
 import { ModuleGenerator } from './modules';
+import { readFileSync } from 'fs';
+import * as path from 'path';
+
 /**
  * GraphQLBackend
  *
@@ -18,13 +21,16 @@ export class GraphQLBackendCreator {
   private dataLayerManager: IDataLayerResourcesManager;
   private dbContextProvider: DatabaseContextProvider;
   private inputContext: Type[]
+  private models: string[]
+  private config: Config
 
   /**
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(graphQLSchema: string, config: Config) {
-    this.inputContext = createInputContext(graphQLSchema, config)
+  constructor(models: string[], config: Config) {
+    this.models = models;
+    this.config = config;
     this.dbContextProvider = new DefaultDataContextProvider();
   }
 
@@ -58,18 +64,23 @@ export class GraphQLBackendCreator {
    * Create backend with all related resources
    */
   public async createBackend(database: string): Promise<IGraphQLBackend> {
-    const backend: IGraphQLBackend = {};
+    const backend: IGraphQLBackend = {
+      modules: []
+    };
 
-    const schemaGenerator = new SchemaGenerator(this.inputContext)
-    backend.schema = schemaGenerator.generate()
+    const moduleGenerator = new ModuleGenerator();
+    this.models.forEach((m: string) => {
+      const modelFile = readFileSync(`${process.cwd()}/${m}`, 'utf8');
+      const modelName = path.posix.basename(`${process.cwd()}/${m}`, '.graphql');
 
-    const resolverGenerator = new ResolverGenerator(this.inputContext)
-    backend.resolvers = resolverGenerator.generate(database)
+      const inputContext = createInputContext(modelFile, this.config);
+      const gqlModule = moduleGenerator.generate(modelName, inputContext, database);
+      backend.modules.push(gqlModule);
+    });
 
-    const moduleGenerator = new ModuleGenerator()
-    backend.module = moduleGenerator.generate()
+    const moduleNames = backend.modules.map((m: IGraphbackModule) => m.name);
 
-    backend.appModule = moduleGenerator.generateAppModule()
+    backend.appModule = moduleGenerator.generateAppModule(moduleNames);
 
     return backend;
   }
@@ -105,9 +116,7 @@ export class GraphQLBackendCreator {
 export interface IGraphQLBackend {
   // Human readable schema that should be replaced with current one
   schema?: string,
-  // Resolvers that should be mounted to schema`
-  resolvers?: IGraphbackResolvers
-  module?: IGraphbackModule
+  modules?: IGraphbackModule[]
   appModule?: IGraphbackModule
 }
 
@@ -121,5 +130,8 @@ export interface IGraphbackResolvers {
 }
 
 export interface IGraphbackModule {
+  name?: string
   index?: string
+  schema?: string
+  resolvers?: IGraphbackResolvers
 }

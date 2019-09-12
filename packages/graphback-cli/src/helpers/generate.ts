@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync, exists } from 'fs';
 import { GlobSync } from 'glob'
-import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver, IGraphbackModule } from 'graphback'
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
 
@@ -37,66 +37,67 @@ export async function generateBackend(): Promise<void> {
     const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
 
     const modulesPath: string = `${path}/src/modules`
-    const outputSchemaPath: string = `${modulesPath}/default`
-    const outputResolverPath: string = `${modulesPath}/default/resolvers`
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(models.found, generation)
 
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     let generatedClient
     let clientPath: string
-    if(client) {
+    if (client) {
       generatedClient = await backend.createClient()
       clientPath = `${process.cwd()}/client`
-      if(!existsSync(clientPath)) {
+      if (!existsSync(clientPath)) {
         mkdirSync(clientPath)
       }
     }
 
-    if (!existsSync(modulesPath)) {
-      mkdirSync(modulesPath);
-    }
+    generated.modules.forEach((m: IGraphbackModule) => {
+      const modulePath = `${modulesPath}/${m.name.toLowerCase()}`;
+      const resolverPath = `${modulePath}/resolvers`;
 
-    if (!existsSync(outputSchemaPath)) {
-     mkdirSync(outputSchemaPath)
-    }
-
-    writeFileSync(`${outputSchemaPath}/model.ts`, generated.schema)
-
-    if (!existsSync(outputResolverPath)) {
-      mkdirSync(outputResolverPath);
-    }
-
-    writeFileSync(`${outputResolverPath}/index.ts`, generated.resolvers.index)
-
-    if(!existsSync(`${outputResolverPath}/custom`)) {
-      mkdirSync(`${outputResolverPath}/custom`)
-    }
-
-    if(!existsSync(`${outputResolverPath}/generated`)) {
-      mkdirSync(`${outputResolverPath}/generated`)
-    }
-
-    generated.resolvers.custom.forEach((output: OutputResolver) => {
-      if(!existsSync(`${outputResolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
-        writeFileSync(`${outputResolverPath}/custom/${output.name}.ts`, output.output)
+      if (!existsSync(modulePath)) {
+        mkdirSync(modulePath, { recursive: true });
       }
+      writeFileSync(`${modulePath}/${m.name}.ts`, m.schema);
+
+      if (!existsSync(resolverPath)) {
+        mkdirSync(resolverPath);
+      }
+
+      writeFileSync(`${resolverPath}/index.ts`, m.resolvers.index);
+
+      if (!existsSync(`${resolverPath}/custom`)) {
+        mkdirSync(`${resolverPath}/custom`)
+      }
+
+      if (!existsSync(`${resolverPath}/generated`)) {
+        mkdirSync(`${resolverPath}/generated`)
+      }
+
+      writeFileSync(`${modulePath}/index.ts`, m.index);
     });
 
-    const resolverFiles = readdirSync(`${outputResolverPath}/generated`)
-    resolverFiles.forEach((file: string) => unlinkSync(`${outputResolverPath}/generated/${file}`))
+    // generated.modules.forEach((m: IGraphbackModule) => {
 
-    generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
+    //   m.resolvers.custom.forEach((output: OutputResolver) => {
+    //     if (!existsSync(`${outputResolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
+    //       writeFileSync(`${outputResolverPath}/custom/${output.name}.ts`, output.output)
+    //     }
+    //   });
 
-    writeFileSync(`${modulesPath}/default/index.ts`, generated.module.index);
+    //   const resolverFiles = readdirSync(`${outputResolverPath}/generated`)
+    //   resolverFiles.forEach((file: string) => unlinkSync(`${outputResolverPath}/generated/${file}`))
+
+    //   m.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
+    // });
 
     writeFileSync(`${modulesPath}/app.ts`, generated.appModule.index)
 
-    if(client) {
+    if (client) {
       Object.keys(generatedClient).forEach((folder: string) => {
         const currentFolder = `${clientPath}/${folder}`
-        if(!existsSync(currentFolder)) {
+        if (!existsSync(currentFolder)) {
           mkdirSync(currentFolder)
         }
         generatedClient[folder].forEach((c: ClientImplementation) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))

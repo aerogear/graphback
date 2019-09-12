@@ -1,33 +1,38 @@
+import { createImportString } from '../../utils';
+
 const commonImports = [
   "import { GraphQLModule } from '@graphql-modules/core';",
 ];
 
 const moduleImports = [
   "import 'graphql-import-node';",
-  "import { typeDefs } from './model';",
   "import { resolvers } from './resolvers';"
 ];
 
-const appImports = [
-  "import { DefaultModule } from './default'"
-];
+export const generateModule = (name: string) => {
+  const modelImport = createImportString(['typeDefs'], `'./${name}'`);
 
-export const generateModule = () => {
-  return `${[...commonImports, ...moduleImports].join(`\n`)}
+  // TODO: Sort imports alphabetically
+  const imports = [...commonImports, ...moduleImports, modelImport];
 
-export const DefaultModule = new GraphQLModule({
+  return `${imports.join(`\n`)}
+
+export const ${name}Module = new GraphQLModule({
   typeDefs,
   resolvers
 });
 `;
 }
 
-export const generateAppModule = () => {
-  return `${[...commonImports, ...appImports].join(`\n`)}
+export const generateAppModuleTemplate = (moduleNames: string[]) => {
+
+  const imports = moduleNames.map((m: string) => createImportString([`${m}Module`], `'./${m.toLowerCase()}'`))
+
+  return `${[...commonImports, ...imports].join(`\n`)}
 
 export const AppModule = new GraphQLModule({
   imports: [
-    DefaultModule
+    ${moduleNames.map((m: string) => `${m}Module`).join(`,\n    `)}
   ]
 });
 `;

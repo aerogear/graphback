@@ -32,3 +32,9 @@ export const filterInterfaceTypes = (types: Type[]) => types.filter((t: Type) =>
 export const createImplementsInterfaceString = (names: string[]) => {
   return `implements ${names.map((name: string) => name).join(' & ')} `;
 }
+
+export const createImportString = (names: string[], path: string) => {
+  const imports = names.map((name: string) => name).join(', ');
+
+  return `import { ${imports} } from ${path};`;
+};
