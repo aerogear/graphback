@@ -2,9 +2,10 @@ import chalk from 'chalk';
 import * as execa from 'execa'
 import { readFileSync, unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
+import { DatabaseSchemaManager, GraphQLBackendCreator, IGraphbackModel } from 'graphback';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
+import * as path from 'path';
 
 const configPath = `${process.cwd()}/config.json`
 
@@ -52,10 +53,17 @@ export const createDBResources = async(): Promise<void> => {
       await execa('touch', ['db.sqlite'])
     }
 
-    const path: string = process.cwd()
-    const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
+     const modelDefinitions: IGraphbackModel[] = models.found.map((m: string) => {
+      const name = path.posix.basename(`${process.cwd()}/${m}`, '.graphql');
+      const schemaText = readFileSync(`${process.cwd()}/${m}`, 'utf8');
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, generation)
+      return {
+        name,
+        schema: schemaText
+      }
+    });
+
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(modelDefinitions, generation)
 
     const manager = new DatabaseSchemaManager(database, dbConfig);
     backend.registerDataResourcesManager(manager);

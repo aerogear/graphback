@@ -20,17 +20,19 @@ export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
   private dbContextProvider: DatabaseContextProvider;
+  private models: IGraphbackModel[]
   private inputContext: Type[]
-  private models: string[]
   private config: Config
 
   /**
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(models: string[], config: Config) {
+  constructor(models: IGraphbackModel[], config: Config) {
     this.models = models;
     this.config = config;
+    const fullSchema = models.map((m: IGraphbackModel) => m.schema).join('\n');
+    this.inputContext = createInputContext(fullSchema, config);
     this.dbContextProvider = new DefaultDataContextProvider();
   }
 
@@ -69,12 +71,10 @@ export class GraphQLBackendCreator {
     };
 
     const moduleGenerator = new ModuleGenerator();
-    this.models.forEach((m: string) => {
-      const modelFile = readFileSync(`${process.cwd()}/${m}`, 'utf8');
-      const modelName = path.posix.basename(`${process.cwd()}/${m}`, '.graphql');
 
-      const inputContext = createInputContext(modelFile, this.config);
-      const gqlModule = moduleGenerator.generate(modelName, inputContext, database);
+    this.models.forEach((m: IGraphbackModel) => {
+      const modelInputContext = createInputContext(m.schema, this.config);
+      const gqlModule = moduleGenerator.generate(m.name, modelInputContext, database);
       backend.modules.push(gqlModule);
     });
 
@@ -93,7 +93,8 @@ export class GraphQLBackendCreator {
 
 
   public async createDatabase(): Promise<void> {
-    const context = this.inputContext.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+    const context = this.inputContext.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription');
+
     try {
       if (this.dataLayerManager) {
         logger.info("Creating database structure")
@@ -106,7 +107,6 @@ export class GraphQLBackendCreator {
       // logger.error(`Error on Database creation ${error}`)
       throw error
     }
-
   }
 }
 
@@ -134,4 +134,9 @@ export interface IGraphbackModule {
   index?: string
   schema?: string
   resolvers?: IGraphbackResolvers
+}
+
+export interface IGraphbackModel {
+  name?: string
+  schema?: string
 }

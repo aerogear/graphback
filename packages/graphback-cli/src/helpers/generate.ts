@@ -1,9 +1,10 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync, exists } from 'fs';
 import { GlobSync } from 'glob'
-import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver, IGraphbackModule } from 'graphback'
+import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver, IGraphbackModule, IGraphbackModel } from 'graphback'
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
+import * as path from 'path';
 
 /**
  * Message after command execution
@@ -33,18 +34,28 @@ export async function generateBackend(): Promise<void> {
 
     const { database, generation, client } = JSON.parse(readFileSync(configPath, "utf8"))
 
-    const path: string = process.cwd()
-    const schemaText: string = models.found.map((m: string) => readFileSync(`${path}/${m}`, 'utf8')).join('\n')
+    const currPath: string = process.cwd()
 
-    const modulesPath: string = `${path}/src/modules`
+    const modulesPath: string = `${currPath}/src/modules`
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(models.found, generation)
+    const modelDefinitions: IGraphbackModel[] = models.found.map((m: string) => {
+      const name = path.posix.basename(`${process.cwd()}/${m}`, '.graphql');
+      const schemaText = readFileSync(`${process.cwd()}/${m}`, 'utf8');
+
+      return {
+        name,
+        schema: schemaText
+      }
+    });
+
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(modelDefinitions, generation)
 
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     let generatedClient
     let clientPath: string
     if (client) {
+
       generatedClient = await backend.createClient()
       clientPath = `${process.cwd()}/client`
       if (!existsSync(clientPath)) {
