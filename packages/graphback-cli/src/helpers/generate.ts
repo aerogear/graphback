@@ -75,22 +75,19 @@ export async function generateBackend(): Promise<void> {
         mkdirSync(`${resolverPath}/generated`)
       }
 
+      m.resolvers.custom.forEach((output: OutputResolver) => {
+        if (!existsSync(`${resolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
+          writeFileSync(`${resolverPath}/custom/${output.name}.ts`, output.output)
+        }
+      });
+
+      const resolverFiles = readdirSync(`${resolverPath}/generated`)
+      resolverFiles.forEach((file: string) => unlinkSync(`${resolverPath}/generated/${file}`))
+
+      m.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${resolverPath}/generated/${output.name}.ts`, output.output))
+
       writeFileSync(`${modulePath}/index.ts`, m.index);
     });
-
-    // generated.modules.forEach((m: IGraphbackModule) => {
-
-    //   m.resolvers.custom.forEach((output: OutputResolver) => {
-    //     if (!existsSync(`${outputResolverPath}/custom/${output.name}.ts`) || output.name === 'index') {
-    //       writeFileSync(`${outputResolverPath}/custom/${output.name}.ts`, output.output)
-    //     }
-    //   });
-
-    //   const resolverFiles = readdirSync(`${outputResolverPath}/generated`)
-    //   resolverFiles.forEach((file: string) => unlinkSync(`${outputResolverPath}/generated/${file}`))
-
-    //   m.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${outputResolverPath}/generated/${output.name}.ts`, output.output))
-    // });
 
     writeFileSync(`${modulesPath}/app.ts`, generated.appModule.index)
 
