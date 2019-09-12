@@ -1,6 +1,19 @@
 {
   "version": "0.2.0",
   "configurations": [
+
+     {
+      "name": "Current TS File",
+      "type": "node",
+      "request": "launch",
+      "env": {
+      },
+      "args": ["${relativeFile}"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
     {
       "type": "node",
       "request": "launch",
@@ -11,6 +24,19 @@
       "protocol": "inspector",
       "args": [
         "generate"
+      ],
+      "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "CLI openapi",
+      "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "protocol": "inspector",
+      "args": [
+        "openapi"
       ],
       "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
     },
