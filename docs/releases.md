@@ -25,6 +25,10 @@ Templates rely on `graphback.json` file. Please rename your `config.json` to `gr
     "client": "./client/src/graphql"
   }
 ```
+### Graphback-CLI
+#### Features
+
+- `graphback openapi` command provides way to migrate OpenAPI definition to GraphQL schema
 
 ### Graphback
 
