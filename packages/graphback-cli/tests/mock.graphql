@@ -1,0 +1,24 @@
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+  comment: [Comment]!
+}
+
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+}
+
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+}
+
+type Mutation {
+  likeNote(id: ID!): Note!
+}
+
+type Subscription {
+  liked: Note!
+}
