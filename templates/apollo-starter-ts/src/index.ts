@@ -8,6 +8,7 @@ import config from "./config/config"
 import { connect } from "./db"
 import { resolvers, typeDefs } from "./mapping"
 import { pubsub } from './subscriptions'
+import { AppModule } from './modules/app';
 
 async function start() {
   const app = express()
@@ -16,16 +17,18 @@ async function start() {
 
   app.get("/health", (req, res) => res.sendStatus(200))
 
+  const { schema } = AppModule;
+
   // connect to db
   const client = await connect(config.db);
 
-  const schema = makeExecutableSchema({
-    typeDefs,
-    resolvers,
-    resolverValidationOptions: {
-      requireResolversForResolveType: false
-    }
-  });
+  // const schema = makeExecutableSchema({
+  //   typeDefs,
+  //   resolvers,
+  //   resolverValidationOptions: {
+  //     requireResolversForResolveType: false
+  //   }
+  // });
 
   const apolloConfig = {
     schema,
