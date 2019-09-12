@@ -1,4 +1,4 @@
-import { buildASTSchema, GraphQLObjectType, GraphQLSchema, parse, printSchema, visit } from "graphql";
+import { buildASTSchema, GraphQLObjectType, GraphQLSchema, isInputType, parse, printSchema, visit } from "graphql";
 
 /**
  * Remove comments from schema 
@@ -35,6 +35,9 @@ export const removeOperationsFromSchema = (schema: GraphQLSchema) => {
     // Names can be different depending on user setting
     // This is much faster than using visitor
     schemaConfig.types = schemaConfig.types.filter((graphQLType: GraphQLObjectType) => {
+        if(isInputType(graphQLType)){
+            return false;
+        }
         if (schemaConfig.mutation && graphQLType.name === schemaConfig.mutation.name) {
             return false;
         }
