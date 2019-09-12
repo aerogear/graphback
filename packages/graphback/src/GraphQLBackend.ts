@@ -45,15 +45,6 @@ export class GraphQLBackendCreator {
     this.dbContextProvider = provider;
   }
 
-  // NOTES: Two approaches to generate backend
-  // 1. Generate user visible schema and then parse it the same way as users will save it
-  // Connect resolvers back to generated schema.
-
-  // 2. Generate schema programmatically (as typescript objects) and pass it to execution engine (currently under construction) together with resolvers.
-  // This is kinda  tricky as it will need to bypass entire server side execution (that currently basing on JSON files stored in the database)
-
-  // This spike is using first approach for the moment as I wanted to avoid wider refactoring of the server
-
   /**
    * Create backend with all related resources
    */
