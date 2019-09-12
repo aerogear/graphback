@@ -42,3 +42,10 @@ Execute `graphback` in your shell for more information
   Create configuration in existing project to support Graphback resolver and schema generation.
 
   > **Note** When creating configuration please review if locations created for `files` integration match your project folder structure
+  
+## OpenAPI
+
+ ```bash
+ graphback openapi 
+ ```    
+ Generate GraphQL schema and resolvers based on OpenAPI spec
