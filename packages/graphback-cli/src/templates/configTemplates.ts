@@ -37,7 +37,7 @@ const generationConfig = {
   "disableGen": false
 }
 
-const paths = {
+const defaultPaths = {
   "model": "./model",
   "generatedResolvers": "./src/resolvers",
   "customResolvers": "./src/resolvers",
@@ -85,7 +85,7 @@ export const createConfig = async(database: string, client: boolean) => {
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
   config["database"] = database
-  config["paths"] = paths
+  config["defaultPaths"] = defaultPaths
   config["client"] = client
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)

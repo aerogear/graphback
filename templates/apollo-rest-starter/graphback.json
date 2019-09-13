@@ -17,7 +17,7 @@
     "subDelete": false,
     "disableGen": false
   },
-  "paths": {
+  "defaultPaths": {
     "model": "./model",
     "generatedResolvers": "./src/resolvers",
     "customResolvers": "./src/resolvers",

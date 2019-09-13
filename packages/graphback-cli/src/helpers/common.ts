@@ -11,9 +11,9 @@ export const checkDirectory = (): string => {
 
     const configPath = `${process.cwd()}/graphback.json`
 
-    const { paths } = JSON.parse(readFileSync(configPath, "utf8"))
+    const { defaultPaths } = JSON.parse(readFileSync(configPath, "utf8"))
   
-    pathForModel = join(process.cwd(), paths.model)
+    pathForModel = join(process.cwd(), defaultPaths.model)
 
     accessSync(`${pathForModel}`)
 
