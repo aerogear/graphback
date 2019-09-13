@@ -1,6 +1,6 @@
 import { Type } from '../ContextTypes';
 import { IGraphbackModule } from '../GraphQLBackend';
-import {  generateAppModuleTemplate, generateModule, generateCommonModuleTemplate } from './outputModule/moduleTemplate';
+import {  generateAppModuleTemplate, generateModuleTemplate, generateCommonModuleTemplate } from './outputModule/moduleTemplate';
 import { ResolverGenerator } from '../resolvers';
 import { SchemaGenerator } from '../schema';
 
@@ -14,10 +14,12 @@ export class ModuleGenerator {
     const schemaGenerator = new SchemaGenerator(inputContext)
     gqlModule.schema = schemaGenerator.generate()
 
+    gqlModule.relations = schemaGenerator.getRelations(name);
+
     const resolverGenerator = new ResolverGenerator(inputContext)
     gqlModule.resolvers = resolverGenerator.generate(database)
 
-    gqlModule.index = generateModule(gqlModule.name)
+    gqlModule.index = generateModuleTemplate(gqlModule.name, gqlModule.relations);
 
     return gqlModule;
   }

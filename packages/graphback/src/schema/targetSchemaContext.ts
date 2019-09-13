@@ -7,7 +7,7 @@ export interface TargetType {
   fields: string[]
 }
 
-interface RelationInfo {
+export interface RelationInfo {
   name: string
   //tslint:disable-next-line
   type: string
@@ -24,6 +24,7 @@ export interface TargetContext {
   interfaces: TargetType[]
   inputFields: TargetType[]
   filterFields: TargetType[],
+  relations: RelationInfo[],
   // pagination: Type[],
   queries: string[],
   mutations: string[],
@@ -168,12 +169,12 @@ export const buildTargetContext = (input: Type[]) => {
     })
   });
 
-
   const context: TargetContext = {
     types: [],
     interfaces: [],
     inputFields: [],
     filterFields: [],
+    relations,
     // pagination: [],
     queries: [],
     mutations: [],
@@ -182,7 +183,6 @@ export const buildTargetContext = (input: Type[]) => {
 
   const objectTypes = filterObjectTypes(inputContext);
   const interfaceTypes = filterInterfaceTypes(inputContext);
-
 
   context.types = objectTypes.map((t: Type) => {
     return {

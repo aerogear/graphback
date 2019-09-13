@@ -72,6 +72,8 @@ export async function generateBackend(): Promise<void> {
         mkdirSync(modulePath, { recursive: true });
       }
 
+      writeFileSync(`${modulePath}/index.ts`, m.index);
+
       if (!m.schema) {
         return;
       }
@@ -102,8 +104,6 @@ export async function generateBackend(): Promise<void> {
       resolverFiles.forEach((file: string) => unlinkSync(`${resolverPath}/generated/${file}`))
 
       m.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${resolverPath}/generated/${output.name}.ts`, output.output));
-
-      writeFileSync(`${modulePath}/index.ts`, m.index);
     });
 
     writeFileSync(`${modulesPath}/app.ts`, generated.appModule.index)

@@ -1,26 +1,31 @@
 import { createImportString } from '../../utils';
+import { RelationInfo } from '../../schema/targetSchemaContext';
 
 const commonImports = [
   "import { GraphQLModule } from '@graphql-modules/core';",
 ];
 
-const moduleImports = [
-  "import { importSchema } from 'graphql-import';",
+const commonModuleImports = [
+  "import 'graphql-import-node';",
   "import { CommonModule } from '../common';",
   "import { resolvers } from './resolvers';"
 ];
 
-export const generateModule = (name: string) => {
+export const generateModuleTemplate = (name: string, relations: RelationInfo[]) => {
+  const moduleImports = relations.map((r: RelationInfo) => createImportString([`${r.name}Module`], `'../${r.name.toLowerCase()}'`));
+
+  const schemaImport = createImportString(['* as typeDefs'], `'./${name}.graphql'`, true)
+
   // TODO: Sort imports alphabetically
-  const imports = [...commonImports, ...moduleImports];
+  const imports = [...commonImports, ...commonModuleImports, ...moduleImports, schemaImport];
 
   return `${imports.join(`\n`)}
 
 export const ${name}Module = new GraphQLModule({
-  typeDefs: importSchema(__dirname + '/${name}.graphql'),
+  typeDefs,
   resolvers,
   imports: [
-    CommonModule
+    CommonModule,${relations.length ? relations.map((r: RelationInfo) => `\n${r.name}Module`).join(',') : ''}
   ]
 });
 `;

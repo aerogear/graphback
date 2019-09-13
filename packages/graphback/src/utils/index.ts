@@ -33,8 +33,25 @@ export const createImplementsInterfaceString = (names: string[]) => {
   return `implements ${names.map((name: string) => name).join(' & ')} `;
 }
 
-export const createImportString = (names: string[], path: string) => {
+export const createImportString = (names: string[], path: string, isDefault: boolean = false) => {
   const imports = names.map((name: string) => name).join(', ');
 
-  return `import { ${imports} } from ${path};`;
+  return `import ${ isDefault ? '' : '{ '}${imports}${ isDefault ? '' : ' }'} from ${path};`;
 };
+
+/**
+ * Filter duplicate items in an array by one of their keys
+ *
+ * @param arr - The array to filter
+ * @param key - The key to compare each item on.
+ */
+/* tslint:disable:no-any */
+export const uniqueBy = (arr: any[], key: string) => {
+  const seen = new Set();
+
+  return arr.filter((item: any) => {
+    const k = item[key];
+
+    return seen.has(k) ? false : seen.add(k);
+  });
+}

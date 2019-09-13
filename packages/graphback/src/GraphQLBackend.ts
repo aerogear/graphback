@@ -9,6 +9,7 @@ import { SchemaGenerator } from './schema';
 import { ModuleGenerator } from './modules';
 import { readFileSync } from 'fs';
 import * as path from 'path';
+import { RelationInfo } from './schema/targetSchemaContext';
 
 /**
  * GraphQLBackend
@@ -136,6 +137,7 @@ export interface IGraphbackModule {
   index?: string
   schema?: string
   resolvers?: IGraphbackResolvers
+  relations?: RelationInfo[]
 }
 
 export interface IGraphbackModel {

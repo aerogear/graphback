@@ -1,6 +1,7 @@
 import { Type } from '../ContextTypes';
+import { uniqueBy } from '../utils';
 import { generateSchema } from './schemaTemplate';
-import { buildTargetContext, createCustomSchemaContext, TargetContext } from './targetSchemaContext';
+import { buildTargetContext, createCustomSchemaContext, RelationInfo, TargetContext } from './targetSchemaContext';
 
 
 /**
@@ -12,14 +13,20 @@ export class SchemaGenerator {
   private inputContext: Type[]
 
   constructor(inputContext: Type[]) {
-    this.inputContext = inputContext
+    this.inputContext = inputContext;
+    this.context = buildTargetContext(inputContext);
+  }
+
+  public getRelations(name: string): RelationInfo[] {
+    const relations = this.context.relations.filter((r: RelationInfo) => r.name !== name);
+
+    return uniqueBy(relations, 'name');
   }
 
   /**
    * Generate output schema as string
    */
   public generate() {
-    this.context = buildTargetContext(this.inputContext)
     const [ customQueries, customMutations, customSubscriptions ] = createCustomSchemaContext(this.inputContext)
 
     return generateSchema(this.context, customQueries, customMutations, customSubscriptions)
