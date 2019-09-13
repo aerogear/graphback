@@ -5,20 +5,19 @@ const commonImports = [
 ];
 
 const moduleImports = [
-  "import { resolvers } from './resolvers';",
-  "import { CommonModule } from '../common';"
+  "import { importSchema } from 'graphql-import';",
+  "import { CommonModule } from '../common';",
+  "import { resolvers } from './resolvers';"
 ];
 
 export const generateModule = (name: string) => {
-  const modelImport = createImportString(['typeDefs'], `'./${name}'`);
-
   // TODO: Sort imports alphabetically
-  const imports = [...commonImports, ...moduleImports, modelImport];
+  const imports = [...commonImports, ...moduleImports];
 
   return `${imports.join(`\n`)}
 
 export const ${name}Module = new GraphQLModule({
-  typeDefs,
+  typeDefs: importSchema(__dirname + '/${name}.graphql'),
   resolvers,
   imports: [
     CommonModule

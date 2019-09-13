@@ -38,8 +38,6 @@ const filters = (defs: TargetType[]): string => {
   }`).join('\n\n  ')}`
 }
 
-const imports = `import gql from 'graphql-tag'`
-
 /**
  * Patch together generated and custom queries
  * @param queries queries generated from the types (CRUD)
@@ -128,10 +126,7 @@ const outputSchema = (context: TargetContext, customQueries: string[], customMut
   const allMutations = generateMutations(mutations, customMutations)
   const allSubs = generateSubscriptions(subscriptions, customSubscriptions)
 
-  let output = `${imports}
-
-export const typeDefs = gql\`
-  ${nodeInterfaces(interfaces)}
+  let output = `${nodeInterfaces(interfaces)}
 
   ${nodeTypes(types)}
 
@@ -150,8 +145,6 @@ export const typeDefs = gql\`
   if (allSubs) {
     output += `\n\n  ${allSubs}`
   }
-
-  output += `\n\`\n`
 
   return output
 }

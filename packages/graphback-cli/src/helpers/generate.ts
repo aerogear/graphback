@@ -76,7 +76,7 @@ export async function generateBackend(): Promise<void> {
         return;
       }
 
-      writeFileSync(`${modulePath}/${m.name}.ts`, m.schema);
+      writeFileSync(`${modulePath}/${m.name}.graphql`, m.schema);
 
       if (!existsSync(resolverPath)) {
         mkdirSync(resolverPath);
