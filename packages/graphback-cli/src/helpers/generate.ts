@@ -22,6 +22,7 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
  * Generate schema and resolvers using graphback-core and
  * write them into generated folder
  */
+// TODO: make this function smaller (max length nearly exceeded)
 export async function generateBackend(): Promise<void> {
   try {
     const models = new GlobSync('model/*.graphql', { cwd: process.cwd() })
@@ -70,6 +71,11 @@ export async function generateBackend(): Promise<void> {
       if (!existsSync(modulePath)) {
         mkdirSync(modulePath, { recursive: true });
       }
+
+      if (!m.schema) {
+        return;
+      }
+
       writeFileSync(`${modulePath}/${m.name}.ts`, m.schema);
 
       if (!existsSync(resolverPath)) {
@@ -95,7 +101,7 @@ export async function generateBackend(): Promise<void> {
       const resolverFiles = readdirSync(`${resolverPath}/generated`)
       resolverFiles.forEach((file: string) => unlinkSync(`${resolverPath}/generated/${file}`))
 
-      m.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${resolverPath}/generated/${output.name}.ts`, output.output))
+      m.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${resolverPath}/generated/${output.name}.ts`, output.output));
 
       writeFileSync(`${modulePath}/index.ts`, m.index);
     });

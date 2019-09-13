@@ -66,11 +66,13 @@ export class GraphQLBackendCreator {
    * Create backend with all related resources
    */
   public async createBackend(database: string): Promise<IGraphQLBackend> {
-    const backend: IGraphQLBackend = {
-      modules: []
-    };
-
     const moduleGenerator = new ModuleGenerator();
+
+    const commonModule = moduleGenerator.generateCommonModule();
+
+    const backend: IGraphQLBackend = {
+      modules: [commonModule]
+    };
 
     this.models.forEach((m: IGraphbackModel) => {
       const modelInputContext = createInputContext(m.schema, this.config);

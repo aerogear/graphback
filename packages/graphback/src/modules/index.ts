@@ -1,11 +1,10 @@
 import { Type } from '../ContextTypes';
 import { IGraphbackModule } from '../GraphQLBackend';
-import {  generateAppModuleTemplate, generateModule } from './outputModule/moduleTemplate';
+import {  generateAppModuleTemplate, generateModule, generateCommonModuleTemplate } from './outputModule/moduleTemplate';
 import { ResolverGenerator } from '../resolvers';
 import { SchemaGenerator } from '../schema';
 
 export class ModuleGenerator {
-  private inputContext: Type[]
 
   public generate(name: string, inputContext: Type[], database: string): IGraphbackModule {
     const gqlModule: IGraphbackModule = {
@@ -26,6 +25,13 @@ export class ModuleGenerator {
   public generateAppModule(moduleNames: string[]): IGraphbackModule {
     return {
       index: generateAppModuleTemplate(moduleNames)
+    }
+  }
+
+  public generateCommonModule(): IGraphbackModule {
+    return {
+      name: 'Common',
+      index: generateCommonModuleTemplate()
     }
   }
 }

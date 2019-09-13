@@ -2,12 +2,9 @@ import cors from "cors"
 import express from "express"
 import http from "http"
 
-import { ApolloServer, makeExecutableSchema } from "apollo-server-express"
+import { ApolloServer } from "apollo-server-express"
 
 import config from "./config/config"
-import { connect } from "./db"
-import { resolvers, typeDefs } from "./mapping"
-import { pubsub } from './subscriptions'
 import { AppModule } from './modules/app';
 
 async function start() {
@@ -19,32 +16,7 @@ async function start() {
 
   const { schema } = AppModule;
 
-  // connect to db
-  const client = await connect(config.db);
-
-  // const schema = makeExecutableSchema({
-  //   typeDefs,
-  //   resolvers,
-  //   resolverValidationOptions: {
-  //     requireResolversForResolveType: false
-  //   }
-  // });
-
-  const apolloConfig = {
-    schema,
-    context: async ({
-      req
-    }: {req: express.Request}) => {
-      // pass request + db ref into context for each resolver
-      return {
-        req: req,
-        db: client,
-        pubsub
-      }
-    }
-  }
-
-  const apolloServer = new ApolloServer(apolloConfig)
+  const apolloServer = new ApolloServer({ schema });
 
   apolloServer.applyMiddleware({ app })
 
