@@ -24,6 +24,9 @@ export const generateModuleTemplate = (name: string, importedModules: IGraphback
 export const ${name}Module = new GraphQLModule({
   typeDefs,
   resolvers,
+  resolverValidationOptions: {
+    requireResolversForResolveType: false
+  },
   imports: [
     CommonModule,${importedModules.length ? importedModules.map((m: IGraphbackModule) => `\n    ${m.name}Module`).join(',') : ''}
   ]
