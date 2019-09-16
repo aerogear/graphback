@@ -1,27 +1,17 @@
-import { accessSync, readFileSync } from 'fs'
-import { join } from 'path'
+import { existsSync } from 'fs'
+import { configInstance } from '../config/ConfigBuilder';
 import { logError } from '../utils'
 
 
-export const checkDirectory = (): string => {
+export const checkDirectory = () => {
 
-  let pathForModel
-
-  try {
-
-    const configPath = `${process.cwd()}/graphback.json`
-
-    const { defaultPaths } = JSON.parse(readFileSync(configPath, "utf8"))
-  
-    pathForModel = join(process.cwd(), defaultPaths.model)
-
-    accessSync(`${pathForModel}`)
-
-  } catch (err) {
-    logError(`Model not found, make sure you are in root directory of your project and that you have
-    specified the correct path to your .graphql file`)
-    process.exit(0)
+  if (configInstance.isValid()) {
+    if (existsSync(configInstance.config.files.model)) {
+      return;
+    }
   }
 
-  return pathForModel
+  logError(`Model not found, make sure you are in root directory of your project and that you have
+    specified the correct path to your .graphql file`)
+  process.exit(0)
 }

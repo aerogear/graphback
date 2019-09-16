@@ -2,6 +2,7 @@
 
 // Top level Api
 export * from './GraphQLBackend'
+export * from './GraphQLGeneratorConfig'
 
 // Resolvers
 export * from './resolvers'
