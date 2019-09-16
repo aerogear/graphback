@@ -63,7 +63,7 @@ export const transformOpenApiSpec = async () => {
 
     logInfo(`
    Successfully generated GraphQL schema from OpenAPI definition.
-   You can review your schema in model folder and OpenAPI it for your own needs. 
+   You can review your schema in model folder and modify it for your own needs. 
    You can then generate your backend using ${chalk.cyan(`graphback generate`)} command that will create resolvers.
    OpenAPI files will not longer be processed by generator.`)
 }
