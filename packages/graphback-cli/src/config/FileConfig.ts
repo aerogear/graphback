@@ -1,10 +1,10 @@
 
 /**
- * Configuration for input and output files 
+ * Configuration for input and output folders 
  */
 export interface FileConfig {
     /**
-     * Input model used for processing files
+     * Input model used for providing source for code generation
      */
     model: string,
 

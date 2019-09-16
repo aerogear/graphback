@@ -16,14 +16,14 @@ export class ConfigBuilder {
     }
 
     public isValid() {
-        return this.config && this.config.db && this.config.files;
+        return this.config && this.config.db && this.config.folders;
     }
 
     private applyAbsolutePaths() {
         // tslint:disable-next-line: no-for-in
-        for (const fileType in this.config.files) {
-            if (this.config.files[fileType]) {
-                this.config.files[fileType] = join(process.cwd(), this.config.files[fileType]);
+        for (const fileType in this.config.folders) {
+            if (this.config.folders[fileType]) {
+                this.config.folders[fileType] = join(process.cwd(), this.config.folders[fileType]);
             }
         }
     }

@@ -40,9 +40,9 @@ export const dropDBResources = async (): Promise<void> => {
 
 export const createDBResources = async (): Promise<void> => {
   try {
-    const { db: { database, dbConfig }, graphqlCRUD, files } = configInstance.config
+    const { db: { database, dbConfig }, graphqlCRUD, folders } = configInstance.config
 
-    const models = new GlobSync(`${files.model}/*.graphql`)
+    const models = new GlobSync(`${folders.model}/*.graphql`)
 
     if (models.found.length === 0) {
       logError(`No graphql file found inside ${process.cwd()}/model folder.`)

@@ -25,22 +25,22 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
  */
 export async function generateBackend(): Promise<void> {
   try {
-    const { files, graphqlCRUD, db: { database }, client } = configInstance.config;
+    const { folders, graphqlCRUD, db: { database }, client } = configInstance.config;
 
-    const models = new GlobSync(`${files.model}/*.graphql`)
+    const models = new GlobSync(`${folders.model}/*.graphql`)
 
     if (models.found.length === 0) {
-      logError(`No graphql file found inside ${files.model} folder.`)
+      logError(`No graphql file found inside ${folders.model} folder.`)
       process.exit(0)
     }
 
     const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
 
-    const pathForSchema: string = join(process.cwd(), files.schema)
+    const pathForSchema: string = join(process.cwd(), folders.schema)
     const outputSchemaPath: string = `${pathForSchema}/generated.ts`
 
-    const customResolvers: string = join(process.cwd(), files.customResolvers, `custom`)
-    const generatedResolvers: string = join(process.cwd(), files.generatedResolvers, `generated`)
+    const customResolvers: string = join(process.cwd(), folders.customResolvers, `custom`)
+    const generatedResolvers: string = join(process.cwd(), folders.generatedResolvers, `generated`)
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
@@ -60,11 +60,11 @@ export async function generateBackend(): Promise<void> {
 
     if (client) {
       const generatedClient = await backend.createClient()
-      if (!existsSync(files.client)) {
-        mkdirSync(files.client, { recursive: true })
+      if (!existsSync(folders.client)) {
+        mkdirSync(folders.client, { recursive: true })
       }
       Object.keys(generatedClient).forEach((folder: string) => {
-        const currentFolder = `${files.client}/${folder}`
+        const currentFolder = `${folders.client}/${folder}`
         if (!existsSync(currentFolder)) {
           mkdirSync(currentFolder)
         }

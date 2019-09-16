@@ -6,7 +6,7 @@ import { logError } from '../utils'
 export const checkDirectory = () => {
 
   if (configInstance.isValid()) {
-    if (existsSync(configInstance.config.files.model)) {
+    if (existsSync(configInstance.config.folders.model)) {
       return;
     }
   }

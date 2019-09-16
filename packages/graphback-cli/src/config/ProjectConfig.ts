@@ -7,7 +7,7 @@ import { FileConfig } from './FileConfig';
  * 
  * - DB - database generation
  * - graphqlCRUD - graphql CRUD generation
- * - files - input/outputs of the generator
+ * - folders - input/outputs of the generator
  */
 export interface ProjectConfig {
     /**
@@ -25,9 +25,9 @@ export interface ProjectConfig {
     graphqlCRUD: GraphQLGeneratorConfig,
 
     /**
-     * Configuration for input/output filesß
+     * Configuration for input/output folders
      */
-    files: FileConfig
+    folders: FileConfig
 
     /**
      * Empty object config that can be created to generate client
