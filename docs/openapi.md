@@ -5,23 +5,23 @@ title: OpenAPI migrations
 
 ## OpenAPI spec migration
 
-OpenAPI (Swagger) is an specification for describing RESTfull API.
-Specification can be generated based on existing API with many open source solutions. 
+OpenAPI (Swagger) is a specification for describing RESTful APIs.
+A specification can be generated based on an existing API with many open source solutions. 
 
-Developers can also utilize various OpenAPI generators thanks to https://openapi-generator.tech project.
-Generating GraphQL schema from OpenAPI will almost always come with some information loss.
-Strongly typed nature of GraphQL and additional elements like Interfaces, Enums and Scalars 
+Developers can also utilize various OpenAPI generators thanks to [OpenAPI Generator](https://openapi-generator.tech) project.
+Generating a GraphQL schema from OpenAPI will almost always come with some information loss.
+Due to the strongly typed nature of GraphQL additional elements like Interfaces, Enums and Scalars 
 do not have direct mapping in OpenAPI definitions. 
 
 When working with Graphback developers can generate or manually build their existing 
-OpenAPI definition and then transform it to GraphQL schema
+OpenAPI definition and then transform it into a GraphQL schema.
 
 ## Migration workflow
 
-To migrate simply put your OpenAPI definition into model folder (both yaml and json are supported)
-and execute graphback command:
+To migrate simply put your OpenAPI definition into the model folder (both YAML and JSON are supported)
+and execute:
 
 `graphback openapi` 
 
-By default command will stip out all methods and leave only the OpenAPI types.
-Developers can manually apply Graphback directives and tweak schema for their own needs.
+By default the command will strip out all methods and leave only the OpenAPI types.
+Developers can manually apply Graphback directives and tweak the schema for their own needs.
