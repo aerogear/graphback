@@ -40,19 +40,20 @@ interface OpenApiConfig {
  * 3. Renames original OpenAPI definitions so they will not be processed anymore
  */
 export const transformOpenApiSpec = async () => {
-    const models = new GlobSync('model/*.yaml', { cwd: process.cwd() })
-    const jsonModels = new GlobSync('model/*.json', { cwd: process.cwd() })
+    const path: string = process.cwd()
+    const models = new GlobSync('model/*.yaml', { cwd:path })
+    const jsonModels = new GlobSync('model/*.json', { cwd: path})
 
     if (models.found.length === 0 && jsonModels.found.length === 0) {
-        logError(`No OpenAPI file found inside ${process.cwd()}/model folder.`)
+        logError(`No OpenAPI file found inside model folder.`)
         process.exit(0)
     }
 
-    const configPath = `${process.cwd()}/config.json`
+    const configPath = `${path}/config.json`
     let { openApi } = JSON.parse(readFileSync(configPath, "utf8"))
     openApi = openApi || {};
 
-    const path: string = process.cwd()
+
     for (const model of jsonModels.found) {
         await processSingleDefinition(model, path, false, openApi);
     }
