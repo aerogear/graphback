@@ -54,7 +54,7 @@ export const createDBResources = async(): Promise<void> => {
     }
 
      const modelDefinitions: IGraphbackModel[] = models.found.map((m: string) => {
-      const name = path.posix.basename(`${process.cwd()}/${m}`, '.graphql');
+      const name = path.basename(`${process.cwd()}/${m}`, '.graphql');
       const schemaText = readFileSync(`${process.cwd()}/${m}`, 'utf8');
 
       return {
