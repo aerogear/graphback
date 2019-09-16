@@ -91,7 +91,7 @@ export class GraphQLBackendCreator {
         m.dependentTypes.forEach((t: string) => {
           const dependency = this.findModuleForType(t, backend.modules, [m.name]);
 
-          if (dependency) {
+          if (dependency && !m.moduleImports.find((d: IGraphbackModule) => d.name === dependency.name)) {
             m.moduleImports.push(dependency);
           }
         });
