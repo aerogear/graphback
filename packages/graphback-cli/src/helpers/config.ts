@@ -10,7 +10,7 @@ Graphback configuration successfully bootstrapped :rocket:
 
 Next Steps:
 1. Review your configuration in "graphback.json" file
-2. Edit the .graphql file inside ${chalk.cyan(`model`)} with your GraphQL types.
+2. Edit the .graphql file inside your model folder.
 3. Run ${chalk.cyan(`${commandRoot}generate`)} to generate schema and resolvers
 `
 }

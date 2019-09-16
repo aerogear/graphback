@@ -92,7 +92,7 @@ GraphQL server successfully bootstrapped :rocket:
 
 Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
-2. Edit the .graphql file inside ${chalk.cyan(`model`)} with your GraphQL types.
+2. Edit the .graphql file inside your model folder.
 3. Run ${chalk.cyan(`${commandRoot}generate`)} to generate schema and resolvers
 `
 }
