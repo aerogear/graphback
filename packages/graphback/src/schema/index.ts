@@ -17,10 +17,10 @@ export class SchemaGenerator {
     this.context = buildTargetContext(inputContext);
   }
 
-  public getRelations(name: string): RelationInfo[] {
-    const relations = this.context.relations.filter((r: RelationInfo) => r.name !== name);
+  public getRelations(name: string): string[] {
+    const relations = this.context.relations.filter((r: RelationInfo) => r.name !== name).map((r: RelationInfo) => r.name);
 
-    return uniqueBy(relations, 'name');
+    return [...new Set(relations)];
   }
 
   /**

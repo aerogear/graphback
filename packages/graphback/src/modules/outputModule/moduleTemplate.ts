@@ -1,5 +1,5 @@
+import { IGraphbackModule } from '../../GraphQLBackend';
 import { createImportString } from '../../utils';
-import { RelationInfo } from '../../schema/targetSchemaContext';
 
 const commonImports = [
   "import { GraphQLModule } from '@graphql-modules/core';",
@@ -11,8 +11,8 @@ const commonModuleImports = [
   "import { resolvers } from './resolvers';"
 ];
 
-export const generateModuleTemplate = (name: string, relations: RelationInfo[]) => {
-  const moduleImports = relations.map((r: RelationInfo) => createImportString([`${r.name}Module`], `'../${r.name.toLowerCase()}'`));
+export const generateModuleTemplate = (name: string, importedModules: IGraphbackModule[] = []) => {
+  const moduleImports = importedModules.map((m: IGraphbackModule) => createImportString([`${m.name}Module`], `'../${m.name.toLowerCase()}'`));
 
   const schemaImport = createImportString(['* as typeDefs'], `'./${name}.graphql'`, true)
 
@@ -25,7 +25,7 @@ export const ${name}Module = new GraphQLModule({
   typeDefs,
   resolvers,
   imports: [
-    CommonModule,${relations.length ? relations.map((r: RelationInfo) => `\n${r.name}Module`).join(',') : ''}
+    CommonModule,${importedModules.length ? importedModules.map((m: IGraphbackModule) => `\n    ${m.name}Module`).join(',') : ''}
   ]
 });
 `;
