@@ -55,10 +55,7 @@ export async function generateBackend(): Promise<void> {
 
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(`${generatedResolvers}/index.ts`, generated.resolvers.index)
-
-    // const resolverFiles = readdirSync(generatedResolvers)
-    /// resolverFiles.forEach((file: string) => unlinkSync(join(generatedResolvers, file)))
-
+ 
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${generatedResolvers}/${output.name}.ts`, output.output))
 
     if (client) {
