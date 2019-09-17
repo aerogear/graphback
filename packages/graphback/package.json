@@ -34,21 +34,21 @@
   "devDependencies": {
     "@types/graphql": "14.2.3",
     "@types/knex": "0.15.2",
-    "@types/node": "8.10.53",
+    "@types/node": "8.10.54",
     "@types/pino": "5.20.0",
-    "ava": "2.3.0",
+    "ava": "2.4.0",
     "rimraf": "3.0.0",
-    "ts-node": "8.3.0",
-    "tslint": "5.19.0",
+    "ts-node": "8.4.1",
+    "tslint": "5.20.0",
     "tsutils": "3.17.1",
-    "typescript": "3.6.2"
+    "typescript": "3.6.3"
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "graphql": "14.5.4",
-    "knex": "0.19.3",
+    "graphql": "14.5.6",
+    "knex": "0.19.4",
     "pg": "7.12.1",
-    "pino": "5.13.2",
+    "pino": "5.13.3",
     "sqlite3": "4.1.0",
     "tslib": "1.10.0"
   }
