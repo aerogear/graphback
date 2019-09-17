@@ -7,6 +7,10 @@ import { generateAppModuleTemplate, generateCommonModuleTemplate } from './outpu
 export class ModuleGenerator {
 
   public generate(name: string, inputContext: Type[], database: string): IGraphbackModule {
+    if (!inputContext.length) {
+      return undefined;
+    }
+
     const gqlModule: IGraphbackModule = {
       name,
       types: inputContext,
@@ -22,7 +26,7 @@ export class ModuleGenerator {
         interfaces = [...t.interfaces.map((i: InterfaceType) => i.type)];
       }
     });
-    // inputContext.map((t: Type) => t.interfaces.map((i: InterfaceType) => i.type));
+
     gqlModule.dependentTypes = [...schemaGenerator.getRelations(name), ...interfaces];
 
     const resolverGenerator = new ResolverGenerator(inputContext)

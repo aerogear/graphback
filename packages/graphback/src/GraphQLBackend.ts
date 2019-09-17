@@ -81,7 +81,9 @@ export class GraphQLBackendCreator {
       const modelInputContext = createInputContext(m.schema, this.config);
       const gqlModule = moduleGenerator.generate(m.name, modelInputContext, database);
 
-      backend.modules.push(gqlModule);
+      if (gqlModule) {
+        backend.modules.push(gqlModule);
+      }
     });
 
     // we need to figure out the inter-dependency between the modules based on the relationship
