@@ -1,10 +1,8 @@
 import { existsSync } from 'fs'
-import { configInstance } from '../config/ConfigBuilder';
+import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError } from '../utils'
 
-
-export const checkDirectory = () => {
-
+export const checkDirectory = (configInstance: ConfigBuilder) => {
   if (configInstance.isValid()) {
     if (existsSync(configInstance.config.folders.model)) {
       return;

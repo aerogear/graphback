@@ -20,7 +20,7 @@
       "subDelete": false,
       "disableGen": false
   },
-  "files": {
+  "folders": {
       "model": "./model",
       "generatedResolvers": "./src/resolvers",
       "customResolvers": "./src/resolvers",

@@ -2,7 +2,7 @@
 /**
  * Configuration for input and output folders 
  */
-export interface FileConfig {
+export interface FolderConfig {
     /**
      * Input model used for providing source for code generation
      */

@@ -1,6 +1,7 @@
 // tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
+import { getDefaultFoldersLocations } from '../config/ConfigBuilder';
 
 const configFilesPath = `${__dirname}/resources/config`
 
@@ -35,14 +36,6 @@ const generationConfig = {
   "subUpdate": false,
   "subDelete": false,
   "disableGen": false
-}
-
-const defaultPaths = {
-  "model": "./model",
-  "generatedResolvers": "./src/resolvers",
-  "customResolvers": "./src/resolvers",
-  "schema": "./src/schema",
-  "client": "./client/src/graphql"
 }
 
 export const chooseDatabase = async(): Promise<string> => {
@@ -85,7 +78,7 @@ export const createConfig = async(database: string, client: boolean) => {
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
   config["database"] = database
-  config["defaultPaths"] = defaultPaths
+  config["folders"] = getDefaultFoldersLocations();
   config["client"] = client
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)

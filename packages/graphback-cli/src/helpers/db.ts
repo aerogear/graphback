@@ -3,11 +3,10 @@ import * as execa from 'execa'
 import { readFileSync, unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
 import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
-import { configInstance } from '../config/ConfigBuilder';
+import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 
-const configPath = `${process.cwd()}/graphback.json`
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -18,7 +17,7 @@ const handleError = (err: { code: string; message: string; }): void => {
   process.exit(0)
 }
 
-export const dropDBResources = async (): Promise<void> => {
+export const dropDBResources = async (configInstance: ConfigBuilder): Promise<void> => {
   try {
     const { database, dbConfig } = configInstance.config.db
     if (database === 'sqlite3') {
@@ -38,7 +37,7 @@ export const dropDBResources = async (): Promise<void> => {
   }
 }
 
-export const createDBResources = async (): Promise<void> => {
+export const createDBResources = async (configInstance: ConfigBuilder): Promise<void> => {
   try {
     const { db: { database, dbConfig }, graphqlCRUD, folders } = configInstance.config
 
@@ -76,9 +75,10 @@ Run ${chalk.cyan(`npm run develop`)} to start the server.
 }
 
 export const createDB = async (): Promise<void> => {
-  checkDirectory()
-  await dropDBResources()
-  await createDBResources()
+  const configInstance = new ConfigBuilder();
+  checkDirectory(configInstance)
+  await dropDBResources(configInstance)
+  await createDBResources(configInstance)
   postCommandMessage()
   process.exit(0)
 }

@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFile
 import { GlobSync } from 'glob'
 import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
 import { join } from 'path'
-import { configInstance } from '../config/ConfigBuilder';
+import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
 
@@ -25,6 +25,8 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
  */
 export async function generateBackend(): Promise<void> {
   try {
+    const configInstance = new ConfigBuilder();
+    checkDirectory(configInstance)
     const { folders, graphqlCRUD, db: { database }, client } = configInstance.config;
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
@@ -36,11 +38,11 @@ export async function generateBackend(): Promise<void> {
 
     const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
 
-    const pathForSchema: string = join(process.cwd(), folders.schema)
+    const pathForSchema: string = folders.schema
     const outputSchemaPath: string = `${pathForSchema}/generated.ts`
 
-    const customResolvers: string = join(process.cwd(), folders.customResolvers, `custom`)
-    const generatedResolvers: string = join(process.cwd(), folders.generatedResolvers, `generated`)
+    const customResolvers: string = folders.customResolvers
+    const generatedResolvers: string = folders.generatedResolvers
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
@@ -55,7 +57,7 @@ export async function generateBackend(): Promise<void> {
 
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(`${generatedResolvers}/index.ts`, generated.resolvers.index)
- 
+
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${generatedResolvers}/${output.name}.ts`, output.output))
 
     if (client) {
@@ -77,15 +79,20 @@ export async function generateBackend(): Promise<void> {
   }
 
   function checkAndCreateFolders(pathForSchema: string, customResolvers: string, generatedResolvers: string) {
-    if (!existsSync(pathForSchema)) {
-      mkdirSync(pathForSchema, { recursive: true });
+    try {
+      if (!existsSync(pathForSchema)) {
+        mkdirSync(pathForSchema, { recursive: true });
+      }
+      if (!existsSync(customResolvers)) {
+        mkdirSync(customResolvers, { recursive: true });
+      }
+      if (!existsSync(generatedResolvers)) {
+        mkdirSync(generatedResolvers, { recursive: true });
+      }
+    } catch (err) {
+      logError(`Error when creating folder structure: ${err}`)
     }
-    if (!existsSync(customResolvers)) {
-      mkdirSync(customResolvers, { recursive: true });
-    }
-    if (!existsSync(generatedResolvers)) {
-      mkdirSync(generatedResolvers, { recursive: true });
-    }
+
   }
 }
 
@@ -93,7 +100,6 @@ export async function generateBackend(): Promise<void> {
  * exported generate handler
  */
 export async function generate(cliName: string = "graphback"): Promise<void> {
-  checkDirectory()
   await generateBackend()
   postCommandMessage(cliName)
 }

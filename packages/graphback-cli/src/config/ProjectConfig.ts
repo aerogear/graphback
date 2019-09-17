@@ -1,5 +1,5 @@
 import { GraphQLGeneratorConfig } from 'graphback';
-import { FileConfig } from './FileConfig';
+import { FolderConfig } from './FolderConfig';
 
 /**
  * Configuration for project that specifies every aspect of generation process.
@@ -27,7 +27,7 @@ export interface ProjectConfig {
     /**
      * Configuration for input/output folders
      */
-    folders: FileConfig
+    folders: FolderConfig
 
     /**
      * Empty object config that can be created to generate client
