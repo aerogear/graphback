@@ -1,4 +1,4 @@
-import { INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, Type } from '../ContextTypes';
+import { INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from '../ContextTypes';
 
 export enum ResolverType {
   CREATE = 'create',
@@ -21,6 +21,8 @@ export const getTableName = (typeName: string): string => {
 export const filterObjectTypes = (types: Type[]) => types.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION);
 
 export const filterInterfaceTypes = (types: Type[]) => types.filter((t: Type) => t.kind === INTERFACE_TYPE_DEFINITION);
+
+export const filterObjectExtensions = (types: Type[]) => types.filter((t: Type) => t.kind === OBJECT_TYPE_EXTENSION);
 
 /**
  * Generate a string literal with the following format:
