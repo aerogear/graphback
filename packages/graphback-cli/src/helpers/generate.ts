@@ -1,11 +1,13 @@
 import chalk from 'chalk';
-import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync, readFile } from 'fs';
 import { GlobSync } from 'glob'
 import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
 import { join } from 'path'
 import { configInstance } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
+import { diff } from '@graphql-inspector/core';
+
 
 /**
  * Message after command execution
@@ -52,10 +54,22 @@ export async function generateBackend(): Promise<void> {
         writeFileSync(`${customResolvers}/${output.name}.ts`, output.output)
       }
     })
+    try {
+      const oldSchema = readFileSync(outputSchemaPath, 'utf8')
+      const diffChanges = diff(generated.schema, oldSchema)
+      diffChanges.forEach((change) => {
+        console.log("Change detected")
+        console.log(`${JSON.stringify(change)}`);
+      })
+    } catch {
+      // Ignore
+    }
+
+
 
     writeFileSync(outputSchemaPath, generated.schema)
     writeFileSync(`${generatedResolvers}/index.ts`, generated.resolvers.index)
- 
+
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${generatedResolvers}/${output.name}.ts`, output.output))
 
     if (client) {
