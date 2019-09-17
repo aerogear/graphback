@@ -2,6 +2,7 @@ import { parse, visit } from 'graphql';
 import { Config, INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from './ContextTypes'
 import { applyGeneratorDirectives } from './directives';
 import { inputTypeVisitor } from './InputTypeVisitor';
+import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './utils';
 
 /**
  * create input context to be reused for
@@ -24,11 +25,11 @@ export const createInputContext = (schemaText: string, defaultConfig: Config): T
 
 
 
-    const extendNodes = context.filter((t: Type) => t.kind === OBJECT_TYPE_EXTENSION)
+    const extendNodes = filterObjectExtensions(context)
 
-    const interfaces = context.filter((t: Type) => t.kind === INTERFACE_TYPE_DEFINITION)
+    const interfaces = filterInterfaceTypes(context)
 
-    context = context.filter((t: Type) => t.kind !== OBJECT_TYPE_EXTENSION && t.kind !== INTERFACE_TYPE_DEFINITION)
+    context = filterObjectTypes(context)
 
     return [...context.map((t: Type) => {
       const extendNode = extendNodes.find((node: Type) => node.name === t.name)
