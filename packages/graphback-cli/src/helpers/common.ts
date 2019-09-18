@@ -1,12 +1,15 @@
-import { accessSync } from 'fs'
+import { existsSync } from 'fs'
+import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError } from '../utils'
 
-
-export const checkDirectory = (): void => {
-  try{
-    accessSync(`${process.cwd()}/model`)
-  } catch(err) {
-    logError(`model directory not found. Make you sure you are in the root of your project.`)
-    process.exit(0)
+export const checkDirectory = (configInstance: ConfigBuilder) => {
+  if (configInstance.isValid()) {
+    if (existsSync(configInstance.config.folders.model)) {
+      return;
+    }
   }
+
+  logError(`Model not found, make sure you are in root directory of your project and that you have
+    specified the correct path to your .graphql file`)
+  process.exit(0)
 }

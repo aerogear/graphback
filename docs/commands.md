@@ -32,3 +32,13 @@ Execute `graphback` in your shell for more information
   ```
   Create databases resources based on your data model. Currently supports PostgreSQL and sqlite3.
 > **Note** - *Running `graphback db` drops your database and recreates it with tables and relationships.*
+
+### Config 
+
+  ```bash
+  graphback config
+  ```
+
+  Create configuration in existing project to support Graphback resolver and schema generation.
+
+  > **Note** When creating configuration please review if locations created for `files` integration match your project folder structure

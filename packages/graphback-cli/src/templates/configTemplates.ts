@@ -1,6 +1,7 @@
 // tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
+import { getDefaultFoldersLocations } from '../config/ConfigBuilder';
 
 const configFilesPath = `${__dirname}/resources/config`
 
@@ -69,7 +70,7 @@ export const askForClient = async(): Promise<boolean> => {
  * Create config file with db info
  */
 export const createConfig = async(database: string, client: boolean) => {
-  const configPath = `${process.cwd()}/config.json`
+  const configPath = `${process.cwd()}/graphback.json`
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {}
@@ -77,6 +78,7 @@ export const createConfig = async(database: string, client: boolean) => {
   config["dbConfig"] = JSON.parse(dbConfig)
   config["generation"] = generationConfig
   config["database"] = database
+  config["folders"] = getDefaultFoldersLocations();
   config["client"] = client
   if(dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)

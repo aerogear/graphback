@@ -1,6 +1,7 @@
 import { parse, visit } from 'graphql';
-import { Config, INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from './ContextTypes'
+import { INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from './ContextTypes'
 import { applyGeneratorDirectives } from './directives';
+import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { inputTypeVisitor } from './InputTypeVisitor';
 import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './utils';
 
@@ -9,7 +10,7 @@ import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from 
  * schema, resolvers generation
  * and database creation
  */
-export const createInputContext = (schemaText: string, defaultConfig: Config): Type[] => {
+export const createInputContext = (schemaText: string, defaultConfig: GraphQLGeneratorConfig): Type[] => {
   const schema = applyGeneratorDirectives(schemaText)
   try {
     const astNode = parse(schema)

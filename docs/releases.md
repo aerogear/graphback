@@ -10,7 +10,24 @@ Please follow indidividual releases for more information.
 
 # Next
 
+### Graphback-cli
+
+#### Breaking changes
+
+Templates rely on `graphback.json` file. Please rename your `config.json` to `graphback.json` and add additional configuration entries
+
+```json
+  "files": {
+    "model": "./model",
+    "generatedResolvers": "./src/resolvers",
+    "customResolvers": "./src/resolvers",
+    "schema": "./src/schema",
+    "client": "./client/src/graphql"
+  }
+```
+
 ### Graphback
+
 #### Features
 
 - Support for Interfaces in GraphQL schema

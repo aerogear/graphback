@@ -1,8 +1,9 @@
 import { Client, ClientGenerator } from './client';
 import { createInputContext } from './ContextCreator';
-import { Config, OBJECT_TYPE_DEFINITION, Type } from './ContextTypes';
+import { OBJECT_TYPE_DEFINITION, Type } from './ContextTypes';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
+import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { logger } from './logger'
 import { OutputResolver, ResolverGenerator } from './resolvers';
 import { SchemaGenerator } from './schema';
@@ -22,7 +23,7 @@ export class GraphQLBackendCreator {
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(graphQLSchema: string, config: Config) {
+  constructor(graphQLSchema: string, config: GraphQLGeneratorConfig) {
     this.inputContext = createInputContext(graphQLSchema, config)
     this.dbContextProvider = new DefaultDataContextProvider();
   }

@@ -1,3 +1,5 @@
+import { GraphQLGeneratorConfig } from './GraphQLGeneratorConfig';
+
 export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
 export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
 export const OBJECT_TYPE_EXTENSION = 'ObjectTypeExtension';
@@ -62,25 +64,6 @@ export interface Field {
 }
 
 /**
- * Schema and resolver config
- * paginate - create pagination
- * rest describe crud methods
- */
-export interface Config {
-  create?: boolean
-  update?: boolean
-  //tslint:disable-next-line
-  delete?: boolean
-  find?: boolean
-  findAll?: boolean
-  subCreate?: boolean
-  subUpdate?: boolean
-  subDelete?: boolean
-  paginate?: boolean
-  disableGen?: boolean
-}
-
-/**
  * Context type returned from InputTypeVisitor
  */
 export interface Type {
@@ -88,7 +71,7 @@ export interface Type {
   name: string
   fields: Field[]
   interfaces?: InterfaceType[]
-  config: Config
+  config: GraphQLGeneratorConfig
 }
 
 
