@@ -1,5 +1,6 @@
 import { GraphQLGeneratorConfig } from 'graphback';
 import { FolderConfig } from './FolderConfig';
+import { OpenApiConfig } from './OpenApiConfig'
 
 /**
  * Configuration for project that specifies every aspect of generation process.
@@ -13,7 +14,7 @@ export interface ProjectConfig {
     /**
      * Database configuration
      */
-    db: {
+    db?: {
         // tslint:disable-next-line: no-any
         dbConfig: any,
         database: string
@@ -22,16 +23,21 @@ export interface ProjectConfig {
     /**
      * GraphQL generator engine configuration
      */
-    graphqlCRUD: GraphQLGeneratorConfig,
+    graphqlCRUD?: GraphQLGeneratorConfig,
 
     /**
      * Configuration for input/output folders
      */
-    folders: FolderConfig
+    folders?: FolderConfig
 
     /**
      * Empty object config that can be created to generate client
      * Reserved for future usage
      */
-    client: object
+    client?: object
+
+    /**
+     * Configuration for OpenApi generator
+     */
+    openApi?: OpenApiConfig
 }

@@ -4,34 +4,11 @@ import { GlobSync } from 'glob';
 import { printSchema } from 'graphql';
 import { safeLoad } from 'js-yaml'
 import { createGraphQlSchema } from "openapi-to-graphql"
+import { ConfigBuilder } from '../config/ConfigBuilder';
+import { OpenApiConfig } from '../config/OpenApiConfig';
 import { logError, logInfo } from '../utils';
 import { removeCommentsFromSchema, removeOperationsFromSchema } from "../utils/openApiHelpers"
-/**
- * Configuration options for OpenAPI generator
- */
-interface OpenApiConfig {
-    /**
-     * Transform OpenAPI to GraphQL Schema 
-     * 
-     * @default false
-     */
-    includeComments: boolean,
-
-    /**
-     * Migration migrates GraphQL schema only once.
-     * Use this flag to continusly migrate OpenAPI definition in model folder
-     * 
-     * @default false
-     */
-    reuseOpenAPIModel: boolean
-
-    /**
-     * Removes queries and mutations comming from OpenAPI spec
-     * 
-     * @default false
-     */
-    includeQueriesAndMutations: boolean
-}
+import { checkDirectory } from './common';
 
 /**
  * OpenAPI command line tool
@@ -40,38 +17,36 @@ interface OpenApiConfig {
  * 3. Renames original OpenAPI definitions so they will not be processed anymore
  */
 export const transformOpenApiSpec = async () => {
-    const path: string = process.cwd()
-    const models = new GlobSync('model/*.yaml', { cwd:path })
-    const jsonModels = new GlobSync('model/*.json', { cwd: path})
+    const configInstance = new ConfigBuilder();
+    checkDirectory(configInstance);
+
+    const { folders, openApi } = configInstance.config;
+    const models = new GlobSync(`${folders.model}/*.yaml`)
+    const jsonModels = new GlobSync(`${folders.model}/*.json`)
 
     if (models.found.length === 0 && jsonModels.found.length === 0) {
         logError(`No OpenAPI file found inside model folder.`)
         process.exit(0)
     }
 
-    const configPath = `${path}/config.json`
-    let { openApi } = JSON.parse(readFileSync(configPath, "utf8"))
-    openApi = openApi || {};
-
-
     for (const model of jsonModels.found) {
-        await processSingleDefinition(model, path, false, openApi);
+        await processSingleDefinition(model, false, openApi);
     }
 
     for (const model of models.found) {
-        await processSingleDefinition(model, path, true, openApi);
+        await processSingleDefinition(model, true, openApi);
     }
 
     logInfo(`
    Successfully generated GraphQL schema from OpenAPI definition.
    You can review your schema in model folder and modify it for your own needs. 
-   You can then generate your backend using ${chalk.cyan(`graphback generate`)} command that will create resolvers.
+   You can then generate your backend using ${chalk.cyan(`generate`)} command that will create resolvers.
    OpenAPI files will not longer be processed by generator.`)
 }
 
-async function processSingleDefinition(model: string, path: string, isYaml: boolean, openApiConfig: OpenApiConfig) {
+async function processSingleDefinition(model: string, isYaml: boolean, openApiConfig: OpenApiConfig) {
     logInfo(`   Processing OpenAPI definition: ${model}`);
-    const schemaText: string = readFileSync(`${path}/${model}`, 'utf8');
+    const schemaText: string = readFileSync(`${model}`, 'utf8');
     let parsedObject;
     if (isYaml) {
         parsedObject = safeLoad(schemaText);
@@ -94,9 +69,9 @@ async function processSingleDefinition(model: string, path: string, isYaml: bool
 
         const schemaString = printSchema(schema);
 
-        writeFileSync(`${path}/${model}.graphql`, schemaString);
+        writeFileSync(`${model}.graphql`, schemaString);
         if (!openApiConfig.reuseOpenAPIModel) {
-            renameSync(`${path}/${model}`, `${path}/${model}_processed`)
+            renameSync(`${model}`, `${model}_processed`)
         }
         logInfo(`   Finished transforming OpenAPI definition: ${model}`);
     }

@@ -7,6 +7,5 @@ export const desc = 'Generate GraphQL schema and resolvers based on OpenAPI spec
 export const builder = {}
 
 export async function handler() {
-  checkDirectory()
   await transformOpenApiSpec();
 }
