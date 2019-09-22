@@ -44,7 +44,7 @@
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.2",
     "ava": "2.4.0",
-    "lint-staged": "9.2.5",
+    "lint-staged": "9.3.0",
     "rimraf": "3.0.0",
     "ts-node": "8.4.1",
     "tslint": "5.20.0",
