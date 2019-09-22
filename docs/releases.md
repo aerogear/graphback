@@ -8,7 +8,7 @@ title: Releases
 This file contains changes and migration steps for Graphback project. 
 Please follow indidividual releases for more information.
 
-# Next
+# 0.9.0
 
 ### Graphback-cli
 
