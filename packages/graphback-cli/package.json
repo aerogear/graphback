@@ -65,7 +65,7 @@
     "js-yaml": "^3.13.1",
     "node-emoji": "1.10.0",
     "openapi-to-graphql": "^1.6.0",
-    "ora": "3.4.0",
+    "ora": "4.0.0",
     "parse-github-url": "1.0.2",
     "pg": "7.12.1",
     "request": "2.88.0",
