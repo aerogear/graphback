@@ -36,7 +36,7 @@
     "node": "12.10.0"
   },
   "devDependencies": {
-    "@types/js-yaml": "^3.12.1",
+    "@types/js-yaml": "3.12.1",
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/node": "12.7.5",
@@ -60,11 +60,11 @@
     "figlet": "1.2.4",
     "glob": "7.1.4",
     "graphback": "^0.8.3",
-    "graphql": "^14.5.4",
+    "graphql": "14.5.7",
     "inquirer": "7.0.0",
-    "js-yaml": "^3.13.1",
+    "js-yaml": "3.13.1",
     "node-emoji": "1.10.0",
-    "openapi-to-graphql": "^1.6.0",
+    "openapi-to-graphql": "1.6.0",
     "ora": "4.0.0",
     "parse-github-url": "1.0.2",
     "pg": "7.12.1",
