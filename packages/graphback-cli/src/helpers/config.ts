@@ -3,6 +3,7 @@ import * as figlet from 'figlet'
 import { askForClient, chooseDatabase, createConfig } from '../templates/configTemplates'
 import { addModel, createModel, ModelTemplate } from '../templates/modelTemplates';
 import { logInfo } from '../utils';
+import { installDependencies } from './init';
 
 function postSetupMessage(commandRoot: string): string {
   return `
@@ -40,6 +41,7 @@ export async function initConfig(commandRoot?: string, options: InitOptions = {}
   const database = options.database || await chooseDatabase()
   const client = options.client || await askForClient()
   addModel("", modelName, content)
+  await installDependencies(database)
   await createConfig(database, client)
   logInfo(postSetupMessage(commandRoot))
 }
