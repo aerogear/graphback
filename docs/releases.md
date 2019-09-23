@@ -24,12 +24,12 @@ Removed REST template from official list of templates
 Templates rely on `graphback.json` file. Please rename your `config.json` to `graphback.json` and add additional configuration entries
 
 ```json
-  "files": {
+  "folders": {
     "model": "./model",
-    "generatedResolvers": "./src/resolvers/generated",
-    "customResolvers": "./src/resolvers/generated",
-    "schema": "./src/schema",
-    "client": "./client/src/graphql"
+      "resolvers": "./src/resolvers/",
+      "schema":  "./src/schema",
+      "client": "./client/src/graphql"
+
   }
 ```
 ### Graphback-CLI

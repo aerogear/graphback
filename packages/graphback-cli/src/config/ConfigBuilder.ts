@@ -7,10 +7,10 @@ import { readJsonTemplateConfig } from './readJsonTemplateConfig';
 export const getDefaultFoldersLocations = (): FolderConfig => {
     return {
         "model": "./model",
-        "generatedResolvers": "./src/resolvers/generated",
-        "customResolvers": "./src/resolvers/custom",
+        "resolvers": "./src/resolvers/",
         "schema": "./src/schema",
         "client": "./client/src/graphql"
+
     };
 }
 
@@ -27,7 +27,8 @@ export class ConfigBuilder {
     }
 
     public isValid() {
-        return this.config && this.config.db && this.config.folders;
+        return this.config && this.config.db &&
+            this.config.folders;
     }
 
     private applyAbsolutePaths() {

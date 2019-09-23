@@ -80,5 +80,4 @@ export const createDB = async (): Promise<void> => {
   await dropDBResources(configInstance)
   await createDBResources(configInstance)
   postCommandMessage()
-  process.exit(0)
 }

@@ -41,8 +41,8 @@ export async function generateBackend(): Promise<void> {
     const pathForSchema: string = folders.schema
     const outputSchemaPath: string = `${pathForSchema}/generated.ts`
 
-    const customResolvers: string = folders.customResolvers
-    const generatedResolvers: string = folders.generatedResolvers
+    const customResolvers: string = join(folders.resolvers, "/custom")
+    const generatedResolvers: string = join(folders.resolvers, "/generated")
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
@@ -56,7 +56,7 @@ export async function generateBackend(): Promise<void> {
     })
 
     writeFileSync(outputSchemaPath, generated.schema)
-    writeFileSync(`${generatedResolvers}/index.ts`, generated.resolvers.index)
+    writeFileSync(`${folders.resolvers}/index.ts`, generated.resolvers.index)
 
     generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${generatedResolvers}/${output.name}.ts`, output.output))
 
