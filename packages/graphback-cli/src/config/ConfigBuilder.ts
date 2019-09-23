@@ -7,8 +7,8 @@ import { readJsonTemplateConfig } from './readJsonTemplateConfig';
 export const getDefaultFoldersLocations = (): FolderConfig => {
     return {
         "model": "./model",
-        "generatedResolvers": "./src/resolvers",
-        "customResolvers": "./src/resolvers",
+        "generatedResolvers": "./src/resolvers/generated",
+        "customResolvers": "./src/resolvers/custom",
         "schema": "./src/schema",
         "client": "./client/src/graphql"
     };

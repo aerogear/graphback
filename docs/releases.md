@@ -26,8 +26,8 @@ Templates rely on `graphback.json` file. Please rename your `config.json` to `gr
 ```json
   "files": {
     "model": "./model",
-    "generatedResolvers": "./src/resolvers",
-    "customResolvers": "./src/resolvers",
+    "generatedResolvers": "./src/resolvers/generated",
+    "customResolvers": "./src/resolvers/generated",
     "schema": "./src/schema",
     "client": "./client/src/graphql"
   }
