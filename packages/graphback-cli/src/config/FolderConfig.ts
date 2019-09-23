@@ -8,17 +8,14 @@ export interface FolderConfig {
      */
     model: string,
 
+
+
     /**
-     * Location for generated resolvers.
+     * Location for resolvers.
      * 
      * NOTE: all contents in this folder will be removed and regenerated every time generation process is triggered
      */
-    generatedResolvers: string,
-
-    /**
-     * Location for custom resolvers 
-     */
-    customResolvers: string,
+    resolvers: string,
 
     /**
      * Location for schema file
@@ -29,4 +26,5 @@ export interface FolderConfig {
      * Location for client side queries and mutations
      */
     client: string
+
 }
