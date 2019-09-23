@@ -8,4 +8,5 @@ export const builder = {}
 
 export async function handler() {
   await createDB()
+  process.exit(0);
 }

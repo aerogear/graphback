@@ -3,7 +3,6 @@ type Shop {
   name: String!
   ## Relationship
   products: [Product]!
-  owner: Person!
   customers: [Person]!
 }
 
