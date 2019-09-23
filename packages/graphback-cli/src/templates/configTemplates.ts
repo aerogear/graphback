@@ -76,7 +76,7 @@ export const createConfig = async(database: string, client: boolean) => {
   const config = {}
   const [dbConfig, dockerCompose] = getConfig(database)
   config["dbConfig"] = JSON.parse(dbConfig)
-  config["generation"] = generationConfig
+  config["graphqlCRUD"] = generationConfig
   config["database"] = database
   config["folders"] = getDefaultFoldersLocations();
   config["client"] = client
