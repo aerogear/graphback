@@ -11,9 +11,6 @@ templates with multiple use cases including various server frameworks like Graph
 Typescript implementation of GraphQL server using apollo-express framework. 
 Uses knex.js library for database access.
 
-### [apollo-rest-starter](https://github.com/aerogear/graphback/tree/master/templates/apollo-rest-starter)
-Typescript implementation of GraphQL server using apollo-express framework and Sofa library. Sofa enables exposing REST API along with GraphQL based endpoint. 
-Uses knex.js library for database access.
  
 ### Custom templates
 

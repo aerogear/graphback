@@ -8,6 +8,13 @@ title: Releases
 This file contains changes and migration steps for Graphback project. 
 Please follow indidividual releases for more information.
 
+# 0.9.1
+
+### Templates
+
+Removed REST template from official list of templates
+
+
 # 0.9.0
 
 ### Graphback-cli
