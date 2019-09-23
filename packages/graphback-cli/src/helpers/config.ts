@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import * as figlet from 'figlet'
 import { askForClient, chooseDatabase, createConfig } from '../templates/configTemplates'
-import { addModel, createModel } from '../templates/modelTemplates';
+import { addModel, createModel, ModelTemplate } from '../templates/modelTemplates';
 import { logInfo } from '../utils';
 
 function postSetupMessage(commandRoot: string): string {
@@ -15,21 +15,30 @@ Next Steps:
 `
 }
 
+/**
+ * initConfig options
+ */
+export interface InitOptions {
+  client?: boolean,
+  // Type of database
+  database?: string
+  // example model
+  model?: ModelTemplate
+}
+
 
 /**
- * init command handler
- * @param name name of project folder
- * @param templateName name of the template provided(if any)
- * @param templateUrl github url to the template
+ * config command handler
+ * @param options used for initializting config without asking user for input
  */
-export async function initConfig(commandRoot?: string) {
+export async function initConfig(commandRoot?: string, options: InitOptions = {}) {
   logInfo(chalk.yellow(
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
   ))
 
-  const [modelName, content] = await createModel()
-  const database = await chooseDatabase()
-  const client = await askForClient()
+  const { modelName, content } = options.model || await createModel()
+  const database = options.database || await chooseDatabase()
+  const client = options.client || await askForClient()
   addModel("", modelName, content)
   await createConfig(database, client)
   logInfo(postSetupMessage(commandRoot))

@@ -102,7 +102,7 @@ Next Steps:
  */
 function buildTemplateFromGithub(templateUrl: string) {
   const url = templateUrl.split("#")
-  
+
   return {
     name: "Users Github template",
     description: "User provided template",
@@ -133,7 +133,7 @@ export async function init(name: string, templateName?: string, templateUrl?: st
     template = await assignTemplate(templateName)
   }
 
-  const [modelName, content] = await createModel()
+  const { modelName, content } = await createModel()
   const database = await chooseDatabase()
   const client = await askForClient()
   mkdirSync(path)

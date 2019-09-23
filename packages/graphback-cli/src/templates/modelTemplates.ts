@@ -41,10 +41,15 @@ export function addModel(projectName: string, modelName: string, content: string
   spinner.succeed()
 }
 
+export interface ModelTemplate {
+  modelName: string,
+  content: string
+}
+
 /**
  * Ask user to include model or not
  */
-export async function createModel(): Promise<string[]> {
+export async function createModel(): Promise<ModelTemplate> {
   const { includeModel } = await ask([
     {
       type: 'confirm',
@@ -53,7 +58,7 @@ export async function createModel(): Promise<string[]> {
     }
   ])
 
-  if(includeModel) {
+  if (includeModel) {
     const { modelName } = await ask([
       {
         type: 'list',
@@ -63,11 +68,11 @@ export async function createModel(): Promise<string[]> {
       }
     ])
 
-    const content = allModels.find((m: GraphQLModel) => m.name===modelName).content
-    
-    return [modelName, content]
+    const content = allModels.find((m: GraphQLModel) => m.name === modelName).content
+
+    return { modelName, content }
   }
   const defaultName = 'Default'
 
-  return [defaultName , defaultModel]
+  return { modelName: defaultName, content: defaultModel }
 }
