@@ -9,7 +9,7 @@ export const checkDirectory = (configInstance: ConfigBuilder) => {
     }
   }
 
-  logError(`Model not found, make sure you are in root directory of your project and that you have
-    specified the correct path to your .graphql file`)
+  logError(`Model not found in ${configInstance.config.folders.model}, 
+Make sure you are in root directory of your project and that you have specified the correct path to your model files`)
   process.exit(0)
 }
