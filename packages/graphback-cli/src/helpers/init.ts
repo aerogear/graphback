@@ -12,10 +12,8 @@ import { logError, logInfo } from '../utils'
 
 /**
  * Install dependencies, currently only npm
- * @param name project folder name
  */
-async function installDependencies(name: string, database: string): Promise<void> {
-  process.chdir(name)
+export async function installDependencies(database: string): Promise<void> {
   const spinner = ora('Installing dependencies').start()
   await execa('npm', ['i'])
   if (database === 'pg') {
@@ -141,6 +139,7 @@ export async function init(name: string, templateName?: string, templateUrl?: st
 Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   addModel(name, modelName, content)
-  await Promise.all([installDependencies(name, database), createConfig(database, client)])
+  process.chdir(name)
+  await Promise.all([installDependencies(database), createConfig(database, client)])
   logInfo(postSetupMessage(name, commandRoot))
 }
