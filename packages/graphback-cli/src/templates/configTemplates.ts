@@ -12,9 +12,9 @@ const dockerFilesPath = `${__dirname}/resources/docker`
  */
 
 const getConfig = (database: string) => {
-  if(database === 'pg') {
+  if (database === 'pg') {
     return [readFileSync(`${configFilesPath}/postgres.json`, 'utf8'), readFileSync(`${dockerFilesPath}/postgres.yml`, 'utf8')]
-  } else if(database === 'sqlite3') {
+  } else if (database === 'sqlite3') {
     return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
   } else {
     return undefined
@@ -38,14 +38,14 @@ const generationConfig = {
   "disableGen": false
 }
 
-export const chooseDatabase = async(): Promise<string> => {
+export const chooseDatabase = async (): Promise<string> => {
   const { database } = await ask({
     type: 'list',
     name: 'database',
     message: 'Choose your database',
     choices: databases,
     filter: (input: string) => {
-      if(input === 'PostgreSQL') {
+      if (input === 'PostgreSQL') {
         return 'pg'
       } else {
         return input
@@ -56,7 +56,7 @@ export const chooseDatabase = async(): Promise<string> => {
   return database
 }
 
-export const askForClient = async(): Promise<boolean> => {
+export const askForClient = async (): Promise<boolean> => {
   const { client } = await ask({
     type: 'confirm',
     name: 'client',
@@ -69,20 +69,22 @@ export const askForClient = async(): Promise<boolean> => {
 /**
  * Create config file with db info
  */
-export const createConfig = async(database: string, client: boolean) => {
+export const createConfig = async (database: string, client: boolean) => {
   const configPath = `${process.cwd()}/graphback.json`
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {}
   const [dbConfig, dockerCompose] = getConfig(database)
-  config["dbConfig"] = JSON.parse(dbConfig)
+  config['db'] = {
+    dbConfig: JSON.parse(dbConfig),
+    database: database
+  }
   config["graphqlCRUD"] = generationConfig
-  config["database"] = database
   config["folders"] = getDefaultFoldersLocations();
   config["client"] = client
-  if(dockerCompose) {
+  if (dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)
   }
- 
+
   writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }
