@@ -9,6 +9,7 @@ if (require.main === module) {
   yargs
     .commandDir('commands')
     .demandCommand(1)
+    .strict()
     .help()
     .version()
     .argv;
