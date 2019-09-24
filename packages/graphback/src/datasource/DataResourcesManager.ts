@@ -103,7 +103,6 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
         })
       }
     }
-    await this.dbConnection.destroy();
     
     return Promise.resolve();
   }
