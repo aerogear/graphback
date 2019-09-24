@@ -23,7 +23,9 @@ export class ConfigBuilder {
 
     constructor() {
         this.config = readJsonTemplateConfig();
-        this.applyAbsolutePaths();
+        if (this.isValid()) {
+            this.applyAbsolutePaths();
+        }
     }
 
     public isValid() {

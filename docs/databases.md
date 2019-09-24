@@ -12,7 +12,7 @@ Graphback provides support to multiple databases
 
 - PostgreSQL
 - MySQL
-- SQLLite
+- SQLite
 - MSSQL 
 
 ## Planned Data Sources
