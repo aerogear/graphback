@@ -4,6 +4,7 @@ type Shop {
   ## Relationship
   products: [Product]!
   customers: [Person]!
+  owner: Person!
 }
 
 type Person {
