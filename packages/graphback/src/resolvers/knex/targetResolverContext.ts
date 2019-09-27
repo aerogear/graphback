@@ -141,7 +141,7 @@ export const buildTypeContext = (context: Type, database: string, relations: str
     typeContext.subscriptions = [newSub(context), updatedSub(context), deletedSub(context)].filter((s: string) => s!==undefined)
     typeContext.subscriptionTypes = createSubscriptionTypes(context)
   }
-
+  
   return typeContext
 }
 
@@ -167,10 +167,6 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
             typeName: t.name,
             implementation: knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
           })
-          relations.push({
-            typeName: f.type,
-            implementation: knex.invertTypeRelation(columnName, t.name.toLowerCase(), t.name.toLowerCase())
-          })
         } else if(f.directives.OneToMany || f.isArray) {
           let columnName = `${t.name.toLowerCase()}Id`
           if(f.directives.OneToMany) {
@@ -179,10 +175,6 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
           relations.push({
             typeName: t.name,
             implementation: knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
-          })
-          relations.push({
-            typeName: f.type,
-            implementation: knex.invertTypeRelation(columnName, t.name.toLowerCase(), t.name.toLowerCase())
           })
         }
       }
