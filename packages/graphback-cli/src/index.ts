@@ -11,6 +11,7 @@ if (require.main === module) {
     .demandCommand(1)
     .strict()
     .help()
-    .version()
+    .alias('v', 'version')
+    .version('version')
     .argv;
 }
