@@ -12,5 +12,6 @@ if (require.main === module) {
     .strict()
     .help()
     .version()
+    .alias('v', 'version')
     .argv;
 }
