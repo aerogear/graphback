@@ -13,5 +13,6 @@ if (require.main === module) {
     .help()
     .alias('h', 'help')
     .version()
+    .alias('v', 'version')
     .argv;
 }
