@@ -10,7 +10,8 @@ if (require.main === module) {
     .commandDir('commands')
     .demandCommand(1)
     .strict()
-    .help()
+    .alias('h', 'help')
+    .help('help')
     .version()
     .argv;
 }
