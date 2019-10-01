@@ -15,7 +15,7 @@
     "apollo-server-express": "2.9.4",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "graphql": "14.5.7",
+    "graphql": "14.5.8",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.1",
     "knex": "0.19.4",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/ioredis": "4.0.17",
+    "@types/ioredis": "4.0.18",
     "@types/knex": "0.16.1",
     "ts-node": "8.4.1",
     "tslint": "5.20.0",
