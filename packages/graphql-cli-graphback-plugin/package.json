@@ -17,12 +17,12 @@
     "lint": "tslint -t stylish --project \"tsconfig.json\""
   },
   "engines": {
-    "node": "12.11.0"
+    "node": "12.11.1"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
-    "@types/node": "12.7.8",
+    "@types/node": "12.7.11",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.3",
