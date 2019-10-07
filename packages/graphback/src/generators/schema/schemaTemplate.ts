@@ -1,4 +1,4 @@
-import { createImplementsInterfaceString } from '../utils';
+import { createImplementsInterfaceString } from '../../utils';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
 // const pagination = (inputContext: Type[]): string => {

@@ -18,6 +18,7 @@ export class KnexResolver extends BaseKnexResolver {
   public createSQLResolver = (subscription: boolean, fieldName: string, tableName: string, typeName: string): string => {
     if(subscription) {
       return `${fieldName}: async (_: any, args: any, context: GraphQLContext) => {
+          middleware.create(args, context);
       const [ id ] = await ${this.knexContext}('${tableName}').insert(args.input).returning('id')
       const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', id)
       ${this.pubsub}.publish(Subscriptions.NEW_${typeName.toUpperCase()}, {
