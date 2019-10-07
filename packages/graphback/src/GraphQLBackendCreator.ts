@@ -1,12 +1,16 @@
 import { Client, ClientGenerator } from './generators/client';
-import { createInputContext } from './input/ContextCreator';
-import { OBJECT_TYPE_DEFINITION, Type } from './input/ContextTypes';
-import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
-import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
-import { OutputResolver, ResolverGenerator } from './generators/resolvers';
+import { LegacyResolverGenerator, OutputResolver, ServicesRuntimeResolverGenerator } from './generators/resolvers';
 import { SchemaGenerator } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
+import { IGraphQLBackend } from './IGraphQLBackend'
+import { createInputContext } from './input/ContextCreator';
+import { OBJECT_TYPE_DEFINITION, Type } from './input/ContextTypes';
+import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
+import { DefaultsCRUDService } from './layers/service/DefaultCRUDService';
+import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
+import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
 import { logger } from './utils/logger'
+
 /**
  * GraphQLBackend
  *
@@ -15,6 +19,7 @@ import { logger } from './utils/logger'
  */
 // TODO split generator into plugin based architecture without datamigration
 // Datamigration should be the component on it's own
+// TODO rename to backend
 export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
@@ -56,9 +61,27 @@ export class GraphQLBackendCreator {
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()
 
-    const resolverGenerator = new ResolverGenerator(this.inputContext)
+    const resolverGenerator = new LegacyResolverGenerator(this.inputContext)
     backend.resolvers = resolverGenerator.generate(database)
 
+    return backend;
+  }
+
+ /**
+  * Create runtime for backend in form of the schema string and resolve functions
+  */
+  public async createRuntime(db: GraphbackDataProvider): Promise<IGraphQLBackend> {
+    const backend = {
+      schema: "",
+      resolvers: {}
+    };
+
+    const schemaGenerator = new SchemaGenerator(this.inputContext)
+    backend.schema = schemaGenerator.generate()
+    const defaultProvider = new DefaultsCRUDService(db);
+    const resolverGenerator = new ServicesRuntimeResolverGenerator(this.inputContext, defaultProvider)
+    backend.resolvers = resolverGenerator.generate()
+    
     return backend;
   }
 
@@ -87,21 +110,3 @@ export class GraphQLBackendCreator {
   }
 }
 
-/**
- * Represents generated graphql backend
- */
-export interface IGraphQLBackend {
-  // Human readable schema that should be replaced with current one
-  schema?: string,
-  // Resolvers that should be mounted to schema`
-  resolvers?: IGraphbackResolvers
-}
-
-export interface IGraphbackResolvers {
-  // Index file for resolvers stitching
-  index?: string
-  // Resolvers
-  types?: OutputResolver[],
-  // Custom resolvers stubs
-  custom?: OutputResolver[]
-}
