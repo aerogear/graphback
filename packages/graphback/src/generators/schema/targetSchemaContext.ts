@@ -1,5 +1,5 @@
-import { Argument, Field, INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, Type } from '../ContextTypes'
-import { filterInterfaceTypes, filterObjectTypes, getFieldName, ResolverType } from '../utils'
+import { Argument, Field, INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, Type } from '../../ContextTypes'
+import { filterInterfaceTypes, filterObjectTypes, getFieldName, ResolverType } from '../../utils'
 
 export interface TargetType {
   name: string
