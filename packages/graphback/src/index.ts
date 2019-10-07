@@ -1,11 +1,15 @@
 // Welcome to the generator codebase :)
 
 // Top level Api
-export * from './GraphQLBackend'
+export * from './GraphQLBackendCreator'
+export * from './IGraphQLBackend'
 export * from './GraphQLGeneratorConfig'
 
 // Resolvers
 export * from './generators/resolvers'
+
+// Layers
+export * from './layers'
 
 // Client
 export * from './generators/client'

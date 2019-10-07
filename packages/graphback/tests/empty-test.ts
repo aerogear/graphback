@@ -1,7 +1,7 @@
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
 import { createInputContext, Type } from '../src';
-import { maybeNullFieldArgs } from '../src/schema/targetSchemaContext';
+import { maybeNullFieldArgs } from '../src/generators/schema/targetSchemaContext';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
