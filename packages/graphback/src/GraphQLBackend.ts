@@ -1,18 +1,20 @@
-import { Client, ClientGenerator } from './client';
-import { createInputContext } from './ContextCreator';
-import { OBJECT_TYPE_DEFINITION, Type } from './ContextTypes';
-import { DatabaseContextProvider, DefaultDataContextProvider } from './datasource/DatabaseContextProvider';
-import { IDataLayerResourcesManager } from './datasource/DataResourcesManager';
+import { Client, ClientGenerator } from './generators/client';
+import { createInputContext } from './input/ContextCreator';
+import { OBJECT_TYPE_DEFINITION, Type } from './input/ContextTypes';
+import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
+import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
+import { OutputResolver, ResolverGenerator } from './generators/resolvers';
+import { SchemaGenerator } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
-import { logger } from './logger'
-import { OutputResolver, ResolverGenerator } from './resolvers';
-import { SchemaGenerator } from './schema';
+import { logger } from './utils/logger'
 /**
  * GraphQLBackend
  *
  * Automatically generate your database structure resolvers and queries from graphql types.
  * See README for examples
  */
+// TODO split generator into plugin based architecture without datamigration
+// Datamigration should be the component on it's own
 export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
