@@ -1,5 +1,5 @@
-import { Field, OBJECT_TYPE_DEFINITION, Type } from "../ContextTypes";
-import { getFieldName, ResolverType } from '../utils';
+import { Field, OBJECT_TYPE_DEFINITION, Type } from "../../input/ContextTypes";
+import { getFieldName, ResolverType } from '../../utils/graphqlUtils';
 
 const gqlImport = `import gql from "graphql-tag"`
 
