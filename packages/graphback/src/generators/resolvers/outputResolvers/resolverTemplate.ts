@@ -1,4 +1,4 @@
-import { Custom, TargetResolverContext, TypeContext } from '../knex/targetResolverContext';
+import { Custom, TargetResolverContext, TypeContext } from '../legacy-knex/targetResolverContext';
 
 const imports = `import { GraphQLContext } from '../../context'`
 

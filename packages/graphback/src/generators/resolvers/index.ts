@@ -1,5 +1,5 @@
-import { Type } from '../../ContextTypes'
-import { buildResolverTargetContext, createCustomContext, TypeContext } from './knex/targetResolverContext';
+import { Type } from '../../input/ContextTypes'
+import { buildResolverTargetContext, createCustomContext, TypeContext } from './legacy-knex/targetResolverContext';
 import { generateGraphbackResolvers } from './outputResolvers/resolverTemplate';
 
 export interface OutputResolver {
