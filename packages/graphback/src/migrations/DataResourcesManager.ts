@@ -1,7 +1,7 @@
 // tslint:disable: await-promise
 import * as Knex from 'knex'
-import { Field, Type } from '../ContextTypes';
-import { logger } from '../logger'
+import { Field, Type } from '../input/ContextTypes';
+import { logger } from '../utils/logger'
 import { DatabaseContextProvider } from './DatabaseContextProvider'
 /**
  * Represents update for data type

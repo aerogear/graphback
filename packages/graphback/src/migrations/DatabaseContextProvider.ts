@@ -1,4 +1,4 @@
-import { Type } from '../ContextTypes'
+import { Type } from '../input/ContextTypes'
 
 
 /**

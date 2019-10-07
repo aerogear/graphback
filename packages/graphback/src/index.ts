@@ -5,19 +5,19 @@ export * from './GraphQLBackend'
 export * from './GraphQLGeneratorConfig'
 
 // Resolvers
-export * from './resolvers'
+export * from './generators/resolvers'
 
 // Client
-export * from './client'
+export * from './generators/client'
 
 // DDL layer
-export * from './datasource/DataResourcesManager'
+export * from './migrations/DataResourcesManager'
 
 // Logger management
-export * from './logger'
+export * from './utils/logger'
 
-export * from './InputTypeVisitor'
-export * from './ContextCreator'
-export * from './ContextTypes'
+export * from './input/InputTypeVisitor'
+export * from './input/ContextCreator'
+export * from './input/ContextTypes'
 
-export * from './utils'
+export * from './utils/graphqlUtils'
