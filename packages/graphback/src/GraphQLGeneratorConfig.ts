@@ -11,6 +11,5 @@ export interface GraphQLGeneratorConfig {
     subCreate?: boolean;
     subUpdate?: boolean;
     subDelete?: boolean;
-    paginate?: boolean;
     disableGen?: boolean;
 }

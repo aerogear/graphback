@@ -50,6 +50,7 @@ export interface Argument {
 /**
  * Field context of parsed GraphQL type
  */
+//FIXME RENAME THIS
 export interface Field {
   name: string
   // tslint:disable-next-line
@@ -66,6 +67,7 @@ export interface Field {
 /**
  * Context type returned from InputTypeVisitor
  */
+// FIXME RENAME THIS AS SOON AS POSSIBLE
 export interface Type {
   kind: string
   name: string

@@ -1,9 +1,9 @@
 import { parse, visit } from 'graphql';
+import { GraphQLGeneratorConfig } from "../GraphQLGeneratorConfig";
+import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from '../utils/graphqlUtils';
 import { INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from './ContextTypes'
 import { applyGeneratorDirectives } from './directives';
-import { GraphQLGeneratorConfig } from "../GraphQLGeneratorConfig";
 import { inputTypeVisitor } from './InputTypeVisitor';
-import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from '../utils/graphqlUtils';
 
 /**
  * create input context to be reused for
