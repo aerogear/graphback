@@ -1,4 +1,4 @@
-import { Custom, TargetResolverContext, TypeContext } from '../legacy-knex/targetResolverContext';
+import { Custom, TargetResolverContext, TypeContext } from '../api';
 
 const imports = `import { GraphQLContext } from '../../context'`
 
@@ -9,29 +9,29 @@ const imports = `import { GraphQLContext } from '../../context'`
  */
 // tslint:disable-next-line: max-func-body-length
 const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
-  const { relations, queries, mutations, subscriptions, subscriptionTypes } = context
+  const { relations, queries, mutations, subscriptions } = context
 
   const outputResolvers = []
 
-  if(relations.length) {
+  if (relations.length) {
     outputResolvers.push(`${name}: {
     ${relations.join(',\n    ')}
   }`)
   }
 
-  if(queries.length) {
+  if (queries.length) {
     outputResolvers.push(`Query: {
     ${context.queries.join(',\n    ')}
   }`)
   }
 
-  if(mutations.length) {
+  if (mutations.length) {
     outputResolvers.push(`Mutation: {
     ${context.mutations.join(',\n    ')}
   }`)
   }
 
-  if(subscriptions.length) {
+  if (subscriptions.length) {
     outputResolvers.push(`Subscription: {
     ${context.subscriptions.join(',\n    ')}
   }`)
@@ -39,7 +39,7 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
 
   let output = `${imports}`
 
-  if(context.subscriptions.length) {
+  if (context.subscriptions.length) {
     output += `\n\nenum Subscriptions {
   ${context.subscriptionTypes}
 }`
@@ -63,10 +63,10 @@ const generateResolvers = (context: TypeContext[]) => {
 }
 
 const alphabeticSort = (a: TypeContext | Custom, b: TypeContext | Custom) => {
-  if(a.name < b.name) {
+  if (a.name < b.name) {
     return -1
   }
-  if(a.name > b.name) {
+  if (a.name > b.name) {
     return 1
   }
 
@@ -79,7 +79,7 @@ const alphabeticSort = (a: TypeContext | Custom, b: TypeContext | Custom) => {
  * @param hasCustomElements has custom queries or mutations or not
  */
 const generateIndexFile = (context: TypeContext[], hasCustomElements: boolean) => {
-  if(hasCustomElements) {
+  if (hasCustomElements) {
     return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 import { customResolvers } from './custom'
