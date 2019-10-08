@@ -1,6 +1,6 @@
 import { Client, ClientGenerator } from './generators/client';
 import { LegacyResolverGenerator, OutputResolver, ServicesRuntimeResolverGenerator } from './generators/resolvers';
-import { SchemaGenerator } from './generators/schema';
+import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
 import { createInputContext } from './input/ContextCreator';
@@ -58,7 +58,7 @@ export class GraphQLBackendCreator {
   public async createBackend(database: string): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
 
-    const schemaGenerator = new SchemaGenerator(this.inputContext)
+    const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()
 
     const resolverGenerator = new LegacyResolverGenerator(this.inputContext)
@@ -67,10 +67,12 @@ export class GraphQLBackendCreator {
     return backend;
   }
 
- /**
-  * Create runtime for backend in form of the schema string and resolve functions
-  */
-  public async createRuntime(db: GraphbackDataProvider): Promise<IGraphQLBackend> {
+  /**
+   * Create runtime for backend in form of the schema string and resolve functions
+   */
+  // tslint:disable-next-line: no-any
+  public async createRuntime(db: GraphbackDataProvider): Promise<any> {
+    // TODO interface
     const backend = {
       schema: "",
       resolvers: {}
@@ -81,7 +83,7 @@ export class GraphQLBackendCreator {
     const defaultProvider = new DefaultsCRUDService(db);
     const resolverGenerator = new ServicesRuntimeResolverGenerator(this.inputContext, defaultProvider)
     backend.resolvers = resolverGenerator.generate()
-    
+
     return backend;
   }
 

@@ -1,4 +1,4 @@
-import { Argument, Field, INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, Type } from '../../input/ContextTypes'
+import { Argument, Field, InterfaceType, Type } from '../../input/ContextTypes'
 import { filterInterfaceTypes, filterObjectTypes, getFieldName, ResolverType } from '../../utils/graphqlUtils'
 
 export interface TargetType {
@@ -253,5 +253,5 @@ export const createCustomSchemaContext = (inputContext: Type[]) => {
     customSubscriptions = subscriptionType[0].fields.map(maybeNullFieldArgs)
   }
 
-  return [customQueries, customMutations, customSubscriptions]
+  return { customQueries, customMutations, customSubscriptions }
 }

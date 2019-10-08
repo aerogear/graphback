@@ -17,12 +17,12 @@ export interface TypeContext {
     context: TargetResolverContext
 }
 
+// TODO too generic name
 export interface Custom {
     name: string
     implementation: string
     operationType?: string
 }
-
 export interface Relation {
     typeName: string
     implementation: string
