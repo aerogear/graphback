@@ -1,5 +1,5 @@
 import { Client, ClientGenerator } from './generators/client';
-import { LegacyResolverGenerator, OutputResolver, ServicesRuntimeResolverGenerator } from './generators/resolvers';
+import { LegacyResolverGenerator, LayeredRuntimeResolverGenerator } from './generators/resolvers';
 import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
@@ -81,7 +81,7 @@ export class GraphQLBackendCreator {
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()
     const defaultProvider = new DefaultsCRUDService(db);
-    const resolverGenerator = new ServicesRuntimeResolverGenerator(this.inputContext, defaultProvider)
+    const resolverGenerator = new LayeredRuntimeResolverGenerator(this.inputContext, defaultProvider)
     backend.resolvers = resolverGenerator.generate()
 
     return backend;

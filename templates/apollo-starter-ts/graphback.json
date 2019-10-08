@@ -1,5 +1,5 @@
 {
-  "runtime": false,
+  "runtime": true,
   "db": {
     "dbConfig": {
       "user": "postgresql",
