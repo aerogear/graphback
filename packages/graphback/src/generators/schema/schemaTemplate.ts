@@ -1,19 +1,6 @@
 import { createImplementsInterfaceString } from '../../utils/graphqlUtils';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
-// const pagination = (inputContext: Type[]): string => {
-//   return `
-// ${inputContext.map((i: Type) => `type ${i.name}Page {
-//   items: [${i.name}]!
-//   pageInfo: PaginationInfo!
-// }`).join('\n\n')}
-// `
-// }
-
-const generateImplementsString = (names: string[]) => {
-  return `implements ${names.map((name: string) => name).join(' & ')} `;
-}
-
 const inputs = (defs: TargetType[]): string => {
   return `${defs.map((d: TargetType) => `input ${d.name}Input {
     ${d.fields.join('\n    ')}
@@ -21,7 +8,7 @@ const inputs = (defs: TargetType[]): string => {
 }
 
 const nodeTypes = (defs: TargetType[]): string => {
-  return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces): ''}{
+  return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces) : ''}{
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
 }
@@ -38,8 +25,6 @@ const filters = (defs: TargetType[]): string => {
   }`).join('\n\n  ')}`
 }
 
-const imports = `import gql from 'graphql-tag'`
-
 /**
  * Patch together generated and custom queries
  * @param queries queries generated from the types (CRUD)
@@ -47,7 +32,7 @@ const imports = `import gql from 'graphql-tag'`
  */
 const generateQueries = (queries: string[], customQueries: string[]) => {
   if (!queries.length && !customQueries.length) {
-    return ``
+    return '';
   }
   let queryOutput = `type Query {`
 
@@ -116,28 +101,36 @@ const generateSubscriptions = (subscriptions: string[], customSubs: string[]) =>
 }
 
 /**
+ * Contains additional elements that should be added to schema
+ */
+export interface CustomSchemaContext {
+  customQueries: string[]
+  customMutations: string[]
+  customSubscriptions: string[]
+}
+
+/**
  * String template having placeholders for definitions which is received
  * from targetcontext
  * @param context target context module contains definition for each of the fields
  * in the schema such as Inputs, Filters, Queries etc
  */
-const outputSchema = (context: TargetContext, customQueries: string[], customMutations: string[], customSubscriptions: string[]): string => {
+export const generateSchemaString = (context: TargetContext, customContext?: CustomSchemaContext): string => {
+
   const { inputFields, types, interfaces, filterFields, queries, mutations, subscriptions } = context
 
-  const allQueries = generateQueries(queries, customQueries)
-  const allMutations = generateMutations(mutations, customMutations)
-  const allSubs = generateSubscriptions(subscriptions, customSubscriptions)
-
-  let output = `${imports}
-
-export const typeDefs = gql\`
+  const allQueries = generateQueries(queries, customContext.customQueries)
+  const allMutations = generateMutations(mutations, customContext.customMutations)
+  const allSubs = generateSubscriptions(subscriptions, customContext.customSubscriptions)
+  let output = `
   ${nodeInterfaces(interfaces)}
 
   ${nodeTypes(types)}
 
   ${inputs(inputFields)}
 
-  ${filters(filterFields)}`
+  ${filters(filterFields)}
+  `
 
   if (allQueries) {
     output += `\n\n  ${allQueries}`
@@ -151,14 +144,9 @@ export const typeDefs = gql\`
     output += `\n\n  ${allSubs}`
   }
 
-  output += `\n\`\n`
+  output += `\n`;
 
-  return output
+  return output;
 }
 
-/**
- * Generate the output schema
- */
-export const generateSchema = (context: TargetContext, queries: string[], mutations: string[], subscriptions: string[]): string => {
-  return outputSchema(context, queries, mutations, subscriptions)
-}
+
