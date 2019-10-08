@@ -26,6 +26,7 @@
     "generatedResolvers": "./src/resolvers",
     "customResolvers": "./src/resolvers",
     "schema": "./src/schema",
-    "client": "./client/src/graphql"
+    "client": "./client/src/graphql",
+    "migrations": "./migrations"
   }
 }

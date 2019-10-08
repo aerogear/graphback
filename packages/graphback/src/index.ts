@@ -15,7 +15,7 @@ export * from './layers'
 export * from './generators/client'
 
 // DDL layer
-export * from './migrations/DataResourcesManager'
+export * from './database/migrations/DataResourcesManager'
 
 // Logger management
 export * from './utils/logger'
@@ -24,4 +24,4 @@ export * from './input/InputTypeVisitor'
 export * from './input/ContextCreator'
 export * from './input/ContextTypes'
 
-export * from './utils/graphqlUtils'
+export * from './database';
