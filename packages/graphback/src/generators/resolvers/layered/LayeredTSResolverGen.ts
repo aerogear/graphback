@@ -5,11 +5,11 @@ import { generateGraphbackResolvers } from '../formatters/ApolloResolverTemplate
 import { buildResolverTargetContext, createCustomContext } from '../legacy-knex/targetResolverContext'
 
 /**
- * Generate runtime resolver layer using Apollo GraphQL format 
+ * Generate source code for resolvers layer using Apollo GraphQL format
  * and injected service layer. Service layer offers various capabilities like monitoring, cache etc. 
  * so resolver logic can be kept simple and interchangable.
  */
-export class ServiceTSResolverGen {
+export class LayeredResolverGen {
   private inputContext: Type[]
   private serviceContext: string
 

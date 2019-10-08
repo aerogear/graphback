@@ -18,7 +18,7 @@ import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDServi
  * ```
  * 
  */
-export class ServicesRuntimeResolverGenerator {
+export class LayeredRuntimeResolverGenerator {
   private inputContext: Type[]
   private service: GraphbackCRUDService
 
@@ -43,7 +43,7 @@ export class ServicesRuntimeResolverGenerator {
         const resolverCreateField = getFieldName(resolverElement.name, ResolverType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (_: any, args: any, context: any) => {
-          return this.service.createObject(tableName, args, context)
+          return this.service.createObject(tableName, args.input, context)
         }
       }
       if (resolverElement.config.update) {
