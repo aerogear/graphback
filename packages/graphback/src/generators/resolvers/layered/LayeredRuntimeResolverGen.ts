@@ -31,8 +31,7 @@ export class ServicesRuntimeResolverGenerator {
   public generate() {
     const resolvers = {
       Query: {},
-      Mutation: {},
-      Subscription: {}
+      Mutation: {}
     };
     for (const resolverElement of this.inputContext) {
       if (resolverElement.config.disableGen) {
@@ -62,20 +61,21 @@ export class ServicesRuntimeResolverGenerator {
         }
       }
       if (resolverElement.config.findAll) {
-        const findAllField = getFieldName(resolverElement.name, ResolverType.FIND_ALL);
+        const findAllField = getFieldName(resolverElement.name, ResolverType.FIND_ALL, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (_: any, args: any, context: any) => {
           return this.service.findAll(tableName, context)
         }
       }
       if (resolverElement.config.find) {
-        const findField = getFieldName(resolverElement.name, ResolverType.FIND);
+        const findField = getFieldName(resolverElement.name, ResolverType.FIND, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (_: any, args: any, context: any) => {
           return this.service.findBy(tableName, args.filter, context)
         }
       }
       // TODO subscriptions
+      // TODO relationships
     }
 
     return resolvers;
