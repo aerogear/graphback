@@ -1,5 +1,6 @@
 {
-  "db":{
+  "runtime": false,
+  "db": {
     "dbConfig": {
       "user": "postgresql",
       "password": "postgres",
@@ -27,5 +28,4 @@
     "schema": "./src/schema",
     "client": "./client/src/graphql"
   }
-
 }
