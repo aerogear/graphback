@@ -15,6 +15,18 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
+      "name": "Template app ",
+      "type": "node",
+      "request": "launch",
+      "env": {
+      },
+      "args": ["${workspaceRoot}/templates/apollo-starter-ts/src/index.ts"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "CLI generate",
