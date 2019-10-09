@@ -1,6 +1,6 @@
 import { Type } from '../../input/ContextTypes';
-import { buildTargetContext, createCustomSchemaContext, TargetContext } from './targetSchemaContext';
 import { generateSchemaString } from './schemaTemplate';
+import { buildTargetContext, createCustomSchemaContext, TargetContext } from './targetSchemaContext';
 
 /**
  * Schema formatter that provides ability to wrap schema string with language specific code 
