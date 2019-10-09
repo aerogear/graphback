@@ -27,7 +27,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
       }
     } else {
       const manager = new DatabaseSchemaManager(database, dbConfig);
-      // tslint:disable-next-line: await-promise
+
       await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
       // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('CREATE SCHEMA public;')
@@ -52,14 +52,13 @@ export const createDBResources = async (configInstance: ConfigBuilder): Promise<
       await execa('touch', ['db.sqlite'])
     }
 
-    const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
-
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(folders.model, graphqlCRUD)
 
     const manager = new DatabaseSchemaManager(database, dbConfig);
+
     backend.registerDataResourcesManager(manager);
 
-    await backend.createDatabase()
+    await backend.migrateDatabase(`${process.cwd()}/migrations`)
 
   } catch (err) {
     handleError(err)
@@ -77,7 +76,7 @@ Run ${chalk.cyan(`npm run develop`)} to start the server.
 export const createDB = async (): Promise<void> => {
   const configInstance = new ConfigBuilder();
   checkDirectory(configInstance)
-  await dropDBResources(configInstance)
+  // await dropDBResources(configInstance)
   await createDBResources(configInstance)
   postCommandMessage()
 }

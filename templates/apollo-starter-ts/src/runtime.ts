@@ -11,12 +11,7 @@ import * as jsonConfig from '../graphback.json'
  * It will be part of of the integration tests
  */
 export const createRuntime = async (client: Knex) => {
-    const runtimeSchema = `
-    type User {
-      id: ID!
-      name: String
-    }`
-    const backend = new GraphQLBackendCreator(runtimeSchema, jsonConfig.graphqlCRUD);
+    const backend = new GraphQLBackendCreator(jsonConfig.folders.model, jsonConfig.graphqlCRUD);
     const dbClientProvider = new PgKnexDBDataProvider(client);
     const runtime = await backend.createRuntime(dbClientProvider);
     const generatedSchema = runtime.schema;

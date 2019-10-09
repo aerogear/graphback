@@ -7,9 +7,13 @@ import { createInputContext } from './input/ContextCreator';
 import { OBJECT_TYPE_DEFINITION, Type } from './input/ContextTypes';
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
 import { DefaultsCRUDService } from './layers/service/DefaultCRUDService';
-import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
+import {
+  DatabaseContextProvider,
+  DefaultDataContextProvider,
+} from './migrations/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
-import { logger } from './utils/logger'
+import { logger } from './utils/logger';
+import { buildSchemaText } from './utils';
 
 /**
  * GraphQLBackend
@@ -21,17 +25,19 @@ import { logger } from './utils/logger'
 // Datamigration should be the component on it's own
 // TODO rename to backend
 export class GraphQLBackendCreator {
-
   private dataLayerManager: IDataLayerResourcesManager;
   private dbContextProvider: DatabaseContextProvider;
-  private inputContext: Type[]
+  private inputContext: Type[];
+  private graphqlSchema: string;
+
 
   /**
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(graphQLSchema: string, config: GraphQLGeneratorConfig) {
-    this.inputContext = createInputContext(graphQLSchema, config)
+  constructor(schemaDir: string, config: GraphQLGeneratorConfig) {
+    this.graphqlSchema = buildSchemaText(schemaDir);
+    this.inputContext = createInputContext(this.graphqlSchema, config);
     this.dbContextProvider = new DefaultDataContextProvider();
   }
 
@@ -61,8 +67,8 @@ export class GraphQLBackendCreator {
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()
 
-    const resolverGenerator = new LegacyResolverGenerator(this.inputContext)
-    backend.resolvers = resolverGenerator.generate(database)
+    const resolverGenerator = new LegacyResolverGenerator(this.inputContext);
+    backend.resolvers = resolverGenerator.generate(database);
 
     return backend;
   }
@@ -74,12 +80,12 @@ export class GraphQLBackendCreator {
   public async createRuntime(db: GraphbackDataProvider): Promise<any> {
     // TODO interface
     const backend = {
-      schema: "",
-      resolvers: {}
+      schema: '',
+      resolvers: {},
     };
 
-    const schemaGenerator = new SchemaGenerator(this.inputContext)
-    backend.schema = schemaGenerator.generate()
+    const schemaGenerator = new SchemaGenerator(this.inputContext);
+    backend.schema = schemaGenerator.generate();
     const defaultProvider = new DefaultsCRUDService(db);
     const resolverGenerator = new LayeredRuntimeResolverGenerator(this.inputContext, defaultProvider)
     backend.resolvers = resolverGenerator.generate()
@@ -88,27 +94,49 @@ export class GraphQLBackendCreator {
   }
 
   public async createClient(): Promise<Client> {
-    const clientGenerator = new ClientGenerator(this.inputContext)
+    const clientGenerator = new ClientGenerator(this.inputContext);
 
-    return clientGenerator.generate()
+    return clientGenerator.generate();
   }
 
+  public async migrateDatabase(
+    migrationsDir: string,
+  ): Promise<void> {
+    const context = this.inputContext.filter(
+      (t: Type) =>
+        t.kind === OBJECT_TYPE_DEFINITION &&
+        t.name !== 'Query' &&
+        t.name !== 'Mutation' &&
+        t.name !== 'Subscription',
+    );
 
-  public async createDatabase(): Promise<void> {
-    const context = this.inputContext.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+    const changes = await this.dataLayerManager.createMigration(
+      this.graphqlSchema,
+      migrationsDir,
+    );
+
     try {
       if (this.dataLayerManager) {
-        logger.info("Creating database structure")
-        await this.dataLayerManager.createDatabaseResources(this.dbContextProvider, context);
-        await this.dataLayerManager.createDatabaseRelations(this.dbContextProvider, context);
+        if (!changes) {
+          logger.info('Creating database structure');
+          await this.dataLayerManager.createDatabaseResources(
+            this.dbContextProvider,
+            context,
+          );
+          await this.dataLayerManager.createDatabaseRelations(
+            this.dbContextProvider,
+            context,
+          );
+        } else {
+          logger.info('Updating existing database');
+          await this.dataLayerManager.updateDatabaseResources(this.dbContextProvider, context, changes)
+        }
       } else {
-        logger.info("Database structure generation skipped.")
+        logger.info('Database structure generation skipped.');
       }
     } catch (error) {
       // logger.error(`Error on Database creation ${error}`)
-      throw error
+      throw error;
     }
-
   }
 }
-

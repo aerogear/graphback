@@ -12,9 +12,9 @@ import { checkDirectory } from './common';
  */
 function postCommandMessage(cliName: string): void {
   logInfo(`
-Successfully generated schema and resolvers :tada:.  
+Successfully generated schema and resolvers :tada:.
 
-Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
+Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)}
 followed by ${chalk.cyan(`${cliName}db`)} to create database.
 `)
 }
@@ -36,15 +36,13 @@ export async function generateBackend(): Promise<void> {
       process.exit(0)
     }
 
-    const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
-
     const pathForSchema: string = folders.schema
     const outputSchemaPath: string = `${pathForSchema}/generated.ts`
 
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(folders.model, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);
