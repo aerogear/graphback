@@ -16,9 +16,9 @@
     "findAll": true,
     "find": true,
     "delete": false,
-    "subCreate": false,
-    "subUpdate": false,
-    "subDelete": false,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true,
     "disableGen": false
   },
   "folders": {

@@ -1,4 +1,4 @@
-import { ResolverType } from "../ResolverType"
+import { ResolverType } from "../../generators/resolvers/ResolverType"
 
 
 /**

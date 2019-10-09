@@ -46,6 +46,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "graphql-subscriptions": "1.1.0",
     "knex": "0.19.5",
     "pg": "7.12.1",
     "pino": "5.13.4",

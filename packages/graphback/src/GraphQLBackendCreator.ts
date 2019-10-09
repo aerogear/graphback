@@ -1,3 +1,4 @@
+import { PubSub } from 'graphql-subscriptions';
 import { Client, ClientGenerator } from './generators/client';
 import { LayeredRuntimeResolverGenerator, LegacyResolverGenerator } from './generators/resolvers';
 import { RuntimeResolversDefinition } from './generators/resolvers/layered/RuntimeResolversDefinition';
@@ -68,7 +69,7 @@ export class GraphQLBackendCreator {
   /**
    * Create runtime for backend in form of the schema string and resolve functions
    */
-  public async createRuntime(db: GraphbackDataProvider): Promise<RuntimeResolversDefinition> {
+  public async createRuntime(db: GraphbackDataProvider, pubSub: PubSub): Promise<RuntimeResolversDefinition> {
     const backend: RuntimeResolversDefinition = {
       schema: "",
       resolvers: {}
@@ -76,7 +77,7 @@ export class GraphQLBackendCreator {
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()
-    const defaultProvider = new DefaultsCRUDService(db);
+    const defaultProvider = new DefaultsCRUDService(db, pubSub);
     const resolverGenerator = new LayeredRuntimeResolverGenerator(this.inputContext, defaultProvider)
     backend.resolvers = resolverGenerator.generate()
 

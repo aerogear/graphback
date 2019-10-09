@@ -1,7 +1,7 @@
 import { getFieldName, getTableName, ResolverType } from '../../..'
 import { ModelTypeContext } from '../../../input/ContextTypes'
 import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDService'
-import { subscriptionTopicMapping } from './subscriptionTopicMapping'
+import { subscriptionTopicMapping } from '../../../layers/service/subscriptionTopicMapping'
 
 /**
  * Generate runtime resolver layer using Apollo GraphQL format 
@@ -86,48 +86,24 @@ export class LayeredRuntimeResolverGenerator {
 
   // tslint:disable-next-line: no-any
   private createSubscriptions(resolverElement: ModelTypeContext, resolvers: any) {
-    if (resolverElement.config.subCreate) {
+    if (resolverElement.config.create && resolverElement.config.subCreate) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`new${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {
-        if (!context.pubSub) {
-          // TODO internal logger?
-          console.log("Missing pubsub mechanism in context object")
-
-          return;
-        }
-        const createSubKey = subscriptionTopicMapping(ResolverType.CREATE, resolverElement.name);
-
-        return context.pubSub.asyncIterator(createSubKey)
+        this.service.subscribeToCreate(resolverElement.name, context);
       }
     }
 
-    if (resolverElement.config.subUpdate) {
+    if (resolverElement.config.update && resolverElement.config.subUpdate) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`updated${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {
-        if (!context.pubSub) {
-          // TODO internal logger?
-          console.log("Missing pubsub mechanism in context object")
-
-          return;
-        }
-        const createSubKey = subscriptionTopicMapping(ResolverType.UPDATE, resolverElement.name);
-
-        return context.pubSub.asyncIterator(createSubKey)
+        this.service.subscribeToUpdate(resolverElement.name, context);
       }
     }
 
-    if (resolverElement.config.subDelete) {
+    if (resolverElement.config.delete && resolverElement.config.subDelete) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`deleted${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {
-        if (!context.pubSub) {
-          // TODO internal logger?
-          console.log("Missing pubsub mechanism in context object")
-
-          return;
-        }
-        const createSubKey = subscriptionTopicMapping(ResolverType.DELETE, resolverElement.name);
-
-        return context.pubSub.asyncIterator(createSubKey)
+        this.service.subscribeToDelete(resolverElement.name, context);
       }
     }
 

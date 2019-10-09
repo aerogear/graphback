@@ -24,7 +24,7 @@ async function start() {
   let executableSchema;
   // Temporary change for testing
   if (config.runtime) {
-    executableSchema = await createRuntime(client);
+    executableSchema = await createRuntime(client, pubsub);
   } else {
     executableSchema = makeExecutableSchema({
       typeDefs,
