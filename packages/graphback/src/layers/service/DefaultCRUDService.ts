@@ -31,6 +31,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any> implements Gra
 
     }
 
+    // tslint:disable-next-line: no-reserved-keywords
     public delete(name: string, id: string, context: GraphbackContext): Promise<string> {
         this.logger.log(`deleting object ${name}`)
 
@@ -51,7 +52,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any> implements Gra
 
     // tslint:disable-next-line: no-any
     public findBy(name: string, filter: any, context: GraphbackContext): Promise<T[]> {
-        this.logger.log(`querying object ${name} with filter ${filter}`)
+        this.logger.log(`querying object ${name} with filter ${JSON.stringify(filter)}`)
 
         return this.db.findBy(name, filter, context);
     }

@@ -1,5 +1,5 @@
 import { ResolverType } from '../generators/resolvers';
-import { INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, ModelTypeContext } from '../input/ContextTypes';
+import { INTERFACE_TYPE_DEFINITION, ModelTypeContext, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION } from '../input/ContextTypes';
 
 
 export const getFieldName = (typeName: string, action: ResolverType, plural: string = ''): string => {

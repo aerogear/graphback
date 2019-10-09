@@ -73,7 +73,7 @@ export class LayeredRuntimeResolverGenerator {
         const findField = getFieldName(resolverElement.name, ResolverType.FIND, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          return this.service.findBy(tableName, args.filter, context)
+          return this.service.findBy(tableName, args.fields, context)
         }
       }
 
