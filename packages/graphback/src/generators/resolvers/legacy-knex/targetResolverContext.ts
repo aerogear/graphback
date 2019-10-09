@@ -1,7 +1,7 @@
 import { Field, OBJECT_TYPE_DEFINITION, Type } from '../../../input/ContextTypes';
 import { getFieldName, getTableName, ResolverType } from '../../../utils/graphqlUtils';
-import { Relation, TargetResolverContext, TypeContext } from '../api';
 import { KnexResolver } from './KnexResolver';
+import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
 const knex = new KnexResolver()
 
@@ -99,7 +99,7 @@ const createSubscriptionTypes = (t: Type): string => {
  * Create context object for each individual type
  * @param context Visited info from the model
  */
-export const buildTypeContext = (context: Type, database: string, relations: string[]): TargetResolverContext => {
+export const buildResolverTypeContext = (context: Type, database: string, relations: string[]): TargetResolverContext => {
   const typeContext = {
     relations: [],
     queries: [],
@@ -127,7 +127,7 @@ export const buildTypeContext = (context: Type, database: string, relations: str
  */
 export const buildResolverTargetContext = (input: Type[], database: string) => {
   const inputContext = input.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
-  const output: TypeContext[] = []
+  const output: ResolverTypeContext[] = []
 
   const relations = []
 
@@ -160,7 +160,7 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
   inputContext.forEach((t: Type) => {
     output.push({
       name: t.name,
-      context: buildTypeContext(t, database, relations.filter((r: Relation) => r.typeName === t.name).map((r: Relation) => r.implementation))
+      context: buildResolverTypeContext(t, database, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
     })
   })
 
