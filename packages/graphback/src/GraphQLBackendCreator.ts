@@ -1,16 +1,16 @@
 import { Client, ClientGenerator } from './generators/client';
 import { LayeredRuntimeResolverGenerator, LegacyResolverGenerator } from './generators/resolvers';
+import { RuntimeResolversDefinition } from './generators/resolvers/layered/RuntimeResolversDefinition';
 import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
 import { createInputContext } from './input/ContextCreator';
-import { OBJECT_TYPE_DEFINITION, ModelTypeContext } from './input/ContextTypes';
+import { ModelTypeContext, OBJECT_TYPE_DEFINITION } from './input/ContextTypes';
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
 import { DefaultsCRUDService } from './layers/service/DefaultCRUDService';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
 import { logger } from './utils/logger'
-import { RuntimeResolversDefinition } from './generators/resolvers/layered/RuntimeResolversDefinition';
 
 /**
  * GraphQLBackend

@@ -1,4 +1,4 @@
-import { ModelFieldContext, OBJECT_TYPE_DEFINITION, ModelTypeContext } from "../../input/ContextTypes";
+import { ModelFieldContext, ModelTypeContext, OBJECT_TYPE_DEFINITION } from "../../input/ContextTypes";
 import { getFieldName } from '../../utils/graphqlUtils';
 import { ResolverType } from '../resolvers';
 

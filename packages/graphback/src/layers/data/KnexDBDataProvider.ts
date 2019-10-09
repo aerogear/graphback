@@ -39,6 +39,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`Cannot update ${name}`);
     }
 
+    // tslint:disable-next-line: no-reserved-keywords
     public async delete(name: string, id: string): Promise<string> {
         const dbResult = await this.db(name).where('id', '=', id).del()
         if (dbResult) {
