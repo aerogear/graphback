@@ -35,9 +35,6 @@ async function start() {
     });
   }
 
-
-
-
   const apolloConfig = {
     schema: executableSchema,
     context: async ({

@@ -4,32 +4,83 @@
 // tslint:disable-next-line: no-any
 export type AdvancedFilter = any;
 
-
-// TODO pagination
-interface PagedResult<T> {
-    result: T;
-    total: number;
-    page: number;
-}
-
 /**
- * Builds CRUD interface for data access 
+ * Graphback layered architecture component that can be called 
+ * from the service layer in both RESTFULL and GraphQL middlewares.
+ * 
+ * Graphback implements server side procesing using following flow:
+ * 
+ * `GraphQL Resolvers` ->  `GraphbackCRUDService` [1-*] -> `GraphbackDataProvider`
+ * 
+ * Data layer can be composable (each provider can reference multiple layers of other providers).
+ * 
+ * @see GraphbackCRUDService
  */
 // tslint:disable-next-line: no-any
 export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
-    // FIXME Pagination support
-    // CRUD
-    // FIXME rename to Object = object?
+
+    /**
+     * Implementation for object creation 
+     * 
+     * @param name name of the object to create
+     * @param data input data
+     * @param context context object passed from graphql or rest layer
+     */
     createObject(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
-    readObject(name: string, id: string, context?: GraphbackContext): Promise<Type>;
+    
+    /**
+     * Implementation for object updates 
+     * 
+     * @param name name of the object to create
+     * @param id of the object to update
+     * @param data input data
+     * @param context context object passed from graphql or rest layer
+     */
     updateObject(name: string, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
+
+    /**
+     * Implementation for object deletes 
+     * 
+     * @param name name of the object to create
+     * @param id of the object to delete
+     * @param context context object passed from graphql or rest layer
+     */
     deleteObject(name: string, id: string, context?: GraphbackContext): Promise<string>;
 
-    // Find
+    /**
+     * Implementation for reading object 
+     * 
+     * @param name name of the object to create
+     * @param id id of the object
+     * @param context context object passed from graphql or rest layer
+     */
+    readObject(name: string, id: string, context?: GraphbackContext):  Promise<Type>;
+
+    /**
+     * Implementation for finding all objects
+     * 
+     * @param name name of the object to create
+     * @param id id of the object
+     * @param context context object passed from graphql or rest layer
+     */
     findAll(name: string, context?: GraphbackContext): Promise<Type[]>;
+
+    /**
+     * Implementation for reading objects with filtering capabilities
+     * 
+     * @param name name of the object to create
+     * @param filter filter by specific type
+     * @param context context object passed from graphql or rest layer
+     */
     findBy(name: string, filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
 
-    // Dataloader support
-    // Caching support for nested queries
-    // readObjectWithCache(id: String, data: Type);
+
+    /**
+     * Read multiple items by their id's (used for lazy data loading purposes)
+     * 
+     * @param name 
+     * @param ids array of identifiers that needs to be fetched
+     */
+    batchRead(name: string, ids: [string]): Promise<Type[]>
+
 }
