@@ -5,8 +5,8 @@ import http from "http"
 import config from "./config/config"
 import { connect } from "./db"
 import { resolvers, schemaString } from "./mapping"
-import { pubsub } from './subscriptions'
 import { createRuntime } from './runtime'
+import { pubsub } from './subscriptions'
 
 
 async function start() {

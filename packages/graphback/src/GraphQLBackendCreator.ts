@@ -1,5 +1,5 @@
 import { Client, ClientGenerator } from './generators/client';
-import { LegacyResolverGenerator, LayeredRuntimeResolverGenerator } from './generators/resolvers';
+import { LayeredRuntimeResolverGenerator, LegacyResolverGenerator } from './generators/resolvers';
 import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
