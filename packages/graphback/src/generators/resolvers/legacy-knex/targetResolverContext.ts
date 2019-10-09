@@ -1,5 +1,6 @@
 import { Field, OBJECT_TYPE_DEFINITION, Type } from '../../../input/ContextTypes';
-import { getFieldName, getTableName, ResolverType } from '../../../utils/graphqlUtils';
+import { getFieldName, getTableName } from '../../../utils/graphqlUtils';
+import { ResolverType } from '../ResolverType';
 import { KnexResolver } from './KnexResolver';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
