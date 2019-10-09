@@ -1,5 +1,5 @@
 import { getFieldName, getTableName, ResolverType } from '../../..'
-import { Type } from '../../../input/ContextTypes'
+import { ModelTypeContext } from '../../../input/ContextTypes'
 import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDService'
 import { subscriptionTopicMapping } from './subscriptionTopicMapping'
 
@@ -20,10 +20,10 @@ import { subscriptionTopicMapping } from './subscriptionTopicMapping'
  * 
  */
 export class LayeredRuntimeResolverGenerator {
-  private inputContext: Type[]
+  private inputContext: ModelTypeContext[]
   private service: GraphbackCRUDService
 
-  constructor(inputContext: Type[], service: GraphbackCRUDService) {
+  constructor(inputContext: ModelTypeContext[], service: GraphbackCRUDService) {
     this.inputContext = inputContext
 
     this.service = service;
@@ -85,7 +85,7 @@ export class LayeredRuntimeResolverGenerator {
   }
 
   // tslint:disable-next-line: no-any
-  private createSubscriptions(resolverElement: Type, resolvers: any) {
+  private createSubscriptions(resolverElement: ModelTypeContext, resolvers: any) {
     if (resolverElement.config.subCreate) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`new${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {

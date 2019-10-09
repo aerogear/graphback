@@ -1,4 +1,4 @@
-import { Field, OBJECT_TYPE_DEFINITION, Type } from '../../../input/ContextTypes';
+import { ModelFieldContext, OBJECT_TYPE_DEFINITION, ModelTypeContext } from '../../../input/ContextTypes';
 import { getFieldName, getTableName } from '../../../utils/graphqlUtils';
 import { ResolverType } from '../ResolverType';
 import { KnexResolver } from './KnexResolver';
@@ -9,7 +9,7 @@ const knex = new KnexResolver()
 /**
  * Resolver crud methods - create, update, delete, find and findAll
  */
-const createResolver = (t: Type, database: string): string => {
+const createResolver = (t: ModelTypeContext, database: string): string => {
   if (t.config.create) {
     return knex.createTemplate(database, t.config.subCreate, getFieldName(t.name, ResolverType.CREATE), getTableName(t.name), t.name)
   }
@@ -17,7 +17,7 @@ const createResolver = (t: Type, database: string): string => {
   return undefined
 }
 
-const updateResolver = (t: Type): string => {
+const updateResolver = (t: ModelTypeContext): string => {
   if (t.config.update) {
     return knex.updateTemplate(t.config.subUpdate, getFieldName(t.name, ResolverType.UPDATE), getTableName(t.name), t.name)
   }
@@ -25,7 +25,7 @@ const updateResolver = (t: Type): string => {
   return undefined
 }
 
-const deleteResolver = (t: Type): string => {
+const deleteResolver = (t: ModelTypeContext): string => {
   if (t.config.delete) {
     return knex.deleteTemplate(t.config.subDelete, getFieldName(t.name, ResolverType.DELETE), getTableName(t.name), t.name)
   }
@@ -33,7 +33,7 @@ const deleteResolver = (t: Type): string => {
   return undefined
 }
 
-const findResolver = (t: Type): string => {
+const findResolver = (t: ModelTypeContext): string => {
   if (t.config.find) {
     return knex.findTemplate(getFieldName(t.name, ResolverType.FIND, 's'), getTableName(t.name))
   }
@@ -41,7 +41,7 @@ const findResolver = (t: Type): string => {
   return undefined
 }
 
-const findAllResolver = (t: Type): string => {
+const findAllResolver = (t: ModelTypeContext): string => {
   if (t.config.findAll) {
     return knex.findAllTemplate(getFieldName(t.name, ResolverType.FIND_ALL, 's'), getTableName(t.name))
   }
@@ -53,7 +53,7 @@ const findAllResolver = (t: Type): string => {
  * Subscriptions - new, updated and deleted
  */
 
-const newSub = (t: Type): string => {
+const newSub = (t: ModelTypeContext): string => {
   if (t.config.create && t.config.subCreate) {
     return knex.newSub(t.name)
   }
@@ -61,7 +61,7 @@ const newSub = (t: Type): string => {
   return undefined
 }
 
-const updatedSub = (t: Type): string => {
+const updatedSub = (t: ModelTypeContext): string => {
   if (t.config.update && t.config.subUpdate) {
     return knex.updatedSub(t.name)
   }
@@ -69,7 +69,7 @@ const updatedSub = (t: Type): string => {
   return undefined
 }
 
-const deletedSub = (t: Type): string => {
+const deletedSub = (t: ModelTypeContext): string => {
   if (t.config.delete && t.config.subDelete) {
     return knex.deletedSub(t.name)
   }
@@ -81,7 +81,7 @@ const deletedSub = (t: Type): string => {
  * Create enum for subscriptions implementation
  * @param t Type object
  */
-const createSubscriptionTypes = (t: Type): string => {
+const createSubscriptionTypes = (t: ModelTypeContext): string => {
   const subscriptionEnum = []
   if (t.config.create && t.config.subCreate) {
     subscriptionEnum.push(`NEW_${t.name.toUpperCase()} = 'new${t.name.toLowerCase()}'`)
@@ -100,7 +100,7 @@ const createSubscriptionTypes = (t: Type): string => {
  * Create context object for each individual type
  * @param context Visited info from the model
  */
-export const buildResolverTypeContext = (context: Type, database: string, relations: string[]): TargetResolverContext => {
+export const buildResolverTypeContext = (context: ModelTypeContext, database: string, relations: string[]): TargetResolverContext => {
   const typeContext = {
     relations: [],
     queries: [],
@@ -126,14 +126,14 @@ export const buildResolverTypeContext = (context: Type, database: string, relati
  * Create context of all the types
  * @param input Input visited object
  */
-export const buildResolverTargetContext = (input: Type[], database: string) => {
-  const inputContext = input.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+export const buildResolverTargetContext = (input: ModelTypeContext[], database: string) => {
+  const inputContext = input.filter((t: ModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: ResolverTypeContext[] = []
 
   const relations = []
 
-  inputContext.forEach((t: Type) => {
-    t.fields.forEach((f: Field) => {
+  inputContext.forEach((t: ModelTypeContext) => {
+    t.fields.forEach((f: ModelFieldContext) => {
       if (f.isType) {
         if (f.directives.OneToOne || !f.isArray) {
           let columnName = `${t.name.toLowerCase()}Id`
@@ -158,7 +158,7 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
     })
   })
 
-  inputContext.forEach((t: Type) => {
+  inputContext.forEach((t: ModelTypeContext) => {
     output.push({
       name: t.name,
       context: buildResolverTypeContext(t, database, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
@@ -172,11 +172,11 @@ export const buildResolverTargetContext = (input: Type[], database: string) => {
  * Create queries, mutations or subscriptions from custom input provided
  * @param inputContext Input visited object
  */
-export const createCustomContext = (inputContext: Type[]) => {
-  const queryType = inputContext.filter((t: Type) => t.name === 'Query')
+export const createCustomContext = (inputContext: ModelTypeContext[]) => {
+  const queryType = inputContext.filter((t: ModelTypeContext) => t.name === 'Query')
   let customQueries = []
   if (queryType.length) {
-    customQueries = queryType[0].fields.map((f: Field) => {
+    customQueries = queryType[0].fields.map((f: ModelFieldContext) => {
       return {
         name: f.name,
         implementation: knex.blankResolver(f.name),
@@ -185,10 +185,10 @@ export const createCustomContext = (inputContext: Type[]) => {
     })
   }
 
-  const mutationType = inputContext.filter((t: Type) => t.name === 'Mutation')
+  const mutationType = inputContext.filter((t: ModelTypeContext) => t.name === 'Mutation')
   let customMutations = []
   if (mutationType.length) {
-    customMutations = mutationType[0].fields.map((f: Field) => {
+    customMutations = mutationType[0].fields.map((f: ModelFieldContext) => {
       return {
         name: f.name,
         implementation: knex.blankResolver(f.name),
@@ -197,10 +197,10 @@ export const createCustomContext = (inputContext: Type[]) => {
     })
   }
 
-  const subscriptionType = inputContext.filter((t: Type) => t.name === 'Subscription')
+  const subscriptionType = inputContext.filter((t: ModelTypeContext) => t.name === 'Subscription')
   let customSubscriptions = []
   if (subscriptionType.length) {
-    customSubscriptions = subscriptionType[0].fields.map((f: Field) => {
+    customSubscriptions = subscriptionType[0].fields.map((f: ModelFieldContext) => {
       return {
         name: f.name,
         implementation: knex.blankSubscription(f.name),

@@ -1,5 +1,5 @@
 
-// TODO split directives into individual plugins
+// FIXME split directives into individual plugins
 const directives = `directive @OneToMany(field: String) on FIELD_DEFINITION
 directive @OneToOne(field: String) on FIELD_DEFINITION
 directive @create(enable: Boolean) on OBJECT

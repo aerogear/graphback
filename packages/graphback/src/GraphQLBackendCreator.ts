@@ -4,12 +4,13 @@ import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
 import { createInputContext } from './input/ContextCreator';
-import { OBJECT_TYPE_DEFINITION, Type } from './input/ContextTypes';
+import { OBJECT_TYPE_DEFINITION, ModelTypeContext } from './input/ContextTypes';
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
 import { DefaultsCRUDService } from './layers/service/DefaultCRUDService';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
 import { logger } from './utils/logger'
+import { RuntimeResolversDefinition } from './generators/resolvers/layered/RuntimeResolversDefinition';
 
 /**
  * GraphQLBackend
@@ -17,14 +18,11 @@ import { logger } from './utils/logger'
  * Automatically generate your database structure resolvers and queries from graphql types.
  * See README for examples
  */
-// TODO split generator into plugin based architecture without datamigration
-// Datamigration should be the component on it's own
-// TODO rename to backend
 export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
   private dbContextProvider: DatabaseContextProvider;
-  private inputContext: Type[]
+  private inputContext: ModelTypeContext[]
 
   /**
    * @param graphQLSchema string containing graphql types
@@ -70,10 +68,8 @@ export class GraphQLBackendCreator {
   /**
    * Create runtime for backend in form of the schema string and resolve functions
    */
-  // tslint:disable-next-line: no-any
-  public async createRuntime(db: GraphbackDataProvider): Promise<any> {
-    // TODO interface
-    const backend = {
+  public async createRuntime(db: GraphbackDataProvider): Promise<RuntimeResolversDefinition> {
+    const backend: RuntimeResolversDefinition = {
       schema: "",
       resolvers: {}
     };
@@ -95,7 +91,7 @@ export class GraphQLBackendCreator {
 
 
   public async createDatabase(): Promise<void> {
-    const context = this.inputContext.filter((t: Type) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+    const context = this.inputContext.filter((t: ModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
     try {
       if (this.dataLayerManager) {
         logger.info("Creating database structure")

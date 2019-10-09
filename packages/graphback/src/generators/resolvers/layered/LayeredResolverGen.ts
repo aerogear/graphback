@@ -1,4 +1,4 @@
-import { Type } from '../../../input/ContextTypes'
+import { ModelTypeContext } from '../../../input/ContextTypes'
 
 /**
  * Generate source code for resolvers layer using Apollo GraphQL format
@@ -6,18 +6,16 @@ import { Type } from '../../../input/ContextTypes'
  * so resolver logic can be kept simple and interchangable.
  */
 export class LayeredResolverGen {
-  private inputContext: Type[]
+  private inputContext: ModelTypeContext[]
   private serviceContext: string
 
-  constructor(inputContext: Type[], serviceContext: string) {
+  constructor(inputContext: ModelTypeContext[], serviceContext: string) {
     this.inputContext = inputContext
     this.serviceContext = serviceContext;
   }
 
   public generate() {
     const resolvers = {};
-    // FIXME implement more cases here
-    // Supports create only for the moment
     for (const resolverElement of this.inputContext) {
       //TODO 
     }
