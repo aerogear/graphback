@@ -16,7 +16,7 @@ import { AdvancedFilter } from '../data/GraphbackDataProvider';
  */
 // tslint:disable-next-line: no-any
 export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
- 
+
     /**
      * Implementation for object creation 
      * 
@@ -25,7 +25,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param context context object passed from graphql or rest layer
      */
     create(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
-    
+
     /**
      * Implementation for object updates 
      * 
@@ -52,7 +52,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    read(name: string, id: string, context?: GraphbackContext):  Promise<Type>;
+    read(name: string, id: string, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for finding all objects
@@ -72,5 +72,27 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      */
     findBy(name: string, filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
 
-    
+    /**
+     * Subscription for all creation events
+     * 
+     * @param name name of the component to subscribe
+     * @param context additional context
+     */
+    subscribeToCreate(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
+
+    /**
+     * Subscription for all update events
+     * 
+     * @param name name of the component to subscribe
+     * @param context additional context
+     */
+    subscribeToUpdate(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
+
+    /**
+     * Subscription for all deletion events
+     * 
+     * @param name name of the component to subscribe
+     * @param context additional context
+     */
+    subscribeToDelete(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
 }
