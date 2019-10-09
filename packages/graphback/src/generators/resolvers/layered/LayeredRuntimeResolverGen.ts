@@ -89,21 +89,21 @@ export class LayeredRuntimeResolverGenerator {
     if (resolverElement.config.create && resolverElement.config.subCreate) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`new${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {
-        this.service.subscribeToCreate(resolverElement.name, context);
+        return this.service.subscribeToCreate(resolverElement.name, context);
       }
     }
 
     if (resolverElement.config.update && resolverElement.config.subUpdate) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`updated${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {
-        this.service.subscribeToUpdate(resolverElement.name, context);
+        return this.service.subscribeToUpdate(resolverElement.name, context);
       }
     }
 
     if (resolverElement.config.delete && resolverElement.config.subDelete) {
       // tslint:disable-next-line: no-any
       resolvers.Subscription[`deleted${resolverElement.name}`] = (parent: any, parentparent: any, context: any) => {
-        this.service.subscribeToDelete(resolverElement.name, context);
+        return this.service.subscribeToDelete(resolverElement.name, context);
       }
     }
 

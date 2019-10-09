@@ -30,8 +30,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
         const result = await this.db.create(name, data, context);
         if (this.pubSub) {
             const topic = subscriptionTopicMapping(ResolverType.CREATE, name);
-            const payload = {}
-            payload[`new${name}`] = result;
+            const payload = this.buildEventPayload('new', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -43,8 +42,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
         const result = await this.db.update(name, id, data, context);
         if (this.pubSub) {
             const topic = subscriptionTopicMapping(ResolverType.UPDATE, name);
-            const payload = {}
-            payload[`update${name}`] = result;
+            const payload = this.buildEventPayload('updated', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -57,8 +55,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
         const result = await this.db.delete(name, id, context);
         if (this.pubSub) {
             const topic = subscriptionTopicMapping(ResolverType.DELETE, name);
-            const payload = {}
-            payload[`delete${name}`] = result;
+            const payload = this.buildEventPayload('deleted', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -117,4 +114,14 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
 
         return this.pubSub.asyncIterator(deleteSubKey)
     }
+
+    private buildEventPayload(action: string, name: string, result: string) {
+        const payload = {};
+        // FIXME this will fail if type is lower case
+        const upperCaseName = name.charAt(0).toUpperCase() + name.slice(1);
+        payload[`${action}${upperCaseName}`] = result;
+
+        return payload;
+    }
+
 }
