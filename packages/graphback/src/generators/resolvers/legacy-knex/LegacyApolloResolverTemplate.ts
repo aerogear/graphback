@@ -1,4 +1,4 @@
-import { Custom, TargetResolverContext, TypeContext } from '../api';
+import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from  './resolverTypes';
 
 const imports = `import { GraphQLContext } from '../../context'`
 
@@ -53,8 +53,8 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
   return output
 }
 
-const generateResolvers = (context: TypeContext[]) => {
-  return context.map((t: TypeContext) => {
+const generateResolvers = (context: ResolverTypeContext[]) => {
+  return context.map((t: ResolverTypeContext) => {
     return {
       name: t.name.toLowerCase(),
       output: generateTypeResolvers(t.context, t.name)
@@ -62,7 +62,7 @@ const generateResolvers = (context: TypeContext[]) => {
   })
 }
 
-const alphabeticSort = (a: TypeContext | Custom, b: TypeContext | Custom) => {
+const alphabeticSort = (a: ResolverTypeContext | CustomResolverContext, b: ResolverTypeContext | CustomResolverContext) => {
   if (a.name < b.name) {
     return -1
   }
@@ -78,28 +78,28 @@ const alphabeticSort = (a: TypeContext | Custom, b: TypeContext | Custom) => {
  * @param context Array fo `Type`
  * @param hasCustomElements has custom queries or mutations or not
  */
-const generateIndexFile = (context: TypeContext[], hasCustomElements: boolean) => {
+const generateIndexFile = (context: ResolverTypeContext[], hasCustomElements: boolean) => {
   if (hasCustomElements) {
-    return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+    return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 import { customResolvers } from './custom'
 
-export const resolvers = [${[...context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}]
+export const resolvers = [${[...context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}]
 `
   }
 
-  return `${context.sort(alphabeticSort).map((t: TypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+  return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
-export const resolvers = [${context.map((t: TypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
+export const resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
 `
 }
 
-const generateCustomResolvers = (customResolvers: Custom[]) => {
-  const index = `${customResolvers.sort(alphabeticSort).map((c: Custom) => `import { ${c.name} } from './${c.name}'`).join('\n')}
+const generateCustomResolvers = (customResolvers: CustomResolverContext[]) => {
+  const index = `${customResolvers.sort(alphabeticSort).map((c: CustomResolverContext) => `import { ${c.name} } from './${c.name}'`).join('\n')}
 
-export const customResolvers = [${customResolvers.map((c: Custom) => c.name).join(', ')}]
+export const customResolvers = [${customResolvers.map((c: CustomResolverContext) => c.name).join(', ')}]
 `
-  const outputCustomResolvers = customResolvers.map((c: Custom) => {
+  const outputCustomResolvers = customResolvers.map((c: CustomResolverContext) => {
     return {
       name: c.name,
       output: `${imports}
@@ -130,7 +130,7 @@ export const ${c.name} = {
  * @param customContext custom queries/ mutations/ subscriptions if any
  * @param hasCustomElements specifies if above mentioned custom elements are present or not
  */
-export const generateGraphbackResolvers = (context: TypeContext[], customContext: Custom[], hasCustomElements: boolean) => {
+export const generateGraphbackResolvers = (context: ResolverTypeContext[], customContext: CustomResolverContext[], hasCustomElements: boolean) => {
   return {
     types: generateResolvers(context),
     index: generateIndexFile(context, hasCustomElements),

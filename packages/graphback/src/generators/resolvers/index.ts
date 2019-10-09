@@ -1,5 +1,5 @@
 
 export * from "./layered/LayeredRuntimeResolverGen"
-export * from "./layered/LayeredTSResolverGen"
-export * from "./api"
+export * from "./layered/LayeredResolverGen"
 export * from "./legacy-knex/LegacyResolverGenerator"
+export * from "./OutputResolver"

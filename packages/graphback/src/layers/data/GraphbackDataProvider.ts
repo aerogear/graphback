@@ -26,7 +26,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    createObject(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    create(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
     
     /**
      * Implementation for object updates 
@@ -36,7 +36,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    updateObject(name: string, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    update(name: string, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes 
@@ -45,7 +45,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param id of the object to delete
      * @param context context object passed from graphql or rest layer
      */
-    deleteObject(name: string, id: string, context?: GraphbackContext): Promise<string>;
+    delete(name: string, id: string, context?: GraphbackContext): Promise<string>;
 
     /**
      * Implementation for reading object 
@@ -54,7 +54,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    readObject(name: string, id: string, context?: GraphbackContext):  Promise<Type>;
+    read(name: string, id: string, context?: GraphbackContext):  Promise<Type>;
 
     /**
      * Implementation for finding all objects

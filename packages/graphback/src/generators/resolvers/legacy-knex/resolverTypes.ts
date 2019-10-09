@@ -1,4 +1,3 @@
-
 /**
  * Context used to generate resolvers. 
  * It categorizes resolvers to types and relations. 
@@ -11,24 +10,21 @@ export interface TargetResolverContext {
     subscriptionTypes?: string
 }
 
-// TODO comments
-export interface TypeContext {
+/**
+ * Interface containing all required metadata that will be used to build resolvers.
+ */
+export interface ResolverTypeContext {
     name: string
     context: TargetResolverContext
 }
 
-// TODO too generic name
-export interface Custom {
+export interface CustomResolverContext {
     name: string
     implementation: string
     operationType?: string
 }
-export interface Relation {
+
+export interface ResolverRelationContext {
     typeName: string
     implementation: string
 }
-
-export interface OutputResolver {
-    name: string
-    output: string
-  }

@@ -18,29 +18,29 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any> implements Gra
         this.logger = logger || defaultLogger;
     }
 
-    public createObject(name: string, data: T, context: GraphbackContext): Promise<T> {
+    public create(name: string, data: T, context: GraphbackContext): Promise<T> {
         this.logger.log(`Creating object ${name}`)
 
-        return this.db.createObject(name, data, context);
+        return this.db.create(name, data, context);
 
     }
-    public updateObject(name: string, id: string, data: T, context: GraphbackContext): Promise<T> {
+    public update(name: string, id: string, data: T, context: GraphbackContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 
-        return this.db.updateObject(name, id, data, context);
+        return this.db.update(name, id, data, context);
 
     }
 
-    public deleteObject(name: string, id: string, context: GraphbackContext): Promise<string> {
+    public delete(name: string, id: string, context: GraphbackContext): Promise<string> {
         this.logger.log(`deleting object ${name}`)
 
-        return this.db.deleteObject(name, id, context);
+        return this.db.delete(name, id, context);
     }
 
-    public readObject(name: string, id: string, context: GraphbackContext): Promise<T> {
+    public read(name: string, id: string, context: GraphbackContext): Promise<T> {
         this.logger.log(`reading object ${name}`)
 
-        return this.db.readObject(name, id, context);
+        return this.db.read(name, id, context);
     }
 
     public findAll(name: string, context: GraphbackContext): Promise<T[]> {

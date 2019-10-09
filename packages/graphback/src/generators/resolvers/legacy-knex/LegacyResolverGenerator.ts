@@ -1,6 +1,6 @@
 import { Type } from '../../../input/ContextTypes'
-import { TypeContext } from '../api';
-import { generateGraphbackResolvers } from '../formatters/ApolloResolverTemplate';
+import { generateGraphbackResolvers } from './LegacyApolloResolverTemplate';
+import { ResolverTypeContext } from './resolverTypes';
 import { buildResolverTargetContext, createCustomContext } from './targetResolverContext';
 
 /**
@@ -8,7 +8,7 @@ import { buildResolverTargetContext, createCustomContext } from './targetResolve
  * and string templates
  */
 export class LegacyResolverGenerator {
-    private context: TypeContext[]
+    private context: ResolverTypeContext[]
     private inputContext: Type[]
   
     constructor(inputContext: Type[]) {

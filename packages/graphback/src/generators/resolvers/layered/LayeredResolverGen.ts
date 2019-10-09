@@ -1,8 +1,4 @@
-import { getFieldName, getTableName, ResolverType } from '../../..'
 import { Type } from '../../../input/ContextTypes'
-import { TypeContext } from '../api'
-import { generateGraphbackResolvers } from '../formatters/ApolloResolverTemplate'
-import { buildResolverTargetContext, createCustomContext } from '../legacy-knex/targetResolverContext'
 
 /**
  * Generate source code for resolvers layer using Apollo GraphQL format

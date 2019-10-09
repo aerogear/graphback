@@ -43,21 +43,21 @@ export class LayeredRuntimeResolverGenerator {
         const resolverCreateField = getFieldName(resolverElement.name, ResolverType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (_: any, args: any, context: any) => {
-          return this.service.createObject(tableName, args.input, context)
+          return this.service.create(tableName, args.input, context)
         }
       }
       if (resolverElement.config.update) {
         const updateField = getFieldName(resolverElement.name, ResolverType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (_: any, args: any, context: any) => {
-          return this.service.updateObject(tableName, args.id, args.input, context)
+          return this.service.update(tableName, args.id, args.input, context)
         }
       }
       if (resolverElement.config.delete) {
         const deleteField = getFieldName(resolverElement.name, ResolverType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (_: any, args: any, context: any) => {
-          return this.service.deleteObject(tableName, args.id, context)
+          return this.service.delete(tableName, args.id, context)
         }
       }
       if (resolverElement.config.findAll) {
