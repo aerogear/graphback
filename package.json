@@ -4,7 +4,9 @@
   "private": true,
   "description": "Mono repository for Graphback project",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "@graphql-inspector/core": "^1.26.0"
+  },
   "devDependencies": {
     "del-cli": "3.0.0",
     "lerna": "3.16.4",
