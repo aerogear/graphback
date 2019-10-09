@@ -44,7 +44,7 @@ test.beforeEach(async t => {
 });
 
 test('read Todo', async t => {
-  const todo: Todo = await t.context.provider.readObject('todos', '3');
+  const todo: Todo = await t.context.provider.read('todos', '3');
 
   t.assert(todo.id === 3);
   t.assert(todo.text === 'just another todo');
@@ -57,7 +57,7 @@ test('batch read Todos', async t => {
 });
 
 test('create Todo', async t => {
-  const todo: Todo = await t.context.provider.createObject('todos', {
+  const todo: Todo = await t.context.provider.create('todos', {
     text: 'create a todo',
   });
 
@@ -66,7 +66,7 @@ test('create Todo', async t => {
 });
 
 test('update Todo', async t => {
-  const todo: Todo = await t.context.provider.updateObject('todos', '1', {
+  const todo: Todo = await t.context.provider.update('todos', '1', {
     text: 'my updated first todo',
   });
 
@@ -75,7 +75,7 @@ test('update Todo', async t => {
 });
 
 test('delete Todo', async t => {
-  const id = await t.context.provider.deleteObject('todos', '3');
+  const id = await t.context.provider.delete('todos', '3');
 
   t.assert(id === '3');
 });
