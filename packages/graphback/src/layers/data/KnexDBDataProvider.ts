@@ -23,7 +23,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     }
 
     public async create(name: string, data: Type): Promise<Type> {
-        const id = await this.db(name).insert(data).returning('id');
+        const [id] = await this.db(name).insert(data);
         const dbResult = await this.db.select().from(name).where('id', '=', id)
         if (dbResult && dbResult[0]) {
             return dbResult[0]
@@ -32,9 +32,12 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     }
 
     public async update(name: string, id: string, data: Type): Promise<Type> {
-        const dbResult = await this.db(name).update(data).returning('*');
-        if (dbResult && dbResult[0]) {
-            return dbResult[0]
+        const updateResult = await this.db(name).update(data).where('id', '=', id);
+        if (updateResult === 1) {
+            const dbResult = await this.db.select().from(name).where('id', '=', id);
+            if (dbResult && dbResult[0]) {
+                return dbResult[0]
+            }
         }
         throw new NoDataError(`Cannot update ${name}`);
     }
@@ -50,8 +53,6 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     }
 
     public async read(name: string, id: string): Promise<Type> {
-        // FIXME we use hardcoded id that needs to be reflected in migration. 
-        // To do that properl we can introduce @ID directive when performing data migration
         const dbResult = await this.db.select().from(name).where('id', '=', id);
         if (dbResult && dbResult[0]) {
             return dbResult[0]
