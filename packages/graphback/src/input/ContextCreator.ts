@@ -1,7 +1,7 @@
 import { parse, visit } from 'graphql';
 import { GraphQLGeneratorConfig } from "../GraphQLGeneratorConfig";
 import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from '../utils/graphqlUtils';
-import { INTERFACE_TYPE_DEFINITION, InterfaceType, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION, Type } from './ContextTypes'
+import { ModelTypeContext } from './ContextTypes'
 import { applyGeneratorDirectives } from './directives';
 import { inputTypeVisitor } from './InputTypeVisitor';
 
@@ -10,14 +10,14 @@ import { inputTypeVisitor } from './InputTypeVisitor';
  * schema, resolvers generation
  * and database creation
  */
-export const createInputContext = (schemaText: string, defaultConfig: GraphQLGeneratorConfig): Type[] => {
+export const createInputContext = (schemaText: string, defaultConfig: GraphQLGeneratorConfig): ModelTypeContext[] => {
   const schema = applyGeneratorDirectives(schemaText)
   try {
     const astNode = parse(schema)
 
     const schemaDef = visit(astNode, { leave: inputTypeVisitor });
 
-    let context =  schemaDef.definitions.map((t: Type) => {
+    let context =  schemaDef.definitions.map((t: ModelTypeContext) => {
       return {
         ...t,
         config: { ...defaultConfig, ...t.config }
@@ -32,8 +32,8 @@ export const createInputContext = (schemaText: string, defaultConfig: GraphQLGen
 
     context = filterObjectTypes(context)
 
-    return [...context.map((t: Type) => {
-      const extendNode = extendNodes.find((node: Type) => node.name === t.name)
+    return [...context.map((t: ModelTypeContext) => {
+      const extendNode = extendNodes.find((node: ModelTypeContext) => node.name === t.name)
 
       if(extendNode) {
         return {

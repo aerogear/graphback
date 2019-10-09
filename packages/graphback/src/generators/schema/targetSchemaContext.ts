@@ -1,4 +1,4 @@
-import { Argument, Field, InterfaceType, Type } from '../../input/ContextTypes'
+import { Argument, ModelFieldContext, InterfaceType, ModelTypeContext } from '../../input/ContextTypes'
 import { filterInterfaceTypes, filterObjectTypes, getFieldName } from '../../utils/graphqlUtils'
 import { ResolverType } from '../resolvers'
 
@@ -31,45 +31,45 @@ export interface TargetContext {
   subscriptions: string[]
 }
 
-const findQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => (!t.config.disableGen && t.config.find))
-    .map((t: Type) => {
+const findQueries = (inputContext: ModelTypeContext[]): string[] => {
+  return inputContext.filter((t: ModelTypeContext) => (!t.config.disableGen && t.config.find))
+    .map((t: ModelTypeContext) => {
       const fieldName = getFieldName(t.name, ResolverType.FIND, 's')
 
       return `${fieldName}(fields: ${t.name}Filter!): [${t.name}!]!`
     })
 }
 
-const updateQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => (!t.config.disableGen && t.config.update))
-    .map((t: Type) => {
+const updateQueries = (inputContext: ModelTypeContext[]): string[] => {
+  return inputContext.filter((t: ModelTypeContext) => (!t.config.disableGen && t.config.update))
+    .map((t: ModelTypeContext) => {
       const fieldName = getFieldName(t.name, ResolverType.UPDATE)
 
       return `${fieldName}(id: ID!, input: ${t.name}Input!): ${t.name}!`
     })
 }
 
-const createQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => (!t.config.disableGen && t.config.create))
-    .map((t: Type) => {
+const createQueries = (inputContext: ModelTypeContext[]): string[] => {
+  return inputContext.filter((t: ModelTypeContext) => (!t.config.disableGen && t.config.create))
+    .map((t: ModelTypeContext) => {
       const fieldName = getFieldName(t.name, ResolverType.CREATE)
 
       return `${fieldName}(input: ${t.name}Input!): ${t.name}!`
     })
 }
 
-const delQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => (!t.config.disableGen && t.config.delete))
-    .map((t: Type) => {
+const delQueries = (inputContext: ModelTypeContext[]): string[] => {
+  return inputContext.filter((t: ModelTypeContext) => (!t.config.disableGen && t.config.delete))
+    .map((t: ModelTypeContext) => {
       const fieldName = getFieldName(t.name, ResolverType.DELETE)
 
       return `${fieldName}(id: ID!): ID!`
     })
 }
 
-const findAllQueries = (inputContext: Type[]): string[] => {
-  return inputContext.filter((t: Type) => (!t.config.disableGen && t.config.findAll))
-    .map((t: Type) => {
+const findAllQueries = (inputContext: ModelTypeContext[]): string[] => {
+  return inputContext.filter((t: ModelTypeContext) => (!t.config.disableGen && t.config.findAll))
+    .map((t: ModelTypeContext) => {
       const fieldName = getFieldName(t.name, ResolverType.FIND_ALL, 's')
 
       return `${fieldName}: [${t.name}!]!`
@@ -85,7 +85,7 @@ const deletedSub = (name: string) => `deleted${name}: ID!`
  * ex - title: String!
  * @param f Field type
  */
-export const maybeNullField = (f: Field) => {
+export const maybeNullField = (f: ModelFieldContext) => {
   if (f.isArray) {
     return `${f.name}: [${f.type}]${f.isNull ? '' : '!'}`
   }
@@ -102,7 +102,7 @@ export const maybeNullField = (f: Field) => {
  * @param f Field type from custom input
  * arguments structure - {name, value: {isNull, type, isArray}}
  */
-export const maybeNullFieldArgs = (f: Field) => {
+export const maybeNullFieldArgs = (f: ModelFieldContext) => {
   if (f.arguments) {
     return `${f.name}(${f.arguments.map((x: Argument) => x.value.isArray ?
       `${x.name}: [${x.value.type}]${x.value.isNull ? '' : '!'}` :
@@ -112,7 +112,7 @@ export const maybeNullFieldArgs = (f: Field) => {
   }
 }
 
-const nullField = (f: Field) => {
+const nullField = (f: ModelFieldContext) => {
   if (f.isArray) {
     return `${f.name}: [${f.type}]`
   }
@@ -132,13 +132,13 @@ const nullField = (f: Field) => {
  * subscriptions - generated subscription according to config - new, updated, deleted
  * @param input input visted object from model
  */
-export const buildTargetContext = (input: Type[]) => {
-  const inputContext = input.filter((t: Type) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+export const buildTargetContext = (input: ModelTypeContext[]) => {
+  const inputContext = input.filter((t: ModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
 
-  inputContext.forEach((t: Type) => {
-    t.fields.forEach((f: Field) => {
+  inputContext.forEach((t: ModelTypeContext) => {
+    t.fields.forEach((f: ModelFieldContext) => {
       if (f.isType) {
         if (f.directives.OneToOne || !f.isArray) {
           relations.push({
@@ -185,36 +185,36 @@ export const buildTargetContext = (input: Type[]) => {
   const interfaceTypes = filterInterfaceTypes(inputContext);
 
 
-  context.types = objectTypes.map((t: Type) => {
+  context.types = objectTypes.map((t: ModelTypeContext) => {
     return {
       "name": t.name,
       "interfaces": t.interfaces.map((i: InterfaceType) => i.type),
-      "fields": [...t.fields.filter((f: Field, ) => !f.isType).map(maybeNullField), ...new Set(relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation))]
+      "fields": [...t.fields.filter((f: ModelFieldContext, ) => !f.isType).map(maybeNullField), ...new Set(relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation))]
     }
   });
 
-  context.interfaces = interfaceTypes.map((t: Type) => {
+  context.interfaces = interfaceTypes.map((t: ModelTypeContext) => {
     return {
       "name": t.name,
-      "fields": [...t.fields.filter((f: Field, ) => !f.isType).map(maybeNullField), ...new Set(relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation))]
+      "fields": [...t.fields.filter((f: ModelFieldContext, ) => !f.isType).map(maybeNullField), ...new Set(relations.filter((r: RelationInfo) => r.name === t.name).map((r: RelationInfo) => r.relation))]
     }
   });
 
-  context.inputFields = objectTypes.map((t: Type) => {
+  context.inputFields = objectTypes.map((t: ModelTypeContext) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: Field) => f.type !== 'ID' && !f.isType)
+      "fields": [...t.fields.filter((f: ModelFieldContext) => f.type !== 'ID' && !f.isType)
         .map(maybeNullField),
       ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField))]
     }
   })
 
-  context.filterFields = objectTypes.map((t: Type) => {
+  context.filterFields = objectTypes.map((t: ModelTypeContext) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: Field) => !f.isType)
+      "fields": [...t.fields.filter((f: ModelFieldContext) => !f.isType)
         .map(nullField),
       ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))]
     }
@@ -222,9 +222,9 @@ export const buildTargetContext = (input: Type[]) => {
   // context.pagination = inputContext.filter((t: Type) => t.config.paginate)
   context.queries = [...findQueries(objectTypes), ...findAllQueries(objectTypes)]
   context.mutations = [...createQueries(objectTypes), ...updateQueries(objectTypes), ...delQueries(objectTypes)]
-  context.subscriptions = [...objectTypes.filter((t: Type) => !t.config.disableGen && t.config.create && t.config.subCreate).map((t: Type) => newSub(t.name)),
-  ...objectTypes.filter((t: Type) => !t.config.disableGen && t.config.update && t.config.subUpdate).map((t: Type) => updatedSub(t.name)),
-  ...objectTypes.filter((t: Type) => !t.config.disableGen && t.config.delete && t.config.subDelete).map((t: Type) => deletedSub(t.name))]
+  context.subscriptions = [...objectTypes.filter((t: ModelTypeContext) => !t.config.disableGen && t.config.create && t.config.subCreate).map((t: ModelTypeContext) => newSub(t.name)),
+  ...objectTypes.filter((t: ModelTypeContext) => !t.config.disableGen && t.config.update && t.config.subUpdate).map((t: ModelTypeContext) => updatedSub(t.name)),
+  ...objectTypes.filter((t: ModelTypeContext) => !t.config.disableGen && t.config.delete && t.config.subDelete).map((t: ModelTypeContext) => deletedSub(t.name))]
 
   return context
 }
@@ -233,22 +233,22 @@ export const buildTargetContext = (input: Type[]) => {
  * Create custom queries and mutations from user's input
  * @param inputContext Type[]
  */
-export const createCustomSchemaContext = (inputContext: Type[]) => {
+export const createCustomSchemaContext = (inputContext: ModelTypeContext[]) => {
   const objectTypes = filterObjectTypes(inputContext);
 
-  const queryType = objectTypes.filter((t: Type) => t.name === 'Query')
+  const queryType = objectTypes.filter((t: ModelTypeContext) => t.name === 'Query')
   let customQueries = []
   if (queryType.length) {
     customQueries = queryType[0].fields.map(maybeNullFieldArgs)
   }
 
-  const mutationType = objectTypes.filter((t: Type) => t.name === 'Mutation')
+  const mutationType = objectTypes.filter((t: ModelTypeContext) => t.name === 'Mutation')
   let customMutations = []
   if (mutationType.length) {
     customMutations = mutationType[0].fields.map(maybeNullFieldArgs)
   }
 
-  const subscriptionType = objectTypes.filter((t: Type) => t.name === 'Subscription')
+  const subscriptionType = objectTypes.filter((t: ModelTypeContext) => t.name === 'Subscription')
   let customSubscriptions = []
   if (subscriptionType.length) {
     customSubscriptions = subscriptionType[0].fields.map(maybeNullFieldArgs)

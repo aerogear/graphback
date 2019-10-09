@@ -1,4 +1,4 @@
-import { Type } from '../../input/ContextTypes';
+import { ModelTypeContext } from '../../input/ContextTypes';
 import { generateSchemaString } from './schemaTemplate';
 import { buildTargetContext, createCustomSchemaContext, TargetContext } from './targetSchemaContext';
 
@@ -29,10 +29,10 @@ export interface SchemaFormatter {
  */
 export class SchemaGenerator {
     private context: TargetContext
-    private inputContext: Type[]
+    private inputContext: ModelTypeContext[]
     private formatter: SchemaFormatter;
 
-    constructor(inputContext: Type[], formatter?: SchemaFormatter) {
+    constructor(inputContext: ModelTypeContext[], formatter?: SchemaFormatter) {
         this.inputContext = inputContext
         this.formatter = formatter;
     }

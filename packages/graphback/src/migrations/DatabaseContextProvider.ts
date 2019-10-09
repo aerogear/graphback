@@ -1,4 +1,4 @@
-import { Type } from '../input/ContextTypes'
+import { ModelTypeContext } from '../input/ContextTypes'
 
 
 /**
@@ -13,7 +13,7 @@ export interface DatabaseContextProvider {
    *
    * @param field GraphQL Type used to retrieve namespace
    */
-  getFieldName(field: Type)
+  getFieldName(field: ModelTypeContext)
 }
 
 /**
@@ -27,7 +27,7 @@ export class DefaultDataContextProvider implements DatabaseContextProvider {
     this.prefix = prefix;
   }
 
-  public getFieldName(field: Type) {
+  public getFieldName(field: ModelTypeContext) {
     return this.prefix + field.name.toLowerCase();
   }
 }
