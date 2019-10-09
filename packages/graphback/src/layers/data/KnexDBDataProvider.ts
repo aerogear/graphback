@@ -75,7 +75,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
     }
 
-    public async batchRead(name: string, ids: [string]): Promise<Type[]> {
+    public async batchRead(name: string, ids: string[]): Promise<Type[]> {
         const dbResult = await this.db.select().from(name).where('id', 'in', ids);
         if (dbResult) {
             return dbResult;
