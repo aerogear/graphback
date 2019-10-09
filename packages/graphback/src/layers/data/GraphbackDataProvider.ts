@@ -81,6 +81,6 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param name 
      * @param ids array of identifiers that needs to be fetched
      */
-    batchRead(name: string, ids: [string]): Promise<Type[]>
+    batchRead(name: string, ids: string[]): Promise<Type[]>
 
 }
