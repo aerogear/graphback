@@ -1,5 +1,6 @@
 import { Argument, Field, InterfaceType, Type } from '../../input/ContextTypes'
-import { filterInterfaceTypes, filterObjectTypes, getFieldName, ResolverType } from '../../utils/graphqlUtils'
+import { filterInterfaceTypes, filterObjectTypes, getFieldName } from '../../utils/graphqlUtils'
+import { ResolverType } from '../resolvers'
 
 export interface TargetType {
   name: string
