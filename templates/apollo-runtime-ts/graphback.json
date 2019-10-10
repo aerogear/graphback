@@ -15,10 +15,10 @@
     "update": true,
     "findAll": true,
     "find": true,
-    "delete": false,
-    "subCreate": false,
-    "subUpdate": false,
-    "subDelete": false,
+    "delete": true,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true,
     "disableGen": false
   },
   "folders": {

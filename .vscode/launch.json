@@ -15,14 +15,14 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
-      "name": "Template app ",
+      "name": "Runtime template app ",
       "type": "node",
       "request": "launch",
       "env": {
       },
-      "args": ["${workspaceRoot}/templates/apollo-starter-ts/src/index.ts"],
+      "args": ["${workspaceRoot}/templates/apollo-runtime-ts/src/index.ts"],
       "runtimeArgs": ["-r", "ts-node/register"],
-      "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
+      "cwd": "${workspaceRoot}/templates/apollo-runtime-ts",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },

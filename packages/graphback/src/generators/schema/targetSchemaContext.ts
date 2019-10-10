@@ -1,4 +1,4 @@
-import { InputModelArgument, InputInterfaceType, InputModelFieldContext, InputModelTypeContext } from '../../input/ContextTypes'
+import { InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '../../input/ContextTypes'
 import { filterInterfaceTypes, filterObjectTypes, getFieldName } from '../../utils/graphqlUtils'
 import { ResolverType } from '../resolvers'
 

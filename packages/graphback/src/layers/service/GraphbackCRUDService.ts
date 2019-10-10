@@ -1,5 +1,5 @@
-import { AdvancedFilter } from '../data/GraphbackDataProvider';
 import { InputModelTypeContext } from '../../input/ContextTypes';
+import { AdvancedFilter } from '../data/GraphbackDataProvider';
 
 
 /**

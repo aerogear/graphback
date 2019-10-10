@@ -56,7 +56,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
         
         const result = await this.db.delete(inputType, id, context);
         if (this.pubSub && inputType.config.subDelete) {
-            const topic = subscriptionTopicMapping(ResolverType.DELETE, name);
+            const topic = subscriptionTopicMapping(ResolverType.DELETE, inputType.name);
             const payload = this.buildEventPayload('deleted', inputType, result);
             await this.pubSub.publish(topic, payload);
         }
@@ -100,11 +100,10 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
 
             return undefined;
         }
-        const updateSubKey = subscriptionTopicMapping(ResolverType.CREATE, inputType.name);
+        const updateSubKey = subscriptionTopicMapping(ResolverType.UPDATE, inputType.name);
 
         return this.pubSub.asyncIterator(updateSubKey)
     }
-
 
     public subscribeToDelete(inputType: InputModelTypeContext, context: GraphbackContext): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
@@ -112,7 +111,7 @@ export class DefaultsCRUDService<T = any, GraphbackContext = any>
 
             return undefined;
         }
-        const deleteSubKey = subscriptionTopicMapping(ResolverType.CREATE, inputType.name);
+        const deleteSubKey = subscriptionTopicMapping(ResolverType.DELETE, inputType.name);
 
         return this.pubSub.asyncIterator(deleteSubKey)
     }

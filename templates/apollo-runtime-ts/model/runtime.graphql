@@ -1,0 +1,7 @@
+
+## Model that will be used at server runtime
+
+type User {
+    id: ID!
+    name: String!
+}
