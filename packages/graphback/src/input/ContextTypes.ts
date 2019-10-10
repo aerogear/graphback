@@ -28,13 +28,13 @@ export interface ManyToMany {
 /**
  * All relation directive definitions
  */
-export interface Directive {
+export interface RelationshipsDirectives {
   OneToOne?: OneToOne
   OneToMany?: OneToMany
   ManyToMany?: ManyToMany
 }
 
-export interface Value {
+export interface ModelArgumentValue {
   // tslint:disable-next-line: no-reserved-keywords
   type: string
   isArray: boolean
@@ -42,40 +42,43 @@ export interface Value {
   isType: boolean
 }
 
-export interface Argument {
+export interface InputModelArgument {
   name: string
-  value: Value
+  value: ModelArgumentValue
 }
 
 /**
  * Field context of parsed GraphQL type
  */
-export interface ModelFieldContext {
+export interface InputModelFieldContext {
   name: string
   // tslint:disable-next-line
   type: string
   isArray: boolean
   isType: boolean
   isNull: boolean
-  directives: Directive
+  directives: RelationshipsDirectives
   hasDirectives: boolean
   // tslint:disable-next-line: no-banned-terms
-  arguments?: Argument[]
+  arguments?: InputModelArgument[]
 }
 
 /**
- * Context type returned from InputTypeVisitor
+ * Type information from Graphback model. 
+ * This interface is being used in entire graphback ecoystem to carry all 
+ * required information about model that can be used to generate GraphQL Schema, Resolvers etc.
+ * Context type returned from `InputTypeVisitor`
  */
-export interface ModelTypeContext {
+export interface InputModelTypeContext {
   kind: string
   name: string
-  fields: ModelFieldContext[]
-  interfaces?: InterfaceType[]
+  fields: InputModelFieldContext[]
+  interfaces?: InputInterfaceType[]
   config: GraphQLGeneratorConfig
 }
 
 
-export interface InterfaceType {
+export interface InputInterfaceType {
   // tslint:disable-next-line: no-reserved-keywords
   type: string
   isArray: boolean

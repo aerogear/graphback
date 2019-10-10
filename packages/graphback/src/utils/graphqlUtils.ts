@@ -1,5 +1,5 @@
 import { ResolverType } from '../generators/resolvers';
-import { INTERFACE_TYPE_DEFINITION, ModelTypeContext, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION } from '../input/ContextTypes';
+import { INTERFACE_TYPE_DEFINITION, InputModelTypeContext, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION } from '../input/ContextTypes';
 
 
 export const getFieldName = (typeName: string, action: ResolverType, plural: string = ''): string => {
@@ -12,11 +12,11 @@ export const getTableName = (typeName: string): string => {
   return typeName.toLowerCase()
 }
 
-export const filterObjectTypes = (types: ModelTypeContext[]) => types.filter((t: ModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION);
+export const filterObjectTypes = (types: InputModelTypeContext[]) => types.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION);
 
-export const filterInterfaceTypes = (types: ModelTypeContext[]) => types.filter((t: ModelTypeContext) => t.kind === INTERFACE_TYPE_DEFINITION);
+export const filterInterfaceTypes = (types: InputModelTypeContext[]) => types.filter((t: InputModelTypeContext) => t.kind === INTERFACE_TYPE_DEFINITION);
 
-export const filterObjectExtensions = (types: ModelTypeContext[]) => types.filter((t: ModelTypeContext) => t.kind === OBJECT_TYPE_EXTENSION);
+export const filterObjectExtensions = (types: InputModelTypeContext[]) => types.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_EXTENSION);
 
 /**
  * Generate a string literal with the following format:

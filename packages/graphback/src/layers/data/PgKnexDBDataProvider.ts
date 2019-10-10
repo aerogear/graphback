@@ -1,5 +1,7 @@
 // tslint:disable-next-line: no-require-imports
 import * as Knex from 'knex';
+import { InputModelTypeContext } from '../../input/ContextTypes';
+import { getTableName } from '../../utils';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 import { NoDataError } from './NoDataError';
 
@@ -16,7 +18,8 @@ export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends Kn
         super(db);
     }
 
-    public async create(name: string, data: Type): Promise<Type> {
+    public async create(inputType: InputModelTypeContext,  data: Type): Promise<Type> {
+        const name = getTableName(inputType.name)
         const dbResult = await this.db(name).insert(data).returning('*');
         if (dbResult && dbResult[0]) {
             return dbResult[0]

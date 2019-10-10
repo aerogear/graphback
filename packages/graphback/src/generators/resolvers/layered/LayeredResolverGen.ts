@@ -1,4 +1,4 @@
-import { ModelTypeContext } from '../../../input/ContextTypes'
+import { InputModelTypeContext } from '../../../input/ContextTypes'
 
 /**
  * Generate source code for resolvers layer using Apollo GraphQL format
@@ -6,10 +6,10 @@ import { ModelTypeContext } from '../../../input/ContextTypes'
  * so resolver logic can be kept simple and interchangable.
  */
 export class LayeredResolverGen {
-  private inputContext: ModelTypeContext[]
+  private inputContext: InputModelTypeContext[]
   private serviceContext: string
 
-  constructor(inputContext: ModelTypeContext[], serviceContext: string) {
+  constructor(inputContext: InputModelTypeContext[], serviceContext: string) {
     this.inputContext = inputContext
     this.serviceContext = serviceContext;
   }

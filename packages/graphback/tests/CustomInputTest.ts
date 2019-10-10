@@ -1,6 +1,7 @@
+// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { createInputContext, ModelTypeContext } from '../src';
+import { createInputContext, InputModelTypeContext } from '../src';
 import { maybeNullFieldArgs } from '../src/generators/schema/targetSchemaContext';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -17,7 +18,7 @@ const defautConfig = {
   "disableGen": false
 }
 
-let inputContext: ModelTypeContext[]
+let inputContext: InputModelTypeContext[]
 
 ava.before((t: ExecutionContext) => {
   inputContext = createInputContext(schemaText, defautConfig)
@@ -25,7 +26,7 @@ ava.before((t: ExecutionContext) => {
 
 ava('Test for schema string output from custom input', async (t: ExecutionContext) => {
   const output = `likeNote(id: ID!): Note!`
-  const mutationField = inputContext.filter((t: ModelTypeContext) => t.name === 'Mutation')[0].fields[0]
+  const mutationField = inputContext.filter((context: InputModelTypeContext) => context.name === 'Mutation')[0].fields[0]
   t.is(maybeNullFieldArgs(mutationField), output)
 });
 
