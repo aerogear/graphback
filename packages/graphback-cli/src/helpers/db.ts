@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import * as execa from 'execa'
-import { readFileSync, unlinkSync } from 'fs'
+import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, LocalSchemaProvider } from 'graphback';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
@@ -32,6 +32,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
       // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('CREATE SCHEMA public;')
     }
+
   } catch (err) {
     handleError(err)
   }
@@ -39,7 +40,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
 
 export const createDBResources = async (configInstance: ConfigBuilder): Promise<void> => {
   try {
-    const { db: { database, dbConfig }, graphqlCRUD, folders } = configInstance.config
+    const { db: { database, dbConfig, initialization }, graphqlCRUD, folders } = configInstance.config
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -52,13 +53,14 @@ export const createDBResources = async (configInstance: ConfigBuilder): Promise<
       await execa('touch', ['db.sqlite'])
     }
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(folders.model, graphqlCRUD)
+    const schemaContext = new LocalSchemaProvider(folders.migrations, folders.model)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
 
     const manager = new DatabaseSchemaManager(database, dbConfig);
 
     backend.registerDataResourcesManager(manager);
 
-    await backend.migrateDatabase(`${process.cwd()}/migrations`)
+    await backend.migrateDatabase(initialization)
 
   } catch (err) {
     handleError(err)
@@ -76,7 +78,11 @@ Run ${chalk.cyan(`npm run develop`)} to start the server.
 export const createDB = async (): Promise<void> => {
   const configInstance = new ConfigBuilder();
   checkDirectory(configInstance)
-  // await dropDBResources(configInstance)
+
+  if (configInstance.config.db.initialization === DatabaseInitializationStrategy.DropCreate) {
+    await dropDBResources(configInstance)
+  }
+
   await createDBResources(configInstance)
   postCommandMessage()
 }

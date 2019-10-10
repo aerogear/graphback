@@ -1,24 +1,9 @@
 // tslint:disable: await-promise
+import { Change, ChangeType } from '@graphql-inspector/core';
 import * as Knex from 'knex';
 import { Field, Type } from '../input/ContextTypes';
 import { logger } from '../utils/logger';
 import { DatabaseContextProvider } from './DatabaseContextProvider';
-import {
-  readdirSync,
-  readFileSync,
-  mkdir,
-  writeFileSync,
-  existsSync,
-  mkdirSync,
-  unlink,
-  unlinkSync,
-} from 'fs';
-import { join } from 'path';
-import { sync } from 'glob';
-import { diff, Change, ChangeType } from '@graphql-inspector/core';
-import { buildSchema } from 'graphql';
-import { CHANGES } from './changes';
-import { buildSchemaText, buildSchemaFromDir } from '../utils';
 /**
  * Represents update for data type
  */
@@ -57,8 +42,6 @@ export interface IDataLayerResourcesManager {
    */
   updateDatabaseResources(context: DatabaseContextProvider,
     types: Type[], changes: Change[]): Promise<void>;
-
-  createMigration(modelDir: string, migrationsDir: string): Promise<Change[]>;
 }
 
 /**
@@ -110,33 +93,6 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     dbConnectionOptions: Knex.ConnectionConfig | Knex.Sqlite3ConnectionConfig,
   ) {
     this.dbConnection = createDBConnectionKnex(client, dbConnectionOptions);
-  }
-
-  public async createMigration(
-    schemaText: string,
-    migrationsDir: string,
-  ): Promise<Change[]> {
-    if (!existsSync(migrationsDir)) {
-      mkdirSync(migrationsDir);
-    }
-
-    const oldSchema = buildSchemaFromDir(migrationsDir);
-    const newSchema = buildSchema(schemaText);
-
-    const changes = diff(oldSchema, newSchema);
-
-    if (changes.length > 0) {
-      const schemaPath = join(migrationsDir, '*.graphql');
-      const files = sync(schemaPath);
-
-      for (const gqlFile of files) {
-        unlinkSync(gqlFile);
-      }
-
-      writeFileSync(join(migrationsDir, 'Model.graphql'), schemaText);
-    }
-
-    return Promise.resolve(changes);
   }
 
   public async createDatabaseResources(

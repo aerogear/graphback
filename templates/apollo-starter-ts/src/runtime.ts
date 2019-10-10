@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-core';
-import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
+import { GraphQLBackendCreator, PgKnexDBDataProvider, LocalSchemaProvider } from 'graphback';
 import { makeExecutableSchema } from 'graphql-tools';
 
 // Runtime test
@@ -11,7 +11,8 @@ import * as jsonConfig from '../graphback.json'
  * It will be part of of the integration tests
  */
 export const createRuntime = async (client: Knex) => {
-    const backend = new GraphQLBackendCreator(jsonConfig.folders.model, jsonConfig.graphqlCRUD);
+    const schemaContext = new LocalSchemaProvider(jsonConfig.folders.migrations, jsonConfig.folders.model);
+    const backend = new GraphQLBackendCreator(schemaContext, jsonConfig.graphqlCRUD);
     const dbClientProvider = new PgKnexDBDataProvider(client);
     const runtime = await backend.createRuntime(dbClientProvider);
     const generatedSchema = runtime.schema;

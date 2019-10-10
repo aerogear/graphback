@@ -14,6 +14,10 @@ import {
 import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
 import { logger } from './utils/logger';
 import { buildSchemaText } from './utils';
+import { ISchemaProvider } from './migrations/schema/ISchemaProvider';
+import { Change, diff } from '@graphql-inspector/core';
+import { buildSchema } from 'graphql';
+import { DatabaseInitializationStrategy } from './migrations';
 
 /**
  * GraphQLBackend
@@ -27,17 +31,20 @@ import { buildSchemaText } from './utils';
 export class GraphQLBackendCreator {
   private dataLayerManager: IDataLayerResourcesManager;
   private dbContextProvider: DatabaseContextProvider;
+  private schemaContext: ISchemaProvider;
   private inputContext: Type[];
-  private graphqlSchema: string;
-
+  private newSchema: string;
+  private oldSchema: string;
 
   /**
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(schemaDir: string, config: GraphQLGeneratorConfig) {
-    this.graphqlSchema = buildSchemaText(schemaDir);
-    this.inputContext = createInputContext(this.graphqlSchema, config);
+  constructor(schemaContext: ISchemaProvider, config: GraphQLGeneratorConfig) {
+    this.schemaContext = schemaContext;
+    this.oldSchema = schemaContext.getOldSchemaText();
+    this.newSchema = schemaContext.getNewSchemaText();
+    this.inputContext = createInputContext(schemaContext.getNewSchemaText(), config);
     this.dbContextProvider = new DefaultDataContextProvider();
   }
 
@@ -56,6 +63,10 @@ export class GraphQLBackendCreator {
    */
   public setDatabaseContext(provider: DatabaseContextProvider) {
     this.dbContextProvider = provider;
+  }
+
+  public setSchemaContext(provider: ISchemaProvider) {
+    this.schemaContext = provider;
   }
 
   /**
@@ -100,7 +111,7 @@ export class GraphQLBackendCreator {
   }
 
   public async migrateDatabase(
-    migrationsDir: string,
+    initializationStrategy: DatabaseInitializationStrategy
   ): Promise<void> {
     const context = this.inputContext.filter(
       (t: Type) =>
@@ -110,14 +121,18 @@ export class GraphQLBackendCreator {
         t.name !== 'Subscription',
     );
 
-    const changes = await this.dataLayerManager.createMigration(
-      this.graphqlSchema,
-      migrationsDir,
+    const changes = await this.getSchemaChanges(
+      this.oldSchema,
+      this.newSchema,
     );
+
+    if (!this.oldSchema || changes.length > 0) {
+      this.schemaContext.updateOldSchema(this.newSchema);
+    }
 
     try {
       if (this.dataLayerManager) {
-        if (!changes) {
+        if (initializationStrategy === DatabaseInitializationStrategy.DropCreate || !this.oldSchema) {
           logger.info('Creating database structure');
           await this.dataLayerManager.createDatabaseResources(
             this.dbContextProvider,
@@ -138,5 +153,25 @@ export class GraphQLBackendCreator {
       // logger.error(`Error on Database creation ${error}`)
       throw error;
     }
+  }
+
+  private getSchemaChanges(
+    oldSchemaText: string,
+    newSchemaText: string,
+  ): Promise<Change[]> {
+    let changes: Change[] = [];
+
+    if (!oldSchemaText || !oldSchemaText.length) {
+      return Promise.resolve(changes);
+    }
+
+    const oldSchema = buildSchema(oldSchemaText);
+    const newSchema = buildSchema(newSchemaText);
+
+    if (oldSchema && newSchema) {
+      changes = diff(oldSchema, newSchema);
+    }
+
+    return Promise.resolve(changes);
   }
 }

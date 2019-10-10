@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver, LocalSchemaProvider } from 'graphback'
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
@@ -42,7 +42,8 @@ export async function generateBackend(): Promise<void> {
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(folders.model, graphqlCRUD)
+    const schemaContext = new LocalSchemaProvider(folders.migrations, folders.model)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);

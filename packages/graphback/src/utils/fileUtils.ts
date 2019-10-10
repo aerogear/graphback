@@ -1,12 +1,23 @@
-import { join } from 'path';
+import { join, basename } from 'path';
+import { unlinkSync, writeFileSync, readFileSync } from 'fs';
 import { sync } from 'glob';
-import { unlinkSync } from 'fs';
 
-export const removeGraphqlFiles = (dir: string) => {
-  const schemaPath = join(dir, '*.graphql');
-  const files = sync(schemaPath);
+export const removeFiles = async (...patterns: string[]) => {
+  for (const pattern of patterns) {
+    const paths = sync(pattern);
+    for (const path of paths) {
+      unlinkSync(path);
+    }
+  }
+}
 
-  for (const gqlFile of files) {
-    unlinkSync(gqlFile);
+export const copyFiles = async (patterns: string[], toDir: string) => {
+  for (const pattern of patterns) {
+    const paths = sync(pattern);
+    for (const path of paths) {
+      const contents = readFileSync(path);
+      const fileName = basename(path);
+      writeFileSync(join(toDir, fileName), contents);
+    }
   }
 }
