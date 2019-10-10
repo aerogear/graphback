@@ -1,13 +1,13 @@
-import { ApolloServer, gql, makeExecutableSchema } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
 import http from "http"
+
+import { ApolloServer, makeExecutableSchema } from "apollo-server-express"
+
 import config from "./config/config"
 import { connect } from "./db"
-import { resolvers, schemaString } from "./mapping"
-import { createRuntime } from './runtime'
+import { resolvers, typeDefs } from "./mapping"
 import { pubsub } from './subscriptions'
-
 
 async function start() {
   const app = express()
@@ -19,27 +19,19 @@ async function start() {
   // connect to db
   const client = await connect(config.db);
 
-  const typeDefs = gql`${schemaString}`
-
-  let executableSchema;
-  // Temporary change for testing
-  if (config.runtime) {
-    executableSchema = await createRuntime(client, pubsub);
-  } else {
-    executableSchema = makeExecutableSchema({
-      typeDefs,
-      resolvers,
-      resolverValidationOptions: {
-        requireResolversForResolveType: false
-      }
-    });
-  }
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
+  });
 
   const apolloConfig = {
-    schema: executableSchema,
+    schema,
     context: async ({
       req
-    }: { req: express.Request }) => {
+    }: {req: express.Request}) => {
       // pass request + db ref into context for each resolver
       return {
         req: req,
