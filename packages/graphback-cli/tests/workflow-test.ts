@@ -28,6 +28,8 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   t.true(existsSync(join(basePath,"client/src/graphql/fragments/Test.ts")))
   t.true(existsSync(join(basePath,"src/schema/generated.ts")))
   t.true(existsSync(join(basePath,"src/resolvers/generated/test.ts")))
+  
+  // FIXME - requires injecting new version of the graphback
   try {
     await execa('npm', ['run', 'build']);
   } catch (error) {

@@ -1,5 +1,7 @@
 // tslint:disable-next-line: no-require-imports
 import * as Knex from 'knex';
+import { InputModelTypeContext } from '../../input/ContextTypes';
+import { getTableName } from '../../utils';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
 
@@ -22,7 +24,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         this.db = db;
     }
 
-    public async create(name: string, data: Type): Promise<Type> {
+    public async create(inputType: InputModelTypeContext,  data: Type): Promise<Type> {
+        const name = getTableName(inputType.name)
         const [id] = await this.db(name).insert(data);
         const dbResult = await this.db.select().from(name).where('id', '=', id)
         if (dbResult && dbResult[0]) {
@@ -31,7 +34,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`Cannot create ${name}`);
     }
 
-    public async update(name: string, id: string, data: Type): Promise<Type> {
+    public async update(inputType: InputModelTypeContext,  id: string, data: Type): Promise<Type> {
+        const name = getTableName(inputType.name)
         const updateResult = await this.db(name).update(data).where('id', '=', id);
         if (updateResult === 1) {
             const dbResult = await this.db.select().from(name).where('id', '=', id);
@@ -43,7 +47,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     }
 
     // tslint:disable-next-line: no-reserved-keywords
-    public async delete(name: string, id: string): Promise<string> {
+    public async delete(inputType: InputModelTypeContext,  id: string): Promise<string> {
+        const name = getTableName(inputType.name)
         const dbResult = await this.db(name).where('id', '=', id).del()
         if (dbResult) {
             return id;
@@ -52,7 +57,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
     }
 
-    public async read(name: string, id: string): Promise<Type> {
+    public async read(inputType: InputModelTypeContext,  id: string): Promise<Type> {
+        const name = getTableName(inputType.name)
         const dbResult = await this.db.select().from(name).where('id', '=', id);
         if (dbResult && dbResult[0]) {
             return dbResult[0]
@@ -60,7 +66,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`Cannot read ${name}`);
     }
 
-    public async findAll(name: string): Promise<Type[]> {
+    public async findAll(inputType: InputModelTypeContext, ): Promise<Type[]> {
+        const name = getTableName(inputType.name)
         const dbResult = await this.db.select().from(name);
         if (dbResult) {
             return dbResult;
@@ -68,7 +75,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`Cannot find all results for ${name}`);
     }
 
-    public async findBy(name: string, filter: Type | AdvancedFilter): Promise<Type[]> {
+    public async findBy(inputType: InputModelTypeContext,  filter: Type | AdvancedFilter): Promise<Type[]> {
+        const name = getTableName(inputType.name)
         const dbResult = await this.db.select().from(name).where(filter);
         if (dbResult) {
             return dbResult;
@@ -76,7 +84,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
     }
 
-    public async batchRead(name: string, ids: string[]): Promise<Type[]> {
+    public async batchRead(inputType: InputModelTypeContext,  ids: string[]): Promise<Type[]> {
+        const name = getTableName(inputType.name)
         const dbResult = await this.db.select().from(name).where('id', 'in', ids);
         if (dbResult) {
             return dbResult;

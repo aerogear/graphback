@@ -1,4 +1,4 @@
-import { ModelTypeContext } from '../../input/ContextTypes';
+import { InputModelTypeContext } from '../../input/ContextTypes';
 import { createSampleQueries } from './targetContext';
 
 export interface ClientImplementation {
@@ -17,9 +17,9 @@ export interface Client {
  * Generate sample queries from the datamodel
  */
 export class ClientGenerator {
-  private inputContext: ModelTypeContext[]
+  private inputContext: InputModelTypeContext[]
 
-  constructor(inputContext: ModelTypeContext[]) {
+  constructor(inputContext: InputModelTypeContext[]) {
     this.inputContext = inputContext
   }
 

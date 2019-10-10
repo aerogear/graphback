@@ -1,34 +1,34 @@
-import { ModelFieldContext, ModelTypeContext, OBJECT_TYPE_DEFINITION } from "../../input/ContextTypes";
+import { InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "../../input/ContextTypes";
 import { getFieldName } from '../../utils/graphqlUtils';
 import { ResolverType } from '../resolvers';
 
 const gqlImport = `import gql from "graphql-tag"`
 
-const variableFields = (t: ModelTypeContext) => {
-  return t.fields.filter((f: ModelFieldContext) => !f.isType && !f.isArray)
-                  .map((f: ModelFieldContext) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
+const variableFields = (t: InputModelTypeContext) => {
+  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray)
+                  .map((f: InputModelFieldContext) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
                   .join(', ')
 }
 
-const inputVariableFields = (t: ModelTypeContext) => {
-  return t.fields.filter((f: ModelFieldContext) => !f.isType && !f.isArray && f.type!=='ID')
-                  .map((f: ModelFieldContext) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
+const inputVariableFields = (t: InputModelTypeContext) => {
+  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type!=='ID')
+                  .map((f: InputModelFieldContext) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
                   .join(', ')
 }
 
-const variables = (t: ModelTypeContext) => {
-  return t.fields.filter((f: ModelFieldContext) => !f.isType && !f.isArray)
-                  .map((f: ModelFieldContext) => `${f.name}: \$${f.name}`)
+const variables = (t: InputModelTypeContext) => {
+  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray)
+                  .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}`)
                   .join(', ')
 }
 
-const inputVariables = (t: ModelTypeContext) => {
-  return t.fields.filter((f: ModelFieldContext) => !f.isType && !f.isArray && f.type!=='ID')
-                  .map((f: ModelFieldContext) => `${f.name}: \$${f.name}`)
+const inputVariables = (t: InputModelTypeContext) => {
+  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type!=='ID')
+                  .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}`)
                   .join(', ')
 }
 
-const findAllQuery = (t: ModelTypeContext, imports: string) => {
+const findAllQuery = (t: InputModelTypeContext, imports: string) => {
   const fieldName = getFieldName(t.name, ResolverType.FIND_ALL, 's')
 
   return `${imports}
@@ -45,7 +45,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const findQuery = (t: ModelTypeContext, imports: string) => {
+const findQuery = (t: InputModelTypeContext, imports: string) => {
   const fieldName = getFieldName(t.name, ResolverType.FIND)
 
   return `${imports}
@@ -63,7 +63,7 @@ export const ${fieldName} = gql\`
 }
 
 
-const createMutation = (t: ModelTypeContext, imports: string) => {
+const createMutation = (t: InputModelTypeContext, imports: string) => {
   const fieldName = getFieldName(t.name, ResolverType.CREATE)
 
   return `${imports}
@@ -80,7 +80,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const updateMutation = (t: ModelTypeContext, imports: string) => {
+const updateMutation = (t: InputModelTypeContext, imports: string) => {
   const fieldName = getFieldName(t.name, ResolverType.UPDATE)
 
   return `${imports}
@@ -97,7 +97,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const deleteMutation = (t: ModelTypeContext, imports: string) => {
+const deleteMutation = (t: InputModelTypeContext, imports: string) => {
   const fieldName = getFieldName(t.name, ResolverType.DELETE)
 
   return `${imports}
@@ -112,7 +112,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const subscription = (t: ModelTypeContext, imports: string, subscriptionType: string) => {
+const subscription = (t: InputModelTypeContext, imports: string, subscriptionType: string) => {
   const fieldName = `${subscriptionType}${t.name}`
 
   return `${imports}
@@ -129,19 +129,19 @@ export const ${fieldName} = gql\`
 `
 }
 
-const fragment = (t: ModelTypeContext) => {
+const fragment = (t: InputModelTypeContext) => {
   return `${gqlImport}
 
 export const ${t.name}Fragment = gql\`
   fragment ${t.name}Fields on ${t.name} {
-    ${t.fields.filter((f: ModelFieldContext) => !f.isArray && !f.isType).map((f: ModelFieldContext) => `${f.name}`).join('\n    ')}
+    ${t.fields.filter((f: InputModelFieldContext) => !f.isArray && !f.isType).map((f: InputModelFieldContext) => `${f.name}`).join('\n    ')}
   }
 \`
 `
 }
 
-const createFragments = (types: ModelTypeContext[]) => {
-  return types.map((t: ModelTypeContext) => {
+const createFragments = (types: InputModelTypeContext[]) => {
+  return types.map((t: InputModelTypeContext) => {
     return {
       name: t.name,
       implementation: fragment(t)
@@ -149,10 +149,10 @@ const createFragments = (types: ModelTypeContext[]) => {
   })
 }
 
-const createQueries = (types: ModelTypeContext[]) => {
+const createQueries = (types: InputModelTypeContext[]) => {
   const queries = []
 
-  types.forEach((t: ModelTypeContext) => {
+  types.forEach((t: InputModelTypeContext) => {
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
@@ -174,10 +174,10 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
   return queries
 }
 
-const createMutations = (types: ModelTypeContext[]) => {
+const createMutations = (types: InputModelTypeContext[]) => {
   const mutations = []
 
-  types.forEach((t: ModelTypeContext) => {
+  types.forEach((t: InputModelTypeContext) => {
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
@@ -206,10 +206,10 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
   return mutations
 }
 
-const createSubscriptions = (types: ModelTypeContext[]) => {
+const createSubscriptions = (types: InputModelTypeContext[]) => {
   const subscriptions = []
 
-  types.forEach((t: ModelTypeContext) => {
+  types.forEach((t: InputModelTypeContext) => {
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
@@ -239,8 +239,8 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
 }
 
 
-export const createSampleQueries = (inputContext: ModelTypeContext[]) => {
-  const context = inputContext.filter((t: ModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+export const createSampleQueries = (inputContext: InputModelTypeContext[]) => {
+  const context = inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   return {
     fragments: createFragments(context),

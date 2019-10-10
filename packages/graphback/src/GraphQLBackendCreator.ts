@@ -6,7 +6,7 @@ import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
 import { createInputContext } from './input/ContextCreator';
-import { ModelTypeContext, OBJECT_TYPE_DEFINITION } from './input/ContextTypes';
+import { InputModelTypeContext, OBJECT_TYPE_DEFINITION } from './input/ContextTypes';
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
 import { DefaultsCRUDService } from './layers/service/DefaultCRUDService';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
@@ -23,7 +23,7 @@ export class GraphQLBackendCreator {
 
   private dataLayerManager: IDataLayerResourcesManager;
   private dbContextProvider: DatabaseContextProvider;
-  private inputContext: ModelTypeContext[]
+  private inputContext: InputModelTypeContext[]
 
   /**
    * @param graphQLSchema string containing graphql types
@@ -92,7 +92,7 @@ export class GraphQLBackendCreator {
 
 
   public async createDatabase(): Promise<void> {
-    const context = this.inputContext.filter((t: ModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+    const context = this.inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
     try {
       if (this.dataLayerManager) {
         logger.info("Creating database structure")

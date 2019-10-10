@@ -1,14 +1,14 @@
 // tslint:disable: await-promise
 import * as Knex from 'knex'
-import { ModelFieldContext, ModelTypeContext } from '../input/ContextTypes';
+import { InputModelFieldContext, InputModelTypeContext } from '../input/ContextTypes';
 import { logger } from '../utils/logger'
 import { DatabaseContextProvider } from './DatabaseContextProvider'
 /**
  * Represents update for data type
  */
 export interface IDataLayerUpdate {
-  oldType: ModelTypeContext,
-  newType: ModelTypeContext
+  oldType: InputModelTypeContext,
+  newType: InputModelTypeContext
 }
 
 /**
@@ -22,12 +22,12 @@ export interface IDataLayerResourcesManager {
    *
    * @param types that should be used to gather resources
    */
-  createDatabaseResources(context: DatabaseContextProvider, types: ModelTypeContext[]): Promise<void>;
+  createDatabaseResources(context: DatabaseContextProvider, types: InputModelTypeContext[]): Promise<void>;
 
   /**
    *  Create relations among tables in database.
    */
-  createDatabaseRelations(context: DatabaseContextProvider, types: ModelTypeContext[]): Promise<void>;
+  createDatabaseRelations(context: DatabaseContextProvider, types: InputModelTypeContext[]): Promise<void>;
 
   /**
    * Update database resources after they are created
@@ -83,7 +83,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     this.dbConnection = createDBConnectionKnex(client, dbConnectionOptions)
   }
 
-  public async createDatabaseResources(context: DatabaseContextProvider, types: ModelTypeContext[]): Promise<void> {
+  public async createDatabaseResources(context: DatabaseContextProvider, types: InputModelTypeContext[]): Promise<void> {
     for (const gqlType of types) {
 
       const tableName: string = context.getFieldName(gqlType)
@@ -107,7 +107,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     return Promise.resolve();
   }
 
-  public async createDatabaseRelations(context: DatabaseContextProvider, types: ModelTypeContext[]): Promise<void> {
+  public async createDatabaseRelations(context: DatabaseContextProvider, types: InputModelTypeContext[]): Promise<void> {
     logger.info("Creating relations")
     for (const gqlType of types) {
       const tableName = context.getFieldName(gqlType)
@@ -136,7 +136,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    * @param gqlField properties of the field
    * @param tableName table to create relation in
    */
-  public async createOneToOneRelation(currentTable: string, gqlField: ModelFieldContext, tableName: string): Promise<void> {
+  public async createOneToOneRelation(currentTable: string, gqlField: InputModelFieldContext, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
     if (gqlField.hasDirectives && gqlField.directives.OneToOne.field) {
       fieldname = gqlField.directives.OneToOne.field
@@ -164,7 +164,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    * @param gqlField properties of the field
    * @param tableName table to create relation in
    */
-  public async createOneToManyRelation(currentTable: string, gqlField: ModelFieldContext, tableName: string): Promise<void> {
+  public async createOneToManyRelation(currentTable: string, gqlField: InputModelFieldContext, tableName: string): Promise<void> {
     let fieldname = `${currentTable}Id`
     if (gqlField.hasDirectives && gqlField.directives.OneToMany.field) {
       fieldname = gqlField.directives.OneToMany.field
@@ -192,7 +192,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    * @param currentTable current table being parsed
    * @param gqlField properties of the field
    */
-  public async createManyToManyRelation(currentTable: string, gqlField: ModelFieldContext): Promise<void> {
+  public async createManyToManyRelation(currentTable: string, gqlField: InputModelFieldContext): Promise<void> {
     let newTable = gqlField.directives.ManyToMany.tablename
     if (!newTable) {
       newTable = `${currentTable}_${gqlField.type.toLowerCase()}`
