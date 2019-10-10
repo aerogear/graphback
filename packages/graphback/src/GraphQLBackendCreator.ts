@@ -8,7 +8,7 @@ import { IGraphQLBackend } from './IGraphQLBackend'
 import { createInputContext } from './input/ContextCreator';
 import { InputModelTypeContext, OBJECT_TYPE_DEFINITION } from './input/ContextTypes';
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
-import { DefaultsCRUDService } from './layers/service/DefaultCRUDService';
+import { DefaultCRUDService } from './layers/service/DefaultCRUDService';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './migrations/DatabaseContextProvider';
 import { IDataLayerResourcesManager } from './migrations/DataResourcesManager';
 import { logger } from './utils/logger'
@@ -77,7 +77,7 @@ export class GraphQLBackendCreator {
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()
-    const defaultProvider = new DefaultsCRUDService(db, pubSub);
+    const defaultProvider = new DefaultCRUDService(db, pubSub);
     const resolverGenerator = new LayeredRuntimeResolverGenerator(this.inputContext, defaultProvider)
     backend.resolvers = resolverGenerator.generate()
 
