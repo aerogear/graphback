@@ -3,12 +3,12 @@ import { Type } from '../../../input/ContextTypes'
 import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDService'
 
 /**
- * Generate runtime resolver layer using Apollo GraphQL format 
- * and injected service layer. Service layer offers various capabilities like monitoring, cache etc. 
+ * Generate runtime resolver layer using Apollo GraphQL format
+ * and injected service layer. Service layer offers various capabilities like monitoring, cache etc.
  * so resolver logic can be kept simple and interchangable.
- * 
+ *
  * Resolvers are formatted using graphql-tools format
- * 
+ *
  * ```javascript
  * const resolvers = {
  *    Query: {...}
@@ -16,7 +16,7 @@ import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDServi
  *    Subscription: {...}
  * }
  * ```
- * 
+ *
  */
 export class LayeredRuntimeResolverGenerator {
   private inputContext: Type[]

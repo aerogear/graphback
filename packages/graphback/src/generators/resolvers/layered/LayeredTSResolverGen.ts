@@ -6,7 +6,7 @@ import { buildResolverTargetContext, createCustomContext } from '../legacy-knex/
 
 /**
  * Generate source code for resolvers layer using Apollo GraphQL format
- * and injected service layer. Service layer offers various capabilities like monitoring, cache etc. 
+ * and injected service layer. Service layer offers various capabilities like monitoring, cache etc.
  * so resolver logic can be kept simple and interchangable.
  */
 export class LayeredResolverGen {
@@ -25,7 +25,7 @@ export class LayeredResolverGen {
     for (const resolverElement of this.inputContext) {
       // TODO
     }
-    
+
     return resolvers;
   }
 }
