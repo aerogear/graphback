@@ -2,6 +2,8 @@
 [![Node.js version][nodejs-badge]][nodejs]
 [![APLv2][license-badge]][LICENSE]
 [![PRs Welcome][prs-badge]][prs]
+[![Discord Chat](https://img.shields.io/discord/632220458137419776)](https://discord.gg/mJ7j84m)
+Feel free to join the Discord community now that you are a contributor :wink: 
 
 ## Graphback
 
