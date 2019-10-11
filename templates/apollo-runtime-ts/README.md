@@ -15,14 +15,18 @@ Currently 2 data providers are supported:
 Then developers can create runtime instance:
 
 ```ts
-    const backend = new GraphQLBackendCreator(`your model string here`, {});
+    const client = new Knex(...);
+    const graphbackOptions = {...}
+    const modelString = `type Test ...`
+    
+    // Create backend
+    const backend = new GraphQLBackendCreator(modelString, graphbackOptions);
     const dbClientProvider = new PgKnexDBDataProvider(client);
-    const runtime = await backend.createRuntime(dbClientProvider, pubSub);
+    const runtime = await backend.createRuntime(dbClientProvider);
     console.log(runtime.schema,  runtime.resolvers)
 ```    
 
-See: `./runtime.ts` for fully functional example.
-
+See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/templates/apollo-runtime-ts/src/runtime.ts#L30) for a fully functional example.
 
 ### Running example
 
@@ -32,7 +36,7 @@ The project has been created using `graphback`. Run the project using the follow
 docker-compose up -d
 ```
 
-- create database (Data migration will be supported later by @craicoverflow)
+- create database
 ```
 graphback db
 ```

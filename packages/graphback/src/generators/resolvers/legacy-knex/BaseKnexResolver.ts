@@ -70,7 +70,7 @@ public newSub = (typeName: string): string => {
 
 public updatedSub = (typeName: string): string => {
     return `updated${typeName}: {
-      m  : (_: any, __: any, context: GraphQLContext) => {
+      subscribe  : (_: any, __: any, context: GraphQLContext) => {
         return ${this.pubsub}.asyncIterator(Subscriptions.UPDATED_${typeName.toUpperCase()})
       }
     }`

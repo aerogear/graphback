@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
-import knex = require('knex');
+import Knex from 'knex';
 import { resolve } from "path";
 import * as jsonConfig from '../graphback.json'
 
