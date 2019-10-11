@@ -1,4 +1,3 @@
-// tslint:disable-next-line: no-require-imports
 import * as Knex from 'knex';
 import { InputModelTypeContext } from '../../input/ContextTypes';
 import { getTableName } from '../../utils';

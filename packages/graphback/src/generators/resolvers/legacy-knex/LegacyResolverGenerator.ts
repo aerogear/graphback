@@ -19,11 +19,7 @@ export class LegacyResolverGenerator {
       this.context = buildResolverTargetContext(this.inputContext, database)
   
       const customContext = createCustomContext(this.inputContext)
-  
-      let hasCustomElements = false
-      if(customContext.length) {
-        hasCustomElements = true
-      }
+      const hasCustomElements = !!customContext.length
   
       return generateGraphbackResolvers(this.context, customContext, hasCustomElements)
     }  
