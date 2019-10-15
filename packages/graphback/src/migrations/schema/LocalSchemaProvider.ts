@@ -4,7 +4,7 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 
 /**
- * Provides old and new schema from a local context
+ * Provides old and new schema from a local filesystem
  *
  * @export
  * @class LocalSchemaProvider
