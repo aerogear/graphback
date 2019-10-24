@@ -5,13 +5,14 @@ const gqlImport = `import gql from "graphql-tag"`
 
 const variableFields = (t: Type) => {
   return t.fields.filter((f: Field) => !f.isType && !f.isArray)
-                  .map((f: Field) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
+                  .map((f: Field) => `\$${f.name}: ${f.type}${f.isNull ? '': '!'}`)
                   .join(', ')
 }
 
 const inputVariableFields = (t: Type) => {
   return t.fields.filter((f: Field) => !f.isType && !f.isArray && f.type!=='ID')
-                  .map((f: Field) => `${f.name}: ${f.type}${f.isNull ? '': '!'}`)
+                  .map((f: Field) => `\$${f.name}: ${f.type}${f.isNull ? '': '!'}`)
+
                   .join(', ')
 }
 
