@@ -33,13 +33,13 @@
     ]
   },
   "engines": {
-    "node": "12.12.0"
+    "node": "12.13.0"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/js-yaml": "3.12.1",
-    "@types/node": "12.7.12",
+    "@types/node": "12.11.7",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.29",
     "@types/yargs": "13.0.3",
@@ -58,13 +58,13 @@
     "chalk": "2.4.2",
     "execa": "2.1.0",
     "figlet": "1.2.4",
-    "glob": "7.1.4",
+    "glob": "7.1.5",
     "graphback": "^0.10.0-dev1",
     "graphql": "14.5.8",
     "inquirer": "7.0.0",
     "js-yaml": "3.13.1",
     "node-emoji": "1.10.0",
-    "openapi-to-graphql": "1.6.1",
+    "openapi-to-graphql": "1.6.2",
     "ora": "3.4.0",
     "parse-github-url": "1.0.2",
     "pg": "7.12.1",
