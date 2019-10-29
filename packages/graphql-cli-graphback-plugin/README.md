@@ -1,6 +1,6 @@
 # Graphql-cli-graphback-plugin
 Plugin to enable generating fully functional backend 
-using GraphQL-Cli
+using [Graphql CLI](https://github.com/Urigo/graphql-cli)
 
 > *NOTE*: This package is no longer maintained. Please use [GraphQL CLI](https://github.com/Urigo/graphql-cli) directly.
 
