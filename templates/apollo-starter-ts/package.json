@@ -1,6 +1,6 @@
 {
   "name": "apollo-graphql-template",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "",
   "private": true,
   "main": "dist/src/index.js",
