@@ -2,7 +2,7 @@
 Plugin to enable generating fully functional backend 
 using GraphQL-Cli
 
-> *NOTE*: This package is no longer maintained. Please use Graphql-cli directly
+> *NOTE*: This package is no longer maintained. Please use [Graphql CLI](https://github.com/Urigo/graphql-cli) directly.
 
 **Documentation**: [https://graphback.dev](https://graphback.dev)
 **Repository**: [https://github.com/aerogear/graphback/](https://github.com/aerogear/graphback/)
