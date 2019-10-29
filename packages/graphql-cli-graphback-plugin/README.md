@@ -1,6 +1,8 @@
 # Graphql-cli-graphback-plugin
 Plugin to enable generating fully functional backend 
-using GraphQL-Cli
+using [Graphql CLI](https://github.com/Urigo/graphql-cli)
+
+> *NOTE*: This package is no longer maintained. Please use [GraphQL CLI](https://github.com/Urigo/graphql-cli) directly.
 
 **Documentation**: [https://graphback.dev](https://graphback.dev)
 **Repository**: [https://github.com/aerogear/graphback/](https://github.com/aerogear/graphback/)
@@ -38,4 +40,4 @@ The command will generate schema and resolvers, with CRUD operations according t
 ### `graphql backend-db`
 The command will create database resources according to your datamodel(including tables and relationships). Running the commands recreates the database structure i.e. drops all existing data.
 
-You can run created server using `npm run start`
+You can run created server using `npm start`
