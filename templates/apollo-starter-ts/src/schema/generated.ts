@@ -1,6 +1,4 @@
-import gql from 'graphql-tag'
-
-export const typeDefs = gql`
+export const schemaString = `
 type User {
   id: ID
   name: String
