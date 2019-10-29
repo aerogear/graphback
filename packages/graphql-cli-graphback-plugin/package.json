@@ -1,6 +1,6 @@
 {
   "name": "graphql-cli-graphback-plugin",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "GraphQL CLI plugin for Graphback - Node.js backend generator",
   "homepage": "https://github.com/aerogear/graphback",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
     "lint": "tslint -t stylish --project \"tsconfig.json\""
   },
   "engines": {
-    "node": "12.10.0"
+    "node": ">= 8.0.0"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
@@ -38,7 +38,7 @@
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
-    "graphback-cli": "^0.9.3",
+    "graphback-cli": "^0.9.4",
     "graphql-cli": "3.0.14",
     "yargs": "14.0.0"
   },
