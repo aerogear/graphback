@@ -1,0 +1,7 @@
+## Any change here requires change in runtime.ts
+type User {
+    id: ID!
+    name: String
+    hi: String!
+    hey: String
+}

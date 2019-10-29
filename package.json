@@ -4,7 +4,6 @@
   "private": true,
   "description": "Mono repository for Graphback project",
   "main": "index.js",
-  "dependencies": {},
   "devDependencies": {
     "del-cli": "3.0.0",
     "lerna": "3.18.3",

@@ -15,7 +15,7 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
-      "name": "Runtime template app ",
+      "name": "Runtime template app",
       "type": "node",
       "request": "launch",
       "env": {

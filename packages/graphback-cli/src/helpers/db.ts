@@ -1,12 +1,10 @@
-import chalk from 'chalk';
 import * as execa from 'execa'
-import { readFileSync, unlinkSync } from 'fs'
+import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseSchemaManager, GraphQLBackendCreator } from 'graphback';
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, InputModelProvider } from 'graphback';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
-
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -27,19 +25,20 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
       }
     } else {
       const manager = new DatabaseSchemaManager(database, dbConfig);
-      // tslint:disable-next-line: await-promise
+
       await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
       // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('CREATE SCHEMA public;')
     }
+
   } catch (err) {
     handleError(err)
   }
 }
 
-export const createDBResources = async (configInstance: ConfigBuilder): Promise<void> => {
+export const createDBResources = async (configInstance: ConfigBuilder, initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
   try {
-    const { db: { database, dbConfig }, graphqlCRUD, folders } = configInstance.config
+    const { db: { database }, graphqlCRUD, folders } = configInstance.config
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -52,32 +51,23 @@ export const createDBResources = async (configInstance: ConfigBuilder): Promise<
       await execa('touch', ['db.sqlite'])
     }
 
-    const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
+    const schemaContext = new InputModelProvider(folders.migrations, folders.model)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
-
-    const manager = new DatabaseSchemaManager(database, dbConfig);
-    backend.registerDataResourcesManager(manager);
-
-    await backend.createDatabase()
+    await backend.initializeDatabase(initializationStrategy);
 
   } catch (err) {
     handleError(err)
   }
 }
 
-const postCommandMessage = () => {
-  logInfo(`
-Database resources created.
-
-Run ${chalk.cyan(`npm run develop`)} to start the server.
-  `)
+export const postCommandMessage = (message: string) => {
+  logInfo(message);
 }
 
-export const createDB = async (): Promise<void> => {
+export const createDB = async (initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
   const configInstance = new ConfigBuilder();
   checkDirectory(configInstance)
-  await dropDBResources(configInstance)
-  await createDBResources(configInstance)
-  postCommandMessage()
+
+  await createDBResources(configInstance, initializationStrategy)
 }

@@ -5,12 +5,12 @@ import { OpenApiConfig } from './OpenApiConfig'
 /**
  * Configuration for project that specifies every aspect of generation process.
  * Sections:
- * 
+ *
  * - DB - database generation
  * - graphqlCRUD - graphql CRUD generation
  * - folders - input/outputs of the generator
  */
-export interface ProjectConfig {
+ export interface ProjectConfig {
     /**
      * Database configuration
      */
@@ -18,6 +18,7 @@ export interface ProjectConfig {
         // tslint:disable-next-line: no-any
         dbConfig: any,
         database: string
+        initialization?: string
     },
 
     /**
@@ -41,3 +42,4 @@ export interface ProjectConfig {
      */
     openApi?: OpenApiConfig
 }
+

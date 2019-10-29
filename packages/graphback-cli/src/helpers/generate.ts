@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, InputModelProvider, OutputResolver } from 'graphback'
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
@@ -12,10 +12,12 @@ import { checkDirectory } from './common';
  */
 function postCommandMessage(cliName: string): void {
   logInfo(`
-Successfully generated schema and resolvers :tada:.  
+Successfully generated schema and resolvers :tada:.
 
-Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)} 
+Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)}
 followed by ${chalk.cyan(`${cliName}db`)} to create database.
+
+After changing your data model, run ${chalk.cyan(`graphback update-db`)} to update the database.
 `)
 }
 
@@ -36,15 +38,14 @@ export async function generateBackend(): Promise<void> {
       process.exit(0)
     }
 
-    const schemaText: string = models.found.map((m: string) => readFileSync(`/${m}`, 'utf8')).join('\n')
-
     const pathForSchema: string = folders.schema
     const outputSchemaPath: string = `${pathForSchema}/generated.ts`
 
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
+    const schemaContext = new InputModelProvider(folders.migrations, folders.model)
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);

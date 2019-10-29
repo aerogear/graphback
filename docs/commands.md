@@ -33,6 +33,17 @@ Execute `graphback` in your shell for more information
   Create databases resources based on your data model. Currently supports PostgreSQL and sqlite3.
 > **Note** - *Running `graphback db` drops your database and recreates it with tables and relationships.*
 
+## Update Database
+
+```sh
+graphback update-db
+```
+
+Updates your database schema based on your data model. Currently supported change types are:
+
+- **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
+- **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.
+
 ### Config 
 
   ```bash

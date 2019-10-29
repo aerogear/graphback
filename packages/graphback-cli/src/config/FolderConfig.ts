@@ -1,6 +1,6 @@
 
 /**
- * Configuration for input and output folders 
+ * Configuration for input and output folders
  */
 export interface FolderConfig {
     /**
@@ -8,11 +8,9 @@ export interface FolderConfig {
      */
     model: string,
 
-
-
     /**
      * Location for resolvers.
-     * 
+     *
      * NOTE: all contents in this folder will be removed and regenerated every time generation process is triggered
      */
     resolvers: string,
@@ -27,4 +25,8 @@ export interface FolderConfig {
      */
     client: string
 
+    /**
+     * Location to save migrations
+     */
+    migrations: string
 }
