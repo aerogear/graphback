@@ -20,7 +20,8 @@ Input package is an abstraction that provides common entry point to all graphbac
 - Various DBLayer generators
 
 `InputProcessor` abstraction provides seamless way for providing valid input for generators. 
-This package is not designed to be used directly and it 
+
+> Note: This package is not designed to be used directly.
 
 
 ## Adding support for new inputs types

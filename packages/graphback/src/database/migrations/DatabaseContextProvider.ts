@@ -1,5 +1,4 @@
-import { InputModelTypeContext } from '../../input/ContextTypes'
-
+import { InputModelTypeContext } from '@graphback/codegen-input';
 
 /**
  * Provides context for database creation and queries.

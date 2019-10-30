@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '../../input/ContextTypes';
+import { InputModelTypeContext } from '@graphback/codegen-input';
 import { generateSchemaString } from './schemaTemplate';
 import { buildTargetContext, createCustomSchemaContext, TargetContext } from './targetSchemaContext';
 

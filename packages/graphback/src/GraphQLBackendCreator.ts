@@ -1,17 +1,15 @@
+
+import { ClientDocuments, createClient } from '@graphback/codegen-client';
+import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-input';
 import { PubSub } from 'graphql-subscriptions';
 import { DatabaseInitializationStrategy } from './database/initialization/DatabaseInitializationStrategy';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './database/migrations/DatabaseContextProvider';
-import { IDataLayerResourcesManager } from './database/migrations/DataResourcesManager';
 import { GraphQLSchemaManager } from './database/migrations/schema/GraphQLSchemaManager';
 import { SchemaProvider } from './database/migrations/schema/SchemaProvider';
-import { Client, ClientGenerator } from './generators/client';
 import { LayeredRuntimeResolverGenerator, LegacyResolverGenerator } from './generators/resolvers';
 import { RuntimeResolversDefinition } from './generators/resolvers/layered/RuntimeResolversDefinition';
 import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
-import { GraphQLGeneratorConfig } from "./GraphQLGeneratorConfig";
 import { IGraphQLBackend } from './IGraphQLBackend'
-import { createInputContext } from './input/ContextCreator';
-import { InputModelTypeContext, OBJECT_TYPE_DEFINITION } from './input/ContextTypes';
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
 import { DefaultCRUDService } from './layers/service/DefaultCRUDService';
 
@@ -30,9 +28,9 @@ export class GraphQLBackendCreator {
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(schemaContext: SchemaProvider, config: GraphQLGeneratorConfig) {
+  constructor(schemaContext: SchemaProvider, config: GraphbackGeneratorConfig) {
     this.graphQLSchemaManager = new GraphQLSchemaManager({ provider: schemaContext });
-    this.inputContext = createInputContext(schemaContext.getCurrentSchemaText(), config);
+    this.inputContext = graphQLInputContext.createModelContext(schemaContext.getCurrentSchemaText(), config);
     this.dbContextProvider = new DefaultDataContextProvider();
   }
 
@@ -96,9 +94,7 @@ export class GraphQLBackendCreator {
     return backend;
   }
 
-  public async createClient(): Promise<Client> {
-    const clientGenerator = new ClientGenerator(this.inputContext);
-
-    return clientGenerator.generate();
+  public async createClient(): Promise<ClientDocuments> {
+    return createClient(this.inputContext);
   }
 }

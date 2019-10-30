@@ -4,8 +4,8 @@ import { GraphbackGeneratorConfig } from "../api/GraphbackGeneratorConfig";
 import { applyGeneratorDirectives } from './directives'
 import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './graphqlUtils';
 
-import { inputTypeVisitor } from './InputTypeVisitor';
 import { InputContextCreator } from '../api';
+import { inputTypeVisitor } from './InputTypeVisitor';
 
 
 

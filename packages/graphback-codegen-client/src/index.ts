@@ -2,3 +2,4 @@
 
 // Top level Api
 export * from './createClient'
+export * from './api/ClientDocuments'

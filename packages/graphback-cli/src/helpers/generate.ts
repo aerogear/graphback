@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { ClientImplementation, GraphQLBackendCreator, IGraphQLBackend, InputModelProvider, OutputResolver } from 'graphback'
+import { GraphQLBackendCreator, IGraphQLBackend, InputModelProvider, OutputResolver } from 'graphback'
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
@@ -71,7 +71,8 @@ export async function generateBackend(): Promise<void> {
         if (!existsSync(currentFolder)) {
           mkdirSync(currentFolder)
         }
-        generatedClient[folder].forEach((c: ClientImplementation) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))
+        // tslint:disable-next-line: no-any
+        generatedClient[folder].forEach((c: any) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))
       })
     }
   } catch (err) {

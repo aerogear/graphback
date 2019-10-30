@@ -3,7 +3,8 @@ import { ClientDocuments } from './api/ClientDocuments';
 import { ClientGenerator} from "./transformer";
 
 /**
- * Create client side 
+ * Create client side based on inputContext
+ * 
  * @param inputContext 
  */
 export const createClient = async (inputContext: InputModelTypeContext[]): Promise<ClientDocuments> => {
