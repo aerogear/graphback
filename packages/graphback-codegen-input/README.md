@@ -1,0 +1,43 @@
+## GraphBack
+
+<p align="center">
+  <img width="400" src="https://github.com/aerogear/graphback/raw/master/website/static/img/graphback.png">
+  <br/>
+  Auto generate database structure, <br/>
+  GraphQL Resolvers and Queries from GraphQL types 🚀
+</p>
+
+**Documentation**: https://graphback.dev
+**Repository**: https://github.com/aerogear/graphback/
+
+## Graphback-Codegen-Input 
+
+Input package is an abstraction that provides common entry point to all graphback generators:
+- Client generator
+- Schema generator
+- Various resolver generators
+- Various Service layer generators
+- Various DBLayer generators
+
+`InputProcessor` abstraction provides seamless way for providing valid input for generators. 
+This package is not designed to be used directly and it 
+
+
+## Adding support for new inputs types
+
+Graphback-Codegen-Input by default relies on GraphQL schema model as input. 
+However it can support any type of inputs like json schema, database or OpenAPI definitions.
+
+Developers can extend functionality by using `InputProcessor` abstraction.
+``
+
+## Generator config
+
+Each individual type will contain individual config. Developers can pass global configuration that will be applied to elements that do not have any directives.
+Modifier directives directly on types will change default configuration.
+See `GraphbackGeneratorConfig` for more information.
+
+## Contributing
+
+`./api` folder contains all types required for creating input processors
+`./graphql` folder contains implementation that builds GraphQL based processors
