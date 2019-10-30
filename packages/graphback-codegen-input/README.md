@@ -29,7 +29,6 @@ Graphback-Codegen-Input by default relies on GraphQL schema model as input.
 However it can support any type of inputs like json schema, database or OpenAPI definitions.
 
 Developers can extend functionality by using `InputProcessor` abstraction.
-``
 
 ## Generator config
 
