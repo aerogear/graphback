@@ -1,6 +1,6 @@
 import { getFieldName, GraphbackOperationType, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-input'
-import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation} from './gqlTemplates'
 import { ClientGeneratorConfig } from '..'
+import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation} from './gqlTemplates'
 
 const gqlImport = `import gql from "graphql-tag"`
 
@@ -11,6 +11,8 @@ const findAllQueryTS = (t: InputModelTypeContext, imports: string) => {
 
 export const ${fieldName} = gql\`
   ${findAllQuery(t)}
+
+  \$\{${t.name}Fragment}
 \`
 `
 }
@@ -22,6 +24,8 @@ const findQueryTS = (t: InputModelTypeContext, imports: string) => {
 
 export const ${fieldName} = gql\`
   ${findQuery(t)}
+
+  \$\{${t.name}Fragment}
 \`
 `
 }
@@ -34,6 +38,8 @@ const createMutationTS = (t: InputModelTypeContext, imports: string) => {
 
 export const ${fieldName} = gql\` 
   ${createMutation(t)}
+
+  \$\{${t.name}Fragment}
 `
 }
 
@@ -44,6 +50,8 @@ const updateMutationTS = (t: InputModelTypeContext, imports: string) => {
 
 export const ${fieldName} = gql\`
   ${updateMutation(t)}
+
+  \$\{${t.name}Fragment}
 \`
 `
 }
@@ -55,6 +63,8 @@ const deleteMutationTS = (t: InputModelTypeContext, imports: string) => {
 
 export const ${fieldName} = gql\`
   ${deleteMutation(t)}
+
+  \$\{${t.name}Fragment}
 \`
 `
 }
@@ -66,6 +76,8 @@ const subscriptionTS = (t: InputModelTypeContext, imports: string, subscriptionT
 
 export const ${fieldName} = gql\`
   ${subscription(t, subscriptionType)}
+
+  \$\{${t.name}Fragment}
 \`
 `
 }

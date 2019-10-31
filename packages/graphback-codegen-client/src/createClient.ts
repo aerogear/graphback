@@ -15,13 +15,6 @@ export interface ClientGeneratorConfig {
      * - gql - .graphql file 
      */
     language: 'ts' | 'gql'
-    
-
-    /**
-     * Level of nested queries that will be performed by queries
-     * By default 0
-     */
-    queryLevel: number
 }
 
 

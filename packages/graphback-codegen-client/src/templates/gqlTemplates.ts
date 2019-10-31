@@ -35,8 +35,6 @@ export const findAllQuery = (t: InputModelTypeContext) => {
       ...${t.name}Fields
     }
   }
-
-  \$\{${t.name}Fragment}
   `
 }
 
@@ -49,8 +47,6 @@ export const findQuery = (t: InputModelTypeContext) => {
       ...${t.name}Fields
     }
   }
-
-  \$\{${t.name}Fragment}
 `
 }
 
@@ -64,8 +60,6 @@ export const createMutation = (t: InputModelTypeContext) => {
       ...${t.name}Fields
     }
   }
-
-  \$\{${t.name}Fragment}
 `
 }
 
@@ -78,12 +72,10 @@ export const updateMutation = (t: InputModelTypeContext) => {
       ...${t.name}Fields
     }
   }
-
-  \$\{${t.name}Fragment}
 `
 }
 
-export const deleteMutation = (t: InputModelTypeContext,) => {
+export const deleteMutation = (t: InputModelTypeContext, ) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
   return `
@@ -104,8 +96,6 @@ export const subscription = (t: InputModelTypeContext, subscriptionType: string)
       ...${t.name}Fields
     }
   }
-
-  \$\{${t.name}Fragment}
 `
 }
 
@@ -130,18 +120,18 @@ export const createQueries = (types: InputModelTypeContext[]) => {
   const queries = []
 
   types.forEach((t: InputModelTypeContext) => {
-  
+
     if (t.config.find) {
       queries.push({
         name: getFieldName(t.name, GraphbackOperationType.FIND),
-        implementation: findQuery(t)
+        implementation: findQuery(t) + fragment(t)
       })
     }
 
     if (t.config.findAll) {
       queries.push({
         name: getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'),
-        implementation: findAllQuery(t)
+        implementation: findAllQuery(t) + fragment(t)
       })
     }
   })
@@ -156,21 +146,21 @@ const createMutations = (types: InputModelTypeContext[]) => {
     if (t.config.create) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.CREATE),
-        implementation: createMutation(t)
+        implementation: createMutation(t) + fragment(t)
       })
     }
 
     if (t.config.update) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.UPDATE),
-        implementation: updateMutation(t)
+        implementation: updateMutation(t) + fragment(t)
       })
     }
 
     if (t.config.delete) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.DELETE),
-        implementation: deleteMutation(t)
+        implementation: deleteMutation(t) + fragment(t)
       })
     }
   })
@@ -185,21 +175,21 @@ const createSubscriptions = (types: InputModelTypeContext[]) => {
     if (t.config.create && t.config.subCreate) {
       subscriptions.push({
         name: `new${t.name}`,
-        implementation: subscription(t, 'new')
+        implementation: subscription(t, 'new') + fragment(t)
       })
     }
 
     if (t.config.update && t.config.subUpdate) {
       subscriptions.push({
         name: `updated${t.name}`,
-        implementation: subscription(t, 'updated')
+        implementation: subscription(t, 'updated') + fragment(t)
       })
     }
 
     if (t.config.delete && t.config.subDelete) {
       subscriptions.push({
         name: `deleted${t.name}`,
-        implementation: subscription(t, 'deleted')
+        implementation: subscription(t, 'deleted') + fragment(t)
       })
     }
   })
