@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from "@graphback/codegen-input"
+import { InputModelTypeContext } from "@graphback/codegen-core"
 import { AdvancedFilter } from '../data/GraphbackDataProvider';
 
 

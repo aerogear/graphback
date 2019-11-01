@@ -1,15 +1,9 @@
 {
-  "runtime": true,
   "db": {
     "dbConfig": {
-      "user": "postgresql",
-      "password": "postgres",
-      "database": "users",
-      "host": "127.0.0.1",
-      "port": 55432
+      "filename": "./db.sqlite"
     },
-    "database": "pg",
-    "initialization": "UpdateDatabase"
+    "database": "sqlite3"
   },
   "graphqlCRUD": {
     "create": true,
@@ -23,11 +17,11 @@
     "disableGen": false
   },
   "folders": {
-    "migrations": "./migrations",
     "model": "./model",
-    "generatedResolvers": "./src/resolvers",
-    "customResolvers": "./src/resolvers",
+    "resolvers": "./src/resolvers/",
     "schema": "./src/schema",
-    "client": "./client/src/graphql"
-  }
+    "client": "./client/src/graphql",
+    "migrations": "./migrations"
+  },
+  "client": true
 }

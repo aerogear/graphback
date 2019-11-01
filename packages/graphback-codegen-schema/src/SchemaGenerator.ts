@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-input';
+import { InputModelTypeContext } from '@graphback/codegen-core';
 import { generateSchemaString } from './schemaTemplate';
 import { buildTargetContext, createCustomSchemaContext, TargetContext } from './targetSchemaContext';
 
@@ -8,6 +8,7 @@ import { buildTargetContext, createCustomSchemaContext, TargetContext } from './
  *
  * @see jsSchemaFormatter
  * @see tsSchemaFormatter
+ * @see gqlSchemaFormatter
  *
  */
 export interface SchemaFormatter {

@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-input';
+import { InputModelTypeContext } from '@graphback/codegen-core';
 import { ClientDocuments } from './api/ClientDocuments';
 import { ClientGenerator } from './ClientGenerator';
 
@@ -14,7 +14,7 @@ export interface ClientGeneratorConfig {
      * - ts - typescript file output (backwards compatibility)
      * - gql - .graphql file 
      */
-    language: 'ts' | 'gql'
+    output: 'ts' | 'gql'
 }
 
 

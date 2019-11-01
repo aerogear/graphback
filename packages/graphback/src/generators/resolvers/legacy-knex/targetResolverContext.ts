@@ -1,6 +1,4 @@
-import { InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/codegen-input";
-import { getFieldName, getTableName } from '../../../utils/graphqlUtils';
-import { ResolverType } from '../ResolverType';
+import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/codegen-core";;
 import { KnexResolver } from './KnexResolver';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
@@ -11,7 +9,7 @@ const knex = new KnexResolver()
  */
 const createResolver = (t: InputModelTypeContext, database: string): string => {
   if (t.config.create) {
-    return knex.createTemplate(database, t.config.subCreate, getFieldName(t.name, ResolverType.CREATE), getTableName(t.name), t.name)
+    return knex.createTemplate(database, t.config.subCreate, getFieldName(t.name, GraphbackOperationType.CREATE), getTableName(t.name), t.name)
   }
 
   return undefined
@@ -19,7 +17,7 @@ const createResolver = (t: InputModelTypeContext, database: string): string => {
 
 const updateResolver = (t: InputModelTypeContext): string => {
   if (t.config.update) {
-    return knex.updateTemplate(t.config.subUpdate, getFieldName(t.name, ResolverType.UPDATE), getTableName(t.name), t.name)
+    return knex.updateTemplate(t.config.subUpdate, getFieldName(t.name, GraphbackOperationType.UPDATE), getTableName(t.name), t.name)
   }
 
   return undefined
@@ -27,7 +25,7 @@ const updateResolver = (t: InputModelTypeContext): string => {
 
 const deleteResolver = (t: InputModelTypeContext): string => {
   if (t.config.delete) {
-    return knex.deleteTemplate(t.config.subDelete, getFieldName(t.name, ResolverType.DELETE), getTableName(t.name), t.name)
+    return knex.deleteTemplate(t.config.subDelete, getFieldName(t.name, GraphbackOperationType.DELETE), getTableName(t.name), t.name)
   }
 
   return undefined
@@ -35,7 +33,7 @@ const deleteResolver = (t: InputModelTypeContext): string => {
 
 const findResolver = (t: InputModelTypeContext): string => {
   if (t.config.find) {
-    return knex.findTemplate(getFieldName(t.name, ResolverType.FIND, 's'), getTableName(t.name))
+    return knex.findTemplate(getFieldName(t.name, GraphbackOperationType.FIND, 's'), getTableName(t.name))
   }
 
   return undefined
@@ -43,7 +41,7 @@ const findResolver = (t: InputModelTypeContext): string => {
 
 const findAllResolver = (t: InputModelTypeContext): string => {
   if (t.config.findAll) {
-    return knex.findAllTemplate(getFieldName(t.name, ResolverType.FIND_ALL, 's'), getTableName(t.name))
+    return knex.findAllTemplate(getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'), getTableName(t.name))
   }
 
   return undefined
@@ -100,7 +98,7 @@ const createSubscriptionTypes = (t: InputModelTypeContext): string => {
  * Create context object for each individual type
  * @param context Visited info from the model
  */
-export const buildResolverTypeContext = (context: InputModelTypeContext, database: string, relations: string[]): TargetResolverContext => {
+export const buildGraphbackOperationTypeContext = (context: InputModelTypeContext, database: string, relations: string[]): TargetResolverContext => {
   const typeContext = {
     relations: [],
     queries: [],
@@ -161,7 +159,7 @@ export const buildResolverTargetContext = (input: InputModelTypeContext[], datab
   inputContext.forEach((t: InputModelTypeContext) => {
     output.push({
       name: t.name,
-      context: buildResolverTypeContext(t, database, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
+      context: buildGraphbackOperationTypeContext(t, database, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
     })
   })
 

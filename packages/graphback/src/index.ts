@@ -18,4 +18,4 @@ export * from './utils/logger'
 export * from './database';
 
 export * from '@graphback/codegen-client'
-export * from '@graphback/codegen-input'
+export * from '@graphback/codegen-core'

@@ -29,4 +29,13 @@ module.exports = { schemaString };
 `
   }
 }
- 
+
+
+/**
+ * GQL string template that returns schema in original form
+ */
+export const gqlSchemaFormatter: SchemaFormatter = {
+  format: (schemaString: string) => {
+    return schemaString;
+  }
+}
