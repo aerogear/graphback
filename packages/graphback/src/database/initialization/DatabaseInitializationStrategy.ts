@@ -1,5 +1,5 @@
+import { InputModelTypeContext } from '@graphback/codegen-input';
 import { Change } from '@graphql-inspector/core';
-import { InputModelTypeContext } from '../../input/ContextTypes';
 import { DatabaseContextProvider } from '../migrations/DatabaseContextProvider';
 
 export interface DatabaseInitializationStrategy {

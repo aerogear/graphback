@@ -46,6 +46,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@graphback/codegen-input": "0.10.0-dev1",
+    "@graphback/codegen-client": "0.10.0-dev1",
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.5",
     "graphql-subscriptions": "1.1.0",

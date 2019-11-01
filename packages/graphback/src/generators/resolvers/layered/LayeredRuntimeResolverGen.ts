@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '../../../input/ContextTypes'
+import { InputModelTypeContext } from "@graphback/codegen-input"
 import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDService'
 import { getFieldName } from '../../../utils'
 import { ResolverType } from '../ResolverType'

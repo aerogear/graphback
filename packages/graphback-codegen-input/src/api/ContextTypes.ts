@@ -1,4 +1,5 @@
-import { GraphQLGeneratorConfig } from '../GraphQLGeneratorConfig';
+import { KindEnum } from 'graphql';
+import { GraphbackGeneratorConfig } from './GraphbackGeneratorConfig';
 
 export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
 export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
@@ -70,14 +71,17 @@ export interface InputModelFieldContext {
  * Context type returned from `InputTypeVisitor`
  */
 export interface InputModelTypeContext {
-  kind: string
+  // FIXME Make this GraphQL independent so developers do not need to introduce another library
+  kind: KindEnum
   name: string
   fields: InputModelFieldContext[]
   interfaces?: InputInterfaceType[]
-  config: GraphQLGeneratorConfig
+  config: GraphbackGeneratorConfig
 }
 
-
+/**
+ * Interface information for Graphback model
+ */
 export interface InputInterfaceType {
   // tslint:disable-next-line: no-reserved-keywords
   type: string

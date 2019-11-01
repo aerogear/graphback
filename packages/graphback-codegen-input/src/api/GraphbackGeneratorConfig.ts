@@ -1,7 +1,7 @@
 /**
- * Schema and resolver generator config
+ * Generator config
  */
-export interface GraphQLGeneratorConfig {
+export interface GraphbackGeneratorConfig {
     create?: boolean;
     update?: boolean;
     //tslint:disable-next-line

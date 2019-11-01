@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '../../../input/ContextTypes'
+import { InputModelTypeContext } from "@graphback/codegen-input"
 
 /**
  * Generate source code for resolvers layer using Apollo GraphQL format

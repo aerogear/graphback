@@ -1,4 +1,4 @@
-import { InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '../../../input/ContextTypes';
+import { InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/codegen-input";
 import { getFieldName, getTableName } from '../../../utils/graphqlUtils';
 import { ResolverType } from '../ResolverType';
 import { KnexResolver } from './KnexResolver';

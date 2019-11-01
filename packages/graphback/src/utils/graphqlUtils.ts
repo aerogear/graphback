@@ -1,9 +1,9 @@
+import { InputModelTypeContext, INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION } from '@graphback/codegen-input';
 import { readFileSync } from 'fs';
 import { sync } from 'glob';
 import { buildSchema, GraphQLSchema } from 'graphql';
 import { join } from 'path';
 import { ResolverType } from '../generators/resolvers';
-import { InputModelTypeContext, INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION } from '../input/ContextTypes';
 
 export const getFieldName = (typeName: string, action: ResolverType, plural: string = ''): string => {
   const upperCasedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);

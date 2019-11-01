@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '../../../input/ContextTypes';
+import { InputModelTypeContext } from '@graphback/codegen-input';
 import { DatabaseConnectionOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseContextProvider } from '../../migrations/DatabaseContextProvider';
 import { DatabaseSchemaManager } from '../../migrations/DataResourcesManager';

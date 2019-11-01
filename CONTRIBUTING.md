@@ -1,4 +1,4 @@
-# Contributing to the GraphBack
+# Contributing to the Graphback
 
 First, ensure you have the [latest LTS npm](https://docs.npmjs.com/) installed.
 For CLI usage we recommend to use Node version manager - NVM.

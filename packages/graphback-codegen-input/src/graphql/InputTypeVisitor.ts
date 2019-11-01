@@ -2,6 +2,12 @@ import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode,
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
+/**
+ * Default visitor that creates unified format based on GraphQL schema model
+ * Visitor reduces complexity of the schema and exposes all available information from the model 
+ * 
+ * @see InputModelTypeContext for object that is returned as result of the vist operation
+ */
 export const inputTypeVisitor = {
 
   Name: (node: NameNode): string => {

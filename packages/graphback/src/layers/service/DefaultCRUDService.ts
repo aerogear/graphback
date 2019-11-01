@@ -1,7 +1,7 @@
+import { InputModelTypeContext } from "@graphback/codegen-input"
 import { PubSub } from 'graphql-subscriptions';
 import { defaultLogger, GraphbackMessageLogger } from '../../components/Logger';
 import { ResolverType } from '../../generators/resolvers/ResolverType';
-import { InputModelTypeContext } from '../../input/ContextTypes';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';

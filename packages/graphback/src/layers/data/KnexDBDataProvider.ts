@@ -1,5 +1,5 @@
+import { InputModelTypeContext } from "@graphback/codegen-input"
 import * as Knex from 'knex';
-import { InputModelTypeContext } from '../../input/ContextTypes';
 import { getTableName } from '../../utils';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';

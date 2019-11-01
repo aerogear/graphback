@@ -1,6 +1,6 @@
-## What's new in GraphBack
+## What's new in Graphback
 
-This file contains changes and migration steps for GraphBack project. 
+This file contains changes and migration steps for Graphback project. 
 Please follow indidivudal releases for more information.
 
 Note - Graphback is still not ready to be used in production.
