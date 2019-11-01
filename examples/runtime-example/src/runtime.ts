@@ -11,7 +11,7 @@ import {
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as Knex from 'knex';
-import * as jsonConfig from '../graphback.json'
+import * as jsonConfig from '../graphback.json.js'
 
 /**
  * Method used to create runtime schema
