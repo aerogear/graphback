@@ -20,9 +20,9 @@
       "request": "launch",
       "env": {
       },
-      "args": ["${workspaceRoot}/templates/apollo-runtime-ts/src/index.ts"],
+      "args": ["${workspaceRoot}/examples/runtime-example/src/index.ts"],
       "runtimeArgs": ["-r", "ts-node/register"],
-      "cwd": "${workspaceRoot}/templates/apollo-runtime-ts",
+      "cwd": "${workspaceRoot}/examples/runtime-example",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
@@ -37,7 +37,7 @@
       "args": [
         "generate"
       ],
-      "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
+      "cwd": "${workspaceRoot}/examples/generator-example",
     },
     {
       "type": "node",
@@ -50,7 +50,7 @@
       "args": [
         "openapi"
       ],
-      "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
+      "cwd": "${workspaceRoot}/examples/generator-example",
     },
     {
       "type": "node",
@@ -63,7 +63,7 @@
       "args": [
         "db"
       ],
-      "cwd": "${workspaceRoot}/templates/apollo-starter-ts",
+      "cwd": "${workspaceRoot}/examples/generator-example",
     }
   ]
 }

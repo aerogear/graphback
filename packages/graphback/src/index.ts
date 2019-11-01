@@ -4,12 +4,6 @@
 export * from './GraphQLBackendCreator'
 export * from './IGraphQLBackend'
 
-// Resolvers
-export * from './generators/resolvers'
-
-// Layers
-export * from './layers'
-
 // DDL layer
 export * from './database/migrations/DataResourcesManager'
 
@@ -19,3 +13,5 @@ export * from './database';
 
 export * from '@graphback/codegen-client'
 export * from '@graphback/codegen-core'
+export * from '@graphback/codegen-resolvers'
+export * from '@graphback/runtime'

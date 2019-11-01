@@ -42,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/aerogear/graphback/issues"
   },
-  "homepage": "https://github.com/aerogear/graphback#readme"
+  "homepage": "https://github.com/aerogear/graphback#readme",
+  "dependencies": {
+    "knex": "^0.20.1"
+  }
 }
