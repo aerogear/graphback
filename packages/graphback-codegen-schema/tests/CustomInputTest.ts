@@ -1,8 +1,8 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { graphQLInputContext, InputModelTypeContext } from '../src';
-import { maybeNullFieldArgs } from '../src/generators/schema/targetSchemaContext';
+import { graphQLInputContext, InputModelTypeContext } from '../../graphback/src';
+import { maybeNullFieldArgs } from '../src/targetSchemaContext';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 

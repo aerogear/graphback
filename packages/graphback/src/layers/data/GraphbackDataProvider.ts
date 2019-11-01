@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from "@graphback/codegen-input"
+import { InputModelTypeContext } from "@graphback/codegen-core"
 
 // If we come with Union on client we might use some complex JSON for describing rules
 // and single key for type for simple use cases

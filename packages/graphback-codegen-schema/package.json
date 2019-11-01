@@ -1,7 +1,7 @@
 {
-  "name": "graphback",
+  "name": "@graphback/codegen-schema",
   "version": "0.10.0-dev1",
-  "description": "Auto generate resolvers on top of the graphql and database of your choice",
+  "description": "GraphQL-Code-Generator compatibile schema generator",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "typescript": {
@@ -31,11 +31,11 @@
   "engines": {
     "node": ">= 8.0.0"
   },
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/graphql": "14.2.3",
     "@types/knex": "0.15.2",
     "@types/node": "8.10.56",
-    "@types/pino": "5.20.0",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
@@ -44,19 +44,8 @@
     "tsutils": "3.17.1",
     "typescript": "3.6.4"
   },
-  "license": "Apache-2.0",
   "dependencies": {
-    "@graphback/codegen-schema": "0.10.0-dev1",
-    "@graphback/codegen-core": "0.10.0-dev1",
-    "@graphback/codegen-client": "0.10.0-dev1",
-    "@graphql-inspector/core": "1.26.0",
-    "glob": "7.1.5",
-    "graphql-subscriptions": "1.1.0",
-    "knex": "0.20.0",
-    "pg": "7.12.1",
-    "pino": "5.13.5",
-    "sqlite3": "4.1.0",
-    "tslib": "1.10.0"
+    "@graphback/codegen-core": "0.10.0-dev1"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

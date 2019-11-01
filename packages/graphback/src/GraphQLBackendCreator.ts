@@ -1,6 +1,7 @@
 
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
-import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-input';
+import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-core';
+import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { PubSub } from 'graphql-subscriptions';
 import { DatabaseInitializationStrategy } from './database/initialization/DatabaseInitializationStrategy';
 import { DatabaseContextProvider, DefaultDataContextProvider } from './database/migrations/DatabaseContextProvider';
@@ -8,7 +9,6 @@ import { GraphQLSchemaManager } from './database/migrations/schema/GraphQLSchema
 import { SchemaProvider } from './database/migrations/schema/SchemaProvider';
 import { LayeredRuntimeResolverGenerator, LegacyResolverGenerator } from './generators/resolvers';
 import { RuntimeResolversDefinition } from './generators/resolvers/layered/RuntimeResolversDefinition';
-import { SchemaGenerator, tsSchemaFormatter } from './generators/schema';
 import { IGraphQLBackend } from './IGraphQLBackend'
 import { GraphbackDataProvider } from './layers/data/GraphbackDataProvider';
 import { DefaultCRUDService } from './layers/service/DefaultCRUDService';

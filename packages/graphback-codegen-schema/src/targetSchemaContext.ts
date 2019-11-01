@@ -1,6 +1,4 @@
-import { InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/codegen-input'
-import { filterInterfaceTypes, filterObjectTypes, getFieldName } from '../../utils/graphqlUtils'
-import { ResolverType } from '../resolvers'
+import { filterInterfaceTypes, filterObjectTypes, getFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/codegen-core'
 
 export interface TargetType {
   name: string
@@ -34,7 +32,7 @@ export interface TargetContext {
 const findQueries = (inputContext: InputModelTypeContext[]): string[] => {
   return inputContext.filter((t: InputModelTypeContext) => (!t.config.disableGen && t.config.find))
     .map((t: InputModelTypeContext) => {
-      const fieldName = getFieldName(t.name, ResolverType.FIND, 's')
+      const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
       return `${fieldName}(fields: ${t.name}Filter!): [${t.name}!]!`
     })
@@ -43,7 +41,7 @@ const findQueries = (inputContext: InputModelTypeContext[]): string[] => {
 const updateQueries = (inputContext: InputModelTypeContext[]): string[] => {
   return inputContext.filter((t: InputModelTypeContext) => (!t.config.disableGen && t.config.update))
     .map((t: InputModelTypeContext) => {
-      const fieldName = getFieldName(t.name, ResolverType.UPDATE)
+      const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
       return `${fieldName}(id: ID!, input: ${t.name}Input!): ${t.name}!`
     })
@@ -52,7 +50,7 @@ const updateQueries = (inputContext: InputModelTypeContext[]): string[] => {
 const createQueries = (inputContext: InputModelTypeContext[]): string[] => {
   return inputContext.filter((t: InputModelTypeContext) => (!t.config.disableGen && t.config.create))
     .map((t: InputModelTypeContext) => {
-      const fieldName = getFieldName(t.name, ResolverType.CREATE)
+      const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
       return `${fieldName}(input: ${t.name}Input!): ${t.name}!`
     })
@@ -61,7 +59,7 @@ const createQueries = (inputContext: InputModelTypeContext[]): string[] => {
 const delQueries = (inputContext: InputModelTypeContext[]): string[] => {
   return inputContext.filter((t: InputModelTypeContext) => (!t.config.disableGen && t.config.delete))
     .map((t: InputModelTypeContext) => {
-      const fieldName = getFieldName(t.name, ResolverType.DELETE)
+      const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
       return `${fieldName}(id: ID!): ID!`
     })
@@ -70,7 +68,7 @@ const delQueries = (inputContext: InputModelTypeContext[]): string[] => {
 const findAllQueries = (inputContext: InputModelTypeContext[]): string[] => {
   return inputContext.filter((t: InputModelTypeContext) => (!t.config.disableGen && t.config.findAll))
     .map((t: InputModelTypeContext) => {
-      const fieldName = getFieldName(t.name, ResolverType.FIND_ALL, 's')
+      const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
 
       return `${fieldName}: [${t.name}!]!`
     })

@@ -1,10 +1,10 @@
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { graphQLInputContext } from '@graphback/codegen-input/src';
+import { graphQLInputContext } from '@graphback/codegen-core/src';
+import { applyGeneratorDirectives } from '@graphback/codegen-core';
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { buildSchema, validate, parse } from 'graphql';
+import { buildSchema, parse } from 'graphql';
 import { createClient } from '../src';
-import { applyGeneratorDirectives } from '@graphback/codegen-input/src/graphql/directives';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
@@ -47,7 +47,7 @@ ava('Test snapshot config gql', async (t: ExecutionContext) => {
     "disableGen": true
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
-  const client = await createClient(inputContext, { language: "gql" })
+  const client = await createClient(inputContext, { output: "gql" })
   t.snapshot(client);
 });
 
@@ -66,7 +66,7 @@ ava('Test parse', async (t: ExecutionContext) => {
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
   const schema = buildSchema(applyGeneratorDirectives(schemaText));
-  const client = await createClient(inputContext, { language: "gql" })
+  const client = await createClient(inputContext, { output: "gql" })
   for(const documentObj of client.queries){
     const doc = parse(documentObj.implementation);
     t.true(doc.kind === 'Document');

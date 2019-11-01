@@ -1,5 +1,5 @@
 // tslint:disable: await-promise
-import { InputModelFieldContext, InputModelTypeContext } from '@graphback/codegen-input';
+import { InputModelFieldContext, InputModelTypeContext } from '@graphback/codegen-core';
 import { Change, ChangeType } from '@graphql-inspector/core';
 import { unlinkSync } from 'fs';
 import { GlobSync } from 'glob';

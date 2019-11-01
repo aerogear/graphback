@@ -1,5 +1,5 @@
 {
-  "name": "@graphback/codegen-input",
+  "name": "@graphback/codegen-core",
   "version": "0.10.0-dev1",
   "description": "Api for building Graphback generator metadata",
   "main": "dist/index.js",

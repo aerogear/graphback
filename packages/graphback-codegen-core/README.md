@@ -10,9 +10,9 @@
 **Documentation**: https://graphback.dev
 **Repository**: https://github.com/aerogear/graphback/
 
-## Graphback-Codegen-Input 
+## Graphback-Codegen-Core 
 
-Input package is an abstraction that provides common entry point to all graphback generators:
+Codegen core package is an abstraction that provides common entry point to all graphback generators:
 - Client generator
 - Schema generator
 - Various resolver generators

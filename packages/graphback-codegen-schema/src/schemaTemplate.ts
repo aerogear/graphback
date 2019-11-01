@@ -1,4 +1,4 @@
-import { createImplementsInterfaceString } from '../../utils/graphqlUtils';
+import { createImplementsInterfaceString } from '@graphback/codegen-core';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
 const inputs = (defs: TargetType[]): string => {

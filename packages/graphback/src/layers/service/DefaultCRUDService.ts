@@ -1,7 +1,6 @@
-import { InputModelTypeContext } from "@graphback/codegen-input"
+import { GraphbackOperationType, InputModelTypeContext } from "@graphback/codegen-core"
 import { PubSub } from 'graphql-subscriptions';
 import { defaultLogger, GraphbackMessageLogger } from '../../components/Logger';
-import { ResolverType } from '../../generators/resolvers/ResolverType';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
@@ -31,7 +30,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
         this.logger.log(`Creating object ${inputType.name}`)
         const result = await this.db.create(inputType, data, context);
         if (this.pubSub && inputType.config.subCreate) {
-            const topic = subscriptionTopicMapping(ResolverType.CREATE, inputType.name);
+            const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, inputType.name);
             const payload = this.buildEventPayload('new', inputType, result);
             await this.pubSub.publish(topic, payload);
         }
@@ -43,7 +42,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
 
         const result = await this.db.update(inputType, id, data, context);
         if (this.pubSub && inputType.config.subUpdate) {
-            const topic = subscriptionTopicMapping(ResolverType.UPDATE, inputType.name);
+            const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, inputType.name);
             const payload = this.buildEventPayload('updated', inputType, result);
             await this.pubSub.publish(topic, payload);
         }
@@ -57,7 +56,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
         
         const result = await this.db.delete(inputType, id, context);
         if (this.pubSub && inputType.config.subDelete) {
-            const topic = subscriptionTopicMapping(ResolverType.DELETE, inputType.name);
+            const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, inputType.name);
             const payload = this.buildEventPayload('deleted', inputType, result);
             await this.pubSub.publish(topic, payload);
         }
@@ -90,7 +89,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
 
             return undefined;
         }
-        const createSubKey = subscriptionTopicMapping(ResolverType.CREATE, inputType.name);
+        const createSubKey = subscriptionTopicMapping(GraphbackOperationType.CREATE, inputType.name);
 
         return this.pubSub.asyncIterator(createSubKey)
     }
@@ -101,7 +100,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
 
             return undefined;
         }
-        const updateSubKey = subscriptionTopicMapping(ResolverType.UPDATE, inputType.name);
+        const updateSubKey = subscriptionTopicMapping(GraphbackOperationType.UPDATE, inputType.name);
 
         return this.pubSub.asyncIterator(updateSubKey)
     }
@@ -112,7 +111,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
 
             return undefined;
         }
-        const deleteSubKey = subscriptionTopicMapping(ResolverType.DELETE, inputType.name);
+        const deleteSubKey = subscriptionTopicMapping(GraphbackOperationType.DELETE, inputType.name);
 
         return this.pubSub.asyncIterator(deleteSubKey)
     }

@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-input';
+import { InputModelTypeContext } from '@graphback/codegen-core';
 import { ClientGeneratorConfig } from './createClient';
 import { createClientDocumentsGQL } from './templates/gqlTemplates';
 import { createClientDocumentsTS } from './templates/tsTemplates';
@@ -20,10 +20,10 @@ export class ClientGenerator {
 
   public generate() {
     if(this.config){
-      if(this.config.language === 'ts'){
+      if(this.config.output === 'ts'){
         return createClientDocumentsTS(this.inputContext)
       }
-      if(this.config.language === 'gql'){
+      if(this.config.output === 'gql'){
         return createClientDocumentsGQL(this.inputContext)
       }
     }
