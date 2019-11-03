@@ -45,7 +45,10 @@
     "typescript": "3.6.4"
   },
   "dependencies": {
-    "@graphback/codegen-core": "0.10.0-dev1"
+    "@graphback/codegen-core": "0.10.0-dev1",
+    "knex": "0.20.0",
+    "pg": "7.12.1",
+    "sqlite3": "4.1.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

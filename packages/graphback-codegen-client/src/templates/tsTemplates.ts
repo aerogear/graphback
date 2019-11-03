@@ -40,6 +40,7 @@ export const ${fieldName} = gql\`
   ${createMutation(t)}
 
   \$\{${t.name}Fragment}
+\`
 `
 }
 
