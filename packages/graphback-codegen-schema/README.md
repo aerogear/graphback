@@ -10,16 +10,19 @@
 **Documentation**: https://graphback.dev
 **Repository**: https://github.com/aerogear/graphback/
 
-## Graphback-Codegen-Client 
+## Graphback-Codegen-Schema 
 
-Generator for client side queries
+Generator for full GraphQL Schema. 
+Generator accepts Graphback model as input and uses it to generate fully functional schema
 
 ## Usage
 
 ```ts
-import { createClient } from "@graphback/codegen-client"
+import { SchemaGenerator, gqlSchemaFormatter } from "@graphback/codegen-schema"
 import { graphQLInputContext } from "@graphback/codegen-core"
 
 const inputContext = graphQLInputContext.createModelContext(schemaText, {})
-console.log(createClient(inputContext));
+const schemaGenerator = new SchemaGenerator(inputContext, gqlSchemaFormatter)
+const schema = schemaGenerator.generate()
+console.log(schema);
 ```

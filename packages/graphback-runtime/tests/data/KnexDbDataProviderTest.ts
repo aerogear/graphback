@@ -1,7 +1,7 @@
 // tslint:disable-next-line: match-default-export-name
 import _test, { TestInterface } from 'ava';
 import * as Knex from 'knex';
-import { KnexDBDataProvider } from '../../../src/layers/data/KnexDBDataProvider';
+import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 
 // tslint:disable: typedef
 

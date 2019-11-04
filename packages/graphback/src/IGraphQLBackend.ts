@@ -1,4 +1,4 @@
-import { OutputResolver } from './generators/resolvers/index';
+import { OutputResolver } from '@graphback/codegen-resolvers';
 
 /**
  * Represents generated graphql backend

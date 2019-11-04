@@ -2,8 +2,8 @@
 import _test, { TestInterface } from 'ava';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { DefaultCRUDService } from '../../../src';
-import { KnexDBDataProvider } from '../../../src/layers/data/KnexDBDataProvider';
+import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
+import { DefaultCRUDService } from  '../../src/service/DefaultCRUDService'
 
 // tslint:disable: typedef
 

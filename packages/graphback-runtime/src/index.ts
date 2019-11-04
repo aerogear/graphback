@@ -8,3 +8,6 @@ export * from "./data/KnexDBDataProvider"
 // Service
 export * from "./service/DefaultCRUDService"
 export * from "./service/GraphbackCRUDService"
+
+export * from "./resolvers/LayeredRuntimeResolverGen"
+export * from "./resolvers/RuntimeResolversDefinition"

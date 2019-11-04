@@ -7,6 +7,8 @@
   GraphQL Resolvers and Queries from GraphQL types 🚀
 </p>
 
+> NOTE: Graphback CLI is going to be replaced with graphql-cli in near future. Please consider installing https://github.com/Urigo/graphql-cli
+
 ## Motivation 
 
 GraphQL can be hard and intimidating initially.

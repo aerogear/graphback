@@ -1,5 +1,5 @@
 import { getFieldName, GraphbackOperationType, InputModelTypeContext} from "@graphback/codegen-core"
-import { GraphbackCRUDService } from '../../../layers/service/GraphbackCRUDService'
+import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
  * Generate runtime resolver layer using Apollo GraphQL format
@@ -23,7 +23,6 @@ export class LayeredRuntimeResolverGenerator {
 
   constructor(inputContext: InputModelTypeContext[], service: GraphbackCRUDService) {
     this.inputContext = inputContext
-
     this.service = service;
   }
 

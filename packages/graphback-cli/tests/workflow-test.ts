@@ -17,7 +17,7 @@ const model = {
 }
 
 ava('Test cli workflow', async (t: ExecutionContext) => {
-  const basePath = resolve(`${__dirname}/../../../templates/apollo-starter-ts`);
+  const basePath = resolve(`${__dirname}/../../../examples/generator-example`);
   process.chdir(basePath)
   console.info(`Starting tests in ${process.cwd()}`)
   await initConfig("testback ", { model, database: "sqlite3", client: true });
