@@ -1,0 +1,51 @@
+{
+  "name": "@graphback/db-migrate",
+  "version": "0.10.0-dev1",
+  "description": "Graphback database migrations",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "typescript": {
+    "definition": "types/index.d.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/graphql": "14.2.3",
+    "@types/knex": "0.15.2",
+    "@types/node": "8.10.56",
+    "ava": "2.4.0",
+    "graphql": "14.5.8",
+    "rimraf": "3.0.0",
+    "ts-node": "8.4.1",
+    "tslint": "5.20.0",
+    "tsutils": "3.17.1",
+    "typescript": "3.6.4"
+  },
+  "scripts": {
+    "clean": "rimraf coverage dist types",
+    "build": "tsc",
+    "watch": "tsc -w ",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "test": "ava",
+    "pretest": "npm run build"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "author": "ephelan@redhat.com",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+  }
+}
