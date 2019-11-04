@@ -11,6 +11,7 @@ export * from './database/migrations/DataResourcesManager'
 export * from './utils/logger'
 export * from './database';
 
+export * from '@graphback/codegen-schema'
 export * from '@graphback/codegen-client'
 export * from '@graphback/codegen-core'
 export * from '@graphback/codegen-resolvers'
