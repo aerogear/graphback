@@ -3,10 +3,10 @@ import { ClientDocuments, createClient } from '@graphback/codegen-client';
 import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-core';
 import { LegacyResolverGenerator } from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
+import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-migrate';
 import { DefaultCRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
-import { DatabaseInitializationStrategy, DatabaseContextProvider, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-migrate';
 
 /**
  * GraphQLBackend
