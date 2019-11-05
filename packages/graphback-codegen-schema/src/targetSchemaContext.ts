@@ -1,4 +1,4 @@
-import { filterInterfaceTypes, filterObjectTypes, getFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/codegen-core'
+import { filterInterfaceTypes, filterObjectTypes, getFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/core'
 
 export interface TargetType {
   name: string

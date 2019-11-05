@@ -1,4 +1,4 @@
-import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/codegen-core";;
+import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
 import { KnexResolver } from './KnexResolver';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 

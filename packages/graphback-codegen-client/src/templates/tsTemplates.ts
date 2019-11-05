@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-core'
+import { getFieldName, GraphbackOperationType, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
 import { ClientGeneratorConfig } from '..'
 import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation} from './gqlTemplates'
 
@@ -36,7 +36,7 @@ const createMutationTS = (t: InputModelTypeContext, imports: string) => {
 
   return `${imports}
 
-export const ${fieldName} = gql\` 
+export const ${fieldName} = gql\`
   ${createMutation(t)}
 
   \$\{${t.name}Fragment}

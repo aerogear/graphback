@@ -1,4 +1,4 @@
-import { GraphbackOperationType, InputModelTypeContext } from "@graphback/codegen-core"
+import { GraphbackOperationType, InputModelTypeContext } from "@graphback/core"
 /**
  * Provides way to map runtime topics for subscriptions for specific types and object names
  */

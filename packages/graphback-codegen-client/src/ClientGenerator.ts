@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-core';
+import { InputModelTypeContext } from '@graphback/core';
 import { ClientGeneratorConfig } from './createClient';
 import { createClientDocumentsGQL } from './templates/gqlTemplates';
 import { createClientDocumentsTS } from './templates/tsTemplates';
@@ -6,7 +6,7 @@ import { createClientDocumentsTS } from './templates/tsTemplates';
 
 /**
  * Generate ClientDocuments from the datamodel.
- * Those definitions will be the actual queries, 
+ * Those definitions will be the actual queries,
  * mutations and subscriptions that can be then saved to some predefined locations.
  */
 export class ClientGenerator {
@@ -27,7 +27,7 @@ export class ClientGenerator {
         return createClientDocumentsGQL(this.inputContext)
       }
     }
-    
+
     return createClientDocumentsTS(this.inputContext)
   }
 }

@@ -1,4 +1,4 @@
-import { GraphbackOperationType, InputModelTypeContext } from "@graphback/codegen-core"
+import { GraphbackOperationType, InputModelTypeContext } from "@graphback/core"
 import { PubSub } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
@@ -7,7 +7,7 @@ import { subscriptionTopicMapping } from './subscriptionTopicMapping';
 
 /**
  * Default implementation of the CRUD service offering following capabilities:
- * 
+ *
  * - Subscriptions: using default publish subscribe method
  * - Logging: using logging abstraction
  */
@@ -53,7 +53,7 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
     // tslint:disable-next-line: no-reserved-keywords
     public async delete(inputType: InputModelTypeContext, id: string, context?: GraphbackContext): Promise<string> {
         this.logger.log(`deleting object ${inputType.name}`)
-        
+
         const result = await this.db.delete(inputType, id, context);
         if (this.pubSub && inputType.config.subDelete) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, inputType.name);

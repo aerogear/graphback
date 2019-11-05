@@ -46,7 +46,7 @@
     "sqlite3": "4.1.0"
   },
   "dependencies": {
-    "@graphback/codegen-core": "0.10.0-dev1",
+    "@graphback/core": "0.10.0-dev1",
     "graphql-subscriptions": "^1.1.0",
     "knex": "0.20.0"
   },

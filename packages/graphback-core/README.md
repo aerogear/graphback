@@ -10,7 +10,7 @@
 **Documentation**: https://graphback.dev
 **Repository**: https://github.com/aerogear/graphback/
 
-## Graphback-Codegen-Core 
+## Graphback-Core 
 
 Codegen core package is an abstraction that provides common entry point to all graphback generators:
 - Client generator

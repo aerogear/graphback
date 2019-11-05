@@ -1,6 +1,6 @@
 import { tsSchemaFormatter, gqlSchemaFormatter } from '../src/schemaFormatters';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { graphQLInputContext } from '@graphback/codegen-core/src';
+import { graphQLInputContext } from '@graphback/core/src';
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
 import { buildSchema, parse } from 'graphql';
