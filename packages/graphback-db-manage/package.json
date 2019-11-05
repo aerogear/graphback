@@ -1,5 +1,5 @@
 {
-  "name": "@graphback/db-migrate",
+  "name": "@graphback/db-manage",
   "version": "0.10.0-dev1",
   "description": "Graphback database migrations",
   "main": "dist/index.js",

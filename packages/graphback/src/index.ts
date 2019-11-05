@@ -9,4 +9,4 @@ export * from '@graphback/codegen-client'
 export * from '@graphback/codegen-core'
 export * from '@graphback/codegen-resolvers'
 export * from '@graphback/runtime'
-export * from '@graphback/db-migrate';
+export * from '@graphback/db-manage';
