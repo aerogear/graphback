@@ -4,9 +4,6 @@
 export * from './GraphQLBackendCreator'
 export * from './IGraphQLBackend'
 
-// Logger management
-// export * from './utils/logger'
-
 export * from '@graphback/codegen-schema'
 export * from '@graphback/codegen-client'
 export * from '@graphback/codegen-core'
