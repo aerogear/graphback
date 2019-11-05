@@ -8,7 +8,7 @@
     "definition": "types/index.d.ts"
   },
   "dependencies": {
-    "@graphback/codegen-core": "0.10.0-dev1",
+    "@graphback/core": "0.10.0-dev1",
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.5",
     "knex": "0.20.0",

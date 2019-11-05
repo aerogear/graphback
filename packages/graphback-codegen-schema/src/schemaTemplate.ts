@@ -1,4 +1,4 @@
-import { createImplementsInterfaceString } from '@graphback/codegen-core';
+import { createImplementsInterfaceString } from '@graphback/core';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
 const inputs = (defs: TargetType[]): string => {

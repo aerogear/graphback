@@ -1,4 +1,4 @@
-import { getTableName, InputModelTypeContext } from "@graphback/codegen-core"
+import { getTableName, InputModelTypeContext } from "@graphback/core"
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
@@ -6,11 +6,11 @@ import { NoDataError } from './NoDataError';
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
  * Layer is tested with following databases:
- * 
+ *
  * - Sqlite
  * - MySQL (MariaDB)
  * - Postgress (by `PgKnexDBDataProvider`)
- * 
+ *
  * NOTE: For Postgres use dedicated `PgKnexDBDataProvider` that implements more performant creation method.
  */
 // tslint:disable-next-line: no-any

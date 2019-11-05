@@ -45,7 +45,7 @@
     "typescript": "3.6.4"
   },
   "dependencies": {
-    "@graphback/codegen-core": "0.10.0-dev1"
+    "@graphback/core": "0.10.0-dev1"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

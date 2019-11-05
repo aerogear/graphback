@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-core';
+import { InputModelTypeContext } from '@graphback/core';
 import { ClientDocuments } from './api/ClientDocuments';
 import { ClientGenerator } from './ClientGenerator';
 
@@ -10,9 +10,9 @@ export interface ClientGeneratorConfig {
     /**
      * Output language that will be supported
      * Our plugin supports multiple languages for simplicity
-     * 
+     *
      * - ts - typescript file output (backwards compatibility)
-     * - gql - .graphql file 
+     * - gql - .graphql file
      */
     output: 'ts' | 'gql'
 }
@@ -20,11 +20,11 @@ export interface ClientGeneratorConfig {
 
 /**
  * Create client side based on inputContext
- * 
- * @param inputContext 
+ *
+ * @param inputContext
  */
 export const createClient = async (inputContext: InputModelTypeContext[], config?: ClientGeneratorConfig): Promise<ClientDocuments> => {
     const clientGenerator = new ClientGenerator(inputContext, config);
-    
+
     return clientGenerator.generate();
 }

@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, InputModelTypeContext} from "@graphback/codegen-core"
+import { getFieldName, GraphbackOperationType, InputModelTypeContext} from "@graphback/core"
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**

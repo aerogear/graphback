@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-core';
+import { InputModelTypeContext } from '@graphback/core';
 import { Change } from '@graphql-inspector/core';
 import { DatabaseConnectionOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseContextProvider } from '../../migrations/DatabaseContextProvider';

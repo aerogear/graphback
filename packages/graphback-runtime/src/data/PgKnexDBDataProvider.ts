@@ -1,11 +1,11 @@
-import { getTableName, InputModelTypeContext } from "@graphback/codegen-core"
+import { getTableName, InputModelTypeContext } from "@graphback/core"
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 import { NoDataError } from './NoDataError';
 
 /**
- * Knex.js database data provider exposing basic CRUD operations. 
- * 
+ * Knex.js database data provider exposing basic CRUD operations.
+ *
  * NOTE: This class implements Postgres specific implementaion that provides more performant object creation than generic `KnexDBDataProvider`
  * that works with the rest of the databases.
  */

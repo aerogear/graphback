@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from "@graphback/codegen-core"
+import { InputModelTypeContext } from "@graphback/core"
 import { generateGraphbackResolvers } from './LegacyApolloResolverTemplate';
 import { ResolverTypeContext } from './resolverTypes';
 import { buildResolverTargetContext, createCustomContext } from './targetResolverContext';

@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from "@graphback/codegen-core"
+import { InputModelTypeContext } from "@graphback/core"
 
 // If we come with Union on client we might use some complex JSON for describing rules
 // and single key for type for simple use cases
@@ -6,32 +6,32 @@ import { InputModelTypeContext } from "@graphback/codegen-core"
 export type AdvancedFilter = any;
 
 /**
- * Graphback layered architecture component that can be called 
+ * Graphback layered architecture component that can be called
  * from the service layer in both RESTFULL and GraphQL middlewares.
- * 
+ *
  * Graphback implements server side procesing using following flow:
- * 
+ *
  * `GraphQL Resolvers` ->  `GraphbackCRUDService` [1-*] -> `GraphbackDataProvider`
- * 
+ *
  * Data layer can be composable (each provider can reference multiple layers of other providers).
- * 
+ *
  * @see GraphbackCRUDService
  */
 // tslint:disable-next-line: no-any
 export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
 
     /**
-     * Implementation for object creation 
-     * 
+     * Implementation for object creation
+     *
      * @param name name of the object to create
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
     create(inputType: InputModelTypeContext,  data: Type, context?: GraphbackContext): Promise<Type>;
-    
+
     /**
-     * Implementation for object updates 
-     * 
+     * Implementation for object updates
+     *
      * @param name name of the object to create
      * @param id of the object to update
      * @param data input data
@@ -40,8 +40,8 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
     update(inputType: InputModelTypeContext,  id: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
-     * Implementation for object deletes 
-     * 
+     * Implementation for object deletes
+     *
      * @param name name of the object to create
      * @param id of the object to delete
      * @param context context object passed from graphql or rest layer
@@ -49,8 +49,8 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
     delete(inputType: InputModelTypeContext,  id: string, context?: GraphbackContext): Promise<string>;
 
     /**
-     * Implementation for reading object 
-     * 
+     * Implementation for reading object
+     *
      * @param name name of the object to create
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
@@ -59,7 +59,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
 
     /**
      * Implementation for finding all objects
-     * 
+     *
      * @param name name of the object to create
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
@@ -68,7 +68,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
 
     /**
      * Implementation for reading objects with filtering capabilities
-     * 
+     *
      * @param name name of the object to create
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
@@ -78,8 +78,8 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
 
     /**
      * Read multiple items by their id's (used for lazy data loading purposes)
-     * 
-     * @param name 
+     *
+     * @param name
      * @param ids array of identifiers that needs to be fetched
      */
     batchRead(inputType: InputModelTypeContext,  ids: string[]): Promise<Type[]>

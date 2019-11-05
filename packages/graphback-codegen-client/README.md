@@ -18,7 +18,7 @@ Generator for client side queries
 
 ```ts
 import { createClient } from "@graphback/codegen-client"
-import { graphQLInputContext } from "@graphback/codegen-core"
+import { graphQLInputContext } from "@graphback/core"
 
 const inputContext = graphQLInputContext.createModelContext(schemaText, {})
 console.log(createClient(inputContext));

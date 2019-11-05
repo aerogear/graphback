@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/codegen-core'
+import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
 import { ClientGeneratorConfig } from '../createClient'
 
 

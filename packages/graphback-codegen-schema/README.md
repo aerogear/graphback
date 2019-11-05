@@ -19,7 +19,7 @@ Generator accepts Graphback model as input and uses it to generate fully functio
 
 ```ts
 import { SchemaGenerator, gqlSchemaFormatter } from "@graphback/codegen-schema"
-import { graphQLInputContext } from "@graphback/codegen-core"
+import { graphQLInputContext } from "@graphback/core"
 
 const inputContext = graphQLInputContext.createModelContext(schemaText, {})
 const schemaGenerator = new SchemaGenerator(inputContext, gqlSchemaFormatter)
