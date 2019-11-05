@@ -35,6 +35,7 @@
     "@types/graphql": "14.2.3",
     "@types/knex": "0.15.2",
     "@types/node": "8.10.56",
+    "@types/pino": "^5.8.13",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
@@ -44,7 +45,9 @@
     "typescript": "3.6.4"
   },
   "license": "Apache-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "pino": "5.13.5"
+  },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   }
