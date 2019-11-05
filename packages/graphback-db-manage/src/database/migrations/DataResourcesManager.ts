@@ -1,10 +1,9 @@
 // tslint:disable: await-promise
-import { InputModelFieldContext, InputModelTypeContext } from '@graphback/codegen-core';
+import { InputModelFieldContext, InputModelTypeContext, logger } from '@graphback/codegen-core';
 import { Change, ChangeType } from '@graphql-inspector/core';
 import { unlinkSync } from 'fs';
 import { GlobSync } from 'glob';
 import * as Knex from 'knex';
-import { logger } from '../../utils';
 import { DatabaseContextProvider } from './DatabaseContextProvider';
 /**
  * Represents update for data type
