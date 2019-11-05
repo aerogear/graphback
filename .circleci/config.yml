@@ -5,11 +5,6 @@ jobs:
     docker:
       # Node 8 LTS
       - image: circleci/node:lts-browsers
-      - image: circleci/postgres:latest
-        environment:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgresql
-          POSTGRES_DB: users
     steps:
       - checkout
       - run:
