@@ -7,7 +7,6 @@ export interface TargetResolverContext {
     queries?: string[]
     mutations?: string[]
     subscriptions?: string[],
-    subscriptionTypes?: string
 }
 
 /**

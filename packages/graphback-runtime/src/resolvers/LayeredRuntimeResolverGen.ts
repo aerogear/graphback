@@ -15,7 +15,6 @@ import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
  *    Subscription: {...}
  * }
  * ```
- *
  */
 export class LayeredRuntimeResolverGenerator {
   private inputContext: InputModelTypeContext[]
@@ -36,44 +35,44 @@ export class LayeredRuntimeResolverGenerator {
       if (resolverElement.config.disableGen) {
         continue;
       }
-
+      const objectName = resolverElement.name.toLowerCase();
       if (resolverElement.config.create) {
         const resolverCreateField = getFieldName(resolverElement.name, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
-          return this.service.create(resolverElement, args.input, context)
+          return this.service.create(objectName, args.input, context)
         }
       }
       if (resolverElement.config.update) {
         const updateField = getFieldName(resolverElement.name, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
-          return this.service.update(resolverElement, args.id, args.input, context)
+          return this.service.update(objectName, args.id, args.input, context)
         }
       }
       if (resolverElement.config.delete) {
         const deleteField = getFieldName(resolverElement.name, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
-          return this.service.delete(resolverElement, args.id, context)
+          return this.service.delete(objectName, args.id, context)
         }
       }
       if (resolverElement.config.findAll) {
         const findAllField = getFieldName(resolverElement.name, GraphbackOperationType.FIND_ALL, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
-          return this.service.findAll(resolverElement, context)
+          return this.service.findAll(objectName, context)
         }
       }
       if (resolverElement.config.find) {
         const findField = getFieldName(resolverElement.name, GraphbackOperationType.FIND, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          return this.service.findBy(resolverElement, args.fields, context)
+          return this.service.findBy(objectName, args.fields, context)
         }
       }
 
-      this.createSubscriptions(resolverElement, resolvers)
+      this.createSubscriptions(resolverElement, resolvers, objectName)
     }
 
     // Delete Mutations key if not needed.
@@ -91,12 +90,12 @@ export class LayeredRuntimeResolverGenerator {
   }
 
   // tslint:disable-next-line: no-any
-  private createSubscriptions(resolverElement: InputModelTypeContext, resolvers: any) {
+  private createSubscriptions(resolverElement: InputModelTypeContext, resolvers: any, objectName: string) {
     if (resolverElement.config.create && resolverElement.config.subCreate) {
       resolvers.Subscription[`new${resolverElement.name}`] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
-          return this.service.subscribeToCreate(resolverElement, context);
+          return this.service.subscribeToCreate(objectName, context);
         }
       }
     }
@@ -105,7 +104,7 @@ export class LayeredRuntimeResolverGenerator {
       resolvers.Subscription[`updated${resolverElement.name}`] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
-          return this.service.subscribeToUpdate(resolverElement, context);
+          return this.service.subscribeToUpdate(objectName, context);
         }
       }
     }
@@ -114,7 +113,7 @@ export class LayeredRuntimeResolverGenerator {
       resolvers.Subscription[`deleted${resolverElement.name}`] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
-          return this.service.subscribeToDelete(resolverElement, context);
+          return this.service.subscribeToDelete(objectName, context);
         }
       }
     }

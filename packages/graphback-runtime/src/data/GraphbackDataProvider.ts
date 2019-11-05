@@ -27,8 +27,8 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    create(inputType: InputModelTypeContext,  data: Type, context?: GraphbackContext): Promise<Type>;
-
+    create(name: string,  data: Type, context?: GraphbackContext): Promise<Type>;
+    
     /**
      * Implementation for object updates
      *
@@ -37,7 +37,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    update(inputType: InputModelTypeContext,  id: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    update(name: string,  id: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes
@@ -46,7 +46,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param id of the object to delete
      * @param context context object passed from graphql or rest layer
      */
-    delete(inputType: InputModelTypeContext,  id: string, context?: GraphbackContext): Promise<string>;
+    delete(name: string,  id: string, context?: GraphbackContext): Promise<string>;
 
     /**
      * Implementation for reading object
@@ -55,7 +55,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    read(inputType: InputModelTypeContext,  id: string, context?: GraphbackContext):  Promise<Type>;
+    read(name: string,  id: string, context?: GraphbackContext):  Promise<Type>;
 
     /**
      * Implementation for finding all objects
@@ -64,7 +64,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    findAll(inputType: InputModelTypeContext,  context?: GraphbackContext): Promise<Type[]>;
+    findAll(name: string,  context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Implementation for reading objects with filtering capabilities
@@ -73,7 +73,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
-    findBy(inputType: InputModelTypeContext,  filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
+    findBy(name: string,  filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
 
 
     /**
@@ -82,6 +82,6 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param name
      * @param ids array of identifiers that needs to be fetched
      */
-    batchRead(inputType: InputModelTypeContext,  ids: string[]): Promise<Type[]>
+    batchRead(name: string,  ids: string[]): Promise<Type[]>
 
 }

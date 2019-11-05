@@ -25,7 +25,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    create(inputType: InputModelTypeContext, data: Type, context?: GraphbackContext): Promise<Type>;
+    create(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object updates
@@ -35,7 +35,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    update(inputType: InputModelTypeContext, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    update(name: string, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes
@@ -44,7 +44,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data input data containing id
      * @param context context object passed from graphql or rest layer
      */
-    delete(inputType: InputModelTypeContext, id: string, context?: GraphbackContext): Promise<string>;
+    delete(name: string, id: string, context?: GraphbackContext): Promise<string>;
 
     /**
      * Implementation for reading object
@@ -53,7 +53,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    read(inputType: InputModelTypeContext, id: string, context?: GraphbackContext): Promise<Type>;
+    read(name: string, id: string, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for finding all objects
@@ -62,7 +62,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    findAll(inputType: InputModelTypeContext, context?: GraphbackContext): Promise<Type[]>;
+    findAll(name: string, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Implementation for reading objects with filtering capabilities
@@ -71,7 +71,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
-    findBy(inputType: InputModelTypeContext, filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
+    findBy(name: string, filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Subscription for all creation events
@@ -79,7 +79,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param name name of the component to subscribe
      * @param context additional context
      */
-    subscribeToCreate(inputType: InputModelTypeContext, context?: GraphbackContext): AsyncIterator<Type> | undefined
+    subscribeToCreate(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
      * Subscription for all update events
@@ -87,7 +87,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param name name of the component to subscribe
      * @param context additional context
      */
-    subscribeToUpdate(inputType: InputModelTypeContext, context?: GraphbackContext): AsyncIterator<Type> | undefined
+    subscribeToUpdate(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
      * Subscription for all deletion events
@@ -95,5 +95,5 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param name name of the component to subscribe
      * @param context additional context
      */
-    subscribeToDelete(inputType: InputModelTypeContext, context?: GraphbackContext): AsyncIterator<Type> | undefined
+    subscribeToDelete(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
 }

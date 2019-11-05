@@ -1,28 +1,22 @@
-import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from  './resolverTypes';
-
-const imports = `import { GraphQLContext } from '../../context'`
+import { InputModelTypeContext } from '@graphback/codegen-core';
+import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from '../api/resolverTypes';
+import { createCustomContext } from '../api/targetResolverContext';
 
 /**
- * Generate resolvers for each type
+ * Formats generated source code into Apollo GraphQL format
  * @param context `Type` object
  * @param name name of the Type
  */
 // tslint:disable-next-line: max-func-body-length
-const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
+const generateApolloFormattedResolvers = (context: TargetResolverContext, name: string): string => {
   const { relations, queries, mutations, subscriptions } = context
 
   const outputResolvers = []
 
-  if (relations.length) {
-    outputResolvers.push(`${name}: {
-    ${relations.join(',\n    ')}
-  }`)
-  }
-
   if (queries.length) {
     outputResolvers.push(`Query: {
-    ${context.queries.join(',\n    ')}
-  }`)
+create${name}
+`);
   }
 
   if (mutations.length) {
@@ -37,20 +31,10 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
   }`)
   }
 
-  let output = `${imports}`
-
-  if (context.subscriptions.length) {
-    output += `\n\nenum Subscriptions {
-  ${context.subscriptionTypes}
-}`
-  }
-
-  output += `\n\nexport const ${name.toLowerCase()}Resolvers = {
+  return `\n\nexport const ${name.toLowerCase()}Resolvers = {
   ${outputResolvers.join(',\n\n  ')}
 }
 `
-
-  return output
 }
 
 const generateResolvers = (context: ResolverTypeContext[]) => {
@@ -126,11 +110,13 @@ export const ${c.name} = {
  * types - contains original generated CRUD resolvers based on the types
  * custom - contains custom empty stubs if hasCustomElements===true
  * index - maps together the resolvers from the above.
- * @param context name and context object of each type from input datamodel
- * @param customContext custom queries/ mutations/ subscriptions if any
- * @param hasCustomElements specifies if above mentioned custom elements are present or not
+ * 
+ * @param inputContext name and context object of each type from input datamodel
  */
-export const generateGraphbackResolvers = (context: ResolverTypeContext[], customContext: CustomResolverContext[], hasCustomElements: boolean) => {
+export const generateGraphbackResolvers = (context: ResolverTypeContext[], inputContext: InputModelTypeContext[]) => {
+  const customContext = createCustomContext(inputContext)
+  const hasCustomElements = !!customContext.length
+
   return {
     types: generateResolvers(context),
     index: generateIndexFile(context, hasCustomElements),

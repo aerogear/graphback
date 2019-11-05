@@ -5,6 +5,11 @@ import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
 
+
+interface GraphbackContext {
+    publish: boolean
+}
+
 /**
  * Default implementation of the CRUD service offering following capabilities:
  *
@@ -12,7 +17,7 @@ import { subscriptionTopicMapping } from './subscriptionTopicMapping';
  * - Logging: using logging abstraction
  */
 // tslint:disable-next-line: no-any
-export class DefaultCRUDService<T = any, GraphbackContext = any>
+export class DefaultCRUDService<T = any>
     implements GraphbackCRUDService<T, GraphbackContext>  {
 
     private db: GraphbackDataProvider;
@@ -26,24 +31,24 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
         this.logger = logger || defaultLogger;
     }
 
-    public async create(inputType: InputModelTypeContext, data: T, context?: GraphbackContext): Promise<T> {
-        this.logger.log(`Creating object ${inputType.name}`)
-        const result = await this.db.create(inputType, data, context);
-        if (this.pubSub && inputType.config.subCreate) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, inputType.name);
-            const payload = this.buildEventPayload('new', inputType, result);
+    public async create(name: string, data: T, context?: GraphbackContext): Promise<T> {
+        this.logger.log(`Creating object ${name}`)
+        const result = await this.db.create(name, data, context);
+        if (this.pubSub && context.publish) {
+            const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
+            const payload = this.buildEventPayload('new', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
         return result;
     }
-    public async update(inputType: InputModelTypeContext, id: string, data: T, context?: GraphbackContext): Promise<T> {
-        this.logger.log(`Updating object ${inputType.name}`)
+    public async update(name: string, id: string, data: T, context?: GraphbackContext): Promise<T> {
+        this.logger.log(`Updating object ${name}`)
 
-        const result = await this.db.update(inputType, id, data, context);
-        if (this.pubSub && inputType.config.subUpdate) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, inputType.name);
-            const payload = this.buildEventPayload('updated', inputType, result);
+        const result = await this.db.update(name, id, data, context);
+        if (this.pubSub && context.publish) {
+            const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
+            const payload = this.buildEventPayload('updated', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -51,74 +56,74 @@ export class DefaultCRUDService<T = any, GraphbackContext = any>
     }
 
     // tslint:disable-next-line: no-reserved-keywords
-    public async delete(inputType: InputModelTypeContext, id: string, context?: GraphbackContext): Promise<string> {
-        this.logger.log(`deleting object ${inputType.name}`)
+    public async delete(name: string, id: string, context?: GraphbackContext): Promise<string> {
+        this.logger.log(`deleting object ${name}`)
 
-        const result = await this.db.delete(inputType, id, context);
-        if (this.pubSub && inputType.config.subDelete) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, inputType.name);
-            const payload = this.buildEventPayload('deleted', inputType, result);
+        const result = await this.db.delete(name, id, context);
+        if (this.pubSub && context.publish) {
+            const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
+            const payload = this.buildEventPayload('deleted', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
         return result;
     }
 
-    public read(inputType: InputModelTypeContext, id: string, context?: GraphbackContext): Promise<T> {
-        this.logger.log(`reading object ${inputType.name}`)
+    public read(name: string, id: string, context?: GraphbackContext): Promise<T> {
+        this.logger.log(`reading object ${name}`)
 
-        return this.db.read(inputType, id, context);
+        return this.db.read(name, id, context);
     }
 
-    public findAll(inputType: InputModelTypeContext, context?: GraphbackContext): Promise<T[]> {
-        this.logger.log(`querying object ${inputType.name}`)
+    public findAll(name: string, context?: GraphbackContext): Promise<T[]> {
+        this.logger.log(`querying object ${name}`)
 
-        return this.db.findAll(inputType, context);
+        return this.db.findAll(name, context);
     }
 
     // tslint:disable-next-line: no-any
-    public findBy(inputType: InputModelTypeContext, filter: any, context?: GraphbackContext): Promise<T[]> {
-        this.logger.log(`querying object ${inputType.name} with filter ${JSON.stringify(filter)}`)
+    public findBy(name: string, filter: any, context?: GraphbackContext): Promise<T[]> {
+        this.logger.log(`querying object ${name} with filter ${JSON.stringify(filter)}`)
 
-        return this.db.findBy(inputType, filter, context);
+        return this.db.findBy(name, filter, context);
     }
 
-    public subscribeToCreate(inputType: InputModelTypeContext, context?: GraphbackContext): AsyncIterator<T> | undefined {
+    public subscribeToCreate(name: string, context?: GraphbackContext): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
-            this.logger.log(`Cannot subscribe to events for ${inputType.name}`)
+            this.logger.log(`Cannot subscribe to events for ${name}`)
 
             return undefined;
         }
-        const createSubKey = subscriptionTopicMapping(GraphbackOperationType.CREATE, inputType.name);
+        const createSubKey = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
 
         return this.pubSub.asyncIterator(createSubKey)
     }
 
-    public subscribeToUpdate(inputType: InputModelTypeContext, context?: GraphbackContext): AsyncIterator<T> | undefined {
+    public subscribeToUpdate(name: string, context?: GraphbackContext): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
-            this.logger.log(`Cannot subscribe to events for ${inputType.name}`)
+            this.logger.log(`Cannot subscribe to events for ${name}`)
 
             return undefined;
         }
-        const updateSubKey = subscriptionTopicMapping(GraphbackOperationType.UPDATE, inputType.name);
+        const updateSubKey = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
 
         return this.pubSub.asyncIterator(updateSubKey)
     }
 
-    public subscribeToDelete(inputType: InputModelTypeContext, context?: GraphbackContext): AsyncIterator<T> | undefined {
+    public subscribeToDelete(name: string, context?: GraphbackContext): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
-            this.logger.log(`Cannot subscribe to events for ${inputType.name}`)
+            this.logger.log(`Cannot subscribe to events for ${name}`)
 
             return undefined;
         }
-        const deleteSubKey = subscriptionTopicMapping(GraphbackOperationType.DELETE, inputType.name);
+        const deleteSubKey = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
 
         return this.pubSub.asyncIterator(deleteSubKey)
     }
 
-    private buildEventPayload(action: string, inputType: InputModelTypeContext, result: string) {
+    private buildEventPayload(action: string, name: string, result: string) {
         const payload = {};
-        payload[`${action}${inputType.name}`] = result;
+        payload[`${action}${name}`] = result;
 
         return payload;
     }

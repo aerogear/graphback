@@ -1,5 +1,10 @@
+<<<<<<< HEAD:packages/graphback-codegen-resolvers/src/legacy-knex/targetResolverContext.ts
 import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
 import { KnexResolver } from './KnexResolver';
+=======
+import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/codegen-core";;
+import { KnexResolver } from '../legacy-knex/KnexResolver';
+>>>>>>> b2ebcd6... fix: remove legacy resolver generators:packages/graphback-codegen-resolvers/src/api/targetResolverContext.ts
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
 const knex = new KnexResolver()
@@ -47,10 +52,6 @@ const findAllResolver = (t: InputModelTypeContext): string => {
   return undefined
 }
 
-/**
- * Subscriptions - new, updated and deleted
- */
-
 const newSub = (t: InputModelTypeContext): string => {
   if (t.config.create && t.config.subCreate) {
     return knex.newSub(t.name)
@@ -76,25 +77,6 @@ const deletedSub = (t: InputModelTypeContext): string => {
 }
 
 /**
- * Create enum for subscriptions implementation
- * @param t Type object
- */
-const createSubscriptionTypes = (t: InputModelTypeContext): string => {
-  const subscriptionEnum = []
-  if (t.config.create && t.config.subCreate) {
-    subscriptionEnum.push(`NEW_${t.name.toUpperCase()} = 'new${t.name.toLowerCase()}'`)
-  }
-  if (t.config.update && t.config.subUpdate) {
-    subscriptionEnum.push(`UPDATED_${t.name.toUpperCase()} = 'updated${t.name.toLowerCase()}'`)
-  }
-  if (t.config.delete && t.config.subDelete) {
-    subscriptionEnum.push(`DELETED_${t.name.toUpperCase()} = 'deleted${t.name.toLowerCase()}'`)
-  }
-
-  return subscriptionEnum.join(`,\n  `)
-}
-
-/**
  * Create context object for each individual type
  * @param context Visited info from the model
  */
@@ -114,7 +96,6 @@ export const buildGraphbackOperationTypeContext = (context: InputModelTypeContex
     typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s !== undefined)
     typeContext.mutations = [createResolver(context, database), updateResolver(context), deleteResolver(context)].filter((s: string) => s !== undefined)
     typeContext.subscriptions = [newSub(context), updatedSub(context), deletedSub(context)].filter((s: string) => s !== undefined)
-    typeContext.subscriptionTypes = createSubscriptionTypes(context)
   }
 
   return typeContext
@@ -122,7 +103,8 @@ export const buildGraphbackOperationTypeContext = (context: InputModelTypeContex
 
 /**
  * Create context of all the types
- * @param input Input visited object
+ * 
+ * @param input InputModelTypeContext representing model 
  */
 export const buildResolverTargetContext = (input: InputModelTypeContext[], database: string) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
