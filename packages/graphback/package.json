@@ -51,7 +51,7 @@
     "@graphback/codegen-client": "0.10.0-dev1",
     "@graphback/codegen-resolvers": "0.10.0-dev1",
     "@graphback/runtime": "0.10.0-dev1",
-    "@graphback/db-migrate": "0.10.0-dev1",
+    "@graphback/db-manage": "0.10.0-dev1",
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.5",
     "pino": "5.13.5",
