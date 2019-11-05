@@ -4,8 +4,8 @@ import { Change, ChangeType } from '@graphql-inspector/core';
 import { unlinkSync } from 'fs';
 import { GlobSync } from 'glob';
 import * as Knex from 'knex';
-import { logger } from '../../utils/logger';
 import { DatabaseContextProvider } from './DatabaseContextProvider';
+import { logger } from '../../utils';
 /**
  * Represents update for data type
  */

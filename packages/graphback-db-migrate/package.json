@@ -7,7 +7,13 @@
   "typescript": {
     "definition": "types/index.d.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@graphback/codegen-core": "0.10.0-dev1",
+    "@graphql-inspector/core": "1.26.0",
+    "glob": "7.1.5",
+    "knex": "0.20.0",
+    "pino": "5.13.5"
+  },
   "devDependencies": {
     "@types/graphql": "14.2.3",
     "@types/knex": "0.15.2",

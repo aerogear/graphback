@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { sync } from 'glob';
-import { buildSchema, GraphQLSchema } from 'graphql';
 import { join } from 'path';
 
 /**
@@ -22,19 +21,4 @@ export const buildSchemaText = (schemaDir: string): string => {
     .join('\n');
 
   return schemaText.length ? schemaText : undefined;
-}
-
-/**
- * Builds a GraphQLSchema object from all .graphql files in a directory
- *
- * @param schemaDir - The directory of the schema files
- */
-export const buildSchemaFromDir = (schemaDir: string): GraphQLSchema => {
-  const schemaText = buildSchemaText(schemaDir);
-
-  if (!schemaText) {
-    return undefined;
-  }
-
-  return buildSchema(schemaText);
 }
