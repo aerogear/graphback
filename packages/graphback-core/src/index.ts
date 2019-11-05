@@ -3,3 +3,4 @@
 export * from './api'
 export * from './graphql'
 export * from './logging';
+export * from './utils/fileUtils';
