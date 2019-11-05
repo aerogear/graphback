@@ -38,12 +38,15 @@ ava('it should detect multiple changes', (t: ExecutionContext) => {
   const changes = schemaManager.getChanges();
 
   t.assert(changes.length === 2);
+  // tslint:disable-next-line: no-null-keyword
+  t.snapshot(JSON.stringify(changes, null, 2));
 });
 
-ava('it should update the old schema', (t: ExecutionContext) => {
+ava('it should update the old schema to match the new one', (t: ExecutionContext) => {
   const { schemaManager, provider } = setup();
 
   schemaManager.updateOldSchema();
 
   t.assert(provider.getCurrentSchemaText() === provider.getPreviousSchemaText());
+  t.snapshot(provider.getPreviousSchemaText());
 });
