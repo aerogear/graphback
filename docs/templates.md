@@ -7,7 +7,7 @@ title: Templates
 Graphback provides users with the choice of setting up a custom environment with features with the help of templates. We plan to provide
 templates with multiple use cases including various server frameworks like GraphQL server frameworks like Apollo GraphQL, GraphQL-js and others.
 
-### [apollo-typescript-starter](https://github.com/aerogear/graphback/tree/master/templates/apollo-starter-ts)
+### [apollo-typescript-starter](https://github.com/aerogear/graphback/tree/templates-master/templates/apollo-starter-ts)
 Typescript implementation of GraphQL server using apollo-express framework. 
 Uses knex.js library for database access.
 
