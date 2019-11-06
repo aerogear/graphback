@@ -1,11 +1,11 @@
+// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import ava, { ExecutionContext } from 'ava';
-// tslint:disable-next-line: no-var-requires
+// tslint:disable-next-line: no-var-requires no-require-imports
 const execa = require('execa');
 import { existsSync } from 'fs';
 import { DropCreateDatabaseAlways } from 'graphback';
 import { join, resolve } from 'path';
 import { createDB, generate, initConfig } from '../src';
-import { exec } from 'child_process';
 
 const model = {
   modelName: "testSchema",
@@ -23,15 +23,6 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   console.info(`Starting tests in ${process.cwd()}`)
   await initConfig("testback ", { model, database: "sqlite3", client: true });
   await generate();
-
-  const defaultConfig = {
-    db: {
-      dbConfig: {
-        "filename": "./db.sqlite"
-      },
-      database: "sqlite3"
-    },
-  }
 
   const databaseInitializationStrategy = new DropCreateDatabaseAlways({
     connectionOptions: {
@@ -52,5 +43,6 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   } catch (error) {
     t.fail(`build failed with ${error}`);
   }
+
 });
 
