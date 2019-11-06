@@ -1,6 +1,7 @@
 import { Change, diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
 import { SchemaProvider } from './SchemaProvider';
+import { GraphQLSchemaChangeTypes } from '../GraphQLSchemaChangeTypes';
 
 export interface SchemaManagerOptions {
   provider: SchemaProvider
@@ -42,10 +43,22 @@ export class GraphQLSchemaManager {
       changes = diff(oldSchema, newSchema);
     }
 
-    return changes;
+    return this.getValidChangeTypes(changes);
   }
 
   public updateOldSchema() {
     this.provider.updatePreviousSchema(this.currentSchemaText);
+  }
+
+  /**
+   * Filter only the allowed, non-breaking changes types
+   *
+   * @private
+   * @param {Change[]} changes
+   * @returns {Change[]}
+   * @memberof GraphQLSchemaManager
+   */
+  private getValidChangeTypes(changes: Change[]): Change[] {
+    return changes.filter((c: Change) => !!GraphQLSchemaChangeTypes[c.type]);
   }
 }
