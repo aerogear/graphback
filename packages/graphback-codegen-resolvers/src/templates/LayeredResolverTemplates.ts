@@ -1,38 +1,39 @@
 // TODO subscription support
+// TODO support for the database type instead of hardcoded lowercase
 export const createTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-    return context.crudService.create(${typeName.toLowerCase()}, args, context);
-  }`
+      return context.crudService.create("${typeName.toLowerCase()}", args, context);
+    }`
 }
 
-export const updateTemplate = (fieldName: string, typeName: string,subscription?: boolean): string => {
+export const updateTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-    return context.crudService.update(${typeName.toLowerCase()}, args, context);
-  }`
+      return context.crudService.update("${typeName.toLowerCase()}", args, context);
+    }`
 }
 
 export const deleteTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-    return context.crudService.delete(${typeName.toLowerCase()}, args, context);
-  }`
+      return context.crudService.delete("${typeName.toLowerCase()}", args, context);
+    }`
 }
 
 export const findAllTemplate = (fieldName: string, typeName: string): string => {
   return `${fieldName}: (_, args, context) => {
-    return context.crudService.findAll(${typeName.toLowerCase()}, context);
-  }`
+      return context.crudService.findAll("${typeName.toLowerCase()}", context);
+    }`
 }
 
 export const findTemplate = (fieldName: string, typeName: string, ): string => {
   return `${fieldName}: (_, args, context) => {
-    return context.crudService.findAll(${typeName.toLowerCase()}, context);
-  }`
+      return context.crudService.findAll("${typeName.toLowerCase()}", context);
+    }`
 }
 
 export const newSub = (typeName: string): string => {
   return `new${typeName}: {
       subscribe: (_: any, __: any, context: GraphQLContext) => {
-        return context.crudService.subscribeToCreate(${typeName.toLowerCase()}, context);
+        return context.crudService.subscribeToCreate("${typeName.toLowerCase()}", context);
       }
     }`
 }
@@ -40,7 +41,7 @@ export const newSub = (typeName: string): string => {
 export const updatedSub = (typeName: string): string => {
   return `updated${typeName}: {
       subscribe  : (_: any, __: any, context: GraphQLContext) => {
-        return context.crudService.subscribeToUpdate(${typeName.toLowerCase()}, context);
+        return context.crudService.subscribeToUpdate("${typeName.toLowerCase()}", context);
       }
     }`
 }
@@ -48,7 +49,7 @@ export const updatedSub = (typeName: string): string => {
 export const deletedSub = (typeName: string): string => {
   return `deleted${typeName}: {
       subscribe: (_: any, __: any, context: GraphQLContext) => {
-        return context.crudService.subscribeToDelete(${typeName.toLowerCase()}, context);
+        return context.crudService.subscribeToDelete("${typeName.toLowerCase()}", context);
       }
     }`
 }

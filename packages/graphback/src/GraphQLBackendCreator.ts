@@ -47,7 +47,7 @@ export class GraphQLBackendCreator {
     backend.schema = schemaGenerator.generate()
 
     const resolverGenerator = new ApolloServiceResolverGenerator(this.inputContext);
-    backend.resolvers = resolverGenerator.generate(database);
+    backend.resolvers = resolverGenerator.generate();
 
     return backend;
   }

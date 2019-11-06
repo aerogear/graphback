@@ -14,6 +14,10 @@ const nodeTypes = (defs: TargetType[]): string => {
 }
 
 const nodeInterfaces = (defs: TargetType[]): string => {
+  if (defs.length === 0) {
+    return '';
+  }
+  
   return `${defs.map((d: TargetType) => `interface ${d.name} {
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`

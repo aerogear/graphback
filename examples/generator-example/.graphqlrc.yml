@@ -1,0 +1,37 @@
+schema: 
+  - ./src/schema/**/*.ts:
+      require: ts-node/register
+documents: ./client/src/graphql/**/*.ts
+extensions:
+  generate:
+    db:
+      dbConfig:
+        user: postgresql
+        password: postgres
+        database: users
+        host: localhost
+        port: 55432
+      database: pg
+    graphqlCRUD:
+      create: true
+      update: true
+      findAll: true
+      find: true
+      delete: false
+      subCreate: false
+      subUpdate: false
+      subDelete: false
+      disableGen: false
+    folders:
+      model: ./model
+      resolvers: ./src/resolvers
+      schema: ./src/schema
+      client: ./client/src/graphql
+
+  codegen:
+    src/generated-types.ts:
+      - typescript
+      - typescript-resolvers
+    client/src/generated-types.ts:
+      - typescript
+      - typescript-operations

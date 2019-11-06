@@ -10,10 +10,27 @@ import { createDB, generate, initConfig } from '../src';
 const model = {
   modelName: "testSchema",
   content: `
-    type Test {
-      id: ID
-      name: String
-    }
+  type Note {
+    id: ID!
+    title: String!
+    description: String!
+    ## Relationship
+    comment: [Comment]! @OneToMany(field: "noteComment")
+  }
+  
+  type Comment {
+    id: ID!
+    title: String!
+    description: String!
+  }
+  
+  type Query {
+    getLikedNotes(id: ID!, names: [String]!): Note!
+  }
+  
+  type Mutation {
+    likeNote(id: ID!): Note!
+  }
 `
 }
 

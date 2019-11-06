@@ -1,7 +1,7 @@
 import { InputModelTypeContext } from "@graphback/core"
-import { ResolverTypeContext } from './api/resolverTypes';
-import { buildResolverTargetContext } from './api/targetResolverContext';
-import { generateGraphbackResolvers } from './formatters/ApolloResolverFormatter';
+import { generateGraphbackResolvers } from '../formatters/ApolloResolverFormatter';
+import { ResolverTypeContext } from './resolverTypes';
+import { buildResolverTargetContext } from './targetResolverContext';
 
 /**
  * Generate resolvers layer that connects with service
@@ -14,7 +14,7 @@ export class ApolloServiceResolverGenerator {
       this.inputContext = inputContext
     }
 
-    public generate(database: string) {
+    public generate() {
       this.context = buildResolverTargetContext(this.inputContext)
 
       return generateGraphbackResolvers(this.context, this.inputContext)

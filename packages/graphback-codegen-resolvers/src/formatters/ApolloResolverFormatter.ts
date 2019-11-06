@@ -15,8 +15,8 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
 
   if (queries.length) {
     outputResolvers.push(`Query: {
-create${name}
-`);
+    ${context.queries.join(',\n    ')}
+  }`)
   }
 
   if (mutations.length) {
