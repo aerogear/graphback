@@ -12,6 +12,7 @@
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.5",
     "knex": "0.20.0",
+    "sqlite3": "4.1.0",
     "pino": "5.13.5"
   },
   "devDependencies": {
