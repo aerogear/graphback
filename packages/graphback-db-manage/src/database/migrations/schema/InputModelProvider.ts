@@ -1,6 +1,7 @@
-import { buildSchemaText, removeFiles } from '@graphback/core';
+import { removeFiles } from '@graphback/core';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { buildSchemaText } from '../../../utils/graphqlUtils';
 import { SchemaProvider } from './SchemaProvider';
 
 /**
