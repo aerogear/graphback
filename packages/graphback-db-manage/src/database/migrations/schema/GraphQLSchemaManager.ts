@@ -1,7 +1,7 @@
 import { Change, diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
-import { SchemaProvider } from './SchemaProvider';
 import { GraphQLSchemaChangeTypes } from '../GraphQLSchemaChangeTypes';
+import { SchemaProvider } from './SchemaProvider';
 
 export interface SchemaManagerOptions {
   provider: SchemaProvider
