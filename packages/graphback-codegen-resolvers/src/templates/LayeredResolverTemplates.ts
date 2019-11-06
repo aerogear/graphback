@@ -1,17 +1,17 @@
-
-export const createTemplate = (fieldName: string, typeName: string, subscription: boolean): string => {
+// TODO subscription support
+export const createTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
     return context.crudService.create(${typeName.toLowerCase()}, args, context);
   }`
 }
 
-export const updateTemplate = (fieldName: string, typeName: string, subscription: boolean): string => {
+export const updateTemplate = (fieldName: string, typeName: string,subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
     return context.crudService.update(${typeName.toLowerCase()}, args, context);
   }`
 }
 
-export const deleteTemplate = (fieldName: string, typeName: string): string => {
+export const deleteTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
     return context.crudService.delete(${typeName.toLowerCase()}, args, context);
   }`
@@ -23,7 +23,7 @@ export const findAllTemplate = (fieldName: string, typeName: string): string => 
   }`
 }
 
-export const findTemplate = (fieldName: string, typeName: string): string => {
+export const findTemplate = (fieldName: string, typeName: string, ): string => {
   return `${fieldName}: (_, args, context) => {
     return context.crudService.findAll(${typeName.toLowerCase()}, context);
   }`
@@ -67,6 +67,7 @@ export const typeRelation = (relation: string, columnName: string, fieldName: st
   // } else {
   //   return undefined
   // }
+  return '';
 }
 
 export const invertTypeRelation = (columnName: string, fieldName: string, tableName: string): string => {

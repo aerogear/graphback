@@ -1,5 +1,5 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
-import { LegacyResolverGenerator } from "@graphback/codegen-resolvers"
+import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
 import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-manage';
@@ -46,7 +46,7 @@ export class GraphQLBackendCreator {
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()
 
-    const resolverGenerator = new LegacyResolverGenerator(this.inputContext);
+    const resolverGenerator = new ApolloServiceResolverGenerator(this.inputContext);
     backend.resolvers = resolverGenerator.generate(database);
 
     return backend;

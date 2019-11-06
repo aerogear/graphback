@@ -1,76 +1,70 @@
-<<<<<<< HEAD:packages/graphback-codegen-resolvers/src/legacy-knex/targetResolverContext.ts
-import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
-import { KnexResolver } from './KnexResolver';
-=======
-import { getFieldName, getTableName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/codegen-core";;
-import { KnexResolver } from '../legacy-knex/KnexResolver';
->>>>>>> b2ebcd6... fix: remove legacy resolver generators:packages/graphback-codegen-resolvers/src/api/targetResolverContext.ts
+import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
+import * as templates from "../templates/LayeredResolverTemplates"
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
-const knex = new KnexResolver()
-
+// TODO extract to separate class that will support different types
 /**
  * Resolver crud methods - create, update, delete, find and findAll
  */
-const createResolver = (t: InputModelTypeContext, database: string): string => {
+const createResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.create) {
-    return knex.createTemplate(database, t.config.subCreate, getFieldName(t.name, GraphbackOperationType.CREATE), getTableName(t.name), t.name)
+    return templates.createTemplate(getFieldName(t.name, GraphbackOperationType.CREATE), t.name)
   }
 
   return undefined
 }
 
-const updateResolver = (t: InputModelTypeContext): string => {
+const updateResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.update) {
-    return knex.updateTemplate(t.config.subUpdate, getFieldName(t.name, GraphbackOperationType.UPDATE), getTableName(t.name), t.name)
+    return templates.updateTemplate(getFieldName(t.name, GraphbackOperationType.UPDATE), t.name)
   }
 
   return undefined
 }
 
-const deleteResolver = (t: InputModelTypeContext): string => {
+const deleteResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.delete) {
-    return knex.deleteTemplate(t.config.subDelete, getFieldName(t.name, GraphbackOperationType.DELETE), getTableName(t.name), t.name)
+    return templates.deleteTemplate(getFieldName(t.name, GraphbackOperationType.DELETE), t.name)
   }
 
   return undefined
 }
 
-const findResolver = (t: InputModelTypeContext): string => {
+const findResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.find) {
-    return knex.findTemplate(getFieldName(t.name, GraphbackOperationType.FIND, 's'), getTableName(t.name))
+    return templates.findTemplate(getFieldName(t.name, GraphbackOperationType.FIND, 's'), t.name)
   }
 
   return undefined
 }
 
-const findAllResolver = (t: InputModelTypeContext): string => {
+const findAllResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.findAll) {
-    return knex.findAllTemplate(getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'), getTableName(t.name))
+    return templates.findAllTemplate(getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'), t.name)
   }
 
   return undefined
 }
 
-const newSub = (t: InputModelTypeContext): string => {
+const newSub = (t: InputModelTypeContext): string | undefined => {
   if (t.config.create && t.config.subCreate) {
-    return knex.newSub(t.name)
+    return templates.newSub(t.name)
   }
 
   return undefined
 }
 
-const updatedSub = (t: InputModelTypeContext): string => {
+const updatedSub = (t: InputModelTypeContext): string | undefined => {
   if (t.config.update && t.config.subUpdate) {
-    return knex.updatedSub(t.name)
+    return templates.updatedSub(t.name)
   }
 
   return undefined
 }
 
-const deletedSub = (t: InputModelTypeContext): string => {
+const deletedSub = (t: InputModelTypeContext): string | undefined => {
   if (t.config.delete && t.config.subDelete) {
-    return knex.deletedSub(t.name)
+    return templates.deletedSub(t.name)
   }
 
   return undefined
@@ -80,7 +74,7 @@ const deletedSub = (t: InputModelTypeContext): string => {
  * Create context object for each individual type
  * @param context Visited info from the model
  */
-export const buildGraphbackOperationTypeContext = (context: InputModelTypeContext, database: string, relations: string[]): TargetResolverContext => {
+export const buildGraphbackOperationTypeContext = (context: InputModelTypeContext, relations: string[]): TargetResolverContext => {
   const typeContext = {
     relations: [],
     queries: [],
@@ -94,7 +88,7 @@ export const buildGraphbackOperationTypeContext = (context: InputModelTypeContex
   }
   if (!context.config.disableGen) {
     typeContext.queries = [findResolver(context), findAllResolver(context)].filter((s: string) => s !== undefined)
-    typeContext.mutations = [createResolver(context, database), updateResolver(context), deleteResolver(context)].filter((s: string) => s !== undefined)
+    typeContext.mutations = [createResolver(context), updateResolver(context), deleteResolver(context)].filter((s: string) => s !== undefined)
     typeContext.subscriptions = [newSub(context), updatedSub(context), deletedSub(context)].filter((s: string) => s !== undefined)
   }
 
@@ -106,42 +100,17 @@ export const buildGraphbackOperationTypeContext = (context: InputModelTypeContex
  * 
  * @param input InputModelTypeContext representing model 
  */
-export const buildResolverTargetContext = (input: InputModelTypeContext[], database: string) => {
+// FIXME remove this class and build proper relationship support
+export const buildResolverTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: ResolverTypeContext[] = []
 
-  const relations = []
-
-  inputContext.forEach((t: InputModelTypeContext) => {
-    t.fields.forEach((f: InputModelFieldContext) => {
-      if (f.isType) {
-        if (f.directives.OneToOne || !f.isArray) {
-          let columnName = `${t.name.toLowerCase()}Id`
-          if (f.directives.OneToOne) {
-            columnName = f.directives.OneToOne.field
-          }
-          relations.push({
-            typeName: t.name,
-            implementation: knex.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
-          })
-        } else if (f.directives.OneToMany || f.isArray) {
-          let columnName = `${t.name.toLowerCase()}Id`
-          if (f.directives.OneToMany) {
-            columnName = f.directives.OneToMany.field
-          }
-          relations.push({
-            typeName: t.name,
-            implementation: knex.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
-          })
-        }
-      }
-    })
-  })
+  const relations = createRelations(inputContext);
 
   inputContext.forEach((t: InputModelTypeContext) => {
     output.push({
       name: t.name,
-      context: buildGraphbackOperationTypeContext(t, database, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
+      context: buildGraphbackOperationTypeContext(t, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
     })
   })
 
@@ -159,7 +128,7 @@ export const createCustomContext = (inputContext: InputModelTypeContext[]) => {
     customQueries = queryType[0].fields.map((f: InputModelFieldContext) => {
       return {
         name: f.name,
-        implementation: knex.blankResolver(f.name),
+        implementation: templates.blankResolver(f.name),
         operationType: 'Query'
       }
     })
@@ -171,7 +140,7 @@ export const createCustomContext = (inputContext: InputModelTypeContext[]) => {
     customMutations = mutationType[0].fields.map((f: InputModelFieldContext) => {
       return {
         name: f.name,
-        implementation: knex.blankResolver(f.name),
+        implementation: templates.blankResolver(f.name),
         operationType: 'Mutation'
       }
     })
@@ -183,7 +152,7 @@ export const createCustomContext = (inputContext: InputModelTypeContext[]) => {
     customSubscriptions = subscriptionType[0].fields.map((f: InputModelFieldContext) => {
       return {
         name: f.name,
-        implementation: knex.blankSubscription(f.name),
+        implementation: templates.blankSubscription(f.name),
         operationType: 'Subscription'
       }
     })
@@ -191,3 +160,36 @@ export const createCustomContext = (inputContext: InputModelTypeContext[]) => {
 
   return [...customQueries, ...customMutations, ...customSubscriptions]
 }
+
+function createRelations(inputContext: InputModelTypeContext[]) {
+  const relations = [];
+  inputContext.forEach((t: InputModelTypeContext) => {
+    t.fields.forEach((f: InputModelFieldContext) => {
+      if (f.isType) {
+        if (f.directives.OneToOne || !f.isArray) {
+          let columnName = `${t.name.toLowerCase()}Id`;
+          if (f.directives.OneToOne) {
+            columnName = f.directives.OneToOne.field;
+          }
+          relations.push({
+            typeName: t.name,
+            implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
+          });
+        }
+        else if (f.directives.OneToMany || f.isArray) {
+          let columnName = `${t.name.toLowerCase()}Id`;
+          if (f.directives.OneToMany) {
+            columnName = f.directives.OneToMany.field;
+          }
+          relations.push({
+            typeName: t.name,
+            implementation: templates.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
+          });
+        }
+      }
+    });
+  });
+
+  return relations;
+}
+

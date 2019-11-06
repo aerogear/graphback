@@ -1,4 +1,4 @@
-import { InputModelTypeContext } from '@graphback/codegen-core';
+import { InputModelTypeContext } from '@graphback/core';
 import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from '../api/resolverTypes';
 import { createCustomContext } from '../api/targetResolverContext';
 
@@ -8,7 +8,7 @@ import { createCustomContext } from '../api/targetResolverContext';
  * @param name name of the Type
  */
 // tslint:disable-next-line: max-func-body-length
-const generateApolloFormattedResolvers = (context: TargetResolverContext, name: string): string => {
+const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
   const { relations, queries, mutations, subscriptions } = context
 
   const outputResolvers = []
@@ -86,8 +86,7 @@ export const customResolvers = [${customResolvers.map((c: CustomResolverContext)
   const outputCustomResolvers = customResolvers.map((c: CustomResolverContext) => {
     return {
       name: c.name,
-      output: `${imports}
-
+      output: `
 export const ${c.name} = {
   ${c.operationType}: {
     ${c.implementation}
