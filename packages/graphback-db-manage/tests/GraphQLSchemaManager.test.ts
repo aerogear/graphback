@@ -1,24 +1,30 @@
+import { Change, ChangeType } from '@graphql-inspector/core';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import ava, { ExecutionContext } from 'ava';
 import { GraphQLSchemaManager, InMemoryModelProvider } from "../src/database";
+import { GraphQLSchemaChangeTypes } from '../src/database/migrations/GraphQLSchemaChangeTypes';
 
 const oldSchemaDefault = `
 type User {
-    id: ID!
-    name: String!
+  id: ID!
+  name: String!
+}
+
+type Note {
+  id: ID!
+  title: String!
 }
 `;
 
 const currentSchemaDefault = `
 type User {
-    id: ID!
-    name: String!
-    age: Int
+  id: ID!
+  age: Int
 }
 
 type Test {
-    id: ID!
-    name: String
+  id: ID!
+  name: String
 }
 `;
 
@@ -40,6 +46,16 @@ ava('it should detect multiple changes', (t: ExecutionContext) => {
   t.assert(changes.length === 2);
   // tslint:disable-next-line: no-null-keyword
   t.snapshot(JSON.stringify(changes, null, 2));
+});
+
+ava('it should not have invalid change types', (t: ExecutionContext) => {
+  const { schemaManager } = setup();
+
+  const changes = schemaManager.getChanges();
+
+  const invalidChangeTypes = changes.filter((c: Change) => c === GraphQLSchemaChangeTypes[c.type]);
+
+  t.assert(invalidChangeTypes.length === 0);
 });
 
 ava('it should update the old schema to match the new one', (t: ExecutionContext) => {
