@@ -15,7 +15,6 @@
 
 ## Motivation
 
-GraphQL can be hard and intimidating initially.
 Graphback helps you to kickstart your experience with any existing GraphQL implementation
 by generating a Node.js server using your data model.
 
