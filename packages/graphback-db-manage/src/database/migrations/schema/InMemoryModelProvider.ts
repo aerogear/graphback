@@ -1,6 +1,3 @@
-import { buildSchemaText, removeFiles } from '@graphback/core';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join } from 'path';
 import { SchemaProvider } from './SchemaProvider';
 
 /**
