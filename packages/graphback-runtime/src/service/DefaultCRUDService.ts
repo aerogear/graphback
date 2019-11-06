@@ -34,7 +34,8 @@ export class DefaultCRUDService<T = any>
     public async create(name: string, data: T, context?: GraphbackContext): Promise<T> {
         this.logger.log(`Creating object ${name}`)
         const result = await this.db.create(name, data, context);
-        if (this.pubSub && context.publish) {
+        // TODO subscriptions
+        if (this.pubSub && context && context.publish) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
             const payload = this.buildEventPayload('new', name, result);
             await this.pubSub.publish(topic, payload);
@@ -46,7 +47,7 @@ export class DefaultCRUDService<T = any>
         this.logger.log(`Updating object ${name}`)
 
         const result = await this.db.update(name, id, data, context);
-        if (this.pubSub && context.publish) {
+        if (this.pubSub && context && context.publish) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
             const payload = this.buildEventPayload('updated', name, result);
             await this.pubSub.publish(topic, payload);
@@ -60,7 +61,7 @@ export class DefaultCRUDService<T = any>
         this.logger.log(`deleting object ${name}`)
 
         const result = await this.db.delete(name, id, context);
-        if (this.pubSub && context.publish) {
+        if (this.pubSub && context && context.publish) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
             const payload = this.buildEventPayload('deleted', name, result);
             await this.pubSub.publish(topic, payload);
