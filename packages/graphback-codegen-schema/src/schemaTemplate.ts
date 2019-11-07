@@ -1,5 +1,15 @@
-import { createImplementsInterfaceString } from '@graphback/core';
 import { TargetContext, TargetType } from './targetSchemaContext';
+
+/**
+ * Generate a string literal with the following format:
+ *
+ * `implements InterfaceA & InterfaceB & Interface C ...`
+ *
+ * @param names String[] - list of interface names
+ */
+const createImplementsInterfaceString = (names: string[]) => {
+  return `implements ${names.map((name: string) => name).join(' & ')} `;
+}
 
 const inputs = (defs: TargetType[]): string => {
   if (defs.length === 0) {
@@ -7,18 +17,16 @@ const inputs = (defs: TargetType[]): string => {
   }
 
   return `${defs.map((d: TargetType) => `input ${d.name}Input {
-    ${d.fields.join('\n    ')}
-  }`).join('\n\n  ')}`
+  ${d.fields.join('\n  ')}\n}`).join('\n\n')}`
 }
 
 const nodeTypes = (defs: TargetType[]): string => {
   if (defs.length === 0) {
-    return '\n';
+    return '\n\n';
   }
 
   return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces) : ''}{
-    ${d.fields.join('\n    ')}
-  }`).join('\n\n  ')}`
+  ${d.fields.join('\n  ')}\n}`).join('\n\n')}`
 }
 
 const nodeInterfaces = (defs: TargetType[]): string => {
@@ -27,8 +35,7 @@ const nodeInterfaces = (defs: TargetType[]): string => {
   }
 
   return `${defs.map((d: TargetType) => `interface ${d.name} {
-    ${d.fields.join('\n    ')}
-  }`).join('\n\n  ')}`
+  ${d.fields.join('\n  ')}\n}`).join('\n\n')}`
 }
 
 const filters = (defs: TargetType[]): string => {
@@ -37,8 +44,7 @@ const filters = (defs: TargetType[]): string => {
   }
 
   return `${defs.map((d: TargetType) => `input ${d.name}Filter {
-    ${d.fields.join('\n    ')}
-  }`).join('\n\n  ')}`
+    ${d.fields.join('\n    ')}\n}`).join('\n\n')}`
 }
 
 /**
@@ -50,18 +56,18 @@ const generateQueries = (queries: string[], customQueries: string[]) => {
   if (!queries.length && !customQueries.length) {
     return '';
   }
-  let queryOutput = `type Query {`
+  let queryOutput = `\ntype Query {`
 
   if (queries.length) {
-    queryOutput += `\n    ${queries.join('\n    ')}`
+    queryOutput += `\n  ${queries.join('\n  ')}`
   }
 
   if (customQueries.length) {
-    queryOutput += `\n    ## Custom queries`
-    queryOutput += `\n    ${customQueries.join('\n    ')}`
+    queryOutput += `\n  ## Custom queries`
+    queryOutput += `\n  ${customQueries.join('\n  ')}`
   }
 
-  queryOutput += `\n  }`
+  queryOutput += `\n}`
 
   return queryOutput
 }
@@ -75,18 +81,18 @@ const generateMutations = (mutations: string[], customMutations: string[]) => {
   if (!mutations.length && !customMutations.length) {
     return ``
   }
-  let mutationOutput = `type Mutation {`
+  let mutationOutput = `\ntype Mutation {`
 
   if (mutations.length) {
-    mutationOutput += `\n    ${mutations.join('\n    ')}`
+    mutationOutput += `\n  ${mutations.join('\n  ')}`
   }
 
   if (customMutations.length) {
-    mutationOutput += `\n    ## Custom mutations`
-    mutationOutput += `\n    ${customMutations.join('\n    ')}`
+    mutationOutput += `\n  ## Custom mutations`
+    mutationOutput += `\n  ${customMutations.join('\n  ')}`
   }
 
-  mutationOutput += `\n  }`
+  mutationOutput += `\n}`
 
   return mutationOutput
 }
@@ -138,11 +144,13 @@ export const generateSchemaString = (context: TargetContext, customContext?: Cus
   const allQueries = generateQueries(queries, customContext.customQueries)
   const allMutations = generateMutations(mutations, customContext.customMutations)
   const allSubs = generateSubscriptions(subscriptions, customContext.customSubscriptions)
-  let output = `  ${nodeInterfaces(interfaces)}
-  ${nodeTypes(types)}
-  ${inputs(inputFields)}
-  ${filters(filterFields)}
-  `
+  let output = `${nodeInterfaces(interfaces)}
+
+${nodeTypes(types)}
+
+${inputs(inputFields)}
+
+${filters(filterFields)}`
 
   if (allQueries) {
     output += `\n${allQueries}`
