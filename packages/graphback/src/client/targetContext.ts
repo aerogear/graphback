@@ -46,7 +46,7 @@ export const ${fieldName} = gql\`
 }
 
 const findQuery = (t: Type, imports: string) => {
-  const fieldName = getFieldName(t.name, ResolverType.FIND)
+  const fieldName = getFieldName(t.name, ResolverType.FIND, 's')
 
   return `${imports}
 
