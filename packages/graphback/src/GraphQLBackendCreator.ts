@@ -71,13 +71,12 @@ export class GraphQLBackendCreator {
   /**
    * Create runtime for backend in form of the schema string and resolve functions
    */
-  public async createRuntime(db: GraphbackDataProvider, pubSub: PubSub, dbStrategy: DatabaseInitializationStrategy): Promise<RuntimeResolversDefinition> {
+  public async createRuntime(db: GraphbackDataProvider, pubSub: PubSub): Promise<RuntimeResolversDefinition> {
     const backend: RuntimeResolversDefinition = {
       schema: "",
       resolvers: {}
     };
 
-    await this.initializeDatabase(dbStrategy);
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()
