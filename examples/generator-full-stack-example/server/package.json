@@ -1,10 +1,10 @@
 {
     "private": true,
-    "name": "server",
+    "name": "generator-server-example",
     "version": "4.0.0",
     "scripts": {
-      "develop": "ts-node-dev src/index.ts",
-      "start": "ts-node src/index.ts"
+        "develop": "ts-node-dev src/index.ts",
+        "start": "ts-node src/index.ts"
     },
     "dependencies": {
         "@types/cors": "2.8.6",
@@ -17,12 +17,13 @@
         "graphql-subscriptions": "1.1.0",
         "graphql-tag": "2.10.1",
         "graphql-tools": "4.0.6",
-        "knex": "0.20.1",
+        "knex": "0.20.0",
         "pg": "7.12.1",
         "sqlite3": "4.1.0",
         "subscriptions-transport-ws": "0.9.16",
         "ts-node": "8.4.1",
         "ts-node-dev": "1.0.0-pre.44",
-        "typescript": "3.7.2"
+        "typescript": "3.7.2",
+        "graphback": "0.10.0-dev1"
     }
 }

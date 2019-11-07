@@ -12,6 +12,7 @@ import { connect } from './db'
 import { resolvers } from './resolvers';
 import { typeDefs } from './schema';
 import { pubsub } from './subscriptions';
+import { createContext } from './runtime';
 
 async function start() {
   const app = express();
@@ -37,10 +38,13 @@ async function start() {
     }
   });
 
+  const context = createContext(db);
+
   app.use('/graphql', graphqlHTTP(
     (req) => ({
       schema,
       context: {
+        ...context,
         req,
         db,
         pubsub
