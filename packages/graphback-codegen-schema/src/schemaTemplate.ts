@@ -2,12 +2,20 @@ import { createImplementsInterfaceString } from '@graphback/core';
 import { TargetContext, TargetType } from './targetSchemaContext';
 
 const inputs = (defs: TargetType[]): string => {
+  if (defs.length === 0) {
+    return '\n';
+  }
+
   return `${defs.map((d: TargetType) => `input ${d.name}Input {
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
 }
 
 const nodeTypes = (defs: TargetType[]): string => {
+  if (defs.length === 0) {
+    return '\n';
+  }
+
   return `${defs.map((d: TargetType) => `type ${d.name} ${d.interfaces.length ? createImplementsInterfaceString(d.interfaces) : ''}{
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
@@ -17,13 +25,17 @@ const nodeInterfaces = (defs: TargetType[]): string => {
   if (defs.length === 0) {
     return '';
   }
-  
+
   return `${defs.map((d: TargetType) => `interface ${d.name} {
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
 }
 
 const filters = (defs: TargetType[]): string => {
+  if (defs.length === 0) {
+    return '\n';
+  }
+
   return `${defs.map((d: TargetType) => `input ${d.name}Filter {
     ${d.fields.join('\n    ')}
   }`).join('\n\n  ')}`
@@ -126,26 +138,22 @@ export const generateSchemaString = (context: TargetContext, customContext?: Cus
   const allQueries = generateQueries(queries, customContext.customQueries)
   const allMutations = generateMutations(mutations, customContext.customMutations)
   const allSubs = generateSubscriptions(subscriptions, customContext.customSubscriptions)
-  let output = `
-  ${nodeInterfaces(interfaces)}
-
+  let output = `  ${nodeInterfaces(interfaces)}
   ${nodeTypes(types)}
-
   ${inputs(inputFields)}
-
   ${filters(filterFields)}
   `
 
   if (allQueries) {
-    output += `\n\n  ${allQueries}`
+    output += `\n${allQueries}`
   }
 
   if (allMutations) {
-    output += `\n\n  ${allMutations}`
+    output += `\n${allMutations}`
   }
 
   if (allSubs) {
-    output += `\n\n  ${allSubs}`
+    output += `\n${allSubs}`
   }
 
   output += `\n`;
