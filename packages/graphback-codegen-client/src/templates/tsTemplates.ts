@@ -84,9 +84,8 @@ export const ${fieldName} = gql\`
 }
 
 const fragmentTS = (t: InputModelTypeContext) => {
-  return `${gqlImport}
-
-export const ${t.name}Fragment = gql\`
+  return `
+export const ${t.name}Fragment = \`
   ${fragment(t)}
 \`
 `
