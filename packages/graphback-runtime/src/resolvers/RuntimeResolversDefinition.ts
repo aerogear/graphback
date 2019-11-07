@@ -12,5 +12,6 @@ export interface RuntimeResolversDefinition {
     /**
      * Resolvers in Apollo GraphQL format
      */
-    resolvers: Object;
+    // tslint:disable-next-line: no-any
+    resolvers: any;
 }
