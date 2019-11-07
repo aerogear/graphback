@@ -56,7 +56,7 @@
     "glob": "7.1.5",
     "pino": "5.13.5",
     "tslib": "1.10.0",
-    "graphql-subscriptions": "^1.1.0",
+    "graphql-subscriptions": "1.1.0",
     "knex": "0.20.0",
     "pg": "7.12.1",
     "sqlite3": "4.1.0"
