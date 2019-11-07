@@ -39,7 +39,7 @@ export async function generateBackend(): Promise<void> {
     }
 
     const pathForSchema: string = folders.schema
-    const outputSchemaPath: string = `${pathForSchema}/generated.ts`
+    const outputSchemaPath: string = join(pathForSchema,'generated.ts')
 
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
