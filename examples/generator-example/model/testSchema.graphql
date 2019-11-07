@@ -1,5 +1,0 @@
-
-    type Test {
-      id: ID
-      name: String
-    }
