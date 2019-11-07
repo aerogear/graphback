@@ -37,7 +37,7 @@
       "args": [
         "generate"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-example",
+      "cwd": "${workspaceRoot}/examples/generator-full-stack-example",
     },
     {
       "type": "node",
@@ -50,7 +50,7 @@
       "args": [
         "openapi"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-example",
+      "cwd": "${workspaceRoot}/examples/generator-full-stack-example",
     },
     {
       "type": "node",
@@ -63,7 +63,7 @@
       "args": [
         "db"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-example",
+      "cwd": "${workspaceRoot}/examples/generator-full-stack-example",
     }
   ]
 }

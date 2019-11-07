@@ -1,0 +1,32 @@
+{
+  "name": "graphql-cli-fullstack-template",
+  "version": "4.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start:server": "cd server/ && yarn start",
+    "start:client": "cd client/ && yarn start"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "graphql": "14.5.8",
+    "@graphql-codegen/typescript": "canary",
+    "@graphql-codegen/typescript-operations": "canary",
+    "@graphql-codegen/typescript-react-apollo": "canary",
+    "@graphql-codegen/typescript-resolvers": "canary",
+    "@test-graphql-cli/codegen": "canary",
+    "@test-graphql-cli/coverage": "canary",
+    "@test-graphql-cli/diff": "canary",
+    "@test-graphql-cli/generate": "canary",
+    "@test-graphql-cli/init": "canary",
+    "@test-graphql-cli/serve": "canary",
+    "@test-graphql-cli/similar": "canary",
+    "@test-graphql-cli/validate": "canary",
+    "graphql-cli": "canary",
+    "tslint": "5.20.1",
+    "typescript": "3.7.2"
+  }
+}
