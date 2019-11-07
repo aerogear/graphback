@@ -87,7 +87,7 @@ const updateMutation = (t: Type, imports: string) => {
 
 export const ${fieldName} = gql\`
   mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
-    ${fieldName}(id: $id, input: {${inputVariables(t)}}) {4
+    ${fieldName}(id: $id, input: {${inputVariables(t)}}) {
       ...${t.name}Fields
     }
   }
