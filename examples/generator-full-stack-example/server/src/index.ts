@@ -10,9 +10,9 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 import { connect } from './db'
 import { resolvers } from './resolvers';
+import { createContext } from './runtime';
 import { typeDefs } from './schema';
 import { pubsub } from './subscriptions';
-import { createContext } from './runtime';
 
 async function start() {
   const app = express();
