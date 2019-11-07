@@ -54,6 +54,7 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
     const schemaContext = new InputModelProvider(folders.migrations, folders.model)
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
 
+    // TODO: Pass db as config not knex
     await backend.initializeDatabase(initializationStrategy);
 
   } catch (err) {

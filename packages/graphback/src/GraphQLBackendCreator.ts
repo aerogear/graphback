@@ -2,10 +2,11 @@ import { ClientDocuments, createClient } from '@graphback/codegen-client';
 import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
-import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-manage';
-import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
+import { DatabaseManager, DatabaseContextProvider, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider, DatabaseInitializationStrategy } from '@graphback/db-manage';
+import { DefaultCRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
+import knex from 'knex';
 
 /**
  * GraphQLBackend
@@ -29,9 +30,7 @@ export class GraphQLBackendCreator {
   }
 
   /**
-   * Set resolver operations that will be generated
-   *
-   * @param types - array of resolver operations that should be supported
+   * @param types - array of resolver operations that shoulI just said Ill keep an d be supported
    */
   public setDatabaseContext(provider: DatabaseContextProvider) {
     this.dbContextProvider = provider;
@@ -52,20 +51,8 @@ export class GraphQLBackendCreator {
     return backend;
   }
 
-  public async initializeDatabase(strategy: DatabaseInitializationStrategy) {
-    const typeContext = this.inputContext.filter(
-      (t: InputModelTypeContext) =>
-        t.kind === OBJECT_TYPE_DEFINITION &&
-        t.name !== 'Query' &&
-        t.name !== 'Mutation' &&
-        t.name !== 'Subscription',
-    );
-
-    const schemaChanges = this.graphQLSchemaManager.getChanges();
-
-    await strategy.init(this.dbContextProvider, typeContext, schemaChanges);
-
-    this.graphQLSchemaManager.updateOldSchema();
+  public async initializeDatabase(databaseStrategy: DatabaseInitializationStrategy): Promise<void> {
+    await databaseStrategy.init();
   }
 
   /**
@@ -76,7 +63,6 @@ export class GraphQLBackendCreator {
       schema: "",
       resolvers: {}
     };
-
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()

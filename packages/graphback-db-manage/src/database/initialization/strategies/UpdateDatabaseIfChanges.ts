@@ -4,6 +4,8 @@ import { DatabaseConnectionOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseContextProvider } from '../../migrations/DatabaseContextProvider';
 import { DatabaseSchemaManager } from '../../migrations/DataResourcesManager';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
+import { DatabaseManager } from '../../../DatabaseManager';
+import { MetadataProvider } from '../../../MetadataProvider';
 
 /**
  * Database initialization strategy to only update the database schema if there are changes in the schema
@@ -13,14 +15,15 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
  * @implements {DatabaseInitializationStrategy}
  */
 export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
-  private schemaManager: DatabaseSchemaManager;
+  private databaseManager: DatabaseManager;
   constructor(databaseOptions: DatabaseConnectionOptions) {
-    this.schemaManager = new DatabaseSchemaManager(databaseOptions.client, databaseOptions.connectionOptions);
+    this.databaseManager = new DatabaseManager(databaseOptions)
   }
 
-  public async init(context: DatabaseContextProvider, types: InputModelTypeContext[], changes: Change[]): Promise<void> {
-    await this.schemaManager.createDatabaseResources(context, types);
-    await this.schemaManager.updateDatabaseResources(context, types, changes);
-    await this.schemaManager.createDatabaseRelations(context, types);
+  public async init(): Promise<void> {
+    await this.databaseManager.init();
+    // await this.schemaManager.createDatabaseResources(context, types);
+    // await this.schemaManager.updateDatabaseResources(context, types, changes);
+    // await this.schemaManager.createDatabaseRelations(context, types);
   }
 }

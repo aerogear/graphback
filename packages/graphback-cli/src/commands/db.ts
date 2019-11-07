@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { DropCreateDatabaseAlways } from 'graphback'
+import { DropCreateDatabaseAlways, InputModelProvider } from 'graphback'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { createDB, postCommandMessage } from '../helpers'
 
@@ -13,7 +13,14 @@ export async function handler() {
   const configInstance = new ConfigBuilder();
   const config = configInstance.config;
 
-  const initializationStrategy = new DropCreateDatabaseAlways({ client: config.db.database, connectionOptions: config.db.dbConfig });
+  const schemaProvider = new InputModelProvider(config.folders.migrations, config.folders.model);
+
+  const initializationStrategy = new DropCreateDatabaseAlways({
+    client: config.db.database,
+    connectionOptions: config.db.dbConfig,
+    schemaProvider
+  });
+
   await createDB(initializationStrategy)
 
   postCommandMessage(`

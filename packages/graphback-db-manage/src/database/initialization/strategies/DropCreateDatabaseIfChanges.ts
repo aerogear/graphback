@@ -18,11 +18,6 @@ export class DropCreateDatabaseIfChanges implements DatabaseInitializationStrate
     this.schemaManager = new DatabaseSchemaManager(databaseOptions.client, databaseOptions.connectionOptions);
   }
 
-  public async init(context: DatabaseContextProvider, types: InputModelTypeContext[], changes: Change[]): Promise<void> {
-    if (changes.length > 0) {
-      await this.schemaManager.dropDatabaseSchema();
-      await this.schemaManager.createDatabaseResources(context, types);
-      await this.schemaManager.createDatabaseRelations(context, types);
-    }
+  public async init(): Promise<void> {
   }
 }

@@ -7,8 +7,8 @@ import {
 } from 'graphback';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
-import * as Knex from 'knex';
 import * as jsonConfig from '../graphback.json'
+import * as Knex from 'knex';
 
 /**
  * Method used to create runtime schema
@@ -21,8 +21,10 @@ export const createRuntime = async (client: Knex) => {
 
   const databaseInitializationStrategy = new UpdateDatabaseIfChanges({
     client: jsonConfig.db.database,
-    connectionOptions: jsonConfig.db.dbConfig
+    connectionOptions: jsonConfig.db.dbConfig,
+    schemaProvider: schemaContext
   });
+
   await backend.initializeDatabase(databaseInitializationStrategy);
   const pubSub = new PubSub();
   const runtime = await backend.createRuntime(dbClientProvider, pubSub);

@@ -1,6 +1,8 @@
 import { readFileSync } from 'fs';
 import { sync } from 'glob';
 import { join } from 'path';
+import { GraphbackChange, GraphQLSchemaChangeTypes } from '../changes/ChangeTypes';
+import { Change } from '@graphql-inspector/core';
 
 /**
  * Collects all GraphQL files in a directory and reads the content into a string.
@@ -21,4 +23,18 @@ export const buildSchemaText = (schemaDir: string): string => {
     .join('\n');
 
   return schemaText.length ? schemaText : undefined;
+}
+
+export const mapGraphbackChanges = (changes: Change[]): GraphbackChange[] => {
+  return changes.map((change: Change) => {
+    const [type, field] = change.path.split('.');
+
+    return {
+      type: GraphQLSchemaChangeTypes[change.type],
+      path: {
+        type,
+        field
+      }
+    }
+  });
 }

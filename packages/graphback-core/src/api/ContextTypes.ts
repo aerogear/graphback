@@ -65,8 +65,8 @@ export interface InputModelFieldContext {
 }
 
 /**
- * Type information from Graphback model. 
- * This interface is being used in entire graphback ecoystem to carry all 
+ * Type information from Graphback model.
+ * This interface is being used in entire graphback ecoystem to carry all
  * required information about model that can be used to generate GraphQL Schema, Resolvers etc.
  * Context type returned from `InputTypeVisitor`
  */
@@ -74,6 +74,7 @@ export interface InputModelTypeContext {
   // FIXME Make this GraphQL independent so developers do not need to introduce another library
   kind: KindEnum
   name: string
+  state?: string
   fields: InputModelFieldContext[]
   interfaces?: InputInterfaceType[]
   config: GraphbackGeneratorConfig
