@@ -39,7 +39,7 @@ export const findAllQuery = (t: InputModelTypeContext) => {
 }
 
 export const findQuery = (t: InputModelTypeContext) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
+  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
   return `
   query ${fieldName}(${variableFields(t)}) {
