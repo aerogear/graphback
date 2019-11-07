@@ -18,7 +18,7 @@ export const ${fieldName} = gql\`
 }
 
 const findQueryTS = (t: InputModelTypeContext, imports: string) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
+  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
   return `${imports}
 
@@ -109,7 +109,7 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
     if (t.config.find) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND),
+        name: getFieldName(t.name, GraphbackOperationType.FIND, 's'),
         implementation: findQueryTS(t, imports)
       })
     }
