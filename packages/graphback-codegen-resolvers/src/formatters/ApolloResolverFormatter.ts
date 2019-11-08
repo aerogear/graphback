@@ -1,6 +1,7 @@
 import { InputModelTypeContext } from '@graphback/core';
 import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from '../api/resolverTypes';
 import { createCustomContext } from '../api/targetResolverContext';
+import { generateHelperMethod } from '../templates/LayeredResolverTemplates';
 
 /**
  * Formats generated source code into Apollo GraphQL format
@@ -31,7 +32,7 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
   }`)
   }
 
-  return `\n\nexport const ${name.toLowerCase()}Resolvers = {
+  return `${generateHelperMethod()}\n\nexport const ${name.toLowerCase()}Resolvers = {
   ${outputResolvers.join(',\n\n  ')}
 }
 `
