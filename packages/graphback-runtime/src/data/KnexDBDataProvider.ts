@@ -43,7 +43,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     }
 
     // tslint:disable-next-line: no-reserved-keywords
-    public async delete(name: string, id: string): Promise<string> {
+    public async delete(name: string, id: string, data: Type): Promise<string> {
         const dbResult = await this.db(name).where('id', '=', id).del()
         if (dbResult) {
             return id;

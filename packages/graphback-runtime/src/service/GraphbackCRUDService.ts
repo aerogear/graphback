@@ -41,10 +41,11 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * Implementation for object deletes
      *
      * @param name name of the object to create
-     * @param data input data containing id
+     * @param id of the object to delete
+     * @param data data used for consistency reasons
      * @param context context object passed from graphql or rest layer
      */
-    delete(name: string, id: string, context?: GraphbackContext): Promise<string>;
+    delete(name: string, id: string, data?: Type, context?: GraphbackContext): Promise<string>;
 
     /**
      * Implementation for reading object

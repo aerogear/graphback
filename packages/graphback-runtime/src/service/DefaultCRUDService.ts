@@ -57,10 +57,10 @@ export class DefaultCRUDService<T = any>
     }
 
     // tslint:disable-next-line: no-reserved-keywords
-    public async delete(name: string, id: string, context?: GraphbackContext): Promise<string> {
+    public async delete(name: string, id: string, data?: T, context?: GraphbackContext): Promise<string> {
         this.logger.log(`deleting object ${name}`)
 
-        const result = await this.db.delete(name, id, context);
+        const result = await this.db.delete(name, id, data, context);
         if (this.pubSub && context && context.publish) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
             const payload = this.buildEventPayload('deleted', name, result);
