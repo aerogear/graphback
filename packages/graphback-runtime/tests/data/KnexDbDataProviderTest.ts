@@ -77,7 +77,7 @@ test('update Todo', async t => {
 });
 
 test('delete Todo', async t => {
-  const id = await t.context.provider.delete(typeContext.name, '3');
+  const id = await t.context.provider.delete(typeContext.name, '3', undefined);
 
   t.assert(id === '3');
 });
