@@ -2,19 +2,19 @@
 // TODO support for the database type instead of hardcoded lowercase
 export const createTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-      return context.crudService.create("${typeName.toLowerCase()}", args, context);
+      return context.crudService.create("${typeName.toLowerCase()}", args.input, context);
     }`
 }
 
 export const updateTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-      return context.crudService.update("${typeName.toLowerCase()}", args, context);
+      return context.crudService.update("${typeName.toLowerCase()}", args.id, args.input, context);
     }`
 }
 
 export const deleteTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-      return context.crudService.delete("${typeName.toLowerCase()}", args, context);
+      return context.crudService.delete("${typeName.toLowerCase()}", args.id, args.input, context);
     }`
 }
 
@@ -26,7 +26,7 @@ export const findAllTemplate = (fieldName: string, typeName: string): string => 
 
 export const findTemplate = (fieldName: string, typeName: string, ): string => {
   return `${fieldName}: (_, args, context) => {
-      return context.crudService.findAll("${typeName.toLowerCase()}", context);
+      return context.crudService.findBy"${typeName.toLowerCase()}", args.fields, context);
     }`
 }
 

@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, InputModelTypeContext} from "@graphback/core"
+import { getFieldName, GraphbackOperationType, InputModelTypeContext } from "@graphback/core"
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -54,9 +54,10 @@ export class LayeredRuntimeResolverGenerator {
         const deleteField = getFieldName(resolverElement.name, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
-          return this.service.delete(objectName, args.id, context)
+          return this.service.delete(objectName, args.id, args.input, context)
         }
       }
+
       if (resolverElement.config.findAll) {
         const findAllField = getFieldName(resolverElement.name, GraphbackOperationType.FIND_ALL, 's');
         // tslint:disable-next-line: no-any
