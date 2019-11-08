@@ -8,11 +8,11 @@ import { loadConfig } from 'graphql-config';
 import { makeExecutableSchema } from 'graphql-tools';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
+import { createKnexRuntimeContext } from '@graphback/runtime'
+import { PubSub } from 'graphql-subscriptions';
 import { connect } from './db'
 import { resolvers } from './resolvers';
-import { createContext } from './runtime';
 import { typeDefs } from './schema';
-import { pubsub } from './subscriptions';
 
 async function start() {
   const app = express();
@@ -22,7 +22,7 @@ async function start() {
   app.get('/health', (req, res) => res.sendStatus(200));
 
   const config = await loadConfig({
-    extensions: [() => ({ name: 'generate'})]
+    extensions: [() => ({ name: 'generate' })]
   });
 
   const generateConfig = await config!.getDefault().extension('generate');
@@ -38,17 +38,13 @@ async function start() {
     }
   });
 
-  const context = createContext(db);
+  const pubSub = new PubSub();
+  const context = createKnexRuntimeContext(db, pubSub);
 
   app.use('/graphql', graphqlHTTP(
     (req) => ({
       schema,
-      context: {
-        ...context,
-        req,
-        db,
-        pubsub
-      },
+      context,
       graphiql: process.env.NODE_ENV !== 'production',
     }),
   ));

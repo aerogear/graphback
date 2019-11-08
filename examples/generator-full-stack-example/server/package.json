@@ -24,6 +24,6 @@
         "ts-node": "8.4.1",
         "ts-node-dev": "1.0.0-pre.44",
         "typescript": "3.7.2",
-        "graphback": "0.10.0-dev1"
+        "@graphback/runtime": "0.10.0-dev1"
     }
 }

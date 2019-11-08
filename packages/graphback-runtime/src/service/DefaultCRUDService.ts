@@ -1,5 +1,5 @@
 import { GraphbackOperationType, InputModelTypeContext } from "@graphback/core"
-import { PubSub } from 'graphql-subscriptions';
+import { PubSub, PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
@@ -22,9 +22,9 @@ export class DefaultCRUDService<T = any>
 
     private db: GraphbackDataProvider;
     private logger: GraphbackMessageLogger;
-    private pubSub: PubSub;
+    private pubSub: PubSubEngine;
 
-    constructor(db: GraphbackDataProvider, pubSub?: PubSub,
+    constructor(db: GraphbackDataProvider, pubSub?: PubSubEngine,
         logger?: GraphbackMessageLogger) {
         this.db = db
         this.pubSub = pubSub;
