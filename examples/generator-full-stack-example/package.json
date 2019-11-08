@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "start:server": "cd server/ && yarn start",
-    "start:client": "cd client/ && yarn start"
+    "start:client": "cd client/ && yarn start",
+    "build": "cd server && tsc"
   },
   "license": "MIT",
   "devDependencies": {
@@ -28,5 +29,8 @@
     "graphql-cli": "canary",
     "tslint": "5.20.1",
     "typescript": "3.7.2"
+  },
+  "dependencies": {
+    "sqlite3": "^4.1.0"
   }
 }
