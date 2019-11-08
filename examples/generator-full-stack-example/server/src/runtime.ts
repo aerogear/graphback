@@ -2,15 +2,16 @@
 import {
   DatabaseConnectionOptions,
   DatabaseInitializationStrategy,
+  DefaultCRUDService,
   DropCreateDatabaseIfChanges,
   GraphQLBackendCreator,
   InputModelProvider,
   PgKnexDBDataProvider,
-  UpdateDatabaseIfChanges,
-  DefaultCRUDService
+  UpdateDatabaseIfChanges
 } from 'graphback';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
+import { resolve } from 'path';
 import * as jsonConfig from '../../graphback.json'
 
 /**
@@ -18,7 +19,8 @@ import * as jsonConfig from '../../graphback.json'
  * It will be part of of the integration tests
  */
 export const createContext = async (client: Knex) => {
-  const schemaContext = new InputModelProvider(jsonConfig.folders.migrations, jsonConfig.folders.model);
+  const schemaContext = new InputModelProvider(resolve('../', jsonConfig.folders.migrations),
+    resolve('../', jsonConfig.folders.model));
   const backend = new GraphQLBackendCreator(schemaContext, jsonConfig.graphqlCRUD);
   const crudDb = new PgKnexDBDataProvider(client);
 

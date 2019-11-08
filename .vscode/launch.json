@@ -15,6 +15,18 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
+      "name": "Generator template app",
+      "type": "node",
+      "request": "launch",
+      "env": {
+      },
+      "args": ["${workspaceRoot}/examples/generator-full-stack-example/server/src/index.ts"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "cwd": "${workspaceRoot}/examples/generator-full-stack-example/server",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
       "name": "Runtime template app",
       "type": "node",
       "request": "launch",
