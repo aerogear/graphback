@@ -35,17 +35,8 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   t.true(existsSync(join(basePath, "db.sqlite")))
   t.true(existsSync(join(basePath, "client/src/graphql/fragments/Note.ts")))
   t.true(existsSync(join(basePath, "server/src/schema/generated.ts")))
-  t.true(existsSync(join(basePath, "server/src/resolvers/generated/test.ts")))
+  t.true(existsSync(join(basePath, "server/src/resolvers/generated/note.ts")))
 
-  process.chdir(resolve(basePath, './server'))
-  
-  try {
-    await execa('npm', ['run', 'build']);
-  } catch (error) {
-    t.fail(`build failed with ${error}`);
-  }
 
-  // Test init config 
-  await initConfig("testback ", { model, database: "sqlite3", client: true });
 });
 

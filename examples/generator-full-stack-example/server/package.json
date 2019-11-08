@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "generator-server-example",
-    "version": "4.0.0",
+    "version": "0.10.0-dev2",
     "scripts": {
         "develop": "ts-node-dev src/index.ts",
         "build": "tsc",
@@ -9,6 +9,7 @@
         "start": "ts-node src/index.ts"
     },
     "dependencies": {
+        "@graphback/runtime": "^0.10.0-dev2",
         "@types/cors": "2.8.6",
         "@types/express": "4.17.2",
         "@types/node": "12.12.5",
@@ -25,7 +26,6 @@
         "subscriptions-transport-ws": "0.9.16",
         "ts-node": "8.4.1",
         "ts-node-dev": "1.0.0-pre.44",
-        "typescript": "3.7.2",
-        "@graphback/runtime": "0.10.0-dev1"
+        "typescript": "3.7.2"
     }
 }

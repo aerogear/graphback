@@ -1,6 +1,6 @@
 {
   "name": "@graphback/core",
-  "version": "0.10.0-dev1",
+  "version": "0.10.0-dev2",
   "description": "Api for building Graphback generator metadata",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -46,8 +46,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "pino": "5.13.5",
-    "glob": "7.1.5"
+    "glob": "7.1.5",
+    "pino": "5.13.5"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
