@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import { createWriteStream } from 'fs'
-import ora from 'ora'
 import * as github from 'parse-github-url'
 import * as request from 'request'
 import * as tar from 'tar'
 import * as tmp from 'tmp'
+import { logInfo } from '../utils'
 import { Template } from './templateMetadata'
 
 /**
@@ -54,7 +54,7 @@ function getTemplateRepositoryTarInformation(
 async function downloadRepository(
   tarInfo: TemplateRepositoryTarInformation,
 ): Promise<string> {
-  const spinner = ora(`Downloading starter from ${chalk.cyan(tarInfo.uri)}`).start()
+  logInfo(`Downloading starter from ${chalk.cyan(tarInfo.uri)}`)
   const tmpPath = tmp.fileSync({
     postfix: '.tar.gz',
   })
@@ -70,8 +70,6 @@ async function downloadRepository(
       .on('close', resolve)
   })
 
-  spinner.succeed()
-
   return tmpPath.name
 }
 
@@ -86,7 +84,7 @@ async function extractStarterFromRepository(
   repo: TemplateRepositoryTarInformation,
   output: string,
 ): Promise<void> {
-  const spinner = ora(`Extracting content to ${chalk.cyan(output)}`)
+  logInfo(`Extracting content to ${chalk.cyan(output)}`)
 
   await tar.extract({
     file: file,
@@ -94,8 +92,6 @@ async function extractStarterFromRepository(
     filter: (path: string) => RegExp(repo.files).test(path),
     strip: repo.files.split('/').length,
   })
-
-  spinner.succeed()
 
   return
 }

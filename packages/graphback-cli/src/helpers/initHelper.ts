@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import * as execa from 'execa'
 import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
-import ora from 'ora'
 import { createDBConfig } from '../templates/configTemplates'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
@@ -15,9 +14,8 @@ import { logError, logInfo } from '../utils'
  */
 async function installDependencies(name: string): Promise<void> {
   process.chdir(name)
-  const spinner = ora('Installing dependencies').start()
+  logInfo('Installing dependencies')
   await execa('npm', ['i'])
-  spinner.succeed()
 }
 
 /**
