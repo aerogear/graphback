@@ -3,7 +3,7 @@ import * as execa from 'execa'
 import * as figlet from 'figlet'
 import { accessSync, mkdirSync, writeFileSync } from 'fs'
 import { prompt as ask } from 'inquirer'
-import ora from 'ora'
+
 import { askForClient, chooseDatabase, createConfig } from '../templates/configTemplates'
 import { addModel, createModel } from '../templates/modelTemplates';
 import { allTemplates, extractTemplate } from '../templates/starterTemplates'
@@ -14,14 +14,13 @@ import { logError, logInfo } from '../utils'
  * Install dependencies, currently only npm
  */
 export async function installDependencies(database: string): Promise<void> {
-  const spinner = ora('Installing dependencies').start()
+  logInfo('Installing dependencies')
   await execa('npm', ['i'])
   if (database === 'pg') {
     await execa('npm', ['i', '-S', 'pg'])
   } else if (database === 'sqlite3') {
     await execa('npm', ['i', '-S', 'sqlite3'])
   }
-  spinner.succeed()
 }
 
 /**

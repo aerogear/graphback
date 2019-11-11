@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
-import ora from 'ora'
+import { logInfo } from '../utils'
 import { GraphQLModel } from './templateMetadata'
 
 const modelsPath = `${__dirname}/resources/models`
@@ -36,9 +36,8 @@ export const allModels: GraphQLModel[] = [
  */
 export function addModel(projectName: string, modelName: string, content: string): void {
   const path = `${process.cwd()}/${projectName}/model/${modelName}.graphql`
-  const spinner = ora('Creating model').start()
+  logInfo('Creating model')
   writeFileSync(path, content)
-  spinner.succeed()
 }
 
 export interface ModelTemplate {
