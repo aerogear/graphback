@@ -52,7 +52,7 @@ By default resolver layer will based on the `crudService` field attached to cont
 Developers can use the helper function `createKnexRuntimeContext` that will build default context for resolver layer.
 
 See example app:
-https://github.com/aerogear/graphback/tree/master/examples/generator-full-stack-example
+https://github.com/aerogear/graphback/tree/master/examples/generator-fullstack
 
 ### Running example
 

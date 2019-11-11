@@ -19,7 +19,7 @@ const model = {
 }
 
 ava('Test cli workflow', async (t: ExecutionContext) => {
-  const basePath = resolve(`${__dirname}/../../../examples/generator-full-stack-example`);
+  const basePath = resolve(`${__dirname}/../../../examples/generator-fullstack`);
   process.chdir(basePath)
   await generate();
 

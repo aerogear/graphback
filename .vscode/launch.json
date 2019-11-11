@@ -20,9 +20,9 @@
       "request": "launch",
       "env": {
       },
-      "args": ["${workspaceRoot}/examples/generator-full-stack-example/server/src/index.ts"],
+      "args": ["${workspaceRoot}/examples/generator-fullstack/server/src/index.ts"],
       "runtimeArgs": ["-r", "ts-node/register"],
-      "cwd": "${workspaceRoot}/examples/generator-full-stack-example/server",
+      "cwd": "${workspaceRoot}/examples/generator-fullstack/server",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
@@ -49,7 +49,7 @@
       "args": [
         "generate"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-full-stack-example",
+      "cwd": "${workspaceRoot}/examples/generator-fullstack",
     },
     {
       "type": "node",
@@ -62,7 +62,7 @@
       "args": [
         "openapi"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-full-stack-example",
+      "cwd": "${workspaceRoot}/examples/generator-fullstack",
     },
     {
       "type": "node",
@@ -75,7 +75,7 @@
       "args": [
         "db"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-full-stack-example",
+      "cwd": "${workspaceRoot}/examples/generator-fullstack",
     }
   ]
 }

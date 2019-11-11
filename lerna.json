@@ -1,7 +1,7 @@
 {
   "packages": [
     "examples/*",
-    "examples/generator-full-stack-example/*",
+    "examples/generator-fullstack/*",
     "packages/*"
   ],
   "version": "0.10.0-dev2"
