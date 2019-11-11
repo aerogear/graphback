@@ -4,8 +4,9 @@
     "version": "0.10.0-dev2",
     "scripts": {
         "develop": "ts-node-dev src/index.ts",
-        "build": "tsc",
-        "test": "echo server tests are disabled",
+        "build": "echo disabled",
+        "test": "echo disabled",
+        "lint": "echo disabled",
         "start": "ts-node src/index.ts"
     },
     "dependencies": {

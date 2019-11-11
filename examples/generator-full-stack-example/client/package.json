@@ -18,11 +18,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "tsc",
+    "build": "echo disabled",
+    "test": "echo disabled",
+    "lint": "echo disabled",
     "build:react": "react-scripts build",
-    "test": "no tests",
     "test:react": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject:react": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

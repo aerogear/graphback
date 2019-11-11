@@ -9,7 +9,9 @@
   "scripts": {
     "start:server": "cd server/ && yarn start",
     "start:client": "cd client/ && yarn start",
-    "build": "cd server && tsc && cd client && tsc"
+    "build": "echo disabled",
+    "test": "echo disabled",
+    "lint": "echo disabled"
   },
   "license": "MIT",
   "devDependencies": {
