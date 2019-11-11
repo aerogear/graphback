@@ -18,7 +18,7 @@ yarn install
 docker-compose up -d
 ```
 
-- Generate resources(schema and resolvers) and create database
+Generate resources (schema and resolvers) and create database
 
 ```sh
 yarn graphql generate --backend
