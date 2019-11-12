@@ -1,5 +1,5 @@
-import { InputModelTypeContext } from "@graphback/core"
 import { AdvancedFilter } from '../data/GraphbackDataProvider';
+import { GraphbackRuntimeOptions } from '../GraphbackRuntimeOptions';
 
 
 /**
@@ -25,7 +25,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    create(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    create(name: string, data: Type, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object updates
@@ -35,7 +35,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    update(name: string, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    update(name: string, id: string, data: Type, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes
@@ -45,7 +45,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data data used for consistency reasons
      * @param context context object passed from graphql or rest layer
      */
-    delete(name: string, id: string, data?: Type, context?: GraphbackContext): Promise<string>;
+    delete(name: string, id: string, data?: Type, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<string>;
 
     /**
      * Implementation for reading object
@@ -54,7 +54,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    read(name: string, id: string, context?: GraphbackContext): Promise<Type>;
+    read(name: string, id: string, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for finding all objects
@@ -63,7 +63,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    findAll(name: string, context?: GraphbackContext): Promise<Type[]>;
+    findAll(name: string, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Implementation for reading objects with filtering capabilities
@@ -72,7 +72,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
-    findBy(name: string, filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
+    findBy(name: string, filter: Type | AdvancedFilter, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Subscription for all creation events
