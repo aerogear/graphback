@@ -31,7 +31,7 @@ export class KnexMigrationManager implements SchemaMigrationProvider {
     // TODO: Don't hard code table name conversion
     const tableName = t.name.toLowerCase();
 
-    return this.db.schema.createTable(
+    const sqlStatement = this.db.schema.createTable(
       tableName,
       (table: knex.TableBuilder) => {
         table.increments();
@@ -44,6 +44,8 @@ export class KnexMigrationManager implements SchemaMigrationProvider {
         table.timestamps();
       },
     ).toQuery();
+
+    return `${sqlStatement};`;
   }
 
   public alterTable(t: InputModelTypeContext, changes: GraphbackChange[]): string {
@@ -51,7 +53,7 @@ export class KnexMigrationManager implements SchemaMigrationProvider {
     // TODO: Should this be filtered before passed as an arg??
     const typeChanges = changes.filter((c: GraphbackChange) => c.path.type === t.name);
 
-    return this.db.schema.alterTable(
+    const sqlStatement = this.db.schema.alterTable(
       tableName,
       (table: knex.TableBuilder) => {
         for (const change of typeChanges) {
@@ -63,6 +65,8 @@ export class KnexMigrationManager implements SchemaMigrationProvider {
         }
       }
     ).toQuery();
+
+    return `${sqlStatement};`;
   }
 
   public async getMigrations(): Promise<SchemaMigration[]> {
@@ -110,7 +114,7 @@ export class KnexMigrationManager implements SchemaMigrationProvider {
       applied_at: new Date()
     }
 
-    await this.db(this.tables.tables).insert(updatedMigration);
+    await this.db(this.tables.migrations).where({ id: updatedMigration.id }).update(updatedMigration);
 
     return Promise.resolve();
   }

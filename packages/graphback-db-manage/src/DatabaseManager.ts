@@ -6,6 +6,7 @@ import { SchemaMigration } from './models';
 import { mapGraphbackChanges } from './utils/graphqlUtils';
 import { GraphbackChange, GraphQLSchemaChangeTypes } from './changes/ChangeTypes';
 import { KnexMigrationManager } from './migrations/KnexMigrationProvider';
+import { GraphQLSchema } from 'graphql';
 
 export class DatabaseManager {
   private provider: SchemaProvider;
@@ -27,14 +28,9 @@ export class DatabaseManager {
   private async createMigration() {
     const newSchema = buildSchema(this.provider.getCurrentSchemaText());
 
-    // tslint:disable-next-line: no-any
-    let oldSchema: any;
-    if (this.provider.getPreviousSchemaText()) {
-      oldSchema = buildSchema(this.provider.getPreviousSchemaText());
-    }
-
     const migrations = await this.migrationProvider.getMigrations();
 
+    let oldSchema: GraphQLSchema;
     if (migrations.length) {
       const last = migrations[migrations.length - 1];
 
@@ -46,22 +42,28 @@ export class DatabaseManager {
     };
 
     let changes: GraphbackChange[] = [];
-
     if (oldSchema) {
       const inspectorChanges = diff(oldSchema, newSchema);
       changes = mapGraphbackChanges(inspectorChanges);
-
-      if (changes.length) {
-        newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
-        newMigration.changes = JSON.stringify(changes);
-      } else {
-        return;
-      }
+    } else {
+      changes = this.inputContext.map((model: InputModelTypeContext) => {
+        return {
+          type: GraphQLSchemaChangeTypes.TYPE_ADDED,
+          path: {
+            type: model.name
+          }
+        }
+      });
     }
 
-    if (changes.length || !migrations.length) {
-      await this.migrationProvider.createMigration(newMigration);
+    if (!changes.length) {
+      return;
     }
+
+    newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
+    newMigration.changes = JSON.stringify(changes);
+
+    await this.migrationProvider.createMigration(newMigration);
   }
 
   private async applyMigrations() {
