@@ -6,7 +6,7 @@ export * from "./data/PgKnexDBDataProvider"
 export * from "./data/KnexDBDataProvider"
 
 // Service
-export * from "./service/DefaultCRUDService"
+export * from "./service/CRUDService"
 export * from "./service/GraphbackCRUDService"
 
 export * from "./resolvers/LayeredRuntimeResolverGen"

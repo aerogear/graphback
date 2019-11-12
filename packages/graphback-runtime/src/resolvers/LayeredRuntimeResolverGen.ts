@@ -40,21 +40,27 @@ export class LayeredRuntimeResolverGenerator {
         const resolverCreateField = getFieldName(resolverElement.name, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
-          return this.service.create(objectName, args.input, context)
+          return this.service.create(objectName, args.input, {
+            publishEvent: resolverElement.config.subCreate
+          }, context)
         }
       }
       if (resolverElement.config.update) {
         const updateField = getFieldName(resolverElement.name, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
-          return this.service.update(objectName, args.id, args.input, context)
+          return this.service.update(objectName, args.id, args.input, {
+            publishEvent: resolverElement.config.subUpdate
+          }, context)
         }
       }
       if (resolverElement.config.delete) {
         const deleteField = getFieldName(resolverElement.name, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
-          return this.service.delete(objectName, args.id, args.input, context)
+          return this.service.delete(objectName, args.id, args.input, {
+            publishEvent: resolverElement.config.subDelete
+          }, context)
         }
       }
 

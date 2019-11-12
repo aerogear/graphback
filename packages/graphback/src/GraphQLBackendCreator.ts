@@ -3,7 +3,7 @@ import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
 import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-manage';
-import { DefaultCRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
+import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
 
@@ -80,7 +80,7 @@ export class GraphQLBackendCreator {
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()
-    const defaultProvider = new DefaultCRUDService(db, pubSub);
+    const defaultProvider = new CRUDService(db, pubSub);
     const resolverGenerator = new LayeredRuntimeResolverGenerator(this.inputContext, defaultProvider)
     backend.resolvers = resolverGenerator.generate()
 

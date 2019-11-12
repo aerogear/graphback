@@ -3,14 +3,14 @@ import _test, { TestInterface } from 'ava';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { DefaultCRUDService } from  '../../src/service/DefaultCRUDService'
+import { CRUDService } from  '../../src/service/CRUDService'
 
 // tslint:disable: typedef
 
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;
-  crudService: DefaultCRUDService
+  crudService: CRUDService
 }
 
 interface Todo {
@@ -51,7 +51,7 @@ test.beforeEach(async t => {
 
   const provider = new KnexDBDataProvider(db);
   const pubSub = new PubSub();
-  const crudService = new DefaultCRUDService(provider, pubSub)
+  const crudService = new CRUDService(provider, pubSub)
   t.context = { db, provider, crudService };
 });
 

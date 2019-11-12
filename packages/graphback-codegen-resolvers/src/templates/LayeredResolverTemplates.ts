@@ -3,21 +3,27 @@
 export const createTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
       validateRuntimeContext(context)
-      return context.crudService.create("${typeName.toLowerCase()}", args.input, context);
+      return context.crudService.create("${typeName.toLowerCase()}", args.input, {
+        publishEvent: ${subscription}
+      }, context);
     }`
 }
 
 export const updateTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
       validateRuntimeContext(context)
-      return context.crudService.update("${typeName.toLowerCase()}", args.id, args.input, context);
+      return context.crudService.update("${typeName.toLowerCase()}", args.id, args.input, {
+        publishEvent: ${subscription}
+      }, context);
     }`
 }
 
 export const deleteTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
       validateRuntimeContext(context)
-      return context.crudService.delete("${typeName.toLowerCase()}", args.id, args.input, context);
+      return context.crudService.delete("${typeName.toLowerCase()}", args.id, args.input, {
+        publishEvent: ${subscription}
+      }, context);
     }`
 }
 
@@ -37,7 +43,7 @@ export const findTemplate = (fieldName: string, typeName: string, ): string => {
 
 export const newSub = (typeName: string): string => {
   return `new${typeName}: {
-      subscribe: (_: any, __: any, context: GraphQLContext) => {
+      subscribe: (_, args, context) => {
         validateRuntimeContext(context)
         return context.crudService.subscribeToCreate("${typeName.toLowerCase()}", context);
       }
@@ -46,7 +52,7 @@ export const newSub = (typeName: string): string => {
 
 export const updatedSub = (typeName: string): string => {
   return `updated${typeName}: {
-      subscribe  : (_: any, __: any, context: GraphQLContext) => {
+      subscribe: (_, args, context) => {
         validateRuntimeContext(context)
         return context.crudService.subscribeToUpdate("${typeName.toLowerCase()}", context);
       }
@@ -55,7 +61,7 @@ export const updatedSub = (typeName: string): string => {
 
 export const deletedSub = (typeName: string): string => {
   return `deleted${typeName}: {
-      subscribe: (_: any, __: any, context: GraphQLContext) => {
+      subscribe: (_, args, context) => {
         validateRuntimeContext(context)
         return context.crudService.subscribeToDelete("${typeName.toLowerCase()}", context);
       }
