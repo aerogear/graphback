@@ -34,7 +34,6 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/knex": "0.15.2",
     "@types/node": "8.10.56",
     "ava": "2.4.0",
     "graphql": "14.5.8",
