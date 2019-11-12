@@ -4,6 +4,7 @@
     ":pinAllExceptPeerDependencies"
   ],
   "groupName":"all",
+  "ignoreDeps": ["chalk"]
   "packageRules": [
     {
       "packageNames": ["graphql"],
