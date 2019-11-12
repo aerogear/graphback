@@ -13,5 +13,6 @@ export * from "./resolvers/LayeredRuntimeResolverGen"
 export * from "./resolvers/RuntimeResolversDefinition"
 
 // Helpers 
-export * from "./RuntimeContext"
+export * from "./GraphbackRuntimeContext"
 export * from "./createKnexRuntimeContext"
+export * from "./validateRuntimeContext"
