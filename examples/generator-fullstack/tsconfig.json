@@ -6,6 +6,7 @@
       "esnext",
       "esnext.asynciterable",
       "es2015",
+      "es2018.promise",
       "dom",
       "es2016"
     ],
