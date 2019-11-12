@@ -2,9 +2,7 @@ import { InputModelTypeContext, graphQLInputContext } from '@graphback/core';
 import { diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
 import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseConnectionOptions } from './database';
-import { MetadataProvider } from './MetadataProvider';
 import { SchemaMigration } from './models';
-import { printSchema } from 'graphql';
 import { mapGraphbackChanges } from './utils/graphqlUtils';
 import { GraphbackChange, GraphQLSchemaChangeTypes } from './changes/ChangeTypes';
 import { KnexMigrationManager } from './migrations/KnexMigrationProvider';
@@ -21,12 +19,12 @@ export class DatabaseManager {
 
   public async init() {
     await this.migrationProvider.createMetadataTables();
-    await this.saveMigration();
-
+    await this.createMigration();
+    await this.applyMigrations();
     // TODO: Validate input
   }
 
-  private async saveMigration() {
+  private async createMigration() {
     const newSchema = buildSchema(this.provider.getCurrentSchemaText());
 
     // tslint:disable-next-line: no-any
@@ -44,22 +42,35 @@ export class DatabaseManager {
     }
 
     const newMigration: SchemaMigration = {
-      model: printSchema(newSchema)
+      model: this.provider.getCurrentSchemaText()
     };
 
     let changes: GraphbackChange[] = [];
+
     if (oldSchema) {
       const inspectorChanges = diff(oldSchema, newSchema);
       changes = mapGraphbackChanges(inspectorChanges);
-      newMigration.changes = JSON.stringify(changes)
 
       if (changes.length) {
         newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
+        newMigration.changes = JSON.stringify(changes);
+      } else {
+        return;
       }
     }
 
     if (changes.length || !migrations.length) {
-      // await this.metadataProvider.createMigration(newMigration);
+      await this.migrationProvider.createMigration(newMigration);
+    }
+  }
+
+  private async applyMigrations() {
+    const migrations = await this.migrationProvider.getMigrations();
+
+    const migrationsToApply = migrations.filter((m: SchemaMigration) => m.applied_at === null);
+
+    for (const migration of migrationsToApply) {
+      await this.migrationProvider.applyMigration(migration);
     }
   }
 

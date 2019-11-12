@@ -101,4 +101,17 @@ export class KnexMigrationManager implements SchemaMigrationProvider {
 
     return Promise.resolve();
   }
+
+  public async applyMigration(migration: SchemaMigration): Promise<void> {
+    await this.db.raw(migration.sql_up);
+
+    const updatedMigration: SchemaMigration = {
+      ...migration,
+      applied_at: new Date()
+    }
+
+    await this.db(this.tables.tables).insert(updatedMigration);
+
+    return Promise.resolve();
+  }
 }

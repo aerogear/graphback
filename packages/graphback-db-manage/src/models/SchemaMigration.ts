@@ -1,6 +1,6 @@
 export interface SchemaMigration {
   id?: string
-  applied?: boolean
+  applied_at?: Date
   changes?: string
   model: string
   sql_up?: string

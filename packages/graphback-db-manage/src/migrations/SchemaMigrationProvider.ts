@@ -7,5 +7,6 @@ export interface SchemaMigrationProvider {
   alterTable(t: InputModelTypeContext, c: GraphbackChange[]): string;
   createMetadataTables(): Promise<void>;
   getMigrations(): Promise<SchemaMigration[]>;
-  createMigration(migration: SchemaMigration): Promise<void>
+  createMigration(migration: SchemaMigration): Promise<void>;
+  applyMigration(migration: SchemaMigration): Promise<void>;
 }
