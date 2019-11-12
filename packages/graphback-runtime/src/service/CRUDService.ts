@@ -119,7 +119,9 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
     private buildEventPayload(action: string, name: string, result: string) {
         const payload = {};
-        payload[`${action}${name}`] = result;
+        const capitalName = name[0].toUpperCase() +
+            name.slice(1);
+        payload[`${action}${capitalName}`] = result;
 
         return payload;
     }

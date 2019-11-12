@@ -1,8 +1,5 @@
 import { gql } from 'apollo-server-core';
 import {
-  DatabaseConnectionOptions,
-  DatabaseInitializationStrategy,
-  DropCreateDatabaseIfChanges,
   GraphQLBackendCreator,
   InputModelProvider,
   PgKnexDBDataProvider,
