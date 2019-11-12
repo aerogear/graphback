@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@graphback/core": "^0.10.0-dev2",
-    "graphql-subscriptions": "^1.1.0",
+    "graphql-subscriptions": "1.1.0",
     "knex": "0.20.0"
   },
   "peerDependencies": {
