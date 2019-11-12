@@ -33,15 +33,15 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/node": "8.10.56",
+    "@types/node": "8.10.59",
     "@types/pino": "5.20.0",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
-    "ts-node": "8.4.1",
-    "tslint": "5.20.0",
+    "ts-node": "8.5.0",
+    "tslint": "5.20.1",
     "tsutils": "3.17.1",
-    "typescript": "3.6.4"
+    "typescript": "3.7.2"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -52,11 +52,11 @@
     "@graphback/db-manage": "^0.10.0-dev2",
     "@graphback/runtime": "^0.10.0-dev2",
     "@graphql-inspector/core": "1.26.0",
-    "glob": "7.1.5",
+    "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
-    "knex": "0.20.0",
+    "knex": "0.20.1",
     "pg": "7.12.1",
-    "pino": "5.13.5",
+    "pino": "5.13.6",
     "sqlite3": "4.1.0",
     "tslib": "1.10.0"
   },
