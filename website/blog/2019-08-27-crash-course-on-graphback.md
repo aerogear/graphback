@@ -189,11 +189,9 @@ $ graphback generate
 ```
 And if you navigate to `./src/resolvers/custom` you will see `userByName.ts` file. As it is custom resolver we need to implement it ourselves. Change it to:
 ```js
-import { GraphQLContext } from '../../context'
-
 export const userByName = {
   Query: {
-    userByName: (_: any, args: any, context: GraphQLContext) => {
+    userByName: (_: any, args: any, context: any) => {
       return context.db.select().from('user').where('firstName', '=', args.firstName)
     }
   }

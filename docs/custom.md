@@ -50,7 +50,7 @@ and will generated a resolver file in custom folder
 ```
 export const likePost = {
   Mutation: {
-    likePost: (_: any, args: any, context: GraphQLContext) => {
+    likePost: (_: any, args: any, context: any) => {
         // Implementation here
     }
   }
