@@ -1,4 +1,4 @@
-import { InputModelTypeContext, graphQLInputContext } from '@graphback/core';
+import { InputModelTypeContext, graphQLInputContext, filterObjectTypes } from '@graphback/core';
 import { diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
 import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseConnectionOptions } from './database';
@@ -14,7 +14,8 @@ export class DatabaseManager {
   private inputContext: InputModelTypeContext[];
   constructor(options: DatabaseConnectionOptions) {
     this.provider = options.schemaProvider;
-    this.inputContext = graphQLInputContext.createModelContext(this.provider.getCurrentSchemaText(), {});
+    const inputContext = graphQLInputContext.createModelContext(this.provider.getCurrentSchemaText(), {});
+    this.inputContext = filterObjectTypes(inputContext);
     this.migrationProvider = new KnexMigrationManager(options.client, options.connectionOptions);
   }
 
