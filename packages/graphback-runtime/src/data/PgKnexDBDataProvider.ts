@@ -16,8 +16,7 @@ export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends Kn
         super(db);
     }
 
-    public async create(inputType: InputModelTypeContext,  data: Type): Promise<Type> {
-        const name = getTableName(inputType.name)
+    public async create(name: string,  data: Type): Promise<Type> {
         const dbResult = await this.db(name).insert(data).returning('*');
         if (dbResult && dbResult[0]) {
             return dbResult[0]

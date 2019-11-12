@@ -26,9 +26,9 @@ export const createRuntime = async (client: Knex) => {
     client: jsonConfig.db.database,
     connectionOptions: jsonConfig.db.dbConfig
   });
-
+  await backend.initializeDatabase(databaseInitializationStrategy);
   const pubSub = new PubSub();
-  const runtime = await backend.createRuntime(dbClientProvider, pubSub, databaseInitializationStrategy);
+  const runtime = await backend.createRuntime(dbClientProvider, pubSub);
   const generatedSchema = runtime.schema;
 
   const executableSchema = makeExecutableSchema({

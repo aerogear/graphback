@@ -1,5 +1,5 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
-import { LegacyResolverGenerator } from "@graphback/codegen-resolvers"
+import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
 import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-manage';
@@ -46,8 +46,8 @@ export class GraphQLBackendCreator {
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()
 
-    const resolverGenerator = new LegacyResolverGenerator(this.inputContext);
-    backend.resolvers = resolverGenerator.generate(database);
+    const resolverGenerator = new ApolloServiceResolverGenerator(this.inputContext);
+    backend.resolvers = resolverGenerator.generate();
 
     return backend;
   }
@@ -71,13 +71,12 @@ export class GraphQLBackendCreator {
   /**
    * Create runtime for backend in form of the schema string and resolve functions
    */
-  public async createRuntime(db: GraphbackDataProvider, pubSub: PubSub, dbStrategy: DatabaseInitializationStrategy): Promise<RuntimeResolversDefinition> {
+  public async createRuntime(db: GraphbackDataProvider, pubSub: PubSub): Promise<RuntimeResolversDefinition> {
     const backend: RuntimeResolversDefinition = {
       schema: "",
       resolvers: {}
     };
 
-    await this.initializeDatabase(dbStrategy);
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()

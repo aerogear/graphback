@@ -19,13 +19,4 @@ export const filterInterfaceTypes = (types: InputModelTypeContext[]) => types.fi
 
 export const filterObjectExtensions = (types: InputModelTypeContext[]) => types.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_EXTENSION);
 
-/**
- * Generate a string literal with the following format:
- *
- * `implements InterfaceA & InterfaceB & Interface C ...`
- *
- * @param names String[] - list of interface names
- */
-export const createImplementsInterfaceString = (names: string[]) => {
-  return `implements ${names.map((name: string) => name).join(' & ')} `;
-}
+

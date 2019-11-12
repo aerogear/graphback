@@ -1,3 +1,2 @@
-export * from "./layered/LayeredResolverGen"
-export * from "./legacy-knex/LegacyResolverGenerator"
-export * from "./OutputResolver"
+export * from "./api/OutputResolver"
+export * from "./api/ApolloServiceResolverGenerator"

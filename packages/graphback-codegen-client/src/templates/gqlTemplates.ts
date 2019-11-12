@@ -29,57 +29,48 @@ export const inputVariables = (t: InputModelTypeContext) => {
 export const findAllQuery = (t: InputModelTypeContext) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
 
-  return `
-  query ${fieldName} {
+  return `query ${fieldName} {
     ${fieldName} {
       ...${t.name}Fields
     }
-  }
-  `
+  }`
 }
 
 export const findQuery = (t: InputModelTypeContext) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
-  return `
-  query ${fieldName}(${variableFields(t)}) {
+  return `query ${fieldName}(${variableFields(t)}) {
     ${fieldName}(fields: {${variables(t)}}) {
       ...${t.name}Fields
     }
-  }
-`
+  }`
 }
 
 
 export const createMutation = (t: InputModelTypeContext) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `
-  mutation ${fieldName}(${variableFields(t)}) {
+  return `mutation ${fieldName}(${variableFields(t)}) {
     ${fieldName}(input: {${inputVariables(t)}}) {
       ...${t.name}Fields
     }
-  }
-`
+  }`
 }
 
 export const updateMutation = (t: InputModelTypeContext) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
-  return `
-  mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
+  return `mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
     ${fieldName}(id: $id, input: {${inputVariables(t)}}) {
       ...${t.name}Fields
     }
-  }
-`
+  }`
 }
 
 export const deleteMutation = (t: InputModelTypeContext, ) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
-  return `
-  mutation ${fieldName}($id: ID!) {
+  return `mutation ${fieldName}($id: ID!) {
     ${fieldName}(id: $id) {
       id
     }
@@ -90,21 +81,17 @@ export const deleteMutation = (t: InputModelTypeContext, ) => {
 export const subscription = (t: InputModelTypeContext, subscriptionType: string) => {
   const fieldName = `${subscriptionType}${t.name}`
 
-  return `
-  subscription ${fieldName} {
+  return `subscription ${fieldName} {
     ${fieldName} {
       ...${t.name}Fields
     }
-  }
-`
+  }`
 }
 
 export const fragment = (t: InputModelTypeContext) => {
-  return `
-  fragment ${t.name}Fields on ${t.name} {
+  return `fragment ${t.name}Fields on ${t.name} {
     ${t.fields.filter((f: InputModelFieldContext) => !f.isArray && !f.isType).map((f: InputModelFieldContext) => `${f.name}`).join('\n    ')}
-  }
-`
+  }`
 }
 
 export const createFragments = (types: InputModelTypeContext[]) => {

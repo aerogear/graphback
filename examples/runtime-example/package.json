@@ -1,6 +1,6 @@
 {
   "name": "apollo-runtime-template",
-  "version": "0.10.0-dev1",
+  "version": "0.10.0-dev2",
   "description": "",
   "private": true,
   "main": "dist/src/index.js",
@@ -15,7 +15,7 @@
     "apollo-server-express": "2.9.7",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "graphback": "0.10.0-dev1",
+    "graphback": "^0.10.0-dev2",
     "graphql": "14.5.8",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.1",

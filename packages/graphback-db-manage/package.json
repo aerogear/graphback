@@ -1,6 +1,6 @@
 {
   "name": "@graphback/db-manage",
-  "version": "0.10.0-dev1",
+  "version": "0.10.0-dev2",
   "description": "Graphback database migrations",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -8,12 +8,12 @@
     "definition": "types/index.d.ts"
   },
   "dependencies": {
-    "@graphback/core": "0.10.0-dev1",
+    "@graphback/core": "^0.10.0-dev2",
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.5",
     "knex": "0.20.0",
-    "sqlite3": "4.1.0",
-    "pino": "5.13.5"
+    "pino": "5.13.5",
+    "sqlite3": "4.1.0"
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",

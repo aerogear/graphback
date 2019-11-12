@@ -38,3 +38,5 @@ build/
 lib
 
 .nyc_output/
+
+yarn.lock
