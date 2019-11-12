@@ -99,7 +99,7 @@ export const blankResolver = (name: string) => {
 
 export const blankSubscription = (name: string) => {
   return `${name}: {
-      subscribe: (_: any, __: any, context: GraphQLContext) => {
+      subscribe: (_, args, context) => {
         // Implementation here
       }
     }`
