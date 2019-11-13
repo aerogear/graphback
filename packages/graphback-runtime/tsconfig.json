@@ -5,6 +5,7 @@
   ],
   "compilerOptions": {
     "outDir": "./dist/",
+    "noImplicitAny": false,
     "declarationDir": "./types",
     "lib": [
       "esnext.asynciterable",
