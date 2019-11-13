@@ -74,9 +74,13 @@ export class DatabaseManager {
   private async applyMigrations() {
     const migrations = await this.migrationProvider.getMigrations();
 
-    const migrationsToApply = migrations.filter((m: SchemaMigration) => m.applied_at === null);
+    const migrationsToApply = migrations.filter((m: SchemaMigration) => !m.applied_at);
 
-    for (const migration of migrationsToApply) {
+    const sorted = migrationsToApply.sort((a: SchemaMigration, b: SchemaMigration) => {
+      return Number(a.id) - Number(b.id)
+    });
+
+    for (const migration of sorted) {
       await this.migrationProvider.applyMigration(migration);
     }
   }

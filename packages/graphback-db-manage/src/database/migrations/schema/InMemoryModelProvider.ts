@@ -15,15 +15,7 @@ export class InMemoryModelProvider implements SchemaProvider {
     this.newSchemaText = newSchemaText;
   }
 
-  public getCurrentSchemaText(): string {
+  public getSchemaText(): string {
     return this.newSchemaText;
-  }
-
-  public getPreviousSchemaText(): string {
-    return this.oldSchemaText;
-  }
-
-  public async updatePreviousSchema(newSchema: string) {
-    this.oldSchemaText = newSchema;
   }
 }

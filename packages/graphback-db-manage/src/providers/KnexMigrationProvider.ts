@@ -18,12 +18,17 @@ export class KnexMigrationProvider implements MigrationProvider {
     const remoteMigrations: SchemaMigration[] = await this.knexMigrationManager.getMigrations();
     const localMigrations: SchemaMigration[] = this.localMigrationManager.getMigrations();
 
-    return Promise.resolve(remoteMigrations);
+    const unstagedMigrations = localMigrations.filter((l: SchemaMigration) => !remoteMigrations.find((r: SchemaMigration) => r.id === l.id));
+
+    for (const migration of unstagedMigrations) {
+      await this.createMigration(migration);
+    }
+
+    return Promise.resolve(localMigrations);
   }
 
   public applyMigration(migration: SchemaMigration): Promise<void> {
     this.knexMigrationManager.applyMigration(migration);
-    // this.localMigrationManager.applyMigration(migration);
 
     return Promise.resolve();
   }

@@ -1,7 +1,8 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, InputModelProvider } from 'graphback';
+import * as knex from 'knex'
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, InputModelProvider, KnexMigrationProvider } from 'graphback';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
@@ -51,7 +52,8 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       await execa('touch', ['db.sqlite'])
     }
 
-    const schemaContext = new InputModelProvider(folders.migrations, folders.model)
+    const schemaContext = new InputModelProvider(folders.migrations)
+
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
 
     // TODO: Pass db as config not knex
@@ -71,4 +73,12 @@ export const createDB = async (initializationStrategy: DatabaseInitializationStr
   checkDirectory(configInstance)
 
   await createDBResources(configInstance, initializationStrategy)
+}
+
+// tslint:disable-next-line: no-any
+export async function connect(client: string, connection: any) {
+  return knex({
+    client,
+    connection
+  })
 }

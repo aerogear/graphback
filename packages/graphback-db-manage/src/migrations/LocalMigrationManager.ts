@@ -10,8 +10,9 @@ export class LocalMigrationManager {
 
   public getMigrations(): SchemaMigration[] {
     if (!existsSync(this.migrationsDir)) {
-      mkdirSync(this.migrationsDir);
+      return [];
     }
+
     const subDirs = readdirSync(this.migrationsDir);
 
     return subDirs.map((dir: string) => {
@@ -34,7 +35,7 @@ export class LocalMigrationManager {
     const migrationPath = join(this.migrationsDir, migration.id);
 
     if (!existsSync(migrationPath)) {
-      mkdirSync(migrationPath);
+      mkdirSync(migrationPath, { recursive: true });
     }
 
     writeFileSync(join(migrationPath, 'sql_up.sql'), migration.sql_up);
