@@ -1,6 +1,7 @@
 import { GraphbackOperationType } from "@graphback/core"
+import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
-import { GraphbackRuntimeContext} from '../api/GraphbackRuntimeContext';
+import { GraphbackRuntimeContext } from '../api/GraphbackRuntimeContext';
 import { GraphbackRuntimeOptions } from '../api/GraphbackRuntimeOptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
@@ -117,6 +118,17 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         return this.pubSub.asyncIterator(deleteSubKey)
     }
 
+    public batchLoadData(name: string, id: string, context: any) {
+        const keyName = `${name}DataLoader`;
+        if (!context[keyName]) {
+            context[keyName] = new DataLoader<string, any>((keys: string[]) => {
+                return this.db.batchRead(name, keys);
+            });
+        }
+
+        return context[keyName].load(id);
+    }
+
     private buildEventPayload(action: string, name: string, result: string) {
         const payload = {};
         const capitalName = name[0].toUpperCase() +
@@ -125,4 +137,8 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
         return payload;
     }
+
+
+
+
 }

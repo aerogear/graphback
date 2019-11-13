@@ -1,5 +1,6 @@
 import { AdvancedFilter } from '../data/GraphbackDataProvider';
 import { GraphbackRuntimeOptions } from '../api/GraphbackRuntimeOptions';
+import * as DataLoader from "dataloader"
 
 
 /**
@@ -97,4 +98,15 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param context additional context
      */
     subscribeToDelete(name: string, context?: GraphbackContext): AsyncIterator<Type> | undefined
+
+    /**
+     * Speciallized function that can utilize batching the data basing on 
+     * DataLoader library
+     * 
+     * @param context resolver context object that will be used to apply new loader
+     * @param name name of the object we want to load
+     * @param id id of the object we want to load 
+     */
+    batchLoadData(name: string, id: string, context: any);
+
 }
