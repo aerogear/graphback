@@ -4,7 +4,6 @@ import {
   InputModelProvider,
   PgKnexDBDataProvider,
   UpdateDatabaseIfChanges,
-  FileMigrationProvider,
   KnexMigrationProvider
 } from 'graphback';
 import { PubSub } from 'graphql-subscriptions';
