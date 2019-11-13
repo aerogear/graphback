@@ -1,13 +1,13 @@
 import { InputModelTypeContext, InputModelFieldContext } from '@graphback/core';
-import { SchemaMigrationProvider } from './SchemaMigrationProvider';
+import { MigrationProvider } from '../providers/MigrationProvider';
 import { GraphbackChange } from '../changes/ChangeTypes';
 import knex from 'knex';
 import { connect } from '../utils/knexUtils';
 import { SchemaMigration } from '../models';
 
-export class KnexMigrationProvider implements SchemaMigrationProvider {
+export class KnexMigrationManager {
   // tslint:disable-next-line:typedef
-  private primitiveTypesMapping = {
+  protected primitiveTypesMapping = {
     String: 'string',
     Int: 'integer',
     Float: 'float',
@@ -15,16 +15,16 @@ export class KnexMigrationProvider implements SchemaMigrationProvider {
   };
 
   // tslint:disable-next-line: no-any
-  private tables: any = {
-    migrations: 'pg_schema_migrations',
-    tables: 'pg_tables'
+  protected tables: any = {
+    migrations: 'gb_schema_migrations',
+    tables: 'gb_tables'
   };
 
   // tslint:disable-next-line: no-any
-  private db: knex<any, unknown[]>;
+  protected db: knex<any, unknown[]>;
   // tslint:disable-next-line: no-any
-  constructor(client: string, connectionOptions: any) {
-    this.db = connect(client, connectionOptions)
+  constructor(db: knex<any, unknown[]>) {
+    this.db = db;
   }
 
   public addTable(t: InputModelTypeContext): string {
@@ -69,12 +69,6 @@ export class KnexMigrationProvider implements SchemaMigrationProvider {
     return `${sqlStatement};`;
   }
 
-  public async getMigrations(): Promise<SchemaMigration[]> {
-    const migrations: SchemaMigration[] = await this.db.select().from(this.tables.migrations);
-
-    return Promise.resolve(migrations);
-  }
-
   public async createMigration(migration: SchemaMigration): Promise<void> {
     await this.db.table(this.tables.migrations).insert(migration);
 
@@ -84,7 +78,7 @@ export class KnexMigrationProvider implements SchemaMigrationProvider {
   public async createMetadataTables(): Promise<void> {
     if (!await this.db.schema.hasTable(this.tables.migrations)) {
       await this.db.schema.createTable(this.tables.migrations, (table: knex.TableBuilder) => {
-        table.increments('id').primary();
+        table.string('id').primary();
         table.timestamp('applied_at').nullable();
         table.text('model').notNullable();
         table.json('changes').nullable();
@@ -109,13 +103,14 @@ export class KnexMigrationProvider implements SchemaMigrationProvider {
   public async applyMigration(migration: SchemaMigration): Promise<void> {
     await this.db.raw(migration.sql_up);
 
-    const updatedMigration: SchemaMigration = {
-      ...migration,
-      applied_at: new Date()
-    }
-
-    await this.db(this.tables.migrations).where({ id: updatedMigration.id }).update(updatedMigration);
+    await this.db(this.tables.migrations).where({ id: migration.id }).update({ applied_at: new Date() });
 
     return Promise.resolve();
+  }
+
+   public async getMigrations(): Promise<SchemaMigration[]> {
+    const migrations: SchemaMigration[] = await this.db.select().from(this.tables.migrations);
+
+    return Promise.resolve(migrations);
   }
 }

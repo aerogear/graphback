@@ -1,6 +1,6 @@
 import { InputModelTypeContext } from '@graphback/core';
 import { Change } from '@graphql-inspector/core';
-import { DatabaseConnectionOptions } from '../../DatabaseConnectionOptions';
+import { DatabaseStrategyOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseContextProvider } from '../../migrations/DatabaseContextProvider';
 import { DatabaseSchemaManager } from '../../migrations/DataResourcesManager';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
@@ -16,7 +16,7 @@ import { MetadataProvider } from '../../../MetadataProvider';
  */
 export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
   private databaseManager: DatabaseManager;
-  constructor(databaseOptions: DatabaseConnectionOptions) {
+  constructor(databaseOptions: DatabaseStrategyOptions) {
     this.databaseManager = new DatabaseManager(databaseOptions)
   }
 

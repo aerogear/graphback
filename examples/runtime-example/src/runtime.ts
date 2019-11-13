@@ -3,7 +3,9 @@ import {
   GraphQLBackendCreator,
   InputModelProvider,
   PgKnexDBDataProvider,
-  UpdateDatabaseIfChanges
+  UpdateDatabaseIfChanges,
+  FileMigrationProvider,
+  KnexMigrationProvider
 } from 'graphback';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -15,14 +17,16 @@ import * as Knex from 'knex';
  * It will be part of of the integration tests
  */
 export const createRuntime = async (client: Knex) => {
-  const schemaContext = new InputModelProvider(jsonConfig.folders.migrations, jsonConfig.folders.model);
-  const backend = new GraphQLBackendCreator(schemaContext, jsonConfig.graphqlCRUD);
+  const schemaProvider = new InputModelProvider(jsonConfig.folders.model);
+  const backend = new GraphQLBackendCreator(schemaProvider, jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
 
+  const migrationProvider = new KnexMigrationProvider(client, jsonConfig.folders.migrations);
+
   const databaseInitializationStrategy = new UpdateDatabaseIfChanges({
-    client: jsonConfig.db.database,
-    connectionOptions: jsonConfig.db.dbConfig,
-    schemaProvider: schemaContext
+    db: client,
+    schemaProvider,
+    migrationProvider
   });
 
   await backend.initializeDatabase(databaseInitializationStrategy);

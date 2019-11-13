@@ -12,27 +12,12 @@ import { SchemaProvider } from './SchemaProvider';
  * @extends {SchemaProvider}
  */
 export class InputModelProvider implements SchemaProvider {
-  private oldSchemaDir: string;
-  private newSchemaDir: string;
-  constructor(oldSchemaDir: string, newSchemaDir: string) {
-    this.oldSchemaDir = oldSchemaDir;
-    this.newSchemaDir = newSchemaDir;
+  private schemaDir: string;
+  constructor(schemaDir: string) {
+    this.schemaDir = schemaDir;
   }
 
-  public getCurrentSchemaText(): string {
-    return buildSchemaText(this.newSchemaDir);
-  }
-
-  public getPreviousSchemaText(): string {
-    return buildSchemaText(this.oldSchemaDir);
-  }
-
-  public async updatePreviousSchema(newSchema: string) {
-    if (!existsSync(this.oldSchemaDir)) {
-      mkdirSync(this.oldSchemaDir);
-    }
-
-    await removeFiles(join(this.oldSchemaDir, '*.graphql'));
-    writeFileSync(join(this.oldSchemaDir, 'Previous.graphql'), newSchema);
+  public getSchemaText(): string {
+    return buildSchemaText(this.schemaDir);
   }
 }

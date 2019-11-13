@@ -1,9 +1,10 @@
+import { MigrationProvider } from '../providers';
+import * as knex from 'knex';
 import { SchemaProvider } from './migrations';
 
-export interface DatabaseConnectionOptions {
-  // tslint:disable-next-line: no-any
-  client: any;
-  // tslint:disable-next-line: no-any
-  connectionOptions: any;
+export interface DatabaseStrategyOptions {
   schemaProvider: SchemaProvider;
+  migrationProvider: MigrationProvider;
+  // tslint:disable-next-line: no-any
+  db: knex<any, unknown[]>;
 }

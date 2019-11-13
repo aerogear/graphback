@@ -1,33 +1,36 @@
 import { InputModelTypeContext, graphQLInputContext, filterObjectTypes } from '@graphback/core';
 import { diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
-import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseConnectionOptions } from './database';
+import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseStrategyOptions } from './database';
 import { SchemaMigration } from './models';
 import { mapGraphbackChanges } from './utils/graphqlUtils';
 import { GraphbackChange, GraphQLSchemaChangeTypes } from './changes/ChangeTypes';
-import { KnexMigrationProvider } from './migrations/KnexMigrationProvider';
 import { GraphQLSchema } from 'graphql';
+import { MigrationProvider } from './providers';
+import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 
 export class DatabaseManager {
   private schemaProvider: SchemaProvider;
-  private migrationProvider: KnexMigrationProvider;
+  private knexMigrationManager: KnexMigrationManager;
+  private migrationProvider: MigrationProvider;
   private inputContext: InputModelTypeContext[];
-  constructor(options: DatabaseConnectionOptions) {
+  constructor(options: DatabaseStrategyOptions) {
     this.schemaProvider = options.schemaProvider;
-    const inputContext = graphQLInputContext.createModelContext(this.schemaProvider.getCurrentSchemaText(), {});
+    this.migrationProvider = options.migrationProvider;
+    const inputContext = graphQLInputContext.createModelContext(this.schemaProvider.getSchemaText(), {});
     this.inputContext = filterObjectTypes(inputContext);
-    this.migrationProvider = new KnexMigrationProvider(options.client, options.connectionOptions);
+    this.knexMigrationManager = new KnexMigrationManager(options.db);
   }
 
   public async init() {
-    await this.migrationProvider.createMetadataTables();
+    await this.knexMigrationManager.createMetadataTables();
     await this.createMigration();
     await this.applyMigrations();
     // TODO: Validate input
   }
 
   private async createMigration() {
-    const newSchema = buildSchema(this.schemaProvider.getCurrentSchemaText());
+    const newSchema = buildSchema(this.schemaProvider.getSchemaText());
 
     const migrations = await this.migrationProvider.getMigrations();
 
@@ -39,7 +42,8 @@ export class DatabaseManager {
     }
 
     const newMigration: SchemaMigration = {
-      model: this.schemaProvider.getCurrentSchemaText()
+      id: new Date().getTime().toString(),
+      model: this.schemaProvider.getSchemaText()
     };
 
     let changes: GraphbackChange[] = [];
@@ -103,12 +107,12 @@ export class DatabaseManager {
       if (typeAdded) {
         return {
           type: DatabaseChangeType.createTable,
-          sql: this.migrationProvider.addTable(t)
+          sql: this.knexMigrationManager.addTable(t)
         }
       } else {
         return {
           type: DatabaseChangeType.alterTable,
-          sql: this.migrationProvider.alterTable(t, modelChanges)
+          sql: this.knexMigrationManager.alterTable(t, modelChanges)
         }
       }
     });

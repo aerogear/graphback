@@ -1,5 +1,5 @@
 import { InputModelTypeContext } from '@graphback/core';
-import { DatabaseConnectionOptions } from '../../DatabaseConnectionOptions';
+import { DatabaseStrategyOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseContextProvider } from '../../migrations/DatabaseContextProvider';
 import { DatabaseSchemaManager } from '../../migrations/DataResourcesManager';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
@@ -13,8 +13,8 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
  */
 export class DropCreateDatabaseAlways implements DatabaseInitializationStrategy {
   private schemaManager: DatabaseSchemaManager;
-  constructor(databaseOptions: DatabaseConnectionOptions) {
-    this.schemaManager = new DatabaseSchemaManager(databaseOptions.client, databaseOptions.connectionOptions);
+  constructor(databaseOptions: DatabaseStrategyOptions) {
+    // this.schemaManager = new DatabaseSchemaManager(databaseOptions.client, databaseOptions.connectionOptions);
   }
 
   public async init(): Promise<void> {

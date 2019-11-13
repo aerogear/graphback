@@ -26,7 +26,9 @@ export const buildSchemaText = (schemaDir: string): string => {
 }
 
 export const mapGraphbackChanges = (changes: Change[]): GraphbackChange[] => {
-  return changes.map((change: Change) => {
+  return changes.filter((change: Change) => {
+    return !!GraphQLSchemaChangeTypes[change.type]
+  }).map((change: Change) => {
     const [type, field] = change.path.split('.');
 
     return {

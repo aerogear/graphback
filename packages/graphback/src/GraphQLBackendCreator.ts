@@ -16,7 +16,6 @@ import knex from 'knex';
  */
 export class GraphQLBackendCreator {
   private dbContextProvider: DatabaseContextProvider;
-  private graphQLSchemaManager: GraphQLSchemaManager;
   private inputContext: InputModelTypeContext[];
 
   /**
@@ -24,8 +23,7 @@ export class GraphQLBackendCreator {
    * @param config configuration for backend generator
    */
   constructor(schemaContext: SchemaProvider, config: GraphbackGeneratorConfig) {
-    this.graphQLSchemaManager = new GraphQLSchemaManager({ provider: schemaContext });
-    this.inputContext = graphQLInputContext.createModelContext(schemaContext.getCurrentSchemaText(), config);
+    this.inputContext = graphQLInputContext.createModelContext(schemaContext.getSchemaText(), config);
     this.dbContextProvider = new DefaultDataContextProvider();
   }
 
