@@ -18,7 +18,7 @@ export class LocalMigrationManager {
     return subDirs.map((dir: string) => {
       const migrationFolder = join(this.migrationsDir, dir);
 
-      const sqlUp = readFileSync(join(migrationFolder, 'sql_up.sql'), 'utf8');
+      const sqlUp = readFileSync(join(migrationFolder, `${dir}_up.sql`), 'utf8');
       const model = readFileSync(join(migrationFolder, 'model.graphql'), 'utf8');
       const changes = readFileSync(join(migrationFolder, 'changes.json'), 'utf8');
 
@@ -38,7 +38,7 @@ export class LocalMigrationManager {
       mkdirSync(migrationPath, { recursive: true });
     }
 
-    writeFileSync(join(migrationPath, 'sql_up.sql'), migration.sql_up);
+    writeFileSync(join(migrationPath, `${migration.id}_up.sql`), migration.sql_up);
     writeFileSync(join(migrationPath, 'model.graphql'), migration.model);
     writeFileSync(join(migrationPath, 'changes.json'), migration.changes);
   }
