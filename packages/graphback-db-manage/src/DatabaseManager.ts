@@ -9,12 +9,12 @@ import { KnexMigrationProvider } from './migrations/KnexMigrationProvider';
 import { GraphQLSchema } from 'graphql';
 
 export class DatabaseManager {
-  private provider: SchemaProvider;
+  private schemaProvider: SchemaProvider;
   private migrationProvider: KnexMigrationProvider;
   private inputContext: InputModelTypeContext[];
   constructor(options: DatabaseConnectionOptions) {
-    this.provider = options.schemaProvider;
-    const inputContext = graphQLInputContext.createModelContext(this.provider.getCurrentSchemaText(), {});
+    this.schemaProvider = options.schemaProvider;
+    const inputContext = graphQLInputContext.createModelContext(this.schemaProvider.getCurrentSchemaText(), {});
     this.inputContext = filterObjectTypes(inputContext);
     this.migrationProvider = new KnexMigrationProvider(options.client, options.connectionOptions);
   }
@@ -27,7 +27,7 @@ export class DatabaseManager {
   }
 
   private async createMigration() {
-    const newSchema = buildSchema(this.provider.getCurrentSchemaText());
+    const newSchema = buildSchema(this.schemaProvider.getCurrentSchemaText());
 
     const migrations = await this.migrationProvider.getMigrations();
 
@@ -39,7 +39,7 @@ export class DatabaseManager {
     }
 
     const newMigration: SchemaMigration = {
-      model: this.provider.getCurrentSchemaText()
+      model: this.schemaProvider.getCurrentSchemaText()
     };
 
     let changes: GraphbackChange[] = [];
