@@ -4,11 +4,4 @@
 type User {
     id: ID!
     name: String!
-    age: Int
-}
-
-type Hello {
-    id: ID!
-    name: String
-    hello: String
 }
