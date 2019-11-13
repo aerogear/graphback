@@ -5,7 +5,7 @@ import knex from 'knex';
 import { connect } from '../utils/knexUtils';
 import { SchemaMigration } from '../models';
 
-export class KnexMigrationManager implements SchemaMigrationProvider {
+export class KnexMigrationProvider implements SchemaMigrationProvider {
   // tslint:disable-next-line:typedef
   private primitiveTypesMapping = {
     String: 'string',

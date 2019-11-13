@@ -5,18 +5,18 @@ import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseConnectionO
 import { SchemaMigration } from './models';
 import { mapGraphbackChanges } from './utils/graphqlUtils';
 import { GraphbackChange, GraphQLSchemaChangeTypes } from './changes/ChangeTypes';
-import { KnexMigrationManager } from './migrations/KnexMigrationProvider';
+import { KnexMigrationProvider } from './migrations/KnexMigrationProvider';
 import { GraphQLSchema } from 'graphql';
 
 export class DatabaseManager {
   private provider: SchemaProvider;
-  private migrationProvider: KnexMigrationManager;
+  private migrationProvider: KnexMigrationProvider;
   private inputContext: InputModelTypeContext[];
   constructor(options: DatabaseConnectionOptions) {
     this.provider = options.schemaProvider;
     const inputContext = graphQLInputContext.createModelContext(this.provider.getCurrentSchemaText(), {});
     this.inputContext = filterObjectTypes(inputContext);
-    this.migrationProvider = new KnexMigrationManager(options.client, options.connectionOptions);
+    this.migrationProvider = new KnexMigrationProvider(options.client, options.connectionOptions);
   }
 
   public async init() {
