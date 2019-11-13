@@ -2,8 +2,7 @@
 // TODO support for the database type instead of hardcoded lowercase
 export const createTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-      validateRuntimeContext(context)
-      return context.crudService.create("${typeName.toLowerCase()}", args.input, {
+      return context.crud${typeName}.create(args.input, {
         publishEvent: ${subscription}
       }, context);
     }`
@@ -11,8 +10,7 @@ export const createTemplate = (fieldName: string, typeName: string, subscription
 
 export const updateTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-      validateRuntimeContext(context)
-      return context.crudService.update("${typeName.toLowerCase()}", args.id, args.input, {
+      return context.crud${typeName}.update(args.id, args.input, {
         publishEvent: ${subscription}
       }, context);
     }`
@@ -20,8 +18,7 @@ export const updateTemplate = (fieldName: string, typeName: string, subscription
 
 export const deleteTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
-      validateRuntimeContext(context)
-      return context.crudService.delete("${typeName.toLowerCase()}", args.id, args.input, {
+      return context.crud${typeName}.delete(args.id, args.input, {
         publishEvent: ${subscription}
       }, context);
     }`
@@ -29,23 +26,20 @@ export const deleteTemplate = (fieldName: string, typeName: string, subscription
 
 export const findAllTemplate = (fieldName: string, typeName: string): string => {
   return `${fieldName}: (_, args, context) => {
-      validateRuntimeContext(context)
-      return context.crudService.findAll("${typeName.toLowerCase()}", context);
+      return context.crud${typeName}.findAll(context);
     }`
 }
 
 export const findTemplate = (fieldName: string, typeName: string, ): string => {
   return `${fieldName}: (_, args, context) => {
-      validateRuntimeContext(context)
-      return context.crudService.findBy("${typeName.toLowerCase()}", args.fields, context);
+      return context.crud${typeName}.findBy(args.fields, context);
     }`
 }
 
 export const newSub = (typeName: string): string => {
   return `new${typeName}: {
       subscribe: (_, args, context) => {
-        validateRuntimeContext(context)
-        return context.crudService.subscribeToCreate("${typeName.toLowerCase()}", context);
+        return context.crud${typeName}.subscribeToCreate(context);
       }
     }`
 }
@@ -53,8 +47,7 @@ export const newSub = (typeName: string): string => {
 export const updatedSub = (typeName: string): string => {
   return `updated${typeName}: {
       subscribe: (_, args, context) => {
-        validateRuntimeContext(context)
-        return context.crudService.subscribeToUpdate("${typeName.toLowerCase()}", context);
+        return context.crud${typeName}.subscribeToUpdate(context);
       }
     }`
 }
@@ -62,17 +55,12 @@ export const updatedSub = (typeName: string): string => {
 export const deletedSub = (typeName: string): string => {
   return `deleted${typeName}: {
       subscribe: (_, args, context) => {
-        validateRuntimeContext(context)
-        return context.crudService.subscribeToDelete("${typeName.toLowerCase()}", context);
+        return context.crud${typeName}.subscribeToDelete(context);
       }
     }`
 }
 
-export const generateRuntimeImport = (): string =>{
-  return `import { validateRuntimeContext } from "@graphback/runtime";`
-};
 
-// TODO
 export const typeRelation = (relation: string, columnName: string, fieldName: string, tableName: string): string => {
   // if (relation === 'OneToOne') {
   //   return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {

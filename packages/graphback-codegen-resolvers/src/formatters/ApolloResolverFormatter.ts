@@ -1,7 +1,6 @@
 import { InputModelTypeContext } from '@graphback/core';
 import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from '../api/resolverTypes';
 import { createCustomContext } from '../api/targetResolverContext';
-import { generateRuntimeImport } from '../templates/LayeredResolverTemplates';
 
 /**
  * Formats generated source code into Apollo GraphQL format
@@ -32,7 +31,7 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
   }`)
   }
 
-  return `${generateRuntimeImport()}\n\nexport const ${name.toLowerCase()}Resolvers = {
+  return `\n\nexport const ${name.toLowerCase()}Resolvers = {
   ${outputResolvers.join(',\n\n  ')}
 }
 `
@@ -64,19 +63,27 @@ const alphabeticSort = (a: ResolverTypeContext | CustomResolverContext, b: Resol
  * @param hasCustomElements has custom queries or mutations or not
  */
 const generateIndexFile = (context: ResolverTypeContext[], hasCustomElements: boolean) => {
+  let template = 'import { createContext }  from "@graphback/runtime"';
+  let customResolvers = '';
   if (hasCustomElements) {
-    return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
-
-import { customResolvers } from './custom'
-
-export const resolvers = [${[...context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}]
-`
+    template = `import { customResolvers } from './custom'\n`
+    customResolvers = ', ...customResolvers'
   }
 
-  return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+  const typesList = context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ');
 
-export const resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
+  template += `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+
+// Generated resolvers
+export const resolvers = [${typesList}${customResolvers}]
+
+// List of types
+const types = [${context.map((t: ResolverTypeContext) => `"${t.name}"`).join(', ')}]
+
+export const createContext = createContext(types);
 `
+
+  return template;
 }
 
 const generateCustomResolvers = (customResolvers: CustomResolverContext[]) => {

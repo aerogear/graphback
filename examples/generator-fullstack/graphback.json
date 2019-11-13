@@ -23,5 +23,5 @@
     "client": "./client/src/graphql",
     "migrations": "./model/migrations"
   },
-  "client": true
+  "client": false
 }
