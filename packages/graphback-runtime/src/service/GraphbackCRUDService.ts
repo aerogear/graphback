@@ -1,5 +1,5 @@
 import { AdvancedFilter } from '../data/GraphbackDataProvider';
-import { GraphbackRuntimeOptions } from '../GraphbackRuntimeOptions';
+import { GraphbackRuntimeOptions } from '../api/GraphbackRuntimeOptions';
 
 
 /**

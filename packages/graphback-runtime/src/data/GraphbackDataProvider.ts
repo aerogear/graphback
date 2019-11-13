@@ -1,6 +1,4 @@
-import { InputModelTypeContext } from "@graphback/core"
-import { GraphbackRuntimeOptions } from '../GraphbackRuntimeOptions';
-
+ 
 // If we come with Union on client we might use some complex JSON for describing rules
 // and single key for type for simple use cases
 // tslint:disable-next-line: no-any
