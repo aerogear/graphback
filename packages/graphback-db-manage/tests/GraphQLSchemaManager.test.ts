@@ -2,7 +2,7 @@ import { Change, ChangeType } from '@graphql-inspector/core';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import ava, { ExecutionContext } from 'ava';
 import { GraphQLSchemaManager, InMemoryModelProvider } from "../src/database";
-import { GraphQLSchemaChangeTypes } from '../src/database/migrations/GraphQLSchemaChangeTypes';
+import { ModelChangeType } from '../src/database/migrations/ModelChangeType';
 
 const oldSchemaDefault = `
 type User {
@@ -56,7 +56,7 @@ type Test {
 
 //   const changes = schemaManager.getChanges();
 
-//   const invalidChangeTypes = changes.filter((c: Change) => c === GraphQLSchemaChangeTypes[c.type]);
+//   const invalidChangeTypes = changes.filter((c: Change) => c === ModelChangeType[c.type]);
 
 //   t.assert(invalidChangeTypes.length === 0);
 // });

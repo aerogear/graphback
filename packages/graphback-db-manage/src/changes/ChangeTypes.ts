@@ -1,14 +1,14 @@
 import { InputModelTypeContext } from '@graphback/core';
 
 // TODO: Rename this
-export enum GraphQLSchemaChangeTypes {
+export enum ModelChangeType {
   TYPE_ADDED = 'TYPE_ADDED',
   FIELD_ADDED = 'FIELD_ADDED'
 }
 
 export interface GraphbackChange {
   // tslint:disable-next-line: no-reserved-keywords
-  type: GraphQLSchemaChangeTypes
+  type: ModelChangeType
   path: {
     // tslint:disable-next-line: no-reserved-keywords
     type: string

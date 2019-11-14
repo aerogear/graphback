@@ -4,7 +4,7 @@ import { buildSchema } from 'graphql';
 import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseStrategyOptions } from './database';
 import { SchemaMigration } from './models';
 import { mapGraphbackChanges } from './utils/graphqlUtils';
-import { GraphbackChange, GraphQLSchemaChangeTypes } from './changes/ChangeTypes';
+import { GraphbackChange, ModelChangeType } from './changes/ChangeTypes';
 import { GraphQLSchema } from 'graphql';
 import { MigrationProvider } from './providers';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
@@ -53,7 +53,7 @@ export class DatabaseManager {
     } else {
       changes = this.inputContext.map((model: InputModelTypeContext) => {
         return {
-          type: GraphQLSchemaChangeTypes.TYPE_ADDED,
+          type: ModelChangeType.TYPE_ADDED,
           path: {
             type: model.name
           }
@@ -104,9 +104,9 @@ export class DatabaseManager {
     });
 
     return dirtyModels.map((t: InputModelTypeContext) => {
-      const modelChanges: GraphbackChange[] = groupedChanges[t.name];
+      const ModelChangeTypes: GraphbackChange[] = groupedChanges[t.name];
 
-      const typeAdded = modelChanges.find((c: GraphbackChange) => c.type === GraphQLSchemaChangeTypes.TYPE_ADDED);
+      const typeAdded = ModelChangeTypes.find((c: GraphbackChange) => c.type === ModelChangeType.TYPE_ADDED);
 
       if (typeAdded) {
         return {
@@ -116,7 +116,7 @@ export class DatabaseManager {
       } else {
         return {
           type: DatabaseChangeType.alterTable,
-          sql: this.knexMigrationManager.alterTable(t, modelChanges)
+          sql: this.knexMigrationManager.alterTable(t, ModelChangeTypes)
         }
       }
     });
