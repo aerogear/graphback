@@ -1,11 +1,22 @@
 import { readdirSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { SchemaMigration } from '../models';
 import { join } from 'path';
+import { logError } from '../utils/log';
+import chalk from 'chalk';
+
+const handleError = (err: { code: string; message: string; }, migrationId: string, fileName: string) => {
+  if (err.code === 'ENOENT') {
+    logError(`Directory for migration ${chalk.cyan(migrationId)} exists, but failed to execute. ${chalk.cyan(fileName)} file is missing.`)
+  } else {
+    logError(err.message)
+  }
+  process.exit(0)
+}
 
 export class LocalMigrationManager {
   private migrationsDir: string;
   constructor(migrationsDir: string) {
-    this.migrationsDir = migrationsDir;
+    this.migrationsDir = join(process.cwd(), migrationsDir);
   }
 
   public getMigrations(): SchemaMigration[] {
@@ -15,19 +26,38 @@ export class LocalMigrationManager {
 
     const subDirs = readdirSync(this.migrationsDir);
 
-    return subDirs.map((dir: string) => {
-      const migrationFolder = join(this.migrationsDir, dir);
+    return subDirs.map((migrationId: string) => {
+      const migrationFolder = join(this.migrationsDir, migrationId);
 
-      const sqlUp = readFileSync(join(migrationFolder, `${dir}_up.sql`), 'utf8');
-      const model = readFileSync(join(migrationFolder, 'model.graphql'), 'utf8');
-      const changes = readFileSync(join(migrationFolder, 'changes.json'), 'utf8');
+      const sqlFile = `${migrationId}_up.sql`;
+      const modelFile = 'model.graphql';
+      const changesFile = 'changes.json';
 
-      return {
-        id: dir,
-        model,
-        changes,
-        sql_up: sqlUp
+      const sqlFilePath = join(migrationFolder, sqlFile);
+      const modelFilePath = join(migrationFolder, modelFile);
+      const changesFilePath = join(migrationFolder, changesFile);
+
+      const schemaMigration: SchemaMigration = { id: migrationId };
+
+      try {
+        schemaMigration.sql_up = readFileSync(sqlFilePath, 'utf8');
+      } catch (err) {
+        handleError(err, migrationId, sqlFile);
       }
+
+      try {
+        schemaMigration.model = readFileSync(modelFilePath, 'utf8');
+      } catch (err) {
+        handleError(err, migrationId, modelFile);
+      }
+
+      try {
+        schemaMigration.changes = readFileSync(changesFilePath, 'utf8');
+      } catch (err) {
+        handleError(err, migrationId, changesFile);
+      }
+
+      return schemaMigration;
     });
   }
 
