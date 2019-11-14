@@ -1,5 +1,5 @@
 import { InputModelTypeContext } from '@graphback/core';
-import { GraphbackChange } from '../changes/ChangeTypes';
+import { ModelChange } from '../changes/ChangeTypes';
 import { SchemaMigration } from '../models';
 
 export interface MigrationProvider {

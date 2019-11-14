@@ -6,7 +6,7 @@ export enum ModelChangeType {
   FIELD_ADDED = 'FIELD_ADDED'
 }
 
-export interface GraphbackChange {
+export interface ModelChange {
   // tslint:disable-next-line: no-reserved-keywords
   type: ModelChangeType
   path: {
@@ -16,8 +16,8 @@ export interface GraphbackChange {
   }
 }
 
-export interface GraphbackChangeGroup {
+export interface ModelChangeGroup {
   // tslint:disable-next-line: no-reserved-keywords
   name: string
-  changes: GraphbackChange[]
+  changes: ModelChange[]
 }

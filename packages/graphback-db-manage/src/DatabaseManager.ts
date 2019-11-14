@@ -3,8 +3,8 @@ import { diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
 import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseStrategyOptions } from './database';
 import { SchemaMigration } from './models';
-import { mapGraphbackChanges } from './utils/graphqlUtils';
-import { GraphbackChange, ModelChangeType } from './changes/ChangeTypes';
+import { mapModelChanges } from './utils/graphqlUtils';
+import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
 import { GraphQLSchema } from 'graphql';
 import { MigrationProvider } from './providers';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
@@ -46,10 +46,10 @@ export class DatabaseManager {
       model: this.schemaProvider.getSchemaText()
     };
 
-    let changes: GraphbackChange[] = [];
+    let changes: ModelChange[] = [];
     if (oldSchema) {
       const inspectorChanges = diff(oldSchema, newSchema);
-      changes = mapGraphbackChanges(inspectorChanges);
+      changes = mapModelChanges(inspectorChanges);
     } else {
       changes = this.inputContext.map((model: InputModelTypeContext) => {
         return {
@@ -85,8 +85,8 @@ export class DatabaseManager {
     }
   }
 
-  private groupChangesByModel(changes: GraphbackChange[]) {
-    return changes.reduce((acc: GraphbackChange, current: GraphbackChange) => {
+  private groupChangesByModel(changes: ModelChange[]) {
+    return changes.reduce((acc: ModelChange, current: ModelChange) => {
 
       if (!acc[current.path.type]) {
         acc[current.path.type] = [];
@@ -94,19 +94,19 @@ export class DatabaseManager {
       acc[current.path.type].push(current);
 
       return acc;
-    }, {} as GraphbackChange);
+    }, {} as ModelChange);
   }
 
-  private getSqlStatements(changes: GraphbackChange[]): DatabaseChange[] {
+  private getSqlStatements(changes: ModelChange[]): DatabaseChange[] {
     const groupedChanges = this.groupChangesByModel(changes);
     const dirtyModels = this.inputContext.filter((t: InputModelTypeContext) => {
       return !!groupedChanges[t.name];
     });
 
     return dirtyModels.map((t: InputModelTypeContext) => {
-      const ModelChangeTypes: GraphbackChange[] = groupedChanges[t.name];
+      const ModelChangeTypes: ModelChange[] = groupedChanges[t.name];
 
-      const typeAdded = ModelChangeTypes.find((c: GraphbackChange) => c.type === ModelChangeType.TYPE_ADDED);
+      const typeAdded = ModelChangeTypes.find((c: ModelChange) => c.type === ModelChangeType.TYPE_ADDED);
 
       if (typeAdded) {
         return {

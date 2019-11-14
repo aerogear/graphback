@@ -1,6 +1,6 @@
 import { InputModelTypeContext, InputModelFieldContext } from '@graphback/core';
 import { MigrationProvider } from '../providers/MigrationProvider';
-import { GraphbackChange } from '../changes/ChangeTypes';
+import { ModelChange } from '../changes/ChangeTypes';
 import knex from 'knex';
 import { connect } from '../utils/knexUtils';
 import { SchemaMigration } from '../models';
@@ -48,10 +48,10 @@ export class KnexMigrationManager {
     return `${sqlStatement};`;
   }
 
-  public alterTable(t: InputModelTypeContext, changes: GraphbackChange[]): string {
+  public alterTable(t: InputModelTypeContext, changes: ModelChange[]): string {
     const tableName = t.name.toLowerCase();
     // TODO: Should this be filtered before passed as an arg??
-    const typeChanges = changes.filter((c: GraphbackChange) => c.path.type === t.name);
+    const typeChanges = changes.filter((c: ModelChange) => c.path.type === t.name);
 
     const sqlStatement = this.db.schema.alterTable(
       tableName,

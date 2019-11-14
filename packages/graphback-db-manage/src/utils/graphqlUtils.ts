@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { sync } from 'glob';
 import { join } from 'path';
-import { GraphbackChange, ModelChangeType } from '../changes/ChangeTypes';
+import { ModelChange, ModelChangeType } from '../changes/ChangeTypes';
 import { Change } from '@graphql-inspector/core';
 
 /**
@@ -25,7 +25,7 @@ export const buildSchemaText = (schemaDir: string): string => {
   return schemaText.length ? schemaText : undefined;
 }
 
-export const mapGraphbackChanges = (changes: Change[]): GraphbackChange[] => {
+export const mapModelChanges = (changes: Change[]): ModelChange[] => {
   return changes.filter((change: Change) => {
     return !!ModelChangeType[change.type]
   }).map((change: Change) => {
