@@ -1,5 +1,5 @@
 export interface SchemaMigration {
-  id?: string
+  id?: number
   applied_at?: Date
   changes?: string
   model?: string

@@ -62,7 +62,7 @@ export class LocalMigrationManager {
   }
 
   public createMigration(migration: SchemaMigration): void {
-    const migrationPath = join(this.migrationsDir, migration.id);
+    const migrationPath = join(this.migrationsDir, migration.id.toString());
 
     if (!existsSync(migrationPath)) {
       mkdirSync(migrationPath, { recursive: true });
