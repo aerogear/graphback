@@ -80,8 +80,9 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * Read multiple items by their id's (used for lazy data loading purposes)
      *
      * @param name
+     * @param relationField - name of the field that will be used to match ids
      * @param ids array of identifiers that needs to be fetched
      */
-    batchRead(name: string, ids: string[]): Promise<Type[]>
+    batchRead(name: string, relationField: string, ids: string[]): Promise<[Type[]]>
 
 }

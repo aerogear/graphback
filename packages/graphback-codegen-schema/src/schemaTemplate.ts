@@ -106,18 +106,18 @@ const generateSubscriptions = (subscriptions: string[], customSubs: string[]) =>
   if (!subscriptions.length && !customSubs.length) {
     return ``
   }
-  let subsOutput = `type Subscription {`
+  let subsOutput = `\ntype Subscription {`
 
   if (subscriptions.length) {
-    subsOutput += `\n    ${subscriptions.join('\n    ')}`
+    subsOutput += `\n  ${subscriptions.join('\n  ')}`
   }
 
   if (customSubs.length) {
-    subsOutput += `\n    ## Custom subscriptions`
-    subsOutput += `\n    ${customSubs.join('\n    ')}`
+    subsOutput += `\n  ## Custom subscriptions`
+    subsOutput += `\n  ${customSubs.join('\n  ')}`
   }
 
-  subsOutput += `\n  }`
+  subsOutput += `\n}`
 
   return subsOutput
 }

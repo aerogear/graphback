@@ -1,4 +1,5 @@
 import { getTableName, InputModelTypeContext } from "@graphback/core"
+import { execSync } from 'child_process';
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
@@ -76,11 +77,17 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
     }
 
-    public async batchRead(name: string, ids: string[]): Promise<Type[]> {
-        const dbResult = await this.db.select().from(name).where('id', 'in', ids);
+    public async batchRead(name: string, relationField: string, ids: string[]): Promise<[Type[]]> {
+        const dbResult = await this.db.select().from(name).whereIn(relationField, ids);
+
         if (dbResult) {
-            return dbResult;
+            const resultsById = ids.map((id: string) => dbResult.filter((data: Type) => {
+                return data[relationField] === id
+            })) 
+
+            return resultsById as [Type[]];
         }
+
         throw new NoDataError(`No results for ${name} and id: ${JSON.stringify(ids)}`);
     }
 
