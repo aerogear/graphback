@@ -1,6 +1,6 @@
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex'
-import { DefaultCRUDService, PgKnexDBDataProvider } from '.';
+import { CRUDService, PgKnexDBDataProvider } from '.';
 import { GraphbackRuntimeContext } from './GraphbackRuntimeContext';
  
 /**
@@ -8,7 +8,7 @@ import { GraphbackRuntimeContext } from './GraphbackRuntimeContext';
  */
 export const createKnexRuntimeContext = (db: Knex, pubSub: PubSubEngine): GraphbackRuntimeContext => {
   const crudDb = new PgKnexDBDataProvider(db);
-  const crudService = new DefaultCRUDService(crudDb, pubSub);
+  const crudService = new CRUDService(crudDb, pubSub);
 
   return {
     crudService,

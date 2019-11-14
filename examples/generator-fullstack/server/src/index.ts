@@ -2,11 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 
-import graphqlHTTP from 'express-graphql'
-import { execute, subscribe } from 'graphql';
+import { ApolloServer } from "apollo-server-express"
 import { loadConfig } from 'graphql-config';
 import { makeExecutableSchema } from 'graphql-tools';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 import { createKnexRuntimeContext } from '@graphback/runtime'
 import { PubSub } from 'graphql-subscriptions';
@@ -40,32 +38,21 @@ async function start() {
 
   const pubSub = new PubSub();
   const context = createKnexRuntimeContext(db, pubSub);
+  const apolloConfig = {
+    schema,
+    context
+  }
 
-  app.use('/graphql', graphqlHTTP(
-    (req) => ({
-      schema,
-      context,
-      graphiql: process.env.NODE_ENV !== 'production',
-    }),
-  ));
+  const apolloServer = new ApolloServer(apolloConfig)
 
-  const server = http.createServer(app);
+  apolloServer.applyMiddleware({ app })
 
-  SubscriptionServer.create(
-    {
-      schema,
-      execute,
-      subscribe
-    },
-    {
-      server,
-      path: '/graphql'
-    }
-  );
+  const httpServer = http.createServer(app)
+  apolloServer.installSubscriptionHandlers(httpServer)
 
-  const port = process.env.PORT || 4000;
-  server.listen({ port }, () => {
-    console.log(`🚀  Server ready at http://localhost:${port}/graphql`)
+  httpServer.listen({ port: 4000 }, () => {
+    // tslint:disable-next-line: no-console
+    console.log(`🚀  Server ready at http://localhost:4000/graphql`)
   })
 }
 

@@ -8,7 +8,7 @@ import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } f
  */
 const createResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.create) {
-    return templates.createTemplate(getFieldName(t.name, GraphbackOperationType.CREATE), t.name)
+    return templates.createTemplate(getFieldName(t.name, GraphbackOperationType.CREATE), t.name, t.config.subCreate)
   }
 
   return undefined
@@ -16,7 +16,7 @@ const createResolver = (t: InputModelTypeContext): string | undefined => {
 
 const updateResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.update) {
-    return templates.updateTemplate(getFieldName(t.name, GraphbackOperationType.UPDATE), t.name)
+    return templates.updateTemplate(getFieldName(t.name, GraphbackOperationType.UPDATE), t.name, t.config.subUpdate)
   }
 
   return undefined
@@ -24,7 +24,7 @@ const updateResolver = (t: InputModelTypeContext): string | undefined => {
 
 const deleteResolver = (t: InputModelTypeContext): string | undefined => {
   if (t.config.delete) {
-    return templates.deleteTemplate(getFieldName(t.name, GraphbackOperationType.DELETE), t.name)
+    return templates.deleteTemplate(getFieldName(t.name, GraphbackOperationType.DELETE), t.name, t.config.subDelete)
   }
 
   return undefined

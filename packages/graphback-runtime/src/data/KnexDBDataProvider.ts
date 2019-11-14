@@ -60,7 +60,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         throw new NoDataError(`Cannot read ${name}`);
     }
 
-    public async findAll(name: string, ): Promise<Type[]> {
+    public async findAll(name: string): Promise<Type[]> {
         const dbResult = await this.db.select().from(name);
         if (dbResult) {
             return dbResult;
