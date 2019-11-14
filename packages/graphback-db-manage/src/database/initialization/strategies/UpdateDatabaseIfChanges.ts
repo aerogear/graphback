@@ -22,8 +22,5 @@ export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
 
   public async init(): Promise<void> {
     await this.databaseManager.init();
-    // await this.schemaManager.createDatabaseResources(context, types);
-    // await this.schemaManager.updateDatabaseResources(context, types, changes);
-    // await this.schemaManager.createDatabaseRelations(context, types);
   }
 }

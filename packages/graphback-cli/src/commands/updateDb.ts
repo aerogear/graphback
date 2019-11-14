@@ -13,7 +13,7 @@ export async function handler() {
   const configInstance = new ConfigBuilder();
   const config = configInstance.config;
 
-  const schemaProvider = new InputModelProvider(config.folders.migrations);
+  const schemaProvider = new InputModelProvider(config.folders.model);
 
   const db = await connect(config.db.database, config.db.dbConfig);
 
