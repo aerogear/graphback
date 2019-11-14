@@ -1,10 +1,19 @@
 import { InputModelTypeContext, InputModelFieldContext } from '@graphback/core';
-import { MigrationProvider } from '../providers/MigrationProvider';
 import { ModelChange } from '../changes/ChangeTypes';
 import knex from 'knex';
-import { connect } from '../utils/knexUtils';
 import { SchemaMigration } from '../models';
+import { logInfo, logError } from '../utils/log';
+import chalk from 'chalk';
 
+const handleError = (err: { code: string; message: string }) => {
+  if (err.code === '42P07') {
+    logError(err.message);
+  }
+  logError(err.message);
+  process.exit(0);
+}
+
+// TODO: Document exported classes
 export class KnexMigrationManager {
   // tslint:disable-next-line:typedef
   protected primitiveTypesMapping = {
@@ -28,7 +37,6 @@ export class KnexMigrationManager {
   }
 
   public addTable(t: InputModelTypeContext): string {
-    // TODO: Don't hard code table name conversion
     const tableName = t.name.toLowerCase();
 
     const sqlStatement = this.db.schema.createTable(
@@ -50,7 +58,6 @@ export class KnexMigrationManager {
 
   public alterTable(t: InputModelTypeContext, changes: ModelChange[]): string {
     const tableName = t.name.toLowerCase();
-    // TODO: Should this be filtered before passed as an arg??
     const typeChanges = changes.filter((c: ModelChange) => c.path.type === t.name);
 
     const sqlStatement = this.db.schema.alterTable(
@@ -70,46 +77,71 @@ export class KnexMigrationManager {
   }
 
   public async createMigration(migration: SchemaMigration): Promise<void> {
-    await this.db.table(this.tables.migrations).insert(migration);
+    try {
+      // tslint:disable-next-line: await-promise
+      await this.db.table(this.tables.migrations).insert(migration);
+    } catch (err) {
+      handleError(err);
+    }
 
     return Promise.resolve();
   }
 
   public async createMetadataTables(): Promise<void> {
-    if (!await this.db.schema.hasTable(this.tables.migrations)) {
-      await this.db.schema.createTable(this.tables.migrations, (table: knex.TableBuilder) => {
-        table.string('id').primary();
-        table.timestamp('applied_at').nullable();
-        table.text('model').notNullable();
-        table.json('changes').nullable();
-        table.text('sql_up').nullable();
-        table.text('sql_down').nullable();
-        table.timestamp('rollback_at').nullable();
-      });
-    }
+    const hasTable = await this.db.schema.hasTable(this.tables.migrations);
 
-    if (!await this.db.schema.hasTable(this.tables.tables)) {
-      await this.db.schema.createTable(this.tables.tables, (table: knex.TableBuilder) => {
-        table.increments('id').primary();
-        table.string('schema');
-        table.string('name');
-        table.json('fields');
-      });
+    if (!hasTable) {
+      try {
+        // tslint:disable-next-line: await-promise
+        await this.db.schema.createTable(this.tables.migrations, (table: knex.TableBuilder) => {
+          table.bigInteger('id').primary();
+          table.timestamp('applied_at').nullable();
+          table.text('model').notNullable();
+          table.json('changes').nullable();
+          table.text('sql_up').nullable();
+          table.timestamp('rollback_at').nullable();
+
+          logInfo('Created migrations table');
+        });
+      } catch (err) {
+        logError(err.code);
+      }
+
     }
 
     return Promise.resolve();
   }
 
   public async applyMigration(migration: SchemaMigration): Promise<void> {
-    await this.db.raw(migration.sql_up);
+    try {
+      // tslint:disable-next-line: await-promise
+      await this.db.raw(migration.sql_up);
 
-    await this.db(this.tables.migrations).where({ id: migration.id }).update({ applied_at: new Date() });
+      logInfo(`Executed migration ${chalk.cyan(migration.id.toString())}`)
+    } catch (err) {
+      handleError(err);
+    }
+
+    const now = new Date();
+
+    try {
+      // tslint:disable-next-line: await-promise
+      await this.db(this.tables.migrations).where({ id: migration.id }).update({ applied_at: now });
+    } catch (err) {
+      handleError(err.code);
+    }
 
     return Promise.resolve();
   }
 
-   public async getMigrations(): Promise<SchemaMigration[]> {
-    const migrations: SchemaMigration[] = await this.db.select().from(this.tables.migrations);
+  public async getMigrations(): Promise<SchemaMigration[]> {
+    let migrations: SchemaMigration[] = [];
+    try {
+      // tslint:disable-next-line: await-promise
+      migrations = await this.db.select().from(this.tables.migrations);
+    } catch (err) {
+      handleError(err);
+    }
 
     return Promise.resolve(migrations);
   }

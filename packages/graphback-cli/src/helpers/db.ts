@@ -27,6 +27,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
     } else {
       const manager = new DatabaseSchemaManager(database, dbConfig);
 
+      // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
       // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('CREATE SCHEMA public;')
