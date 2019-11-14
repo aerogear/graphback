@@ -50,7 +50,7 @@ export class GraphQLBackendCreator {
   }
 
   public async initializeDatabase(databaseStrategy: DatabaseInitializationStrategy): Promise<void> {
-    await databaseStrategy.init();
+    await databaseStrategy.init(this.dbContextProvider, this.inputContext);
   }
 
   /**

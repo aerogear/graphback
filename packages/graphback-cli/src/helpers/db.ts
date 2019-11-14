@@ -52,7 +52,7 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       await execa('touch', ['db.sqlite'])
     }
 
-    const schemaContext = new InputModelProvider(folders.migrations)
+    const schemaContext = new InputModelProvider(folders.model)
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
 

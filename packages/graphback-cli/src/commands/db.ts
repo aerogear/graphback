@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { DropCreateDatabaseAlways, InputModelProvider, KnexMigrationProvider } from 'graphback'
+import { DropCreateDatabaseAlways } from 'graphback'
 import { ConfigBuilder } from '../config/ConfigBuilder';
-import { createDB, postCommandMessage, connect } from '../helpers'
+import { createDB, postCommandMessage } from '../helpers'
 
 export const command = 'db'
 
@@ -13,17 +13,7 @@ export async function handler() {
   const configInstance = new ConfigBuilder();
   const config = configInstance.config;
 
-  const schemaProvider = new InputModelProvider(config.folders.migrations);
-
-  const db = await connect(config.db.database, config.db.dbConfig);
-
-  const migrationProvider = new KnexMigrationProvider(db, config.folders.migrations);
-
-  const initializationStrategy = new DropCreateDatabaseAlways({
-    db,
-    schemaProvider,
-    migrationProvider
-  });
+  const initializationStrategy = new DropCreateDatabaseAlways(config.db.database, config.db.dbConfig);
 
   await createDB(initializationStrategy)
 
