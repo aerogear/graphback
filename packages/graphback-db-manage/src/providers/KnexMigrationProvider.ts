@@ -24,7 +24,7 @@ export class KnexMigrationProvider implements MigrationProvider {
       await this.createMigration(migration);
     }
 
-    return Promise.resolve(localMigrations);
+    return Promise.resolve(remoteMigrations);
   }
 
   public applyMigration(migration: SchemaMigration): Promise<void> {
