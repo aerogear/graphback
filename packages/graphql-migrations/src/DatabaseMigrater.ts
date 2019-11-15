@@ -170,7 +170,7 @@ export class DatabaseMigrater {
     }
 
     newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
-    newMigration.changes = changes;
+    newMigration.changes = JSON.stringify(changes);
 
     return newMigration;
   }

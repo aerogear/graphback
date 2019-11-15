@@ -64,7 +64,7 @@ export class KnexMigrationManager {
           }
         }
         table.timestamps();
-      },
+      }
     ).toQuery();
 
     return `${sqlStatement};`;
@@ -135,11 +135,11 @@ export class KnexMigrationManager {
           table.json('changes').nullable();
           table.text('sql_up').nullable();
           table.timestamp('rollback_at').nullable();
-
-          logInfo('Created migrations table');
         });
+
+        logInfo('Created migrations table');
       } catch (err) {
-        logError(err.code);
+        logError(err);
       }
 
     }
@@ -170,7 +170,7 @@ export class KnexMigrationManager {
       // tslint:disable-next-line: await-promise
       await this.db(this.tables.migrations).where({ id: migration.id }).update({ applied_at: now });
     } catch (err) {
-      handleError(err.code);
+      handleError(err);
     }
 
     return Promise.resolve();
