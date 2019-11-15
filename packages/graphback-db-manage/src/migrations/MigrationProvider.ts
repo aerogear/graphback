@@ -1,6 +1,4 @@
-import { InputModelTypeContext } from '@graphback/core';
-import { ModelChange } from '../changes/ChangeTypes';
-import { SchemaMigration } from '../models';
+import { SchemaMigration } from '../migrations/SchemaMigration';
 
 export interface MigrationProvider {
   getMigrations(): Promise<SchemaMigration[]>;

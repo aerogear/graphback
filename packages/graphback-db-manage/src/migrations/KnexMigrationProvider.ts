@@ -1,8 +1,8 @@
 import { MigrationProvider } from './MigrationProvider';
 import * as knex from 'knex';
-import { SchemaMigration } from '../models';
-import { KnexMigrationManager } from '../migrations/KnexMigrationManager';
-import { LocalMigrationManager } from '../migrations/LocalMigrationManager';
+import { SchemaMigration } from '../migrations/SchemaMigration';
+import { KnexMigrationManager } from './KnexMigrationManager';
+import { LocalMigrationManager } from './LocalMigrationManager';
 
 export class KnexMigrationProvider implements MigrationProvider {
   private migrationsDir: string;

@@ -2,11 +2,11 @@ import { InputModelTypeContext, graphQLInputContext, filterObjectTypes } from '@
 import { diff } from '@graphql-inspector/core';
 import { buildSchema } from 'graphql';
 import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseStrategyOptions } from './database';
-import { SchemaMigration } from './models';
+import { SchemaMigration } from './migrations/SchemaMigration';
 import { mapModelChanges } from './utils/graphqlUtils';
 import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
 import { GraphQLSchema } from 'graphql';
-import { MigrationProvider } from './providers';
+import { MigrationProvider } from './migrations/MigrationProvider';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 
 export class DatabaseManager {

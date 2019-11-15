@@ -1,4 +1,4 @@
-import { MigrationProvider } from '../providers';
+import { MigrationProvider } from '../migrations/MigrationProvider';
 import * as knex from 'knex';
 import { SchemaProvider } from './migrations';
 

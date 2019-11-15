@@ -1,7 +1,7 @@
 import { InputModelTypeContext, InputModelFieldContext } from '@graphback/core';
 import { ModelChange } from '../changes/ChangeTypes';
 import knex from 'knex';
-import { SchemaMigration } from '../models';
+import { SchemaMigration } from '../migrations/SchemaMigration';
 import { logInfo, logError } from '../utils/log';
 import chalk from 'chalk';
 

@@ -1,5 +1,5 @@
 import { readdirSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { SchemaMigration } from '../models';
+import { SchemaMigration } from '../migrations/SchemaMigration';
 import { join } from 'path';
 import { logError } from '../utils/log';
 import chalk from 'chalk';
