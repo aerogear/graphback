@@ -1,4 +1,4 @@
-import { DatabaseManager } from '../../../DatabaseManager';
+import { DatabaseMigrater } from '../../../DatabaseMigrater';
 import { DatabaseStrategyOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
 
@@ -10,12 +10,12 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
  * @implements {DatabaseInitializationStrategy}
  */
 export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
-  private databaseManager: DatabaseManager;
+  private DatabaseMigrater: DatabaseMigrater;
   constructor(databaseOptions: DatabaseStrategyOptions) {
-    this.databaseManager = new DatabaseManager(databaseOptions)
+    this.DatabaseMigrater = new DatabaseMigrater(databaseOptions)
   }
 
   public async init(): Promise<void> {
-    await this.databaseManager.init();
+    await this.DatabaseMigrater.init();
   }
 }

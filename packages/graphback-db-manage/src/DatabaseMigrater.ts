@@ -9,7 +9,7 @@ import { GraphQLSchema } from 'graphql';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 
-export class DatabaseManager {
+export class DatabaseMigrater {
   private schemaProvider: SchemaProvider;
   private knexMigrationManager: KnexMigrationManager;
   private migrationProvider: MigrationProvider;
