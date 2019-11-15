@@ -2,14 +2,14 @@ import { gql } from 'apollo-server-core';
 import {
   GraphQLBackendCreator,
   InputModelProvider,
+  KnexMigrationProvider,
   PgKnexDBDataProvider,
-  UpdateDatabaseIfChanges,
-  KnexMigrationProvider
+  UpdateDatabaseIfChanges
 } from 'graphback';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
-import * as jsonConfig from '../graphback.json'
 import * as Knex from 'knex';
+import * as jsonConfig from '../graphback.json'
 
 /**
  * Method used to create runtime schema
