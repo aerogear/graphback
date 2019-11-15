@@ -1,8 +1,8 @@
-import { readdirSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { SchemaMigration } from '../migrations/SchemaMigration';
-import { join } from 'path';
-import { logError } from '../utils/log';
 import chalk from 'chalk';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { SchemaMigration } from '../migrations/SchemaMigration';
+import { logError } from '../utils/log';
 
 const handleError = (err: { code: string; message: string; }, migrationId: string, fileName: string) => {
   if (err.code === 'ENOENT') {
@@ -13,12 +13,24 @@ const handleError = (err: { code: string; message: string; }, migrationId: strin
   process.exit(0)
 }
 
+/**
+ * Manages migrations in the local file system
+ *
+ * @export
+ * @class LocalMigrationManager
+ */
 export class LocalMigrationManager {
   private migrationsDir: string;
   constructor(migrationsDir: string) {
     this.migrationsDir = join(process.cwd(), migrationsDir);
   }
 
+  /**
+   * Get all local migrations
+   *
+   * @returns {SchemaMigration[]}
+   * @memberof LocalMigrationManager
+   */
   public getMigrations(): SchemaMigration[] {
     if (!existsSync(this.migrationsDir)) {
       return [];
@@ -61,6 +73,12 @@ export class LocalMigrationManager {
     });
   }
 
+  /**
+   * Create a local migration, persisted as files in the migrations directory
+   *
+   * @param {SchemaMigration} migration
+   * @memberof LocalMigrationManager
+   */
   public createMigration(migration: SchemaMigration): void {
     const migrationPath = join(this.migrationsDir, migration.id.toString());
 

@@ -1,3 +1,9 @@
+/**
+ * Model mapped to the schema_migrations table in the database
+ *
+ * @export
+ * @interface SchemaMigration
+ */
 export interface SchemaMigration {
   id?: string
   applied_at?: Date

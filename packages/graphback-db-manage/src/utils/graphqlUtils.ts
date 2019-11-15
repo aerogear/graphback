@@ -1,8 +1,8 @@
+import { Change } from '@graphql-inspector/core';
 import { readFileSync } from 'fs';
 import { sync } from 'glob';
 import { join } from 'path';
 import { ModelChange, ModelChangeType } from '../changes/ChangeTypes';
-import { Change } from '@graphql-inspector/core';
 
 /**
  * Collects all GraphQL files in a directory and reads the content into a string.

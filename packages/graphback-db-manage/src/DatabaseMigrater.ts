@@ -9,6 +9,16 @@ import { GraphQLSchema } from 'graphql';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 
+/**
+ * Manages schema migration.
+ *
+ * - Create migration tables
+ * - Generate migrations
+ * - Apply migrations
+ *
+ * @export
+ * @class DatabaseMigrater
+ */
 export class DatabaseMigrater {
   private schemaProvider: SchemaProvider;
   private knexMigrationManager: KnexMigrationManager;
@@ -22,6 +32,11 @@ export class DatabaseMigrater {
     this.knexMigrationManager = new KnexMigrationManager(options.db);
   }
 
+  /**
+   * Initialize the schema migration process.
+   *
+   * @memberof DatabaseMigrater
+   */
   public async init() {
     await this.knexMigrationManager.createMetadataTables();
     await this.createMigration();
@@ -29,6 +44,13 @@ export class DatabaseMigrater {
     // TODO: Validate input
   }
 
+  /**
+   * Collect migration metadata and create it
+   *
+   * @private
+   * @returns
+   * @memberof DatabaseMigrater
+   */
   private async createMigration() {
     const newSchema = buildSchema(this.schemaProvider.getSchemaText());
 
@@ -71,6 +93,12 @@ export class DatabaseMigrater {
     await this.migrationProvider.createMigration(newMigration);
   }
 
+  /**
+   * Get the migrations that have not been applied and apply them
+   *
+   * @private
+   * @memberof DatabaseMigrater
+   */
   private async applyMigrations() {
     const migrations = await this.migrationProvider.getMigrations();
 
@@ -85,6 +113,14 @@ export class DatabaseMigrater {
     }
   }
 
+  /**
+   * Group all chage types by their model
+   *
+   * @private
+   * @param {ModelChange[]} changes
+   * @returns
+   * @memberof DatabaseMigrater
+   */
   private groupChangesByModel(changes: ModelChange[]) {
     return changes.reduce((acc: ModelChange, current: ModelChange) => {
 
@@ -94,9 +130,18 @@ export class DatabaseMigrater {
       acc[current.path.type].push(current);
 
       return acc;
+    // tslint:disable-next-line: no-object-literal-type-assertion
     }, {} as ModelChange);
   }
 
+  /**
+   * Generate CREATE and ALTER SQL statements
+   *
+   * @private
+   * @param {ModelChange[]} changes
+   * @returns {DatabaseChange[]}
+   * @memberof DatabaseMigrater
+   */
   private getSqlStatements(changes: ModelChange[]): DatabaseChange[] {
     const groupedChanges = this.groupChangesByModel(changes);
     const dirtyModels = this.inputContext.filter((t: InputModelTypeContext) => {
@@ -104,9 +149,9 @@ export class DatabaseMigrater {
     });
 
     return dirtyModels.map((t: InputModelTypeContext) => {
-      const ModelChangeTypes: ModelChange[] = groupedChanges[t.name];
+      const modelChangeTypes: ModelChange[] = groupedChanges[t.name];
 
-      const typeAdded = ModelChangeTypes.find((c: ModelChange) => c.type === ModelChangeType.TYPE_ADDED);
+      const typeAdded = modelChangeTypes.find((c: ModelChange) => c.type === ModelChangeType.TYPE_ADDED);
 
       if (typeAdded) {
         return {
@@ -116,7 +161,7 @@ export class DatabaseMigrater {
       } else {
         return {
           type: DatabaseChangeType.alterTable,
-          sql: this.knexMigrationManager.alterTable(t, ModelChangeTypes)
+          sql: this.knexMigrationManager.alterTable(t, modelChangeTypes)
         }
       }
     });

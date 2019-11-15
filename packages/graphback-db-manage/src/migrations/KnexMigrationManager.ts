@@ -1,9 +1,10 @@
-import { InputModelTypeContext, InputModelFieldContext } from '@graphback/core';
-import { ModelChange } from '../changes/ChangeTypes';
-import knex from 'knex';
-import { SchemaMigration } from '../migrations/SchemaMigration';
-import { logInfo, logError } from '../utils/log';
+import { InputModelFieldContext, InputModelTypeContext } from '@graphback/core';
 import chalk from 'chalk';
+// tslint:disable-next-line: match-default-export-name
+import knex from 'knex';
+import { ModelChange } from '../changes/ChangeTypes';
+import { SchemaMigration } from '../migrations/SchemaMigration';
+import { logError, logInfo } from '../utils/log';
 
 const handleError = (err: { code: string; message: string }) => {
   if (err.code === '42P07') {
@@ -13,7 +14,13 @@ const handleError = (err: { code: string; message: string }) => {
   process.exit(0);
 }
 
-// TODO: Document exported classes
+/**
+ * Manages remote migrations with Knex. Creates and applies migrations,
+ * generates SQL scripts and creates metadata table
+ *
+ * @export
+ * @class KnexMigrationManager
+ */
 export class KnexMigrationManager {
   // tslint:disable-next-line:typedef
   protected primitiveTypesMapping = {
@@ -36,6 +43,13 @@ export class KnexMigrationManager {
     this.db = db;
   }
 
+  /**
+   * Generates a SQL statement for creating a table
+   *
+   * @param {InputModelTypeContext} t
+   * @returns {string}
+   * @memberof KnexMigrationManager
+   */
   public addTable(t: InputModelTypeContext): string {
     const tableName = t.name.toLowerCase();
 
@@ -56,6 +70,14 @@ export class KnexMigrationManager {
     return `${sqlStatement};`;
   }
 
+  /**
+   * Generates a SQL statement for altering a table
+   *
+   * @param {InputModelTypeContext}
+   * @param {ModelChange[]} changes
+   * @returns {string}
+   * @memberof KnexMigrationManager
+   */
   public alterTable(t: InputModelTypeContext, changes: ModelChange[]): string {
     const tableName = t.name.toLowerCase();
     const typeChanges = changes.filter((c: ModelChange) => c.path.type === t.name);
@@ -76,6 +98,13 @@ export class KnexMigrationManager {
     return `${sqlStatement};`;
   }
 
+  /**
+   * Saves a migration to the database
+   *
+   * @param {SchemaMigration} migration
+   * @returns {Promise<void>}
+   * @memberof KnexMigrationManager
+   */
   public async createMigration(migration: SchemaMigration): Promise<void> {
     try {
       // tslint:disable-next-line: await-promise
@@ -87,6 +116,12 @@ export class KnexMigrationManager {
     return Promise.resolve();
   }
 
+  /**
+   * Create migration metadata table(s)
+   *
+   * @returns {Promise<void>}
+   * @memberof KnexMigrationManager
+   */
   public async createMetadataTables(): Promise<void> {
     const hasTable = await this.db.schema.hasTable(this.tables.migrations);
 
@@ -112,6 +147,13 @@ export class KnexMigrationManager {
     return Promise.resolve();
   }
 
+  /**
+   * Applies a migration to the database
+   *
+   * @param {SchemaMigration} migration
+   * @returns {Promise<void>}
+   * @memberof KnexMigrationManager
+   */
   public async applyMigration(migration: SchemaMigration): Promise<void> {
     try {
       // tslint:disable-next-line: await-promise
@@ -134,6 +176,12 @@ export class KnexMigrationManager {
     return Promise.resolve();
   }
 
+  /**
+   * Fetch all migrations from the database
+   *
+   * @returns {Promise<SchemaMigration[]>}
+   * @memberof KnexMigrationManager
+   */
   public async getMigrations(): Promise<SchemaMigration[]> {
     let migrations: SchemaMigration[] = [];
     try {

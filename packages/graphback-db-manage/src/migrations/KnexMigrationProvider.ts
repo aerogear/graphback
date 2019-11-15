@@ -1,15 +1,23 @@
-import { MigrationProvider } from './MigrationProvider';
+import chalk from 'chalk';
 import * as knex from 'knex';
 import { SchemaMigration } from '../migrations/SchemaMigration';
+import { logError } from '../utils/log';
 import { KnexMigrationManager } from './KnexMigrationManager';
 import { LocalMigrationManager } from './LocalMigrationManager';
+import { MigrationProvider } from './MigrationProvider';
 
+/**
+ * Fetch and apply remote migration using Knex as a database client
+ *
+ * @export
+ * @class KnexMigrationProvider
+ * @implements {MigrationProvider}
+ */
 export class KnexMigrationProvider implements MigrationProvider {
-  private migrationsDir: string;
   private knexMigrationManager: KnexMigrationManager;
   private localMigrationManager: LocalMigrationManager;
+  // tslint:disable-next-line: no-any
   constructor(db: knex<any, unknown[]>, migrationsDir: string) {
-    this.migrationsDir = migrationsDir;
     this.knexMigrationManager = new KnexMigrationManager(db);
     this.localMigrationManager = new LocalMigrationManager(migrationsDir);
   }
@@ -27,14 +35,37 @@ export class KnexMigrationProvider implements MigrationProvider {
     return Promise.resolve(remoteMigrations);
   }
 
-  public applyMigration(migration: SchemaMigration): Promise<void> {
-    this.knexMigrationManager.applyMigration(migration);
+  /**
+   * Apply a migration by updating the database schema
+   *
+   * @param {SchemaMigration} migration
+   * @returns {Promise<void>}
+   * @memberof KnexMigrationProvider
+   */
+  public async applyMigration(migration: SchemaMigration): Promise<void> {
+    try {
+      await this.knexMigrationManager.applyMigration(migration);
+    } catch (err) {
+      logError(`Failed to execute migration ${chalk.cyan(migration.id)} - ${err.message}`)
+    }
 
     return Promise.resolve();
   }
 
+  /**
+   * Create a migration. Generates migration files
+   * in the local project and in the remote database
+   *
+   * @param {SchemaMigration} migration
+   * @returns {Promise<void>}
+   * @memberof KnexMigrationProvider
+   */
   public async createMigration(migration: SchemaMigration): Promise<void> {
     this.localMigrationManager.createMigration(migration);
-    await this.knexMigrationManager.createMigration(migration);
+    try {
+      await this.knexMigrationManager.createMigration(migration);
+    } catch (err) {
+      logError(`Failed to create migration ${chalk.cyan(migration.id)} - ${err.message}`)
+    }
   }
 }
