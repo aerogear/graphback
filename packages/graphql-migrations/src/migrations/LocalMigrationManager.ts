@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { SchemaMigration } from './SchemaMigration';
-import { logError } from '../utils/log';
 import { ModelChange } from '../changes/ChangeTypes';
+import { logError } from '../utils/log';
+import { SchemaMigration } from './SchemaMigration';
 
 const handleError = (err: { code: string; message: string; }, migrationId: string, fileName: string) => {
   if (err.code === 'ENOENT') {

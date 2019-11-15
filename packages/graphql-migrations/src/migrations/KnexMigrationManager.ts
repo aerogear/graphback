@@ -3,8 +3,8 @@ import chalk from 'chalk';
 // tslint:disable-next-line: match-default-export-name
 import knex from 'knex';
 import { ModelChange } from '../changes/ChangeTypes';
-import { SchemaMigration } from './SchemaMigration';
 import { logError, logInfo } from '../utils/log';
+import { SchemaMigration } from './SchemaMigration';
 
 const handleError = (err: { code: string; message: string }) => {
   if (err.code === '42P07') {

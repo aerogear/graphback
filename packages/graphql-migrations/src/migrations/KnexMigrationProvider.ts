@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import * as knex from 'knex';
-import { SchemaMigration } from './SchemaMigration';
 import { logError } from '../utils/log';
 import { KnexMigrationManager } from './KnexMigrationManager';
 import { LocalMigrationManager } from './LocalMigrationManager';
 import { MigrationProvider } from './MigrationProvider';
+import { SchemaMigration } from './SchemaMigration';
 
 /**
  * Fetch and apply remote migration using Knex as a database client
