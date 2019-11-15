@@ -23,11 +23,7 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   process.chdir(basePath)
   await generate();
 
-  const databaseInitializationStrategy = new DropCreateDatabaseAlways({
-    connectionOptions: {
-      filename: "./db.sqlite"
-    }, client: "sqlite3"
-  })
+  const databaseInitializationStrategy = new DropCreateDatabaseAlways("sqlite3", { filename: "./db.sqlite" })
 
   await createDB(databaseInitializationStrategy);
 
