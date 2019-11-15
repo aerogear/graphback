@@ -28,13 +28,11 @@ There are two database CLI commands:
 
 ## Runtime
 
-In runtime, there are 4 database initialization strategies which are defined in the client application.
+In runtime, there are two database initialization strategies which are defined in the client application.
 
 ### Strategies
 
 - `DropCreateDatabaseAlways` - Drops and creates the database every time the application is run.
-- `CreateDatabaseIfNotExists` - Only creates the database if it doesn't exist.
-- `DropCreateDatabaseIfChanges` - Drop and recreate the database if there are changes in your schema.
 - `UpdateDatabaseIfChanges` - Only update the database when your input schema has been changed.
 
 ### Configuration
@@ -42,19 +40,25 @@ In runtime, there are 4 database initialization strategies which are defined in 
 Here is an example of how to configure database initialization strategies.
 
 ```ts
-import * as jsonConfig from '../graphback.json';
+import * as jsonConfig from '../graphback.json'
+
+const db = new Knex(...);
+
+const schemaProvider = new InputModelProvider(jsonConfig.folders.model)
+
+const migrationProvider = new KnexMigrationProvider(db, jsonConfig.folders.migrations);
 
 const databaseInitializationStrategy = new UpdateDatabaseIfChanges({
-  client: jsonConfig.db.database,
-  connectionOptions: jsonConfig.db.dbConfig,
+  db,
+  schemaProvider,
+  migrationProvider
 });
 
+// execute the database initialization strategy
+await backend.initializeDatabase(databaseInitializationStrategy);
+
 const pubSub = new PubSub();
-const runtime = await backend.createRuntime(
-  dbClientProvider,
-  pubSub,
-  databaseInitializationStrategy,
-);
+const runtime = await backend.createRuntime(dbClientProvider, pubSub);
 ```
 
 ## Limitations
@@ -63,3 +67,5 @@ Schema migrations are in a very early phase. At present the change types that ar
 
 - **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
 - **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.
+
+Relationships are not yet supported and will be added very soon.
