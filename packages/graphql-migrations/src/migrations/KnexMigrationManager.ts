@@ -3,7 +3,7 @@ import chalk from 'chalk';
 // tslint:disable-next-line: match-default-export-name
 import knex from 'knex';
 import { ModelChange } from '../changes/ChangeTypes';
-import { SchemaMigration } from '../migrations/SchemaMigration';
+import { SchemaMigration } from './SchemaMigration';
 import { logError, logInfo } from '../utils/log';
 
 const handleError = (err: { code: string; message: string }) => {

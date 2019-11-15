@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as knex from 'knex';
-import { SchemaMigration } from '../migrations/SchemaMigration';
+import { SchemaMigration } from './SchemaMigration';
 import { logError } from '../utils/log';
 import { KnexMigrationManager } from './KnexMigrationManager';
 import { LocalMigrationManager } from './LocalMigrationManager';

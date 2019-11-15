@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { SchemaMigration } from '../migrations/SchemaMigration';
+import { SchemaMigration } from './SchemaMigration';
 import { logError } from '../utils/log';
 
 const handleError = (err: { code: string; message: string; }, migrationId: string, fileName: string) => {

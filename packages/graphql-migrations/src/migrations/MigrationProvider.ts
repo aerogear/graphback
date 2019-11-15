@@ -1,4 +1,4 @@
-import { SchemaMigration } from '../migrations/SchemaMigration';
+import { SchemaMigration } from './SchemaMigration';
 
 /**
  * Interface for fetching, creating and applying migrations
