@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { join } from 'path';
 import { SchemaMigration } from './SchemaMigration';
 import { logError } from '../utils/log';
+import { ModelChange } from '../changes/ChangeTypes';
 
 const handleError = (err: { code: string; message: string; }, migrationId: string, fileName: string) => {
   if (err.code === 'ENOENT') {
@@ -22,7 +23,7 @@ const handleError = (err: { code: string; message: string; }, migrationId: strin
 export class LocalMigrationManager {
   private migrationsDir: string;
   constructor(migrationsDir: string) {
-    this.migrationsDir = join(process.cwd(), migrationsDir);
+    this.migrationsDir = migrationsDir;
   }
 
   /**
@@ -64,7 +65,8 @@ export class LocalMigrationManager {
       }
 
       try {
-        schemaMigration.changes = readFileSync(changesFilePath, 'utf8');
+        const changes = readFileSync(changesFilePath, 'utf8');
+        schemaMigration.changes = JSON.parse(changes);
       } catch (err) {
         handleError(err, migrationId, changesFile);
       }
@@ -88,6 +90,6 @@ export class LocalMigrationManager {
 
     writeFileSync(join(migrationPath, `${migration.id}_up.sql`), migration.sql_up);
     writeFileSync(join(migrationPath, 'model.graphql'), migration.model);
-    writeFileSync(join(migrationPath, 'changes.json'), migration.changes);
+    writeFileSync(join(migrationPath, 'changes.json'), JSON.stringify(migration.changes));
   }
 }
