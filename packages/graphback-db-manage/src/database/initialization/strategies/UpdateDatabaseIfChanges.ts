@@ -10,12 +10,12 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
  * @implements {DatabaseInitializationStrategy}
  */
 export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
-  private DatabaseMigrater: DatabaseMigrater;
+  private databaseMigrater: DatabaseMigrater;
   constructor(databaseOptions: DatabaseStrategyOptions) {
-    this.DatabaseMigrater = new DatabaseMigrater(databaseOptions)
+    this.databaseMigrater = new DatabaseMigrater(databaseOptions)
   }
 
   public async init(): Promise<void> {
-    await this.DatabaseMigrater.init();
+    await this.databaseMigrater.init();
   }
 }

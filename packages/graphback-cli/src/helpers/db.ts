@@ -1,8 +1,8 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import * as knex from 'knex'
 import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, InputModelProvider, KnexMigrationProvider } from 'graphback';
+import * as knex from 'knex'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'

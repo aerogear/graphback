@@ -1,13 +1,12 @@
-import { InputModelTypeContext, graphQLInputContext, filterObjectTypes } from '@graphback/core';
+import { filterObjectTypes, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
 import { diff } from '@graphql-inspector/core';
-import { buildSchema } from 'graphql';
-import { SchemaProvider, DatabaseChangeType, DatabaseChange, DatabaseStrategyOptions } from './database';
+import { buildSchema, GraphQLSchema } from 'graphql';
+import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
+import { DatabaseChange, DatabaseChangeType, DatabaseStrategyOptions, SchemaProvider } from './database';
+import { KnexMigrationManager } from './migrations/KnexMigrationManager';
+import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { mapModelChanges } from './utils/graphqlUtils';
-import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
-import { GraphQLSchema } from 'graphql';
-import { MigrationProvider } from './migrations/MigrationProvider';
-import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 
 /**
  * Manages schema migration.

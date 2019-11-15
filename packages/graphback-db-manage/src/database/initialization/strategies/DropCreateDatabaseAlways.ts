@@ -1,4 +1,4 @@
-import { InputModelTypeContext, filterObjectTypes } from '@graphback/core';
+import { filterObjectTypes, InputModelTypeContext } from '@graphback/core';
 import * as Knex from 'knex';
 import { DatabaseContextProvider } from '../../migrations/DatabaseContextProvider';
 import { DatabaseSchemaManager } from '../../migrations/DataResourcesManager';

@@ -2,11 +2,11 @@ import { ClientDocuments, createClient } from '@graphback/codegen-client';
 import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
-import { DatabaseMigrater, DatabaseContextProvider, DefaultDataContextProvider, SchemaProvider, DatabaseInitializationStrategy } from '@graphback/db-manage';
+import { DatabaseContextProvider, DatabaseInitializationStrategy, DatabaseMigrater, DefaultDataContextProvider, SchemaProvider } from '@graphback/db-manage';
 import { DefaultCRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
 import { PubSub } from 'graphql-subscriptions';
-import { IGraphQLBackend } from '.';
 import knex from 'knex';
+import { IGraphQLBackend } from '.';
 
 /**
  * GraphQLBackend

@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { UpdateDatabaseIfChanges, InputModelProvider, KnexMigrationProvider } from 'graphback'
+import { InputModelProvider, KnexMigrationProvider, UpdateDatabaseIfChanges } from 'graphback'
 import { ConfigBuilder } from '../config/ConfigBuilder';
-import { createDB, postCommandMessage, connect } from '../helpers'
+import { connect, createDB, postCommandMessage } from '../helpers'
 
 export const command = 'update-db'
 

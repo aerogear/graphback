@@ -1,5 +1,5 @@
-import { MigrationProvider } from '../migrations/MigrationProvider';
 import * as knex from 'knex';
+import { MigrationProvider } from '../migrations/MigrationProvider';
 import { SchemaProvider } from './migrations';
 
 export interface DatabaseStrategyOptions {
