@@ -70,7 +70,7 @@
     "request": "2.88.0",
     "tar": "5.0.5",
     "tmp": "0.1.0",
-    "yargs": "14.2.1"
+    "yargs": "15.0.1"
   },
   "jest": {
     "transform": {
