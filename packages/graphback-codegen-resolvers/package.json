@@ -32,6 +32,9 @@
     "node": ">=10.15.3"
   },
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/graphql": "14.2.3",
     "@types/node": "12.12.9",
