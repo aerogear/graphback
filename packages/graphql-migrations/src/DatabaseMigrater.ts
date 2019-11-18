@@ -8,6 +8,9 @@ import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { mapModelChanges } from './utils/graphqlUtils';
 
+export async function migrate() {
+
+}
 /**
  * Manages schema migration.
  *
@@ -170,7 +173,7 @@ export class DatabaseMigrater {
     }
 
     newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
-    newMigration.changes = JSON.stringify(changes);
+    newMigration.changes = changes;
 
     return newMigration;
   }
