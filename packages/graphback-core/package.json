@@ -44,6 +44,9 @@
     "typescript": "3.7.2"
   },
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "glob": "7.1.6",
     "pino": "5.13.6"
