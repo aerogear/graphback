@@ -65,8 +65,7 @@ export class LocalMigrationManager {
       }
 
       try {
-        const changes = readFileSync(changesFilePath, 'utf8');
-        schemaMigration.changes = JSON.parse(changes);
+        schemaMigration.changes = readFileSync(changesFilePath, 'utf8');
       } catch (err) {
         handleError(err, migrationId, changesFile);
       }

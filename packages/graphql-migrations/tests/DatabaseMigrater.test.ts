@@ -5,34 +5,6 @@ import { join } from 'path';
 import Knex = require('knex');
 import { DatabaseMigrater } from '../src/DatabaseMigrater';
 import ava, { ExecutionContext } from 'ava';
-import { ModelChange, ModelChangeType } from '../src/changes/ChangeTypes';
-
-const oldSchemaDefault = `
-type User {
-  id: ID!
-  name: String!
-}
-
-type Note {
-  id: ID!
-  title: String!
-}
-`;
-
-const currentSchemaDefault = `
-type User {
-  id: ID!
-  age: Int
-}
-
-type Test {
-  id: ID!
-  name: String
-}
-`;
-
-
-// TODO: Fix tests
 
 const setup = () => {
 
@@ -55,7 +27,6 @@ const setup = () => {
   return new DatabaseMigrater({ db, schemaProvider, migrationProvider });
 }
 
-
 ava('it should generate a SQL migration script', async (t: ExecutionContext) => {
 
   const databaseMigrater = setup();
@@ -63,7 +34,8 @@ ava('it should generate a SQL migration script', async (t: ExecutionContext) => 
   await databaseMigrater.createMetadataTables();
   const migration = await databaseMigrater.createMigration();
 
-  t.assert(migration.changes.length === 3);
+  const changes = JSON.parse(migration.changes);
+  t.assert(changes.length === 3);
   t.assert(migration.sql_up !== undefined);
   t.snapshot(migration.sql_up);
 });
