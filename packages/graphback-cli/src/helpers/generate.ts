@@ -44,7 +44,7 @@ export async function generateBackend(): Promise<void> {
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
 
-    const schemaContext = new InputModelProvider(folders.migrations, folders.model)
+    const schemaContext = new InputModelProvider(folders.model)
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
 

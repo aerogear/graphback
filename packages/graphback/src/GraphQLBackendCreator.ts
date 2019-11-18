@@ -1,9 +1,9 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
 import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
-import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
-import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, GraphQLSchemaManager, SchemaProvider } from '@graphback/db-manage';
+import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
 import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
+import { DatabaseContextProvider, DatabaseInitializationStrategy, DefaultDataContextProvider, SchemaProvider } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
 
@@ -14,8 +14,6 @@ import { IGraphQLBackend } from '.';
  * See README for examples
  */
 export class GraphQLBackendCreator {
-  private dbContextProvider: DatabaseContextProvider;
-  private graphQLSchemaManager: GraphQLSchemaManager;
   private inputContext: InputModelTypeContext[];
 
   /**
@@ -23,18 +21,7 @@ export class GraphQLBackendCreator {
    * @param config configuration for backend generator
    */
   constructor(schemaContext: SchemaProvider, config: GraphbackGeneratorConfig) {
-    this.graphQLSchemaManager = new GraphQLSchemaManager({ provider: schemaContext });
-    this.inputContext = graphQLInputContext.createModelContext(schemaContext.getCurrentSchemaText(), config);
-    this.dbContextProvider = new DefaultDataContextProvider();
-  }
-
-  /**
-   * Set resolver operations that will be generated
-   *
-   * @param types - array of resolver operations that should be supported
-   */
-  public setDatabaseContext(provider: DatabaseContextProvider) {
-    this.dbContextProvider = provider;
+    this.inputContext = graphQLInputContext.createModelContext(schemaContext.getSchemaText(), config);
   }
 
   /**
@@ -52,22 +39,6 @@ export class GraphQLBackendCreator {
     return backend;
   }
 
-  public async initializeDatabase(strategy: DatabaseInitializationStrategy) {
-    const typeContext = this.inputContext.filter(
-      (t: InputModelTypeContext) =>
-        t.kind === OBJECT_TYPE_DEFINITION &&
-        t.name !== 'Query' &&
-        t.name !== 'Mutation' &&
-        t.name !== 'Subscription',
-    );
-
-    const schemaChanges = this.graphQLSchemaManager.getChanges();
-
-    await strategy.init(this.dbContextProvider, typeContext, schemaChanges);
-
-    this.graphQLSchemaManager.updateOldSchema();
-  }
-
   /**
    * Create runtime for backend in form of the schema string and resolve functions
    */
@@ -76,7 +47,6 @@ export class GraphQLBackendCreator {
       schema: "",
       resolvers: {}
     };
-
 
     const schemaGenerator = new SchemaGenerator(this.inputContext)
     backend.schema = schemaGenerator.generate()

@@ -3,5 +3,16 @@
 
 type User {
     id: ID!
-    name: String!
+    name: String
+    age: String
+}
+
+type City {
+    id: ID!
+    name: String
+}
+
+type Note {
+    id: ID!
+    text: String
 }

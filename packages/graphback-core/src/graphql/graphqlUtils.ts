@@ -1,6 +1,3 @@
-import { readFileSync } from 'fs';
-import { sync } from 'glob';
-import { join } from 'path';
 import { GraphbackOperationType, InputModelTypeContext, INTERFACE_TYPE_DEFINITION, OBJECT_TYPE_DEFINITION, OBJECT_TYPE_EXTENSION } from '../api';
 
 export const getFieldName = (typeName: string, action: GraphbackOperationType, plural: string = ''): string => {

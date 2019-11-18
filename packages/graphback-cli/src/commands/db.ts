@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { DropCreateDatabaseAlways } from 'graphback'
 import { ConfigBuilder } from '../config/ConfigBuilder';
-import { createDB, postCommandMessage } from '../helpers'
+import { connect, createDB, postCommandMessage } from '../helpers'
 
 export const command = 'db'
 
@@ -13,7 +13,10 @@ export async function handler() {
   const configInstance = new ConfigBuilder();
   const config = configInstance.config;
 
-  const initializationStrategy = new DropCreateDatabaseAlways({ client: config.db.database, connectionOptions: config.db.dbConfig });
+  const db = await connect(config.db.database, config.db.dbConfig);
+
+  const initializationStrategy = new DropCreateDatabaseAlways(config.db.database, db);
+
   await createDB(initializationStrategy)
 
   postCommandMessage(`

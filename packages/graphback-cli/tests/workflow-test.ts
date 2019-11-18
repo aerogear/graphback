@@ -5,7 +5,7 @@ const execa = require('execa');
 import { existsSync } from 'fs';
 import { DropCreateDatabaseAlways } from 'graphback';
 import { join, resolve } from 'path';
-import { createDB, generate, initConfig } from '../src';
+import { createDB, generate, initConfig, connect } from '../src';
 
 const model = {
   modelName: "testSchema",
@@ -23,11 +23,9 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   process.chdir(basePath)
   await generate();
 
-  const databaseInitializationStrategy = new DropCreateDatabaseAlways({
-    connectionOptions: {
-      filename: "./db.sqlite"
-    }, client: "sqlite3"
-  })
+  const db = await connect("sqlite3", { filename: "./db.sqlite" })
+
+  const databaseInitializationStrategy = new DropCreateDatabaseAlways("sqlite3", db);
 
   await createDB(databaseInitializationStrategy);
 

@@ -1,7 +1,8 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, InputModelProvider } from 'graphback';
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, InputModelProvider } from 'graphback';
+import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
@@ -26,6 +27,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
     } else {
       const manager = new DatabaseSchemaManager(database, dbConfig);
 
+      // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
       // tslint:disable-next-line: await-promise
       await manager.getConnection().raw('CREATE SCHEMA public;')
@@ -51,10 +53,9 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       await execa('touch', ['db.sqlite'])
     }
 
-    const schemaContext = new InputModelProvider(folders.migrations, folders.model)
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
+    const schemaContext = new InputModelProvider(folders.model)
 
-    await backend.initializeDatabase(initializationStrategy);
+    await initializationStrategy.init(schemaContext.getSchemaText());
 
   } catch (err) {
     handleError(err)
@@ -70,4 +71,12 @@ export const createDB = async (initializationStrategy: DatabaseInitializationStr
   checkDirectory(configInstance)
 
   await createDBResources(configInstance, initializationStrategy)
+}
+
+// tslint:disable-next-line: no-any
+export async function connect(client: string, connection: any) {
+  return Knex({
+    client,
+    connection
+  })
 }
