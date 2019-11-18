@@ -88,8 +88,10 @@ export class KnexMigrationManager {
         for (const change of typeChanges) {
           const field = t.fields.find((f: InputModelFieldContext) => f.name === change.path.field);
           const method = this.primitiveTypesMapping[field.type];
+
           if (method) {
-            table[method](field.name);
+            table[method](field.name)
+            ;
           }
         }
       }
@@ -134,7 +136,6 @@ export class KnexMigrationManager {
           table.text('model').notNullable();
           table.json('changes').nullable();
           table.text('sql_up').nullable();
-          table.timestamp('rollback_at').nullable();
         });
 
         logInfo('Created migrations table');
