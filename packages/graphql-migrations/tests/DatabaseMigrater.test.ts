@@ -22,9 +22,7 @@ const setup = () => {
 
   const db = Knex(dbConfig);
 
-  const migrationProvider = new KnexMigrationProvider(db, migrationsDir)
-
-  return new DatabaseMigrater({ db, schemaProvider, migrationProvider });
+  return new DatabaseMigrater(schemaProvider.getSchemaText(), db, migrationsDir);
 }
 
 ava('it should generate a SQL migration script', async (t: ExecutionContext) => {
