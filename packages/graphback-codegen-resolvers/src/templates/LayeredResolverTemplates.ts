@@ -68,33 +68,25 @@ export const deletedSub = (typeName: string): string => {
     }`
 }
 
-export const generateRuntimeImport = (): string =>{
+export const generateRuntimeImport = (): string => {
   return `import { validateRuntimeContext } from "@graphback/runtime";`
 };
 
-// TODO
 export const typeRelation = (relation: string, columnName: string, fieldName: string, tableName: string): string => {
-  // if (relation === 'OneToOne') {
-  //   return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
-  //     return ${this.knexContext}.select().from('${tableName}').where('${columnName}', '=', parent.id)
-  //                               .then((result) => result[0])
-  //   }`
-  // } else if (relation === 'OneToMany') {
-  //   return `${fieldName}: (parent: any, _: any, context: GraphQLContext) => {
-  //     return ${this.knexContext}.select().from('${tableName}').where('${columnName}', '=', parent.id)
-  //   }`
-  // } else {
-  //   return undefined
-  // }
-  return '';
-}
+  if (relation === 'OneToOne') {
+    return `${fieldName}: (parent, args, context) => {
+      validateRuntimeContext(context)
+      return context.crudService.batchLoadData("${tableName}", "${columnName}", parent.id, context)
+        .then((result) => result[0]);
+    }`
+  } else if (relation === 'OneToMany') {
+    return `${fieldName}: (parent, args, context) => {
+      validateRuntimeContext(context)
+      return context.crudService.batchLoadData("${tableName}", "${columnName}", parent.id, context);
+    }`
+  }
 
-export const invertTypeRelation = (columnName: string, fieldName: string, tableName: string): string => {
-  // return `${fieldName}: async (parent: any, _: any, context: GraphQLContext) => {
-  //     export const result = await ${this.knexContext}.select().from('${tableName}').where('id', '=', parent.${columnName})
-  //     return result[0]
-  //   }`
-  return '';
+  return undefined
 }
 
 export const blankResolver = (name: string) => {

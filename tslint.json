@@ -4,6 +4,7 @@
     "tslint-config-prettier"
   ],
   "rules": {
+    "no-any": false,
     "mocha-no-side-effect-code": false,
     "missing-jsdoc": false,
     "no-relative-imports": false,

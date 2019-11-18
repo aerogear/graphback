@@ -53,9 +53,10 @@ test('read Todo', async t => {
 });
 
 test('batch read Todos', async t => {
-  const todos: Todo[] = await t.context.provider.batchRead(typeContext.name, ['1', '2']);
+  const todos = await t.context.provider.batchRead(typeContext.name, 'id', ['1', '2']);
 
-  t.assert(todos.length === 2);
+  t.assert(todos[0][0].id === 1);
+  t.assert(todos[1][0].id === 2);
 });
 
 test('create Todo', async t => {

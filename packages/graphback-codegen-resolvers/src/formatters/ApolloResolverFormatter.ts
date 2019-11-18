@@ -14,6 +14,12 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
 
   const outputResolvers = []
 
+  if(relations.length) {
+    outputResolvers.push(`${name}: {
+    ${relations.join(',\n    ')}
+  }`)
+  }
+
   if (queries.length) {
     outputResolvers.push(`Query: {
     ${context.queries.join(',\n    ')}

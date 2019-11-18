@@ -3,7 +3,7 @@ type Note {
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment]!
+  comment: [Comment!]!
 }
 
 type Comment {

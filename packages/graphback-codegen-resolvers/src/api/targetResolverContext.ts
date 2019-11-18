@@ -108,9 +108,11 @@ export const buildResolverTargetContext = (input: InputModelTypeContext[]) => {
   const relations = createRelations(inputContext);
 
   inputContext.forEach((t: InputModelTypeContext) => {
+    const typeRelations = relations.filter((r: ResolverRelationContext) => r.typeName === t.name)
+      .map((r: ResolverRelationContext) => r.implementation);
     output.push({
       name: t.name,
-      context: buildGraphbackOperationTypeContext(t, relations.filter((r: ResolverRelationContext) => r.typeName === t.name).map((r: ResolverRelationContext) => r.implementation))
+      context: buildGraphbackOperationTypeContext(t, typeRelations)
     })
   })
 

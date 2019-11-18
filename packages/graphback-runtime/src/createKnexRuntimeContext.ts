@@ -1,7 +1,7 @@
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex'
 import { CRUDService, PgKnexDBDataProvider } from '.';
-import { GraphbackRuntimeContext } from './GraphbackRuntimeContext';
+import { GraphbackRuntimeContext } from './api/GraphbackRuntimeContext';
  
 /**
  * Create context object required for the graphback runtime layer 

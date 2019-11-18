@@ -1,4 +1,4 @@
-import { GraphbackCRUDService, GraphbackDataProvider } from '.';
+import { GraphbackCRUDService, GraphbackDataProvider } from '..';
 
 import { PubSubEngine } from 'graphql-subscriptions';
 
