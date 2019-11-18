@@ -14,7 +14,6 @@ import { IGraphQLBackend } from '.';
  * See README for examples
  */
 export class GraphQLBackendCreator {
-  private dbContextProvider: DatabaseContextProvider;
   private inputContext: InputModelTypeContext[];
 
   /**
@@ -23,14 +22,6 @@ export class GraphQLBackendCreator {
    */
   constructor(schemaContext: SchemaProvider, config: GraphbackGeneratorConfig) {
     this.inputContext = graphQLInputContext.createModelContext(schemaContext.getSchemaText(), config);
-    this.dbContextProvider = new DefaultDataContextProvider();
-  }
-
-  /**
-   * @param types - array of resolver operations that shoulI just said Ill keep an d be supported
-   */
-  public setDatabaseContext(provider: DatabaseContextProvider) {
-    this.dbContextProvider = provider;
   }
 
   /**
@@ -46,10 +37,6 @@ export class GraphQLBackendCreator {
     backend.resolvers = resolverGenerator.generate();
 
     return backend;
-  }
-
-  public async initializeDatabase(databaseStrategy: DatabaseInitializationStrategy): Promise<void> {
-    await databaseStrategy.init(this.dbContextProvider, this.inputContext);
   }
 
   /**

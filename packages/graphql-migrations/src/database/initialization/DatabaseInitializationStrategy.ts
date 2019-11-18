@@ -3,5 +3,5 @@ import { Change } from '@graphql-inspector/core';
 import { DatabaseContextProvider } from '../migrations/DatabaseContextProvider';
 
 export interface DatabaseInitializationStrategy {
-  init(context?: DatabaseContextProvider, types?: InputModelTypeContext[]): Promise<void>;
+  init(schemaText: string): Promise<void>;
 }

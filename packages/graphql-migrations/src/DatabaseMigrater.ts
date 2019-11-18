@@ -2,14 +2,14 @@ import { filterObjectTypes, graphQLInputContext, InputModelTypeContext } from '@
 import { diff } from '@graphql-inspector/core';
 import { buildSchema, GraphQLSchema } from 'graphql';
 import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
-import { DatabaseChange, DatabaseChangeType, DatabaseStrategyOptions, SchemaProvider } from './database';
+import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy, DatabaseStrategyOptions, SchemaProvider } from './database';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { mapModelChanges } from './utils/graphqlUtils';
 
-export async function migrate() {
-
+export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
+  await strategy.init(schemaText);
 }
 /**
  * Manages schema migration.
@@ -173,7 +173,7 @@ export class DatabaseMigrater {
     }
 
     newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
-    newMigration.changes = changes;
+    newMigration.changes = JSON.stringify(changes);
 
     return newMigration;
   }

@@ -6,6 +6,7 @@ import {
   PgKnexDBDataProvider,
   UpdateDatabaseIfChanges
 } from 'graphback';
+import { migrate } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as Knex from 'knex';
@@ -22,13 +23,10 @@ export const createRuntime = async (client: Knex) => {
 
   const migrationProvider = new KnexMigrationProvider(client, jsonConfig.folders.migrations);
 
-  const databaseInitializationStrategy = new UpdateDatabaseIfChanges({
-    db: client,
-    schemaProvider,
-    migrationProvider
-  });
+  const dbInitialization = new UpdateDatabaseIfChanges({ db: client, schemaProvider, migrationProvider });
 
-  await backend.initializeDatabase(databaseInitializationStrategy);
+  await migrate(schemaProvider.getSchemaText(), dbInitialization);
+
   const pubSub = new PubSub();
   const runtime = await backend.createRuntime(dbClientProvider, pubSub);
   const generatedSchema = runtime.schema;
