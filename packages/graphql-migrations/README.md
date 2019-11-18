@@ -1,34 +1,8 @@
-## Graphback
+## graphql-migrations
 
-<p align="center">
-  <img width="400" src="https://github.com/aerogear/graphback/raw/master/website/static/img/graphback.png">
-  <br/>
-  Auto generate database structure, <br/>
-  GraphQL Resolvers and Queries from GraphQL types 🚀
-</p>
-
-**Documentation**: <https://graphback.dev>
-**Repository**: <https://github.com/aerogear/graphback/>
-
-## Graphback-DB-Manager
-
-Runtime and CLI database schema manager.
-
-- Creates database schema.
-- Performs schema migrations.
+Automatically updates your database structure from a GraphQL schema.
 
 ## Usage
-
-### CLI
-
-There are two database CLI commands:
-
-- `graphback db` - this will drop and create a database schema from your input model.
-- `graphback update-db` - this will update your database schema by comparing what has changed between the current and previous schema and applying those changes.
-
-## Runtime
-
-In runtime, there are two database initialization strategies which are defined in the client application.
 
 ### Strategies
 
@@ -39,23 +13,61 @@ In runtime, there are two database initialization strategies which are defined i
 
 Here is an example of how to configure database initialization strategies.
 
+#### Performing automatic migrations
+
 ```ts
-import * as jsonConfig from '../graphback.json'
+import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
+import { migrationsDir } from './config';
 
-const db = new Knex(...);
+const schemaText = `
+type User {
+  id: ID!
+  name: String
+}
 
-const schemaProvider = new InputModelProvider(jsonConfig.folders.model)
+type Note {
+  id: ID!
+  text: String
+}
+`;
 
-const migrationProvider = new KnexMigrationProvider(db, jsonConfig.folders.migrations);
+const db = Knex(...);
 
-const databaseInitializationStrategy = new UpdateDatabaseIfChanges({
-  db,
-  schemaProvider,
-  migrationProvider
+const databaseInitializationStrategy = new UpdateDatabaseIfChanges(db, migrationsDir);
 });
 
-// execute the database initialization strategy
-await backend.initializeDatabase(databaseInitializationStrategy);
+await migrate(schemaText, dbInitialization);
+
+const pubSub = new PubSub();
+const runtime = await backend.createRuntime(dbClientProvider, pubSub);
+```
+
+#### Drop and recreate database every time
+
+This mode is useful for when you are in development mode and don't care about saving migrations.
+
+```ts
+import { migrate, DropCreateDatabaseAlways } from 'graphql-migrations';
+import { migrationsDir } from './config';
+
+const schemaText = `
+type User {
+  id: ID!
+  name: String
+}
+
+type Note {
+  id: ID!
+  text: String
+}
+`;
+
+const db = Knex(...);
+
+const databaseInitializationStrategy = new DropCreateDatabaseAlways('pg', db);
+});
+
+await migrate(schemaText, dbInitialization);
 
 const pubSub = new PubSub();
 const runtime = await backend.createRuntime(dbClientProvider, pubSub);

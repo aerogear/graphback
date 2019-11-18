@@ -1,5 +1,5 @@
 import { graphQLInputContext, InputModelTypeContext } from '@graphback/core';
-import * as Knex from 'knex';
+import * as knex from 'knex';
 import { DatabaseContextProvider, DefaultDataContextProvider } from '../../migrations/DatabaseContextProvider';
 import { DatabaseSchemaManager } from '../../migrations/DataResourcesManager';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
@@ -14,8 +14,9 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
 export class DropCreateDatabaseAlways implements DatabaseInitializationStrategy {
   private schemaManager: DatabaseSchemaManager;
   private context: DatabaseContextProvider;
-  constructor(client: string, connectionOptions: Knex.ConnectionConfig | Knex.Sqlite3ConnectionConfig) {
-    this.schemaManager = new DatabaseSchemaManager(client, connectionOptions);
+  // tslint:disable-next-line: no-any
+  constructor(client: string, db: knex<any, unknown[]>) {
+    this.schemaManager = new DatabaseSchemaManager(client, db);
     this.context = new DefaultDataContextProvider();
   }
 

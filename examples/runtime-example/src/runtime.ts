@@ -2,7 +2,6 @@ import { gql } from 'apollo-server-core';
 import {
   GraphQLBackendCreator,
   InputModelProvider,
-  KnexMigrationProvider,
   PgKnexDBDataProvider,
   UpdateDatabaseIfChanges
 } from 'graphback';
@@ -21,9 +20,7 @@ export const createRuntime = async (client: Knex) => {
   const backend = new GraphQLBackendCreator(schemaProvider, jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  const migrationProvider = new KnexMigrationProvider(client, jsonConfig.folders.migrations);
-
-  const dbInitialization = new UpdateDatabaseIfChanges({ db: client, schemaProvider, migrationProvider });
+  const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
 
   await migrate(schemaProvider.getSchemaText(), dbInitialization);
 

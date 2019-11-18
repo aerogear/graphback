@@ -86,9 +86,10 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
 
   constructor(
     client: string,
-    dbConnectionOptions: Knex.ConnectionConfig | Knex.Sqlite3ConnectionConfig,
+    // tslint:disable-next-line: no-any
+    db: Knex<any, unknown[]>
   ) {
-    this.dbConnection = createDBConnectionKnex(client, dbConnectionOptions);
+    this.dbConnection = db;
     this.client = client;
   }
 

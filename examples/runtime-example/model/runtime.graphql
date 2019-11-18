@@ -7,3 +7,8 @@ type User {
     age: String
     test: String
 }
+
+type Enda {
+    id: ID!
+    name: String
+}

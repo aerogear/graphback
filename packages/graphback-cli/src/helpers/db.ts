@@ -1,11 +1,11 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, GraphQLBackendCreator, InputModelProvider, KnexMigrationProvider } from 'graphback';
-import * as knex from 'knex';
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, InputModelProvider } from 'graphback';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
+import * as Knex from 'knex';
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -75,7 +75,7 @@ export const createDB = async (initializationStrategy: DatabaseInitializationStr
 
 // tslint:disable-next-line: no-any
 export async function connect(client: string, connection: any) {
-  return knex({
+  return Knex({
     client,
     connection
   })

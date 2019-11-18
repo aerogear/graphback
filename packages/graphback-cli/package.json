@@ -71,7 +71,8 @@
     "request": "2.88.0",
     "tar": "5.0.5",
     "tmp": "0.1.0",
-    "yargs": "15.0.1"
+    "yargs": "15.0.1",
+    "sqlite3": "^4.1.0"
   },
   "jest": {
     "transform": {

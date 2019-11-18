@@ -17,13 +17,7 @@ export async function handler() {
 
   const db = await connect(config.db.database, config.db.dbConfig);
 
-  const migrationProvider = new KnexMigrationProvider(db, config.folders.migrations);
-
-  const initializationStrategy = new UpdateDatabaseIfChanges({
-    db,
-    schemaProvider,
-    migrationProvider
-  });
+  const initializationStrategy = new UpdateDatabaseIfChanges(db, config.folders.migrations);
 
   await createDB(initializationStrategy)
 

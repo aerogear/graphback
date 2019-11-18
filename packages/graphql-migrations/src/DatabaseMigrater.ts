@@ -1,8 +1,10 @@
-import { filterObjectTypes, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
+import { graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
 import { diff } from '@graphql-inspector/core';
 import { buildSchema, GraphQLSchema } from 'graphql';
+import * as knex from 'knex';
 import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
-import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy, DatabaseStrategyOptions, SchemaProvider } from './database';
+import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from './database';
+import { KnexMigrationProvider } from './migrations';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
@@ -22,16 +24,16 @@ export async function migrate(schemaText: string, strategy: DatabaseInitializati
  * @class DatabaseMigrater
  */
 export class DatabaseMigrater {
-  private schemaProvider: SchemaProvider;
+  private schemaText: string;
   private knexMigrationManager: KnexMigrationManager;
   private migrationProvider: MigrationProvider;
   private inputContext: InputModelTypeContext[];
-  constructor(options: DatabaseStrategyOptions) {
-    this.schemaProvider = options.schemaProvider;
-    this.migrationProvider = options.migrationProvider;
-    const inputContext = graphQLInputContext.createModelContext(this.schemaProvider.getSchemaText(), {});
-    this.inputContext = filterObjectTypes(inputContext);
-    this.knexMigrationManager = new KnexMigrationManager(options.db);
+  // tslint:disable-next-line: no-any
+  constructor(schemaText: string, db: knex<any, unknown[]>, migrationsDir: string) {
+    this.schemaText = schemaText;
+    this.inputContext = graphQLInputContext.createModelContext(schemaText, {});
+    this.migrationProvider = new KnexMigrationProvider(db, migrationsDir)
+    this.knexMigrationManager = new KnexMigrationManager(db);
   }
 
   /**
@@ -106,7 +108,7 @@ export class DatabaseMigrater {
    */
   public getSqlStatements(changes: ModelChange[]): DatabaseChange[] {
     const groupedChanges = this.groupChangesByModel(changes);
-    const dirtyModels = this.inputContext.filter((t: InputModelTypeContext) => {
+    const dirtyModels = this.getContext().filter((t: InputModelTypeContext) => {
       return !!groupedChanges[t.name];
     });
 
@@ -137,7 +139,7 @@ export class DatabaseMigrater {
    * @memberof DatabaseMigrater
    */
   public async createMigration(): Promise<SchemaMigration> {
-    const newSchema = buildSchema(this.schemaProvider.getSchemaText());
+    const newSchema = buildSchema(this.schemaText);
 
     const migrations = await this.migrationProvider.getMigrations();
 
@@ -150,7 +152,7 @@ export class DatabaseMigrater {
 
     const newMigration: SchemaMigration = {
       id: new Date().getTime().toString(),
-      model: this.schemaProvider.getSchemaText()
+      model: this.schemaText
     };
 
     let changes: ModelChange[] = [];
@@ -158,7 +160,7 @@ export class DatabaseMigrater {
       const inspectorChanges = diff(oldSchema, newSchema);
       changes = mapModelChanges(inspectorChanges);
     } else {
-      changes = this.inputContext.map((model: InputModelTypeContext) => {
+      changes = this.getContext().map((model: InputModelTypeContext) => {
         return {
           type: ModelChangeType.TYPE_ADDED,
           path: {
@@ -176,5 +178,9 @@ export class DatabaseMigrater {
     newMigration.changes = JSON.stringify(changes);
 
     return newMigration;
+  }
+
+  private getContext(): InputModelTypeContext[] {
+    return this.inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription');
   }
 }
