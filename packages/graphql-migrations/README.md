@@ -80,4 +80,5 @@ Schema migrations are in a very early phase. At present the change types that ar
 - **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
 - **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.
 
-Relationships are not yet supported and will be added very soon.
+- Relationships are not yet supported and will be added very soon.
+- Fields cannot be set to `NOT NULL` in the database.
