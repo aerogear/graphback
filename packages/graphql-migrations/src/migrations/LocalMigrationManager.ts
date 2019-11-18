@@ -90,6 +90,6 @@ export class LocalMigrationManager {
 
     writeFileSync(join(migrationPath, `${migration.id}_up.sql`), migration.sql_up);
     writeFileSync(join(migrationPath, 'model.graphql'), migration.model);
-    writeFileSync(join(migrationPath, 'changes.json'), JSON.stringify(migration.changes));
+    writeFileSync(join(migrationPath, 'changes.json'), migration.changes);
   }
 }

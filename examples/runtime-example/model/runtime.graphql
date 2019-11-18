@@ -4,4 +4,6 @@
 type User {
     id: ID!
     name: String!
+    age: String
+    test: String
 }
