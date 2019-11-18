@@ -1,5 +1,4 @@
 import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
-import { ClientGeneratorConfig } from '../createClient'
 
 
 export const variableFields = (t: InputModelTypeContext) => {
@@ -7,6 +6,7 @@ export const variableFields = (t: InputModelTypeContext) => {
     .map((f: InputModelFieldContext) => `\$${f.name}: ${f.type}${f.isNull ? '' : '!'}`)
     .join(', ')
 }
+
 
 export const inputVariableFields = (t: InputModelTypeContext) => {
   return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type !== 'ID')
@@ -50,7 +50,7 @@ export const findQuery = (t: InputModelTypeContext) => {
 export const createMutation = (t: InputModelTypeContext) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName}(${variableFields(t)}) {
+  return `mutation ${fieldName}(${inputVariableFields(t)}) {
     ${fieldName}(input: {${inputVariables(t)}}) {
       ...${t.name}Fields
     }
