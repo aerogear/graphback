@@ -34,7 +34,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/node": "12.12.8",
+    "@types/node": "12.12.9",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
