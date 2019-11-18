@@ -78,5 +78,5 @@ export async function connect(client: string, connection: any) {
   return Knex({
     client,
     connection
-  })
+  }) as any
 }
