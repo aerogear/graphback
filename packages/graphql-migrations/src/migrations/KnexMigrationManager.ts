@@ -24,7 +24,7 @@ const handleError = (err: { code: string; message: string }) => {
 export class KnexMigrationManager {
   // tslint:disable-next-line:typedef
   protected primitiveTypesMapping = {
-    String: 'string',
+    String: 'text',
     Int: 'integer',
     Float: 'float',
     Boolean: 'boolean',
