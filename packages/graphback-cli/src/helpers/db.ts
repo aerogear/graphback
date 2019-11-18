@@ -2,10 +2,10 @@ import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
 import { DatabaseInitializationStrategy, DatabaseSchemaManager, InputModelProvider } from 'graphback';
+import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
-import * as Knex from 'knex';
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
