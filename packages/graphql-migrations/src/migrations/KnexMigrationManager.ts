@@ -63,7 +63,6 @@ export class KnexMigrationManager {
             table[method](field.name);
           }
         }
-        table.timestamps();
       }
     ).toQuery();
 
