@@ -12,7 +12,7 @@
     "@graphback/core": "^0.10.0-dev2",
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.6",
-    "knex": "0.20.1",
+    "knex": "0.20.2",
     "pino": "5.13.6",
     "sqlite3": "4.1.0",
     "pg": "7.12.1",
