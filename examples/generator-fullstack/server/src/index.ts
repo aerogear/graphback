@@ -7,6 +7,7 @@ import { loadConfig } from 'graphql-config';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import { createKnexRuntimeContext } from '@graphback/runtime'
+import { UpdateDatabaseIfChanges, migrate } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { connect } from './db'
 import { resolvers } from './resolvers';
@@ -38,6 +39,11 @@ async function start() {
 
   const pubSub = new PubSub();
   const context = createKnexRuntimeContext(db, pubSub);
+
+  const dbInitialization = new UpdateDatabaseIfChanges(context.crudDb, '../migrations');
+
+  await migrate(schema, dbInitialization);
+
   const apolloConfig = {
     schema,
     context
