@@ -12,6 +12,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { connect } from './db'
 import { resolvers } from './resolvers';
 import { typeDefs } from './schema';
+import { printSchema } from 'graphql';
 
 async function start() {
   const app = express();
@@ -40,9 +41,9 @@ async function start() {
   const pubSub = new PubSub();
   const context = createKnexRuntimeContext(db, pubSub);
 
-  const dbInitialization = new UpdateDatabaseIfChanges(context.crudDb, '../migrations');
+  const dbInitialization = new UpdateDatabaseIfChanges(db, '../migrations');
 
-  await migrate(schema, dbInitialization);
+  await migrate(printSchema(schema), dbInitialization);
 
   const apolloConfig = {
     schema,
