@@ -1,27 +1,43 @@
 import { gql } from 'apollo-server-core';
 import {
   GraphQLBackendCreator,
-  InputModelProvider,
   PgKnexDBDataProvider,
 } from 'graphback';
-import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
+import { migrate } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as Knex from 'knex';
 import * as jsonConfig from '../graphback.json'
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { sync } from 'glob';
+
+// TODO: use graphql-config
+const buildSchemaText = (schemaDir: string): string => {
+  const schemaPath = join(schemaDir, '*.graphql');
+  const files = sync(schemaPath);
+
+  if (files.length === 0) {
+    return '';
+  }
+
+  const schemaText = files
+    // tslint:disable-next-line: no-unnecessary-callback-wrapper
+    .map((f: string) => readFileSync(f))
+    .join('\n');
+
+  return schemaText.length ? schemaText : '';
+}
 
 /**
  * Method used to create runtime schema
  * It will be part of of the integration tests
  */
 export const createRuntime = async (client: Knex) => {
-  const schemaProvider = new InputModelProvider(jsonConfig.folders.model);
-  const backend = new GraphQLBackendCreator(schemaProvider, jsonConfig.graphqlCRUD);
+  const backend = new GraphQLBackendCreator(buildSchemaText(jsonConfig.folders.model), jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
-
-  await migrate(schemaProvider.getSchemaText(), dbInitialization);
+  await migrate(buildSchemaText(jsonConfig.folders.model), client, { migrationsDir: jsonConfig.folders.migrations });
 
   const pubSub = new PubSub();
   const runtime = await backend.createRuntime(dbClientProvider, pubSub);

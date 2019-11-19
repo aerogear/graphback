@@ -1,11 +1,12 @@
 import * as execa from 'execa'
-import { unlinkSync } from 'fs'
-import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, InputModelProvider } from 'graphback';
-import * as Knex from 'knex';
+import { unlinkSync, readFileSync } from 'fs'
+import { GlobSync, sync } from 'glob'
+import { migrate, DatabaseSchemaManager } from 'graphql-migrations';
+import * as knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
+import { join } from 'path';
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -38,9 +39,9 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
   }
 }
 
-export const createDBResources = async (configInstance: ConfigBuilder, initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
+export const createDBResources = async (configInstance: ConfigBuilder, db: knex<any, unknown[]>): Promise<void> => {
   try {
-    const { db: { database }, graphqlCRUD, folders } = configInstance.config
+    const { db: { database }, folders } = configInstance.config
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -49,13 +50,9 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       process.exit(0)
     }
 
-    if (database === 'sqlite3') {
-      await execa('touch', ['db.sqlite'])
-    }
+    const schemaText = buildSchemaText(folders.model);
 
-    const schemaContext = new InputModelProvider(folders.model)
-
-    await initializationStrategy.init(schemaContext.getSchemaText());
+    await migrate(schemaText, db, { migrationsDir: folders.migrations })
 
   } catch (err) {
     handleError(err)
@@ -66,17 +63,34 @@ export const postCommandMessage = (message: string) => {
   logInfo(message);
 }
 
-export const createDB = async (initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
+export const createDB = async (db: knex<any, unknown[]>): Promise<void> => {
   const configInstance = new ConfigBuilder();
   checkDirectory(configInstance)
 
-  await createDBResources(configInstance, initializationStrategy)
+  await createDBResources(configInstance, db)
 }
 
 // tslint:disable-next-line: no-any
 export async function connect(client: string, connection: any) {
-  return Knex({
+  return knex({
     client,
     connection
   }) as any
+}
+
+// TODO: Remove this
+const buildSchemaText = (schemaDir: string): string => {
+  const schemaPath = join(schemaDir, '*.graphql');
+  const files = sync(schemaPath);
+
+  if (files.length === 0) {
+    return '';
+  }
+
+  const schemaText = files
+    // tslint:disable-next-line: no-unnecessary-callback-wrapper
+    .map((f: string) => readFileSync(f))
+    .join('\n');
+
+  return schemaText.length ? schemaText : '';
 }

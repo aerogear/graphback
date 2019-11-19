@@ -5,6 +5,7 @@ type User {
     id: ID!
     name: String
     age: String
+    date: String
 }
 
 type City {

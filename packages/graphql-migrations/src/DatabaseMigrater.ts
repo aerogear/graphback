@@ -3,15 +3,15 @@ import { diff } from '@graphql-inspector/core';
 import { buildSchema, GraphQLSchema } from 'graphql';
 import * as knex from 'knex';
 import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
-import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from './database';
+import { DatabaseChange, DatabaseChangeType } from './database';
 import { KnexMigrationProvider } from './migrations';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { mapModelChanges } from './utils/graphqlUtils';
 
-export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
-  await strategy.init(schemaText);
+export interface MigrationOptions {
+  migrationsDir: string
 }
 /**
  * Manages schema migration.
@@ -29,10 +29,10 @@ export class DatabaseMigrater {
   private migrationProvider: MigrationProvider;
   private inputContext: InputModelTypeContext[];
   // tslint:disable-next-line: no-any
-  constructor(schemaText: string, db: knex<any, unknown[]>, migrationsDir: string) {
+  constructor(schemaText: string, db: knex<any, unknown[]>, options: MigrationOptions) {
     this.schemaText = schemaText;
     this.inputContext = graphQLInputContext.createModelContext(schemaText, {});
-    this.migrationProvider = new KnexMigrationProvider(db, migrationsDir)
+    this.migrationProvider = new KnexMigrationProvider(db, options.migrationsDir)
     this.knexMigrationManager = new KnexMigrationManager(db);
   }
 
@@ -183,4 +183,9 @@ export class DatabaseMigrater {
   private getContext(): InputModelTypeContext[] {
     return this.inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription');
   }
+}
+
+export async function migrate(schemaText: string, db: knex<any, unknown[]>, options: MigrationOptions) {
+  const migrater = new DatabaseMigrater(schemaText, db, options)
+  await migrater.init();
 }

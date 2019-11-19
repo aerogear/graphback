@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { DropCreateDatabaseAlways } from 'graphback'
+import { migrate } from 'graphql-migrations';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { connect, createDB, postCommandMessage } from '../helpers'
 
@@ -15,9 +15,7 @@ export async function handler() {
 
   const db = await connect(config.db.database, config.db.dbConfig);
 
-  const initializationStrategy = new DropCreateDatabaseAlways(config.db.database, db);
-
-  await createDB(initializationStrategy)
+  await createDB(db)
 
   postCommandMessage(`
 Database resources created.

@@ -1,9 +1,8 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
 import { ApolloServiceResolverGenerator} from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
-import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
+import { GraphbackGeneratorConfig, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
 import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
-import { SchemaProvider } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
 
@@ -20,8 +19,8 @@ export class GraphQLBackendCreator {
    * @param graphQLSchema string containing graphql types
    * @param config configuration for backend generator
    */
-  constructor(schemaContext: SchemaProvider, config: GraphbackGeneratorConfig) {
-    this.inputContext = graphQLInputContext.createModelContext(schemaContext.getSchemaText(), config);
+  constructor(schemaText: string, config: GraphbackGeneratorConfig) {
+    this.inputContext = graphQLInputContext.createModelContext(schemaText, config);
   }
 
   /**

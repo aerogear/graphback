@@ -9,7 +9,7 @@ import { ModelChange, ModelChangeType } from '../changes/ChangeTypes';
  *
  * @param schemaDir - The directory of the schema file(s)
  */
-export const buildSchemaText = (schemaDir: string): string => {
+const buildSchemaText = (schemaDir: string): string => {
   const schemaPath = join(schemaDir, '*.graphql');
   const files = sync(schemaPath);
 

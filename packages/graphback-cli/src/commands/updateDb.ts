@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { UpdateDatabaseIfChanges } from 'graphback'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { connect, createDB, postCommandMessage } from '../helpers'
 
@@ -15,9 +14,7 @@ export async function handler() {
 
   const db = await connect(config.db.database, config.db.dbConfig);
 
-  const initializationStrategy = new UpdateDatabaseIfChanges(db, config.folders.migrations);
-
-  await createDB(initializationStrategy)
+  await createDB(db)
 
   postCommandMessage(`
 Database resources updated.
