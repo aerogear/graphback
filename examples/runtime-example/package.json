@@ -16,7 +16,6 @@
     "cors": "2.8.5",
     "express": "4.17.1",
     "graphback": "0.10.0-dev2",
-    "graphql": "14.5.8",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.1",
     "graphql-migrations": "0.10.0-dev2",
@@ -27,6 +26,20 @@
     "@types/ioredis": "4.0.18",
     "ts-node": "8.4.1",
     "tslint": "5.20.0",
-    "typescript": "3.6.4"
+    "typescript": "3.6.4",
+    "@graphql-codegen/typescript": "canary",
+    "@graphql-codegen/typescript-operations": "canary",
+    "@graphql-codegen/typescript-react-apollo": "canary",
+    "@graphql-codegen/typescript-resolvers": "canary",
+    "@test-graphql-cli/codegen": "canary",
+    "@test-graphql-cli/coverage": "canary",
+    "@test-graphql-cli/diff": "canary",
+    "@test-graphql-cli/generate": "canary",
+    "@test-graphql-cli/init": "canary",
+    "@test-graphql-cli/serve": "canary",
+    "@test-graphql-cli/similar": "canary",
+    "@test-graphql-cli/validate": "canary",
+    "graphql": "14.5.8",
+    "graphql-cli": "canary"
   }
 }

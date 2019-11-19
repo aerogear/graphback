@@ -11,6 +11,8 @@ import * as jsonConfig from '../graphback.json'
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { sync } from 'glob';
+import { loadConfig } from 'graphql-config';
+import { printSchema } from 'graphql';
 
 // TODO: use graphql-config
 const buildSchemaText = (schemaDir: string): string => {
@@ -34,10 +36,17 @@ const buildSchemaText = (schemaDir: string): string => {
  * It will be part of of the integration tests
  */
 export const createRuntime = async (client: Knex) => {
-  const backend = new GraphQLBackendCreator(buildSchemaText(jsonConfig.folders.model), jsonConfig.graphqlCRUD);
+
+  const config = await loadConfig({});
+
+  const schema = await config!.getDefault().getSchema();
+
+  const schemaText = printSchema(schema);
+
+  const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  await migrate(buildSchemaText(jsonConfig.folders.model), client, { migrationsDir: jsonConfig.folders.migrations });
+  await migrate(schemaText, client, { migrationsDir: jsonConfig.folders.migrations });
 
   const pubSub = new PubSub();
   const runtime = await backend.createRuntime(dbClientProvider, pubSub);

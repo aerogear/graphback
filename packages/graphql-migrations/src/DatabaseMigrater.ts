@@ -185,6 +185,14 @@ export class DatabaseMigrater {
   }
 }
 
+/**
+ * Run a database migration from the GraphQL input schema
+ *
+ * @export
+ * @param {(string|GraphQLSchema)} schema
+ * @param {knex<any, unknown[]>} db
+ * @param {MigrationOptions} options
+ */
 export async function migrate(schemaText: string, db: knex<any, unknown[]>, options: MigrationOptions) {
   const migrater = new DatabaseMigrater(schemaText, db, options)
   await migrater.init();
