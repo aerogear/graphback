@@ -1,11 +1,13 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, InputModelProvider } from 'graphback';
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, migrate } from 'graphback';
+import { printSchema } from 'graphql';
 import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
+import { loadSchema } from './loadSchema';
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -40,7 +42,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
 
 export const createDBResources = async (configInstance: ConfigBuilder, initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
   try {
-    const { db: { database }, graphqlCRUD, folders } = configInstance.config
+    const { db: { database }, folders } = configInstance.config
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -53,9 +55,10 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       await execa('touch', ['db.sqlite'])
     }
 
-    const schemaContext = new InputModelProvider(folders.model)
+    const schema = await loadSchema();
+    const schemaText = printSchema(schema);
 
-    await initializationStrategy.init(schemaContext.getSchemaText());
+    await migrate(schemaText, initializationStrategy);
 
   } catch (err) {
     handleError(err)

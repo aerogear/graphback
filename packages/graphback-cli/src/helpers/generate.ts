@@ -1,11 +1,13 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphQLBackendCreator, IGraphQLBackend, InputModelProvider, OutputResolver } from 'graphback'
+import { GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { printSchema } from 'graphql';
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
+import { loadSchema } from './loadSchema';
 
 /**
  * Message after command execution
@@ -44,8 +46,10 @@ export async function generateBackend(): Promise<void> {
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
 
-    const schemaContext = new InputModelProvider(folders.model)
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaContext, graphqlCRUD)
+    const schema = await loadSchema();
+    const schemaText = printSchema(schema);
+
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);
