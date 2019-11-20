@@ -1,9 +1,8 @@
 import chalk from 'chalk';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { GlobSync, sync } from 'glob'
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { GlobSync } from 'glob'
 import { GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
-import { GraphQLSchema, printSchema } from 'graphql';
-import { loadConfig } from 'graphql-config';
+import { printSchema } from 'graphql';
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';

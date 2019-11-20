@@ -1,4 +1,5 @@
 import { GraphQLSchema } from 'graphql';
+// tslint:disable-next-line: no-implicit-dependencies
 import { loadConfig } from 'graphql-config';
 import { logError } from '../utils';
 
