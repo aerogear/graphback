@@ -1,12 +1,13 @@
-import * as execa from 'execa'
-import { unlinkSync, readFileSync } from 'fs'
-import { GlobSync, sync } from 'glob'
-import { migrate, DatabaseSchemaManager } from 'graphql-migrations';
+import { unlinkSync } from 'fs';
+import { GlobSync } from 'glob';
+import { printSchema } from 'graphql';
+import { DatabaseSchemaManager, migrate } from 'graphql-migrations';
 import * as knex from 'knex';
+import { join } from 'path';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
-import { join } from 'path';
+import { loadSchema } from './loadSchema';
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -41,7 +42,7 @@ export const dropDBResources = async (configInstance: ConfigBuilder): Promise<vo
 
 export const createDBResources = async (configInstance: ConfigBuilder, db: knex<any, unknown[]>): Promise<void> => {
   try {
-    const { db: { database }, folders } = configInstance.config
+    const { folders } = configInstance.config
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -50,9 +51,10 @@ export const createDBResources = async (configInstance: ConfigBuilder, db: knex<
       process.exit(0)
     }
 
-    const schemaText = buildSchemaText(folders.model);
+    const schema = await loadSchema();
+    const schemaText = printSchema(schema);
 
-    await migrate(schemaText, db, { migrationsDir: folders.migrations })
+    await migrate(schemaText, db, { migrationsDir: folders.migrations });
 
   } catch (err) {
     handleError(err)
@@ -76,21 +78,4 @@ export async function connect(client: string, connection: any) {
     client,
     connection
   }) as any
-}
-
-// TODO: Remove this
-const buildSchemaText = (schemaDir: string): string => {
-  const schemaPath = join(schemaDir, '*.graphql');
-  const files = sync(schemaPath);
-
-  if (files.length === 0) {
-    return '';
-  }
-
-  const schemaText = files
-    // tslint:disable-next-line: no-unnecessary-callback-wrapper
-    .map((f: string) => readFileSync(f))
-    .join('\n');
-
-  return schemaText.length ? schemaText : '';
 }

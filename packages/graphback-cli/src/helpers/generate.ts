@@ -1,11 +1,14 @@
 import chalk from 'chalk';
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { GlobSync, sync } from 'glob'
 import { GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { GraphQLSchema, printSchema } from 'graphql';
+import { loadConfig } from 'graphql-config';
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
+import { loadSchema } from './loadSchema';
 
 /**
  * Message after command execution
@@ -19,23 +22,6 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
 
 After changing your data model, run ${chalk.cyan(`graphback update-db`)} to update the database.
 `)
-}
-
-// TODO: use graphql-config
-const buildSchemaText = (schemaDir: string): string|undefined => {
-  const schemaPath = join(schemaDir, '*.graphql');
-  const files = sync(schemaPath);
-
-  if (files.length === 0) {
-    return undefined;
-  }
-
-  const schemaText = files
-    // tslint:disable-next-line: no-unnecessary-callback-wrapper
-    .map((f: string) => readFileSync(f))
-    .join('\n');
-
-  return schemaText.length ? schemaText : undefined;
 }
 
 /**
@@ -56,12 +42,15 @@ export async function generateBackend(): Promise<void> {
     }
 
     const pathForSchema: string = folders.schema
-    const outputSchemaPath: string = join(pathForSchema,'generated.ts')
+    const outputSchemaPath: string = join(pathForSchema, 'generated.ts')
 
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(buildSchemaText(folders.model), graphqlCRUD)
+    const schema = await loadSchema();
+    const schemaText = printSchema(schema);
+
+    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
     const generated: IGraphQLBackend = await backend.createBackend(database)
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);
