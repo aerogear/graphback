@@ -18,23 +18,11 @@ Here is an example of how to configure database initialization strategies.
 ```ts
 import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
 import { migrationsDir } from './config';
-
-const schemaText = `
-type User {
-  id: ID!
-  name: String
-}
-
-type Note {
-  id: ID!
-  text: String
-}
-`;
+import { schemaText } from './schema';
 
 const db = Knex(...);
 
 const databaseInitializationStrategy = new UpdateDatabaseIfChanges(db, migrationsDir);
-});
 
 await migrate(schemaText, dbInitialization);
 
@@ -49,23 +37,11 @@ This mode is useful for when you are in development mode and don't care about sa
 ```ts
 import { migrate, DropCreateDatabaseAlways } from 'graphql-migrations';
 import { migrationsDir } from './config';
-
-const schemaText = `
-type User {
-  id: ID!
-  name: String
-}
-
-type Note {
-  id: ID!
-  text: String
-}
-`;
+import { schemaText } from './schema';
 
 const db = Knex(...);
 
 const databaseInitializationStrategy = new DropCreateDatabaseAlways('pg', db);
-});
 
 await migrate(schemaText, dbInitialization);
 
