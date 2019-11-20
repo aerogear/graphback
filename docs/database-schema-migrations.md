@@ -29,21 +29,17 @@ Here is an example of how to configure database initialization strategies.
 
 ```ts
 import * as jsonConfig from '../graphback.json'
+import { schemaText } from './schema';
+import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
 
 const db = new Knex(...);
 
-const schemaProvider = new InputModelProvider(jsonConfig.folders.model)
+const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
+const dbClientProvider = new PgKnexDBDataProvider(client);
 
-const migrationProvider = new KnexMigrationProvider(db, jsonConfig.folders.migrations);
+const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
 
-const databaseInitializationStrategy = new UpdateDatabaseIfChanges({
-  db,
-  schemaProvider,
-  migrationProvider
-});
-
-// execute the database initialization strategy
-await backend.initializeDatabase(databaseInitializationStrategy);
+await migrate(schemaText, dbInitialization)
 
 const pubSub = new PubSub();
 const runtime = await backend.createRuntime(dbClientProvider, pubSub);
