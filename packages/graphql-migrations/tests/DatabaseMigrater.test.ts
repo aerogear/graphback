@@ -1,17 +1,28 @@
-import { Change } from '@graphql-inspector/core';
-import { InputModelProvider } from '../src/database/migrations/schema/InputModelProvider';
-import { KnexMigrationProvider } from '../src/migrations';
-import { join } from 'path';
-import Knex = require('knex');
-import { DatabaseMigrater } from '../src/DatabaseMigrater';
+// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import ava, { ExecutionContext } from 'ava';
+import * as Knex from 'knex';
+import { join } from 'path';
+import { DatabaseMigrater } from '../src/DatabaseMigrater';
 
 const setup = () => {
 
-  const modelDir = join(__dirname, 'model');
-  const migrationsDir = join(__dirname, 'migrations');
+  const schemaText = `
+type User {
+  name: String
+  age: Int
+}
 
-  const schemaProvider = new InputModelProvider(modelDir);
+type City {
+    id: String
+    location: String
+}
+
+type Note {
+    name: String
+}
+  `;
+
+  const migrationsDir = join(__dirname, 'migrations');
 
   const dbConfig = {
     "client": "sqlite3",
@@ -22,7 +33,7 @@ const setup = () => {
 
   const db = Knex(dbConfig);
 
-  return new DatabaseMigrater(schemaProvider.getSchemaText(), db, migrationsDir);
+  return new DatabaseMigrater(schemaText, db, migrationsDir);
 }
 
 ava('it should generate a SQL migration script', async (t: ExecutionContext) => {

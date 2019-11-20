@@ -27,6 +27,7 @@
     "@types/ioredis": "4.0.18",
     "ts-node": "8.4.1",
     "tslint": "5.20.0",
-    "typescript": "3.6.4"
+    "typescript": "3.6.4",
+    "@test-graphql-cli/codegen": "canary"
   }
 }

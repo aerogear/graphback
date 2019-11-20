@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { InputModelProvider, KnexMigrationProvider, UpdateDatabaseIfChanges } from 'graphback'
+import { UpdateDatabaseIfChanges } from 'graphback'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { connect, createDB, postCommandMessage } from '../helpers'
 
@@ -12,8 +12,6 @@ export const builder = {}
 export async function handler() {
   const configInstance = new ConfigBuilder();
   const config = configInstance.config;
-
-  const schemaProvider = new InputModelProvider(config.folders.model);
 
   const db = await connect(config.db.database, config.db.dbConfig);
 
