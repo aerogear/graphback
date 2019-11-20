@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { DropCreateDatabaseAlways } from 'graphback'
+import { DropCreateDatabaseAlways } from 'graphql-migrations';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { connect, createDB, postCommandMessage } from '../helpers'
 

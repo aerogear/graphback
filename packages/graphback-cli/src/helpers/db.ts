@@ -1,8 +1,8 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, migrate } from 'graphback';
 import { printSchema } from 'graphql';
+import { DatabaseInitializationStrategy, DatabaseSchemaManager, migrate } from 'graphql-migrations';
 import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils'
