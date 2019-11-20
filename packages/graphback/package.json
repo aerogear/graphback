@@ -49,7 +49,6 @@
     "@graphback/codegen-resolvers": "^0.10.0-dev2",
     "@graphback/codegen-schema": "^0.10.0-dev2",
     "@graphback/core": "^0.10.0-dev2",
-    "graphql-migrations": "^0.10.0-dev2",
     "@graphback/runtime": "^0.10.0-dev2",
     "@graphql-inspector/core": "1.26.0",
     "glob": "7.1.6",
