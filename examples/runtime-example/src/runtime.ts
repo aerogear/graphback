@@ -3,33 +3,13 @@ import {
   GraphQLBackendCreator,
   PgKnexDBDataProvider,
 } from 'graphback';
+import { printSchema } from 'graphql';
+import { loadConfig } from 'graphql-config';
 import { migrate } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as Knex from 'knex';
 import * as jsonConfig from '../graphback.json'
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { sync } from 'glob';
-import { loadConfig } from 'graphql-config';
-import { printSchema } from 'graphql';
-
-// TODO: use graphql-config
-const buildSchemaText = (schemaDir: string): string => {
-  const schemaPath = join(schemaDir, '*.graphql');
-  const files = sync(schemaPath);
-
-  if (files.length === 0) {
-    return '';
-  }
-
-  const schemaText = files
-    // tslint:disable-next-line: no-unnecessary-callback-wrapper
-    .map((f: string) => readFileSync(f))
-    .join('\n');
-
-  return schemaText.length ? schemaText : '';
-}
 
 /**
  * Method used to create runtime schema
@@ -37,8 +17,8 @@ const buildSchemaText = (schemaDir: string): string => {
  */
 export const createRuntime = async (client: Knex) => {
 
+  // load input schema from config
   const config = await loadConfig({});
-
   const schema = await config!.getDefault().getSchema();
 
   const schemaText = printSchema(schema);
