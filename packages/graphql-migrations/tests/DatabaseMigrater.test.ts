@@ -7,6 +7,12 @@ const schemaText = `
 type User {
   id: ID!
   name: String
+  age: Int
+}
+
+type Note {
+  id: ID!
+  text: String
 }
 `;
 
@@ -34,7 +40,10 @@ ava('it should generate a SQL migration script', async (t: ExecutionContext) => 
   const migration = await databaseMigrater.createMigration();
 
   const changes = JSON.parse(migration.changes);
-  t.assert(changes.length === 3);
+
+  console.log(changes);
+
+  t.assert(changes.length === 2);
   t.assert(migration.sql_up !== undefined);
   t.snapshot(migration.sql_up);
 });
