@@ -1,14 +1,10 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
-import { generateResolvers } from "@graphback/codegen-resolvers"
+import { generateResolvers, ResolverGeneratorOptions } from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
-import { graphQLInputContext, InputModelTypeContext } from '@graphback/core';
-import { GraphbackCRUDGeneratorConfig } from '@graphback/core/types/api/GraphbackCRUDGeneratorConfig';
+import { GraphbackCRUDGeneratorConfig, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
 import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
-import { ResolverGeneratorOptions } from '@graphback/codegen-resolvers/types/api/ResolverGeneratorOptions';
-
-// type GeneratorOptions = IFoo & IBar;
 
 /**
  * GraphQLBackend
@@ -30,11 +26,16 @@ export class GraphQLBackendCreator {
   /**
    * Create backend with all related resources
    */
-  public async createBackend(database: string, resolverOptions?: ResolverGeneratorOptions): Promise<IGraphQLBackend> {
+  public async createBackend(resolverOptions?: ResolverGeneratorOptions): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
-    resolverOptions.types = {
-      typesImportStatement: 'import { Resolvers } from "../../generated-types"',
-      resolverType: 'Resolvers',
+    // FIXME - this is for testing only
+    // tslint:disable-next-line: no-parameter-reassignment
+    resolverOptions = {
+      format: 'ts',
+      types: {
+        typesImportStatement: 'import { Resolvers } from "../../generated-types"',
+        resolverType: 'Resolvers',
+      }
     };
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()

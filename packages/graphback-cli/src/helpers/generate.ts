@@ -30,7 +30,7 @@ export async function generateBackend(): Promise<void> {
   try {
     const configInstance = new ConfigBuilder();
     checkDirectory(configInstance)
-    const { folders, graphqlCRUD, db: { database }, client } = configInstance.config;
+    const { folders, graphqlCRUD, client } = configInstance.config;
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -48,7 +48,7 @@ export async function generateBackend(): Promise<void> {
     const schemaText = loadSchema(folders.model);
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
-    const generated: IGraphQLBackend = await backend.createBackend(database)
+    const generated: IGraphQLBackend = await backend.createBackend()
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);
 
