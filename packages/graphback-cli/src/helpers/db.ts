@@ -1,7 +1,6 @@
 import * as execa from 'execa'
 import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { printSchema } from 'graphql';
 import { DatabaseInitializationStrategy, DatabaseSchemaManager, migrate } from 'graphql-migrations';
 import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
@@ -55,8 +54,7 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       await execa('touch', ['db.sqlite'])
     }
 
-    const schema = await loadSchema();
-    const schemaText = printSchema(schema);
+    const schemaText = loadSchema(folders.model);
 
     await migrate(schemaText, initializationStrategy);
 

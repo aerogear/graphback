@@ -73,8 +73,7 @@
     "tar": "5.0.5",
     "tmp": "0.1.0",
     "yargs": "15.0.2",
-    "sqlite3": "4.1.0",
-    "@test-graphql-cli/codegen": "canary"
+    "sqlite3": "4.1.0"
   },
   "jest": {
     "transform": {

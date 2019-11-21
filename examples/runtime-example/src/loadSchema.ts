@@ -22,4 +22,3 @@ export function loadSchema(modelDir: string): string {
     return readFileSync(f, 'utf8');
   }).join('\n');
 }
-
