@@ -94,15 +94,15 @@ exports.resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLower
 }
 
 const generateCustomResolvers = (customResolvers: CustomResolverContext[]) => {
-  const index = `${customResolvers.sort(alphabeticSort).map((c: CustomResolverContext) => `import { ${c.name} } from './${c.name}'`).join('\n')}
+  const index = `${customResolvers.sort(alphabeticSort).map((c: CustomResolverContext) => `const { ${c.name} } = require('./${c.name}')`).join('\n')}
 
-export const customResolvers = [${customResolvers.map((c: CustomResolverContext) => c.name).join(', ')}]
+exports.customResolvers = [${customResolvers.map((c: CustomResolverContext) => c.name).join(', ')}]
 `
   const outputCustomResolvers = customResolvers.map((c: CustomResolverContext) => {
     return {
       name: c.name,
       output: `
-export const ${c.name} = {
+exports.${c.name} = {
   ${c.operationType}: {
     ${c.implementation}
   }
