@@ -3,9 +3,9 @@ import ava, { ExecutionContext } from 'ava';
 // tslint:disable-next-line: no-var-requires no-require-imports
 const execa = require('execa');
 import { existsSync } from 'fs';
-import { DropCreateDatabaseAlways } from 'graphback';
+import { DropCreateDatabaseAlways } from 'graphql-migrations';
 import { join, resolve } from 'path';
-import { createDB, generate, initConfig, connect } from '../src';
+import { connect, createDB, generate } from '../src';
 
 const model = {
   modelName: "testSchema",
