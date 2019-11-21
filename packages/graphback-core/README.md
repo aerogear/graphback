@@ -35,7 +35,7 @@ Developers can extend functionality by using `InputProcessor` abstraction.
 
 Each individual type will contain individual config. Developers can pass global configuration that will be applied to elements that do not have any directives.
 Modifier directives directly on types will change default configuration.
-See `GraphbackGeneratorConfig` for more information.
+See `GraphbackCRUDGeneratorConfig` for more information.
 
 ## Contributing
 

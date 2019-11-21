@@ -68,10 +68,6 @@ export const deletedSub = (typeName: string): string => {
     }`
 }
 
-export const generateRuntimeImport = (): string => {
-  return `import { validateRuntimeContext } from "@graphback/runtime";`
-};
-
 export const typeRelation = (relation: string, columnName: string, fieldName: string, tableName: string): string => {
   if (relation === 'OneToOne') {
     return `${fieldName}: (parent, args, context) => {

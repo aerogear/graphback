@@ -1,4 +1,4 @@
-import { GraphbackGeneratorConfig } from 'graphback';
+import { GraphbackCRUDGeneratorConfig } from 'graphback';
 import { FolderConfig } from './FolderConfig';
 import { OpenApiConfig } from './OpenApiConfig'
 
@@ -24,7 +24,7 @@ import { OpenApiConfig } from './OpenApiConfig'
     /**
      * GraphQL generator engine configuration
      */
-    graphqlCRUD?: GraphbackGeneratorConfig,
+    graphqlCRUD?: GraphbackCRUDGeneratorConfig,
 
     /**
      * Configuration for input/output folders

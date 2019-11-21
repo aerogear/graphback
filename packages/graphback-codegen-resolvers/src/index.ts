@@ -1,2 +1,2 @@
 export * from "./api/OutputResolver"
-export * from "./api/ApolloServiceResolverGenerator"
+export * from "./api/generateResolvers"

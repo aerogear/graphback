@@ -1,7 +1,12 @@
 import { InputModelTypeContext } from '@graphback/core';
+import { ResolverGeneratorOptions } from '../api/ResolverGeneratorOptions';
 import { CustomResolverContext, ResolverTypeContext, TargetResolverContext } from '../api/resolverTypes';
-import { createCustomContext } from '../api/targetResolverContext';
-import { generateRuntimeImport } from '../templates/LayeredResolverTemplates';
+import { buildResolverTargetContext, createCustomContext } from '../api/targetResolverContext';
+
+
+const generateRuntimeImport = (): string => {
+  return `import { validateRuntimeContext } from "@graphback/runtime";`
+};
 
 /**
  * Formats generated source code into Apollo GraphQL format
@@ -9,12 +14,12 @@ import { generateRuntimeImport } from '../templates/LayeredResolverTemplates';
  * @param name name of the Type
  */
 // tslint:disable-next-line: max-func-body-length
-const generateTypeResolvers = (context: TargetResolverContext, name: string): string => {
+const generateTypeResolvers = (context: TargetResolverContext, name: string, options: ResolverGeneratorOptions): string => {
   const { relations, queries, mutations, subscriptions } = context
 
   const outputResolvers = []
 
-  if(relations.length) {
+  if (relations.length) {
     outputResolvers.push(`${name}: {
     ${relations.join(',\n    ')}
   }`)
@@ -38,17 +43,24 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string): st
   }`)
   }
 
-  return `${generateRuntimeImport()}\n\nexport const ${name.toLowerCase()}Resolvers = {
+  let resolverType = '';
+  let typedImports = ''
+  if (options.types) {
+    resolverType = `: ${options.types.resolverType} `
+    typedImports = `${options.types.typesImportStatement}\n`
+  }
+
+  return `${generateRuntimeImport()}\n${typedImports}\nexport const ${name.toLowerCase()}Resolvers ${resolverType}= {
   ${outputResolvers.join(',\n\n  ')}
 }
 `
 }
 
-const generateResolvers = (context: ResolverTypeContext[]) => {
+const generateResolvers = (context: ResolverTypeContext[], options: ResolverGeneratorOptions) => {
   return context.map((t: ResolverTypeContext) => {
     return {
       name: t.name.toLowerCase(),
-      output: generateTypeResolvers(t.context, t.name)
+      output: generateTypeResolvers(t.context, t.name, options)
     }
   })
 }
@@ -119,12 +131,13 @@ export const ${c.name} = {
  * 
  * @param inputContext name and context object of each type from input datamodel
  */
-export const generateGraphbackResolvers = (context: ResolverTypeContext[], inputContext: InputModelTypeContext[]) => {
+export const generateTSResolvers = (inputContext: InputModelTypeContext[], options: ResolverGeneratorOptions) => {
+  const context = buildResolverTargetContext(inputContext)
   const customContext = createCustomContext(inputContext)
   const hasCustomElements = !!customContext.length
 
   return {
-    types: generateResolvers(context),
+    types: generateResolvers(context, options),
     index: generateIndexFile(context, hasCustomElements),
     custom: generateCustomResolvers(customContext)
   }
