@@ -1,7 +1,7 @@
 /**
  * Generator config
  */
-export interface GraphbackGeneratorConfig {
+export interface GraphbackCRUDGeneratorConfig {
     create?: boolean;
     update?: boolean;
     //tslint:disable-next-line

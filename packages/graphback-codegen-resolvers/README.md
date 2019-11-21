@@ -16,4 +16,3 @@ Generator for Graphback Resolver layer
 
 ## Usage
 
-TODO

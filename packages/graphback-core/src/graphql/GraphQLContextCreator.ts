@@ -1,6 +1,6 @@
 import { parse, visit } from 'graphql';
 import { InputModelTypeContext } from '../api/ContextTypes'
-import { GraphbackGeneratorConfig } from "../api/GraphbackGeneratorConfig";
+import { GraphbackCRUDGeneratorConfig } from "../api/GraphbackCRUDGeneratorConfig";
 import { applyGeneratorDirectives } from './directives'
 import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './graphqlUtils';
 
@@ -17,7 +17,7 @@ import { inputTypeVisitor } from './InputTypeVisitor';
  */
 export const graphQLInputContext: InputContextCreator = {
 
-  createModelContext(schemaText: string, defaultConfig: GraphbackGeneratorConfig): InputModelTypeContext[] {
+  createModelContext(schemaText: string, defaultConfig: GraphbackCRUDGeneratorConfig): InputModelTypeContext[] {
     const schema = applyGeneratorDirectives(schemaText)
 
     const astNode = parse(schema)
@@ -53,7 +53,7 @@ function applyExtensionsToOriginalTypes(context: any) {
 }
 
 // tslint:disable-next-line: no-any
-function applyDefaultConfig(schemaDef: any, defaultConfig: GraphbackGeneratorConfig) {
+function applyDefaultConfig(schemaDef: any, defaultConfig: GraphbackCRUDGeneratorConfig) {
   return schemaDef.definitions.map((t: InputModelTypeContext) => {
     return {
       ...t,

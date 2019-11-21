@@ -1,5 +1,5 @@
 import { KindEnum } from 'graphql';
-import { GraphbackGeneratorConfig } from './GraphbackGeneratorConfig';
+import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
 
 export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
 export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
@@ -77,7 +77,7 @@ export interface InputModelTypeContext {
   state?: string
   fields: InputModelFieldContext[]
   interfaces?: InputInterfaceType[]
-  config: GraphbackGeneratorConfig
+  config: GraphbackCRUDGeneratorConfig
 }
 
 /**

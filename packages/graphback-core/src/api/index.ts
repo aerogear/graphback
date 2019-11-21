@@ -1,5 +1,5 @@
 
 export * from "./ContextCreator"
 export * from "./ContextTypes"
-export * from "./GraphbackGeneratorConfig"
+export * from "./GraphbackCRUDGeneratorConfig"
 export * from "./GraphbackOperationType"
