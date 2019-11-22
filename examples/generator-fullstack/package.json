@@ -1,6 +1,6 @@
 {
   "name": "graphql-cli-fullstack-template",
-  "version": "0.10.0-dev2",
+  "version": "0.10.0-rc1",
   "private": true,
   "workspaces": [
     "client",
@@ -33,7 +33,7 @@
     "typescript": "3.7.2"
   },
   "dependencies": {
-    "sqlite3": "^4.1.0",
-    "pg": "7.12.1"
+    "pg": "7.12.1",
+    "sqlite3": "^4.1.0"
   }
 }
