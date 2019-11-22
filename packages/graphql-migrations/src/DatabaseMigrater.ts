@@ -58,17 +58,13 @@ export class DatabaseMigrater {
     await this.applyMigrations(migrations);
   }
 
-  public async createMetadataTables() {
-    await this.knexMigrationManager.createMetadataTables();
-  }
-
   /**
    * Get the migrations that have not been applied and apply them
    *
    * @private
    * @memberof DatabaseMigrater
    */
-  public async applyMigrations(migrations: SchemaMigration[]) {
+  private async applyMigrations(migrations: SchemaMigration[]) {
     const migrationsToApply = migrations.filter((m: SchemaMigration) => !m.applied_at);
 
     const sorted = migrationsToApply.sort((a: SchemaMigration, b: SchemaMigration) => {
@@ -88,7 +84,7 @@ export class DatabaseMigrater {
    * @returns
    * @memberof DatabaseMigrater
    */
-  public groupChangesByModel(changes: ModelChange[]) {
+  private groupChangesByModel(changes: ModelChange[]) {
     return changes.reduce((acc: ModelChange, current: ModelChange) => {
 
       if (!acc[current.path.type]) {
@@ -109,7 +105,7 @@ export class DatabaseMigrater {
    * @returns {DatabaseChange[]}
    * @memberof DatabaseMigrater
    */
-  public getSqlStatements(changes: ModelChange[]): DatabaseChange[] {
+  private getSqlStatements(changes: ModelChange[]): DatabaseChange[] {
     const groupedChanges = this.groupChangesByModel(changes);
     const dirtyModels = this.getContext().filter((t: InputModelTypeContext) => {
       return !!groupedChanges[t.name];
@@ -141,7 +137,7 @@ export class DatabaseMigrater {
    * @returns
    * @memberof DatabaseMigrater
    */
-  public async generateMigration(): Promise<SchemaMigration> {
+  private async generateMigration(): Promise<SchemaMigration> {
     const newSchema = buildSchema(this.schemaText);
 
     const migrations = await this.migrationProvider.getMigrations();
@@ -185,5 +181,9 @@ export class DatabaseMigrater {
 
   private getContext(): InputModelTypeContext[] {
     return this.inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription');
+  }
+
+  private async createMetadataTables() {
+    await this.knexMigrationManager.createMetadataTables();
   }
 }
