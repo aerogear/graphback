@@ -27,3 +27,14 @@ export interface ResolverRelationContext {
     typeName: string
     implementation: string
 }
+ 
+export interface OutputResolvers {
+   name: string
+   output: string
+}
+
+export interface GeneratedResolvers {
+    types: OutputResolvers[],
+    index: string,
+    custom: OutputResolvers[],
+}

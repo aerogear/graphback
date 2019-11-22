@@ -1,3 +1,3 @@
 export * from "./api/OutputResolver"
-export * from "./api/generateResolvers"
+export * from "./api/createResolvers"
 export * from './api/ResolverGeneratorOptions'

@@ -2,9 +2,13 @@ import { InputModelTypeContext } from '@graphback/core'
 import { generateJSResolvers } from '../formatters/ApolloJsResolverFormatter'
 import { generateTSResolvers } from '../formatters/ApolloTsResolverFormatter'
 import { ResolverGeneratorOptions } from './ResolverGeneratorOptions'
-
-
-export const generateResolvers = (inputContext: InputModelTypeContext[], options: ResolverGeneratorOptions) => {
+import { GeneratedResolvers } from './resolverTypes';
+/**
+ * Create resolvers function that 
+ * @param inputContext 
+ * @param options 
+ */
+export const createResolvers = (inputContext: InputModelTypeContext[], options: ResolverGeneratorOptions): GeneratedResolvers => {
     if (options.format === 'ts') {
         return generateTSResolvers(inputContext, options)
     }

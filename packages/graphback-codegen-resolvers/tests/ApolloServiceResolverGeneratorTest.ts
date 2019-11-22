@@ -2,7 +2,7 @@
 import { graphQLInputContext } from '@graphback/core/src';
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { generateResolvers } from '../src';
+import { createResolvers } from '../src';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
@@ -19,7 +19,7 @@ ava('Test snapshot resolvers ts', async (t: ExecutionContext) => {
     "disableGen": true
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
-  const resolvers = generateResolvers(inputContext, {
+  const resolvers = createResolvers(inputContext, {
     format: 'ts', types: {
       resolverType: 'Resolvers',
       typesImportStatement: "import { Resolvers} from '../../generated-types"
@@ -41,6 +41,6 @@ ava('Test snapshot resolvers js', async (t: ExecutionContext) => {
     "disableGen": true
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
-  const resolvers = generateResolvers(inputContext, { format: 'js' })
+  const resolvers = createResolvers(inputContext, { format: 'js' })
   t.snapshot(resolvers);
 });

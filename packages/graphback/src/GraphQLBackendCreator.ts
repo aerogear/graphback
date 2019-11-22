@@ -1,5 +1,5 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
-import { generateResolvers, ResolverGeneratorOptions } from "@graphback/codegen-resolvers"
+import { createResolvers, ResolverGeneratorOptions } from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
 import { GraphbackCRUDGeneratorConfig, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
 import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
@@ -42,7 +42,7 @@ export class GraphQLBackendCreator {
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()
 
-    backend.resolvers = generateResolvers(this.inputContext, resolverOptions);
+    backend.resolvers = createResolvers(this.inputContext, resolverOptions);
 
     return backend;
   }
