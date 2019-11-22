@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { ModelChange } from '../changes/ChangeTypes';
 import { logError } from '../utils/log';
 import { SchemaMigration } from './SchemaMigration';
@@ -39,8 +39,9 @@ export class LocalMigrationManager {
 
     const subDirs = readdirSync(this.migrationsDir);
 
-    return subDirs.map((migrationId: string) => {
-      const migrationFolder = join(this.migrationsDir, migrationId);
+    return subDirs.map((migrationDir: string) => {
+      const migrationId = this.parseMigrationIdFromDirName(migrationDir)
+      const migrationFolder = join(this.migrationsDir, migrationDir);
 
       const sqlFile = `${migrationId}_up.sql`;
       const modelFile = 'model.graphql';
@@ -55,19 +56,19 @@ export class LocalMigrationManager {
       try {
         schemaMigration.sql_up = readFileSync(sqlFilePath, 'utf8');
       } catch (err) {
-        handleError(err, migrationId, sqlFile);
+        handleError(err, migrationDir, sqlFile);
       }
 
       try {
         schemaMigration.model = readFileSync(modelFilePath, 'utf8');
       } catch (err) {
-        handleError(err, migrationId, modelFile);
+        handleError(err, migrationFolder, modelFile);
       }
 
       try {
         schemaMigration.changes = readFileSync(changesFilePath, 'utf8');
       } catch (err) {
-        handleError(err, migrationId, changesFile);
+        handleError(err, migrationFolder, changesFile);
       }
 
       return schemaMigration;
@@ -90,5 +91,24 @@ export class LocalMigrationManager {
     writeFileSync(join(migrationPath, `${migration.id}_up.sql`), migration.sql_up);
     writeFileSync(join(migrationPath, 'model.graphql'), migration.model);
     writeFileSync(join(migrationPath, 'changes.json'), migration.changes);
+  }
+
+  /**
+   * Try to get the migration ID (as a number) from the local migration directory.
+   *
+   * @private
+   * @param {string} migrationDir
+   * @returns {number}
+   * @memberof LocalMigrationManager
+   */
+  private parseMigrationIdFromDirName(migrationDir: string): number {
+    let migrationId: number;
+    try {
+      migrationId = parseInt(migrationDir, 10);
+    } catch (error) {
+      throw new Error(`Invalid local migration directory ${chalk.cyan(migrationDir)}`);
+    }
+
+    return migrationId;
   }
 }
