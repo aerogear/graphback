@@ -11,6 +11,8 @@ import { IGraphQLBackend } from '.';
  *
  * Automatically generate your database structure resolvers and queries from graphql types.
  * See README for examples
+ * 
+ * @deprecated Please use individual packages and generators 
  */
 export class GraphQLBackendCreator {
   private inputContext: InputModelTypeContext[];

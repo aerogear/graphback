@@ -30,15 +30,23 @@ and provides great developer experience.
 Then developers can create runtime instance:
 
 ```ts
+    import { SchemaGenerator, gqlSchemaFormatter } from "@graphback/codegen-schema"
+    import { graphQLInputContext } from "@graphback/core"
+
+    const inputContext = graphQLInputContext.createModelContext(schemaText, {})
+    const schemaGenerator = new SchemaGenerator(inputContext, gqlSchemaFormatter)
+    const schema = schemaGenerator.generate()
+
     const client = new Knex(...);
     const graphbackOptions = {...}
     const modelString = `type Test ...`
     
-    // Create backend
-    const backend = new GraphQLBackendCreator(modelString, graphbackOptions);
+    const defaultProvider = new CRUDService(client);
+    const resolverGenerator = new LayeredRuntimeResolverGenerator(inputContext, defaultProvider)
     const dbClientProvider = new PgKnexDBDataProvider(client);
-    const runtime = await backend.createRuntime(dbClientProvider);
-    console.log(runtime.schema,  runtime.resolvers)
+    
+    const resolvers = resolverGenerator.generate();
+    console.log(schema, resolvers)
 ```    
 
 
