@@ -14,7 +14,7 @@ export interface SchemaGeneratorOptions {
  */
 export const createSchema = (inputContext: InputModelTypeContext[], options: SchemaGeneratorOptions): string => {
     if (options.format === 'ts') {
-        return new SchemaGenerator(inputContext, tsSchemaFormatter).generate();;
+        return new SchemaGenerator(inputContext, tsSchemaFormatter).generate();
     }
     if (options.format === 'js') {
         return new SchemaGenerator(inputContext, jsSchemaFormatter).generate();;
