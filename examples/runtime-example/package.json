@@ -12,15 +12,16 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "apollo-server-express": "2.9.7",
+    "apollo-server-express": "2.9.12",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "graphback": "^0.10.0-rc1",
+    "graphback": "0.10.0-rc1",
     "graphql": "14.5.8",
-    "graphql-migrations": "^0.10.0-rc1",
+    "graphql-migrations": "0.10.0-rc1",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.1",
-    "knex": "0.20.2"
+    "knex": "0.20.2",
+    "pg": "7.14.0"
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
