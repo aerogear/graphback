@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { ModelChange } from '../changes/ChangeTypes';
+import { join } from 'path';
 import { logError } from '../utils/log';
 import { SchemaMigration } from './SchemaMigration';
 
