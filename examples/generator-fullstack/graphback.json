@@ -25,7 +25,7 @@
     "resolvers": "./server/src/resolvers/",
     "schema": "./server/src/schema",
     "client": "./client/src/graphql",
-    "migrations": "./model/migrations"
+    "migrations": "./server/migrations"
   },
   "client": true
 }
