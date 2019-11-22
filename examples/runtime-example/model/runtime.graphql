@@ -4,15 +4,4 @@
 type User {
     id: ID!
     name: String
-    age: String
-}
-
-type City {
-    id: ID!
-    name: String
-}
-
-type Note {
-    id: ID!
-    text: String
 }
