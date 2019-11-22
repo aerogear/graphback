@@ -1,6 +1,5 @@
 import * as knex from 'knex';
 import { DatabaseMigrater } from '../../../DatabaseMigrater';
-import { DatabaseStrategyOptions } from '../../DatabaseConnectionOptions';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
 
 /**

@@ -46,7 +46,7 @@ export class KnexMigrationProvider implements MigrationProvider {
     try {
       await this.knexMigrationManager.applyMigration(migration);
     } catch (err) {
-      logError(`Failed to execute migration ${chalk.cyan(migration.id)} - ${err.message}`)
+      logError(`Failed to execute migration ${chalk.cyan(migration.id.toString())} - ${err.message}`)
     }
 
     return Promise.resolve();
@@ -65,7 +65,7 @@ export class KnexMigrationProvider implements MigrationProvider {
     try {
       await this.knexMigrationManager.createMigration(migration);
     } catch (err) {
-      logError(`Failed to create migration ${chalk.cyan(migration.id)} - ${err.message}`)
+      logError(`Failed to create migration ${chalk.cyan(migration.id.toString())} - ${err.message}`)
     }
   }
 }

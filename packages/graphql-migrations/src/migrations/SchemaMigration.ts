@@ -7,7 +7,7 @@ import { ModelChange } from '../changes/ChangeTypes';
  * @interface SchemaMigration
  */
 export interface SchemaMigration {
-  id?: string
+  id?: Number
   applied_at?: Date
   changes?: string
   model?: string
