@@ -10,11 +10,11 @@
         "start": "ts-node src/index.ts"
     },
     "dependencies": {
-        "@graphback/runtime": "^0.10.0-rc1",
+        "@graphback/runtime": "0.10.0-rc1",
         "@types/cors": "2.8.6",
         "@types/express": "4.17.2",
         "@types/node": "12.12.5",
-        "apollo-server-express": "^2.9.8",
+        "apollo-server-express": "2.9.12",
         "cors": "2.8.5",
         "express": "4.17.1",
         "express-graphql": "0.9.0",
