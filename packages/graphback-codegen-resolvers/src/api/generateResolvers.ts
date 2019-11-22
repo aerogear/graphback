@@ -12,5 +12,5 @@ export const generateResolvers = (inputContext: InputModelTypeContext[], options
         return generateJSResolvers(inputContext, options)
     }
 
-    return generateTSResolvers(inputContext, options)
+    throw Error("Invalid format specified. `options.format` supports only `ts` and `js` flags ");
 }

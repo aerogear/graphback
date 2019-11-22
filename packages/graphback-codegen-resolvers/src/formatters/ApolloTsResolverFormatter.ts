@@ -46,11 +46,11 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string, opt
   let resolverType = '';
   let typedImports = ''
   if (options.types) {
-    resolverType = `: ${options.types.resolverType} `
+    resolverType = `: ${options.types.resolverType}`
     typedImports = `${options.types.typesImportStatement}\n`
   }
 
-  return `${generateRuntimeImport()}\n${typedImports}\nexport const ${name.toLowerCase()}Resolvers ${resolverType}= {
+  return `${generateRuntimeImport()}\n${typedImports}\nexport const ${name.toLowerCase()}Resolvers${resolverType} = {
   ${outputResolvers.join(',\n\n  ')}
 }
 `
