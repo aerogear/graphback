@@ -4,7 +4,7 @@ import { buildSchema, GraphQLSchema } from 'graphql';
 import * as knex from 'knex';
 import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
 import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from './database';
-import { KnexMigrationProvider } from './migrations';
+import { KnexMigrationProvider, LocalMigrationManager } from './migrations';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
@@ -26,14 +26,16 @@ export async function migrate(schemaText: string, strategy: DatabaseInitializati
 export class DatabaseMigrater {
   private schemaText: string;
   private knexMigrationManager: KnexMigrationManager;
+  private localMigrationManager: LocalMigrationManager;
   private migrationProvider: MigrationProvider;
   private inputContext: InputModelTypeContext[];
   // tslint:disable-next-line: no-any
   constructor(schemaText: string, db: knex<any, unknown[]>, migrationsDir: string) {
     this.schemaText = schemaText;
     this.inputContext = graphQLInputContext.createModelContext(schemaText, {});
-    this.migrationProvider = new KnexMigrationProvider(db, migrationsDir)
+    this.migrationProvider = new KnexMigrationProvider(db, migrationsDir);
     this.knexMigrationManager = new KnexMigrationManager(db);
+    this.localMigrationManager = new LocalMigrationManager(migrationsDir);
   }
 
   /**
@@ -44,13 +46,16 @@ export class DatabaseMigrater {
   public async init() {
     await this.createMetadataTables();
 
-    const migration = await this.createMigration();
+    const newMigration = await this.generateMigration();
 
-    if (migration) {
-      await this.migrationProvider.createMigration(migration);
+    if (newMigration) {
+      this.localMigrationManager.createMigration(newMigration);
+      await this.knexMigrationManager.createMigration(newMigration);
     }
 
-    await this.applyMigrations();
+    const migrations = await this.knexMigrationManager.getMigrations();
+
+    await this.applyMigrations(migrations);
   }
 
   public async createMetadataTables() {
@@ -63,13 +68,11 @@ export class DatabaseMigrater {
    * @private
    * @memberof DatabaseMigrater
    */
-  public async applyMigrations() {
-    const migrations = await this.migrationProvider.getMigrations();
-
+  public async applyMigrations(migrations: SchemaMigration[]) {
     const migrationsToApply = migrations.filter((m: SchemaMigration) => !m.applied_at);
 
     const sorted = migrationsToApply.sort((a: SchemaMigration, b: SchemaMigration) => {
-      return Number(a.id) - Number(b.id)
+      return Number(a.id) - Number(b.id);
     });
 
     for (const migration of sorted) {
@@ -138,7 +141,7 @@ export class DatabaseMigrater {
    * @returns
    * @memberof DatabaseMigrater
    */
-  public async createMigration(): Promise<SchemaMigration> {
+  public async generateMigration(): Promise<SchemaMigration> {
     const newSchema = buildSchema(this.schemaText);
 
     const migrations = await this.migrationProvider.getMigrations();
