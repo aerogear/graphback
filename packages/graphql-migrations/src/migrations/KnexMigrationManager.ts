@@ -141,7 +141,6 @@ export class KnexMigrationManager {
       } catch (err) {
         logError(err);
       }
-
     }
 
     return Promise.resolve();

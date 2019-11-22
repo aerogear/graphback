@@ -151,7 +151,7 @@ export class DatabaseMigrater {
     }
 
     const newMigration: SchemaMigration = {
-      id: new Date().getTime().toString(),
+      id: new Date().getTime(),
       model: this.schemaText
     };
 
