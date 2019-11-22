@@ -29,3 +29,14 @@ export function findMigrationsToApply(localMigrations: SchemaMigration[], remote
     return !remoteMigrations.find((r: SchemaMigration) => r.id === l.id);
   });
 }
+
+/**
+ * Get the changes from schema migrations
+ *
+ * @export
+ * @param {SchemaMigration[]} migrations
+ * @returns {string[]}
+ */
+export function getChanges(migrations: SchemaMigration[]): string[] {
+  return [].concat(...migrations.map((m: SchemaMigration) => m.changes));
+}

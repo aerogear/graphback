@@ -41,7 +41,7 @@ ava('it should generate a SQL migration script', async (t: ExecutionContext) => 
   const databaseMigrater = setup();
 
   await databaseMigrater.createMetadataTables();
-  const migration = await databaseMigrater.createMigration();
+  const migration = await databaseMigrater.generateMigration();
 
   const changes = JSON.parse(migration.changes);
   t.assert(changes.length === 3);

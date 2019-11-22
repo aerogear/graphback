@@ -9,6 +9,7 @@ import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { mapModelChanges } from './utils/graphqlUtils';
+import { getChanges } from './migrations/utils';
 
 export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
   await strategy.init(schemaText);
@@ -43,7 +44,7 @@ export class DatabaseMigrater {
    *
    * @memberof DatabaseMigrater
    */
-  public async init() {
+  public async init(): Promise<string[]> {
     await this.createMetadataTables();
 
     const newMigration = await this.generateMigration();
@@ -55,7 +56,62 @@ export class DatabaseMigrater {
 
     const migrations = await this.knexMigrationManager.getMigrations();
 
-    await this.applyMigrations(migrations);
+    const appliedMigrations = await this.applyMigrations(migrations);
+
+    return getChanges(appliedMigrations);
+  }
+
+  /**
+   * Collect migration metadata and create it
+   *
+   * @private
+   * @returns
+   * @memberof DatabaseMigrater
+   */
+  public async generateMigration(): Promise<SchemaMigration> {
+    const newSchema = buildSchema(this.schemaText);
+
+    const migrations = await this.migrationProvider.getMigrations();
+
+    let oldSchema: GraphQLSchema;
+    if (migrations.length) {
+      const last = migrations[migrations.length - 1];
+
+      oldSchema = buildSchema(last.model);
+    }
+
+    const newMigration: SchemaMigration = {
+      id: new Date().getTime(),
+      model: this.schemaText
+    };
+
+    let changes: ModelChange[] = [];
+    if (oldSchema) {
+      const inspectorChanges = diff(oldSchema, newSchema);
+      changes = mapModelChanges(inspectorChanges);
+    } else {
+      changes = this.getContext().map((model: InputModelTypeContext) => {
+        return {
+          type: ModelChangeType.TYPE_ADDED,
+          path: {
+            type: model.name
+          }
+        }
+      });
+    }
+
+    if (!changes.length) {
+      return undefined;
+    }
+
+    newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
+    newMigration.changes = JSON.stringify(changes);
+
+    return newMigration;
+  }
+
+  public async createMetadataTables() {
+    await this.knexMigrationManager.createMetadataTables();
   }
 
   /**
@@ -64,7 +120,7 @@ export class DatabaseMigrater {
    * @private
    * @memberof DatabaseMigrater
    */
-  private async applyMigrations(migrations: SchemaMigration[]) {
+  private async applyMigrations(migrations: SchemaMigration[]): Promise<SchemaMigration[]> {
     const migrationsToApply = migrations.filter((m: SchemaMigration) => !m.applied_at);
 
     const sorted = migrationsToApply.sort((a: SchemaMigration, b: SchemaMigration) => {
@@ -74,6 +130,8 @@ export class DatabaseMigrater {
     for (const migration of sorted) {
       await this.migrationProvider.applyMigration(migration);
     }
+
+    return migrationsToApply;
   }
 
   /**
@@ -130,60 +188,7 @@ export class DatabaseMigrater {
     });
   }
 
-  /**
-   * Collect migration metadata and create it
-   *
-   * @private
-   * @returns
-   * @memberof DatabaseMigrater
-   */
-  private async generateMigration(): Promise<SchemaMigration> {
-    const newSchema = buildSchema(this.schemaText);
-
-    const migrations = await this.migrationProvider.getMigrations();
-
-    let oldSchema: GraphQLSchema;
-    if (migrations.length) {
-      const last = migrations[migrations.length - 1];
-
-      oldSchema = buildSchema(last.model);
-    }
-
-    const newMigration: SchemaMigration = {
-      id: new Date().getTime(),
-      model: this.schemaText
-    };
-
-    let changes: ModelChange[] = [];
-    if (oldSchema) {
-      const inspectorChanges = diff(oldSchema, newSchema);
-      changes = mapModelChanges(inspectorChanges);
-    } else {
-      changes = this.getContext().map((model: InputModelTypeContext) => {
-        return {
-          type: ModelChangeType.TYPE_ADDED,
-          path: {
-            type: model.name
-          }
-        }
-      });
-    }
-
-    if (!changes.length) {
-      return undefined;
-    }
-
-    newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
-    newMigration.changes = JSON.stringify(changes);
-
-    return newMigration;
-  }
-
   private getContext(): InputModelTypeContext[] {
     return this.inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription');
-  }
-
-  private async createMetadataTables() {
-    await this.knexMigrationManager.createMetadataTables();
   }
 }
