@@ -1,6 +1,6 @@
 {
   "name": "graphql-migrations",
-  "version": "0.10.0-dev2",
+  "version": "0.10.0-rc1",
   "description": "Graphback database migrations",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -8,15 +8,15 @@
     "definition": "types/index.d.ts"
   },
   "dependencies": {
-    "chalk": "2.4.2",
-    "@graphback/core": "^0.10.0-dev2",
+    "@graphback/core": "^0.10.0-rc1",
     "@graphql-inspector/core": "1.26.0",
+    "chalk": "2.4.2",
     "glob": "7.1.6",
     "knex": "0.20.2",
-    "pino": "5.14.0",
-    "sqlite3": "4.1.0",
+    "node-emoji": "1.10.0",
     "pg": "7.14.0",
-    "node-emoji": "1.10.0"
+    "pino": "5.14.0",
+    "sqlite3": "4.1.0"
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",

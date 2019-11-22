@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "generator-server-example",
-    "version": "0.10.0-dev2",
+    "version": "0.10.0-rc1",
     "scripts": {
         "develop": "ts-node-dev src/index.ts",
         "build": "echo disabled",
@@ -10,7 +10,7 @@
         "start": "ts-node src/index.ts"
     },
     "dependencies": {
-        "@graphback/runtime": "^0.10.0-dev2",
+        "@graphback/runtime": "^0.10.0-rc1",
         "@types/cors": "2.8.6",
         "@types/express": "4.17.2",
         "@types/node": "12.12.5",
