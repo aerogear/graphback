@@ -8,8 +8,8 @@ import { KnexMigrationProvider, LocalMigrationManager } from './migrations';
 import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
-import { mapModelChanges } from './utils/graphqlUtils';
 import { getChanges } from './migrations/utils';
+import { mapModelChanges } from './utils/graphqlUtils';
 
 export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
   await strategy.init(schemaText);
