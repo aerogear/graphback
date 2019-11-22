@@ -20,7 +20,7 @@ export const createSchema = (inputContext: InputModelTypeContext[], options: Sch
         return new SchemaGenerator(inputContext, jsSchemaFormatter).generate();;
     }
     if (options.format === 'gql') {
-        return new SchemaGenerator(inputContext, gqlSchemaFormatter).generate();;
+        return new SchemaGenerator(inputContext, gqlSchemaFormatter).generate();
     }
     throw Error("Invalid format specified. `options.format` supports only `ts` and `js` flags ");
 }
