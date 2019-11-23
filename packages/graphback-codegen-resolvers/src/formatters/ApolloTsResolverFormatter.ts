@@ -46,8 +46,8 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string, opt
   let resolverType = '';
   let typedImports = ''
   if (options.types) {
-    resolverType = `: ${options.types.resolverType}`
-    typedImports = `${options.types.typesImportStatement}\n`
+    resolverType = `: ${options.types.resolverRootType}`
+    typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}"\n`
   }
 
   return `${generateRuntimeImport()}\n${typedImports}\nexport const ${name.toLowerCase()}Resolvers${resolverType} = {

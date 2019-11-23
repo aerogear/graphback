@@ -1,5 +1,4 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { graphQLInputContext } from '@graphback/core/src';
+import { graphQLInputContext } from '@graphback/core';
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
 import { createResolvers } from '../src';
@@ -21,8 +20,8 @@ ava('Test snapshot resolvers ts', async (t: ExecutionContext) => {
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
   const resolvers = createResolvers(inputContext, {
     format: 'ts', types: {
-      resolverType: 'Resolvers',
-      typesImportStatement: "import { Resolvers} from '../../generated-types"
+      resolverRootType: 'Resolvers',
+      resolverRootLocation: "../../generated-types"
     }
   })
   t.snapshot(resolvers);

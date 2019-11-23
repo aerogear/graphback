@@ -30,15 +30,6 @@ export class GraphQLBackendCreator {
    */
   public async createBackend(resolverOptions?: ResolverGeneratorOptions): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
-    // FIXME - this is for testing only
-    // tslint:disable-next-line: no-parameter-reassignment
-    resolverOptions = {
-      format: 'ts',
-      types: {
-        typesImportStatement: 'import { Resolvers } from "../../generated-types"',
-        resolverType: 'Resolvers',
-      }
-    };
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()
 
