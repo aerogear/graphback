@@ -6,15 +6,15 @@ export interface ResolverGeneratorOptions {
   // generated for resolvers
   types?: {
     /**
-     * for example `Resolvers`
+     * Name of the resolver import
+     * For example `Resolvers`
      */
-    resolverType: string
+    resolverRootType: string
 
     /**
-     * For example: 
-     * import { Resolvers } from '../dist/types
+     * Relative location for root resolver typings.
+     * For example: '../../types'
      */
-    typesImportStatement: string
+    resolverRootLocation: string
   }
-
 }
