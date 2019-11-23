@@ -24,8 +24,8 @@ const inputContext = graphQLInputContext.createModelContext(schemaText, {})
 const resolverOptions = {
   format: 'ts',
   types: {
-    typesImportStatement: 'import { Resolvers } from "../../generated-types"',
-    resolverType: 'Resolvers',
+    resolverRootType: '../../generated-types',
+    resolverRootLocation: 'Resolvers',
   }
 };
 
