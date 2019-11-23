@@ -5,6 +5,7 @@ import knex from 'knex';
 import { ModelChange } from '../changes/ChangeTypes';
 import { logError, logInfo } from '../utils/log';
 import { SchemaMigration } from './SchemaMigration';
+import { mapSchemaMigrationTypes } from './utils';
 
 const handleError = (err: { code: string; message: string }) => {
   if (err.code === '42P07') {
@@ -90,7 +91,7 @@ export class KnexMigrationManager {
 
           if (method) {
             table[method](field.name)
-            ;
+              ;
           }
         }
       }
@@ -190,6 +191,8 @@ export class KnexMigrationManager {
       handleError(err);
     }
 
-    return Promise.resolve(migrations);
+    const mappedValues = mapSchemaMigrationTypes(migrations);
+
+    return Promise.resolve(mappedValues);
   }
 }

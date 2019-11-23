@@ -5,6 +5,7 @@ import { KnexMigrationManager } from './KnexMigrationManager';
 import { LocalMigrationManager } from './LocalMigrationManager';
 import { MigrationProvider } from './MigrationProvider';
 import { SchemaMigration } from './SchemaMigration';
+import { findMigrationsToApply } from './utils';
 
 /**
  * Fetch and apply remote migration using Knex as a database client
@@ -23,14 +24,16 @@ export class KnexMigrationProvider implements MigrationProvider {
   }
 
   public async getMigrations(): Promise<SchemaMigration[]> {
-    const remoteMigrations: SchemaMigration[] = await this.knexMigrationManager.getMigrations();
+    let remoteMigrations: SchemaMigration[] = await this.knexMigrationManager.getMigrations();
     const localMigrations: SchemaMigration[] = this.localMigrationManager.getMigrations();
 
-    const unstagedMigrations = localMigrations.filter((l: SchemaMigration) => !remoteMigrations.find((r: SchemaMigration) => r.id === l.id));
+    const unstagedMigrations = findMigrationsToApply(localMigrations, remoteMigrations);
 
     for (const migration of unstagedMigrations) {
       await this.createMigration(migration);
     }
+
+    remoteMigrations = await this.knexMigrationManager.getMigrations();
 
     return Promise.resolve(remoteMigrations);
   }
@@ -61,7 +64,6 @@ export class KnexMigrationProvider implements MigrationProvider {
    * @memberof KnexMigrationProvider
    */
   public async createMigration(migration: SchemaMigration): Promise<void> {
-    this.localMigrationManager.createMigration(migration);
     try {
       await this.knexMigrationManager.createMigration(migration);
     } catch (err) {
