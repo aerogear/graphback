@@ -77,9 +77,9 @@ const generateIndexFile = (context: ResolverTypeContext[], hasCustomElements: bo
   if (hasCustomElements) {
     return `${context.sort(alphabeticSort).
       map((t: ResolverTypeContext) => 
-      `const { ${t.name.toLowerCase()}Resolvers } = require('./generated/${t.name.toLowerCase()}')`).join('\n')}
+      `const ${t.name.toLowerCase()}Resolvers = require('./generated/${t.name.toLowerCase()}')`).join('\n')}
 
-const { customResolvers } = require('./custom')
+const customResolvers = require('./custom')
 
 exports.resolvers = [${[...context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`), '...customResolvers'].join(', ')}]
 `
@@ -87,7 +87,7 @@ exports.resolvers = [${[...context.map((t: ResolverTypeContext) => `${t.name.toL
 
   return `${context.sort(alphabeticSort).
     map((t: ResolverTypeContext) => 
-    `const ${t.name.toLowerCase()}Resolvers  = require('./generated/${t.name.toLowerCase()}').${t.name.toLowerCase()}Resolvers `).join('\n')}
+    `const ${t.name.toLowerCase()}Resolvers = require('./generated/${t.name.toLowerCase()}').${t.name.toLowerCase()}Resolvers `).join('\n')}
 
 exports.resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
 `
@@ -96,13 +96,13 @@ exports.resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLower
 const generateCustomResolvers = (customResolvers: CustomResolverContext[]) => {
   const index = `${customResolvers.sort(alphabeticSort).map((c: CustomResolverContext) => `const { ${c.name} } = require('./${c.name}')`).join('\n')}
 
-exports.customResolvers = [${customResolvers.map((c: CustomResolverContext) => c.name).join(', ')}]
+exports.default = [${customResolvers.map((c: CustomResolverContext) => c.name).join(', ')}]
 `
   const outputCustomResolvers = customResolvers.map((c: CustomResolverContext) => {
     return {
       name: c.name,
       output: `
-exports.${c.name} = {
+exports.default = {
   ${c.operationType}: {
     ${c.implementation}
   }
