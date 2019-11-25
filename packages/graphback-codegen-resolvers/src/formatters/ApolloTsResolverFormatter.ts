@@ -50,7 +50,7 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string, opt
     typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}"\n`
   }
 
-  return `${generateRuntimeImport()}\n${typedImports}\nexport default = {
+  return `${generateRuntimeImport()}\n${typedImports}\nexport default {
   ${outputResolvers.join(',\n\n  ')}
 } ${resolverType}
 `
