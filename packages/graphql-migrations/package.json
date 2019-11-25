@@ -2,7 +2,7 @@
   "name": "graphql-migrations",
   "version": "0.10.0-rc2",
   "description": "Create & migrate Databases from GraphQL Schema",
-  "author": "Guillaume Chau <guillaume.b.chau@gmail.com>",
+  "author": "Enda Phelan <ephelan@redhat.com>",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "typescript": {
@@ -16,9 +16,7 @@
     "test:unit": "jest",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "yarn run tslint && yarn run eslint && yarn run test:types && yarn run test:unit",
-    "prepublishOnly": "yarn run test && yarn run build",
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "prepublishOnly": "yarn run test && yarn run build"
   },
   "dependencies": {
     "case": "^1.6.1",
@@ -56,19 +54,9 @@
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
-  "bugs": {
-    "url": "https://github.com/Akryum/graphql-migrations/issues"
-  },
-  "homepage": "https://github.com/Akryum/graphql-migrations#readme",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Akryum/graphql-migrations.git"
-  },
   "files": [
     "dist",
-    "src",
-    "LICENSE"
+    "src"
   ],
   "engines": {
     "node": ">=10.15.3"

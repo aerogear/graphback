@@ -1,5 +1,5 @@
 import { Config } from 'knex'
-import { GraphQLSchema } from 'graphql'
+import { buildSchema } from 'graphql'
 import { read } from './connector/read'
 import { generateAbstractDatabase, ScalarMap, NameTransform } from './abstract/generateAbstractDatabase'
 import { computeDiff } from './diff/computeDiff'
@@ -66,7 +66,7 @@ export const defaultOptions: MigrateOptions = {
 
 export async function migrate (
   config: Config,
-  schema: GraphQLSchema,
+  schemaText: string,
   options: MigrateOptions = {},
 ): Promise<Operation[]> {
   // Default options
@@ -87,6 +87,8 @@ export async function migrate (
     finalOptions.dbTablePrefix,
     finalOptions.dbColumnPrefix,
   )
+
+  const schema = buildSchema(schemaText)
   // Generate new
   const newAdb = await generateAbstractDatabase(schema, {
     transformTableName: finalOptions.transformTableName,
