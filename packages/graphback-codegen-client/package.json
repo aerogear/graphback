@@ -1,6 +1,6 @@
 {
   "name": "@graphback/codegen-client",
-  "version": "0.10.0-rc2",
+  "version": "0.10.0-dev3",
   "description": "GraphQL-Code-Generator compatibile client side queries generator",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
