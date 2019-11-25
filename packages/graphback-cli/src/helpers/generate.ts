@@ -40,7 +40,7 @@ export async function generateBackend(): Promise<void> {
     }
 
     const pathForSchema: string = folders.schema
-    const outputSchemaPath: string = join(pathForSchema,'generated.ts')
+    const outputSchemaPath: string = join(pathForSchema, 'generated.ts')
 
     const customResolvers: string = join(folders.resolvers, "/custom")
     const generatedResolvers: string = join(folders.resolvers, "/generated")
@@ -48,7 +48,7 @@ export async function generateBackend(): Promise<void> {
     const schemaText = loadSchema(folders.model);
 
     const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
-    const generated: IGraphQLBackend = await backend.createBackend()
+    const generated: IGraphQLBackend = await backend.createBackend({ format: 'ts' })
 
     checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);
 

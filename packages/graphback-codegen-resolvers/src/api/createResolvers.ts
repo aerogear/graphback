@@ -9,12 +9,13 @@ import { GeneratedResolvers } from './resolverTypes';
  * @param options 
  */
 export const createResolvers = (inputContext: InputModelTypeContext[], options: ResolverGeneratorOptions): GeneratedResolvers => {
-    if (options.format === 'ts') {
-        return generateTSResolvers(inputContext, options)
+    if (options) {
+        if (options.format === 'ts') {
+            return generateTSResolvers(inputContext, options)
+        }
+        if (options.format === 'js') {
+            return generateJSResolvers(inputContext, options)
+        }
     }
-    if (options.format === 'js') {
-        return generateJSResolvers(inputContext, options)
-    }
-
     throw Error("Invalid format specified. `options.format` supports only `ts` and `js` flags ");
 }
