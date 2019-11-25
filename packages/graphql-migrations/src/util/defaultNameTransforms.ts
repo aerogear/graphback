@@ -1,5 +1,5 @@
 import Case from 'case'
-import { NameTransformDirection } from 'src/abstract/generateAbstractDatabase'
+import { NameTransformDirection } from '../abstract/generateAbstractDatabase'
 
 export function defaultNameTransform (name: string, direction: NameTransformDirection) {
   if (direction === 'to-db') {
