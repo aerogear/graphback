@@ -136,7 +136,7 @@ class AbstractDatabaseBuilder {
     const annotations: any = parseAnnotations('db', type.description || null)
 
     if (annotations.skip) {
-      return
+      return undefined
     }
 
     const table: Table = {
@@ -172,7 +172,7 @@ class AbstractDatabaseBuilder {
 
   private buildColumn (table: Table, field: GraphQLField<any, any>) {
     const descriptor = this.getFieldDescriptor(field)
-    if (!descriptor) { return }
+    if (!descriptor) { return undefined }
     table.columns.push(descriptor)
     table.columnMap.set(field.name, descriptor)
     return descriptor

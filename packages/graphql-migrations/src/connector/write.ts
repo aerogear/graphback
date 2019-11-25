@@ -1,4 +1,4 @@
-import Knex, { Config, CreateTableBuilder, TableBuilder } from 'knex'
+import * as Knex from 'knex'
 // eslint-disable-next-line import/no-duplicates
 import * as Operations from '../diff/Operation'
 // eslint-disable-next-line import/no-duplicates
@@ -33,7 +33,7 @@ const ALTER_TABLE_CHILD_OPS: OperationType[] = [
  */
 export async function write (
   operations: Operation[],
-  config: Config,
+  config: Knex.Config,
   schemaName = 'public',
   tablePrefix = '',
   columnPrefix = '',
@@ -59,11 +59,11 @@ class Writer {
   private knex: Knex
   private hooks: { [key: string]: WriteCallback[] } = {}
   // @ts-ignore
-  private trx: Knex.Transaction
+  private trx: knex.Transaction
 
   constructor (
     operations: Operation[],
-    config: Config,
+    config: Knex.Config,
     schemaName = 'public',
     tablePrefix = '',
     columnPrefix = '',
@@ -200,10 +200,10 @@ class Writer {
     await this.callHook(op, 'after')
   }
 
-  private createColumn (op: Operations.ColumnCreateOperation, table: CreateTableBuilder) {
+  private createColumn (op: Operations.ColumnCreateOperation, table: Knex.CreateTableBuilder) {
     if (op.columnType in table) {
       // @ts-ignore
-      let col: Knex.ColumnBuilder = table[op.columnType](
+      let col: knex.ColumnBuilder = table[op.columnType](
         this.getColumnName(op.column),
         ...this.getColumnTypeArgs(op),
       )
@@ -315,9 +315,9 @@ class Writer {
     }
   }
 
-  private alterColumn (table: TableBuilder, op: Operations.ColumnAlterOperation) {
+  private alterColumn (table: Knex.TableBuilder, op: Operations.ColumnAlterOperation) {
     // @ts-ignore
-    let col: Knex.ColumnBuilder = table[op.columnType](
+    let col: knex.ColumnBuilder = table[op.columnType](
       op.column,
       ...this.getColumnTypeArgs(op),
     )

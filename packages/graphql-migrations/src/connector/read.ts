@@ -1,4 +1,4 @@
-import Knex, { Config, ColumnInfo } from 'knex'
+import * as Knex from 'knex'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table } from '../abstract/Table'
 import { TableColumn } from '../abstract/TableColumn'
@@ -19,7 +19,7 @@ import getCheckConstraints from '../util/getCheckConstraints'
  * @param {string} columnPrefix Column name prefix: `<prefix><columnName>`
  */
 export function read (
-  config: Config,
+  config: Knex.Config,
   schemaName = 'public',
   tablePrefix = '',
   columnPrefix = '',
@@ -29,7 +29,7 @@ export function read (
 }
 
 class Reader {
-  public config: Config
+  public config: Knex.Config
   public schemaName: string
   public tablePrefix: string
   public columnPrefix: string
@@ -37,7 +37,7 @@ class Reader {
   public database: AbstractDatabase
 
   constructor (
-    config: Config,
+    config: Knex.Config,
     schemaName: string,
     tablePrefix: string,
     columnPrefix: string,
@@ -78,7 +78,7 @@ class Reader {
 
       // Columns
       const columnComments = await getColumnComments(this.knex, tableName, this.schemaName)
-      const columnInfo: { [key: string]: ColumnInfo } = await this.knex(tableName)
+      const columnInfo: { [key: string]: Knex.ColumnInfo } = await this.knex(tableName)
         .withSchema(this.schemaName)
         .columnInfo() as any
       for (const key in columnInfo) {
