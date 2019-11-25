@@ -21,35 +21,37 @@
   "dependencies": {
     "case": "^1.6.1",
     "graphql-annotations": "^0.0.3",
-    "knex": "^0.16.3",
-    "lodash.isequal": "^4.5.0"
+    "knex": "0.20.2",
+    "lodash.isequal": "4.5.0",
+    "lodash-es": "4.5.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.3",
-    "@types/node": "12.12.12",
     "@nodepack/plugin-typescript": "^0.1.14",
     "@nodepack/service": "^0.1.14",
+    "@types/graphql": "14.2.3",
     "@types/jest": "^24.0.11",
+    "@types/lodash.isequal": "^4.5.5",
+    "@types/node": "12.12.12",
     "@typescript-eslint/eslint-plugin": "^1.1.1",
     "@typescript-eslint/parser": "^1.1.1",
+    "ava": "2.4.0",
     "eslint": "^5.12.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "graphql": "^14.5.8",
     "graphql-tools": "^4.0.4",
     "jest": "^24.0.0",
     "pg": "^7.8.0",
-    "ts-jest": "^24.0.0",
-    "vuepress": "^0.14.10",
-    "ava": "2.4.0",
-    "graphql": "^14.5.8",
     "rimraf": "3.0.0",
+    "ts-jest": "^24.0.0",
     "ts-node": "8.5.2",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
-    "typescript": "3.7.2"
+    "typescript": "3.7.2",
+    "vuepress": "^0.14.10"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
