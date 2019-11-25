@@ -28,7 +28,7 @@ export class GraphQLBackendCreator {
   /**
    * Create backend with all related resources
    */
-  public async createBackend(resolverOptions?: ResolverGeneratorOptions): Promise<IGraphQLBackend> {
+  public async createBackend(resolverOptions: ResolverGeneratorOptions): Promise<IGraphQLBackend> {
     const backend: IGraphQLBackend = {};
     const schemaGenerator = new SchemaGenerator(this.inputContext, tsSchemaFormatter)
     backend.schema = schemaGenerator.generate()

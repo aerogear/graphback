@@ -14,8 +14,7 @@ ava('Test snapshot resolvers ts', async (t: ExecutionContext) => {
     "delete": true,
     "subCreate": true,
     "subUpdate": true,
-    "subDelete": true,
-    "disableGen": true
+    "subDelete": true
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
   const resolvers = createResolvers(inputContext, {
@@ -36,8 +35,7 @@ ava('Test snapshot resolvers js', async (t: ExecutionContext) => {
     "delete": true,
     "subCreate": true,
     "subUpdate": true,
-    "subDelete": true,
-    "disableGen": true
+    "subDelete": true
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
   const resolvers = createResolvers(inputContext, { format: 'js' })
