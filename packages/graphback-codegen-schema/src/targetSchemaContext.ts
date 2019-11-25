@@ -27,6 +27,7 @@ export interface TargetContext {
   queries: string[],
   mutations: string[],
   subscriptions: string[]
+  relations: RelationInfo[]
 }
 
 const findQueries = (inputContext: InputModelTypeContext[]): string[] => {
@@ -163,7 +164,8 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     filterFields: [],
     queries: [],
     mutations: [],
-    subscriptions: []
+    subscriptions: [],
+    relations
   }
 
   const objectTypes = filterObjectTypes(inputContext);
