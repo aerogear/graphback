@@ -83,7 +83,7 @@ const alphabeticSort = (a: ResolverTypeContext | CustomResolverContext, b: Resol
  */
 const generateIndexFile = (context: ResolverTypeContext[], hasCustomElements: boolean) => {
   if (hasCustomElements) {
-    return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+    return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import ${t.name.toLowerCase()}Resolvers from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 import { customResolvers } from './custom'
 
@@ -91,7 +91,7 @@ export const resolvers = [${[...context.map((t: ResolverTypeContext) => `${t.nam
 `
   }
 
-  return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+  return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import ${t.name.toLowerCase()}Resolvers from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 export const resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
 `
