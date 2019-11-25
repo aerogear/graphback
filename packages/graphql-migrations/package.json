@@ -22,16 +22,16 @@
     "case": "^1.6.1",
     "graphql-annotations": "^0.0.3",
     "knex": "0.20.2",
-    "lodash.isequal": "4.5.0",
-    "lodash-es": "4.5.0"
+    "lodash": "4.17.15",
+    "lodash-es": "4.17.15"
   },
   "devDependencies": {
     "@nodepack/plugin-typescript": "^0.1.14",
     "@nodepack/service": "^0.1.14",
     "@types/graphql": "14.2.3",
     "@types/jest": "^24.0.11",
-    "@types/lodash.isequal": "^4.5.5",
     "@types/node": "12.12.12",
+    "@types/lodash": "4.14.108",
     "@typescript-eslint/eslint-plugin": "^1.1.1",
     "@typescript-eslint/parser": "^1.1.1",
     "ava": "2.4.0",

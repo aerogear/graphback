@@ -2,7 +2,7 @@ import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table, TablePrimary, TableIndex, TableUnique } from '../abstract/Table'
 import { TableColumn } from '../abstract/TableColumn'
 import * as Operations from './Operation'
-import isEqual from 'lodash.isequal'
+import { isEqual } from 'lodash'
 
 export async function computeDiff (from: AbstractDatabase, to: AbstractDatabase, {
   updateComments = false,
