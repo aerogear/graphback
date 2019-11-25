@@ -17,7 +17,7 @@
     "express": "4.17.1",
     "graphback": "^0.10.0-rc2",
     "graphql": "14.5.8",
-    "graphql-migrations": "^0.10.0-rc2",
+    "graphql-migrations-bk": "^0.10.0-rc2",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.1",
     "knex": "0.20.2",

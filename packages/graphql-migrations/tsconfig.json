@@ -1,17 +1,33 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "./src/**/*.ts"
-  ],
   "compilerOptions": {
-    "outDir": "./dist/",
-    "declarationDir": "./types",
+    "target": "es5",
+    "module": "esnext",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
     "lib": [
-      "esnext.asynciterable",
-      "es2015",
-      "es2018.promise",
       "dom",
-      "es2016"
-    ]
-  }
+      "esnext",
+    ],
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    // Strict
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    // May break autocomplete
+    "strictNullChecks": false,
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts"
+  ]
 }

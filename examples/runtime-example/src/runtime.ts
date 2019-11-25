@@ -3,7 +3,7 @@ import {
   GraphQLBackendCreator,
   PgKnexDBDataProvider,
 } from 'graphback';
-import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
+import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations-bk';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import * as Knex from 'knex';

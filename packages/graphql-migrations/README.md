@@ -1,60 +1,54 @@
-## graphql-migrations
 
-Automatically updates your database structure from a GraphQL schema.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Akryum/graphql-migrations/master/graphql-migrations.png" alt="Logo">
+</p>
 
-## Usage
+# graphql-migrations
 
-### Strategies
+[![circleci](https://img.shields.io/circleci/project/github/Akryum/graphql-migrations/master.svg)](https://circleci.com/gh/Akryum/graphql-migrations)
 
-- `DropCreateDatabaseAlways` - Drops and creates the database every time the application is run.
-- `UpdateDatabaseIfChanges` - Only update the database when your input schema has been changed.
+Instantly create or update a SQL database from a GraphQL API schema.
 
-### Configuration
+<br>
 
-Here is an example of how to configure database initialization strategies.
+<h3 align="center"><a href="https://graphql-migrations.netlify.com/">Documentation</a></h3>
 
-#### Performing automatic migrations
+<p align="center">
+  <a href="https://www.patreon.com/akryum" target="_blank">
+    <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patreon">
+  </a>
+</p>
 
-```ts
-import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
-import { migrationsDir } from './config';
-import { schemaText } from './schema';
+## Sponsors
 
-const db = Knex(...);
+### Gold
 
-const databaseInitializationStrategy = new UpdateDatabaseIfChanges(db, migrationsDir);
+<p align="center">
+  <a href="https://www.sumcumo.com/en/" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/258614093362102272/570728242399674380/logo-sumcumo.png" alt="sum.cumo logo" width="400px">
+  </a>
+</p>
 
-await migrate(schemaText, dbInitialization);
+### Silver
 
-const pubSub = new PubSub();
-const runtime = await backend.createRuntime(dbClientProvider, pubSub);
-```
+<p align="center">
+  <a href="https://vueschool.io/" target="_blank">
+    <img src="https://vueschool.io/img/logo/vueschool_logo_multicolor.svg" alt="VueSchool logo" width="200px">
+  </a>
 
-#### Drop and recreate database every time
+  <a href="https://www.vuemastery.com/" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/258614093362102272/557267759130607630/Vue-Mastery-Big.png" alt="Vue Mastery logo" width="200px">
+  </a>
+</p>
 
-This mode is useful for when you are in development mode and don't care about saving migrations.
+### Bronze
 
-```ts
-import { migrate, DropCreateDatabaseAlways } from 'graphql-migrations';
-import { migrationsDir } from './config';
-import { schemaText } from './schema';
+<p align="center">
+  <a href="https://vuetifyjs.com" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/537832759985700914/537832771691872267/Horizontal_Logo_-_Dark.png" width="100">
+  </a>
 
-const db = Knex(...);
-
-const databaseInitializationStrategy = new DropCreateDatabaseAlways('pg', db);
-
-await migrate(schemaText, dbInitialization);
-
-const pubSub = new PubSub();
-const runtime = await backend.createRuntime(dbClientProvider, pubSub);
-```
-
-## Limitations
-
-Schema migrations are in a very early phase. At present the change types that are allowed is limited to the following:
-
-- **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
-- **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.
-
-- Relationships are not yet supported and will be added very soon.
-- Fields cannot be set to `NOT NULL` in the database.
+  <a href="https://www.frontenddeveloperlove.com/" target="_blank" title="Frontend Developer Love">
+    <img src="https://cdn.discordapp.com/attachments/258614093362102272/557267744249085953/frontend_love-logo.png" width="56">
+  </a>
+</p>

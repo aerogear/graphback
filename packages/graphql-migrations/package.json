@@ -1,64 +1,68 @@
 {
   "name": "graphql-migrations",
-  "version": "0.10.0-rc2",
-  "description": "Graphback database migrations",
-  "main": "dist/index.js",
-  "types": "types/index.d.ts",
-  "typescript": {
-    "definition": "types/index.d.ts"
+  "version": "0.2.1",
+  "description": "Create & migrate Databases from GraphQL Schema",
+  "author": "Guillaume Chau <guillaume.b.chau@gmail.com>",
+  "scripts": {
+    "dev": "nodepack-service build --watch",
+    "build": "nodepack-service build",
+    "tslint": "nodepack-service lint",
+    "eslint": "eslint {src,tests}/**/*.ts",
+    "start": "node ./dist/app.js",
+    "test:types": "tsc --noEmit",
+    "test:unit": "jest",
+    "test": "yarn run tslint && yarn run eslint && yarn run test:types && yarn run test:unit",
+    "prepublishOnly": "yarn run test && yarn run build",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
-    "@graphback/core": "^0.10.0-rc2",
-    "@graphql-inspector/core": "1.26.0",
-    "chalk": "2.4.2",
-    "glob": "7.1.6",
-    "knex": "0.20.2",
-    "node-emoji": "1.10.0",
-    "pg": "7.14.0",
-    "pino": "5.14.0",
-    "sqlite3": "4.1.0"
+    "case": "^1.6.1",
+    "graphql-annotations": "^0.0.3",
+    "knex": "^0.16.3",
+    "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
-    "@types/chalk": "0.4.31",
-    "@types/graphql": "14.2.3",
-    "@types/node": "12.12.12",
-    "ava": "2.4.0",
-    "graphql": "^14.5.8",
-    "rimraf": "3.0.0",
-    "ts-node": "8.5.2",
-    "tslint": "5.20.1",
-    "tsutils": "3.17.1",
-    "typescript": "3.7.2"
-  },
-  "scripts": {
-    "clean": "rimraf coverage dist types",
-    "build": "tsc",
-    "watch": "tsc -w ",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "test": "ava",
-    "pretest": "npm run build"
-  },
-  "ava": {
-    "files": [
-      "tests/**/*"
-    ],
-    "compileEnhancements": false,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
-  },
-  "engines": {
-    "node": ">=10.15.3"
-  },
-  "author": "ephelan@redhat.com",
-  "license": "Apache-2.0",
-  "publishConfig": {
-    "access": "public"
+    "@nodepack/plugin-typescript": "^0.1.14",
+    "@nodepack/service": "^0.1.14",
+    "@types/graphql": "^14.0.5",
+    "@types/jest": "^24.0.11",
+    "@typescript-eslint/eslint-plugin": "^1.1.1",
+    "@typescript-eslint/parser": "^1.1.1",
+    "eslint": "^5.12.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "graphql": "^14.1.1",
+    "graphql-tools": "^4.0.4",
+    "jest": "^24.0.0",
+    "pg": "^7.8.0",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.2.2",
+    "vuepress": "^0.14.10"
   },
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^14.1.1"
+  },
+  "bugs": {
+    "url": "https://github.com/Akryum/graphql-migrations/issues"
+  },
+  "homepage": "https://github.com/Akryum/graphql-migrations#readme",
+  "license": "MIT",
+  "main": "dist/app.js",
+  "types": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akryum/graphql-migrations.git"
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE"
+  ],
+  "resolutions": {
+    "webpack-dev-middleware": "3.6.0"
   }
 }

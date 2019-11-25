@@ -61,7 +61,7 @@
     "glob": "7.1.6",
     "graphback": "^0.10.0-rc2",
     "graphql": "14.5.8",
-    "graphql-migrations": "^0.10.0-rc2",
+    "graphql-migrations-bk": "^0.10.0-rc2",
     "inquirer": "7.0.0",
     "js-yaml": "3.13.1",
     "knex": "0.20.2",

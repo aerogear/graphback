@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:11.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-{{ .Branch }}-
+            - yarn
+      - run: yarn --network-timeout 600000
+      - save_cache:
+          key: yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/
+      - run: yarn tslint
+      - run: yarn eslint
+      - run: yarn test:types
+      - run: yarn test:unit
+      - run: yarn build

@@ -1,0 +1,64 @@
+{
+  "name": "graphql-migrations-bk",
+  "version": "0.10.0-rc2",
+  "description": "Graphback database migrations",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "typescript": {
+    "definition": "types/index.d.ts"
+  },
+  "dependencies": {
+    "@graphback/core": "^0.10.0-rc2",
+    "@graphql-inspector/core": "1.26.0",
+    "chalk": "2.4.2",
+    "glob": "7.1.6",
+    "knex": "0.20.2",
+    "node-emoji": "1.10.0",
+    "pg": "7.14.0",
+    "pino": "5.14.0",
+    "sqlite3": "4.1.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "0.4.31",
+    "@types/graphql": "14.2.3",
+    "@types/node": "12.12.12",
+    "ava": "2.4.0",
+    "graphql": "^14.5.8",
+    "rimraf": "3.0.0",
+    "ts-node": "8.5.2",
+    "tslint": "5.20.1",
+    "tsutils": "3.17.1",
+    "typescript": "3.7.2"
+  },
+  "scripts": {
+    "clean": "rimraf coverage dist types",
+    "build": "tsc",
+    "watch": "tsc -w ",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "test": "ava",
+    "pretest": "npm run build"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "engines": {
+    "node": ">=10.15.3"
+  },
+  "author": "ephelan@redhat.com",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+  }
+}

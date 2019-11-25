@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { UpdateDatabaseIfChanges } from 'graphql-migrations';
+import { UpdateDatabaseIfChanges } from 'graphql-migrations-bk';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { connect, createDB, postCommandMessage } from '../helpers'
 
