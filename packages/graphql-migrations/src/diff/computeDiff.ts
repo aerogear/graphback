@@ -2,7 +2,6 @@ import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table, TablePrimary, TableIndex, TableUnique } from '../abstract/Table'
 import { TableColumn } from '../abstract/TableColumn'
 import * as Operations from './Operation'
-// @ts-ignore
 import isEqual from 'lodash.isequal'
 
 export async function computeDiff (from: AbstractDatabase, to: AbstractDatabase, {
