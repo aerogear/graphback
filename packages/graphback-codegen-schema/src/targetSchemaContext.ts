@@ -144,24 +144,24 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
             "type": 'Type',
             "relation": `${f.name}: ${f.type}`
           })
-          relations.push({
-            "name": f.type,
-            "type": 'ID',
-            "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-            "idField": `${t.name.toLowerCase()}Id: ID!`
-          })
+          // relations.push({
+          //   "name": f.type,
+          //   "type": 'ID',
+          //   "relation": `${t.name.toLowerCase()}: ${t.name}!`,
+          //   "idField": `${t.name.toLowerCase()}Id: ID!`
+          // })
         } else if (f.directives.OneToMany || f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: [${f.type}!]`
           })
-          relations.push({
-            "name": f.type,
-            "type": 'ID',
-            "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-            "idField": `${t.name.toLowerCase()}Id: ID!`
-          })
+          // relations.push({
+          //   "name": f.type,
+          //   "type": 'ID',
+          //   "relation": `${t.name.toLowerCase()}: ${t.name}!`,
+          //   "idField": `${t.name.toLowerCase()}Id: ID!`
+          // })
         }
       }
     })
@@ -173,7 +173,6 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     interfaces: [],
     inputFields: [],
     filterFields: [],
-    // pagination: [],
     queries: [],
     mutations: [],
     subscriptions: []
