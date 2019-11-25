@@ -119,7 +119,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     }
 
  
-    public batchLoadData(name: string, relationField: string, id: string, context: any) {
+    public batchLoadData(name: string | number, relationField: string, id: string, context: any) {
         const keyName = `${name}DataLoader`;
         if (!context[keyName]) {
             context[keyName] = new DataLoader<string, any>((keys: string[]) => {

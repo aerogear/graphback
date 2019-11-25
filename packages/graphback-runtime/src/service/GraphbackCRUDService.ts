@@ -108,6 +108,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param relationField - name of the field that will be used to match ids
      * @param id id of the object we want to load 
      */
-    batchLoadData(name: string, relationField: string, id: string, context: any);
+    batchLoadData(name: string | number, relationField: string, id: string, context: any);
 
 }
