@@ -1,16 +1,20 @@
 {
   "name": "graphql-migrations",
-  "version": "0.2.1",
+  "version": "0.10.0-rc2",
   "description": "Create & migrate Databases from GraphQL Schema",
   "author": "Guillaume Chau <guillaume.b.chau@gmail.com>",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "typescript": {
+    "definition": "types/index.d.ts"
+  },
   "scripts": {
-    "dev": "nodepack-service build --watch",
-    "build": "nodepack-service build",
-    "tslint": "nodepack-service lint",
-    "eslint": "eslint {src,tests}/**/*.ts",
-    "start": "node ./dist/app.js",
+    "clean": "rimraf coverage dist types",
+    "build": "tsc",
+    "watch": "tsc -w",
     "test:types": "tsc --noEmit",
     "test:unit": "jest",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "yarn run tslint && yarn run eslint && yarn run test:types && yarn run test:unit",
     "prepublishOnly": "yarn run test && yarn run build",
     "docs:dev": "vuepress dev docs",
@@ -23,9 +27,10 @@
     "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
+    "@types/graphql": "14.2.3",
+    "@types/node": "12.12.12",
     "@nodepack/plugin-typescript": "^0.1.14",
     "@nodepack/service": "^0.1.14",
-    "@types/graphql": "^14.0.5",
     "@types/jest": "^24.0.11",
     "@typescript-eslint/eslint-plugin": "^1.1.1",
     "@typescript-eslint/parser": "^1.1.1",
@@ -35,24 +40,27 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "graphql": "^14.1.1",
     "graphql-tools": "^4.0.4",
     "jest": "^24.0.0",
     "pg": "^7.8.0",
     "ts-jest": "^24.0.0",
-    "typescript": "^3.2.2",
-    "vuepress": "^0.14.10"
+    "vuepress": "^0.14.10",
+    "ava": "2.4.0",
+    "graphql": "^14.5.8",
+    "rimraf": "3.0.0",
+    "ts-node": "8.5.2",
+    "tslint": "5.20.1",
+    "tsutils": "3.17.1",
+    "typescript": "3.7.2"
   },
   "peerDependencies": {
-    "graphql": "^14.1.1"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "bugs": {
     "url": "https://github.com/Akryum/graphql-migrations/issues"
   },
   "homepage": "https://github.com/Akryum/graphql-migrations#readme",
   "license": "MIT",
-  "main": "dist/app.js",
-  "types": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Akryum/graphql-migrations.git"
@@ -62,6 +70,9 @@
     "src",
     "LICENSE"
   ],
+  "engines": {
+    "node": ">=10.15.3"
+  },
   "resolutions": {
     "webpack-dev-middleware": "3.6.0"
   }
