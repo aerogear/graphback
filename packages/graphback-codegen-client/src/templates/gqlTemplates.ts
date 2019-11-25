@@ -54,7 +54,8 @@ export const createMutation = (t: InputModelTypeContext) => {
     ${fieldName}(input: {${inputVariables(t)}}) {
       ...${t.name}Fields
     }
-  }`
+  }
+`
 }
 
 export const updateMutation = (t: InputModelTypeContext) => {
@@ -64,7 +65,8 @@ export const updateMutation = (t: InputModelTypeContext) => {
     ${fieldName}(id: $id, input: {${inputVariables(t)}}) {
       ...${t.name}Fields
     }
-  }`
+  }
+`
 }
 
 export const deleteMutation = (t: InputModelTypeContext, ) => {

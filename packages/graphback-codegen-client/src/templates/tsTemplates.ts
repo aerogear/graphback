@@ -84,7 +84,7 @@ export const ${fieldName} = gql\`
 }
 
 const fragmentTS = (t: InputModelTypeContext) => {
-  return `import gql from "graphql-tag
+  return `${gqlImport}
 
 export const ${t.name}Fragment = gql\`
   ${fragment(t)}
