@@ -79,6 +79,8 @@ export class LayeredRuntimeResolverGenerator {
         }
       }
 
+      this.createRelations(resolverElement, resolvers)
+
       this.createSubscriptions(resolverElement, resolvers, objectName)
     }
 
@@ -125,4 +127,38 @@ export class LayeredRuntimeResolverGenerator {
       }
     }
   }
+
+  private createRelations(type: InputModelTypeContext, resolvers: any) {
+    for (const field of type.fields) {
+
+      if (field.isType) {
+
+        if (field.directives.OneToOne || !field.isArray) {
+          // OneToOne
+          let foreignIdName = `${type.name.toLowerCase()}Id`;
+          if (field.directives.OneToOne) {
+            foreignIdName = field.directives.OneToOne.field;
+          }
+          // TODO:
+        }
+        else if (field.directives.OneToMany || field.isArray) {
+          // OneToMany
+          let foreignId = `${type.name.toLowerCase()}Id`;
+          if (field.directives.OneToMany) {
+            foreignId = field.directives.OneToMany.field;
+          }
+
+          if (resolvers[type.name] === undefined) {
+            resolvers[type.name] = {};
+          }
+
+          // tslint:disable-next-line: no-any
+          resolvers[type.name][field.name] = (parent: any, args: any, context: any) => {
+            return this.service.findBy(field.type.toLowerCase(), { [foreignId]: parent.id }, context);
+          };
+        }
+      }
+    }
+  }
 }
+
