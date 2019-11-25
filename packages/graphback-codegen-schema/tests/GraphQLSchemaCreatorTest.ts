@@ -17,8 +17,7 @@ ava('Test snapshot config gql', async (t: ExecutionContext) => {
     "delete": true,
     "subCreate": true,
     "subUpdate": true,
-    "subDelete": true,
-    "disableGen": true
+    "subDelete": true
   }
 
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
