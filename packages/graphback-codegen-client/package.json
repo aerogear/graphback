@@ -1,7 +1,7 @@
 {
   "name": "@graphback/codegen-client",
   "version": "0.10.0-rc2",
-  "description": "GraphQL-Code-Generator compatible client side queries generator",
+  "description": "GraphQL-Code-Generator compatibile client side queries generator",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "typescript": {
@@ -47,7 +47,7 @@
     "typescript": "3.7.2"
   },
   "dependencies": {
-    "@graphback/core": "^0.10.0-rc2"
+    "@graphback/core": "0.10.0-rc2"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

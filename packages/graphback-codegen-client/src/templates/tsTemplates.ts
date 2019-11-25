@@ -1,5 +1,4 @@
 import { getFieldName, GraphbackOperationType, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
-import { ClientGeneratorConfig } from '..'
 import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation} from './gqlTemplates'
 
 const gqlImport = `import gql from "graphql-tag"`
