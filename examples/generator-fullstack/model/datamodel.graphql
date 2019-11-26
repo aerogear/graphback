@@ -2,13 +2,14 @@ type Note {
   id: ID!
   title: String!
   description: String!
+  ## Relationship
+  comment: [Comment!]!
 }
 
 type Comment {
   id: ID!
   title: String!
   description: String!
-  note: Note!
 }
 
 type Query {
@@ -18,5 +19,3 @@ type Query {
 type Mutation {
   likeNote(id: ID!): Note!
 }
-
-
