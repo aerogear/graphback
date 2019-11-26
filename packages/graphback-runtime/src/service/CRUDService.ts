@@ -118,15 +118,15 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         return this.pubSub.asyncIterator(deleteSubKey)
     }
 
- 
-    public batchLoadData(name: string, relationField: string, id: string, context: any) {
+
+    public batchLoadData(name: string, relationField: string, id: string | number, context: any) {
         const keyName = `${name}DataLoader`;
         if (!context[keyName]) {
             context[keyName] = new DataLoader<string, any>((keys: string[]) => {
                 return this.db.batchRead(name, relationField, keys);
             });
         }
-     
+
         return context[keyName].load(id);
     }
 

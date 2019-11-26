@@ -30,14 +30,14 @@ export const deleteTemplate = (fieldName: string, typeName: string, subscription
 export const findAllTemplate = (fieldName: string, typeName: string): string => {
   return `${fieldName}: (_, args, context) => {
       validateRuntimeContext(context)
-      return context.crudService.findAll("${typeName.toLowerCase()}", context);
+      return context.crudService.findAll("${typeName.toLowerCase()}");
     }`
 }
 
 export const findTemplate = (fieldName: string, typeName: string, ): string => {
   return `${fieldName}: (_, args, context) => {
       validateRuntimeContext(context)
-      return context.crudService.findBy("${typeName.toLowerCase()}", args.fields, context);
+      return context.crudService.findBy("${typeName.toLowerCase()}", args.fields);
     }`
 }
 

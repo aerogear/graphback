@@ -46,13 +46,13 @@ const generateTypeResolvers = (context: TargetResolverContext, name: string, opt
   let resolverType = '';
   let typedImports = ''
   if (options.types) {
-    resolverType = `: ${options.types.resolverRootType}`
+    resolverType = `as ${options.types.resolverRootType}`
     typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}"\n`
   }
 
-  return `${generateRuntimeImport()}\n${typedImports}\nexport const ${name.toLowerCase()}Resolvers${resolverType} = {
+  return `${generateRuntimeImport()}\n${typedImports}\nexport default {
   ${outputResolvers.join(',\n\n  ')}
-}
+} ${resolverType}
 `
 }
 
@@ -83,7 +83,7 @@ const alphabeticSort = (a: ResolverTypeContext | CustomResolverContext, b: Resol
  */
 const generateIndexFile = (context: ResolverTypeContext[], hasCustomElements: boolean) => {
   if (hasCustomElements) {
-    return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+    return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import ${t.name.toLowerCase()}Resolvers from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 import { customResolvers } from './custom'
 
@@ -91,7 +91,7 @@ export const resolvers = [${[...context.map((t: ResolverTypeContext) => `${t.nam
 `
   }
 
-  return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import { ${t.name.toLowerCase()}Resolvers } from './generated/${t.name.toLowerCase()}'`).join('\n')}
+  return `${context.sort(alphabeticSort).map((t: ResolverTypeContext) => `import ${t.name.toLowerCase()}Resolvers from './generated/${t.name.toLowerCase()}'`).join('\n')}
 
 export const resolvers = [${context.map((t: ResolverTypeContext) => `${t.name.toLowerCase()}Resolvers`).join(', ')}]
 `
