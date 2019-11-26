@@ -8,9 +8,21 @@ export const variableFields = (t: InputModelTypeContext) => {
 }
 
 
-export const inputVariableFields = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type !== 'ID')
-    .map((f: InputModelFieldContext) => `\$${f.name}: ${f.type}${f.isNull ? '' : '!'}`)
+export const generateInputVariableFields = (t: InputModelTypeContext, relatedTypes: InputModelTypeContext[]) => {
+  return t.fields.filter((f: InputModelFieldContext) => !f.isArray && f.type !== 'ID')
+    .map((f: InputModelFieldContext) => {
+
+      if (f.isType) {
+        const relation = relatedTypes.find((r: InputModelTypeContext) => r.name === f.name);
+
+        // get type of relation.id
+
+        // return `\$${f.name}Id: ${relation.id.type}Id${f.isNull ? '' : '!'}`;
+      }
+
+      return `\$${f.name}: ${f.type}${f.isNull ? '' : '!'}`;
+
+    })
     .join(', ')
 }
 
@@ -20,9 +32,16 @@ export const variables = (t: InputModelTypeContext) => {
     .join(', ')
 }
 
-export const inputVariables = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type !== 'ID')
-    .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}`)
+export const generateInputVariables = (t: InputModelTypeContext) => {
+  return t.fields.filter((f: InputModelFieldContext) => !f.isArray && f.type !== 'ID')
+    .map((f: InputModelFieldContext) => {
+
+      if (f.isType) {
+        return `${f.name}Id: \$${f.name}Id`
+      }
+
+      return `${f.name}: \$${f.name}`
+    })
     .join(', ')
 }
 
@@ -47,11 +66,14 @@ export const findQuery = (t: InputModelTypeContext) => {
 }
 
 
-export const createMutation = (t: InputModelTypeContext) => {
+export const createMutation = (t: InputModelTypeContext, relatedTypes: InputModelTypeContext[]) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName}(${inputVariableFields(t)}) {
-    ${fieldName}(input: {${inputVariables(t)}}) {
+  const inputVariableFields = generateInputVariableFields(t, relatedTypes);
+  const inputVariables = generateInputVariables(t, relatedTypes);
+
+  return `mutation ${fieldName}(${inputVariableFields}) {
+    ${fieldName}(input: {${inputVariables}}) {
       ...${t.name}Fields
     }
   }
@@ -61,8 +83,8 @@ export const createMutation = (t: InputModelTypeContext) => {
 export const updateMutation = (t: InputModelTypeContext) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
-  return `mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
-    ${fieldName}(id: $id, input: {${inputVariables(t)}}) {
+  return `mutation ${fieldName}($id: ID!, ${generateInputVariableFields(t)}) {
+    ${fieldName}(id: $id, input: {${generateInputVariables(t)}}) {
       ...${t.name}Fields
     }
   }
@@ -128,14 +150,22 @@ export const createQueries = (types: InputModelTypeContext[]) => {
   return queries
 }
 
+const getRelatedTypes = (fields: InputModelFieldContext[], types: InputModelTypeContext[]): InputModelTypeContext[] => {
+  return fields.filter((f: InputModelFieldContext) => f.isType).map((f: InputModelFieldContext) => {
+    return types.find((t: InputModelTypeContext) => t.name === f.name);
+  });
+}
+
 const createMutations = (types: InputModelTypeContext[]) => {
   const mutations = []
 
   types.forEach((t: InputModelTypeContext) => {
+    const relatedTypes = getRelatedTypes(t.fields, types);
+
     if (t.config.create) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.CREATE),
-        implementation: createMutation(t) + fragment(t)
+        implementation: createMutation(t, relatedTypes) + fragment(t)
       })
     }
 
