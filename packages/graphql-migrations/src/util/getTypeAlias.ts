@@ -18,7 +18,7 @@ const ALIAS: any = {
   'bytea': { type: 'binary', args: [] },
 }
 
-export default function (dataType: string, maxLength: any): { type: string, args: any[] } {
+export default function(dataType: string, maxLength: any): { type: string, args: any[] } {
   let alias = ALIAS[dataType.toLowerCase()]
   if (!alias) {
     alias = { type: dataType, args: [] }

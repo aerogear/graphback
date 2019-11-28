@@ -40,7 +40,7 @@ const queries: any = {
   }),
 }
 
-export default async function (knex: Knex, schemaName: string) {
+export default async function(knex: Knex, schemaName: string) {
   const query = queries[knex.client.config.client]
   if (!query) {
     console.error(`Client ${knex.client.config.client} not supported`)

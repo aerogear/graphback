@@ -1,10 +1,10 @@
+import { isEqual } from 'lodash'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
-import { Table, TablePrimary, TableIndex, TableUnique } from '../abstract/Table'
+import { Table, TableIndex, TablePrimary, TableUnique } from '../abstract/Table'
 import { TableColumn } from '../abstract/TableColumn'
 import * as Operations from './Operation'
-import { isEqual } from 'lodash'
 
-export async function computeDiff (from: AbstractDatabase, to: AbstractDatabase, {
+export async function computeDiff(from: AbstractDatabase, to: AbstractDatabase, {
   updateComments = false,
 } = {}): Promise<Operations.Operation []> {
   const differ = new Differ(from, to, {
@@ -20,13 +20,13 @@ class Differ {
   private operations: Operations.Operation[] = []
   private tableCount = 0
 
-  constructor (from: AbstractDatabase, to: AbstractDatabase, options: any) {
+  constructor(from: AbstractDatabase, to: AbstractDatabase, options: any) {
     this.from = from
     this.to = to
     this.updateComments = options.updateComments
   }
 
-  public diff (): Operations.Operation[] {
+  public diff(): Operations.Operation[] {
     this.operations.length = 0
 
     const sameTableQueue: Array<{ fromTable: Table, toTable: Table }> = []
@@ -164,7 +164,7 @@ class Differ {
     return this.operations
   }
 
-  private createTable (table: Table) {
+  private createTable(table: Table) {
     const op: Operations.TableCreateOperation = {
       type: 'table.create',
       table: table.name,
@@ -199,7 +199,7 @@ class Differ {
     }
   }
 
-  private renameTable (fromTable: Table, toTable: Table) {
+  private renameTable(fromTable: Table, toTable: Table) {
     const op: Operations.TableRenameOperation = {
       type: 'table.rename',
       fromName: fromTable.name,
@@ -209,7 +209,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private dropTable (table: Table) {
+  private dropTable(table: Table) {
     const op: Operations.TableDropOperation = {
       type: 'table.drop',
       table: table.name,
@@ -218,7 +218,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private setTableComment (table: Table) {
+  private setTableComment(table: Table) {
     const op: Operations.TableCommentSetOperation = {
       type: 'table.comment.set',
       table: table.name,
@@ -228,7 +228,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private setPrimary (table: Table, index: TablePrimary | null) {
+  private setPrimary(table: Table, index: TablePrimary | null) {
     const op: Operations.TablePrimarySetOperation = {
       type: 'table.primary.set',
       table: table.name,
@@ -239,7 +239,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private createIndex (table: Table, index: TableIndex) {
+  private createIndex(table: Table, index: TableIndex) {
     const op: Operations.TableIndexCreateOperation = {
       type: 'table.index.create',
       table: table.name,
@@ -251,7 +251,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private dropIndex (table: Table, index: TableIndex) {
+  private dropIndex(table: Table, index: TableIndex) {
     const op: Operations.TableIndexDropOperation = {
       type: 'table.index.drop',
       table: table.name,
@@ -262,7 +262,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private createUnique (table: Table, index: TableUnique) {
+  private createUnique(table: Table, index: TableUnique) {
     const op: Operations.TableUniqueCreateOperation = {
       type: 'table.unique.create',
       table: table.name,
@@ -277,7 +277,7 @@ class Differ {
    * @param {Table} table
    * @param {TableUnique} index
    */
-  private dropUnique (table: Table, index: TableUnique) {
+  private dropUnique(table: Table, index: TableUnique) {
     const op: Operations.TableUniqueDropOperation = {
       type: 'table.unique.drop',
       table: table.name,
@@ -288,7 +288,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private createForeignKey (table: Table, column: TableColumn) {
+  private createForeignKey(table: Table, column: TableColumn) {
     if (column.foreign && column.foreign.tableName && column.foreign.columnName) {
       const op: Operations.TableForeignCreateOperation = {
         type: 'table.foreign.create',
@@ -302,7 +302,7 @@ class Differ {
     }
   }
 
-  private dropForeignKey (table: Table, column: TableColumn) {
+  private dropForeignKey(table: Table, column: TableColumn) {
     if (column.foreign) {
       const op: Operations.TableForeignDropOperation = {
         type: 'table.foreign.drop',
@@ -314,7 +314,7 @@ class Differ {
     }
   }
 
-  private createColumn (table: Table, column: TableColumn) {
+  private createColumn(table: Table, column: TableColumn) {
     const op: Operations.ColumnCreateOperation = {
       type: 'column.create',
       table: table.name,
@@ -332,7 +332,7 @@ class Differ {
     this.createForeignKey(table, column)
   }
 
-  private renameColumn (table: Table, fromCol: TableColumn, toCol: TableColumn) {
+  private renameColumn(table: Table, fromCol: TableColumn, toCol: TableColumn) {
     const op: Operations.ColumnRenameOperation = {
       type: 'column.rename',
       table: table.name,
@@ -343,7 +343,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private alterColumn (table: Table, column: TableColumn) {
+  private alterColumn(table: Table, column: TableColumn) {
     const op: Operations.ColumnAlterOperation = {
       type: 'column.alter',
       table: table.name,
@@ -358,7 +358,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private dropColumn (table: Table, column: TableColumn) {
+  private dropColumn(table: Table, column: TableColumn) {
     const op: Operations.ColumnDropOperation = {
       type: 'column.drop',
       table: table.name,
@@ -368,7 +368,7 @@ class Differ {
     this.operations.push(op)
   }
 
-  private compareIndex (
+  private compareIndex(
     fromList: Array<TableIndex | TableUnique>,
     toList: Array<TableIndex | TableUnique>,
     create: (index: TableIndex | TableUnique) => void,

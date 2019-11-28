@@ -1,23 +1,23 @@
 import {
-  GraphQLSchema,
-  GraphQLObjectType,
   GraphQLField,
+  GraphQLObjectType,
   GraphQLOutputType,
-  isObjectType,
-  isScalarType,
+  GraphQLScalarType,
+  GraphQLSchema,
   isEnumType,
   isListType,
   isNonNullType,
-  GraphQLScalarType,
+  isObjectType,
+  isScalarType,
 } from 'graphql'
-import { TypeMap } from 'graphql/type/schema'
-import { AbstractDatabase } from './AbstractDatabase'
-import { Table } from './Table'
-import { TableColumn, ForeignKey } from './TableColumn'
 import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
-import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
+import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
 import { defaultNameTransform } from '../util/defaultNameTransforms'
+import { AbstractDatabase } from './AbstractDatabase'
+import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
+import { Table } from './Table'
+import { ForeignKey, TableColumn } from './TableColumn'
 
 const ROOT_TYPES = ['Query', 'Mutation', 'Subscription']
 
@@ -68,7 +68,7 @@ export const defaultOptions: GenerateAbstractDatabaseOptions = {
   transformColumnName: defaultNameTransform,
 }
 
-export async function generateAbstractDatabase (
+export async function generateAbstractDatabase(
   schema: GraphQLSchema,
   options: GenerateAbstractDatabaseOptions = defaultOptions,
 ): Promise<AbstractDatabase> {
@@ -89,7 +89,7 @@ class AbstractDatabaseBuilder {
   private currentTable: Table | null = null
   private currentType: string | null = null
 
-  constructor (schema: GraphQLSchema, options: GenerateAbstractDatabaseOptions) {
+  constructor(schema: GraphQLSchema, options: GenerateAbstractDatabaseOptions) {
     this.schema = schema
     this.transformTableName = options.transformTableName
     this.transformColumnName = options.transformColumnName
@@ -103,7 +103,7 @@ class AbstractDatabaseBuilder {
     }
   }
 
-  public build (): AbstractDatabase {
+  public build(): AbstractDatabase {
     for (const key in this.typeMap) {
       if (this.typeMap[key]) {
         const type = this.typeMap[key]
@@ -118,21 +118,21 @@ class AbstractDatabaseBuilder {
     return this.database
   }
 
-  private getTableName (name: string) {
+  private getTableName(name: string) {
     if (this.transformTableName) {
       return this.transformTableName(name, 'to-db')
     }
     return name
   }
 
-  private getColumnName (name: string) {
+  private getColumnName(name: string) {
     if (this.transformColumnName) {
       return this.transformColumnName(name, 'to-db')
     }
     return name
   }
 
-  private buildTable (type: GraphQLObjectType) {
+  private buildTable(type: GraphQLObjectType) {
     const annotations: any = parseAnnotations('db', type.description || null)
 
     if (annotations.skip) {
@@ -170,7 +170,7 @@ class AbstractDatabaseBuilder {
     return table
   }
 
-  private buildColumn (table: Table, field: GraphQLField<any, any>) {
+  private buildColumn(table: Table, field: GraphQLField<any, any>) {
     const descriptor = this.getFieldDescriptor(field)
     if (!descriptor) { return undefined }
     table.columns.push(descriptor)
@@ -178,7 +178,7 @@ class AbstractDatabaseBuilder {
     return descriptor
   }
 
-  private getFieldDescriptor (
+  private getFieldDescriptor(
     field: GraphQLField<any, any>,
     fieldType: GraphQLOutputType | null = null,
   ): TableColumn | null {
@@ -411,7 +411,7 @@ class AbstractDatabaseBuilder {
   /**
    * Put the correct values for `foreign.tableName` and `foreign.columnName` in the columns.
    */
-  private fillForeignKeys () {
+  private fillForeignKeys() {
     for (const table of this.database.tables) {
       for (const column of table.columns) {
         if (column.foreign) {

@@ -1,11 +1,11 @@
-import { Config } from 'knex'
 import { buildSchema } from 'graphql'
+import { Config } from 'knex'
+import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/generateAbstractDatabase'
 import { read } from './connector/read'
-import { generateAbstractDatabase, ScalarMap, NameTransform } from './abstract/generateAbstractDatabase'
-import { computeDiff } from './diff/computeDiff'
 import { write } from './connector/write'
-import { MigratePlugin } from './plugin/MigratePlugin'
+import { computeDiff } from './diff/computeDiff'
 import { Operation } from './diff/Operation'
+import { MigratePlugin } from './plugin/MigratePlugin'
 import { defaultNameTransform } from './util/defaultNameTransforms'
 
 export interface MigrateOptions {
@@ -64,7 +64,7 @@ export const defaultOptions: MigrateOptions = {
   debug: false,
 }
 
-export async function migrate (
+export async function migrate(
   config: Config,
   schemaText: string,
   options: MigrateOptions = {},

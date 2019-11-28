@@ -31,7 +31,7 @@ const ALTER_TABLE_CHILD_OPS: OperationType[] = [
  * @param {string} tablePrefix Table name prefix: `<prefix><tableName>`
  * @param {string} columnPrefix Column name prefix: `<prefix><columnName>`
  */
-export async function write (
+export async function write(
   operations: Operation[],
   config: Knex.Config,
   schemaName = 'public',
@@ -61,7 +61,7 @@ class Writer {
   // @ts-ignore
   private trx: knex.Transaction
 
-  constructor (
+  constructor(
     operations: Operation[],
     config: Knex.Config,
     schemaName = 'public',
@@ -77,7 +77,7 @@ class Writer {
     this.knex = Knex(config)
   }
 
-  public async write () {
+  public async write() {
     await this.applyPlugins()
 
     await this.knex.transaction(async (trx) => {
@@ -118,24 +118,24 @@ class Writer {
     await this.knex.destroy()
   }
 
-  private getTableName (name: string) {
+  private getTableName(name: string) {
     return `${this.tablePrefix}${name}`
   }
 
-  private getColumnName (name: string) {
+  private getColumnName(name: string) {
     return `${this.columnPrefix}${name}`
   }
 
-  private getColumnNames (names: string[]) {
+  private getColumnNames(names: string[]) {
     return names.map((name) => this.getColumnName(name))
   }
 
-  private removeOperation (op: Operation) {
+  private removeOperation(op: Operation) {
     const index = this.operations.indexOf(op)
     if (index !== -1) { this.operations.splice(index, 1) }
   }
 
-  private async applyPlugins () {
+  private async applyPlugins() {
     this.hooks = {}
     for (const plugin of this.plugins) {
       plugin.write({
@@ -148,7 +148,7 @@ class Writer {
     }
   }
 
-  private async callHook (op: Operation, event: 'before' | 'after') {
+  private async callHook(op: Operation, event: 'before' | 'after') {
     const list = this.hooks[`${op.type}.${event}`]
     if (list) {
       for (const callback of list) {
@@ -157,7 +157,7 @@ class Writer {
     }
   }
 
-  private async createTable (op: Operations.TableCreateOperation) {
+  private async createTable(op: Operations.TableCreateOperation) {
     await this.callHook(op, 'before')
     const childOps: Operation[] = this.operations.filter(
       (child) => CREATE_TABLE_CHILD_OPS.includes(child.type) &&
@@ -200,7 +200,7 @@ class Writer {
     await this.callHook(op, 'after')
   }
 
-  private createColumn (op: Operations.ColumnCreateOperation, table: Knex.CreateTableBuilder) {
+  private createColumn(op: Operations.ColumnCreateOperation, table: Knex.CreateTableBuilder) {
     if (op.columnType in table) {
       // @ts-ignore
       let col: knex.ColumnBuilder = table[op.columnType](
@@ -224,7 +224,7 @@ class Writer {
     }
   }
 
-  private async alterTable (tableName: string) {
+  private async alterTable(tableName: string) {
     const allChildOps = this.operations.filter(
       (child) => ALTER_TABLE_CHILD_OPS.includes(child.type) &&
       (child as any).table === tableName,
@@ -315,7 +315,7 @@ class Writer {
     }
   }
 
-  private alterColumn (table: Knex.TableBuilder, op: Operations.ColumnAlterOperation) {
+  private alterColumn(table: Knex.TableBuilder, op: Operations.ColumnAlterOperation) {
     // @ts-ignore
     let col: knex.ColumnBuilder = table[op.columnType](
       op.column,
@@ -336,7 +336,7 @@ class Writer {
     return col
   }
 
-  private async dropTable (op: Operations.TableDropOperation) {
+  private async dropTable(op: Operations.TableDropOperation) {
     if (['pg', 'mysql', 'mysql2'].includes(this.knex.client.config.client)) {
       await this.trx.raw(`DROP TABLE ?.? CASCADE`, [this.trx.raw(this.schemaName), this.trx.raw(op.table)])
     } else {
@@ -344,7 +344,7 @@ class Writer {
     }
   }
 
-  private getColumnTypeArgs (op: Operations.ColumnCreateOperation | Operations.ColumnAlterOperation) {
+  private getColumnTypeArgs(op: Operations.ColumnCreateOperation | Operations.ColumnAlterOperation) {
     let args: any[] = op.args
     const dbType: string = this.knex.client.config.client
     if (op.columnType === 'timestamp' && args.length) {

@@ -2,15 +2,15 @@ import * as Knex from 'knex'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table } from '../abstract/Table'
 import { TableColumn } from '../abstract/TableColumn'
-import listTables from '../util/listTables'
-import getTypeAlias from '../util/getTypeAlias'
+import getCheckConstraints from '../util/getCheckConstraints'
 import getColumnComments from '../util/getColumnComments'
-import transformDefaultValue from '../util/transformDefaultValue'
-import getPrimaryKey from '../util/getPrimaryKey'
 import getForeignKeys from '../util/getForeignKeys'
 import getIndexes from '../util/getIndexes'
+import getPrimaryKey from '../util/getPrimaryKey'
+import getTypeAlias from '../util/getTypeAlias'
 import getUniques from '../util/getUniques'
-import getCheckConstraints from '../util/getCheckConstraints'
+import listTables from '../util/listTables'
+import transformDefaultValue from '../util/transformDefaultValue'
 
 /**
  * @param {Config} config Knex configuration
@@ -18,7 +18,7 @@ import getCheckConstraints from '../util/getCheckConstraints'
  * @param {string} tablePrefix Table name prefix: `<prefix><tableName>`
  * @param {string} columnPrefix Column name prefix: `<prefix><columnName>`
  */
-export function read (
+export function read(
   config: Knex.Config,
   schemaName = 'public',
   tablePrefix = '',
@@ -36,7 +36,7 @@ class Reader {
   public knex: Knex
   public database: AbstractDatabase
 
-  constructor (
+  constructor(
     config: Knex.Config,
     schemaName: string,
     tablePrefix: string,
@@ -53,7 +53,7 @@ class Reader {
     }
   }
 
-  public async read () {
+  public async read() {
     const tables: Array<{ name: string, comment: string }> = await listTables(this.knex, this.schemaName)
     for (const { name: tableName, comment } of tables) {
       const name = this.getTableName(tableName)
@@ -155,26 +155,26 @@ class Reader {
     return this.database
   }
 
-  private getTableName (name: string) {
+  private getTableName(name: string) {
     if (name.startsWith(this.tablePrefix)) {
       return name.substr(this.tablePrefix.length)
     }
     return null
   }
 
-  private getColumnName (name: string) {
+  private getColumnName(name: string) {
     if (name.startsWith(this.columnPrefix)) {
       return name.substr(this.columnPrefix.length)
     }
     return null
   }
 
-  private getColumnNames (names: string[]): string [] {
+  private getColumnNames(names: string[]): string [] {
     // @ts-ignore
     return names.map((name) => this.getColumnName(name)).filter((n) => !!n)
   }
 
-  private getComment (comments: Array<{ column: string, comment: string }>, column: string) {
+  private getComment(comments: Array<{ column: string, comment: string }>, column: string) {
     const row = comments.find((c) => c.column === column)
     if (row && row.comment != null) {
       return row.comment.replace(/'/g, `''`)

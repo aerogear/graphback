@@ -20,7 +20,7 @@ where tc.constraint_type = 'FOREIGN KEY' and tc.table_name = ? and tc.table_sche
   }),
 }
 
-export default async function (
+export default async function(
   knex: Knex,
   tableName: string,
   schemaName: string,

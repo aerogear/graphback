@@ -46,7 +46,7 @@ const queries: any = {
   }),
 }
 
-export default async function (
+export default async function(
   knex: Knex,
   tableName: string,
   schemaName: string,

@@ -11,7 +11,7 @@ const priority: OperationType[] = [
   'table.foreign.create',
 ]
 
-function getPriority (op: Operation) {
+function getPriority(op: Operation) {
   const index = priority.indexOf(op.type)
   if (index === -1) {
     return 999
@@ -19,7 +19,7 @@ function getPriority (op: Operation) {
   return index
 }
 
-export function sortOps (a: Operation, b: Operation): number {
+export function sortOps(a: Operation, b: Operation): number {
   if (a.type === b.type) {
     return a.priority - b.priority
   }

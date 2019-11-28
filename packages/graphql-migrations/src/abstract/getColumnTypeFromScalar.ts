@@ -1,6 +1,6 @@
 import { GraphQLField, GraphQLScalarType } from 'graphql'
-import { TableColumnType } from './TableColumn'
 import { parseAnnotations } from 'graphql-annotations'
+import { TableColumnType } from './TableColumn'
 
 export interface TableColumnTypeDescriptor {
   /**
@@ -13,7 +13,7 @@ export interface TableColumnTypeDescriptor {
   args: any[]
 }
 
-export default function (
+export default function(
   field: GraphQLField<any, any>,
   scalarType: GraphQLScalarType | null = null,
   annotations: any = null,
