@@ -20,10 +20,14 @@ export const createRuntime = async (client: Knex) => {
   const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  const ops = await migrate({
+  const dbConfig = {
     client: jsonConfig.db.database,
     connection: jsonConfig.db.dbConfig
-  }, schemaText);
+  };
+
+  migrate(dbConfig, schemaText).then((ops) => {
+    console.log(ops);
+  });
 
   const pubSub = new PubSub();
   const runtime = await backend.createRuntime(dbClientProvider, pubSub);
