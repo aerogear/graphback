@@ -1,7 +1,6 @@
 import * as execa from 'execa'
 import { GlobSync } from 'glob'
 import { migrate } from 'graphql-migrations';
-import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { ProjectConfig } from '../config/ProjectConfig';
 import { logError, logInfo } from '../utils'
@@ -41,7 +40,7 @@ export const createDBResources = async (config: ProjectConfig): Promise<any[]> =
     const schemaText = loadSchema(folders.model);
 
     databaseOperations = await migrate(dbConfig, schemaText);
-    
+
   } catch (err) {
     handleError(err)
   }
