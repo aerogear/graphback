@@ -1,9 +1,9 @@
 import * as execa from 'execa'
-import { unlinkSync } from 'fs'
 import { GlobSync } from 'glob'
-import { DatabaseInitializationStrategy, DatabaseSchemaManager, migrate } from 'graphql-migrations-bk';
+import { migrate } from 'graphql-migrations';
 import * as Knex from 'knex';
 import { ConfigBuilder } from '../config/ConfigBuilder';
+import { ProjectConfig } from '../config/ProjectConfig';
 import { logError, logInfo } from '../utils'
 import { checkDirectory } from './common'
 import { loadSchema } from './loadSchema';
@@ -17,31 +17,10 @@ const handleError = (err: { code: string; message: string; }): void => {
   process.exit(0)
 }
 
-export const dropDBResources = async (configInstance: ConfigBuilder): Promise<void> => {
+export const createDBResources = async (config: ProjectConfig): Promise<any[]> => {
+  let databaseOperations: any[];
   try {
-    const { database, dbConfig } = configInstance.config.db
-    if (database === 'sqlite3') {
-      const sqliteFile = new GlobSync('*.sqlite', { cwd: process.cwd() })
-      if (sqliteFile.found.length) {
-        unlinkSync(`${process.cwd()}/${sqliteFile.found[0]}`)
-      }
-    } else {
-      const manager = new DatabaseSchemaManager(database, dbConfig);
-
-      // tslint:disable-next-line: await-promise
-      await manager.getConnection().raw('DROP SCHEMA public CASCADE;')
-      // tslint:disable-next-line: await-promise
-      await manager.getConnection().raw('CREATE SCHEMA public;')
-    }
-
-  } catch (err) {
-    handleError(err)
-  }
-}
-
-export const createDBResources = async (configInstance: ConfigBuilder, initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
-  try {
-    const { db: { database }, folders } = configInstance.config
+    const { db: { database }, folders } = config;
 
     const models = new GlobSync(`${folders.model}/*.graphql`)
 
@@ -54,30 +33,33 @@ export const createDBResources = async (configInstance: ConfigBuilder, initializ
       await execa('touch', ['db.sqlite'])
     }
 
+    const dbConfig = {
+      client: config.db.database,
+      connection: config.db.dbConfig
+    }
+
     const schemaText = loadSchema(folders.model);
 
-    await migrate(schemaText, initializationStrategy);
-
+    databaseOperations = await migrate(dbConfig, schemaText);
+    
   } catch (err) {
     handleError(err)
   }
+
+  return databaseOperations;
 }
 
 export const postCommandMessage = (message: string) => {
   logInfo(message);
 }
 
-export const createDB = async (initializationStrategy: DatabaseInitializationStrategy): Promise<void> => {
+export const createDB = async (): Promise<any[]> => {
   const configInstance = new ConfigBuilder();
+
   checkDirectory(configInstance)
 
-  await createDBResources(configInstance, initializationStrategy)
-}
+  // tslint:disable-next-line: no-unnecessary-local-variable
+  const operations = await createDBResources(configInstance.config)
 
-// tslint:disable-next-line: no-any
-export async function connect(client: string, connection: any) {
-  return Knex({
-    client,
-    connection
-  }) as any
+  return operations
 }
