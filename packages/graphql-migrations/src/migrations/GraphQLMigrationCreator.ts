@@ -2,14 +2,14 @@ import { graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } fr
 import { diff } from '@graphql-inspector/core';
 import { buildSchema, GraphQLSchema } from 'graphql';
 import * as knex from 'knex';
-import { ModelChange, ModelChangeType } from './changes/ChangeTypes';
-import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from './database';
-import { KnexMigrationProvider, LocalMigrationManager } from './migrations';
-import { KnexMigrationManager } from './migrations/KnexMigrationManager';
-import { MigrationProvider } from './migrations/MigrationProvider';
-import { SchemaMigration } from './migrations/SchemaMigration';
-import { getChanges } from './migrations/utils';
-import { mapModelChanges } from './util/mapModelChanges';
+import { KnexMigrationProvider, LocalMigrationManager } from '.';
+import { ModelChange, ModelChangeType } from '../changes/ChangeTypes';
+import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from '../database';
+import { mapModelChanges } from '../util/mapModelChanges';
+import { KnexMigrationManager } from './KnexMigrationManager';
+import { MigrationProvider } from './MigrationProvider';
+import { SchemaMigration } from './SchemaMigration';
+import { getChanges } from './utils';
 
 export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
   const changes = await strategy.init(schemaText);

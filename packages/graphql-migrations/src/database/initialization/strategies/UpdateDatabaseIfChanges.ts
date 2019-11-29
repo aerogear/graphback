@@ -1,5 +1,5 @@
 import * as knex from 'knex';
-import { GraphQLMigrationCreator } from '../../../GraphQLMigrationCreator';
+import { GraphQLMigrationCreator } from '../../../migrations/GraphQLMigrationCreator';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
 
 /**
