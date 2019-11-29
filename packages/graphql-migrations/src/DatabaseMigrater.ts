@@ -9,10 +9,11 @@ import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { getChanges } from './migrations/utils';
-import { mapModelChanges } from './utils/graphqlUtils';
+import { mapModelChanges } from './util/graphqlUtils';
 
 export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
-  await strategy.init(schemaText);
+  const changes = await strategy.init(schemaText);
+  return changes;
 }
 /**
  * Manages schema migration.
@@ -58,7 +59,8 @@ export class DatabaseMigrater {
 
     const appliedMigrations = await this.applyMigrations(migrations);
 
-    return getChanges(appliedMigrations);
+    const changes = getChanges(appliedMigrations);
+    return changes;
   }
 
   /**

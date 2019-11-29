@@ -30,7 +30,7 @@ Here is an example of how to configure database initialization strategies.
 ```ts
 import * as jsonConfig from '../graphback.json'
 import { schemaText } from './schema';
-import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations-bk';
+import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
 
 const db = new Knex(...);
 

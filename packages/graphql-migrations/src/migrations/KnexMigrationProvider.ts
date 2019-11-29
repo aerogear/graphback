@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as knex from 'knex';
-import { logError } from '../utils/log';
+import { logError } from '../util/log';
 import { KnexMigrationManager } from './KnexMigrationManager';
 import { LocalMigrationManager } from './LocalMigrationManager';
 import { MigrationProvider } from './MigrationProvider';

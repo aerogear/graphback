@@ -3,7 +3,7 @@ import ava, { ExecutionContext } from 'ava';
 // tslint:disable-next-line: no-var-requires no-require-imports
 const execa = require('execa');
 import { existsSync } from 'fs';
-import { DropCreateDatabaseAlways } from 'graphql-migrations-bk';
+import { DropCreateDatabaseAlways } from 'graphql-migrations';
 import { join, resolve } from 'path';
 import { connect, createDB, generate } from '../src';
 
