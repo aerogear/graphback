@@ -1,5 +1,5 @@
 import * as knex from 'knex';
-import { DatabaseMigrater } from '../../../DatabaseMigrater';
+import { GraphQLMigrationCreator } from '../../../GraphQLMigrationCreator';
 import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrategy';
 
 /**
@@ -20,7 +20,7 @@ export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
   }
 
   public async init(schemaText: string): Promise<void> {
-    const migrater = new DatabaseMigrater(schemaText, this.db, this.migrationsDir)
+    const migrater = new GraphQLMigrationCreator(schemaText, this.db, this.migrationsDir)
     await migrater.init();
   }
 }

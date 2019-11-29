@@ -23,9 +23,9 @@ export async function migrate(schemaText: string, strategy: DatabaseInitializati
  * - Apply migrations
  *
  * @export
- * @class DatabaseMigrater
+ * @class GraphQLMigrationCreator
  */
-export class DatabaseMigrater {
+export class GraphQLMigrationCreator {
   private schemaText: string;
   private knexMigrationManager: KnexMigrationManager;
   private localMigrationManager: LocalMigrationManager;
@@ -43,7 +43,7 @@ export class DatabaseMigrater {
   /**
    * Initialize the schema migration process.
    *
-   * @memberof DatabaseMigrater
+   * @memberof GraphQLMigrationCreator
    */
   public async init(): Promise<string[]> {
     await this.createMetadataTables();
@@ -68,7 +68,7 @@ export class DatabaseMigrater {
    *
    * @private
    * @returns
-   * @memberof DatabaseMigrater
+   * @memberof GraphQLMigrationCreator
    */
   public async generateMigration(): Promise<SchemaMigration> {
     const newSchema = buildSchema(this.schemaText);
@@ -120,7 +120,7 @@ export class DatabaseMigrater {
    * Get the migrations that have not been applied and apply them
    *
    * @private
-   * @memberof DatabaseMigrater
+   * @memberof GraphQLMigrationCreator
    */
   private async applyMigrations(migrations: SchemaMigration[]): Promise<SchemaMigration[]> {
     const migrationsToApply = migrations.filter((m: SchemaMigration) => !m.applied_at);
@@ -142,7 +142,7 @@ export class DatabaseMigrater {
    * @private
    * @param {ModelChange[]} changes
    * @returns
-   * @memberof DatabaseMigrater
+   * @memberof GraphQLMigrationCreator
    */
   private groupChangesByModel(changes: ModelChange[]) {
     return changes.reduce((acc: ModelChange, current: ModelChange) => {
@@ -163,7 +163,7 @@ export class DatabaseMigrater {
    * @private
    * @param {ModelChange[]} changes
    * @returns {DatabaseChange[]}
-   * @memberof DatabaseMigrater
+   * @memberof GraphQLMigrationCreator
    */
   private getSqlStatements(changes: ModelChange[]): DatabaseChange[] {
     const groupedChanges = this.groupChangesByModel(changes);
