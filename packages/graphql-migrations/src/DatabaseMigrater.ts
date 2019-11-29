@@ -9,7 +9,7 @@ import { KnexMigrationManager } from './migrations/KnexMigrationManager';
 import { MigrationProvider } from './migrations/MigrationProvider';
 import { SchemaMigration } from './migrations/SchemaMigration';
 import { getChanges } from './migrations/utils';
-import { mapModelChanges } from './util/graphqlUtils';
+import { mapModelChanges } from './util/mapModelChanges';
 
 export async function migrate(schemaText: string, strategy: DatabaseInitializationStrategy) {
   const changes = await strategy.init(schemaText);
