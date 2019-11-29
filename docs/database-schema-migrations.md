@@ -5,51 +5,44 @@ title: Database Schema Migrations
 
 ## Database Schema Migrations
 
-Graphback currently has limited database schema migration support built in and available to both runtime and CLI.
+Graphback uses [graphql-migrations](../packages/graphql-migrations) to automatically create and update tables from a GraphQL schema.
 
 ### CLI
 
-There are two database CLI commands:
+To create or update your database from the CLI, run:
 
-- `graphback db` - this will drop and create a database schema from your input model.
-- `graphback update-db` - this will update your database schema by comparing what has changed between the current and previous schema and applying those changes.
+```sh
+graphback db
+```
 
-## Runtime
+### Usage
 
-In runtime, there are two database initialization strategies which are defined in the client application.
+The `migrate` method creates and updates your tables and columns to match your GraphQL schema.
 
-### Strategies
-
-- `DropCreateDatabaseAlways` - Drops and creates the database every time the application is run.
-- `UpdateDatabaseIfChanges` - Only update the database when your input schema has been changed.
-
-### Configuration
-
-Here is an example of how to configure database initialization strategies.
+All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.
 
 ```ts
 import * as jsonConfig from '../graphback.json'
 import { schemaText } from './schema';
-import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
-
-const db = new Knex(...);
+import { migrate } from 'graphql-migrations';
+import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
 
 const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
 const dbClientProvider = new PgKnexDBDataProvider(client);
 
-const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
+const dbConfig = {
+  client: jsonConfig.db.database,
+  connection: jsonConfig.db.dbConfig
+};
 
-await migrate(schemaText, dbInitialization)
+migrate(dbConfig, schemaText, {
+  // Additional options
+}).then((ops) => {
+    console.log(ops);
+});
 
 const pubSub = new PubSub();
+
 const runtime = await backend.createRuntime(dbClientProvider, pubSub);
+...
 ```
-
-## Limitations
-
-Schema migrations are in a very early phase. At present the change types that are allowed is limited to the following:
-
-- **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
-- **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.
-
-Relationships are not yet supported and will be added very soon.
