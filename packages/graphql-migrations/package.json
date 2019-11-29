@@ -17,15 +17,32 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "test": "yarn run tslint && yarn run eslint && yarn run test:types && yarn run test:unit",
+    "test": "ava",
     "pretest": "npm run build"
   },
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
   "dependencies": {
+    "@graphback/core": "^0.10.0-rc2",
+    "@graphql-inspector/core": "1.26.0",
     "case": "1.6.1",
     "graphql-annotations": "^0.0.3",
     "knex": "0.20.2",
     "lodash": "4.17.15",
-    "lodash-es": "4.17.15"
+    "lodash-es": "4.17.15",
+    "node-emoji": "1.10.0",
+    "pino": "5.14.0",
+    "glob": "7.1.6"
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
@@ -35,10 +52,9 @@
     "ava": "2.4.0",
     "graphql": "^14.5.8",
     "graphql-tools": "^4.0.4",
-    "jest": "^24.0.0",
     "pg": "^7.8.0",
+    "sqlite3": "4.1.0",
     "rimraf": "3.0.0",
-    "ts-jest": "^24.0.0",
     "ts-node": "8.5.2",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
@@ -49,8 +65,5 @@
   },
   "engines": {
     "node": ">=10.15.3"
-  },
-  "resolutions": {
-    "webpack-dev-middleware": "3.6.0"
   }
 }

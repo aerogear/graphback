@@ -1,9 +1,9 @@
+import ava, { ExecutionContext } from 'ava';
 import { buildSchema } from 'graphql'
 import { generateAbstractDatabase } from '../../src'
 
-describe('create abstract database', () => {
-  test('skip root types', async () => {
-    const schema = buildSchema(`
+ava('skip root types', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type Query {
         hello: String
       }
@@ -16,12 +16,12 @@ describe('create abstract database', () => {
         notif: String
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(0)
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 0)
+})
 
-  test('simple type', async () => {
-    const schema = buildSchema(`
+ava('simple type', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       """
       A user.
       """
@@ -33,22 +33,22 @@ describe('create abstract database', () => {
         name: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.name).toBe('user')
-    expect(User.comment).toBe('A user.')
-    expect(User.columns.length).toBe(2)
-    const [colId, colName] = User.columns
-    expect(colId.name).toBe('id')
-    expect(colId.type).toBe('uuid')
-    expect(colName.name).toBe('name')
-    expect(colName.type).toBe('string')
-    expect(colName.comment).toBe('Display name.')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.name === 'user')
+  t.assert(User.comment === 'A user.')
+  t.assert(User.columns.length === 2)
+  const [colId, colName] = User.columns
+  t.assert(colId.name === 'id')
+  t.assert(colId.type === 'uuid')
+  t.assert(colName.name === 'name')
+  t.assert(colName.type === 'string')
+  t.assert(colName.comment === 'Display name.')
+})
 
-  test('skip table', async () => {
-    const schema = buildSchema(`
+ava('skip table', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       """
       @db.skip
       """
@@ -57,12 +57,12 @@ describe('create abstract database', () => {
         name: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(0)
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 0)
+})
 
-  test('skip field', async () => {
-    const schema = buildSchema(`
+ava('skip field', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         """
@@ -71,33 +71,33 @@ describe('create abstract database', () => {
         name: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.name).toBe('user')
-    expect(User.columns.length).toBe(1)
-    const [colId] = User.columns
-    expect(colId.name).toBe('id')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.name === 'user')
+  t.assert(User.columns.length === 1)
+  const [colId] = User.columns
+  t.assert(colId.name === 'id')
+})
 
-  test('not null', async () => {
-    const schema = buildSchema(`
+ava('not null', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         name: String!
         nickname: String
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.columns.length).toBe(2)
-    const [colName, colNickname] = User.columns
-    expect(colName.nullable).toBe(false)
-    expect(colNickname.nullable).toBe(true)
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.columns.length === 2)
+  const [colName, colNickname] = User.columns
+  t.assert(colName.nullable === false)
+  t.assert(colNickname.nullable === true)
+})
 
-  test('default value', async () => {
-    const schema = buildSchema(`
+ava('default value', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         @db.default: true
@@ -113,16 +113,16 @@ describe('create abstract database', () => {
         thisOption: Boolean
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    const [User] = adb.tables
-    const [colSomeOption, colThatOption, colThisOption] = User.columns
-    expect(colSomeOption.defaultValue).toBe(true)
-    expect(colThatOption.defaultValue).toBe(false)
-    expect(colThisOption.defaultValue).toBe('')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  const [User] = adb.tables
+  const [colSomeOption, colThatOption, colThisOption] = User.columns
+  t.assert(colSomeOption.defaultValue === true)
+  t.assert(colThatOption.defaultValue === false)
+  t.assert(colThisOption.defaultValue === '')
+})
 
-  test('default primary index', async () => {
-    const schema = buildSchema(`
+ava('default primary index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         This will get a primary index
@@ -131,16 +131,16 @@ describe('create abstract database', () => {
         email: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.primaries.length).toBe(1)
-    const [id] = User.primaries
-    expect(id.columns).toEqual(['id'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.primaries.length === 1)
+  const [id] = User.primaries
+  t.deepEqual(id.columns, ['id'])
+})
 
-  test('no default primary index', async () => {
-    const schema = buildSchema(`
+ava('no default primary index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         This will NOT get a primary index
@@ -152,13 +152,13 @@ describe('create abstract database', () => {
         id: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    const [User] = adb.tables
-    expect(User.primaries.length).toBe(0)
-  })
+  const adb = await generateAbstractDatabase(schema)
+  const [User] = adb.tables
+  t.assert(User.primaries.length === 0)
+})
 
-  test('skip default primary index', async () => {
-    const schema = buildSchema(`
+ava('skip default primary index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         @db.primary: false
@@ -167,14 +167,14 @@ describe('create abstract database', () => {
         email: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.primaries.length).toBe(0)
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.primaries.length === 0)
+})
 
-  test('change primary index', async () => {
-    const schema = buildSchema(`
+ava('change primary index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         """
@@ -183,16 +183,16 @@ describe('create abstract database', () => {
         email: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.primaries.length).toBe(1)
-    const [email] = User.primaries
-    expect(email.columns).toEqual(['email'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.primaries.length === 1)
+  const [email] = User.primaries
+  t.deepEqual(email.columns, ['email'])
+})
 
-  test('simple index', async () => {
-    const schema = buildSchema(`
+ava('simple index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         """
@@ -201,16 +201,16 @@ describe('create abstract database', () => {
         email: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.indexes.length).toBe(1)
-    const [email] = User.indexes
-    expect(email.columns).toEqual(['email'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.indexes.length === 1)
+  const [email] = User.indexes
+  t.deepEqual(email.columns, ['email'])
+})
 
-  test('multiple indexes', async () => {
-    const schema = buildSchema(`
+ava('multiple indexes', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         @db.index
@@ -222,17 +222,17 @@ describe('create abstract database', () => {
         email: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.indexes.length).toBe(2)
-    const [id, email] = User.indexes
-    expect(id.columns).toEqual(['id'])
-    expect(email.columns).toEqual(['email'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.indexes.length === 2)
+  const [id, email] = User.indexes
+  t.deepEqual(id.columns, ['id'])
+  t.deepEqual(email.columns, ['email'])
+})
 
-  test('named index', async () => {
-    const schema = buildSchema(`
+ava('named index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         @db.index: 'myIndex'
@@ -244,17 +244,17 @@ describe('create abstract database', () => {
         name: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.indexes.length).toBe(1)
-    const [myIndex] = User.indexes
-    expect(myIndex.name).toBe('myIndex')
-    expect(myIndex.columns).toEqual(['email', 'name'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.indexes.length === 1)
+  const [myIndex] = User.indexes
+  t.assert(myIndex.name === 'myIndex')
+  t.deepEqual(myIndex.columns, ['email', 'name'])
+})
 
-  test('object index', async () => {
-    const schema = buildSchema(`
+ava('object index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         @db.index: { name: 'myIndex', type: 'string' }
@@ -266,18 +266,18 @@ describe('create abstract database', () => {
         name: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.indexes.length).toBe(1)
-    const [myIndex] = User.indexes
-    expect(myIndex.name).toBe('myIndex')
-    expect(myIndex.type).toBe('string')
-    expect(myIndex.columns).toEqual(['email', 'name'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.indexes.length === 1)
+  const [myIndex] = User.indexes
+  t.assert(myIndex.name === 'myIndex')
+  t.assert(myIndex.type === 'string')
+  t.deepEqual(myIndex.columns, ['email', 'name'])
+})
 
-  test('unique index', async () => {
-    const schema = buildSchema(`
+ava('unique index', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         """
@@ -286,16 +286,16 @@ describe('create abstract database', () => {
         email: String!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.uniques.length).toBe(1)
-    const [email] = User.uniques
-    expect(email.columns).toEqual(['email'])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.uniques.length === 1)
+  const [email] = User.uniques
+  t.deepEqual(email.columns, ['email'])
+})
 
-  test('custom name', async () => {
-    const schema = buildSchema(`
+ava('custom name', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       """
       @db.name: 'people'
       """
@@ -303,15 +303,15 @@ describe('create abstract database', () => {
         id: ID!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.annotations.name).toBe('people')
-    expect(User.name).toBe('people')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.annotations.name === 'people')
+  t.assert(User.name === 'people')
+})
 
-  test('custom type', async () => {
-    const schema = buildSchema(`
+ava('custom type', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         """
         @db.type: 'string'
@@ -320,19 +320,19 @@ describe('create abstract database', () => {
         id: ID!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    const [colId] = User.columns
-    expect(colId.name).toBe('id')
-    expect(colId.annotations.type).toBe('string')
-    expect(colId.annotations.length).toBe(36)
-    expect(colId.type).toBe('string')
-    expect(colId.args).toEqual([36])
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  const [colId] = User.columns
+  t.assert(colId.name === 'id')
+  t.assert(colId.annotations.type === 'string')
+  t.assert(colId.annotations.length === 36)
+  t.assert(colId.type === 'string')
+  t.deepEqual(colId.args, [36])
+})
 
-  test('foreign key', async () => {
-    const schema = buildSchema(`
+ava('foreign key', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         messages: [Message!]!
@@ -343,23 +343,23 @@ describe('create abstract database', () => {
         user: User
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(2)
-    const [User, Message] = adb.tables
-    expect(User.name).toBe('user')
-    expect(Message.name).toBe('message')
-    expect(User.columns.length).toBe(1)
-    expect(Message.columns.length).toBe(2)
-    const [colId, colUserForeign] = Message.columns
-    expect(colId.name).toBe('id')
-    expect(colUserForeign.name).toBe('user_foreign')
-    expect(colUserForeign.type).toBe('uuid')
-    expect(colUserForeign.foreign && colUserForeign.foreign.tableName).toBe('user')
-    expect(colUserForeign.foreign && colUserForeign.foreign.columnName).toBe('id')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 2)
+  const [User, Message] = adb.tables
+  t.assert(User.name === 'user')
+  t.assert(Message.name === 'message')
+  t.assert(User.columns.length === 1)
+  t.assert(Message.columns.length === 2)
+  const [colId, colUserForeign] = Message.columns
+  t.assert(colId.name === 'id')
+  t.assert(colUserForeign.name === 'user_foreign')
+  t.assert(colUserForeign.type === 'uuid')
+  t.assert(colUserForeign.foreign && colUserForeign.foreign.tableName === 'user')
+  t.assert(colUserForeign.foreign && colUserForeign.foreign.columnName === 'id')
+})
 
-  test('many to many', async () => {
-    const schema = buildSchema(`
+ava('many to many', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         """
@@ -376,47 +376,47 @@ describe('create abstract database', () => {
         users: [User]
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(3)
-    const Join = adb.tables[2]
-    expect(Join.name).toBe('message_users_join_user_messages')
-    const [colMessageUsers, colUserMessages] = Join.columns
-    expect(colMessageUsers.name).toBe('users_foreign')
-    expect(colMessageUsers.type).toBe('uuid')
-    expect(colMessageUsers.foreign && colMessageUsers.foreign.tableName).toBe('message')
-    expect(colMessageUsers.foreign && colMessageUsers.foreign.columnName).toBe('id')
-    expect(colUserMessages.name).toBe('messages_foreign')
-    expect(colUserMessages.type).toBe('uuid')
-    expect(colUserMessages.foreign && colUserMessages.foreign.tableName).toBe('user')
-    expect(colUserMessages.foreign && colUserMessages.foreign.columnName).toBe('id')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 3)
+  const Join = adb.tables[2]
+  t.assert(Join.name === 'message_users_join_user_messages')
+  const [colMessageUsers, colUserMessages] = Join.columns
+  t.assert(colMessageUsers.name === 'users_foreign')
+  t.assert(colMessageUsers.type === 'uuid')
+  t.assert(colMessageUsers.foreign && colMessageUsers.foreign.tableName === 'message')
+  t.assert(colMessageUsers.foreign && colMessageUsers.foreign.columnName === 'id')
+  t.assert(colUserMessages.name === 'messages_foreign')
+  t.assert(colUserMessages.type === 'uuid')
+  t.assert(colUserMessages.foreign && colUserMessages.foreign.tableName === 'user')
+  t.assert(colUserMessages.foreign && colUserMessages.foreign.columnName === 'id')
+})
 
-  test('many to many on self', async () => {
-    const schema = buildSchema(`
+ava('many to many on self', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         contacts: [User]
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(2)
-    const [User, UserContacts] = adb.tables
-    expect(UserContacts.name).toBe('user_contacts_join_user_contacts')
-    expect(User.name).toBe('user')
-    expect(User.columns.length).toBe(1)
-    const [col1, col2] = UserContacts.columns
-    expect(col1.name).toBe('id_foreign')
-    expect(col1.type).toBe('uuid')
-    expect(col1.foreign && col1.foreign.tableName).toBe('user')
-    expect(col1.foreign && col1.foreign.columnName).toBe('id')
-    expect(col2.name).toBe('id_foreign_other')
-    expect(col2.type).toBe('uuid')
-    expect(col2.foreign && col2.foreign.tableName).toBe('user')
-    expect(col2.foreign && col2.foreign.columnName).toBe('id')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 2)
+  const [User, UserContacts] = adb.tables
+  t.assert(UserContacts.name === 'user_contacts_join_user_contacts')
+  t.assert(User.name === 'user')
+  t.assert(User.columns.length === 1)
+  const [col1, col2] = UserContacts.columns
+  t.assert(col1.name === 'id_foreign')
+  t.assert(col1.type === 'uuid')
+  t.assert(col1.foreign && col1.foreign.tableName === 'user')
+  t.assert(col1.foreign && col1.foreign.columnName === 'id')
+  t.assert(col2.name === 'id_foreign_other')
+  t.assert(col2.type === 'uuid')
+  t.assert(col2.foreign && col2.foreign.tableName === 'user')
+  t.assert(col2.foreign && col2.foreign.columnName === 'id')
+})
 
-  test('simple list', async () => {
-    const schema = buildSchema(`
+ava('simple list', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         id: ID!
         """
@@ -425,113 +425,113 @@ describe('create abstract database', () => {
         names: [String]
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.name).toBe('user')
-    expect(User.columns.length).toBe(2)
-    const [colId, colNames] = User.columns
-    expect(colId.name).toBe('id')
-    expect(colId.type).toBe('uuid')
-    expect(colNames.name).toBe('names')
-    expect(colNames.type).toBe('json')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.name === 'user')
+  t.assert(User.columns.length === 2)
+  const [colId, colNames] = User.columns
+  t.assert(colId.name === 'id')
+  t.assert(colId.type === 'uuid')
+  t.assert(colNames.name === 'names')
+  t.assert(colNames.type === 'json')
+})
 
-  test('custom scalar map', async () => {
-    const schema = buildSchema(`
+ava('custom scalar map', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         name: String
         nickname: String
       }
     `)
-    const adb = await generateAbstractDatabase(schema, {
-      scalarMap: (field) => {
-        if (field.name === 'name') {
-          return {
-            type: 'text',
-            args: [],
-          }
+  const adb = await generateAbstractDatabase(schema, {
+    scalarMap: (field) => {
+      if (field.name === 'name') {
+        return {
+          type: 'text',
+          args: [],
         }
-        return null
-      },
-    })
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.columns.length).toBe(2)
-    const [colName, colNickname] = User.columns
-    expect(colName.type).toBe('text')
-    expect(colNickname.type).toBe('string')
+      }
+      return null
+    },
   })
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.columns.length === 2)
+  const [colName, colNickname] = User.columns
+  t.assert(colName.type === 'text')
+  t.assert(colNickname.type === 'string')
+})
 
-  test('map lists to json', async () => {
-    const schema = buildSchema(`
+ava('map lists to json', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type User {
         names: [String]
       }
     `)
-    const adb = await generateAbstractDatabase(schema, {
-      mapListToJson: true,
-    })
-    expect(adb.tables.length).toBe(1)
-    const [User] = adb.tables
-    expect(User.columns.length).toBe(1)
-    const [colNames] = User.columns
-    expect(colNames.type).toBe('json')
+  const adb = await generateAbstractDatabase(schema, {
+    mapListToJson: true,
   })
+  t.assert(adb.tables.length === 1)
+  const [User] = adb.tables
+  t.assert(User.columns.length === 1)
+  const [colNames] = User.columns
+  t.assert(colNames.type === 'json')
+})
 
-  test('default name transforms', async () => {
-    const schema = buildSchema(`
+ava('default name transforms', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type UserTeam {
         id: ID!
         name: String!
         yearlyBilling: Boolean!
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(1)
-    const [UserTeam] = adb.tables
-    expect(UserTeam.name).toBe('user_team')
-    expect(UserTeam.columns.length).toBe(3)
-    const [colId, colName, colYearlyBilling] = UserTeam.columns
-    expect(colId.name).toBe('id')
-    expect(colName.name).toBe('name')
-    expect(colYearlyBilling.name).toBe('yearly_billing')
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 1)
+  const [UserTeam] = adb.tables
+  t.assert(UserTeam.name === 'user_team')
+  t.assert(UserTeam.columns.length === 3)
+  const [colId, colName, colYearlyBilling] = UserTeam.columns
+  t.assert(colId.name === 'id')
+  t.assert(colName.name === 'name')
+  t.assert(colYearlyBilling.name === 'yearly_billing')
+})
 
-  test('custom name transforms', async () => {
-    const schema = buildSchema(`
+ava('custom name transforms', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       type UserTeam {
         id: ID!
         name: String!
         yearlyBilling: Boolean!
       }
     `)
-    const adb = await generateAbstractDatabase(schema, {
-      transformTableName: (name, direction) => {
-        if (direction === 'to-db') {
-          return `Foo${name}`
-        }
-        return name
-      },
-      transformColumnName: (name, direction) => {
-        if (direction === 'to-db') {
-          return `bar_${name}`
-        }
-        return name
-      },
-    })
-    expect(adb.tables.length).toBe(1)
-    const [UserTeam] = adb.tables
-    expect(UserTeam.name).toBe('FooUserTeam')
-    expect(UserTeam.columns.length).toBe(3)
-    const [colId, colName, colYearlyBilling] = UserTeam.columns
-    expect(colId.name).toBe('bar_id')
-    expect(colName.name).toBe('bar_name')
-    expect(colYearlyBilling.name).toBe('bar_yearlyBilling')
+  const adb = await generateAbstractDatabase(schema, {
+    transformTableName: (name, direction) => {
+      if (direction === 'to-db') {
+        return `Foo${name}`
+      }
+      return name
+    },
+    transformColumnName: (name, direction) => {
+      if (direction === 'to-db') {
+        return `bar_${name}`
+      }
+      return name
+    },
   })
+  t.assert(adb.tables.length === 1)
+  const [UserTeam] = adb.tables
+  t.assert(UserTeam.name === 'FooUserTeam')
+  t.assert(UserTeam.columns.length === 3)
+  const [colId, colName, colYearlyBilling] = UserTeam.columns
+  t.assert(colId.name === 'bar_id')
+  t.assert(colName.name === 'bar_name')
+  t.assert(colYearlyBilling.name === 'bar_yearlyBilling')
+})
 
-  test('sandbox', async () => {
-    const schema = buildSchema(`
+ava('sandbox', async (t: ExecutionContext) => {
+  const schema = buildSchema(`
       scalar Date
 
       """
@@ -580,7 +580,6 @@ describe('create abstract database', () => {
         users: [User]
       }
     `)
-    const adb = await generateAbstractDatabase(schema)
-    expect(adb.tables.length).toBe(4)
-  })
+  const adb = await generateAbstractDatabase(schema)
+  t.assert(adb.tables.length === 4)
 })
