@@ -12,11 +12,6 @@ type Comment {
   description: String!
 }
 
-type Hello {
-  id: ID!
-  # name: String
-}
-
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
 }
