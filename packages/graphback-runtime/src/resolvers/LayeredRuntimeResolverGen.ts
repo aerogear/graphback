@@ -128,14 +128,14 @@ export class LayeredRuntimeResolverGenerator {
     }
   }
 
-  private createRelations(type: InputModelTypeContext, resolvers: any) {
-    for (const field of type.fields) {
+  private createRelations(resolverElement: InputModelTypeContext, resolvers: any) {
+    for (const field of resolverElement.fields) {
 
       if (field.isType) {
 
         if (field.directives.OneToOne || !field.isArray) {
           // OneToOne
-          let foreignIdName = `${type.name.toLowerCase()}Id`;
+          let foreignIdName = `${resolverElement.name.toLowerCase()}Id`;
           if (field.directives.OneToOne) {
             foreignIdName = field.directives.OneToOne.field;
           }
@@ -143,17 +143,17 @@ export class LayeredRuntimeResolverGenerator {
         }
         else if (field.directives.OneToMany || field.isArray) {
           // OneToMany
-          let foreignId = `${type.name.toLowerCase()}Id`;
+          let foreignId = `${resolverElement.name.toLowerCase()}Id`;
           if (field.directives.OneToMany) {
             foreignId = field.directives.OneToMany.field;
           }
 
-          if (resolvers[type.name] === undefined) {
-            resolvers[type.name] = {};
+          if (resolvers[resolverElement.name] === undefined) {
+            resolvers[resolverElement.name] = {};
           }
 
           // tslint:disable-next-line: no-any
-          resolvers[type.name][field.name] = (parent: any, args: any, context: any) => {
+          resolvers[resolverElement.name][field.name] = (parent: any, args: any, context: any) => {
             return this.service.findBy(field.type.toLowerCase(), { [foreignId]: parent.id }, context);
           };
         }
