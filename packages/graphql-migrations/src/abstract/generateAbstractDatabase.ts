@@ -14,6 +14,7 @@ import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
 import { defaultNameTransform } from '../util/defaultNameTransforms'
+import getObjectTypeFromList from '../util/getObjectTypeFromList'
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
 import { Table } from './Table'
@@ -166,6 +167,16 @@ class AbstractDatabaseBuilder {
       }
     }
 
+    for (const key in this.typeMap) {
+      if (this.typeMap[key]) {
+        const relatedType = this.typeMap[key];
+        if (isObjectType(relatedType) && !relatedType.name.startsWith('__')
+          && !ROOT_TYPES.includes(type.name) && relatedType.name !== this.currentType) {
+          this.buildRelationshipColumns(relatedType);
+        }
+      }
+    }
+
     this.currentTable = null
     this.currentType = null
 
@@ -173,6 +184,29 @@ class AbstractDatabaseBuilder {
     this.database.tableMap.set(type.name, table)
 
     return table
+  }
+
+  private buildRelationshipColumns(type: GraphQLObjectType<any, any>) {
+    const fields = type.getFields();
+
+    for (const key in fields) {
+      if (fields[key]) {
+        const field = fields[key];
+
+        const relationType: GraphQLObjectType = getObjectTypeFromList(field)
+
+        if (relationType && relationType.name === this.currentType) {
+          const relationField: GraphQLField<any, any> = {
+            name: type.name,
+            type,
+            description: undefined,
+            args: [],
+            extensions: []
+          }
+          this.buildColumn(this.currentTable, relationField)
+        }
+      }
+    }
   }
 
   private buildColumn(table: Table, field: GraphQLField<any, any>) {
@@ -223,12 +257,12 @@ class AbstractDatabaseBuilder {
       type = descriptor.type
       args = descriptor.args
 
-    // Enum
+      // Enum
     } else if (isEnumType(fieldType)) {
       type = 'enum'
       args = [fieldType.getValues().map((v) => v.name)]
 
-    // Object
+      // Object
     } else if (isObjectType(fieldType)) {
       columnName = annotations.name || this.getColumnName(`${field.name}_id`)
       const foreignType = this.typeMap[fieldType.name]
@@ -261,7 +295,7 @@ class AbstractDatabaseBuilder {
         columnName: null,
       }
 
-    // List
+      // List
     } else if (isListType(fieldType) && this.currentTable) {
       let ofType = fieldType.ofType
       ofType = isNonNullType(ofType) ? ofType.ofType : ofType
@@ -355,7 +389,7 @@ class AbstractDatabaseBuilder {
         console.warn(`Unsupported Scalar/Enum list on field ${this.currentType}.${field.name}. Use @db.type: "json"`)
         return null
       }
-    // Unsupported
+      // Unsupported
     } else {
       // tslint:disable-next-line max-line-length
       console.warn(`Field ${this.currentType}.${field.name} of type ${fieldType ? fieldType.toString() : '*unknown*'} not supported. Consider specifying column type with:
@@ -390,9 +424,9 @@ class AbstractDatabaseBuilder {
             type: indexType,
             columns: [],
           } : {
-            name: indexName,
-            columns: [],
-          }
+              name: indexName,
+              columns: [],
+            }
           if (indexTypeDef.max && list.length === indexTypeDef.max) {
             list.splice(0, 1)
           }

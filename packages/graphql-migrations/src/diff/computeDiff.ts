@@ -130,7 +130,7 @@ class Differ {
           continue;
         }
         if ((this.updateComments && fromCol.comment !== toCol.comment) ||
-          fromCol.type !== toCol.type || !isEqual(fromCol.args, toCol.args) ||
+          getKnexColumnType(fromCol.type) !== getKnexColumnType(toCol.type) || !isEqual(fromCol.args, toCol.args) ||
           fromCol.nullable !== toCol.nullable ||
           fromCol.defaultValue !== toCol.defaultValue ||
           (Array.isArray(fromCol.defaultValue) && !isEqual(fromCol.defaultValue, toCol.defaultValue)) ||
