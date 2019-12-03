@@ -1,7 +1,8 @@
 import { isEqual } from 'lodash'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
-import { Table, TableIndex, TablePrimary, TableUnique } from '../abstract/Table'
+import { Table, TableIndex, TableUnique } from '../abstract/Table'
 import { TableColumn } from '../abstract/TableColumn'
+import getKnexColumnType from '../util/getKnexColumnType'
 import * as Operations from './Operation'
 
 export async function computeDiff(from: AbstractDatabase, to: AbstractDatabase, {
@@ -116,16 +117,11 @@ class Differ {
         }
       }
 
-      const primaryKeyTypeAlias = {
-        bigIncrements: 'bigInteger',
-        increments: 'integer'
-      };
-
       // Compare columns
       for (const { fromCol, toCol } of sameColumnQueue) {
         if (toCol.name === 'id') {
-          const fromPrimaryKeyType = primaryKeyTypeAlias[fromCol.type] || fromCol.type;
-          const toPrimaryKeyType = primaryKeyTypeAlias[toCol.type] || toCol.type;
+          const fromPrimaryKeyType = getKnexColumnType(fromCol.type);
+          const toPrimaryKeyType = getKnexColumnType(toCol.type);
 
           if (fromPrimaryKeyType !== toPrimaryKeyType) {
             console.warn(`Cannot change type of column ${toTable.name}.${toCol.name} from ${fromCol.type} to ${toCol.type}`);
@@ -329,7 +325,7 @@ class Differ {
       type: 'column.create',
       table: table.name,
       column: column.name,
-      columnType: column.type,
+      columnType: getKnexColumnType(column.type),
       args: column.args,
       comment: column.comment,
       nullable: column.nullable,
