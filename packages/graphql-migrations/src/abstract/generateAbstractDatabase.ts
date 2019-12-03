@@ -154,6 +154,11 @@ class AbstractDatabaseBuilder {
     this.currentType = type.name
 
     const fields = type.getFields()
+
+    if (!fields.id) {
+      throw new Error(`Required type ${this.currentType}.id not found`);
+    }
+
     for (const key in fields) {
       if (fields[key]) {
         const field = fields[key]
@@ -197,6 +202,10 @@ class AbstractDatabaseBuilder {
     let type: string
     let args: any[]
     let foreign: ForeignKey | null = null
+
+    if (columnName === 'id' && (isScalarType(fieldType) && fieldType.name !== 'ID')) {
+      throw new Error(`Scalar ID is missing on type ${this.currentType}.${field.name}`);
+    }
 
     // Scalar
     if (isScalarType(fieldType) || annotations.type) {
