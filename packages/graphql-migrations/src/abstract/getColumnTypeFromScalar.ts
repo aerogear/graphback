@@ -103,9 +103,9 @@ export default function(
   }
 
   // uuid
-  if ((scalarType && scalarType.name === 'ID') || annotations.type === 'bigInteger') {
+  if ((scalarType && scalarType.name === 'ID') || annotations.type === 'increments') {
     return {
-      type: 'bigInteger',
+      type: 'increments',
       args: [],
     }
   }
