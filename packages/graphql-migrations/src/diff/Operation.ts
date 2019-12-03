@@ -60,8 +60,8 @@ export interface TableIndexDropOperation extends Operation {
 export interface TablePrimarySetOperation extends Operation {
   type: 'table.primary.set'
   table: string
-  columns: string[] | null
-  indexName: string | null
+  column: string
+  columnType: string
 }
 
 export interface TableUniqueCreateOperation extends Operation {

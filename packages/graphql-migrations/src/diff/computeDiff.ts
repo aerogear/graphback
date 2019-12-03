@@ -6,7 +6,7 @@ import * as Operations from './Operation'
 
 export async function computeDiff(from: AbstractDatabase, to: AbstractDatabase, {
   updateComments = false,
-} = {}): Promise<Operations.Operation []> {
+} = {}): Promise<Operations.Operation[]> {
   const differ = new Differ(from, to, {
     updateComments,
   })
@@ -109,12 +109,30 @@ class Differ {
 
       // Add columns
       for (const column of addColumnQueue) {
-        this.createColumn(toTable, column)
+        if (column.name === 'id') {
+          this.setPrimary(toTable, column)
+        } else {
+          this.createColumn(toTable, column)
+        }
       }
+
+      const primaryKeyTypeAlias = {
+        bigIncrements: 'bigInteger',
+        increments: 'integer'
+      };
 
       // Compare columns
       for (const { fromCol, toCol } of sameColumnQueue) {
-        // Comment
+        if (toCol.name === 'id') {
+          const fromPrimaryKeyType = primaryKeyTypeAlias[fromCol.type] || fromCol.type;
+          const toPrimaryKeyType = primaryKeyTypeAlias[toCol.type] || toCol.type;
+
+          if (fromPrimaryKeyType !== toPrimaryKeyType) {
+            console.warn(`Cannot change type of column ${toTable.name}.${toCol.name} from ${fromCol.type} to ${toCol.type}`);
+          }
+
+          continue;
+        }
         if ((this.updateComments && fromCol.comment !== toCol.comment) ||
           fromCol.type !== toCol.type || !isEqual(fromCol.args, toCol.args) ||
           fromCol.nullable !== toCol.nullable ||
@@ -127,20 +145,14 @@ class Differ {
 
         // Foreign key
         if ((fromCol.foreign && !toCol.foreign) ||
-        (!fromCol.foreign && toCol.foreign) ||
-        (fromCol.foreign && toCol.foreign &&
-          (fromCol.foreign.tableName !== toCol.foreign.tableName ||
-          fromCol.foreign.columnName !== toCol.foreign.columnName)
-        )) {
+          (!fromCol.foreign && toCol.foreign) ||
+          (fromCol.foreign && toCol.foreign &&
+            (fromCol.foreign.tableName !== toCol.foreign.tableName ||
+              fromCol.foreign.columnName !== toCol.foreign.columnName)
+          )) {
           if (fromCol.foreign) { this.dropForeignKey(toTable, fromCol) }
           if (toCol.foreign) { this.createForeignKey(toTable, toCol) }
         }
-      }
-
-      // Primary index
-      if (!isEqual(fromTable.primaries, toTable.primaries)) {
-        const [index] = toTable.primaries
-        this.setPrimary(toTable, index)
       }
 
       // Index
@@ -179,13 +191,11 @@ class Differ {
 
     // Columns
     for (const column of table.columns) {
-      this.createColumn(table, column)
-    }
-
-    // Primary index
-    if (table.primaries.length) {
-      const [index] = table.primaries
-      this.setPrimary(table, index)
+      if (column.name === 'id') {
+        this.setPrimary(table, column)
+      } else {
+        this.createColumn(table, column);
+      }
     }
 
     // Index
@@ -228,12 +238,12 @@ class Differ {
     this.operations.push(op)
   }
 
-  private setPrimary(table: Table, index: TablePrimary | null) {
+  private setPrimary(table: Table, column: TableColumn) {
     const op: Operations.TablePrimarySetOperation = {
       type: 'table.primary.set',
       table: table.name,
-      columns: index ? index.columns : null,
-      indexName: index ? index.name : null,
+      columnType: column.type,
+      column: column.name,
       priority: 0,
     }
     this.operations.push(op)
