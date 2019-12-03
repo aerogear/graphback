@@ -230,7 +230,7 @@ class AbstractDatabaseBuilder {
 
     // Object
     } else if (isObjectType(fieldType)) {
-      columnName = annotations.name || this.getColumnName(`${field.name}_foreign`)
+      columnName = annotations.name || this.getColumnName(`${field.name}_id`)
       const foreignType = this.typeMap[fieldType.name]
       if (!foreignType) {
         console.warn(`Foreign type ${fieldType.name} not found on field ${this.currentType}.${field.name}.`)
