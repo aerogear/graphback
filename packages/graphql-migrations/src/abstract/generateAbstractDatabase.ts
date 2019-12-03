@@ -167,16 +167,6 @@ class AbstractDatabaseBuilder {
       }
     }
 
-    for (const key in this.typeMap) {
-      if (this.typeMap[key]) {
-        const relatedType = this.typeMap[key];
-        if (isObjectType(relatedType) && !relatedType.name.startsWith('__')
-          && !ROOT_TYPES.includes(type.name) && relatedType.name !== this.currentType) {
-          this.buildRelationshipColumns(relatedType);
-        }
-      }
-    }
-
     this.currentTable = null
     this.currentType = null
 
@@ -184,29 +174,6 @@ class AbstractDatabaseBuilder {
     this.database.tableMap.set(type.name, table)
 
     return table
-  }
-
-  private buildRelationshipColumns(type: GraphQLObjectType<any, any>) {
-    const fields = type.getFields();
-
-    for (const key in fields) {
-      if (fields[key]) {
-        const field = fields[key];
-
-        const relationType: GraphQLObjectType = getObjectTypeFromList(field)
-
-        if (relationType && relationType.name === this.currentType) {
-          const relationField: GraphQLField<any, any> = {
-            name: type.name,
-            type,
-            description: undefined,
-            args: [],
-            extensions: []
-          }
-          this.buildColumn(this.currentTable, relationField)
-        }
-      }
-    }
   }
 
   private buildColumn(table: Table, field: GraphQLField<any, any>) {
