@@ -6,7 +6,7 @@ import { write } from './connector/write'
 import { computeDiff } from './diff/computeDiff'
 import { Operation } from './diff/Operation'
 import { MigratePlugin } from './plugin/MigratePlugin'
-import { defaultNameTransform } from './util/defaultNameTransforms'
+import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
 
 export interface MigrateOptions {
   /**
@@ -56,8 +56,8 @@ export const defaultOptions: MigrateOptions = {
   dbTablePrefix: '',
   dbColumnPrefix: '',
   updateComments: false,
-  transformTableName: defaultNameTransform,
-  transformColumnName: defaultNameTransform,
+  transformTableName: defaultTableNameTransform,
+  transformColumnName: defaultColumnNameTransform,
   scalarMap: null,
   mapListToJson: true,
   plugins: [],

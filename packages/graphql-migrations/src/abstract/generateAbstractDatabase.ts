@@ -13,7 +13,7 @@ import {
 import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
-import { defaultNameTransform } from '../util/defaultNameTransforms'
+import { defaultColumnNameTransform } from '../util/defaultNameTransforms'
 import getObjectTypeFromList from '../util/getObjectTypeFromList'
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
@@ -65,8 +65,8 @@ export interface GenerateAbstractDatabaseOptions {
 
 export const defaultOptions: GenerateAbstractDatabaseOptions = {
   scalarMap: null,
-  transformTableName: defaultNameTransform,
-  transformColumnName: defaultNameTransform,
+  transformTableName: defaultColumnNameTransform,
+  transformColumnName: defaultColumnNameTransform,
 }
 
 export async function generateAbstractDatabase(
@@ -264,7 +264,7 @@ class AbstractDatabaseBuilder {
 
       // Object
     } else if (isObjectType(fieldType)) {
-      columnName = annotations.name || this.getColumnName(`${field.name}_id`)
+      columnName = annotations.name || this.getColumnName(`${field.name}Id`)
       const foreignType = this.typeMap[fieldType.name]
       if (!foreignType) {
         console.warn(`Foreign type ${fieldType.name} not found on field ${this.currentType}.${field.name}.`)

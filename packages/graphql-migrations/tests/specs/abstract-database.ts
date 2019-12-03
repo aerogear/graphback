@@ -352,7 +352,7 @@ ava('foreign key', async (t: ExecutionContext) => {
   t.assert(Message.columns.length === 2)
   const [colId, colUserForeign] = Message.columns
   t.assert(colId.name === 'id')
-  t.assert(colUserForeign.name === 'user_id')
+  t.assert(colUserForeign.name === 'userId')
   t.assert(colUserForeign.type === 'uuid')
   t.assert(colUserForeign.foreign && colUserForeign.foreign.tableName === 'user')
   t.assert(colUserForeign.foreign && colUserForeign.foreign.columnName === 'id')
@@ -381,11 +381,11 @@ ava('many to many', async (t: ExecutionContext) => {
   const Join = adb.tables[2]
   t.assert(Join.name === 'message_users_join_user_messages')
   const [colMessageUsers, colUserMessages] = Join.columns
-  t.assert(colMessageUsers.name === 'users_id')
+  t.assert(colMessageUsers.name === 'usersId')
   t.assert(colMessageUsers.type === 'uuid')
   t.assert(colMessageUsers.foreign && colMessageUsers.foreign.tableName === 'message')
   t.assert(colMessageUsers.foreign && colMessageUsers.foreign.columnName === 'id')
-  t.assert(colUserMessages.name === 'messages_id')
+  t.assert(colUserMessages.name === 'messagesId')
   t.assert(colUserMessages.type === 'uuid')
   t.assert(colUserMessages.foreign && colUserMessages.foreign.tableName === 'user')
   t.assert(colUserMessages.foreign && colUserMessages.foreign.columnName === 'id')
@@ -405,11 +405,11 @@ ava('many to many on self', async (t: ExecutionContext) => {
   t.assert(User.name === 'user')
   t.assert(User.columns.length === 1)
   const [col1, col2] = UserContacts.columns
-  t.assert(col1.name === 'id_id')
+  t.assert(col1.name === 'idId')
   t.assert(col1.type === 'uuid')
   t.assert(col1.foreign && col1.foreign.tableName === 'user')
   t.assert(col1.foreign && col1.foreign.columnName === 'id')
-  t.assert(col2.name === 'id_id_other')
+  t.assert(col2.name === 'idId_other')
   t.assert(col2.type === 'uuid')
   t.assert(col2.foreign && col2.foreign.tableName === 'user')
   t.assert(col2.foreign && col2.foreign.columnName === 'id')
@@ -525,7 +525,7 @@ ava('custom name transforms', async (t: ExecutionContext) => {
   t.assert(UserTeam.name === 'FooUserTeam')
   t.assert(UserTeam.columns.length === 3)
   const [colId, colName, colYearlyBilling] = UserTeam.columns
-  t.assert(colId.name === 'bar_id')
+  t.assert(colId.name === 'barId')
   t.assert(colName.name === 'bar_name')
   t.assert(colYearlyBilling.name === 'bar_yearlyBilling')
 })
