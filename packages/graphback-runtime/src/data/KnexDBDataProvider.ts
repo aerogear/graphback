@@ -17,79 +17,79 @@ import { NoDataError } from './NoDataError';
 // tslint:disable-next-line: no-any
 export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
 
-    protected db: Knex;
+  protected db: Knex;
 
-    constructor(db: Knex) {
-        this.db = db;
+  constructor(db: Knex) {
+    this.db = db;
+  }
+
+  public async create(name: string, data: Type): Promise<Type> {
+    const [id] = await this.db(name).insert(data);
+    const dbResult = await this.db.select().from(name).where('id', '=', id)
+    if (dbResult && dbResult[0]) {
+      return dbResult[0]
+    }
+    throw new NoDataError(`Cannot create ${name}`);
+  }
+
+  public async update(name: string, id: string, data: Type): Promise<Type> {
+    const updateResult = await this.db(name).update(data).where('id', '=', id);
+    if (updateResult === 1) {
+      const dbResult = await this.db.select().from(name).where('id', '=', id);
+      if (dbResult && dbResult[0]) {
+        return dbResult[0]
+      }
+    }
+    throw new NoDataError(`Cannot update ${name}`);
+  }
+
+  // tslint:disable-next-line: no-reserved-keywords
+  public async delete(name: string, id: string, data?: Type): Promise<string> {
+    const dbResult = await this.db(name).where('id', '=', id).del()
+    if (dbResult) {
+      return id;
+    }
+    throw new NoDataError(`Cannot delete ${name}`);
+
+  }
+
+  public async read(name: string, id: string): Promise<Type> {
+    const dbResult = await this.db.select().from(name).where('id', '=', id);
+    if (dbResult && dbResult[0]) {
+      return dbResult[0]
+    }
+    throw new NoDataError(`Cannot read ${name}`);
+  }
+
+  public async findAll(name: string): Promise<Type[]> {
+    const dbResult = await this.db.select().from(name);
+    if (dbResult) {
+      return dbResult;
+    }
+    throw new NoDataError(`Cannot find all results for ${name}`);
+  }
+
+  public async findBy(name: string, filter: Type | AdvancedFilter): Promise<Type[]> {
+    const dbResult = await this.db.select().from(name).where(filter);
+    if (dbResult) {
+      return dbResult;
+    }
+    throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
+  }
+
+  public async batchRead(name: string, relationField: string, ids: string[]): Promise<Type[][]> {
+    const dbResult = await this.db.select().from(name).whereIn(relationField, ids);
+
+    if (dbResult) {
+
+      const resultsById = ids.map((id: string) => dbResult.filter((data: any) => {
+        return data[relationField] === id
+      }))
+
+      return resultsById as [Type[]];
     }
 
-    public async create(name: string, data: Type): Promise<Type> {
-        const [id] = await this.db(name).insert(data);
-        const dbResult = await this.db.select().from(name).where('id', '=', id)
-        if (dbResult && dbResult[0]) {
-            return dbResult[0]
-        }
-        throw new NoDataError(`Cannot create ${name}`);
-    }
-
-    public async update(name: string, id: string, data: Type): Promise<Type> {
-        const updateResult = await this.db(name).update(data).where('id', '=', id);
-        if (updateResult === 1) {
-            const dbResult = await this.db.select().from(name).where('id', '=', id);
-            if (dbResult && dbResult[0]) {
-                return dbResult[0]
-            }
-        }
-        throw new NoDataError(`Cannot update ${name}`);
-    }
-
-    // tslint:disable-next-line: no-reserved-keywords
-    public async delete(name: string, id: string, data?: Type): Promise<string> {
-        const dbResult = await this.db(name).where('id', '=', id).del()
-        if (dbResult) {
-            return id;
-        }
-        throw new NoDataError(`Cannot delete ${name}`);
-
-    }
-
-    public async read(name: string, id: string): Promise<Type> {
-        const dbResult = await this.db.select().from(name).where('id', '=', id);
-        if (dbResult && dbResult[0]) {
-            return dbResult[0]
-        }
-        throw new NoDataError(`Cannot read ${name}`);
-    }
-
-    public async findAll(name: string): Promise<Type[]> {
-        const dbResult = await this.db.select().from(name);
-        if (dbResult) {
-            return dbResult;
-        }
-        throw new NoDataError(`Cannot find all results for ${name}`);
-    }
-
-    public async findBy(name: string, filter: Type | AdvancedFilter): Promise<Type[]> {
-        const dbResult = await this.db.select().from(name).where(filter);
-        if (dbResult) {
-            return dbResult;
-        }
-        throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
-    }
-
-    public async batchRead(name: string, relationField: string, ids: string[]): Promise<Type[][]> {
-        const dbResult = await this.db.select().from(name).whereIn(relationField, ids);
-
-        if (dbResult) {
-      
-            const resultsById = ids.map((id: string) => dbResult.filter((data: Type) => {
-                return `${data[relationField]}` === id
-            })) 
-
-            return resultsById as [Type[]];
-        }
-
-        throw new NoDataError(`No results for ${name} and id: ${JSON.stringify(ids)}`);
-    }
+    throw new NoDataError(`No results for ${name} and id: ${JSON.stringify(ids)}`);
+  }
 
 }
