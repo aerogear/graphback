@@ -13,7 +13,7 @@ export interface TableColumnTypeDescriptor {
   args: any[]
 }
 
-export default function(
+export default function (
   field: GraphQLField<any, any>,
   scalarType: GraphQLScalarType | null = null,
   annotations: any = null,
@@ -21,6 +21,19 @@ export default function(
   if (!annotations) {
     annotations = parseAnnotations('db', field.description || null)
   }
+
+  // increments
+  if (scalarType && scalarType.name === 'ID') {
+    if (annotations.type) {
+      throw new Error(`@db.type annotation is not permitted on ID field.`);
+    }
+
+    return {
+      type: 'increments',
+      args: [],
+    }
+  }
+
 
   // text
   if (annotations.type === 'text') {
@@ -98,14 +111,6 @@ export default function(
   if (['json', 'jsonb'].includes(annotations.type)) {
     return {
       type: annotations.type,
-      args: [],
-    }
-  }
-
-  // uuid
-  if (scalarType && scalarType.name === 'ID') {
-    return {
-      type: 'increments',
       args: [],
     }
   }
