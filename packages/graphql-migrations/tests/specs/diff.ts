@@ -44,7 +44,7 @@ ava('create simple table', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
           nullable: false,
         }),
         columnFactory({
@@ -75,7 +75,7 @@ ava('create simple table', async (t: ExecutionContext) => {
     type: 'column.create',
     table: 'User',
     column: 'id',
-    columnType: 'uuid',
+    columnType: 'increments',
     args: [],
     nullable: false,
     defaultValue: undefined,
@@ -158,7 +158,7 @@ ava('add column', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
       ],
     }),
@@ -168,7 +168,7 @@ ava('add column', async (t: ExecutionContext) => {
     type: 'column.create',
     table: 'User',
     column: 'id',
-    columnType: 'uuid',
+    columnType: 'increments',
     args: [],
     nullable: true,
     defaultValue: undefined,
@@ -184,7 +184,7 @@ ava('add and remove column', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
       ],
     }),
@@ -226,7 +226,7 @@ ava('rename column', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
       ],
     }),
@@ -236,7 +236,7 @@ ava('rename column', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'email',
-          type: 'uuid',
+          type: 'increments',
           annotations: {
             oldNames: ['id'],
           },
@@ -261,7 +261,7 @@ ava('change column comment', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
           comment: 'foo',
         }),
       ],
@@ -272,7 +272,7 @@ ava('change column comment', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
           comment: 'bar',
         }),
       ],
@@ -285,7 +285,7 @@ ava('change column comment', async (t: ExecutionContext) => {
     type: 'column.alter',
     table: 'User',
     column: 'id',
-    columnType: 'uuid',
+    columnType: 'increments',
     args: [],
     nullable: true,
     defaultValue: undefined,
@@ -301,7 +301,7 @@ ava('change column type', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
       ],
     }),
@@ -451,7 +451,7 @@ ava('change primary key', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -466,7 +466,7 @@ ava('change primary key', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -493,7 +493,7 @@ ava('change anonymous index', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -508,7 +508,7 @@ ava('change anonymous index', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -543,7 +543,7 @@ ava('change named index', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -558,7 +558,7 @@ ava('change named index', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -593,7 +593,7 @@ ava('untouched named index', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',
@@ -608,7 +608,7 @@ ava('untouched named index', async (t: ExecutionContext) => {
       columns: [
         columnFactory({
           name: 'id',
-          type: 'uuid',
+          type: 'increments',
         }),
         columnFactory({
           name: 'email',

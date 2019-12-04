@@ -526,7 +526,7 @@ ava('custom name transforms', async (t: ExecutionContext) => {
   t.assert(UserTeam.columns.length === 3)
   const [colId, colName, colYearlyBilling] = UserTeam.columns
   t.assert(colId.name === 'barId')
-  t.assert(colName.name === 'bar_name')
+  t.assert(colName.name === 'barName')
   t.assert(colYearlyBilling.name === 'bar_yearlyBilling')
 })
 
