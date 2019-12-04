@@ -103,7 +103,7 @@ export default function(
   }
 
   // uuid
-  if ((scalarType && scalarType.name === 'ID') || annotations.type === 'increments') {
+  if (scalarType && scalarType.name === 'ID') {
     return {
       type: 'increments',
       args: [],
