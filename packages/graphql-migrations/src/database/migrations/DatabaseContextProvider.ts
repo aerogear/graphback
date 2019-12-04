@@ -7,7 +7,8 @@ import { InputModelTypeContext } from '@graphback/core';
 export interface DatabaseContextProvider {
 
   /**
-   * Get field name with namespace (for relational systems it could be an table name or collection for non sql databases.)
+   * Get field name with namespace (for relational systems
+   * it could be an table name or collection for non sql databases.)
    * This can be used to separate existing schemas to separate projects
    *
    * @param field GraphQL Type used to retrieve namespace

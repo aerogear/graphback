@@ -13,7 +13,7 @@ export interface TableColumnTypeDescriptor {
   args: any[]
 }
 
-export default function (
+export default function(
   field: GraphQLField<any, any>,
   scalarType: GraphQLScalarType | null = null,
   annotations: any = null,

@@ -22,7 +22,8 @@ export class DropCreateDatabaseAlways implements DatabaseInitializationStrategy 
 
   public async init(schemaText: string): Promise<void> {
     const types = graphQLInputContext.createModelContext(schemaText, {});
-    const inputContext = types.filter((t: InputModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+    const inputContext = types.filter((t: InputModelTypeContext) =>
+      t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
     await this.schemaManager.dropDatabaseSchema();
     await this.schemaManager.createDatabaseResources(this.context, inputContext);

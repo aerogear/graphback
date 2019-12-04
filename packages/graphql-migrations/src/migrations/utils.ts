@@ -24,7 +24,8 @@ export function mapSchemaMigrationTypes(migrations: SchemaMigration[]) {
  * @param {SchemaMigration[]} remoteMigrations
  * @returns {SchemaMigration[]}
  */
-export function findMigrationsToApply(localMigrations: SchemaMigration[], remoteMigrations: SchemaMigration[]): SchemaMigration[] {
+export function findMigrationsToApply(localMigrations: SchemaMigration[], remoteMigrations: SchemaMigration[]):
+  SchemaMigration[] {
   return localMigrations.filter((l: SchemaMigration) => {
     return !remoteMigrations.find((r: SchemaMigration) => r.id === l.id);
   });
