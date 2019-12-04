@@ -73,9 +73,7 @@ export const deleteMutation = (t: InputModelTypeContext, ) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
   return `mutation ${fieldName}($id: ID!) {
-    ${fieldName}(id: $id) {
-      id
-    }
+    ${fieldName}(id: $id)
   }
 `
 }
