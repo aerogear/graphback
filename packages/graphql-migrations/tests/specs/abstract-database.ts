@@ -160,9 +160,6 @@ ava('no default primary index', async (t: ExecutionContext) => {
 ava('skip default primary index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
-        """
-        @db.primary: false
-        """
         id: ID!
         email: String!
       }
@@ -490,12 +487,12 @@ ava('default name transforms', async (t: ExecutionContext) => {
   const adb = await generateAbstractDatabase(schema)
   t.assert(adb.tables.length === 1)
   const [UserTeam] = adb.tables
-  t.assert(UserTeam.name === 'user_team')
+  t.assert(UserTeam.name === 'userteam')
   t.assert(UserTeam.columns.length === 3)
   const [colId, colName, colYearlyBilling] = UserTeam.columns
   t.assert(colId.name === 'id')
   t.assert(colName.name === 'name')
-  t.assert(colYearlyBilling.name === 'yearly_billing')
+  t.assert(colYearlyBilling.name === 'yearlyBilling')
 })
 
 ava('custom name transforms', async (t: ExecutionContext) => {
@@ -525,8 +522,8 @@ ava('custom name transforms', async (t: ExecutionContext) => {
   t.assert(UserTeam.name === 'FooUserTeam')
   t.assert(UserTeam.columns.length === 3)
   const [colId, colName, colYearlyBilling] = UserTeam.columns
-  t.assert(colId.name === 'barId')
-  t.assert(colName.name === 'barName')
+  t.assert(colId.name === 'bar_id')
+  t.assert(colName.name === 'bar_name')
   t.assert(colYearlyBilling.name === 'bar_yearlyBilling')
 })
 
