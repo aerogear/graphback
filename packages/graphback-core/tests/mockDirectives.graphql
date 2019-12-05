@@ -10,6 +10,7 @@ type Comment @disableGen {
   id: ID!
   title: String!
   description: String!
+  noteComment: Note!
 }
 
 type Query {

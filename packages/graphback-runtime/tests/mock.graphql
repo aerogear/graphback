@@ -11,6 +11,7 @@ type Comment {
   id: ID!
   title: String!
   description: String!
+  noteComment: Note!
 }
 
 type Query {
