@@ -7,25 +7,26 @@
       "host": "127.0.0.1",
       "port": 55432
     },
-    "database": "pg"
+    "database": "pg",
+    "schema": "public"
   },
   "graphqlCRUD": {
     "create": true,
     "update": true,
     "findAll": true,
     "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true,
+    "delete": false,
+    "subCreate": false,
+    "subUpdate": false,
+    "subDelete": false,
     "disableGen": false
   },
   "folders": {
     "model": "./model",
-    "resolvers": "./server/src/resolvers/",
-    "schema": "./server/src/schema",
+    "resolvers": "./src/resolvers/",
+    "schema": "./src/schema",
     "client": "./client/src/graphql",
-    "migrations": "./server/migrations"
+    "migrations": "./migrations"
   },
   "client": true
 }
