@@ -169,7 +169,7 @@ function createRelations(inputContext: InputModelTypeContext[]) {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
         if (f.directives.OneToOne || !f.isArray) {
-          let columnName = `${f.name.toLowerCase()}Id`;
+          let columnName = `${f.name}Id`;
           if (f.directives.OneToOne) {
             columnName = `${f.directives.OneToOne.field}Id`;
           }
@@ -180,7 +180,7 @@ function createRelations(inputContext: InputModelTypeContext[]) {
           });
         }
         else if (f.directives.OneToMany || f.isArray) {
-          let columnName = `${t.name.toLowerCase()}Id`;
+          let columnName = `${f.name}Id`;
           if (f.directives.OneToMany) {
             columnName = `${f.directives.OneToMany.field}Id`;
           }
