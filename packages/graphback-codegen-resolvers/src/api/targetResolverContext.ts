@@ -168,8 +168,6 @@ function createRelations(inputContext: InputModelTypeContext[]) {
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
-        const relationIdField = getRelationIDField(f, inputContext);
-
         if (f.directives.OneToOne || !f.isArray) {
           let columnName = `${f.name.toLowerCase()}Id`;
           if (f.directives.OneToOne) {
@@ -196,14 +194,4 @@ function createRelations(inputContext: InputModelTypeContext[]) {
   });
 
   return relations;
-}
-
-function getRelationIDField(field: InputModelFieldContext, inputContext: InputModelTypeContext[]) {
-  const relationModel = getRelationModel(field, inputContext);
-
-  return relationModel.fields.find((f: InputModelFieldContext) => f.type === 'ID');
-}
-
-function getRelationModel(field: InputModelFieldContext, inputContext: InputModelTypeContext[]) {
-  return inputContext.find((t: InputModelTypeContext) => t.name === field.type);
 }
