@@ -25,7 +25,9 @@ export const createRuntime = async (client: Knex) => {
     connection: jsonConfig.db.dbConfig
   };
 
-  migrate(dbConfig, schemaText).then((ops) => {
+  migrate(dbConfig, schemaText, {
+    dbSchemaName: jsonConfig.db.schema
+  }).then((ops) => {
     console.log(ops);
   });
 

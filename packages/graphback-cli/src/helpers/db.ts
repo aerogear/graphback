@@ -39,7 +39,9 @@ export const createDBResources = async (config: ProjectConfig): Promise<any[]> =
 
     const schemaText = loadSchema(folders.model);
 
-    databaseOperations = await migrate(dbConfig, schemaText);
+    databaseOperations = await migrate(dbConfig, schemaText, {
+      dbSchemaName: config.db.schema
+    });
 
   } catch (err) {
     handleError(err)

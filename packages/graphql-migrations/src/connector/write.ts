@@ -5,6 +5,7 @@ import * as Operations from '../diff/Operation'
 import { Operation, OperationType } from '../diff/Operation'
 import { MigratePlugin, WriteCallback } from '../plugin/MigratePlugin'
 import { sortOps } from '../util/sortOps'
+import getDatabaseSchemaName from '../util/getDatabaseSchemaName'
 
 const CREATE_TABLE_CHILD_OPS: OperationType[] = [
   'table.comment.set',
@@ -34,19 +35,21 @@ const ALTER_TABLE_CHILD_OPS: OperationType[] = [
 export async function write(
   operations: Operation[],
   config: Knex.Config,
-  schemaName = 'public',
-  tablePrefix = '',
-  columnPrefix = '',
+  schemaName: string = 'public',
+  tablePrefix: string = '',
+  columnPrefix: string = '',
   plugins: MigratePlugin[] = [],
 ) {
+
   const writer = new Writer(
     operations,
     config,
-    schemaName,
+    getDatabaseSchemaName(schemaName),
     tablePrefix,
     columnPrefix,
     plugins,
   )
+
   return writer.write()
 }
 
