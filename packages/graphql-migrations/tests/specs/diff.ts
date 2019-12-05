@@ -86,6 +86,8 @@ ava('create simple table', async (t: ExecutionContext) => {
     comment: null,
     priority: 0,
   } as Operation)
+
+  t.snapshot(result);
 })
 
 ava('rename table', async (t: ExecutionContext) => {

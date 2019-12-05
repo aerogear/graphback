@@ -538,4 +538,5 @@ ava('sandbox', async (t: ExecutionContext) => {
     `)
   const adb = await generateAbstractDatabase(schema)
   t.assert(adb.tables.length === 4)
+  t.snapshot(adb.tables);
 })
