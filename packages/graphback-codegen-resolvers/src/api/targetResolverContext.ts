@@ -178,7 +178,7 @@ function createRelations(inputContext: InputModelTypeContext[]) {
 
           relations.push({
             typeName: t.name,
-            implementation: templates.typeRelation('OneToOne', relationIdField.name, f.name, f.type.toLowerCase())
+            implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
           });
         }
         else if (f.directives.OneToMany || f.isArray) {
