@@ -72,7 +72,7 @@ export const typeRelation = (relation: string, columnName: string, fieldName: st
   if (relation === 'OneToOne') {
     return `${fieldName}: (parent, args, context) => {
       validateRuntimeContext(context)
-      return context.crudService.findBy("${tableName}", { ${columnName}: parent.id })
+      return context.crudService.findBy("${tableName}", { id: parent.${columnName} })
         .then((result) => result[0]);
     }`
   } else if (relation === 'OneToMany') {

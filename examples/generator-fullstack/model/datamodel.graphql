@@ -3,19 +3,12 @@ type Note {
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment!]!
+  comments: [Comment!]! @OneToMany(field: "ownerId")
 }
 
 type Comment {
   id: ID!
   title: String!
   description: String!
-}
-
-type Query {
-  getLikedNotes(id: ID!, names: [String]!): Note!
-}
-
-type Mutation {
-  likeNote(id: ID!): Note!
+  owner: Note
 }
