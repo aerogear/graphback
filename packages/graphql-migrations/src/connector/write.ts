@@ -5,7 +5,6 @@ import * as Operations from '../diff/Operation'
 import { Operation, OperationType } from '../diff/Operation'
 import { MigratePlugin, WriteCallback } from '../plugin/MigratePlugin'
 import { sortOps } from '../util/sortOps'
-import getDatabaseSchemaName from '../util/getDatabaseSchemaName'
 
 const CREATE_TABLE_CHILD_OPS: OperationType[] = [
   'table.comment.set',
