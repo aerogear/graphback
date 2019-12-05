@@ -41,7 +41,7 @@ ava('simple type', async (t: ExecutionContext) => {
   t.assert(User.columns.length === 2)
   const [colId, colName] = User.columns
   t.assert(colId.name === 'id')
-  t.assert(colId.type === 'uuid')
+  t.assert(colId.type === 'increments')
   t.assert(colName.name === 'name')
   t.assert(colName.type === 'string')
   t.assert(colName.comment === 'Display name.')
@@ -83,6 +83,7 @@ ava('skip field', async (t: ExecutionContext) => {
 ava('not null', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID!
         name: String!
         nickname: String
       }
@@ -90,8 +91,8 @@ ava('not null', async (t: ExecutionContext) => {
   const adb = await generateAbstractDatabase(schema)
   t.assert(adb.tables.length === 1)
   const [User] = adb.tables
-  t.assert(User.columns.length === 2)
-  const [colName, colNickname] = User.columns
+  t.assert(User.columns.length === 3)
+  const [_, colName, colNickname] = User.columns
   t.assert(colName.nullable === false)
   t.assert(colNickname.nullable === true)
 })
@@ -99,6 +100,7 @@ ava('not null', async (t: ExecutionContext) => {
 ava('default value', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID!
         """
         @db.default: true
         """
@@ -115,7 +117,7 @@ ava('default value', async (t: ExecutionContext) => {
     `)
   const adb = await generateAbstractDatabase(schema)
   const [User] = adb.tables
-  const [colSomeOption, colThatOption, colThisOption] = User.columns
+  const [_, colSomeOption, colThatOption, colThisOption] = User.columns
   t.assert(colSomeOption.defaultValue === true)
   t.assert(colThatOption.defaultValue === false)
   t.assert(colThisOption.defaultValue === '')
@@ -137,55 +139,6 @@ ava('default primary index', async (t: ExecutionContext) => {
   t.assert(User.primaries.length === 1)
   const [id] = User.primaries
   t.deepEqual(id.columns, ['id'])
-})
-
-ava('no default primary index', async (t: ExecutionContext) => {
-  const schema = buildSchema(`
-      type User {
-        """
-        This will NOT get a primary index
-        """
-        foo: ID!
-        """
-        Neither will this
-        """
-        id: String!
-      }
-    `)
-  const adb = await generateAbstractDatabase(schema)
-  const [User] = adb.tables
-  t.assert(User.primaries.length === 0)
-})
-
-ava('skip default primary index', async (t: ExecutionContext) => {
-  const schema = buildSchema(`
-      type User {
-        id: ID!
-        email: String!
-      }
-    `)
-  const adb = await generateAbstractDatabase(schema)
-  t.assert(adb.tables.length === 1)
-  const [User] = adb.tables
-  t.assert(User.primaries.length === 0)
-})
-
-ava('change primary index', async (t: ExecutionContext) => {
-  const schema = buildSchema(`
-      type User {
-        id: ID!
-        """
-        @db.primary
-        """
-        email: String!
-      }
-    `)
-  const adb = await generateAbstractDatabase(schema)
-  t.assert(adb.tables.length === 1)
-  const [User] = adb.tables
-  t.assert(User.primaries.length === 1)
-  const [email] = User.primaries
-  t.deepEqual(email.columns, ['email'])
 })
 
 ava('simple index', async (t: ExecutionContext) => {
@@ -212,7 +165,7 @@ ava('multiple indexes', async (t: ExecutionContext) => {
         """
         @db.index
         """
-        id: String!
+        id: ID!
         """
         @db.index
         """
@@ -231,6 +184,7 @@ ava('multiple indexes', async (t: ExecutionContext) => {
 ava('named index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID!
         """
         @db.index: 'myIndex'
         """
@@ -253,6 +207,7 @@ ava('named index', async (t: ExecutionContext) => {
 ava('object index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID!
         """
         @db.index: { name: 'myIndex', type: 'string' }
         """
@@ -310,22 +265,23 @@ ava('custom name', async (t: ExecutionContext) => {
 ava('custom type', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID!
         """
         @db.type: 'string'
         @db.length: 36
         """
-        id: ID!
+        name: String
       }
     `)
   const adb = await generateAbstractDatabase(schema)
   t.assert(adb.tables.length === 1)
   const [User] = adb.tables
-  const [colId] = User.columns
-  t.assert(colId.name === 'id')
-  t.assert(colId.annotations.type === 'string')
-  t.assert(colId.annotations.length === 36)
-  t.assert(colId.type === 'string')
-  t.deepEqual(colId.args, [36])
+  const [_, colName] = User.columns
+  t.assert(colName.name === 'name')
+  t.assert(colName.annotations.type === 'string')
+  t.assert(colName.annotations.length === 36)
+  t.assert(colName.type === 'string')
+  t.deepEqual(colName.args, [36])
 })
 
 ava('foreign key', async (t: ExecutionContext) => {
@@ -350,7 +306,7 @@ ava('foreign key', async (t: ExecutionContext) => {
   const [colId, colUserForeign] = Message.columns
   t.assert(colId.name === 'id')
   t.assert(colUserForeign.name === 'userId')
-  t.assert(colUserForeign.type === 'uuid')
+  t.assert(colUserForeign.type === 'increments')
   t.assert(colUserForeign.foreign && colUserForeign.foreign.tableName === 'user')
   t.assert(colUserForeign.foreign && colUserForeign.foreign.columnName === 'id')
 })
@@ -379,11 +335,11 @@ ava('many to many', async (t: ExecutionContext) => {
   t.assert(Join.name === 'message_users_join_user_messages')
   const [colMessageUsers, colUserMessages] = Join.columns
   t.assert(colMessageUsers.name === 'usersId')
-  t.assert(colMessageUsers.type === 'uuid')
+  t.assert(colMessageUsers.type === 'increments')
   t.assert(colMessageUsers.foreign && colMessageUsers.foreign.tableName === 'message')
   t.assert(colMessageUsers.foreign && colMessageUsers.foreign.columnName === 'id')
   t.assert(colUserMessages.name === 'messagesId')
-  t.assert(colUserMessages.type === 'uuid')
+  t.assert(colUserMessages.type === 'increments')
   t.assert(colUserMessages.foreign && colUserMessages.foreign.tableName === 'user')
   t.assert(colUserMessages.foreign && colUserMessages.foreign.columnName === 'id')
 })
@@ -403,11 +359,11 @@ ava('many to many on self', async (t: ExecutionContext) => {
   t.assert(User.columns.length === 1)
   const [col1, col2] = UserContacts.columns
   t.assert(col1.name === 'idId')
-  t.assert(col1.type === 'uuid')
+  t.assert(col1.type === 'increments')
   t.assert(col1.foreign && col1.foreign.tableName === 'user')
   t.assert(col1.foreign && col1.foreign.columnName === 'id')
   t.assert(col2.name === 'idId_other')
-  t.assert(col2.type === 'uuid')
+  t.assert(col2.type === 'increments')
   t.assert(col2.foreign && col2.foreign.tableName === 'user')
   t.assert(col2.foreign && col2.foreign.columnName === 'id')
 })
@@ -429,7 +385,7 @@ ava('simple list', async (t: ExecutionContext) => {
   t.assert(User.columns.length === 2)
   const [colId, colNames] = User.columns
   t.assert(colId.name === 'id')
-  t.assert(colId.type === 'uuid')
+  t.assert(colId.type === 'increments')
   t.assert(colNames.name === 'names')
   t.assert(colNames.type === 'json')
 })
@@ -437,6 +393,7 @@ ava('simple list', async (t: ExecutionContext) => {
 ava('custom scalar map', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID
         name: String
         nickname: String
       }
@@ -454,8 +411,9 @@ ava('custom scalar map', async (t: ExecutionContext) => {
   })
   t.assert(adb.tables.length === 1)
   const [User] = adb.tables
-  t.assert(User.columns.length === 2)
-  const [colName, colNickname] = User.columns
+  t.assert(User.columns.length === 3)
+  const [colId, colName, colNickname] = User.columns
+  t.assert(colId.type === 'increments')
   t.assert(colName.type === 'text')
   t.assert(colNickname.type === 'string')
 })
@@ -463,6 +421,7 @@ ava('custom scalar map', async (t: ExecutionContext) => {
 ava('map lists to json', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
+        id: ID!
         names: [String]
       }
     `)
@@ -471,8 +430,8 @@ ava('map lists to json', async (t: ExecutionContext) => {
   })
   t.assert(adb.tables.length === 1)
   const [User] = adb.tables
-  t.assert(User.columns.length === 1)
-  const [colNames] = User.columns
+  t.assert(User.columns.length === 2)
+  const [_, colNames] = User.columns
   t.assert(colNames.type === 'json')
 })
 

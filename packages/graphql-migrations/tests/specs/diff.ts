@@ -52,13 +52,10 @@ ava('create simple table', async (t: ExecutionContext) => {
           type: 'string',
           args: [150],
         }),
-      ],
-      primaries: [
-        { columns: ['id'], name: undefined },
-      ],
+      ]
     }),
   ]))
-  t.assert(result.length === 5)
+  t.assert(result.length === 4)
 
   t.deepEqual(result[0], {
     type: 'table.create',
@@ -72,14 +69,10 @@ ava('create simple table', async (t: ExecutionContext) => {
     priority: 0,
   } as Operation)
   t.deepEqual(result[2], {
-    type: 'column.create',
+    type: 'table.primary.set',
     table: 'User',
     column: 'id',
     columnType: 'increments',
-    args: [],
-    nullable: false,
-    defaultValue: undefined,
-    comment: null,
     priority: 0,
   } as Operation)
   t.deepEqual(result[3], {
@@ -91,13 +84,6 @@ ava('create simple table', async (t: ExecutionContext) => {
     nullable: true,
     defaultValue: undefined,
     comment: null,
-    priority: 0,
-  } as Operation)
-  t.deepEqual(result[4], {
-    type: 'table.primary.set',
-    table: 'User',
-    indexName: undefined,
-    columns: ['id'],
     priority: 0,
   } as Operation)
 })
@@ -147,10 +133,10 @@ ava('update table comment', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('add column', async (t: ExecutionContext) => {
+ava('set primary key', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
-      name: 'User',
+      name: 'User'
     }),
   ]), dbFactory([
     tableFactory({
@@ -165,10 +151,46 @@ ava('add column', async (t: ExecutionContext) => {
   ]))
   t.assert(result.length === 1)
   t.deepEqual(result[0], {
-    type: 'column.create',
+    type: 'table.primary.set',
     table: 'User',
     column: 'id',
     columnType: 'increments',
+    priority: 0,
+  } as Operation)
+})
+
+ava('add column', async (t: ExecutionContext) => {
+  const result = await computeDiff(dbFactory([
+    tableFactory({
+      name: 'User',
+      columns: [
+        columnFactory({
+          name: 'id',
+          type: 'increments',
+        })
+      ],
+    }),
+  ]), dbFactory([
+    tableFactory({
+      name: 'User',
+      columns: [
+        columnFactory({
+          name: 'id',
+          type: 'increments',
+        }),
+        columnFactory({
+          name: 'name',
+          type: 'string',
+        }),
+      ],
+    }),
+  ]))
+  t.assert(result.length === 1)
+  t.deepEqual(result[0], {
+    type: 'column.create',
+    table: 'User',
+    column: 'name',
+    columnType: 'string',
     args: [],
     nullable: true,
     defaultValue: undefined,
@@ -260,8 +282,8 @@ ava('change column comment', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
-          type: 'increments',
+          name: 'name',
+          type: 'string',
           comment: 'foo',
         }),
       ],
@@ -271,8 +293,8 @@ ava('change column comment', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
-          type: 'increments',
+          name: 'name',
+          type: 'string',
           comment: 'bar',
         }),
       ],
@@ -284,8 +306,8 @@ ava('change column comment', async (t: ExecutionContext) => {
   t.deepEqual(result[0], {
     type: 'column.alter',
     table: 'User',
-    column: 'id',
-    columnType: 'increments',
+    column: 'name',
+    columnType: 'string',
     args: [],
     nullable: true,
     defaultValue: undefined,
@@ -300,8 +322,8 @@ ava('change column type', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
-          type: 'increments',
+          name: 'age',
+          type: 'integer',
         }),
       ],
     }),
@@ -310,8 +332,8 @@ ava('change column type', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
-          type: 'string',
+          name: 'age',
+          type: 'bigInteger',
         }),
       ],
     }),
@@ -320,8 +342,8 @@ ava('change column type', async (t: ExecutionContext) => {
   t.deepEqual(result[0], {
     type: 'column.alter',
     table: 'User',
-    column: 'id',
-    columnType: 'string',
+    column: 'age',
+    columnType: 'bigInteger',
     args: [],
     nullable: true,
     defaultValue: undefined,
@@ -336,7 +358,7 @@ ava('change column type args', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
+          name: 'name',
           type: 'string',
           args: [100],
         }),
@@ -347,7 +369,7 @@ ava('change column type args', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
+          name: 'name',
           type: 'string',
           args: [200],
         }),
@@ -358,7 +380,7 @@ ava('change column type args', async (t: ExecutionContext) => {
   t.deepEqual(result[0], {
     type: 'column.alter',
     table: 'User',
-    column: 'id',
+    column: 'name',
     columnType: 'string',
     args: [200],
     nullable: true,
@@ -374,7 +396,7 @@ ava('change column nullable', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
+          name: 'name',
           type: 'string',
           nullable: false,
         }),
@@ -385,7 +407,7 @@ ava('change column nullable', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
+          name: 'name',
           type: 'string',
           nullable: true,
         }),
@@ -396,7 +418,7 @@ ava('change column nullable', async (t: ExecutionContext) => {
   t.deepEqual(result[0], {
     type: 'column.alter',
     table: 'User',
-    column: 'id',
+    column: 'name',
     columnType: 'string',
     args: [],
     nullable: true,
@@ -412,7 +434,7 @@ ava('change column default value', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
+          name: 'name',
           type: 'string',
           defaultValue: 'foo',
         }),
@@ -423,7 +445,7 @@ ava('change column default value', async (t: ExecutionContext) => {
       name: 'User',
       columns: [
         columnFactory({
-          name: 'id',
+          name: 'name',
           type: 'string',
           defaultValue: 'bar',
         }),
@@ -434,54 +456,12 @@ ava('change column default value', async (t: ExecutionContext) => {
   t.deepEqual(result[0], {
     type: 'column.alter',
     table: 'User',
-    column: 'id',
+    column: 'name',
     columnType: 'string',
     args: [],
     nullable: true,
     defaultValue: 'bar',
     comment: null,
-    priority: 0,
-  } as Operation)
-})
-
-ava('change primary key', async (t: ExecutionContext) => {
-  const result = await computeDiff(dbFactory([
-    tableFactory({
-      name: 'User',
-      columns: [
-        columnFactory({
-          name: 'id',
-          type: 'increments',
-        }),
-        columnFactory({
-          name: 'email',
-          type: 'string',
-        }),
-      ],
-      primaries: [{ columns: ['id'] }],
-    }),
-  ]), dbFactory([
-    tableFactory({
-      name: 'User',
-      columns: [
-        columnFactory({
-          name: 'id',
-          type: 'increments',
-        }),
-        columnFactory({
-          name: 'email',
-          type: 'string',
-        }),
-      ],
-      primaries: [{ columns: ['email'] }],
-    }),
-  ]))
-  t.assert(result.length === 1)
-  t.deepEqual(result[0], {
-    type: 'table.primary.set',
-    table: 'User',
-    indexName: undefined,
-    columns: ['email'],
     priority: 0,
   } as Operation)
 })
