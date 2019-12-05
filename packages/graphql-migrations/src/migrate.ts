@@ -1,5 +1,5 @@
 import { buildSchema } from 'graphql'
-import { Config } from 'knex'
+import * as Knex from 'knex';
 import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/generateAbstractDatabase'
 import { read } from './connector/read'
 import { write } from './connector/write'
@@ -7,6 +7,7 @@ import { computeDiff } from './diff/computeDiff'
 import { Operation } from './diff/Operation'
 import { MigratePlugin } from './plugin/MigratePlugin'
 import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
+import getDatabaseSchemaName from './util/getDatabaseSchemaName'
 
 export interface MigrateOptions {
   /**
@@ -65,15 +66,20 @@ export const defaultOptions: MigrateOptions = {
 }
 
 export async function migrate(
-  config: Config,
+  config: Knex.Config,
   schemaText: string,
   options: MigrateOptions = {},
 ): Promise<Operation[]> {
   // Default options
   const finalOptions = {
     ...defaultOptions,
-    ...options,
+    ...options
   }
+
+  if (config.client === 'sqlite3') {
+    finalOptions.dbSchemaName = null;
+  }
+
   if (finalOptions.debug) {
     config = {
       ...config,

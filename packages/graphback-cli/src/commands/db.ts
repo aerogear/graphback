@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { ConfigBuilder } from '../config/ConfigBuilder';
 import { createDB, postCommandMessage } from '../helpers'
 
 export const command = 'db'
