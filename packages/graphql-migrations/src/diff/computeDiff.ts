@@ -325,7 +325,7 @@ class Differ {
       type: 'column.create',
       table: table.name,
       column: column.name,
-      columnType: getKnexColumnType(column.type),
+      columnType: getKnexColumnType(column.type), // TODO: Move column type mapping to abstraction layer
       args: column.args,
       comment: column.comment,
       nullable: column.nullable,
