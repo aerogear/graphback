@@ -13,7 +13,7 @@ import {
 import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
-import { defaultColumnNameTransform } from '../util/defaultNameTransforms'
+import { defaultColumnNameTransform, defaultTableNameTransform } from '../util/defaultNameTransforms'
 import getObjectTypeFromList from '../util/getObjectTypeFromList'
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
@@ -65,7 +65,7 @@ export interface GenerateAbstractDatabaseOptions {
 
 export const defaultOptions: GenerateAbstractDatabaseOptions = {
   scalarMap: null,
-  transformTableName: defaultColumnNameTransform,
+  transformTableName: defaultTableNameTransform,
   transformColumnName: defaultColumnNameTransform,
 }
 
