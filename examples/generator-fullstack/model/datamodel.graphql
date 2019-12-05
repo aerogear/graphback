@@ -3,14 +3,14 @@ type Note {
   title: String!
   description: String!
   ## Relationship
-  comments: [Comment!]! @OneToMany(field: "owner")
+  comments: [Comment!]!
 }
 
 type Comment {
   id: ID!
   title: String!
   description: String!
-  owner: Note
+  note: Note!
 }
 
 type Query {
