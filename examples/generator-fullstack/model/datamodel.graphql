@@ -1,22 +1,9 @@
 type Note {
   id: ID!
   title: String!
-  description: String!
-  ## Relationship
-  comments: [Comment!]!
 }
 
 type Comment {
   id: ID!
-  title: String!
-  description: String!
   note: Note!
-}
-
-type Query {
-  getLikedNotes(id: ID!, names: [String]!): Note!
-}
-
-type Mutation {
-  likeNote(id: ID!): Note!
 }
