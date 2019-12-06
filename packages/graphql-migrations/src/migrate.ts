@@ -76,7 +76,7 @@ export async function migrate(
   }
 
   if (config.client === 'sqlite3') {
-    finalOptions.dbSchemaName = null;
+    finalOptions.dbSchemaName = '';
   }
 
   if (finalOptions.debug) {
