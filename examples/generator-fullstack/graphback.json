@@ -1,9 +1,13 @@
 {
   "db": {
     "dbConfig": {
-      "filename": "./db.sqlite"
+      "user": "postgresql",
+      "password": "postgres",
+      "database": "users",
+      "host": "127.0.0.1",
+      "port": 55432
     },
-    "database": "sqlite3"
+    "database": "pg"
   },
   "graphqlCRUD": {
     "create": true,

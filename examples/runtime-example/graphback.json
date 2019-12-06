@@ -8,8 +8,7 @@
       "host": "127.0.0.1",
       "port": 55432
     },
-    "database": "pg",
-    "schema": "public"
+    "database": "pg"
   },
   "graphqlCRUD": {
     "create": true,

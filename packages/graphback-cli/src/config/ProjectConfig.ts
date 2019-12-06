@@ -19,7 +19,6 @@ import { OpenApiConfig } from './OpenApiConfig'
         dbConfig: any,
         database: string
         initialization?: string
-        schema?: string
     },
 
     /**
