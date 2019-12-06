@@ -91,7 +91,7 @@ type Note {
 
 #### Default field value
 
-```
+```gql
 type Note {
   id: ID!
   title: String!
