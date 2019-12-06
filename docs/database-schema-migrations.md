@@ -49,7 +49,7 @@ const runtime = await backend.createRuntime(dbClientProvider, pubSub);
 
 ### Migration Options
 
-- `config`: database configuration options
+- `config`: database configuration options.
 - `schema`: a GraphQL schema object.
 - `options`:
   - `updateComments`: overwrite comments on table and columns.
