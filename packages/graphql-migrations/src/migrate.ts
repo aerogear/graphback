@@ -7,7 +7,6 @@ import { computeDiff } from './diff/computeDiff'
 import { Operation } from './diff/Operation'
 import { MigratePlugin } from './plugin/MigratePlugin'
 import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
-import getDatabaseSchemaName from './util/getDatabaseSchemaName'
 
 export interface MigrateOptions {
   /**

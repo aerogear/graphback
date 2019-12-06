@@ -43,7 +43,7 @@ export async function write(
   const writer = new Writer(
     operations,
     config,
-    getDatabaseSchemaName(schemaName),
+    schemaName,
     tablePrefix,
     columnPrefix,
     plugins,
