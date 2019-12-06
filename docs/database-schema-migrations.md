@@ -117,4 +117,8 @@ type Note {
 
 ### Compatibility
 
-The following database providers support database schema migrations.
+The following database providers support full database schema migrations.
+
+- PostgreSQL
+
+SQLite is not yet fully supported but will be soon.
