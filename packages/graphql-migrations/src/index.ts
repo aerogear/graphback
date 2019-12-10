@@ -5,8 +5,8 @@ export { read } from './connector/read'
 export { write } from './connector/write'
 export { MigratePlugin, WriteParams } from './plugin/MigratePlugin'
 
-export { KnexMigrationProvider } from './migrations';
-export { migrate as runGraphqlMigration } from './migrations/GraphQLMigrationCreator';
+export { KnexMigrationProvider } from './production/migrations';
+export { migrate as runGraphqlMigration } from './production/migrations/GraphQLMigrationCreator';
 export {
   DatabaseInitializationStrategy,
   UpdateDatabaseIfChanges,
@@ -14,4 +14,4 @@ export {
   DatabaseContextProvider,
   DefaultDataContextProvider,
   DatabaseSchemaManager
-} from './database';
+} from './production/database';
