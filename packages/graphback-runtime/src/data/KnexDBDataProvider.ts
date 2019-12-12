@@ -83,7 +83,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     if (dbResult) {
 
       const resultsById = ids.map((id: string) => dbResult.filter((data: any) => {
-        return data[relationField] === Number(id)
+        return data[relationField].toString() === id.toString();
       }))
 
       return resultsById as [Type[]];
