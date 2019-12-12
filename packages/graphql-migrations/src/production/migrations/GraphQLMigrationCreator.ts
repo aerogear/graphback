@@ -11,7 +11,7 @@ import { MigrationProvider } from './MigrationProvider';
 import { SchemaMigration } from './SchemaMigration';
 import { getChanges } from './utils';
 
-export async function migrateProd(schemaText: string, strategy: DatabaseInitializationStrategy) {
+export async function migrateProduction(schemaText: string, strategy: DatabaseInitializationStrategy) {
   const changes = await strategy.init(schemaText);
   return changes;
 }
