@@ -12,7 +12,7 @@ Execute `graphback` in your shell for more information
   ```bash
   graphback init <project-name>
   ```
-  The command will guide you through a series of questions - choosing a template, bootstraping model - and setup your project for you.
+  The command will guide you through a series of questions - choosing a template, bootstrapping model - and setup your project for you.
 
   ![](/img/init.gif)
 
