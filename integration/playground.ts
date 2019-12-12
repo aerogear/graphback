@@ -1,7 +1,7 @@
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { TestxServer } from 'graphql-testx';
-import { migrate } from '../packages/graphql-migrations';
-import { schema } from './schemas/basic.graphql';
+import { migrateDB } from '../packages/graphql-migrations';
+import { schema } from './schemas/relations-schema.graphql';
 
 (async () => {
  
@@ -11,7 +11,7 @@ import { schema } from './schemas/basic.graphql';
 
   await server.start();
 
-  const migration = await migrate({
+  const migration = await migrateDB({
 
     client: "sqlite3",
     connection: { filename: "./test.sql" }
@@ -27,11 +27,4 @@ import { schema } from './schemas/basic.graphql';
   // TODO test actual runtime execution logic by executing queries and mutations
 
 })().catch(e => console.error(e))
-
-
-
-
-
-
-
 

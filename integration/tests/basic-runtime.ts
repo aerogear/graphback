@@ -6,7 +6,7 @@ import { unlinkSync } from 'fs';
 import { TestxServer } from 'graphql-testx';
 import { InMemoryDatabase } from 'graphql-testx/dist/src/InMemoryDatabase';
 import fetch from "node-fetch";
-import { migrate } from '../../packages/graphql-migrations';
+import { migrateDB } from '../../packages/graphql-migrations';
 
 // tslint:disable-next-line: no-require-imports
 import Knex = require('knex');
@@ -40,7 +40,7 @@ test.serial('Graphback runtime relationships - generic OneToMany', async (t: Exe
 
 async function graphbackRuntimeWorkflow(server: TestxServer, t: ExecutionContext<unknown>) {
   // Test migrations
-  const migration = await migrate(dbOptions, basicSchema);
+  const migration = await migrateDB(dbOptions, basicSchema);
   const dbSchema = await server.getDatabaseSchema();
   // Complex migration is validated by reviewing snapshots 
   t.snapshot(migration);
