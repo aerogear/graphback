@@ -17,14 +17,14 @@ graphback db
 
 ### Usage
 
-The `migrate` method creates and updates your tables and columns to match your GraphQL schema.
+The `migrateDB` method creates and updates your tables and columns to match your GraphQL schema.
 
 All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.
 
 ```ts
 import * as jsonConfig from '../graphback.json'
 import { schemaText } from './schema';
-import { migrate } from 'graphql-migrations';
+import { migrateDB } from 'graphql-migrations';
 import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
 
 const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
@@ -35,7 +35,7 @@ const dbConfig = {
   connection: jsonConfig.db.dbConfig
 };
 
-migrate(dbConfig, schemaText, {
+migrateDB(dbConfig, schemaText, {
   // Additional options
 }).then((ops) => {
     console.log(ops);

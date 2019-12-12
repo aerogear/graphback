@@ -16,12 +16,12 @@ Automatically create and update your database tables from a GraphQL schema.
 
 ### Usage
 
-The `migrate` method creates and updates your tables and columns to match your GraphQL schema.
+The `migrateDB` method creates and updates your tables and columns to match your GraphQL schema.
 
 All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.
 
 ```ts
-import { migrate } from 'graphql-migrations';
+import { migrateDB } from 'graphql-migrations';
 
 const dbConfig = {
   client: 'pg',
@@ -48,7 +48,7 @@ type Comment {
 }
 `);
 
-migrate(dbConfig, schema, {
+migrateDB(dbConfig, schema, {
   // Additional options
 }).then(() => {
   console.log('Database updated');
@@ -68,7 +68,7 @@ migrate(dbConfig, schema, {
   - `transformColumnName` (default: transform to `lowerCaseFirstCharacter`): transform function for column names.
   - `scalarMap` (default: `null`): Custom scalar mapping..
   - `mapListToJson` (default: `true`): Map scalar lists to JSON column type by default.
-  - `plugins` (default: `[]`): List of graphql-migrate plugins.
+  - `plugins` (default: `[]`): List of graphql-migrations plugins.
   - `debug` (default: `false`): display debugging information and SQL queries.
 
 ### Name transforms
@@ -76,7 +76,7 @@ migrate(dbConfig, schema, {
 You can customise how table and coumn names are transformed before applying to the database with `transformTableName` and `transformColumnName`.
 
 ```ts
-migrate(dbConfig, schema, {
+migrateDB(dbConfig, schema, {
   transformTableName: (name, direction) => {
     if (direction === 'to-db') {
       return name.toLowerCase();
