@@ -53,7 +53,7 @@ export async function createModel(): Promise<ModelTemplate> {
     {
       type: 'confirm',
       name: 'includeModel',
-      message: 'Do you want to include a example model?'
+      message: 'Do you want to include an example model?'
     }
   ])
 
