@@ -125,7 +125,7 @@ SQLite is not yet fully supported but will be soon.
 
 ### Migrations in Production
 
-`migrateProduction` can be used to perform migrations in a controlled/production environment.
+`migrateDBUsingSchema` can be used to perform migrations in a controlled/production environment.
 
 Options:
 
@@ -155,7 +155,7 @@ Here is an example of how to configure database initialization strategies.
 ```ts
 import * as jsonConfig from '../graphback.json'
 import { schemaText } from './schema';
-import { migrateProduction, UpdateDatabaseIfChanges } from 'graphql-migrations';
+import { migrateDBUsingSchema, UpdateDatabaseIfChanges } from 'graphql-migrations';
 
 const db = new Knex(...);
 
@@ -164,7 +164,7 @@ const dbClientProvider = new PgKnexDBDataProvider(client);
 
 const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
 
-await migrateProduction(schemaText, dbInitialization)
+await migrateDBUsingSchema(schemaText, dbInitialization)
 
 const pubSub = new PubSub();
 const runtime = await backend.createRuntime(dbClientProvider, pubSub);

@@ -6,7 +6,7 @@ export { write } from './connector/write'
 export { MigratePlugin, WriteParams } from './plugin/MigratePlugin'
 
 export { KnexMigrationProvider } from './production/migrations';
-export { migrateProduction } from './production/migrations/GraphQLMigrationCreator';
+export { migrateDBUsingSchema } from './production/migrations/GraphQLMigrationCreator';
 export {
   DatabaseInitializationStrategy,
   UpdateDatabaseIfChanges,
