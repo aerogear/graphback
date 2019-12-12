@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "pg": "7.12.1",
-    "sqlite3": "^4.1.0"
+    "sqlite3": "4.1.1"
   }
 }

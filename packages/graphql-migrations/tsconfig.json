@@ -6,6 +6,7 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "declarationDir": "./types",
+    "resolveJsonModule": true,
     "lib": [
       "esnext.asynciterable",
       "es2015",

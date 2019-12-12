@@ -1,21 +1,22 @@
 type Note {
   id: ID!
+  """
+  @db.type: 'string'
+  @db.length: 100
+  """
   title: String!
-  description: String!
-  ## Relationship
-  comment: [Comment!]!
+  """
+  @db.type: 'text'
+  """
+  description: String
+  comments: [Comment]!
 }
 
 type Comment {
   id: ID!
-  title: String!
-  description: String!
-}
-
-type Query {
-  getLikedNotes(id: ID!, names: [String]!): Note!
-}
-
-type Mutation {
-  likeNote(id: ID!): Note!
+  """
+  @db.type: 'text'
+  """
+  description: String
+  note: Note!
 }

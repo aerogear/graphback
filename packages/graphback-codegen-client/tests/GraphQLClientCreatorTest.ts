@@ -1,6 +1,5 @@
+import { applyGeneratorDirectives, graphQLInputContext } from '@graphback/core';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { graphQLInputContext } from '@graphback/core/src';
-import { applyGeneratorDirectives } from '@graphback/core';
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
 import { buildSchema, parse } from 'graphql';

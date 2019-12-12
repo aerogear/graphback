@@ -97,8 +97,8 @@ export const buildGraphbackOperationTypeContext = (context: InputModelTypeContex
 
 /**
  * Create context of all the types
- * 
- * @param input InputModelTypeContext representing model 
+ *
+ * @param input InputModelTypeContext representing model
  */
 // FIXME remove this class and build proper relationship support
 export const buildResolverTargetContext = (input: InputModelTypeContext[]) => {
@@ -169,19 +169,20 @@ function createRelations(inputContext: InputModelTypeContext[]) {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
         if (f.directives.OneToOne || !f.isArray) {
-          let columnName = `${t.name.toLowerCase()}Id`;
+          let columnName = `${f.name}Id`;
           if (f.directives.OneToOne) {
-            columnName = f.directives.OneToOne.field;
+            columnName = `${f.directives.OneToOne.field}Id`;
           }
+
           relations.push({
             typeName: t.name,
             implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
           });
         }
         else if (f.directives.OneToMany || f.isArray) {
-          let columnName = `${t.name.toLowerCase()}Id`;
+          let columnName = `${f.name}Id`;
           if (f.directives.OneToMany) {
-            columnName = f.directives.OneToMany.field;
+            columnName = `${f.directives.OneToMany.field}Id`;
           }
           relations.push({
             typeName: t.name,
@@ -194,4 +195,3 @@ function createRelations(inputContext: InputModelTypeContext[]) {
 
   return relations;
 }
-

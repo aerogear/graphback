@@ -5,51 +5,120 @@ title: Database Schema Migrations
 
 ## Database Schema Migrations
 
-Graphback currently has limited database schema migration support built in and available to both runtime and CLI.
+Graphback uses [graphql-migrations](../packages/graphql-migrations) to automatically create and update tables from a GraphQL schema.
 
 ### CLI
 
-There are two database CLI commands:
+To create or update your database from the CLI, run:
 
-- `graphback db` - this will drop and create a database schema from your input model.
-- `graphback update-db` - this will update your database schema by comparing what has changed between the current and previous schema and applying those changes.
+```sh
+graphback db
+```
 
-## Runtime
+### Usage
 
-In runtime, there are two database initialization strategies which are defined in the client application.
+The `migrate` method creates and updates your tables and columns to match your GraphQL schema.
 
-### Strategies
-
-- `DropCreateDatabaseAlways` - Drops and creates the database every time the application is run.
-- `UpdateDatabaseIfChanges` - Only update the database when your input schema has been changed.
-
-### Configuration
-
-Here is an example of how to configure database initialization strategies.
+All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.
 
 ```ts
 import * as jsonConfig from '../graphback.json'
 import { schemaText } from './schema';
-import { migrate, UpdateDatabaseIfChanges } from 'graphql-migrations';
-
-const db = new Knex(...);
+import { migrate } from 'graphql-migrations';
+import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
 
 const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
 const dbClientProvider = new PgKnexDBDataProvider(client);
 
-const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
+const dbConfig = {
+  client: jsonConfig.db.database,
+  connection: jsonConfig.db.dbConfig
+};
 
-await migrate(schemaText, dbInitialization)
+migrate(dbConfig, schemaText, {
+  // Additional options
+}).then((ops) => {
+    console.log(ops);
+});
 
 const pubSub = new PubSub();
+
 const runtime = await backend.createRuntime(dbClientProvider, pubSub);
+...
 ```
 
-## Limitations
+### Migration Options
 
-Schema migrations are in a very early phase. At present the change types that are allowed is limited to the following:
+- `config`: database configuration options.
+- `schema`: a GraphQL schema object.
+- `options`:
+  - `updateComments`: overwrite comments on table and columns.
+  - `scalarMap`: Custom scalar mapping. Default: `null`.
+  - `mapListToJson`: Map scalar lists to JSON column type by default.
+  - `debug`: display debugging information and SQL queries.
+  - All other options are not currently supported by Graphback.
 
-- **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
-- **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.
+### Defining your data model
 
-Relationships are not yet supported and will be added very soon.
+#### Primary key
+
+Each type must have a primary key. The primary key field must be `id` and the type must be `ID`.
+
+```gql
+type Note {
+  id: ID!
+  title: String!
+}
+```
+
+#### Foreign key
+
+To set a foreign key, set a field reference to the related type.
+
+```gql
+type Comment {
+  id: ID!
+  note: Note! # this creates a `noteId` column in the `comment` table.
+}
+
+type Note {
+  id: ID!
+  title: String!
+}
+```
+
+> NOTE: The field name must match that of the related type. Support for custom field names is coming soon.
+
+#### Default field value
+
+```gql
+type Note {
+  id: ID!
+  title: String!
+  """
+  @db.default: false
+  """
+  complete: Boolean
+}
+```
+
+#### Custom column type
+
+```gql
+type Note {
+  id: ID!
+  """
+  @db.type: 'string'
+  @db.length: 100
+  """
+  title: String!
+}
+```
+
+### Compatibility
+
+The following database providers support full database schema migrations.
+
+- PostgreSQL
+
+SQLite is not yet fully supported but will be soon.

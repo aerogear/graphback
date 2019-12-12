@@ -27,6 +27,7 @@ export interface TargetContext {
   queries: string[],
   mutations: string[],
   subscriptions: string[]
+  relations: RelationInfo[]
 }
 
 const findQueries = (inputContext: InputModelTypeContext[]): string[] => {
@@ -78,17 +79,30 @@ const newSub = (name: string) => `new${name}: ${name}!`
 const updatedSub = (name: string) => `updated${name}: ${name}!`
 const deletedSub = (name: string) => `deleted${name}: ID!`
 
+export const getFieldNameAndType = (f: InputModelFieldContext): { fieldName: string; fieldType: string } => {
+  let fieldName: string = f.name;
+  let fieldType: string = f.type;
+  if (f.isType && !f.isArray) {
+    fieldName = `${f.name}Id`;
+    fieldType = 'Int';
+  }
+
+  return { fieldName, fieldType };
+}
+
 /**
  * Create schema type output from the Field object from isNull, isArray flags
  * ex - title: String!
  * @param f Field type
  */
 export const maybeNullField = (f: InputModelFieldContext) => {
+  const { fieldName, fieldType } = getFieldNameAndType(f);
+
   if (f.isArray) {
-    return `${f.name}: [${f.type}]${f.isNull ? '' : '!'}`
+    return `${fieldName}: [${fieldType}]${f.isNull ? '' : '!'}`
   }
   else {
-    return `${f.name}: ${f.type}${f.isNull ? '' : '!'}`
+    return `${fieldName}: ${fieldType}${f.isNull ? '' : '!'}`
   }
 }
 
@@ -111,11 +125,13 @@ export const maybeNullFieldArgs = (f: InputModelFieldContext) => {
 }
 
 const nullField = (f: InputModelFieldContext) => {
+  const { fieldName, fieldType } = getFieldNameAndType(f);
+
   if (f.isArray) {
-    return `${f.name}: [${f.type}]`
+    return `${fieldName}: [${fieldType}]`
   }
   else {
-    return `${f.name}: ${f.type}`
+    return `${fieldName}: ${fieldType}`
   }
 }
 
@@ -144,23 +160,11 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
             "type": 'Type',
             "relation": `${f.name}: ${f.type}`
           })
-          relations.push({
-            "name": f.type,
-            "type": 'ID',
-            "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-            "idField": `${t.name.toLowerCase()}Id: ID!`
-          })
         } else if (f.directives.OneToMany || f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: [${f.type}!]`
-          })
-          relations.push({
-            "name": f.type,
-            "type": 'ID',
-            "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-            "idField": `${t.name.toLowerCase()}Id: ID!`
           })
         }
       }
@@ -173,10 +177,10 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     interfaces: [],
     inputFields: [],
     filterFields: [],
-    // pagination: [],
     queries: [],
     mutations: [],
-    subscriptions: []
+    subscriptions: [],
+    relations
   }
 
   const objectTypes = filterObjectTypes(inputContext);
@@ -202,7 +206,7 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && !f.isType)
+      "fields": [...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && (!(f.isType && f.isArray) || !f.isType))
         .map(maybeNullField),
       ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField))]
     }
@@ -212,7 +216,7 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: InputModelFieldContext) => !f.isType)
+      "fields": [...t.fields.filter((f: InputModelFieldContext) => (!(f.isType && f.isArray) || !f.isType))
         .map(nullField),
       ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))]
     }

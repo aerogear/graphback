@@ -1,7 +1,13 @@
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+  ## Relationship
+  comment: [Comment!]!
+}
 
-## Model that will be used at server runtime
-
-type User {
-    id: ID!
-    name: String
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
 }
