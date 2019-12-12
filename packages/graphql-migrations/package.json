@@ -1,6 +1,6 @@
 {
   "name": "graphql-migrations",
-  "version": "0.10.0-rc2",
+  "version": "0.10.0-dev4",
   "description": "Create & migrate Databases from GraphQL Schema",
   "author": "Enda Phelan <ephelan@redhat.com>",
   "license": "Apache-2.0",

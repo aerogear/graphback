@@ -1,3 +1,5 @@
+import { AbstractDatabase } from '../abstract/AbstractDatabase';
+
 export type OperationType =
   'table.create' |
   'table.rename' |
@@ -18,6 +20,12 @@ export type OperationType =
 export interface Operation {
   type: OperationType
   priority: number
+}
+
+export interface MigrationResults {
+  results: Operation[]
+  previousDB: AbstractDatabase
+  newDB: AbstractDatabase
 }
 
 export interface TableCreateOperation extends Operation {

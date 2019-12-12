@@ -2,7 +2,8 @@
   "packages": [
     "examples/*",
     "examples/generator-fullstack/*",
-    "packages/*"
+    "packages/*",
+    "integration"
   ],
   "version": "0.10.0-rc2"
 }
