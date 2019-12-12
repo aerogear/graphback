@@ -17,14 +17,14 @@ graphback db
 
 ### Usage
 
-The `migrate` method creates and updates your tables and columns to match your GraphQL schema.
+The `migrateDB` method creates and updates your tables and columns to match your GraphQL schema.
 
 All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.
 
 ```ts
 import * as jsonConfig from '../graphback.json'
 import { schemaText } from './schema';
-import { migrate } from 'graphql-migrations';
+import { migrateDB } from 'graphql-migrations';
 import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
 
 const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
@@ -35,7 +35,7 @@ const dbConfig = {
   connection: jsonConfig.db.dbConfig
 };
 
-migrate(dbConfig, schemaText, {
+migrateDB(dbConfig, schemaText, {
   // Additional options
 }).then((ops) => {
     console.log(ops);
@@ -50,7 +50,7 @@ const runtime = await backend.createRuntime(dbClientProvider, pubSub);
 ### Migration Options
 
 - `config`: database configuration options.
-- `schema`: a GraphQL schema object.
+- `schemaText`: GraphQL schema text.
 - `options`:
   - `updateComments`: overwrite comments on table and columns.
   - `scalarMap`: Custom scalar mapping. Default: `null`.
@@ -122,3 +122,57 @@ The following database providers support full database schema migrations.
 - PostgreSQL
 
 SQLite is not yet fully supported but will be soon.
+
+### Migrations in Production
+
+`migrateDBUsingSchema` can be used to perform migrations in a controlled/production environment.
+
+Options:
+
+- `schemaText`: GraphQL schema text.
+- `strategy`: Database initialization strategy. Options: `UpdateDatabaseIfChanges`, `DropCreateDatabaseAlways`.
+  
+#### Strategies
+
+**UpdateDatabaseIfChanges** - Only update the database when your input schema has been changed.
+
+Options:
+
+- `client`: [knex](http://knexjs.org/) configuration object.
+- `migrationsDir`: Folder to save/read local migration data.
+
+**DropCreateDatabaseAlways** - Wipe and recreate a new database every time.
+
+Options:
+
+- `client`: Database provider type (e.g: `pg`, `sqlite3`)
+- `db`: [knex](http://knexjs.org/) configuration object.
+
+#### Configuration
+
+Here is an example of how to configure database initialization strategies.
+
+```ts
+import * as jsonConfig from '../graphback.json'
+import { schemaText } from './schema';
+import { migrateDBUsingSchema, UpdateDatabaseIfChanges } from 'graphql-migrations';
+
+const db = new Knex(...);
+
+const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
+const dbClientProvider = new PgKnexDBDataProvider(client);
+
+const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
+
+await migrateDBUsingSchema(schemaText, dbInitialization)
+
+const pubSub = new PubSub();
+const runtime = await backend.createRuntime(dbClientProvider, pubSub);
+```
+
+#### Limitations
+
+Schema migrations are in a very early phase. At present the change types that are allowed is limited to the following:
+
+- **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
+- **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.

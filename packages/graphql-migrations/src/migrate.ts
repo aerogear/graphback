@@ -64,7 +64,7 @@ export const defaultOptions: MigrateOptions = {
   debug: false,
 }
 
-export async function migrate(
+export async function migrateDB(
   config: Knex.Config,
   schemaText: string,
   options: MigrateOptions = {},
