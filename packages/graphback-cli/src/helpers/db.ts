@@ -42,8 +42,8 @@ export const createDBResources = async (config: ProjectConfig): Promise<any[]> =
 
     const schemaWithDirectives = applyGeneratorDirectives(schemaText);
 
-    databaseOperations = await migrateDB(dbConfig, schemaWithDirectives);
-
+    const migration = await migrateDB(dbConfig, schemaWithDirectives);
+    databaseOperations = migration.results;
   } catch (err) {
     handleError(err)
   }

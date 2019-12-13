@@ -10,6 +10,7 @@ export const schema =
   type Comment {
     id: ID!
     description: String
+    item: Item
   }
 `
 

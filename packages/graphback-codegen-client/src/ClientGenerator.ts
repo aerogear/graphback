@@ -1,8 +1,8 @@
 import { InputModelTypeContext } from '@graphback/core';
 import { ClientGeneratorConfig } from './createClient';
+import { createClientDocumentsGqlComplete } from './templates/gqlCompleteTemplates';
 import { createClientDocumentsGQL } from './templates/gqlTemplates';
 import { createClientDocumentsTS } from './templates/tsTemplates';
-
 
 /**
  * Generate ClientDocuments from the datamodel.
@@ -19,12 +19,15 @@ export class ClientGenerator {
   }
 
   public generate() {
-    if(this.config){
-      if(this.config.output === 'ts'){
+    if (this.config) {
+      if (this.config.output === 'ts') {
         return createClientDocumentsTS(this.inputContext)
       }
-      if(this.config.output === 'gql'){
+      if (this.config.output === 'gql') {
         return createClientDocumentsGQL(this.inputContext)
+      }
+      if (this.config.output === 'gqlwithfragment') {
+        return createClientDocumentsGqlComplete(this.inputContext)
       }
     }
 

@@ -2,7 +2,7 @@ import { applyGeneratorDirectives, graphQLInputContext } from '@graphback/core';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { buildSchema, parse } from 'graphql';
+import { parse } from 'graphql';
 import { createClient } from '../src';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -50,6 +50,22 @@ ava('Test snapshot config gql', async (t: ExecutionContext) => {
   t.snapshot(client);
 });
 
+ava('Test snapshot config gqlwithfragmentz', async (t: ExecutionContext) => {
+  const defautConfig = {
+    "create": true,
+    "update": true,
+    "findAll": true,
+    "find": true,
+    "delete": true,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true,
+    "disableGen": true
+  }
+  const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
+  const client = await createClient(inputContext, { output: "gqlwithfragment" })
+  t.snapshot(client);
+});
 
 ava('Test parse', async (t: ExecutionContext) => {
   const defautConfig = {
@@ -64,7 +80,6 @@ ava('Test parse', async (t: ExecutionContext) => {
     "disableGen": true
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
-  const schema = buildSchema(applyGeneratorDirectives(schemaText));
   const client = await createClient(inputContext, { output: "gql" })
   for(const documentObj of client.queries){
     const doc = parse(documentObj.implementation);
@@ -85,3 +100,6 @@ ava('Test parse', async (t: ExecutionContext) => {
     // validate(schema, doc));
   }
 });
+
+
+ 
