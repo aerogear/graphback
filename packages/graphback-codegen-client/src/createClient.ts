@@ -13,8 +13,9 @@ export interface ClientGeneratorConfig {
      *
      * - ts - typescript file output (backwards compatibility)
      * - gql - .graphql file
+     * - gqlwithfragment - complete gql queries containing fragments for redundancy
      */
-    output: 'ts' | 'gql'
+    output: 'ts' | 'gql' | 'gqlwithfragment'
 }
 
 

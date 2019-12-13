@@ -4,7 +4,7 @@ import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/g
 import { read } from './connector/read'
 import { write } from './connector/write'
 import { computeDiff } from './diff/computeDiff'
-import { Operation } from './diff/Operation'
+import { MigrationResults } from './diff/Operation'
 import { MigratePlugin } from './plugin/MigratePlugin'
 import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
 
@@ -68,7 +68,7 @@ export async function migrateDB(
   config: Knex.Config,
   schemaText: string,
   options: MigrateOptions = {},
-): Promise<Operation[]> {
+): Promise<MigrationResults> {
   // Default options
   const finalOptions = {
     ...defaultOptions,
@@ -121,5 +121,5 @@ export async function migrateDB(
     finalOptions.plugins,
   )
 
-  return ops
+  return { results: ops, previousDB: existingAdb, newDB: newAdb }
 }
