@@ -14,7 +14,7 @@ import { schema } from './schemas/relations-schema.graphql';
   const migration = await migrateDB({
 
     client: "sqlite3",
-    connection: { filename: "./test.sql" }
+    connection: { filename: "./test.sqlite" }
   }, schema);
 
   console.log(JSON.stringify(migration, undefined, 2));
@@ -27,4 +27,3 @@ import { schema } from './schemas/relations-schema.graphql';
   // TODO test actual runtime execution logic by executing queries and mutations
 
 })().catch(e => console.error(e))
-
