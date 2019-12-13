@@ -10,12 +10,6 @@ directive @subDelete(enable: Boolean) on OBJECT
 directive @disableGen(enable: Boolean) on OBJECT
 `
 
-//FIXME add handling for ManyToMany
-const relationShipDirectives = `
-directive @OneToMany(field: String) on FIELD_DEFINITION
-directive @OneToOne(field: String) on FIELD_DEFINITION
-`
-
 /**
  * Append all required directives into model
  * 
@@ -23,6 +17,5 @@ directive @OneToOne(field: String) on FIELD_DEFINITION
  */
 export const applyGeneratorDirectives = (schema: string) => {
   return `${generatorDirectives}\n\n
-          ${relationShipDirectives}
           ${schema}`
 }
