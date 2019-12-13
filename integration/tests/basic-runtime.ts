@@ -9,7 +9,7 @@ import fetch from "node-fetch";
 import { migrateDB } from '../../packages/graphql-migrations';
 
 // tslint:disable-next-line: no-require-imports
-import Knex = require('knex');
+import * as Knex from 'knex';
 import { schema as basicSchema } from '../schemas/basic.graphql';
 import { schema as relationsSchema } from '../schemas/relations-schema.graphql';
 
@@ -95,4 +95,3 @@ async function createItem(client: ApolloClient<unknown>, mutations, t: Execution
   t.assert(item.id);
   t.deepEqual(item.title, "TestA");
 }
-
