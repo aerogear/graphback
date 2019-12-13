@@ -154,13 +154,13 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
-        if (f.directives.OneToOne || !f.isArray) {
+        if (f.annotations.OneToOne || !f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',
             "relation": `${f.name}: ${f.type}`
           })
-        } else if (f.directives.OneToMany || f.isArray) {
+        } else if (f.annotations.OneToMany || f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',

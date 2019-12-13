@@ -168,10 +168,10 @@ function createRelations(inputContext: InputModelTypeContext[]) {
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
-        if (f.directives.OneToOne || !f.isArray) {
+        if (f.annotations.OneToOne || !f.isArray) {
           let columnName = `${f.name}Id`;
-          if (f.directives.OneToOne) {
-            columnName = `${f.directives.OneToOne.field}Id`;
+          if (f.annotations.OneToOne) {
+            columnName = `${f.annotations.OneToOne.field}Id`;
           }
 
           relations.push({
@@ -179,10 +179,10 @@ function createRelations(inputContext: InputModelTypeContext[]) {
             implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
           });
         }
-        else if (f.directives.OneToMany || f.isArray) {
+        else if (f.annotations.OneToMany || f.isArray) {
           let columnName = `${f.name}Id`;
-          if (f.directives.OneToMany) {
-            columnName = `${f.directives.OneToMany.field}Id`;
+          if (f.annotations.OneToMany) {
+            columnName = `${f.annotations.OneToMany.field}Id`;
           }
           relations.push({
             typeName: t.name,
