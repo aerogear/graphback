@@ -1,4 +1,4 @@
-import { FieldDefinitionNode, ObjectTypeDefinitionNode } from 'graphql';
+import { FieldDefinitionNode } from 'graphql';
 import { parseAnnotations } from 'graphql-annotations';
 import { InputModelFieldAnnotations } from '../api';
 
