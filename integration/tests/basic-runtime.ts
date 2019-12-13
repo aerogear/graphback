@@ -21,7 +21,11 @@ const dbOptions = {
 let database;
 
 test.beforeEach(() => {
-  unlinkSync("./test.sqlite")
+  try {
+    unlinkSync("./test.sqlite")
+  } catch {
+    // Ignore
+  }
 
   const knex = Knex(dbOptions);
   database = new SQLiteDatabase(knex);
@@ -47,12 +51,12 @@ async function graphbackRuntimeWorkflow(server: TestxServer, t: ExecutionContext
   t.snapshot(dbSchema);
   // Test runtime
   const queries = await server.getQueries();
-  
+
   const mutations = await server.getMutations();
   const uri = await server.httpUrl();
   const client = new ApolloClient({ uri, fetch });
   await createItem(client, mutations, t);
-  // await updateItem(client, t, queries, mutations);
+  await updateItem(client, t, queries, mutations);
   // TODO test db updates (blocked by SQLLite issue)
 }
 
@@ -63,7 +67,7 @@ async function createServer(schema: string) {
   });
   await server.start();
 
-  return server ;
+  return server;
 }
 
 async function findItems(client: ApolloClient<unknown>, queries, t: ExecutionContext<unknown>) {

@@ -40,4 +40,4 @@ lib
 .nyc_output/
 
 yarn.lock
-integration/test.sql
+integration/test.sqlite
