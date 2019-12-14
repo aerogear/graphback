@@ -13,12 +13,12 @@
     "pretest": "npm run build"
   },
   "dependencies": {
-    "apollo-boost": "^0.4.4",
+    "apollo-boost": "0.4.7",
     "graphback": "0.10.0-rc2",
     "graphql": "^14.0.0",
     "graphql-testx": "0.3.0-dev387.0b5dcc5",
     "knex": "0.20.4",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "2.6.0"
   },
   "ava": {
     "files": [
