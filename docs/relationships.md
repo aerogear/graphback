@@ -5,27 +5,38 @@ title: Relationships
 
 ## Database Relationships
 
-Graphback supports `one-to-one` and `one-to-many` relationships and provides out of the box support for the schema and resolvers accordingly.
+Graphback supports `one-to-one`, `one-to-many` and `many-to-one` relationships and provides out of the box support for the schema and resolvers accordingly.
 
 ### OneToOne
 
-The `1:1` relation can be simply declared by:
+The `1:1` relation can be declared by:
+
 ```graphql
 type Profile {
   user: User!
 }
-```
-which will create the relationship via a column in the `profile` table using column `userId`. You can customize the field which tracks the relationship using directives.
-```graphql
-type Profile {
-  """
-  @db.oneToOne: 'yourCustomField'
-  """
-  user: User!
+
+type User {
+  profile: Profile!
 }
 ```
 
-This creates a `yourCustomFieldId` in the `profile` table.
+which will create the relationship via a `userId` column in the `profile` table and a `profileId` column in the `user` table. You can customize the field which tracks the relationship using annotations:
+
+```graphql
+type Profile {
+  profileUser: User!
+}
+
+type User {
+  """
+  @db.oneToOne: 'profileUser'
+  """
+  profile: Profile!
+}
+```
+
+This creates a 1:1 relationship between `profile.profileUserId` and `user.profileId`.
 
 ### ManyToOne
 
@@ -37,21 +48,30 @@ type Comment {
 }
 ```
 
-This creates a column `noteId` in table `comment` to track the relationship. You can customise the field name by using the `@db.manyToOne` annotation which tracks the relationship field.
+This creates a `noteId` column in the `comment` table to track the relationship.
+
+You can also customise the field name:
 
 ```graphql
 type Comment {
-  """
-  @db.manyToOne: 'comments'
-  """
   customNote: Note
 }
+```
 
-type Note {
-  comments: [Comment]
+This creates `customNoteId` in the `comment` table.
+
+You can track to custom field names in the relation table using the `@db.manyToOne` annotation.
+
+```gql
+type Comment {
+  """
+  @db.manyToOne: 'noteComments'
+  """
+  note: Note
 }
 ```
-This creates a `customNoteId` column in the `comment` table.
+
+This tracks to `Note.noteComments`.
 
 ### OneToMany
 
@@ -63,7 +83,9 @@ type Note {
 }
 ```
 
-This tracks the relationship at the resolver layer so you can query `1:m` data like this:
+To create the foreign key in the relation table, see [ManyToOne](#ManyToOne).
+
+This tracks the relationship at the resolver level, so you can query `1:m` data like so:
 
 ```gql
 query allNotes {
@@ -89,9 +111,7 @@ type Note {
   """
   comments: [Comment]
 }
-
-type Comment {
-  customNote: Note
-}
 ```
+
+This tracks to the `Comment.customNote` GraphQL type.
 
