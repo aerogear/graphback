@@ -53,7 +53,7 @@ export interface MigrateOptions {
   /**
    * Remove directives from the GraphQLSchema
    */
-  removeDirectives?: boolean
+  removeDirectivesFromSchema?: boolean
 }
 
 export const defaultOptions: MigrateOptions = {
@@ -67,7 +67,7 @@ export const defaultOptions: MigrateOptions = {
   mapListToJson: true,
   plugins: [],
   debug: false,
-  removeDirectives: true
+  removeDirectivesFromSchema: true
 }
 
 export async function migrateDB(
@@ -93,7 +93,7 @@ export async function migrateDB(
   }
 
   let schema: GraphQLSchema;
-  if (finalOptions.removeDirectives) {
+  if (finalOptions.removeDirectivesFromSchema) {
     schema = removeDirectivesFromSchema(schemaText);
   } else {
     schema = buildSchema(schemaText)
