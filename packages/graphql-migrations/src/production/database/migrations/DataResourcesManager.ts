@@ -94,7 +94,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   }
 
   public async createDatabaseResources(context: DatabaseContextProvider, types: InputModelTypeContext[]):
-  Promise<void> {
+    Promise<void> {
     for (const gqlType of types) {
       const tableName: string = context.getFieldName(gqlType);
 
@@ -105,17 +105,17 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   }
 
   public async createDatabaseRelations(context: DatabaseContextProvider, types: InputModelTypeContext[]):
-  Promise<void> {
+    Promise<void> {
     logger.info("Creating relations")
     for (const gqlType of types) {
       const tableName = context.getFieldName(gqlType);
       const currentTable = tableName;
       for (const gqlField of gqlType.fields) {
         if (gqlField.isType) {
-          if (Relation.manyToMany in gqlField.directives) {
+          if (Relation.manyToMany in gqlField.annotations) {
             await this.createManyToManyRelation(currentTable, gqlField);
           } else if (
-            Relation.oneToMany in gqlField.directives ||
+            Relation.oneToMany in gqlField.annotations ||
             gqlField.isArray
           ) {
             await this.createOneToManyRelation(
@@ -124,7 +124,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
               tableName,
             );
           } else if (
-            Relation.oneToOne in gqlField.directives ||
+            Relation.oneToOne in gqlField.annotations ||
             !gqlField.isArray
           ) {
             await this.createOneToOneRelation(
@@ -147,10 +147,10 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    * @param tableName table to create relation in
    */
   public async createOneToOneRelation(currentTable: string, gqlField: InputModelFieldContext, tableName: string):
-   Promise<void> {
+    Promise<void> {
     let fieldname = `${currentTable}Id`
-    if (gqlField.hasDirectives && gqlField.directives.OneToOne.field) {
-      fieldname = gqlField.directives.OneToOne.field;
+    if (gqlField.hasDirectives && gqlField.annotations.OneToOne.field) {
+      fieldname = gqlField.annotations.OneToOne.field;
     }
     if (!gqlField.isArray) {
       // tslint:disable-next-line: no-parameter-reassignment
@@ -190,10 +190,10 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    * @param tableName table to create relation in
    */
   public async createOneToManyRelation(currentTable: string, gqlField: InputModelFieldContext, tableName: string):
-  Promise<void> {
+    Promise<void> {
     let fieldname = `${currentTable}Id`
-    if (gqlField.hasDirectives && gqlField.directives.OneToMany.field) {
-      fieldname = gqlField.directives.OneToMany.field;
+    if (gqlField.hasDirectives && gqlField.annotations.OneToMany.field) {
+      fieldname = gqlField.annotations.OneToMany.field;
     }
     if (gqlField.isArray) {
       // tslint:disable-next-line: no-parameter-reassignment
@@ -230,17 +230,14 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
    * @param gqlField properties of the field
    */
   public async createManyToManyRelation(currentTable: string, gqlField: InputModelFieldContext):
-  Promise<void> {
-    let newTable = gqlField.directives.ManyToMany.tablename
-    if (!newTable) {
-      newTable = `${currentTable}_${gqlField.type.toLowerCase()}`;
-    }
+    Promise<void> {
+    const newTable = `${currentTable}_${gqlField.type.toLowerCase()}`;
 
     // tslint:disable-next-line: await-promise
     const hasTable = await this.dbConnection.schema.hasTable(newTable);
     if (gqlField.isArray) {
       if (hasTable) {
-        logger.info('skipping relation creation');
+        logger.info('skipping rela  tion creation');
       } else {
         const tableOne = gqlField.type.toLowerCase();
         const tableTwo = currentTable;

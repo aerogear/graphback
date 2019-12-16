@@ -49,7 +49,8 @@
   },
   "dependencies": {
     "glob": "7.1.6",
-    "pino": "5.14.0"
+    "pino": "5.14.0",
+    "graphql-annotations": "0.0.3"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

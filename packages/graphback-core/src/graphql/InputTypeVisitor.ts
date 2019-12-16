@@ -1,4 +1,5 @@
 import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, InterfaceTypeDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
+import { parseFieldAnnotations } from './annotations';
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
@@ -42,6 +43,7 @@ export const inputTypeVisitor = {
       return {
         ...node.type,
         "name": node.name,
+        "annotations": parseFieldAnnotations(node),
         "directives": Object.assign({}, ...node.directives),
         "hasDirectives": node.directives.length > 0,
         "arguments": node.arguments
@@ -50,6 +52,7 @@ export const inputTypeVisitor = {
       return {
         ...node.type,
         "name": node.name,
+        "annotations": parseFieldAnnotations(node),
         "directives": Object.assign({}, ...node.directives),
         "hasDirectives": node.directives.length > 0,
       }

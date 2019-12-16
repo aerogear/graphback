@@ -3,7 +3,10 @@ type Note {
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment]! @OneToMany(field: "noteComment")
+  """
+  @db.oneToMany: 'noteComment'
+  """
+  comment: [Comment]!
 
 }
 

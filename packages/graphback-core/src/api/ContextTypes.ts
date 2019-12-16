@@ -23,16 +23,23 @@ export interface OneToMany {
  * n:m relation directive
  */
 export interface ManyToMany {
-  tablename?: string
+  field?: string
+}
+/**
+ * m:1 relation directive
+ */
+export interface ManyToOne {
+  field?: string
 }
 
 /**
  * All relation directive definitions
  */
-export interface RelationshipsDirectives {
+export interface InputModelFieldAnnotations {
   OneToOne?: OneToOne
   OneToMany?: OneToMany
   ManyToMany?: ManyToMany
+  ManyToOne?: ManyToOne
 }
 
 export interface ModelArgumentValue {
@@ -58,7 +65,7 @@ export interface InputModelFieldContext {
   isArray: boolean
   isType: boolean
   isNull: boolean
-  directives: RelationshipsDirectives
+  annotations: InputModelFieldAnnotations
   hasDirectives: boolean
   // tslint:disable-next-line: no-banned-terms
   arguments?: InputModelArgument[]
@@ -90,4 +97,3 @@ export interface InputInterfaceType {
   isNull: boolean
   isType: boolean
 }
-

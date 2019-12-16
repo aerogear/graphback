@@ -1,6 +1,5 @@
 import { gql } from 'apollo-server-core';
 import {
-  applyGeneratorDirectives,
   GraphQLBackendCreator,
   PgKnexDBDataProvider,
 } from 'graphback';
@@ -17,7 +16,6 @@ import { loadSchema } from './loadSchema';
  */
 export const createRuntime = async (client: Knex) => {
   const schemaText = loadSchema(jsonConfig.folders.model);
-  const schemaWithDirectives = applyGeneratorDirectives(schemaText);
 
   const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
@@ -27,7 +25,7 @@ export const createRuntime = async (client: Knex) => {
     connection: jsonConfig.db.dbConfig
   };
 
-  migrateDB(dbConfig, schemaWithDirectives).then((ops) => {
+  migrateDB(dbConfig, schemaText).then((ops) => {
     console.log(ops);
   });
 
