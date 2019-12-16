@@ -56,6 +56,7 @@ const runtime = await backend.createRuntime(dbClientProvider, pubSub);
   - `scalarMap`: Custom scalar mapping. Default: `null`.
   - `mapListToJson`: Map scalar lists to JSON column type by default.
   - `debug`: display debugging information and SQL queries.
+  - `removeDirectivesFromSchema`: removes all directives from the GraphQL schema.
   - All other options are not currently supported by Graphback.
 
 ### Defining your data model
