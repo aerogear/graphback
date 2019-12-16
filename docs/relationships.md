@@ -36,7 +36,7 @@ type User {
 }
 ```
 
-This creates a 1:1 relationship between `profile.profileUserId` and `user.profileId`.
+This creates a `1:1` relationship between `profile.profileUserId` and `user.profileId`.
 
 ### ManyToOne
 
