@@ -1,8 +1,9 @@
 import { graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core';
 import { diff } from '@graphql-inspector/core';
-import { buildSchema, GraphQLSchema } from 'graphql';
+import { buildSchema, GraphQLSchema, printSchema } from 'graphql';
 import * as knex from 'knex';
 import { KnexMigrationProvider, LocalMigrationManager } from '.';
+import { removeDirectivesFromSchema } from '../../util/removeDirectivesFromSchema';
 import { ModelChange, ModelChangeType } from '../changes/ChangeTypes';
 import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from '../database';
 import { mapModelChanges } from '../util/mapModelChanges';
@@ -26,14 +27,14 @@ export async function migrateDBUsingSchema(schemaText: string, strategy: Databas
  * @class GraphQLMigrationCreator
  */
 export class GraphQLMigrationCreator {
-  private schemaText: string;
+  private schema: GraphQLSchema;
   private knexMigrationManager: KnexMigrationManager;
   private localMigrationManager: LocalMigrationManager;
   private migrationProvider: MigrationProvider;
   private inputContext: InputModelTypeContext[];
   // tslint:disable-next-line: no-any
   constructor(schemaText: string, db: knex<any, unknown[]>, migrationsDir: string) {
-    this.schemaText = schemaText;
+    this.schema = removeDirectivesFromSchema(schemaText);
     this.inputContext = graphQLInputContext.createModelContext(schemaText, {});
     this.migrationProvider = new KnexMigrationProvider(db, migrationsDir);
     this.knexMigrationManager = new KnexMigrationManager(db);
@@ -71,7 +72,6 @@ export class GraphQLMigrationCreator {
    * @memberof GraphQLMigrationCreator
    */
   public async generateMigration(): Promise<SchemaMigration> {
-    const newSchema = buildSchema(this.schemaText);
 
     const migrations = await this.migrationProvider.getMigrations();
 
@@ -84,12 +84,12 @@ export class GraphQLMigrationCreator {
 
     const newMigration: SchemaMigration = {
       id: new Date().getTime(),
-      model: this.schemaText
+      model: printSchema(this.schema)
     };
 
     let changes: ModelChange[] = [];
     if (oldSchema) {
-      const inspectorChanges = diff(oldSchema, newSchema);
+      const inspectorChanges = diff(oldSchema, this.schema);
       changes = mapModelChanges(inspectorChanges);
     } else {
       changes = this.getContext().map((model: InputModelTypeContext) => {

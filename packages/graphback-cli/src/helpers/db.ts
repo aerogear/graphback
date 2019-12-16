@@ -1,6 +1,5 @@
 import * as execa from 'execa'
 import { GlobSync } from 'glob'
-import { applyGeneratorDirectives } from 'graphback';
 import { migrateDB } from 'graphql-migrations';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { ProjectConfig } from '../config/ProjectConfig';
@@ -40,10 +39,8 @@ export const createDBResources = async (config: ProjectConfig): Promise<any[]> =
 
     const schemaText = loadSchema(folders.model);
 
-    const schemaWithDirectives = applyGeneratorDirectives(schemaText);
+    databaseOperations = await migrateDB(dbConfig, schemaText);
 
-    const migration = await migrateDB(dbConfig, schemaWithDirectives);
-    databaseOperations = migration.results;
   } catch (err) {
     handleError(err)
   }

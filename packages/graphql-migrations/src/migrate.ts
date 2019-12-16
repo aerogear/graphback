@@ -1,4 +1,4 @@
-import { buildSchema } from 'graphql'
+import { buildSchema, GraphQLSchema, printSchema } from 'graphql'
 import * as Knex from 'knex';
 import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/generateAbstractDatabase'
 import { read } from './connector/read'
@@ -7,6 +7,7 @@ import { computeDiff } from './diff/computeDiff'
 import { MigrationResults } from './diff/Operation'
 import { MigratePlugin } from './plugin/MigratePlugin'
 import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
+import { removeDirectivesFromSchema } from './util/removeDirectivesFromSchema';
 
 export interface MigrateOptions {
   /**
@@ -49,6 +50,10 @@ export interface MigrateOptions {
    * Display debug information
    */
   debug?: boolean
+  /**
+   * Remove directives from the GraphQLSchema
+   */
+  removeDirectives?: boolean
 }
 
 export const defaultOptions: MigrateOptions = {
@@ -62,6 +67,7 @@ export const defaultOptions: MigrateOptions = {
   mapListToJson: true,
   plugins: [],
   debug: false,
+  removeDirectives: true
 }
 
 export async function migrateDB(
@@ -85,6 +91,14 @@ export async function migrateDB(
       debug: true,
     }
   }
+
+  let schema: GraphQLSchema;
+  if (finalOptions.removeDirectives) {
+    schema = removeDirectivesFromSchema(schemaText);
+  } else {
+    schema = buildSchema(schemaText)
+  }
+
   // Read current
   const existingAdb = await read(
     config,
@@ -93,7 +107,6 @@ export async function migrateDB(
     finalOptions.dbColumnPrefix,
   )
 
-  const schema = buildSchema(schemaText)
   // Generate new
   const newAdb = await generateAbstractDatabase(schema, {
     transformTableName: finalOptions.transformTableName,
