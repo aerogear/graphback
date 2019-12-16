@@ -16,8 +16,8 @@ const handleError = (err: { code: string; message: string; }): void => {
   process.exit(0)
 }
 
-export const createDBResources = async (config: ProjectConfig): Promise<any[]> => {
-  let databaseOperations: any[];
+export const createDBResources = async (config: ProjectConfig): Promise<any> => {
+  let databaseOperations: any;
   try {
     const { db: { database }, folders } = config;
 
