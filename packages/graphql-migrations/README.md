@@ -33,7 +33,7 @@ const dbConfig = {
   },
 };
 
-const schema = buildSchema(`
+const schema = `
 type Note {
   id: ID!
   title: String!
@@ -46,7 +46,7 @@ type Comment {
   description: String
   note: Note!
 }
-`);
+`;
 
 migrateDB(dbConfig, schema, {
   // Additional options
