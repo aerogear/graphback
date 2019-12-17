@@ -13,9 +13,11 @@ import {
 import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
-import { defaultColumnNameTransform, defaultTableNameTransform } from '../util/defaultNameTransforms'
+import { defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '../util/defaultNameTransforms'
+import getObjectTypeFromList from '../util/getObjectTypeFromList'
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
+import { OneToManyRelationship } from './RelationshipTypes'
 import { Table } from './Table'
 import { ForeignKey, TableColumn } from './TableColumn'
 
@@ -86,6 +88,7 @@ class AbstractDatabaseBuilder {
   private database: AbstractDatabase
   /** Used to push new intermediary tables after current table */
   private tableQueue: Table[] = []
+  private oneToManyQueue: OneToManyRelationship[] = [];
   private currentTable: Table | null = null
   private currentType: string | null = null
 
@@ -113,6 +116,12 @@ class AbstractDatabaseBuilder {
         }
       }
     }
+
+    // create relationships from OneToMany
+    for (const oneToMany of this.oneToManyQueue) {
+      this.createOneToManyRelationship(oneToMany)
+    }
+
     this.database.tables.push(...this.tableQueue)
     this.fillForeignKeys()
     return this.database
@@ -162,6 +171,17 @@ class AbstractDatabaseBuilder {
     for (const key in fields) {
       if (fields[key]) {
         const field = fields[key]
+
+        if (this.isOneToMany(field)) {
+          this.oneToManyQueue.push({
+            kind: 'OneToMany',
+            type: getObjectTypeFromList(field),
+            relation: type,
+            description: field.description
+          });
+          continue;
+        }
+
         this.buildColumn(table, field)
       }
     }
@@ -415,6 +435,38 @@ class AbstractDatabaseBuilder {
       foreign,
       defaultValue: annotations.default != null ? annotations.default : null,
     }
+  }
+
+  private createOneToManyRelationship(oneToManyRelationship: OneToManyRelationship) {
+    const annotations: any = parseAnnotations('db', oneToManyRelationship.description || null);
+
+    const field: GraphQLField<any, any> = {
+      name: annotations.oneToMany || lowerCaseFirstChar(oneToManyRelationship.relation.name),
+      type: oneToManyRelationship.relation,
+      description: oneToManyRelationship.description,
+      args: [],
+      extensions: []
+    }
+
+    const table = this.getRelationTableFromOneToMany(oneToManyRelationship)
+
+    this.buildColumn(table, field);
+  }
+
+  private getRelationTableFromOneToMany(oneToMany: OneToManyRelationship) {
+    const annotations: any = parseAnnotations('db', oneToMany.description || null);
+
+    return this.database.tables.find((table: Table) => {
+      const tableName = annotations.name || this.getTableName(oneToMany.type.name);
+      return table.name === tableName;
+    });
+  }
+
+  private isOneToMany(field: GraphQLField<any, any>) {
+    if (getObjectTypeFromList(field)) {
+      return true;
+    }
+    return false;
   }
 
   /**
