@@ -1,4 +1,5 @@
 import { filterInterfaceTypes, filterObjectTypes, getFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/core'
+import { lowerCaseFirstChar } from './util/lowerCaseFirstChar'
 
 export interface TargetType {
   name: string
@@ -146,6 +147,8 @@ const nullField = (f: InputModelFieldContext) => {
  * subscriptions - generated subscription according to config - new, updated, deleted
  * @param input input visted object from model
  */
+// TODO: function size
+// tslint:disable-next-line: max-func-body-length
 export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
@@ -154,7 +157,9 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
-        if (f.annotations.OneToOne || !f.isArray) {
+        const fieldName = getRelationFieldName(f, t);
+
+        if (f.annotations.OneToOne || f.annotations.ManyToOne || !f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',
@@ -258,3 +263,20 @@ export const createCustomSchemaContext = (inputContext: InputModelTypeContext[])
 
   return { customQueries, customMutations, customSubscriptions }
 }
+function getRelationFieldName(f: InputModelFieldContext, t: InputModelTypeContext) {
+  let fieldName: string;
+    if (f.annotations.OneToOne) {
+    fieldName = f.annotations.OneToOne.field;
+  }
+  else if (f.annotations.ManyToOne) {
+    fieldName = f.annotations.ManyToOne.field;
+  }
+  else if (f.annotations.OneToMany) {
+    fieldName = f.annotations.OneToMany.field;
+  }
+  else {
+    fieldName = lowerCaseFirstChar(t.name);
+  }
+  return fieldName;
+}
+
