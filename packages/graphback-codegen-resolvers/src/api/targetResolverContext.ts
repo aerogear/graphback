@@ -180,7 +180,7 @@ function createRelations(inputContext: InputModelTypeContext[]) {
           });
         }
         else if (f.annotations.OneToMany || f.isArray) {
-          let columnName = `${f.name}Id`;
+          let columnName = `${lowerCaseFirstChar(f.type)}Id`;
           if (f.annotations.OneToMany) {
             columnName = `${f.annotations.OneToMany.field}Id`;
           }
@@ -194,4 +194,8 @@ function createRelations(inputContext: InputModelTypeContext[]) {
   });
 
   return relations;
+}
+
+export function lowerCaseFirstChar(text: string) {
+  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
