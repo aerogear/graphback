@@ -1,5 +1,6 @@
 import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
 import * as templates from "../templates/LayeredResolverTemplates"
+import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
 // TODO extract to separate class that will support different types
@@ -180,10 +181,11 @@ function createRelations(inputContext: InputModelTypeContext[]) {
           });
         }
         else if (f.annotations.OneToMany || f.isArray) {
-          let columnName = `${lowerCaseFirstChar(f.type)}Id`;
+          let columnName = `${lowerCaseFirstChar(t.name)}Id`;
           if (f.annotations.OneToMany) {
             columnName = `${f.annotations.OneToMany.field}Id`;
           }
+
           relations.push({
             typeName: t.name,
             implementation: templates.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
@@ -194,8 +196,4 @@ function createRelations(inputContext: InputModelTypeContext[]) {
   });
 
   return relations;
-}
-
-export function lowerCaseFirstChar(text: string) {
-  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
