@@ -1,6 +1,6 @@
 ---
 id: config
-title: CRUD Config
+title: Graphback CRUD Config
 ---
 
 Graphback takes input model and generates CRUD operations as queries and mutations.
@@ -11,7 +11,7 @@ We can use them in clients to receive live updates for every change that is happ
  Graphback allows the user to customize the generation process by using `configuration` and `directives`.
 
 ## Configuration
-Graphback uses flags to allow user to choose between the CRUD operations and subscriptions. These are present in `config.json`, created during `init`,
+Graphback uses flags to allow user to choose between the CRUD operations and subscriptions. These are present in `graphback.json`, created by `config` command or by graphql-cli,
 in the root of your project folder under the `generation` key. The default config is
 ```json
 {
