@@ -1,5 +1,4 @@
-import { filterInterfaceTypes, filterObjectTypes, getFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/core'
-import { lowerCaseFirstChar } from './util/lowerCaseFirstChar'
+import { filterInterfaceTypes, filterObjectTypes, getFieldName, getRelationFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/core'
 
 export interface TargetType {
   name: string
@@ -191,7 +190,6 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const objectTypes = filterObjectTypes(inputContext);
   const interfaceTypes = filterInterfaceTypes(inputContext);
 
-
   context.types = objectTypes.map((t: InputModelTypeContext) => {
     return {
       "name": t.name,
@@ -262,21 +260,5 @@ export const createCustomSchemaContext = (inputContext: InputModelTypeContext[])
   }
 
   return { customQueries, customMutations, customSubscriptions }
-}
-function getRelationFieldName(f: InputModelFieldContext, t: InputModelTypeContext) {
-  let fieldName: string;
-    if (f.annotations.OneToOne) {
-    fieldName = f.annotations.OneToOne.field;
-  }
-  else if (f.annotations.ManyToOne) {
-    fieldName = f.annotations.ManyToOne.field;
-  }
-  else if (f.annotations.OneToMany) {
-    fieldName = f.annotations.OneToMany.field;
-  }
-  else {
-    fieldName = lowerCaseFirstChar(t.name);
-  }
-  return fieldName;
 }
 
