@@ -11,7 +11,7 @@ Graphback is an package andCLI tool that can help you bootstrap a GraphQL server
 - Support for subscriptions and live updates on the data
 - Relational support
 - Database migrations for relational database of your choice using Knex.js framework
-- Extendable runtime layer for composing data services used in generated resolvers
+- Extensible runtime layer for composing data services used in generated resolvers
 - Generated client side queries 
 - Integration with other community libraries like graphql-config and graphql-code-generator
 - Component based approach allows to support different programimng languages.
