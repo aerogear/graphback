@@ -55,7 +55,7 @@ graphql init
 
 Please answer all questions based on your preference.
 After project is created please follow project README file that might differ depending on
-the template tha was choosen on startup.
+the template that was chosen on startup.
 
 GraphQL CLI offers various commands to interact with your project that work along Graphback package.
 Graphback specific commands are available by executing `graphql generate` 
