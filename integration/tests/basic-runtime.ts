@@ -38,7 +38,6 @@ test.serial('Graphback runtime end to end', async (t: ExecutionContext) => {
 
 test.serial('Graphback runtime relationships - generic OneToMany', async (t: ExecutionContext) => {
   const server = await createServer(relationsSchema);
-  // TODO relationships not supported in queries and runtime
   await graphbackRuntimeWorkflow(server, t);
 });
 
