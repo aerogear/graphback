@@ -132,20 +132,18 @@ export class LayeredRuntimeResolverGenerator {
     for (const field of resolverElement.fields) {
 
       if (field.isType) {
-
-        if (field.directives.OneToOne || !field.isArray) {
+        if (field.annotations.OneToOne || !field.isArray) {
           // OneToOne
           let foreignIdName = `${resolverElement.name.toLowerCase()}Id`;
-          if (field.directives.OneToOne) {
-            foreignIdName = field.directives.OneToOne.field;
+          if (field.annotations.OneToOne) {
+            foreignIdName = field.annotations.OneToOne.field;
           }
-          // TODO:
         }
-        else if (field.directives.OneToMany || field.isArray) {
+        else if (field.annotations.OneToMany || field.isArray) {
           // OneToMany
           let foreignId = `${resolverElement.name.toLowerCase()}Id`;
-          if (field.directives.OneToMany) {
-            foreignId = field.directives.OneToMany.field;
+          if (field.annotations.OneToMany) {
+            foreignId = field.annotations.OneToMany.field;
           }
 
           if (resolvers[resolverElement.name] === undefined) {

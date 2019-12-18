@@ -1,5 +1,3 @@
-// TODO subscription support
-// TODO support for the database type instead of hardcoded lowercase
 export const createTemplate = (fieldName: string, typeName: string, subscription?: boolean): string => {
   return `${fieldName}: (_, args, context) => {
       validateRuntimeContext(context)
