@@ -30,30 +30,30 @@
   "dependencies": {
     "@graphback/core": "^0.10.0-rc2",
     "@graphql-inspector/core": "1.26.0",
-    "case": "1.6.1",
+    "case": "1.6.2",
     "graphql-annotations": "0.0.3",
-    "knex": "0.20.2",
+    "knex": "0.20.4",
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
-    "pino": "5.14.0",
+    "pino": "5.15.0",
     "glob": "7.1.6"
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/jest": "24.0.23",
-    "@types/node": "12.12.12",
-    "@types/lodash": "4.14.108",
+    "@types/jest": "24.0.24",
+    "@types/node": "12.12.20",
+    "@types/lodash": "4.14.149",
     "ava": "2.4.0",
     "graphql": "^14.5.8",
     "graphql-tools": "4.0.6",
-    "pg": "7.14.0",
-    "sqlite3": "4.1.0",
+    "pg": "7.15.0",
+    "sqlite3": "4.1.1",
     "rimraf": "3.0.0",
-    "ts-node": "8.5.2",
+    "ts-node": "8.5.4",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
-    "typescript": "3.7.2"
+    "typescript": "3.7.3"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
