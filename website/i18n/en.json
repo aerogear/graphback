@@ -46,7 +46,8 @@
         "title": "Releases"
       },
       "runtime": {
-        "title": "runtime"
+        "title": "Graphback runtime",
+        "sidebar_label": "Runtimes"
       },
       "templates": {
         "title": "Templates"
