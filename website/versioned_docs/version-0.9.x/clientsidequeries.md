@@ -5,7 +5,7 @@ original_id: clientqueries
 ---
 
 Graphback allows users to generate client-side queries based on the data model. All the queries/mutations/subscriptions
-which are generated through `graphback generate` for the user can also be generated as client-side queries. Users may follow up with using `create-react-app` or `apollo-client` to create client.
+which are generated through `graphback generate` for the user can also be generated as client-side queries. Users may follow up with `create-react-app` or `apollo-client` to create client.
 
 ## How it works
 Graphback asks whether you want to generate client-side queries in the `graphback init` command. Answering it yes,
