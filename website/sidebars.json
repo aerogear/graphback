@@ -9,9 +9,8 @@
     ],
     "Concepts": [
       "concepts",
-      "templates",
+      "runtime",
       "datasources",
-      "modules",
       "clientqueries"
     ],
     "Migrations": [

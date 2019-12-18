@@ -16,5 +16,11 @@ by generating backend layer using your data model.
 
 **Repository**: https://github.com/aerogear/graphback/
 
-> NOTE: This package offers core functionality and it is not designed to be used directly. 
-For usage please refer to graphback-cli package.
+
+## Graphback core packages
+
+- 
+- 
+
+
+

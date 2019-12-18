@@ -1,4 +1,4 @@
-## apollo-starter-ts
+## Graphback Runtime Example
 
 Template that showcases Graphback runtime generation capabilities using 
 resolver layer generated in memory. 
@@ -10,7 +10,6 @@ Currently 2 data providers are supported:
 
  - KnexDBDataProvider
  - PgKnexDBDataProvider
- - RestDataProvider (Looking for contributions)
 
 Then developers can create runtime instance:
 

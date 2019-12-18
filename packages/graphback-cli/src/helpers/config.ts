@@ -1,9 +1,22 @@
 import chalk from 'chalk';
+import * as execa from 'execa'
 import * as figlet from 'figlet'
 import { askForClient, chooseDatabase, createConfig } from '../templates/configTemplates'
 import { addModel, createModel, ModelTemplate } from '../templates/modelTemplates';
 import { logInfo } from '../utils';
-import { installDependencies } from './init';
+
+/**
+ * Install dependencies, currently only npm
+ */
+export async function installDependencies(database: string): Promise<void> {
+  logInfo('Installing dependencies')
+  await execa('npm', ['i'])
+  if (database === 'pg') {
+    await execa('npm', ['i', '-S', 'pg'])
+  } else if (database === 'sqlite3') {
+    await execa('npm', ['i', '-S', 'sqlite3'])
+  }
+}
 
 function postSetupMessage(commandRoot: string): string {
   return `

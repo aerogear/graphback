@@ -1,7 +1,11 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
 import { logInfo } from '../utils'
-import { GraphQLModel } from './templateMetadata'
+
+export interface GraphQLModel {
+ name: string
+ content: string
+}
 
 const modelsPath = `${__dirname}/resources/models`
 

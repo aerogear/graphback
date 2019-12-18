@@ -13,9 +13,3 @@ Graphback provides support to multiple databases
 - PostgreSQL
 - MySQL
 - SQLite
-- MSSQL 
-
-## Planned Data Sources
-
-- MongoDB (In Progress)
-- REST (In Progress)

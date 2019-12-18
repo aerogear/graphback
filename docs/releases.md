@@ -5,8 +5,45 @@ title: Releases
 
 ## What's new in Graphback
 
+
 This file contains changes and migration steps for Graphback project. 
 Please follow indidividual releases for more information.
+
+
+# 0.10.0
+
+BREAKING changes for CLI/ and runtime.
+
+### Graphback-CLI
+
+- Removed `init` method 
+
+Init method is no longer available. To start new boilerplate project
+please use graphql-cli `init` command instead that now incorporates graphback.
+
+
+### Graphback
+
+- Added runtime layer
+
+Runtime layer gives developers ability to run GraphQL server basing on input model 
+without code generation. All resolvers are created at runtime giving developers ability to update applications 
+on the fly. For more information please check official documentation for runtime layer.
+
+- Deprecating graphback as way to interact with the Graphback ecosystem
+
+Graphback package offers multiple helpers however to fully configure all generators and other capabilities
+developers can use individual packages:
+
+```
+@graphback/codegen-client
+@graphback/codegen-resolvers
+@graphback/codegen-schema
+@graphback/core
+@graphback/runtime
+graphql-migrations
+```
+
 
 # 0.9.1
 
