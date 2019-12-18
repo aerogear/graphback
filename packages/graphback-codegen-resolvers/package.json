@@ -37,20 +37,20 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/node": "12.12.12",
+    "@types/node": "12.12.20",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
-    "ts-node": "8.5.2",
+    "ts-node": "8.5.4",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
-    "typescript": "3.7.2"
+    "typescript": "3.7.3"
   },
   "dependencies": {
     "@graphback/core": "^0.10.0-rc2",
-    "knex": "0.20.2",
-    "pg": "7.14.0",
-    "sqlite3": "4.1.0"
+    "knex": "0.20.4",
+    "pg": "7.15.0",
+    "sqlite3": "4.1.1"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

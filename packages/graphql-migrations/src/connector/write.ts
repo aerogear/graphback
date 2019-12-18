@@ -169,7 +169,7 @@ class Writer {
       await this.callHook(childOp, 'before')
     }
     await this.trx.schema.withSchema(this.schemaName)
-      .createTable(this.getTableName(op.table), async (table: Knex.TableBuilder) => {
+      .createTable(this.getTableName(op.table), async (table: Knex.CreateTableBuilder) => {
         for (const childOp of childOps) {
           switch (childOp.type) {
             case 'column.create':
@@ -258,7 +258,7 @@ class Writer {
       }
     }
     await this.trx.schema.withSchema(this.schemaName)
-      .alterTable(this.getTableName(tableName), async (table: Knex.TableBuilder) => {
+      .alterTable(this.getTableName(tableName), async (table: Knex.CreateTableBuilder) => {
         for (const childOp of childOps) {
           switch (childOp.type) {
             case 'table.comment.set':
