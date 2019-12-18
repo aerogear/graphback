@@ -57,7 +57,7 @@ Please answer all questions based on your preference.
 After project is created please follow project README file that might differ depending on
 the template that was chosen on startup.
 
-GraphQL CLI offers various commands to interact with your project that work along Graphback package.
+GraphQL CLI offers various commands to interact with your project that work with the Graphback package.
 Graphback specific commands are available by executing `graphql generate` 
  
 ## Adding Graphback to existing project using Graphback CLI
