@@ -9,7 +9,7 @@
     ],
     "Concepts": [
       "concepts",
-      "templates",
+      "runtime",
       "datasources",
       "clientqueries"
     ],
