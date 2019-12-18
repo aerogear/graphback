@@ -4,7 +4,7 @@ title: What is Graphback and how do I get started?
 sidebar_label: What is Graphback
 ---
 
-Graphback is an package andCLI tool that can help you bootstrap a GraphQL server and client for you including GraphQL schema, resolvers and generating database structure. Graphback addresses the difficulty in configuring a GraphQL server from scratch by giving developers:
+Graphback is a package and CLI tool that can help you bootstrap a GraphQL server and client for you including GraphQL schema, resolvers and generating database structure. Graphback addresses the difficulty in configuring a GraphQL server from scratch by giving developers:
 
 - Generated GraphQL Schema containing Queries and Mutations for general data access
 - Underlying resolvers to fetch data in performant way
