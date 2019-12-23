@@ -1,0 +1,27 @@
+{
+  "version-0.10.x-docs": {
+    "Getting Started": [
+      "version-0.10.x-gettingstarted",
+      "version-0.10.x-datamodel",
+      "version-0.10.x-config",
+      "version-0.10.x-custom",
+      "version-0.10.x-relationships"
+    ],
+    "Concepts": [
+      "version-0.10.x-concepts",
+      "version-0.10.x-runtime",
+      "version-0.10.x-datasources",
+      "version-0.10.x-clientqueries"
+    ],
+    "Migrations": [
+      "version-0.10.x-migrations",
+      "version-0.10.x-openapi"
+    ],
+    "Reference": [
+      "version-0.10.x-commands"
+    ],
+    "Releases": [
+      "version-0.10.x-releases"
+    ]
+  }
+}
