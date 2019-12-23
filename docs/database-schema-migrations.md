@@ -140,6 +140,9 @@ When using custom name in database we need to map it directly inside resolver or
     }
 ```
 
+> NOTE: database migration logic require objects to have `id: ID!` field defined. 
+Renaming `id` field to anything else will break Graphback data resolution logic
+
 ### Compatibility
 
 The following database providers support full database schema migrations.

@@ -14,12 +14,17 @@ type Note {
   title: String!
   description: String!
   ## Relationship
-  comment: [Comment]!
+  comment: [Comment!]!
 }
 
 type Comment {
   id: ID!
   title: String!
   description: String!
+  note: Note!
 }
 ```
+
+Every data model needs to have `id: ID!` field that will be used to uniquely represent every object in the database. Objects can also reference each other using relationships.
+
+For more information please refer to [`migrations`](/docs/database-schema-migrations) documentation 
