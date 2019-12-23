@@ -116,16 +116,41 @@ type Note {
 }
 ```
 
+#### Changing column names in graphback
+
+When working with database migration library it is possible to change individual database columns.
+sing custom column will require manual mapping in resolver or database layer. 
+
+```gql
+type Note {
+  id: ID!
+  """
+  @db.name: 'note_title'
+  """
+  title: String!
+}
+```
+
+When using custom name in database we need to map it directly inside resolver or db layer.
+
+```ts
+      // In your data provider
+      data.title = data['note_title']
+      return data;
+    }
+```
+
 ### Compatibility
 
 The following database providers support full database schema migrations.
 
 - PostgreSQL
+- 
 
-SQLite is not yet fully supported but will be soon.
+# Migrations Engine for Production use cases
 
-### Migrations in Production
-
+As supplement to development database migrations Graphback offers additional method called
+`migrateDBUsingSchema`.
 `migrateDBUsingSchema` can be used to perform migrations in a controlled/production environment.
 
 Options:
