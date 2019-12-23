@@ -5,6 +5,7 @@ import { read } from './connector/read'
 import { write } from './connector/write'
 import { computeDiff } from './diff/computeDiff'
 import { MigrationResults } from './diff/Operation'
+import { MigrateOperationFilter } from './plugin/MigrateOperationFilter';
 import { MigratePlugin } from './plugin/MigratePlugin'
 import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
 import { removeDirectivesFromSchema } from './util/removeDirectivesFromSchema';
@@ -54,6 +55,13 @@ export interface MigrateOptions {
    * Remove directives from the GraphQLSchema
    */
   removeDirectivesFromSchema?: boolean
+
+  /**
+   * Method that can be used to filter out operations that we do not want to execute.
+   * For example if we want to prevent deletion of the tables filter can remove `table.drop` operations
+   * from array
+   */
+  operationFilter?: MigrateOperationFilter
 }
 
 export const defaultOptions: MigrateOptions = {
@@ -118,9 +126,14 @@ export async function migrateDB(
     console.log('AFTER', JSON.stringify(newAdb.tables, null, 2))
   }
   // Diff
-  const ops = await computeDiff(existingAdb, newAdb, {
+  let ops = await computeDiff(existingAdb, newAdb, {
     updateComments: finalOptions.updateComments,
   })
+
+  if (finalOptions.operationFilter) {
+    ops = finalOptions.operationFilter.filter(ops);
+  }
+
   if (finalOptions.debug) {
     console.log('OPERATIONS', ops)
   }
