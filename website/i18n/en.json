@@ -51,6 +51,52 @@
       },
       "templates": {
         "title": "Templates"
+      },
+      "version-0.9.x/version-0.9.x-clientqueries": {
+        "title": "Client-side Queries"
+      },
+      "version-0.9.x/version-0.9.x-commands": {
+        "title": "CLI commands"
+      },
+      "version-0.9.x/version-0.9.x-concepts": {
+        "title": "Introduction"
+      },
+      "version-0.9.x/version-0.9.x-config": {
+        "title": "CRUD Config"
+      },
+      "version-0.9.x/version-0.9.x-custom": {
+        "title": "Custom Methods"
+      },
+      "version-0.9.x/version-0.9.x-database-schema-migrations": {
+        "title": "Database Schema Migrations"
+      },
+      "version-0.9.x/version-0.9.x-datasources": {
+        "title": "Data Sources"
+      },
+      "version-0.9.x/version-0.9.x-datamodel": {
+        "title": "Defining your Data Model"
+      },
+      "version-0.9.x/version-0.9.x-gettingstarted": {
+        "title": "What is Graphback and how do I get started?",
+        "sidebar_label": "What is Graphback"
+      },
+      "version-0.9.x/version-0.9.x-migrations": {
+        "title": "Migrating to GraphQL"
+      },
+      "version-0.9.x/version-0.9.x-modules": {
+        "title": "GraphQL Modules"
+      },
+      "version-0.9.x/version-0.9.x-openapi": {
+        "title": "OpenAPI migrations"
+      },
+      "version-0.9.x/version-0.9.x-relationships": {
+        "title": "Relationships"
+      },
+      "version-0.9.x/version-0.9.x-releases": {
+        "title": "Releases"
+      },
+      "version-0.9.x/version-0.9.x-templates": {
+        "title": "Templates"
       }
     },
     "links": {
