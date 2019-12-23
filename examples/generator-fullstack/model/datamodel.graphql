@@ -3,7 +3,15 @@
 """
 type Note {
   id: ID!
+  """
+  @db.type: 'string'
+  @db.length: 100
+  """
   title: String!
+  """
+  @db.type: 'text'
+  """
+  description: String
   """
   @db.oneToMany: 'commentNote'
   """
@@ -15,6 +23,9 @@ type Note {
 """
 type Comment {
   id: ID!
+  """
+  @db.type: 'text'
+  """
   description: String
   commentNote: Note!
 }
