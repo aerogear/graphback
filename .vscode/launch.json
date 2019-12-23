@@ -77,19 +77,6 @@
         "db"
       ],
       "cwd": "${workspaceRoot}/examples/generator-fullstack",
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "CLI update-db",
-      "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-      "sourceMaps": true,
-      "protocol": "inspector",
-      "args": [
-        "update-db"
-      ],
-      "cwd": "${workspaceRoot}/examples/generator-fullstack",
     }
   ]
 }
