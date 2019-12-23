@@ -11,9 +11,9 @@ export interface WriteParams {
   ) => void
 }
 
-export abstract class MigratePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public write(params: WriteParams): void {
-    // Re-implement
-  }
+/**
+ * Interface for all migration plugins
+ */
+export interface MigratePlugin {
+  write(params: WriteParams): boolean;
 }
