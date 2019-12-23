@@ -1,6 +1,6 @@
 {
   "name": "@graphback/core",
-  "version": "0.10.0-rc2",
+  "version": "0.10.0-rc3",
   "description": "Api for building Graphback generator metadata",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "glob": "7.1.6",
-    "pino": "5.15.0",
-    "graphql-annotations": "0.0.3"
+    "graphql-annotations": "0.0.3",
+    "pino": "5.15.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
