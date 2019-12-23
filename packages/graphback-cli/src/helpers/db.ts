@@ -1,6 +1,6 @@
 import * as execa from 'execa'
 import { GlobSync } from 'glob'
-import { migrateDB, MigrateOptions, removeDeleteOperationsFilter } from 'graphql-migrations';
+import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { ProjectConfig } from '../config/ProjectConfig';
 import { logError, logInfo } from '../utils'
@@ -40,7 +40,7 @@ export const createDBResources = async (config: ProjectConfig): Promise<any> => 
 
     const migrateOptions: MigrateOptions = {
       // Do not perform delete operations on tables
-      operationFilter: removeDeleteOperationsFilter
+      operationFilter: removeNonSafeOperationsFilter
     }
 
     const schemaText = loadSchema(folders.model);
