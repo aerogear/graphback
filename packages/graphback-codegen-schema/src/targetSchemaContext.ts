@@ -164,7 +164,7 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
           relations.push({
             "name": t.name,
             "type": 'Type',
-            "relation": `${f.name}: [${f.type}!]`
+            "relation": `${f.name}: [${f.type}!]!`
           })
         }
       }
