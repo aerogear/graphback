@@ -119,7 +119,7 @@ type Note {
 #### Changing column names in graphback
 
 When working with database migration library it is possible to change individual database columns.
-sing custom column will require manual mapping in resolver or database layer. 
+Using custom column will require manual mapping in resolver or database layer. 
 
 ```gql
 type Note {
@@ -145,7 +145,7 @@ When using custom name in database we need to map it directly inside resolver or
 The following database providers support full database schema migrations.
 
 - PostgreSQL
-- 
+- SQLLite
 
 # Migrations Engine for Production use cases
 
