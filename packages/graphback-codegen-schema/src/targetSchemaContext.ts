@@ -146,35 +146,12 @@ const nullField = (f: InputModelFieldContext) => {
  * subscriptions - generated subscription according to config - new, updated, deleted
  * @param input input visted object from model
  */
-// TODO: function size
-// tslint:disable-next-line: max-func-body-length
 export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
 
-  inputContext.forEach((t: InputModelTypeContext) => {
-    t.fields.forEach((f: InputModelFieldContext) => {
-      if (f.isType) {
-        const fieldName = getRelationFieldName(f, t);
-
-        if (f.annotations.OneToOne || f.annotations.ManyToOne || !f.isArray) {
-          relations.push({
-            "name": t.name,
-            "type": 'Type',
-            "relation": `${f.name}: ${f.type}`
-          })
-        } else if (f.annotations.OneToMany || f.isArray) {
-          relations.push({
-            "name": t.name,
-            "type": 'Type',
-            "relation": `${f.name}: [${f.type}!]!`
-          })
-        }
-      }
-    })
-  });
-
+  addRelations(inputContext, relations)
 
   const context: TargetContext = {
     types: [],
@@ -224,7 +201,7 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
       ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))]
     }
   })
-  // context.pagination = inputContext.filter((t: Type) => t.config.paginate)
+  
   context.queries = [...findQueries(objectTypes), ...findAllQueries(objectTypes)]
   context.mutations = [...createQueries(objectTypes), ...updateQueries(objectTypes), ...delQueries(objectTypes)]
   context.subscriptions = [...objectTypes.filter((t: InputModelTypeContext) => !t.config.disableGen && t.config.create && t.config.subCreate).map((t: InputModelTypeContext) => newSub(t.name)),
@@ -260,5 +237,29 @@ export const createCustomSchemaContext = (inputContext: InputModelTypeContext[])
   }
 
   return { customQueries, customMutations, customSubscriptions }
+}
+
+function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
+  inputContext.forEach((t: InputModelTypeContext) => {
+    t.fields.forEach((f: InputModelFieldContext) => {
+      if (f.isType) {
+        const fieldName = getRelationFieldName(f, t)
+        if (f.annotations.OneToOne || f.annotations.ManyToOne || !f.isArray) {
+          relations.push({
+            "name": t.name,
+            "type": 'Type',
+            "relation": `${f.name}: ${f.type}`
+          })
+        }
+        else if (f.annotations.OneToMany || f.isArray) {
+          relations.push({
+            "name": t.name,
+            "type": 'Type',
+            "relation": `${f.name}: [${f.type}!]`
+          })
+        }
+      }
+    })
+  })
 }
 
