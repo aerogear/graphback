@@ -16,8 +16,8 @@
     "apollo-boost": "0.4.7",
     "graphback": "^0.10.0-rc3",
     "graphql": "^14.0.0",
-    "graphql-testx": "0.3.0-dev395.1074469",
-    "knex": "0.20.4",
+    "graphql-testx": "0.3.0-dev407.37e9f4a",
+    "knex": "0.20.5",
     "node-fetch": "2.6.0"
   },
   "ava": {
@@ -42,7 +42,7 @@
     "ts-node": "8.5.4",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
-    "typescript": "3.7.3"
+    "typescript": "3.7.4"
   },
   "license": "Apache-2.0"
 }
