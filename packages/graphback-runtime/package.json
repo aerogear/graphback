@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/node": "12.12.21",
+    "@types/node": "12.12.22",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
@@ -45,13 +45,13 @@
     "ts-node": "8.5.4",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
-    "typescript": "3.7.3"
+    "typescript": "3.7.4"
   },
   "dependencies": {
     "@graphback/core": "^0.10.0-rc3",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0",
-    "knex": "0.20.4"
+    "knex": "0.20.5"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
