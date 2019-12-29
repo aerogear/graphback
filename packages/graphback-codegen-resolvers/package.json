@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@graphback/core": "^0.10.0-rc3",
-    "knex": "0.20.5",
+    "knex": "0.20.4",
     "pg": "7.16.1",
     "sqlite3": "4.1.1"
   },
