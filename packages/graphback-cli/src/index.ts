@@ -10,6 +10,7 @@ if (require.main === module) {
     .commandDir('commands')
     .demandCommand(1)
     .strict()
+    .recommendCommands()
     .help()
     .alias('h', 'help')
     .version()
