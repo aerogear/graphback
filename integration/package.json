@@ -17,7 +17,7 @@
     "graphback": "^0.10.0-rc3",
     "graphql": "^14.0.0",
     "graphql-testx": "0.3.0-dev407.37e9f4a",
-    "knex": "0.20.5",
+    "knex": "0.20.6",
     "node-fetch": "2.6.0"
   },
   "ava": {
