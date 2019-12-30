@@ -33,7 +33,7 @@
     "case": "1.6.2",
     "glob": "7.1.6",
     "graphql-annotations": "0.0.3",
-    "knex": "0.20.5",
+    "knex": "0.20.6",
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
