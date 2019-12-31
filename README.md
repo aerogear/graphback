@@ -59,5 +59,5 @@ Licensed under the APLv2.
 [license-badge]: https://img.shields.io/badge/license-APLv2-blue.svg
 [typescript-30]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html
 [nodejs]: https://nodejs.org/dist/latest-v8.x/docs/api/
-[license]: https://github.com/wtrocki/graphql-resolver-gen/blob/master/LICENSE
+[license]: ./LICENSE
 [prs]: ./CONTRIBUTING.md
