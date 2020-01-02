@@ -50,11 +50,11 @@
     "@graphback/codegen-schema": "^0.10.0-rc3",
     "@graphback/core": "^0.10.0-rc3",
     "@graphback/runtime": "^0.10.0-rc3",
-    "@graphql-inspector/core": "1.26.0",
+    "@graphql-inspector/core": "1.27.0",
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
     "knex": "0.20.6",
-    "pg": "7.16.1",
+    "pg": "7.17.0",
     "pino": "5.15.0",
     "sqlite3": "4.1.1",
     "tslib": "1.10.0"
