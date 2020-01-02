@@ -49,7 +49,7 @@
   "dependencies": {
     "@graphback/core": "^0.10.0-rc3",
     "knex": "0.20.6",
-    "pg": "7.16.1",
+    "pg": "7.17.0",
     "sqlite3": "4.1.1"
   },
   "peerDependencies": {
