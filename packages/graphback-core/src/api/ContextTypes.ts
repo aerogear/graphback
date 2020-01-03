@@ -3,6 +3,7 @@ import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
 
 export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
 export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
+export const SCALAR_TYPE_DEFINITION = 'ScalarTypeDefinition';
 export const OBJECT_TYPE_EXTENSION = 'ObjectTypeExtension';
 
 /**

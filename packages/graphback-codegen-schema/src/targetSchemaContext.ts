@@ -22,10 +22,10 @@ export interface TargetContext {
   types: TargetType[]
   interfaces: TargetType[]
   inputFields: TargetType[]
-  filterFields: TargetType[],
-  // pagination: Type[],
-  queries: string[],
-  mutations: string[],
+  filterFields: TargetType[]
+  scalars:  TargetType[]
+  queries: string[]
+  mutations: string[]
   subscriptions: string[]
   relations: RelationInfo[]
 }
@@ -156,6 +156,7 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const context: TargetContext = {
     types: [],
     interfaces: [],
+    scalars: [],
     inputFields: [],
     filterFields: [],
     queries: [],
