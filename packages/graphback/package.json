@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "@types/node": "12.12.22",
+    "@types/node": "12.12.24",
     "@types/pino": "5.20.0",
     "ava": "2.4.0",
     "graphql": "14.5.8",
