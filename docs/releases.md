@@ -8,6 +8,33 @@ title: Releases
 This file contains changes and migration steps for Graphback project. 
 Please follow individual releases for more information.
 
+# 0.11.0
+
+BREAKING changes for config
+
+### Graphback
+
+- BREAKING: Removed directives for CRUD operations
+Graphback no longer uses GraphQL directives for controling generation of the CRUD operations.
+Users should use annotations
+
+```
+type Note @delete {
+  ...
+}
+```
+
+becomes now:
+
+```
+"""
+  @crud.delete
+"""
+type Note @delete {
+  ...
+}
+```
+
 # 0.10.0
 
 BREAKING changes for CLI/ and runtime.

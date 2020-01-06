@@ -18,7 +18,7 @@ type Note {
   description: String!
 }
 ```
-running `graphback generate` will generate all operations which are enabled in `config.json` or using `directives`.
+running `graphback generate` will generate all operations which are enabled in `config.json` or using `annotations`.
 
 ## Examples
 ### Fragment

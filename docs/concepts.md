@@ -28,7 +28,7 @@ type Query {
 }
 ```
 
-Graphback provides a set of the GraphQL directives that allow providing hints for the generation process to customize output source code. Based on provided model Graphback will generate a set of queries, mutations, and subscriptions together with resolvers that will by default connect with a database of your choice. 
+Graphback provides a set of the GraphQL annotations that allow providing hints for the generation process to customize output source code. Based on provided model Graphback will generate a set of queries, mutations, and subscriptions together with resolvers that will by default connect with a database of your choice. 
 
 Input model can contain custom queries and mutations that can be implemented manually by developers at a later stage.
 

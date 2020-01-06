@@ -24,7 +24,7 @@ and execute:
 `graphback openapi` 
 
 By default the command will strip out all methods and leave only the OpenAPI types.
-Developers can manually apply Graphback directives and tweak the schema for their own needs.
+Developers can manually apply Graphback annotations and tweak the schema for their own needs.
 
 > NOTE: Migration is going to apply `ID!` type only when OpenAPI definition is 
 using UUID type. In other scenarios `ID!` type needs to be applied manually to 
