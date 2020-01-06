@@ -1,6 +1,6 @@
 {
   "name": "graphql-cli-fullstack-template",
-  "version": "0.10.0-rc3",
+  "version": "0.10.0",
   "private": true,
   "workspaces": [
     "client",
