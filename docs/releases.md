@@ -59,7 +59,7 @@ Removed REST template from official list of templates
 
 ### Graphback-cli
 
-#### Breaking changesfeat:
+#### Breaking changes
 
 Templates rely on `graphback.json` file. Please rename your `config.json` to `graphback.json` and add additional configuration entries
 
