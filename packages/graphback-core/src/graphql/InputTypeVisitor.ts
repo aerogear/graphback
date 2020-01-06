@@ -1,5 +1,5 @@
 import { ArgumentNode, BooleanValueNode, DirectiveDefinitionNode, DirectiveNode, FieldDefinitionNode, InputValueDefinitionNode, InterfaceTypeDefinitionNode, ListTypeNode, NamedTypeNode, NameNode, NonNullTypeNode, ObjectTypeDefinitionNode, StringValueNode } from 'graphql';
-import { parseFieldAnnotations } from './annotations';
+import { parseFieldAnnotations, parseTypeAnnotations } from './annotations';
 
 const scalars = ['ID', 'Int', 'Float', 'String', 'Boolean']
 
@@ -44,8 +44,7 @@ export const inputTypeVisitor = {
         ...node.type,
         "name": node.name,
         "annotations": parseFieldAnnotations(node),
-        "directives": Object.assign({}, ...node.directives),
-        "hasDirectives": node.directives.length > 0,
+        "directives": node.directives,
         "arguments": node.arguments
       }
     } else {
@@ -53,18 +52,13 @@ export const inputTypeVisitor = {
         ...node.type,
         "name": node.name,
         "annotations": parseFieldAnnotations(node),
-        "directives": Object.assign({}, ...node.directives),
-        "hasDirectives": node.directives.length > 0,
+        "directives": node.directives
       }
     }
   },
 
   InterfaceTypeDefinition: (node: InterfaceTypeDefinitionNode) => {
-    let config = {};
-
-    node.directives.forEach((directive: object) => {
-      config = Object.assign(config, directive);
-    })
+    const config = parseTypeAnnotations(node)
 
     return {
       "kind": node.kind,
@@ -76,19 +70,7 @@ export const inputTypeVisitor = {
 
 
   ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => {
-    let config = {}
-
-    node.directives.forEach((directive: object) => {
-      config = Object.assign(config, directive)
-    });
-
-    Object.keys(config).forEach((key: string) => {
-      if (Object.keys(config[key]).length) {
-        config[key] = config[key].enable
-      } else {
-        config[key] = true
-      }
-    })
+    const config = parseTypeAnnotations(node)
 
     return {
       "kind": node.kind,
@@ -96,17 +78,6 @@ export const inputTypeVisitor = {
       "fields": node.fields,
       "interfaces": node.interfaces,
       "config": config
-    }
-  },
-
-  DirectiveDefinition: (node: DirectiveDefinitionNode) => {
-    // tslint:disable-next-line: no-null-keyword
-    return null
-  },
-
-  Directive: (node: DirectiveNode) => {
-    return {
-      [node.name.toString()]: Object.assign({}, ...node.arguments)
     }
   },
 

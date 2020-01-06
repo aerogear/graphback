@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import { graphQLInputContext, InputModelTypeContext } from '../src';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
-const schemaTextDirectives = readFileSync(`${__dirname}/mockDirectives.graphql`, 'utf8')
+const schemaTextAnnotations = readFileSync(`${__dirname}/mockAnnotations.graphql`, 'utf8')
 
 ava('Test snapshot config', async (t: ExecutionContext) => {
   const defautConfig = {
@@ -41,10 +41,10 @@ ava('Test snapshot no config', async (t: ExecutionContext) => {
 });
 
 
-ava('Test snapshot with directives', async (t: ExecutionContext) => {
+ava('Test snapshot with annotations', async (t: ExecutionContext) => {
   const defautConfig = {
   }
-  const inputContext = graphQLInputContext.createModelContext(schemaTextDirectives, defautConfig)
+  const inputContext = graphQLInputContext.createModelContext(schemaTextAnnotations, defautConfig)
 
   t.snapshot(inputContext);
 });
