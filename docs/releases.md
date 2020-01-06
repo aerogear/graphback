@@ -5,10 +5,8 @@ title: Releases
 
 ## What's new in Graphback
 
-
 This file contains changes and migration steps for Graphback project. 
-Please follow indidividual releases for more information.
-
+Please follow individual releases for more information.
 
 # 0.10.0
 
@@ -19,8 +17,7 @@ BREAKING changes for CLI/ and runtime.
 - Removed `init` method 
 
 Init method is no longer available. To start new boilerplate project
-please use graphql-cli `init` command instead that now incorporates graphback.
-
+please use graphql-cli `init` command instead that now incorporates Graphback.
 
 ### Graphback
 
@@ -44,13 +41,19 @@ developers can use individual packages:
 graphql-migrations
 ```
 
+### GraphQL-Migrations
+
+- Added a new library [`graphql-migrations`](https://github.com/aerogear/graphback/tree/master/packages/graphql-migrations) for executing database migrations.
+
+- `migrateDB` directly compares the input model with the current database and uses the generated diff to update the database structure. This mode does not generate any migration metadata.
+
+- `migrateDBUsingSchema` updates the database by comparing the input model with the previous model. This mode generates migration metadata which is persisted to the local filesystem and to the database.
 
 # 0.9.1
 
 ### Templates
 
 Removed REST template from official list of templates
-
 
 # 0.9.0
 
