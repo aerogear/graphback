@@ -1,6 +1,6 @@
 {
   "name": "graphback-integration-tests",
-  "version": "0.10.0-rc3",
+  "version": "0.10.0",
   "private": true,
   "description": "Integration tests",
   "main": "index.js",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "apollo-boost": "0.4.7",
-    "graphback": "^0.10.0-rc3",
+    "graphback": "0.10.0",
     "graphql": "^14.0.0",
     "graphql-testx": "0.3.0-dev407.37e9f4a",
     "knex": "0.20.6",
