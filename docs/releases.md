@@ -5,10 +5,8 @@ title: Releases
 
 ## What's new in Graphback
 
-
 This file contains changes and migration steps for Graphback project. 
 Please follow individual releases for more information.
-
 
 # 0.10.0
 
@@ -19,8 +17,7 @@ BREAKING changes for CLI/ and runtime.
 - Removed `init` method 
 
 Init method is no longer available. To start new boilerplate project
-please use graphql-cli `init` command instead that now incorporates graphback.
-
+please use graphql-cli `init` command instead that now incorporates Graphback.
 
 ### Graphback
 
