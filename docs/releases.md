@@ -7,7 +7,7 @@ title: Releases
 
 
 This file contains changes and migration steps for Graphback project. 
-Please follow indidividual releases for more information.
+Please follow individual releases for more information.
 
 
 # 0.10.0
