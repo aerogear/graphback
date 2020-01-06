@@ -41,6 +41,13 @@ developers can use individual packages:
 graphql-migrations
 ```
 
+### GraphQL-Migrations
+
+- Added a new library [`graphql-migrations`](https://github.com/aerogear/graphback/tree/master/packages/graphql-migrations) for executing database migrations.
+
+- `migrateDB` directly compares the input model with the current database and uses the generated diff to update the database structure. This mode does not generate any migration metadata.
+
+- `migrateDBUsingSchema` updates the database by comparing the input model with the previous model. This mode generates migration metadata which is persisted to the local filesystem and to the database.
 
 # 0.9.1
 
@@ -48,12 +55,11 @@ graphql-migrations
 
 Removed REST template from official list of templates
 
-
 # 0.9.0
 
 ### Graphback-cli
 
-#### Breaking changes
+#### Breaking changesfeat:
 
 Templates rely on `graphback.json` file. Please rename your `config.json` to `graphback.json` and add additional configuration entries
 
