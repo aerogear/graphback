@@ -28,7 +28,7 @@ becomes now:
 
 ```
 """
-  @crud.delete
+@crud.delete
 """
 type Note @delete {
   ...
