@@ -37,7 +37,7 @@ Each individual type will contain individual config. Developers can pass global 
 
 See `GraphbackCRUDGeneratorConfig` for more information.
 
-Config can be modified directly in the schema by utilizing GraphQL-Annotations:
+Config can be modified directly in the schema by utilizing [`graphql-annotations`](graphql-annotations):
 https://github.com/Akryum/graphql-annotations
 
 ## Contributing
