@@ -73,7 +73,7 @@ All config options can be replicated by specifying the `@crud.` prefix
 @crud.disableGen: true
 ```
 
-User can use these annotations to have more control over individual elements. For example,
+You can use these annotations to have more control over individual elements. For example:
 ```
 """
 @crud.delete
