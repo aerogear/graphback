@@ -78,7 +78,7 @@ You can use these annotations to have more control over individual elements. For
 """
 @crud.delete
 """
-type Note @delete {
+type Note {
   ...
 }
 ```
