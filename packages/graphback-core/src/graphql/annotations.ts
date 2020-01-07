@@ -36,7 +36,7 @@ export const parseFieldAnnotations = (node: FieldDefinitionNode): InputModelFiel
 }
 
 
-export const parseTypeAnnotations = (node: TypeDefinitionNode): InputModelFieldAnnotations => {
+export const parseTypeAnnotations = (node: TypeDefinitionNode) => {
 
     return node.description ? parseAnnotations('crud', String(node.description)) : undefined;
 }
