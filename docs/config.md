@@ -59,7 +59,7 @@ type User {
 ```
  
 #### Available Options
-All config options can be replicated by specifying `@crud.` prefix
+All config options can be replicated by specifying the `@crud.` prefix
 
 ```
 @crud.create: true
