@@ -450,7 +450,9 @@ class AbstractDatabaseBuilder {
 
     const table = this.getRelationTableFromOneToMany(oneToManyRelationship)
 
-    this.buildColumn(table, field);
+    if (!this.hasColumn(table, field)) {
+      this.buildColumn(table, field);
+    }
   }
 
   private getRelationTableFromOneToMany(oneToMany: OneToManyRelationship) {
@@ -467,6 +469,14 @@ class AbstractDatabaseBuilder {
       return true;
     }
     return false;
+  }
+
+  private hasColumn(table: Table, field: GraphQLField<any, any>) {
+    const columnDescriptor = this.getFieldDescriptor(field);
+
+    const column = table.columns.find((tc: TableColumn) => tc.name === columnDescriptor.name);
+
+    return !!column;
   }
 
   /**
