@@ -6,7 +6,7 @@ import { graphQLInputContext, InputModelTypeContext } from '../src';
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 const schemaTextAnnotations = readFileSync(`${__dirname}/mockAnnotations.graphql`, 'utf8')
 
-ava('Test snapshot config', async (t: ExecutionContext) => {
+ava('Test config', async (t: ExecutionContext) => {
   const defautConfig = {
     "create": true,
     "update": true,
@@ -20,7 +20,7 @@ ava('Test snapshot config', async (t: ExecutionContext) => {
 });
 
 
-ava('Test snapshot subscriptions', async (t: ExecutionContext) => {
+ava('Test subscriptions', async (t: ExecutionContext) => {
   const defautConfig = {
     "subCreate": true,
     "subUpdate": true,
@@ -32,7 +32,7 @@ ava('Test snapshot subscriptions', async (t: ExecutionContext) => {
   t.snapshot(inputContext);
 });
 
-ava('Test snapshot no config', async (t: ExecutionContext) => {
+ava('Test no config', async (t: ExecutionContext) => {
   const defautConfig = {
   }
   const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
@@ -41,7 +41,7 @@ ava('Test snapshot no config', async (t: ExecutionContext) => {
 });
 
 
-ava('Test snapshot with annotations', async (t: ExecutionContext) => {
+ava('Test with annotations', async (t: ExecutionContext) => {
   const defautConfig = {
   }
   const inputContext = graphQLInputContext.createModelContext(schemaTextAnnotations, defautConfig)
