@@ -172,7 +172,7 @@ class AbstractDatabaseBuilder {
       if (fields[key]) {
         const field = fields[key]
 
-        if (this.isOneToMany(field)) {
+        if (this.isOneToMany(type, field)) {
           this.oneToManyQueue.push({
             kind: 'OneToMany',
             type: getObjectTypeFromList(field),
@@ -464,11 +464,14 @@ class AbstractDatabaseBuilder {
     });
   }
 
-  private isOneToMany(field: GraphQLField<any, any>) {
+  private isOneToMany(type: GraphQLObjectType, field: GraphQLField<any, any>) {
     const annotations: any = parseAnnotations('db', field.description || null);
-    if (getObjectTypeFromList(field) && !annotations.manyToMany) {
+
+    const relationType = getObjectTypeFromList(field);
+    if ((relationType && relationType.name !== type.name) && !annotations.manyToMany) {
       return true;
     }
+
     return false;
   }
 
