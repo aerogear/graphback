@@ -1,4 +1,6 @@
-""" @crud.delete: false """
+""" 
+@crud.delete: false 
+"""
 type Note {
   id: ID!
   """
@@ -13,7 +15,9 @@ type Note {
   comments: [Comment]!
 }
 
-"""@crud.disableGen"""
+"""
+@crud.disableGen
+"""
 type Comment {
   id: ID!
   """
