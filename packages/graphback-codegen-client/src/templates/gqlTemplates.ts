@@ -2,27 +2,27 @@ import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputMode
 
 
 export const variableFields = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray)
-    .map((f: InputModelFieldContext) => `\$${f.name}: ${f.type}${f.isNull ? '' : '!'}`)
+  return t.fields.filter((f: InputModelFieldContext) => !f.isArray)
+    .map((f: InputModelFieldContext) => `\$${f.name}${f.isType ? 'Id' : ''}: ${f.isType ? 'Int' : f.type}${f.isNull ? '' : '!'}`)
     .join(', ')
 }
 
 
 export const inputVariableFields = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type !== 'ID')
-    .map((f: InputModelFieldContext) => `\$${f.name}: ${f.type}${f.isNull ? '' : '!'}`)
+  return t.fields.filter((f: InputModelFieldContext) => !f.isArray && f.type !== 'ID')
+    .map((f: InputModelFieldContext) => `\$${f.name}${f.isType ? 'Id' : ''}: ${f.isType ? 'Int' : f.type}${f.isNull ? '' : '!'}`)
     .join(', ')
 }
 
 export const variables = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray)
-    .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}`)
+  return t.fields.filter((f: InputModelFieldContext) => !f.isArray)
+    .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}${f.isType ? 'Id' : ''}`)
     .join(', ')
 }
 
 export const inputVariables = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isType && !f.isArray && f.type !== 'ID')
-    .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}`)
+  return t.fields.filter((f: InputModelFieldContext) => !f.isArray && f.type !== 'ID')
+    .map((f: InputModelFieldContext) => `${f.name}${f.isType ? 'Id' : ''}: \$${f.name}${f.isType ? 'Id' : ''}`)
     .join(', ')
 }
 
@@ -90,7 +90,7 @@ export const subscription = (t: InputModelTypeContext, subscriptionType: string)
 
 export const fragment = (t: InputModelTypeContext) => {
   return `fragment ${t.name}Fields on ${t.name} {
-    ${t.fields.filter((f: InputModelFieldContext) => !f.isArray && !f.isType).map((f: InputModelFieldContext) => `${f.name}`).join('\n    ')}
+    ${t.fields.filter((f: InputModelFieldContext) => !f.isArray).map((f: InputModelFieldContext) => `${f.name}${f.isType ? 'Id' : ''}`).join('\n    ')}
   }`
 }
 
