@@ -465,7 +465,8 @@ class AbstractDatabaseBuilder {
   }
 
   private isOneToMany(field: GraphQLField<any, any>) {
-    if (getObjectTypeFromList(field)) {
+    const annotations: any = parseAnnotations('db', field.description || null);
+    if (getObjectTypeFromList(field) && !annotations.manyToMany) {
       return true;
     }
     return false;
