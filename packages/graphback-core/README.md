@@ -33,9 +33,11 @@ Developers can extend functionality by using `InputProcessor` abstraction.
 
 ## Generator config
 
-Each individual type will contain individual config. Developers can pass global configuration that will be applied to elements that do not have any directives.
-Modifier directives directly on types will change default configuration.
+Each individual type will contain individual config. Developers can pass global configuration that will be applied to every type
+
 See `GraphbackCRUDGeneratorConfig` for more information.
+
+Config can be modified directly in the schema by utilizing [`graphql-annotations`](graphql-annotations):
 
 ## Contributing
 

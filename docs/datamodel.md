@@ -4,7 +4,7 @@ title: Defining your Data Model
 ---
 
 ## Model
-The Data model file is written in GraphQL syntax where you define your types along with custom directives for additional use cases.
+The Data model file is written in GraphQL syntax where you define your data types.
 
 ## Example
 

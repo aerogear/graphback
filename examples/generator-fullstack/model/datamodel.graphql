@@ -1,3 +1,6 @@
+""" 
+@crud.delete: false 
+"""
 type Note {
   id: ID!
   """
@@ -12,6 +15,9 @@ type Note {
   comments: [Comment]!
 }
 
+"""
+@crud.disableGen
+"""
 type Comment {
   id: ID!
   """

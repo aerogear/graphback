@@ -66,7 +66,6 @@ export interface InputModelFieldContext {
   isType: boolean
   isNull: boolean
   annotations: InputModelFieldAnnotations
-  hasDirectives: boolean
   // tslint:disable-next-line: no-banned-terms
   arguments?: InputModelArgument[]
 }

@@ -1,7 +1,6 @@
 import { parse, visit } from 'graphql';
 import { InputModelTypeContext } from '../api/ContextTypes'
 import { GraphbackCRUDGeneratorConfig } from "../api/GraphbackCRUDGeneratorConfig";
-import { applyGeneratorDirectives } from './directives'
 import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './graphqlUtils';
 
 import { InputContextCreator } from '../api';
@@ -18,9 +17,7 @@ import { inputTypeVisitor } from './InputTypeVisitor';
 export const graphQLInputContext: InputContextCreator = {
 
   createModelContext(schemaText: string, defaultConfig: GraphbackCRUDGeneratorConfig): InputModelTypeContext[] {
-    const schema = applyGeneratorDirectives(schemaText)
-
-    const astNode = parse(schema)
+    const astNode = parse(schemaText)
     const schemaDef = visit(astNode, { leave: inputTypeVisitor });
     const context = applyDefaultConfig(schemaDef, defaultConfig)
     const interfaces = filterInterfaceTypes(context)

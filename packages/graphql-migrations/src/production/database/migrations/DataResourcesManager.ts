@@ -149,7 +149,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   public async createOneToOneRelation(currentTable: string, gqlField: InputModelFieldContext, tableName: string):
     Promise<void> {
     let fieldname = `${currentTable}Id`
-    if (gqlField.hasDirectives && gqlField.annotations.OneToOne.field) {
+    if (gqlField.annotations.OneToOne.field) {
       fieldname = gqlField.annotations.OneToOne.field;
     }
     if (!gqlField.isArray) {
@@ -192,7 +192,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   public async createOneToManyRelation(currentTable: string, gqlField: InputModelFieldContext, tableName: string):
     Promise<void> {
     let fieldname = `${currentTable}Id`
-    if (gqlField.hasDirectives && gqlField.annotations.OneToMany.field) {
+    if (gqlField.annotations.OneToMany.field) {
       fieldname = gqlField.annotations.OneToMany.field;
     }
     if (gqlField.isArray) {

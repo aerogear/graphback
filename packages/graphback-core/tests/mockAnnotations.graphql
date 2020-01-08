@@ -1,15 +1,17 @@
-type Note @create {
+
+""" @crud.delete: false """
+type Note {
   id: ID!
   title: String!
   description: String!
-  ## Relationship
   """
   @db.oneToMany: 'noteComment'
   """
   comment: [Comment]!
 }
 
-type Comment @disableGen {
+"""@crud.disableGen"""
+type Comment {
   id: ID!
   title: String!
   description: String!

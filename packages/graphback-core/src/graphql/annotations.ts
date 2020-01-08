@@ -1,4 +1,4 @@
-import { FieldDefinitionNode } from 'graphql';
+import { FieldDefinitionNode, TypeDefinitionNode } from 'graphql';
 import { parseAnnotations } from 'graphql-annotations';
 import { InputModelFieldAnnotations } from '../api';
 
@@ -33,4 +33,10 @@ export const parseFieldAnnotations = (node: FieldDefinitionNode): InputModelFiel
     }
 
     return fieldAnnotations;
+}
+
+
+export const parseTypeAnnotations = (node: TypeDefinitionNode) => {
+
+    return node.description ? parseAnnotations('crud', String(node.description)) : undefined;
 }
