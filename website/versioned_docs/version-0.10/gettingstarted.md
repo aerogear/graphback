@@ -23,7 +23,7 @@ Graphback currently supports:
 
 ## Multiple ways of getting started
 
-Graphback offers many ways of starting
+You can start with Graphback by
 
 - Using Graphback with most popular GraphQL boilerplates with GraphQL CLI
 - Adding Graphback to your existing project
