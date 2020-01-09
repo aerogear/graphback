@@ -35,6 +35,12 @@ type Note @delete {
 }
 ```
 
+# 0.10.1
+
+# Graphback-Codegen-Client
+
+- Generate relationship variables in mutations, fragment, subscriptions, queries.
+
 # 0.10.0
 
 BREAKING changes for CLI/ and runtime.
