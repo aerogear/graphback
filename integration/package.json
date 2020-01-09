@@ -16,8 +16,8 @@
     "apollo-boost": "0.4.7",
     "graphback": "^0.10.1",
     "graphql": "^14.0.0",
-    "graphql-testx": "0.3.0-dev407.37e9f4a",
-    "knex": "0.20.6",
+    "graphql-testx": "0.3.0",
+    "knex": "0.20.7",
     "node-fetch": "2.6.0"
   },
   "ava": {
