@@ -88,7 +88,7 @@ type Note {
 }
 ```
 
-> NOTE: The field name must match that of the related type. Support for custom field names is coming soon.
+> NOTE: See [relationships](./relationships) for how to customise foreign key field names.
 
 #### Default field value
 
