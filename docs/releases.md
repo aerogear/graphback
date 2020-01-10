@@ -35,9 +35,24 @@ type Note @delete {
 }
 ```
 
+# 0.10.2
+
+### graphql-migrations
+
+It's now possible to create database relationships from the `1:M` side of your data model!
+
+```gql
+type User {
+  id: ID!
+  messages: [Message]
+}
+```
+
+This creates a `userId` foreign key column in the `message` table. Visit the [relationships documentation](../relationships#OneToMany) for more examples.
+
 # 0.10.1
 
-# Graphback-Codegen-Client
+### Graphback-Codegen-Client
 
 - Generate relationship variables in mutations, fragment, subscriptions, queries.
 
