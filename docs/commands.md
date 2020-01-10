@@ -16,9 +16,10 @@ graphback config
 
 Create configuration in existing project to support Graphback resolver and schema generation.
 
-> **Note** When creating configuration please review if locations created for `files` integration match your project folder structure
+> **Note** When creating configuration please review if locations created for `folders` integration match your project folder structure
 
 ### Generate
+
   ```bash
   graphback generate
   ```

@@ -24,7 +24,7 @@ type Note @delete {
 }
 ```
 
-becomes now:
+now becomes:
 
 ```
 """
