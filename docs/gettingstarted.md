@@ -80,7 +80,7 @@ Graphback offers runtime layer that will create in memory implementation of the 
 Developers can still customize the way that data is queried and cached thanks to runtime architecture.
 For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation
 
-## Creating/updating your database from your data model
+## Creating and updating your database from your data model
 
 Graphback will create or update the database configured in `graphback.json` file, using the types defined in your data model.
 
