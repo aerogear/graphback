@@ -47,7 +47,7 @@
     "typescript": "3.7.4"
   },
   "dependencies": {
-    "@graphback/core": "^0.10.2",
+    "@graphback/core": "0.10.2",
     "knex": "0.20.7",
     "pg": "7.17.0",
     "sqlite3": "4.1.1"
