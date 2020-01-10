@@ -82,7 +82,7 @@ For more information about runtime layer please follow [`runtime`](/docs/runtime
 
 ## Creating/updating your database from your data model
 
-Graphback will create or update the database configured in `graphback.json` using the types defined in your data model.
+Graphback will create or update the database configured in `graphback.json` file, using the types defined in your data model.
 
 ```gql
 type User {
