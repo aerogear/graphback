@@ -58,7 +58,7 @@ export const postCommandMessage = (message: string) => {
   logInfo(message);
 }
 
-export const createDB = async (): Promise<any[]> => {
+export const createDB = async (): Promise<any> => {
   const configInstance = new ConfigBuilder();
 
   checkDirectory(configInstance)

@@ -1,5 +1,6 @@
-import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
+import { getFieldName, getRelationFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
 import * as templates from "../templates/LayeredResolverTemplates"
+import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
 // TODO extract to separate class that will support different types
@@ -168,22 +169,15 @@ function createRelations(inputContext: InputModelTypeContext[]) {
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
+        const fieldName = getRelationFieldName(f, t);
+        const columnName = `${fieldName}Id`;
         if (f.annotations.OneToOne || !f.isArray) {
-          let columnName = `${f.name}Id`;
-          if (f.annotations.OneToOne) {
-            columnName = `${f.annotations.OneToOne.field}Id`;
-          }
-
           relations.push({
             typeName: t.name,
             implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
           });
         }
         else if (f.annotations.OneToMany || f.isArray) {
-          let columnName = `${f.name}Id`;
-          if (f.annotations.OneToMany) {
-            columnName = `${f.annotations.OneToMany.field}Id`;
-          }
           relations.push({
             typeName: t.name,
             implementation: templates.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())

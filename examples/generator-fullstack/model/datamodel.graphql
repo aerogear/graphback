@@ -12,6 +12,9 @@ type Note {
   @db.type: 'text'
   """
   description: String
+  """
+  @db.oneToMany: 'commentNote'
+  """
   comments: [Comment]!
 }
 
@@ -24,5 +27,5 @@ type Comment {
   @db.type: 'text'
   """
   description: String
-  note: Note!
+  commentNote: Note!
 }
