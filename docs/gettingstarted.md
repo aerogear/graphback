@@ -31,10 +31,9 @@ Graphback offers many ways of starting
 
 ### Start new project using Graphback and GraphQL CLI
 
-Best way to start with Graphback is to choose one of the available project boilerplates 
+The best way to start with Graphback is to choose one of the available project boilerplates 
 available as part of official GraphQL CLI. 
-GraphQL CLI integrates Graphback with other community libraries offering compehensive 
-way to work with GraphQL API's.
+GraphQL CLI integrates Graphback with other community libraries offering acomprehensive way to work with GraphQL APIs.
 You can use any of the available GraphQL-CLI templates to bootstrap Graphback enabled project. 
 
 With yarn:
@@ -76,7 +75,7 @@ If you use SQLite, you don't need to use Docker.
 
 ## Running Graphback in existing application without code generation
 
-Graphback offers runtime layer that will create in memory implementation of the graphql services without code generation.
+Graphback offers runtime layer that will create an in-memory implementation of the graphql services without code generation.
 Developers can still customize the way that data is queried and cached thanks to runtime architecture.
 For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation
 
