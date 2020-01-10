@@ -2,8 +2,8 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://graphback.dev/blog</id>
     <title>Graphback Blog</title>
-    <updated>2019-08-27T06:00:00Z</updated>
-    <generator>Feed for Node.js</generator>
+    <updated>2019-08-27T06:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://graphback.dev/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Graphback news and events.</subtitle>
     <logo>https://graphback.dev/img/favicon.ico</logo>
@@ -11,40 +11,40 @@
     <entry>
         <title type="html"><![CDATA[Crash course on Graphback]]></title>
         <id>https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html</id>
-        <link href="https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html">
-        </link>
-        <updated>2019-08-27T06:00:00Z</updated>
+        <link href="https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html"/>
+        <updated>2019-08-27T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted.</p>
 ]]></summary>
         <author>
             <name>Michal Stokluska</name>
+            <email/>
             <uri>https://www.linkedin.com/in/michal-stokluska-350a72123</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Graphback - the evolution of the GraphQL ecosystem]]></title>
         <id>https://graphback.dev/blog/2019/08/21/introduction.html</id>
-        <link href="https://graphback.dev/blog/2019/08/21/introduction.html">
-        </link>
-        <updated>2019-08-21T06:00:00Z</updated>
+        <link href="https://graphback.dev/blog/2019/08/21/introduction.html"/>
+        <updated>2019-08-21T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>GraphQL was created almost 7 years ago at Facebook to resolve specific problems for the Facebook mobile platform. As Query Language, GraphQL offers transport and data exchange layer between server and client, leaving many implementation details to developers.
 When comparing with REST, GraphQL technology has a steep learning curve and many pitfalls waiting for beginner developers looking to embrace it.</p>
 ]]></summary>
         <author>
             <name>Wojciech Trocki</name>
+            <email/>
             <uri>http://twitter.com/wojtroken</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Using Visitor Pattern to parse GraphQL AST]]></title>
         <id>https://graphback.dev/blog/2019/07/10/using-visitor.html</id>
-        <link href="https://graphback.dev/blog/2019/07/10/using-visitor.html">
-        </link>
-        <updated>2019-07-10T06:00:00Z</updated>
+        <link href="https://graphback.dev/blog/2019/07/10/using-visitor.html"/>
+        <updated>2019-07-10T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC'19 I have been working on <a href="https://aerogear.github.io/graphback">Graphback</a>. For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this</p>
 ]]></summary>
         <author>
             <name>Ankit Jena</name>
+            <email/>
             <uri>http://twitter.com/ankitjey</uri>
         </author>
     </entry>
