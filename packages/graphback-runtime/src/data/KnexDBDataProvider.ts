@@ -1,7 +1,11 @@
-import { getTableName, InputModelTypeContext } from "@graphback/core"
+import { getTableName, InputModelTypeContext } from '@graphback/core';
 import { execSync } from 'child_process';
 import * as Knex from 'knex';
-import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
+import {
+  AdvancedFilter,
+  GraphbackDataProvider,
+  Paginate,
+} from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
 
 /**
@@ -15,8 +19,8 @@ import { NoDataError } from './NoDataError';
  * NOTE: For Postgres use dedicated `PgKnexDBDataProvider` that implements more performant creation method.
  */
 // tslint:disable-next-line: no-any
-export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
-
+export class KnexDBDataProvider<Type = any, GraphbackContext = any>
+  implements GraphbackDataProvider<Type, GraphbackContext> {
   protected db: Knex;
 
   constructor(db: Knex) {
@@ -25,19 +29,27 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   public async create(name: string, data: Type): Promise<Type> {
     const [id] = await this.db(name).insert(data);
-    const dbResult = await this.db.select().from(name).where('id', '=', id)
+    const dbResult = await this.db
+      .select()
+      .from(name)
+      .where('id', '=', id);
     if (dbResult && dbResult[0]) {
-      return dbResult[0]
+      return dbResult[0];
     }
     throw new NoDataError(`Cannot create ${name}`);
   }
 
   public async update(name: string, id: string, data: Type): Promise<Type> {
-    const updateResult = await this.db(name).update(data).where('id', '=', id);
+    const updateResult = await this.db(name)
+      .update(data)
+      .where('id', '=', id);
     if (updateResult === 1) {
-      const dbResult = await this.db.select().from(name).where('id', '=', id);
+      const dbResult = await this.db
+        .select()
+        .from(name)
+        .where('id', '=', id);
       if (dbResult && dbResult[0]) {
-        return dbResult[0]
+        return dbResult[0];
       }
     }
     throw new NoDataError(`Cannot update ${name}`);
@@ -45,18 +57,22 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   // tslint:disable-next-line: no-reserved-keywords
   public async delete(name: string, id: string, data?: Type): Promise<string> {
-    const dbResult = await this.db(name).where('id', '=', id).del()
+    const dbResult = await this.db(name)
+      .where('id', '=', id)
+      .del();
     if (dbResult) {
       return id;
     }
     throw new NoDataError(`Cannot delete ${name}`);
-
   }
 
   public async read(name: string, id: string): Promise<Type> {
-    const dbResult = await this.db.select().from(name).where('id', '=', id);
+    const dbResult = await this.db
+      .select()
+      .from(name)
+      .where('id', '=', id);
     if (dbResult && dbResult[0]) {
-      return dbResult[0]
+      return dbResult[0];
     }
     throw new NoDataError(`Cannot read ${name}`);
   }
@@ -69,27 +85,58 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot find all results for ${name}`);
   }
 
-  public async findBy(name: string, filter: Type | AdvancedFilter): Promise<Type[]> {
-    const dbResult = await this.db.select().from(name).where(filter);
+  public async findBy(
+    name: string,
+    filter: Type | AdvancedFilter,
+  ): Promise<Type[]> {
+    const dbResult = await this.db
+      .select()
+      .from(name)
+      .where(filter);
     if (dbResult) {
       return dbResult;
     }
-    throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
+    throw new NoDataError(
+      `No results for ${name} query and filter: ${JSON.stringify(filter)}`,
+    );
   }
 
-  public async batchRead(name: string, relationField: string, ids: string[]): Promise<Type[][]> {
-    const dbResult = await this.db.select().from(name).whereIn(relationField, ids);
+  public async pagination(name: string, paginate: Paginate): Promise<Type[]> {
+    const dbResult = await this.db
+      .select()
+      .from(name)
+      .offset(paginate.start)
+      .limit(paginate.limit);
 
     if (dbResult) {
+      return dbResult;
+    }
 
-      const resultsById = ids.map((id: string) => dbResult.filter((data: any) => {
-        return data[relationField].toString() === id.toString();
-      }))
+    throw new NoDataError(`No paginated results for ${name}`);
+  }
+
+  public async batchRead(
+    name: string,
+    relationField: string,
+    ids: string[],
+  ): Promise<Type[][]> {
+    const dbResult = await this.db
+      .select()
+      .from(name)
+      .whereIn(relationField, ids);
+
+    if (dbResult) {
+      const resultsById = ids.map((id: string) =>
+        dbResult.filter((data: any) => {
+          return data[relationField].toString() === id.toString();
+        }),
+      );
 
       return resultsById as [Type[]];
     }
 
-    throw new NoDataError(`No results for ${name} and id: ${JSON.stringify(ids)}`);
+    throw new NoDataError(
+      `No results for ${name} and id: ${JSON.stringify(ids)}`,
+    );
   }
-
 }
