@@ -37,7 +37,7 @@
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
-    "pino": "5.15.0"
+    "pino": "5.16.0"
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
@@ -50,7 +50,7 @@
     "pg": "7.17.1",
     "rimraf": "3.0.0",
     "sqlite3": "4.1.1",
-    "ts-node": "8.6.0",
+    "ts-node": "8.6.1",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",
     "typescript": "3.7.4"
