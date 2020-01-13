@@ -3,11 +3,26 @@
     "config:base",
     ":pinAllExceptPeerDependencies"
   ],
-  "groupName":"all",
-  "ignoreDeps": ["chalk"],
+  "groupName": "all",
+  "ignoreDeps": [
+    "chalk"
+  ],
+  "pathRules": [
+    {
+      "paths": [
+        "examples/**"
+      ],
+      "extends": [
+        "config:base",
+        ":pinAllExceptPeerDependencies"
+      ]
+    }
+  ],
   "packageRules": [
     {
-      "packageNames": ["graphql"],
+      "packageNames": [
+        "graphql"
+      ],
       "versionStrategy": "widen"
     }
   ]
