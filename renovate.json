@@ -7,16 +7,11 @@
   "ignoreDeps": [
     "chalk"
   ],
-  "pathRules": [
-    {
-      "paths": [
-        "examples/**"
-      ],
-      "extends": [
-        "config:base",
-        ":pinAllExceptPeerDependencies"
-      ]
-    }
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**"
   ],
   "packageRules": [
     {
