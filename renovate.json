@@ -9,8 +9,6 @@
   ],
   "ignorePaths": [
     "**/node_modules/**",
-    "**/bower_components/**",
-    "**/vendor/**",
     "**/__tests__/**",
     "**/test/**",
     "**/tests/**"
