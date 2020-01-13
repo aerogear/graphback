@@ -20,7 +20,7 @@ export const createRuntime = async (client: Knex) => {
   const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
   const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  const dbConfig = {
+  const dbConfig: any = {
     client: jsonConfig.db.database,
     connection: jsonConfig.db.dbConfig
   };
