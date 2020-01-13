@@ -9,7 +9,7 @@
   },
   "scripts": {
     "clean": "rimraf coverage dist types",
-    "build": "echo disabled",
+    "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",

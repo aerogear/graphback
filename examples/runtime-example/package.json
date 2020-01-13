@@ -5,7 +5,7 @@
   "private": true,
   "main": "dist/src/index.js",
   "scripts": {
-    "build": "echo disabled",
+    "build": "tsc",
     "develop": "ts-node src/index.ts",
     "start": "node dist/src/index.js",
     "watch": "tsc -w"
