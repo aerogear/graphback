@@ -12,7 +12,7 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "apollo-server-express": "2.9.12",
+    "apollo-server-express": "2.9.16",
     "cors": "2.8.5",
     "express": "4.17.1",
     "graphback": "0.10.2",
