@@ -11,7 +11,7 @@ interface RelationInfo {
   //tslint:disable-next-line
   type: string
   relation: string
-  fieldInfo?: RelationFieldInfo
+  fieldInfo: RelationFieldInfo
   idField?: string
 }
 
@@ -144,11 +144,11 @@ const nullField = (f: InputModelFieldContext) => {
 }
 
 const relationExists = (fieldInfo: RelationFieldInfo, relations: RelationInfo[]): boolean => {
-  const match = relations.filter((r: RelationInfo) => r.type === 'Type').find((r: RelationInfo) => {
+  const matchingRelation = relations.filter((r: RelationInfo) => r.type === 'Type').find((r: RelationInfo) => {
     return r.fieldInfo.name === fieldInfo.name && r.fieldInfo.type === fieldInfo.type && r.fieldInfo.isArray === fieldInfo.isArray;
   });
 
-  return Boolean(match);
+  return Boolean(matchingRelation);
 }
 
 const findRelationByFieldName = (relation: RelationInfo, relations: RelationInfo[]): RelationInfo => {
@@ -271,7 +271,7 @@ export const createCustomSchemaContext = (inputContext: InputModelTypeContext[])
 }
 
 function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
-  const maybeDuplicateRelationsQueue = [];
+  const manyToOneRelationQueue = [];
 
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
@@ -300,7 +300,6 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
           })
 
           const relationFieldName = getRelationFieldName(f, t)
-
           const fieldInfo = {
             "name": relationFieldName,
             "type": t.name,
@@ -313,9 +312,7 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
             "relation": `${relationFieldName}: ${t.name}!`,
             "idField": `${relationFieldName}Id: ID!`,
             "fieldInfo": fieldInfo
-          });
-
-          relations.push({
+          }, {
             "name": f.type,
             "type": 'ID',
             "relation": `${relationFieldName}: ${t.name}!`,
@@ -323,7 +320,7 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
             "fieldInfo": fieldInfo
           });
 
-          maybeDuplicateRelationsQueue.push({
+          manyToOneRelationQueue.push({
             "name": f.type,
             "type": 'Type',
             "relation": `${relationFieldName}: ${t.name}!`,
@@ -334,14 +331,18 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
     })
   });
 
-  for (const maybeDuplicate of maybeDuplicateRelationsQueue) {
-    const existingRelation = findRelationByFieldName(maybeDuplicate, relations);
+  addManyToOneRelations(manyToOneRelationQueue, relations)
+}
 
-    if (existingRelation && existingRelation.fieldInfo.type !== maybeDuplicate.fieldInfo.type) {
-      throw new Error(`Cannot create relationship: ${maybeDuplicate.name}.${maybeDuplicate.fieldInfo.name} does not match type ${maybeDuplicate.fieldInfo.type}`);
+function addManyToOneRelations(manyToOneRelationQueue: RelationInfo[], relations: RelationInfo[]) {
+  for (const manyToOneRelation of manyToOneRelationQueue) {
+    const existingRelation = findRelationByFieldName(manyToOneRelation, relations)
+    if (existingRelation && existingRelation.fieldInfo.type !== manyToOneRelation.fieldInfo.type) {
+      throw new Error(`Cannot create relationship: ${manyToOneRelation.name}.${manyToOneRelation.fieldInfo.name} does not match type ${manyToOneRelation.fieldInfo.type}`)
     }
     if (!existingRelation || !relationExists(existingRelation.fieldInfo, relations)) {
-      relations.push(maybeDuplicate);
+      relations.push(manyToOneRelation)
     }
   }
 }
+
