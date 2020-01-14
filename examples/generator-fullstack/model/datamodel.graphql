@@ -1,31 +1,19 @@
-""" 
-@crud.delete: false 
-"""
-type Note {
+type User {
   id: ID!
+  name: String!
   """
-  @db.type: 'string'
-  @db.length: 100
+  @db.oneToMany: 'inUser'
   """
-  title: String!
+  inTransactions: [Transaction!]!
   """
-  @db.type: 'text'
+  @db.oneToMany: 'outUser'
   """
-  description: String
-  """
-  @db.oneToMany: 'commentNote'
-  """
-  comments: [Comment]!
+  outTransactions: [Transaction!]!
 }
 
-"""
-@crud.disableGen
-"""
-type Comment {
+type Transaction {
   id: ID!
-  """
-  @db.type: 'text'
-  """
-  description: String
-  commentNote: Note!
+  amount: Int!
+  inUser: User!
+  outUser: User!
 }

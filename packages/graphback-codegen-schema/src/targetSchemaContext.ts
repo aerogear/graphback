@@ -11,8 +11,7 @@ interface RelationInfo {
   //tslint:disable-next-line
   type: string
   relation: string
-  fieldName: string
-  fieldInfo: RelationFieldInfo
+  fieldInfo?: RelationFieldInfo
   idField?: string
 }
 
@@ -93,7 +92,7 @@ export const getFieldNameAndType = (f: InputModelFieldContext): { fieldName: str
   let fieldType: string = f.type;
   if (f.isType && !f.isArray) {
     fieldName = `${f.name}Id`;
-    fieldType = 'Int';
+    fieldType = 'ID';
   }
 
   return { fieldName, fieldType };
@@ -145,7 +144,7 @@ const nullField = (f: InputModelFieldContext) => {
 }
 
 const relationExists = (fieldInfo: RelationFieldInfo, relations: RelationInfo[]): boolean => {
-  const match = relations.find((r: RelationInfo) => {
+  const match = relations.filter((r: RelationInfo) => r.type === 'Type').find((r: RelationInfo) => {
     return r.fieldInfo.name === fieldInfo.name && r.fieldInfo.type === fieldInfo.type && r.fieldInfo.isArray === fieldInfo.isArray;
   });
 
@@ -153,7 +152,9 @@ const relationExists = (fieldInfo: RelationFieldInfo, relations: RelationInfo[])
 }
 
 const findRelationByFieldName = (relation: RelationInfo, relations: RelationInfo[]): RelationInfo => {
-  return relations.find((r: RelationInfo) => r.name === relation.name && r.fieldInfo.name === relation.fieldInfo.name);
+  return relations.find((r: RelationInfo) => {
+    return r.name === relation.name && r.fieldInfo && r.fieldInfo.name === relation.fieldInfo.name
+  });
 }
 
 /**
@@ -172,87 +173,8 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
-  const maybeDuplicateRelationsQueue = []
 
-  inputContext.forEach((t: InputModelTypeContext) => {
-    t.fields.forEach((f: InputModelFieldContext) => {
-      if (f.isType) {
-        if (f.annotations.OneToOne || !f.isArray) {
-          relations.push({
-            "name": t.name,
-            "type": 'Type',
-            "fieldName": f.name,
-            "fieldInfo": {
-              "name": f.name,
-              "type": f.type,
-              "isArray": f.isArray
-            },
-            "relation": `${f.name}: ${f.type}`
-          })
-
-          // relations.push({
-          //   "name": f.type,
-          //   "type": 'Int',
-          //   "fieldName": t.name.toLowerCase(),
-          //   "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-          //   "idField": `${t.name.toLowerCase()}Id: Int!`
-          // })
-        } else if (f.annotations.OneToMany || f.isArray) {
-          const fieldName = getRelationFieldName(f, t);
-          relations.push({
-            "name": t.name,
-            "type": 'Type',
-            "fieldName": f.name,
-            "fieldInfo": {
-              "name": f.name,
-              "type": f.type,
-              "isArray": f.isArray
-            },
-            "relation": `${f.name}: [${f.type}!]!`
-          })
-
-          const fieldInfo: RelationFieldInfo = {
-            name: fieldName,
-            type: t.name,
-            isArray: false
-          };
-
-          maybeDuplicateRelationsQueue.push({
-            "name": f.type,
-            "type": 'Type',
-            "fieldName": t.name,
-            "fieldInfo": fieldInfo,
-            "relation": `${fieldName}: ${t.name}!`
-          })
-
-          // relations.push({
-          //   "name": f.type,
-          //   "type": 'Type',
-          //   "fieldName": "test",
-          //   "relation": `${t.name.toLowerCase()}: ${t.name}`
-          // })
-          // relations.push({
-          //   "name": f.type,
-          //   "type": 'Int',
-          //   "fieldName": t.name.toLowerCase(),
-          //   "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-          //   "idField": `${t.name.toLowerCase()}Id: Int!`
-          // })
-        }
-      }
-    })
-  });
-
-  for (const extraRelation of maybeDuplicateRelationsQueue) {
-    const existingRelation = findRelationByFieldName(extraRelation, relations);
-
-    if (existingRelation && existingRelation.fieldInfo.type !== extraRelation.fieldInfo.type) {
-      throw new Error(`Cannot create relationship: ${extraRelation.name}.${extraRelation.fieldInfo.name} does not match type ${extraRelation.fieldInfo.type}`);
-    }
-    if (!existingRelation || !relationExists(existingRelation.fieldInfo, relations)) {
-      relations.push(extraRelation);
-    }
-  }
+  addRelations(input, relations);
 
   const context: TargetContext = {
     types: [],
@@ -283,13 +205,21 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     }
   });
 
+  const fieldExists = (name: string, fields: InputModelFieldContext[]) => {
+    const field = fields.find((f: InputModelFieldContext) => {
+      return f.name === name;
+    });
+
+    return Boolean(field);
+  }
+
   context.inputFields = objectTypes.map((t: InputModelTypeContext) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && (!(f.isType && f.isArray) || !f.isType))
+      "fields": [...new Set([...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && (!(f.isType && f.isArray) || !f.isType))
         .map(maybeNullField),
-      ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField))]
+      ...[].concat(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID' && fieldExists(r.name, t.fields)).map((r: RelationInfo) => r.idField))])]
     }
   })
 
@@ -297,9 +227,9 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: InputModelFieldContext) => (!(f.isType && f.isArray) || !f.isType))
+      "fields": [...new Set([...t.fields.filter((f: InputModelFieldContext) => (!(f.isType && f.isArray) || !f.isType))
         .map(nullField),
-      ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))]
+      ...[].concat(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))])]
     }
   })
 
@@ -350,28 +280,17 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
           relations.push({
             "name": t.name,
             "type": 'Type',
-            "fieldName": f.name,
             "fieldInfo": {
               "name": f.name,
               "type": f.type,
               "isArray": f.isArray
             },
-            "relation": `${f.name}: ${f.type}`
+            "relation": `${f.name}: ${f.type}!`,
           })
-
-          // relations.push({
-          //   "name": f.type,
-          //   "type": 'Int',
-          //   "fieldName": t.name.toLowerCase(),
-          //   "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-          //   "idField": `${t.name.toLowerCase()}Id: Int!`
-          // })
         } else if (f.annotations.OneToMany || f.isArray) {
-
           relations.push({
             "name": t.name,
             "type": 'Type',
-            "fieldName": f.name,
             "fieldInfo": {
               "name": f.name,
               "type": f.type,
@@ -380,33 +299,36 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
             "relation": `${f.name}: [${f.type}!]!`
           })
 
-          const fieldInfo: RelationFieldInfo = {
-            name: t.name.toLowerCase(),
-            type: t.name,
-            isArray: false
+          const relationFieldName = getRelationFieldName(f, t)
+
+          const fieldInfo = {
+            "name": relationFieldName,
+            "type": t.name,
+            "isArray": false
           };
+
+          relations.push({
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "idField": `${relationFieldName}Id: ID!`,
+            "fieldInfo": fieldInfo
+          });
+
+          relations.push({
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "idField": `${relationFieldName}Id: ID!`,
+            "fieldInfo": fieldInfo
+          });
 
           maybeDuplicateRelationsQueue.push({
             "name": f.type,
             "type": 'Type',
-            "fieldName": t.name,
-            "fieldInfo": fieldInfo,
-            "relation": `${t.name.toLowerCase()}: ${t.name}!`
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "fieldInfo": fieldInfo
           })
-
-          // relations.push({
-          //   "name": f.type,
-          //   "type": 'Type',
-          //   "fieldName": "test",
-          //   "relation": `${t.name.toLowerCase()}: ${t.name}`
-          // })
-          // relations.push({
-          //   "name": f.type,
-          //   "type": 'Int',
-          //   "fieldName": t.name.toLowerCase(),
-          //   "relation": `${t.name.toLowerCase()}: ${t.name}!`,
-          //   "idField": `${t.name.toLowerCase()}Id: Int!`
-          // })
         }
       }
     })
