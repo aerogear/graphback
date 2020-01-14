@@ -157,6 +157,12 @@ const findRelationByFieldName = (relation: RelationInfo, relations: RelationInfo
   });
 }
 
+const getFieldByName = (name: string, fields: InputModelFieldContext[]) => {
+  return fields.find((f: InputModelFieldContext) => {
+    return f.name === name;
+  });
+}
+
 /**
  * Build schema context for the string templates
  * relations - if the model has relations
@@ -205,21 +211,13 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     }
   });
 
-  const fieldExists = (name: string, fields: InputModelFieldContext[]) => {
-    const field = fields.find((f: InputModelFieldContext) => {
-      return f.name === name;
-    });
-
-    return Boolean(field);
-  }
-
   context.inputFields = objectTypes.map((t: InputModelTypeContext) => {
     return {
       "name": t.name,
       "type": 'input',
       "fields": [...new Set([...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && (!(f.isType && f.isArray) || !f.isType))
         .map(maybeNullField),
-      ...[].concat(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID' && fieldExists(r.name, t.fields)).map((r: RelationInfo) => r.idField))])]
+      ...[].concat(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID' && !getFieldByName(r.fieldInfo.name, t.fields)).map((r: RelationInfo) => r.idField))])]
     }
   })
 
@@ -334,11 +332,12 @@ function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
   addManyToOneRelations(manyToOneRelationQueue, relations)
 }
 
+// Add 1:1 fields to relationships list. Does not add fields that already exist.
 function addManyToOneRelations(manyToOneRelationQueue: RelationInfo[], relations: RelationInfo[]) {
   for (const manyToOneRelation of manyToOneRelationQueue) {
     const existingRelation = findRelationByFieldName(manyToOneRelation, relations)
     if (existingRelation && existingRelation.fieldInfo.type !== manyToOneRelation.fieldInfo.type) {
-      throw new Error(`Cannot create relationship: ${manyToOneRelation.name}.${manyToOneRelation.fieldInfo.name} does not match type ${manyToOneRelation.fieldInfo.type}`)
+      throw new Error(`Cannot add relation to schema: Field ${manyToOneRelation.name}.${manyToOneRelation.fieldInfo.name} does not match type ${manyToOneRelation.fieldInfo.type}`)
     }
     if (!existingRelation || !relationExists(existingRelation.fieldInfo, relations)) {
       relations.push(manyToOneRelation)
