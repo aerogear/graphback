@@ -11,7 +11,15 @@ interface RelationInfo {
   //tslint:disable-next-line
   type: string
   relation: string
+  fieldInfo: RelationFieldInfo
   idField?: string
+}
+
+interface RelationFieldInfo {
+  name: string
+  // tslint:disable-next-line: no-reserved-keywords
+  type: string
+  isArray: boolean
 }
 
 /**
@@ -84,7 +92,7 @@ export const getFieldNameAndType = (f: InputModelFieldContext): { fieldName: str
   let fieldType: string = f.type;
   if (f.isType && !f.isArray) {
     fieldName = `${f.name}Id`;
-    fieldType = 'Int';
+    fieldType = 'ID';
   }
 
   return { fieldName, fieldType };
@@ -135,6 +143,26 @@ const nullField = (f: InputModelFieldContext) => {
   }
 }
 
+const relationExists = (fieldInfo: RelationFieldInfo, relations: RelationInfo[]): boolean => {
+  const matchingRelation = relations.filter((r: RelationInfo) => r.type === 'Type').find((r: RelationInfo) => {
+    return r.fieldInfo.name === fieldInfo.name && r.fieldInfo.type === fieldInfo.type && r.fieldInfo.isArray === fieldInfo.isArray;
+  });
+
+  return Boolean(matchingRelation);
+}
+
+const findRelationByFieldName = (relation: RelationInfo, relations: RelationInfo[]): RelationInfo => {
+  return relations.find((r: RelationInfo) => {
+    return r.name === relation.name && r.fieldInfo && r.fieldInfo.name === relation.fieldInfo.name
+  });
+}
+
+const getFieldByName = (name: string, fields: InputModelFieldContext[]) => {
+  return fields.find((f: InputModelFieldContext) => {
+    return f.name === name;
+  });
+}
+
 /**
  * Build schema context for the string templates
  * relations - if the model has relations
@@ -146,12 +174,13 @@ const nullField = (f: InputModelFieldContext) => {
  * subscriptions - generated subscription according to config - new, updated, deleted
  * @param input input visted object from model
  */
+// tslint:disable-next-line: max-func-body-length
 export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   const relations = []
 
-  addRelations(inputContext, relations)
+  addRelations(input, relations);
 
   const context: TargetContext = {
     types: [],
@@ -186,9 +215,9 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && (!(f.isType && f.isArray) || !f.isType))
+      "fields": [...new Set([...t.fields.filter((f: InputModelFieldContext) => f.type !== 'ID' && (!(f.isType && f.isArray) || !f.isType))
         .map(maybeNullField),
-      ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField))]
+      ...[].concat(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID' && !getFieldByName(r.fieldInfo.name, t.fields)).map((r: RelationInfo) => r.idField))])]
     }
   })
 
@@ -196,12 +225,12 @@ export const buildTargetContext = (input: InputModelTypeContext[]) => {
     return {
       "name": t.name,
       "type": 'input',
-      "fields": [...t.fields.filter((f: InputModelFieldContext) => (!(f.isType && f.isArray) || !f.isType))
+      "fields": [...new Set([...t.fields.filter((f: InputModelFieldContext) => (!(f.isType && f.isArray) || !f.isType))
         .map(nullField),
-      ...new Set(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))]
+      ...[].concat(relations.filter((r: RelationInfo) => r.name === t.name && r.type === 'ID').map((r: RelationInfo) => r.idField.slice(0, -1)))])]
     }
   })
-  
+
   context.queries = [...findQueries(objectTypes), ...findAllQueries(objectTypes)]
   context.mutations = [...createQueries(objectTypes), ...updateQueries(objectTypes), ...delQueries(objectTypes)]
   context.subscriptions = [...objectTypes.filter((t: InputModelTypeContext) => !t.config.disableGen && t.config.create && t.config.subCreate).map((t: InputModelTypeContext) => newSub(t.name)),
@@ -240,26 +269,79 @@ export const createCustomSchemaContext = (inputContext: InputModelTypeContext[])
 }
 
 function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
+  const manyToOneRelationQueue = [];
+
   inputContext.forEach((t: InputModelTypeContext) => {
     t.fields.forEach((f: InputModelFieldContext) => {
       if (f.isType) {
-        const fieldName = getRelationFieldName(f, t)
-        if (f.annotations.OneToOne || f.annotations.ManyToOne || !f.isArray) {
+        if (f.annotations.OneToOne || !f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',
-            "relation": `${f.name}: ${f.type}`
+            "fieldInfo": {
+              "name": f.name,
+              "type": f.type,
+              "isArray": f.isArray
+            },
+            "relation": `${f.name}: ${f.type}!`,
           })
-        }
-        else if (f.annotations.OneToMany || f.isArray) {
+        } else if (f.annotations.OneToMany || f.isArray) {
           relations.push({
             "name": t.name,
             "type": 'Type',
-            "relation": `${f.name}: [${f.type}!]`
+            "fieldInfo": {
+              "name": f.name,
+              "type": f.type,
+              "isArray": f.isArray
+            },
+            "relation": `${f.name}: [${f.type}!]!`
+          })
+
+          const relationFieldName = getRelationFieldName(f, t)
+          const fieldInfo = {
+            "name": relationFieldName,
+            "type": t.name,
+            "isArray": false
+          };
+
+          relations.push({
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "idField": `${relationFieldName}Id: ID!`,
+            "fieldInfo": fieldInfo
+          }, {
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "idField": `${relationFieldName}Id: ID!`,
+            "fieldInfo": fieldInfo
+          });
+
+          manyToOneRelationQueue.push({
+            "name": f.type,
+            "type": 'Type',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "fieldInfo": fieldInfo
           })
         }
       }
     })
-  })
+  });
+
+  addManyToOneRelations(manyToOneRelationQueue, relations)
+}
+
+// Add 1:1 fields to relationships list. Does not add fields that already exist.
+function addManyToOneRelations(manyToOneRelationQueue: RelationInfo[], relations: RelationInfo[]) {
+  for (const manyToOneRelation of manyToOneRelationQueue) {
+    const existingRelation = findRelationByFieldName(manyToOneRelation, relations)
+    if (existingRelation && existingRelation.fieldInfo.type !== manyToOneRelation.fieldInfo.type) {
+      throw new Error(`Cannot add relation to schema: Field ${manyToOneRelation.name}.${manyToOneRelation.fieldInfo.name} does not match type ${manyToOneRelation.fieldInfo.type}`)
+    }
+    if (!existingRelation || !relationExists(existingRelation.fieldInfo, relations)) {
+      relations.push(manyToOneRelation)
+    }
+  }
 }
 

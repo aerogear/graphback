@@ -27,5 +27,4 @@ type Comment {
   @db.type: 'text'
   """
   description: String
-  commentNote: Note!
 }
