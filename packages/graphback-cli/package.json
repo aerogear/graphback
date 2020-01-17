@@ -39,7 +39,7 @@
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/js-yaml": "3.12.1",
-    "@types/node": "12.12.24",
+    "@types/node": "12.12.25",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.29",
     "@types/yargs": "15.0.0",
@@ -51,7 +51,7 @@
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
     "tsutils": "3.17.1",
-    "typescript": "3.7.4",
+    "typescript": "3.7.5",
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {

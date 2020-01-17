@@ -5,8 +5,8 @@
   "dependencies": {
     "@apollo/react-common": "3.1.3",
     "@apollo/react-hooks": "3.1.3",
-    "@types/jest": "24.0.25",
-    "@types/node": "12.12.24",
+    "@types/jest": "24.9.0",
+    "@types/node": "12.12.25",
     "@types/react": "16.9.17",
     "@types/react-dom": "16.9.4",
     "apollo-boost": "0.4.7",
@@ -14,7 +14,7 @@
     "react": "16.12.0",
     "react-dom": "16.12.0",
     "react-scripts": "3.3.0",
-    "typescript": "3.7.4"
+    "typescript": "3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
