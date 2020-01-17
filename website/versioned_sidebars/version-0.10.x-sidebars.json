@@ -4,13 +4,13 @@
       "version-0.10.x-gettingstarted",
       "version-0.10.x-datamodel",
       "version-0.10.x-config",
-      "version-0.10.x-custom",
-      "version-0.10.x-relationships"
+      "version-0.10.x-custom"
     ],
     "Concepts": [
       "version-0.10.x-concepts",
       "version-0.10.x-runtime",
       "version-0.10.x-datasources",
+      "version-0.10.x-relationships",
       "version-0.10.x-clientqueries"
     ],
     "Migrations": [

@@ -4,13 +4,13 @@
       "gettingstarted",
       "datamodel",
       "config",
-      "custom",
-      "relationships"
+      "custom"
     ],
     "Concepts": [
       "concepts",
       "runtime",
       "datasources",
+      "relationships",
       "clientqueries"
     ],
     "Migrations": [
