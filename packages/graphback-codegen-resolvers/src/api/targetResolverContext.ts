@@ -1,6 +1,5 @@
 import { getFieldName, getRelationFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from "@graphback/core";;
 import * as templates from "../templates/LayeredResolverTemplates"
-import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
 // TODO extract to separate class that will support different types

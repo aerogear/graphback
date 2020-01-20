@@ -27,10 +27,10 @@ export interface ResolverRelationContext {
     typeName: string
     implementation: string
 }
- 
+
 export interface OutputResolvers {
-   name: string
-   output: string
+    name: string
+    output: string
 }
 
 export interface GeneratedResolvers {

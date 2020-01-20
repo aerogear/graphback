@@ -9,4 +9,5 @@ export interface GraphbackRuntimeContext {
     crudService: GraphbackCRUDService
     crudDb: GraphbackDataProvider
     pubSub: PubSubEngine
+    fieldMap: any
 }
