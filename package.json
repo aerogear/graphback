@@ -14,8 +14,8 @@
     "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
-    "typedoc": "0.16.4",
-    "typescript": "3.7.4"
+    "typedoc": "0.16.7",
+    "typescript": "3.7.5"
   },
   "scripts": {
     "test": "nyc lerna run test",
