@@ -10,7 +10,7 @@ import {
   isObjectType,
   isScalarType,
 } from 'graphql'
-import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
+import { parseAnnotations, stripAnnotations } from 'graphql-metadata'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
 import { defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '../util/defaultNameTransforms'
