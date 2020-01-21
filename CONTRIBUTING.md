@@ -7,7 +7,7 @@ For CLI usage we recommend to use Node version manager - NVM.
 
 ```sh
 npm install
-npm run bootstrap
+yarn bootstrap
 ```
 
 ## Project Structure
@@ -16,15 +16,15 @@ The SDK is made by a group of modules, each one implemented in a different NPM p
 
 ### Run tests with coverage
 
-`npm run test`
+`yarn test`
 
 ### Run linter
 
-`npm run lint`
+`yarn lint`
 
 ### Build
 
-`npm run build`
+`yarn build`
 
 ## Using command line tool from local machine
 
