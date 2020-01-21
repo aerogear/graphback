@@ -1,4 +1,6 @@
-import { buildSchema } from "graphql";
+import { buildSchema, GraphQLSchema } from "graphql";
+import { printSchemaWithDirectives } from '@graphql-toolkit/common';
+import { SchemaCRUDPlugin } from './SchemaCRUDPlugin';
 
 export const globalCRUDMethods = {
   "create": true,
@@ -43,4 +45,7 @@ type Note {
   }
 `
 
-export const schema = buildSchema(schemaText);
+export const schema: GraphQLSchema = buildSchema(schemaText);
+
+const plugin = new SchemaCRUDPlugin({ globalCRUDMethods })
+console.log(printSchemaWithDirectives(plugin.transformSchema(schema)))
