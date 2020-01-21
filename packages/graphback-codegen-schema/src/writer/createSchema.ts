@@ -1,8 +1,10 @@
 import { InputModelTypeContext } from '@graphback/core'
 import { SchemaGenerator, tsSchemaFormatter } from '..';
-import { gqlSchemaFormatter, jsSchemaFormatter } from './writer/schemaFormatters';
+import { gqlSchemaFormatter, jsSchemaFormatter } from './schemaFormatters';
+import { GraphQLSchema } from 'graphql';
+import { printSortedSchema } from './schemaPrinter';
 
-export interface SchemawriterOptions {
+export interface SchemaWriterOptions {
     // output format
     format: 'ts' | 'js' | 'gql'
 }
@@ -12,16 +14,17 @@ export interface SchemawriterOptions {
  * @param inputContext 
  * @param options 
  */
-export const createSchema = (inputContext: InputModelTypeContext[], options: SchemawriterOptions): string => {
+export const writeSchema = (schema: GraphQLSchema, options: SchemaWriterOptions): string => {
+    const schemaString = printSortedSchema(schema);
     if (options) {
         if (options.format === 'ts') {
-            return new SchemaGenerator(inputContext, tsSchemaFormatter).generate();
+            return tsSchemaFormatter.format(schemaString)
         }
         if (options.format === 'js') {
-            return new SchemaGenerator(inputContext, jsSchemaFormatter).generate();;
+            return jsSchemaFormatter.format(schemaString)
         }
         if (options.format === 'gql') {
-            return new SchemaGenerator(inputContext, gqlSchemaFormatter).generate();
+            return gqlSchemaFormatter.format(schemaString)
         }
     }
     throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `gql` flags");
