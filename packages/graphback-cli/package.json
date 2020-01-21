@@ -18,7 +18,7 @@
     "watch": "tsc -w",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
-    "pretest": "npm run build"
+    "pretest": "yarn build"
   },
   "ava": {
     "files": [
