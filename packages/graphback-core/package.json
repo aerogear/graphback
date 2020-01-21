@@ -14,7 +14,7 @@
     "watch": "tsc -w ",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
-    "pretest": "npm run build"
+    "pretest": "yarn build"
   },
   "ava": {
     "files": [
@@ -50,6 +50,7 @@
   "dependencies": {
     "glob": "7.1.6",
     "graphql-annotations": "0.0.3",
+    "graphql-metadata": "^0.5.0",
     "pino": "5.16.0"
   },
   "peerDependencies": {
