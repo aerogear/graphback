@@ -40,7 +40,7 @@
     "pino": "5.16.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.3",
+
     "@types/jest": "24.9.0",
     "@types/lodash": "4.14.149",
     "@types/node": "12.12.25",
