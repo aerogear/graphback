@@ -1,13 +1,20 @@
-import { GraphQLSchema, GraphQLNamedType, GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLType, isObjectType } from 'graphql';
+
 /**
  * 
+ * Get all GraphQL types from schema without: 
+ *
+ * - Query, Mutation, Subscription objects
+ * - Internal scalars added by parser
+ *
  * @param schema 
  */
-export const getBusinessTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectType[] => {
+//FIXME: Swap with https://github.com/ardatan/graphql-toolkit/pull/422
+export const getUserTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectType[] => {
     const allTypesMap = schema.getTypeMap();
+    const types = Object.values(allTypesMap);
 
-    // tslint:disable-next-line: no-unnecessary-local-variable
-    const modelTypes = Object.values(allTypesMap).filter((graphqlType: GraphQLObjectType) => {
+    return types.filter((graphqlType: GraphQLType) => {
         if (graphqlType instanceof GraphQLObjectType) {
             // Filter out private types
             if (graphqlType.name.startsWith('__')) {
@@ -27,7 +34,5 @@ export const getBusinessTypesFromSchema = (schema: GraphQLSchema): GraphQLObject
         }
 
         return false;
-    })
-
-    return modelTypes as GraphQLObjectType[];
+    }) as GraphQLObjectType[]
 }
