@@ -1,8 +1,8 @@
 import { InputModelTypeContext } from '@graphback/core'
-import { SchemaGenerator, tsSchemaFormatter } from '.';
+import { SchemaGenerator, tsSchemaFormatter } from '..';
 import { gqlSchemaFormatter, jsSchemaFormatter } from './schemaFormatters';
 
-export interface SchemaGeneratorOptions {
+export interface SchemaWritterOptions {
     // output format
     format: 'ts' | 'js' | 'gql'
 }
@@ -12,7 +12,7 @@ export interface SchemaGeneratorOptions {
  * @param inputContext 
  * @param options 
  */
-export const createSchema = (inputContext: InputModelTypeContext[], options: SchemaGeneratorOptions): string => {
+export const createSchema = (inputContext: InputModelTypeContext[], options: SchemaWritterOptions): string => {
     if (options) {
         if (options.format === 'ts') {
             return new SchemaGenerator(inputContext, tsSchemaFormatter).generate();

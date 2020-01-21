@@ -1,3 +1,3 @@
 export * from './SchemaGenerator'
-export * from './schemaFormatters'
-export * from './createSchema'
+export * from './writter/schemaFormatters'
+export * from './writter/createSchema'

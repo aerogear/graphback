@@ -1,4 +1,4 @@
-import { SchemaFormatter } from './SchemaGenerator'
+import { SchemaFormatter } from '../SchemaGenerator'
 
 /**
  * Typescript string template that formats schema into common js module that can be imported 

@@ -1,6 +1,7 @@
-import { buildSchema, GraphQLSchema } from "graphql";
-import { printSchemaWithDirectives } from '@graphql-toolkit/common';
+import { buildSchema, GraphQLSchema, printSchema } from "graphql";
 import { SchemaCRUDPlugin } from './SchemaCRUDPlugin';
+import { printSortedSchema } from '../writter/schemaPrinter';
+
 
 export const globalCRUDMethods = {
   "create": true,
@@ -14,6 +15,17 @@ export const globalCRUDMethods = {
 }
 
 export const schemaText = `
+scalar DateTime
+
+directive @texample(
+  reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE
+
+interface aestInterface {
+  id: ID!
+}
+
+
 """
 @model 
 @crud.delete: true
@@ -48,4 +60,4 @@ type Note {
 export const schema: GraphQLSchema = buildSchema(schemaText);
 
 const plugin = new SchemaCRUDPlugin({ globalCRUDMethods })
-console.log(printSchemaWithDirectives(plugin.transformSchema(schema)))
+console.log(printSortedSchema(plugin.transformSchema(schema)))
