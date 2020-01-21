@@ -15,7 +15,6 @@ import { getUserTypesFromSchema } from '..';
  */
 export abstract class GraphbackPlugin {
 
-
     /**
      * Performs transformation on the schema and returns target schemaƒ
      * @param schema 
@@ -50,11 +49,6 @@ export abstract class GraphbackPlugin {
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
     }
 };
-
-
-
-
-
 
 /**
  * Allows to execute chain of plugins that create resources. 
