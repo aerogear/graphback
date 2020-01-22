@@ -1,6 +1,6 @@
-import { buildSchema, GraphQLSchema, printSchema } from "graphql";
-import { printSortedSchema } from '@graphback/codegen-schema/src/writer/schemaPrinter';
-import { SchemaCRUDPlugin } from '@graphback/codegen-schema/src/plugin/SchemaCRUDPlugin';
+// tslint:disable
+
+import { buildSchema, GraphQLSchema } from "graphql";
 import { GraphbackEngine } from './GraphbackEngine';
 
 export const globalCRUDMethods = {
@@ -65,4 +65,4 @@ const engine = new GraphbackEngine(schema, {
   }
 })
 const backend = engine.buildBackend({ format: 'ts' });
-console.log(backend);
+console.info(backend);

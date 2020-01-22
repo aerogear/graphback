@@ -1,10 +1,10 @@
-import { GraphbackCRUDGeneratorConfig, GraphbackPlugin, GraphbackGlobalConfig } from '@graphback/core'
+import { GraphbackCRUDGeneratorConfig, GraphbackGlobalConfig, GraphbackPlugin } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { parseAnnotations } from 'graphql-metadata'
-import { tsSchemaFormatter, jsSchemaFormatter, gqlSchemaFormatter } from '../writer/schemaFormatters';
-import { printSortedSchema } from '../writer/schemaPrinter';
 import * as pluralize from "pluralize";
+import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
+import { printSortedSchema } from '../writer/schemaPrinter';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -55,7 +55,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     private defaultCRUDOptions: GraphbackCRUDGeneratorConfig
     private pluginConfig: SchemaCRUDPluginConfig;
 
-    constructor(globalConfig: GraphbackGlobalConfig, pluginConfig: SchemaCRUDPluginConfig) {
+    constructor(globalConfig: GraphbackGlobalConfig, pluginConfig?: SchemaCRUDPluginConfig) {
         super()
         this.pluginConfig = pluginConfig;
         this.defaultCRUDOptions = Object.assign(defaultGeneratorOptions, globalConfig.crudMethods)
@@ -89,7 +89,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param inputContext 
      * @param options 
      */
-    transformSchemaToString(schema: GraphQLSchema) {
+    public transformSchemaToString(schema: GraphQLSchema) {
         const schemaString = printSortedSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {

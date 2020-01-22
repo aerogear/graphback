@@ -1,9 +1,8 @@
 import { createResolvers, ResolverGeneratorOptions } from "@graphback/codegen-resolvers"
-import { } from '@graphback/codegen-schema';
-import { GraphbackPluginEngine, GraphbackGlobalConfig, graphQLInputContext } from '@graphback/core';
-import { IGraphQLBackend } from './IGraphQLBackend';
-import { SchemaCRUDPluginConfig, SchemaCRUDPlugin } from '@graphback/codegen-schema';
+import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
+import { GraphbackGlobalConfig, GraphbackPluginEngine, graphQLInputContext } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
+import { IGraphQLBackend } from './IGraphQLBackend';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 
  */

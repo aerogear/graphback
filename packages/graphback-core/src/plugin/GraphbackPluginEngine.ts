@@ -1,4 +1,4 @@
-import { GraphQLSchema, buildSchema } from 'graphql';
+import { buildSchema, GraphQLSchema } from 'graphql';
 import { GraphbackPlugin } from './GraphbackPlugin';
 
 /**
