@@ -14,26 +14,22 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: install-dependencies
-          command: npm install
+          command: yarn
       - run:
           name: install-package-dependencies
-          command: npm run bootstrap
+          command: yarn bootstrap
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
-          # Hoisting will cache some of the packages, but rest needs to be installed separtely
-          name: install-package-dependencies-after-cache
-          command: npm run bootstrap
-      - run:
           name: run lint
-          command: npm run lint
+          command: yarn lint
       - run:
           name: test
-          command: npm test
+          command: yarn test
   npm_publish:
-    working_directory: ~/graphqlheroes
+    working_directory: ~/aerogear/graphback
     docker:
       # Node 8 LTS
       - image: circleci/node:lts

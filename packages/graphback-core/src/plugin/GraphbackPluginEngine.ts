@@ -15,7 +15,7 @@ import { GraphbackPlugin } from './GraphbackPlugin';
  */
 export class GraphbackPluginEngine {
 
-    private plugins: GraphbackPlugin[];
+    private plugins: GraphbackPlugin[] = [];
     private schema: GraphQLSchema;
 
     constructor(schema: GraphQLSchema | string) {
@@ -29,8 +29,8 @@ export class GraphbackPluginEngine {
         }
     }
 
-    public registerPlugin(plugin: GraphbackPlugin): void {
-        this.plugins.push(plugin);
+    public registerPlugin(...plugins: GraphbackPlugin[]): void {
+        this.plugins.concat(plugins);
     }
 
     public execute(): GraphQLSchema {

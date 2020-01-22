@@ -1,7 +1,7 @@
 import { createResolvers, ResolverGeneratorOptions } from "@graphback/codegen-resolvers"
 import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
 import { GraphbackGlobalConfig, GraphbackPluginEngine, graphQLInputContext } from '@graphback/core';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, printSchema } from 'graphql';
 import { IGraphQLBackend } from './IGraphQLBackend';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 
@@ -30,14 +30,18 @@ export class GraphbackEngine {
     this.schema = schema;
     this.config = config;
     // Legacy to be removed
-    this.inputContext = graphQLInputContext.createModelContext(schema as string, {});
+    if (typeof schema === 'string') {
+      this.inputContext = graphQLInputContext.createModelContext(schema, {});
+    } else {
+      this.inputContext = graphQLInputContext.createModelContext(printSchema(schema), {});
+    }
   }
 
   /**
    * Create backend with all related resources
    */
   // FIXME generator options should be moved to plugin config
-  public buildBackend(resolverOptions: ResolverGeneratorOptions): IGraphQLBackend {
+  public buildServer(resolverOptions: ResolverGeneratorOptions): IGraphQLBackend {
     const backend: IGraphQLBackend = {};
 
     const pluginEngine = new GraphbackPluginEngine(this.schema);
