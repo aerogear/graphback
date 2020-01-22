@@ -6,7 +6,7 @@ For CLI usage we recommend to use Node version manager - NVM.
 ## Building
 
 ```sh
-npm install
+yarn install
 yarn bootstrap
 ```
 
