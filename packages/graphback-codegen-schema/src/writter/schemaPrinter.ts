@@ -1,23 +1,26 @@
-import { getUserTypesFromSchema } from '@graphback/core';
-import { GraphQLObjectType, print } from 'graphql';
+import { GraphQLObjectType, print, GraphQLCompositeType, GraphQLSchema, GraphQLType } from 'graphql';
 
-export function printSortedSchema(schema) {
-    const userTypes = getUserTypesFromSchema(schema).sort((userType1: GraphQLObjectType, userType2: GraphQLObjectType) => {
-        return userType1.name.localeCompare(userType2.name);
-    });
+
+export function printSortedSchema(schema: GraphQLSchema) {
+    const schemaTypes = Object.values(schema.getTypeMap());
+
+    const orderedTypes = schemaTypes.filter((schemaType: GraphQLObjectType) => {
+        if (isQueryType(schema, schemaType)) {
+            return false;
+        }
+        if (isSubscriptionType(schema, schemaType)) {
+            return false;
+        }
+        if (isMutationType(schema, schemaType)) {
+            return false;
+        }
+
+        return !!schemaType.astNode?.loc
+    }).sort((type1: GraphQLObjectType, type2: GraphQLObjectType) => {
+        return type1.astNode.loc.start - type2.astNode.loc.start
+    })
 
     let schemaString = '';
-
-    const nonUserTypes = Object.values(schema.getTypeMap()).filter((graphqlType: any) => {
-        if (graphqlType.name.startsWith('__')) {
-            return false;
-        }
-        if (graphqlType instanceof GraphQLObjectType) {
-            return false;
-        }
-
-        return true;
-    });
 
     schemaString += schema.getDirectives().map((directive: any) => {
         if (directive.astNode) {
@@ -25,26 +28,60 @@ export function printSortedSchema(schema) {
         }
 
         return undefined;
-    }).filter(value => !!value).join('\n\n');
+    }).filter((value: any) => !!value).join('\n\n');
 
     schemaString += '\n\n';
-    schemaString += nonUserTypes.map((graphqlType: any) => {
-        if (graphqlType.astNode) {
-            return `${print(graphqlType.astNode)}`
-        }
-
-        return undefined;
-    }).filter(value => !!value).join('\n\n');
-
-    schemaString += '\n\n';
-    schemaString += userTypes.map((userType: GraphQLObjectType) => {
-        return `${print(userType.astNode)}`
+    schemaString += orderedTypes.map((graphqlType: any) => {
+        return `${print(graphqlType.astNode)}`
     }).join('\n\n');
-    
+
     schemaString += '\n\n';
     schemaString += `${print(schema.getQueryType().astNode)} \n\n`
     schemaString += `${print(schema.getMutationType().astNode)} \n\n`
     schemaString += `${print(schema.getSubscriptionType().astNode)} \n\n`
 
     return schemaString;
+}
+
+/**
+ * Checks if type is query
+ *
+ * @internal
+ */
+export function isQueryType(schema: GraphQLSchema, providedType: any) {
+    const schemaType = schema.getQueryType();
+    if (schemaType) {
+        return schemaType.name === providedType.name;
+    }
+
+    return false;
+}
+
+/**
+ * Checks if type is mutation
+ *
+ * @internal
+ */
+export function isMutationType(schema: GraphQLSchema, providedType: any) {
+    const schemaType = schema.getMutationType();
+    if (providedType.name && schemaType) {
+        return schemaType.name === providedType.name;
+    }
+
+    return false;
+}
+
+/**
+ * Checks if type is subscription
+ *
+ * @internal
+ */
+export function isSubscriptionType(
+    schema: GraphQLSchema, providedType: any) {
+    const schemaType = schema.getSubscriptionType();
+    if (schemaType) {
+        return schemaType.name === providedType.name;
+    }
+
+    return false;
 }
