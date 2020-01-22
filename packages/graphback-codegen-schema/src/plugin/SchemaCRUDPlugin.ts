@@ -45,7 +45,7 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
  * patterns for CRUD operations on top of GraphQL Schema
  * Plugin checkes all types annotated with model
  * 
- * Used graphql annotations:
+ * Used graphql metadata:
  * 
  * - model: marks type to be processed by CRUD generator
  * - crud: controls what types of operations can be generated. 
