@@ -2,9 +2,9 @@ import { GraphbackCRUDGeneratorConfig, GraphbackPlugin, GraphbackGlobalConfig } 
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { parseAnnotations } from 'graphql-metadata'
-import * as pluralize from "pluralize";
-import { tsSchemaFormatter, jsSchemaFormatter, gqlSchemaFormatter } from '..';
+import { tsSchemaFormatter, jsSchemaFormatter, gqlSchemaFormatter } from '../writer/schemaFormatters';
 import { printSortedSchema } from '../writer/schemaPrinter';
+import * as pluralize from "pluralize";
 
 /**
  * Configuration for Schema generator CRUD plugin
