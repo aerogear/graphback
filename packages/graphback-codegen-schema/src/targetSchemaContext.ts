@@ -1,5 +1,6 @@
 import { filterInterfaceTypes, filterObjectTypes, getFieldName, getRelationFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/core'
 
+// TODO: Remove this field as it is legacy code
 export interface TargetType {
   name: string
   interfaces?: string[]

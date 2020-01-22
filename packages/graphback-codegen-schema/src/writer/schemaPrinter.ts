@@ -1,6 +1,11 @@
-import { GraphQLObjectType, print, GraphQLCompositeType, GraphQLSchema, GraphQLType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, print } from 'graphql';
 
-
+/**
+ * Allows to transform schema into string by perserving original order
+ * and including directives
+ * 
+ * @param schema 
+ */
 export function printSortedSchema(schema: GraphQLSchema) {
     const schemaTypes = Object.values(schema.getTypeMap());
 
@@ -15,7 +20,7 @@ export function printSortedSchema(schema: GraphQLSchema) {
             return false;
         }
 
-        return !!schemaType.astNode?.loc
+        return schemaType.astNode?.loc !== undefined;
     }).sort((type1: GraphQLObjectType, type2: GraphQLObjectType) => {
         return type1.astNode.loc.start - type2.astNode.loc.start
     })

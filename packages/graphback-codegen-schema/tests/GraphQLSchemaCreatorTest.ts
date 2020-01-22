@@ -1,4 +1,4 @@
-import { gqlSchemaFormatter } from '../src/writter/schemaFormatters';
+import { gqlSchemaFormatter } from '../src/writer/schemaFormatters';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { graphQLInputContext } from '@graphback/core/src';
 import ava, { ExecutionContext } from 'ava';

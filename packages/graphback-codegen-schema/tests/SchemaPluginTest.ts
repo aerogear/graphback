@@ -2,7 +2,7 @@
 import ava, { ExecutionContext } from 'ava';
 import { buildSchema, GraphQLSchema } from "graphql";
 import { SchemaCRUDPlugin } from '../src/plugin/SchemaCRUDPlugin';
-import { printSortedSchema } from '../src/writter/schemaPrinter';
+import { printSortedSchema } from '../src/writer/schemaPrinter';
 
 
 const schemaText = `
