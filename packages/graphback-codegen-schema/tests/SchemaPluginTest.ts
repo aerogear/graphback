@@ -54,7 +54,7 @@ ava('Test snapshot Schema Plugin', async (t: ExecutionContext) => {
   const schema: GraphQLSchema = buildSchema(schemaText);
 
 
-  const plugin = new SchemaCRUDPlugin({ globalCRUDMethods })
+  const plugin = new SchemaCRUDPlugin({ crudMethods: globalCRUDMethods })
 
   t.snapshot(printSortedSchema(plugin.transformSchema(schema)));
 });
@@ -82,7 +82,7 @@ ava('Test snapshot Schema Plugin no queries and subscriptions', async (t: Execut
   `
 
   const schema: GraphQLSchema = buildSchema(simpleSchema);
-  const plugin = new SchemaCRUDPlugin({ globalCRUDMethods })
+  const plugin = new SchemaCRUDPlugin({ crudMethods: globalCRUDMethods })
 
   t.snapshot(printSortedSchema(plugin.transformSchema(schema)));
 });

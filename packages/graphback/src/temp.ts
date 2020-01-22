@@ -1,6 +1,7 @@
-import { buildSchema, GraphQLSchema, printSchema } from "graphql";
-import { printSortedSchema } from '../writer/schemaPrinter';
-import { SchemaCRUDPlugin } from './SchemaCRUDPlugin';
+// tslint:disable
+
+import { buildSchema, GraphQLSchema } from "graphql";
+import { GraphbackEngine } from './GraphbackEngine';
 
 export const globalCRUDMethods = {
   "create": true,
@@ -58,5 +59,10 @@ interface aestInterface {
 
 export const schema: GraphQLSchema = buildSchema(schemaText);
 
-const plugin = new SchemaCRUDPlugin({ globalCRUDMethods })
-console.log(printSortedSchema(plugin.transformSchema(schema)))
+const engine = new GraphbackEngine(schema, {
+  global: {
+    crudMethods: globalCRUDMethods
+  }
+})
+const backend = engine.buildBackend({ format: 'ts' });
+console.info(backend);
