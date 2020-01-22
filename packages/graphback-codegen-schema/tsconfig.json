@@ -5,7 +5,7 @@
   ],
   "compilerOptions": {
     "outDir": "./dist/",
-    "declarationDir": "./types",
+    "declarationDir": "types",
     "lib": [
       "esnext.asynciterable",
       "es2015",

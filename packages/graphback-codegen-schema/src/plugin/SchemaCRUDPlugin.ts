@@ -1,14 +1,17 @@
-import { GraphbackCRUDGeneratorConfig, GraphbackPlugin } from '@graphback/core'
+import { GraphbackCRUDGeneratorConfig, GraphbackGlobalConfig, GraphbackPlugin } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { parseAnnotations } from 'graphql-metadata'
 import * as pluralize from "pluralize";
+import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
+import { printSortedSchema } from '../writer/schemaPrinter';
 
-export interface SchemaPluginConfig {
-    /**
-     * Flags for CRUD method creation
-     */
-    globalCRUDMethods?: GraphbackCRUDGeneratorConfig
+/**
+ * Configuration for Schema generator CRUD plugin
+ */
+export interface SchemaCRUDPluginConfig {
+    // output format for schema string
+    format: 'ts' | 'js' | 'gql'
 }
 
 const defaultGeneratorOptions = {
@@ -32,6 +35,8 @@ type ModelDefinition = {
 };
 
 
+export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
+
 /**
  * Graphback CRUD operations plugin
  * 
@@ -48,10 +53,12 @@ type ModelDefinition = {
  */
 export class SchemaCRUDPlugin extends GraphbackPlugin {
     private defaultCRUDOptions: GraphbackCRUDGeneratorConfig
+    private pluginConfig: SchemaCRUDPluginConfig;
 
-    constructor(options: SchemaPluginConfig) {
+    constructor(globalConfig: GraphbackGlobalConfig, pluginConfig?: SchemaCRUDPluginConfig) {
         super()
-        this.defaultCRUDOptions = Object.assign(defaultGeneratorOptions, options.globalCRUDMethods)
+        this.pluginConfig = pluginConfig;
+        this.defaultCRUDOptions = Object.assign(defaultGeneratorOptions, globalConfig.crudMethods)
     }
 
     public transformSchema(schema: GraphQLSchema): GraphQLSchema {
@@ -77,8 +84,31 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return mergeSchemas({ schemas: [modelsSchema, schema] });
     }
 
+    /**
+     * Create resolvers function that 
+     * @param inputContext 
+     * @param options 
+     */
+    public transformSchemaToString(schema: GraphQLSchema) {
+        const schemaString = printSortedSchema(schema);
+        if (this.pluginConfig) {
+            if (this.pluginConfig.format === 'ts') {
+                return tsSchemaFormatter.format(schemaString)
+            }
+            if (this.pluginConfig.format === 'js') {
+                return jsSchemaFormatter.format(schemaString)
+            }
+            if (this.pluginConfig.format === 'gql') {
+                return gqlSchemaFormatter.format(schemaString)
+            }
+        }
+        throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `gql` flags");
+    }
+
+
+
     public getPluginName() {
-        return "SchemaCRUDGenerator";
+        return SCHEMA_CRUD_PLUGIN_NAME;
     }
 
     private buildSchemaForModels(models: ModelDefinition[]) {
