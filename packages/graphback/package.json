@@ -14,7 +14,7 @@
     "watch": "tsc -w ",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
-    "pretest": "npm run build"
+    "pretest": "yarn build"
   },
   "ava": {
     "files": [
@@ -32,7 +32,7 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.3",
+
     "@types/node": "12.12.25",
     "@types/pino": "5.20.0",
     "ava": "2.4.0",

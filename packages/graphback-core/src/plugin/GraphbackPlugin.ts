@@ -1,0 +1,39 @@
+import { GraphQLSchema } from "graphql";
+import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
+
+/**
+ * Graphback plugin interface
+ * Plugins are base for every graphback generator and schema transformers. 
+ * See documentation for the complete list of the plugins.
+ * 
+ * Plugins can:
+ * 
+ * - Modify the schema
+ * - Create resources like files, db tables etc.
+ * - Perform some in memory operations based on configuration
+ */
+export abstract class GraphbackPlugin {
+
+    /**
+     * Performs transformation on the schema and returns target schemaƒ
+     * @param schema 
+     */
+    public abstract transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema;
+
+    /**
+     * @returns Unique name of the plugin
+     */
+    public abstract getPluginName(): string;
+
+    protected logWarning(message: string): void {
+        // tslint:disable-next-line: no-console
+        console.log(`Warning - ${this.getPluginName()}: ${message}`)
+    }
+
+    protected logError(message: string): void {
+        // tslint:disable-next-line: no-console
+        console.error(`Error - ${this.getPluginName()}: ${message}`)
+    }
+
+  
+};

@@ -14,7 +14,7 @@
     "watch": "tsc -w ",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
-    "pretest": "npm run build"
+    "pretest": "yarn build"
   },
   "ava": {
     "files": [
@@ -32,7 +32,6 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.3",
     "@types/node": "12.12.25",
     "@types/pino": "5.20.0",
     "ava": "2.4.0",
@@ -40,7 +39,6 @@
     "rimraf": "3.0.0",
     "ts-node": "8.6.2",
     "tslint": "5.20.1",
-    "tsutils": "3.17.1",
     "typescript": "3.7.5"
   },
   "license": "Apache-2.0",
@@ -49,7 +47,7 @@
   },
   "dependencies": {
     "glob": "7.1.6",
-    "graphql-annotations": "0.0.3",
+    "graphql-metadata": "0.5.0",
     "pino": "5.16.0"
   },
   "peerDependencies": {

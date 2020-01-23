@@ -1,5 +1,5 @@
 import { FieldDefinitionNode, TypeDefinitionNode } from 'graphql';
-import { parseAnnotations } from 'graphql-annotations';
+import { parseAnnotations } from 'graphql-metadata';
 import { InputModelFieldAnnotations } from '../api';
 
 export const parseFieldAnnotations = (node: FieldDefinitionNode): InputModelFieldAnnotations => {

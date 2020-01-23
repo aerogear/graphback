@@ -1,5 +1,6 @@
 import { TargetContext, TargetType } from './targetSchemaContext';
 
+// TODO legacy code to be removed.
 /**
  * Generate a string literal with the following format:
  *

@@ -20,7 +20,6 @@
   "scripts": {
     "test": "nyc lerna run test",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "cleanInstall": "lerna exec npm install --ignore-scripts",
     "bootstrap": "lerna bootstrap --no-ci",
     "lint": "tslint 'packages/*/src/**/*.ts' 'templates/*/src/**/*.ts' 'packages/*/test/**/*.ts'",
     "lint-fix": "tslint 'packages/*/src/**/*.ts' 'templates/*/src/**/*.ts' 'packages/*/test/**/*.ts' --fix",
@@ -35,6 +34,10 @@
     "clean:packages": "lerna run clean",
     "clean:dependencies": "lerna clean --yes"
   },
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aerogear/graphback.git"

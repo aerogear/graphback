@@ -1,3 +1,3 @@
 export * from './SchemaGenerator'
-export * from './schemaFormatters'
-export * from './createSchema'
+export * from './writer/schemaFormatters'
+export * from './plugin/SchemaCRUDPlugin'

@@ -1,7 +1,7 @@
 import { ClientDocuments, createClient } from '@graphback/codegen-client';
 import { createResolvers, ResolverGeneratorOptions } from "@graphback/codegen-resolvers"
 import { SchemaGenerator, tsSchemaFormatter } from '@graphback/codegen-schema';
-import { GraphbackCRUDGeneratorConfig, graphQLInputContext, InputModelTypeContext } from '@graphback/core';
+import { GraphbackCRUDGeneratorConfig, graphQLInputContext, InputModelTypeContext} from '@graphback/core';
 import { CRUDService, GraphbackDataProvider, LayeredRuntimeResolverGenerator, RuntimeResolversDefinition } from "@graphback/runtime"
 import { PubSub } from 'graphql-subscriptions';
 import { IGraphQLBackend } from '.';
@@ -25,6 +25,7 @@ export class GraphQLBackendCreator {
     this.inputContext = graphQLInputContext.createModelContext(schemaText, config);
   }
 
+  // TODO FIXME Legacy code swap with the generateBackend method
   /**
    * Create backend with all related resources
    */
