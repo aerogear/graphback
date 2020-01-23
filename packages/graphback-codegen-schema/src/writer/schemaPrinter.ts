@@ -6,6 +6,7 @@ import { GraphQLObjectType, GraphQLSchema, print } from 'graphql';
  * 
  * @param schema 
  */
+// TODO remove this method and use `printSchema(lexicographicSortSchema(schema))`
 export function printSortedSchema(schema: GraphQLSchema) {
     const schemaTypes = Object.values(schema.getTypeMap());
 
@@ -41,9 +42,15 @@ export function printSortedSchema(schema: GraphQLSchema) {
     }).join('\n\n');
 
     schemaString += '\n\n';
-    schemaString += `${print(schema.getQueryType().astNode)} \n\n`
-    schemaString += `${print(schema.getMutationType().astNode)} \n\n`
-    schemaString += `${print(schema.getSubscriptionType().astNode)} \n\n`
+    if (schema.getQueryType()) {
+        schemaString += `${print(schema.getQueryType().astNode)} \n\n`
+    }
+    if (schema.getMutationType()) {
+        schemaString += `${print(schema.getMutationType().astNode)} \n\n`
+    }
+    if (schema.getSubscriptionType()) {
+        schemaString += `${print(schema.getSubscriptionType().astNode)} \n\n`
+    }
 
     return schemaString;
 }

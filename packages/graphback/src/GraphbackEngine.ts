@@ -44,11 +44,11 @@ export class GraphbackEngine {
   public buildServer(resolverOptions: ResolverGeneratorOptions): IGraphQLBackend {
     const backend: IGraphQLBackend = {};
 
-    const pluginEngine = new GraphbackPluginEngine(this.schema);
+    const pluginEngine = new GraphbackPluginEngine(this.schema, this.config.global);
     const schemaConfig = this.config.plugins?.SchemaCRUD
-    const schemaCRUDPlugin = new SchemaCRUDPlugin(this.config.global, schemaConfig);
+    const schemaCRUDPlugin = new SchemaCRUDPlugin(schemaConfig);
     pluginEngine.registerPlugin(schemaCRUDPlugin);
-    const resultSchema = pluginEngine.execute();
+    const resultSchema = pluginEngine.execute().getSchema();
 
     backend.schema = schemaCRUDPlugin.transformSchemaToString(resultSchema);
     backend.resolvers = createResolvers(this.inputContext, resolverOptions);

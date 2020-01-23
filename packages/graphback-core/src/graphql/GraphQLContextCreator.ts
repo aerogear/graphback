@@ -1,6 +1,6 @@
 import { parse, visit } from 'graphql';
 import { InputModelTypeContext } from '../api/ContextTypes'
-import { GraphbackCRUDGeneratorConfig } from "../api/GraphbackCRUDGeneratorConfig";
+import { GraphbackCRUDGeneratorConfig } from "../plugin/GraphbackCRUDGeneratorConfig";
 import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './graphqlUtils';
 
 import { InputContextCreator } from '../api';

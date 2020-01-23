@@ -12,7 +12,7 @@ export interface SchemaWriterOptions {
  * @param inputContext 
  * @param options 
  */
-export const createSchema = (inputContext: InputModelTypeContext[], options: SchemawriterOptions): string => {
+export const createSchema = (inputContext: InputModelTypeContext[], options: SchemaWriterOptions): string => {
     if (options) {
         if (options.format === 'ts') {
             return new SchemaGenerator(inputContext, tsSchemaFormatter).generate();
