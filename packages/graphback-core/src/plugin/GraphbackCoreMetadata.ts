@@ -1,0 +1,75 @@
+import { GraphQLSchema, GraphQLObjectType } from 'graphql'
+import { getModelTypesFromSchema } from './getModelTypesFromSchema'
+import { parseMarker, parseAnnotations } from 'graphql-metadata'
+import { ModelDefinition } from './ModelDefinition';
+import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
+import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
+
+const defaultCRUDGeneratorConfig = {
+    "create": true,
+    "update": true,
+    "findAll": true,
+    "find": true,
+    "delete": true,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true,
+    "disableGen": false
+}
+
+/**
+ * Contains Graphback Core Models
+ */
+export class GraphbackCoreMetadata {
+
+    private supportedCrudMethods: GraphbackCRUDGeneratorConfig
+    private schema: GraphQLSchema;
+    private models: ModelDefinition[]
+
+    constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
+        this.schema = schema;
+        this.supportedCrudMethods = Object.assign(defaultCRUDGeneratorConfig, globalConfig.crudMethods)
+    }
+
+    public getSchema() {
+        return this.schema;
+    }
+
+    public setSchema(newSchema: GraphQLSchema) {
+        this.schema = newSchema;
+    }
+
+    /**
+     * Get Graphback Models - GraphQL Types with additional CRUD configuration
+     */
+    public getModelDefinitions() {
+        if (this.models) {
+            return this.models;
+        }
+        // Contains map of the models with their underlying CRUD configuration
+        this.models = [];
+        // Get actual user types 
+        const modelTypes = this.getGraphQLTypesWithModel();
+        for (const modelType of modelTypes) {
+            let crudOptions = parseAnnotations('crud', modelType.description)
+            // Merge CRUD options from type with global ones
+            crudOptions = Object.assign(this.supportedCrudMethods, crudOptions);
+            this.models.push({ graphqlType: modelType, crudOptions })
+        }
+
+        return this.models;
+    }
+
+    /**
+     * Helper for plugins to fetch all types that should be processed by Graphback plugins.
+     * To mark type as enabled for graphback generators we need to add `model` annotations over the type. 
+     * 
+     * Returns all user types that have @model in description
+     * @param schema 
+     */
+    public getGraphQLTypesWithModel(): GraphQLObjectType[] {
+        const types = getModelTypesFromSchema(this.schema)
+
+        return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
+    }
+}

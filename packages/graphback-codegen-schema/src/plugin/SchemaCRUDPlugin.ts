@@ -1,7 +1,6 @@
-import { GraphbackCRUDGeneratorConfig, GraphbackGlobalConfig, GraphbackPlugin } from '@graphback/core'
+import { GraphbackPlugin, GraphbackCoreMetadata, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { parseAnnotations } from 'graphql-metadata'
 import * as pluralize from "pluralize";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
 import { printSortedSchema } from '../writer/schemaPrinter';
@@ -13,27 +12,6 @@ export interface SchemaCRUDPluginConfig {
     // output format for schema string
     format: 'ts' | 'js' | 'gql'
 }
-
-const defaultGeneratorOptions = {
-    "create": true,
-    "update": true,
-    "findAll": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true,
-    "disableGen": false
-}
-
-/**
- * Used to encapsulate configuration for the type
- */
-type ModelDefinition = {
-    graphqlType: GraphQLObjectType,
-    crudOptions: GraphbackCRUDGeneratorConfig
-};
-
 
 export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
 
@@ -52,27 +30,18 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
  * For example crud.update: false will disable updates for type
  */
 export class SchemaCRUDPlugin extends GraphbackPlugin {
-    private defaultCRUDOptions: GraphbackCRUDGeneratorConfig
+
     private pluginConfig: SchemaCRUDPluginConfig;
 
-    constructor(globalConfig: GraphbackGlobalConfig, pluginConfig?: SchemaCRUDPluginConfig) {
+    constructor(pluginConfig?: SchemaCRUDPluginConfig) {
         super()
-        this.pluginConfig = pluginConfig;
-        this.defaultCRUDOptions = Object.assign(defaultGeneratorOptions, globalConfig.crudMethods)
+        this.pluginConfig = Object.assign({ format: 'gql' }, pluginConfig);
+
     }
 
-    public transformSchema(schema: GraphQLSchema): GraphQLSchema {
-        // Contains map of the models with their underlying CRUD configuration
-        const models: ModelDefinition[] = [];
-        // Get actual user types 
-        const modelTypes = this.getUserModels(schema);
-        for (const modelType of modelTypes) {
-            let crudOptions = parseAnnotations('crud', modelType.description)
-            // Merge CRUD options
-            crudOptions = Object.assign(this.defaultCRUDOptions, crudOptions);
-            models.push({ graphqlType: modelType, crudOptions })
-        }
-
+    public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
+        const schema = metadata.getSchema()
+        const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
 
