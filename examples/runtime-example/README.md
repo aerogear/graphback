@@ -25,7 +25,7 @@ Then developers can create runtime instance:
     console.log(runtime.schema,  runtime.resolvers)
 ```    
 
-See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/example/runtime/src/runtime.ts#L30) for a fully functional example.
+See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/examples/runtime-example/src/runtime.ts#L32) for a fully functional example.
 
 ### Running example
 
