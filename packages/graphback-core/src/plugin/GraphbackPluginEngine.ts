@@ -1,5 +1,7 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
 import { GraphbackPlugin } from './GraphbackPlugin';
+import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
+import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
 
 /**
  * Allows to execute chain of plugins that create resources. 
@@ -15,10 +17,12 @@ import { GraphbackPlugin } from './GraphbackPlugin';
  */
 export class GraphbackPluginEngine {
 
-    private plugins: GraphbackPlugin[] = [];
-    private schema: GraphQLSchema;
+    private plugins: GraphbackPlugin[]
+    private schema: GraphQLSchema
+    private metadata: GraphbackCoreMetadata;
 
-    constructor(schema: GraphQLSchema | string) {
+    constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
+        this.plugins = [];
         if (!schema) {
             throw new Error("Plugin engine requires schema");
         }
@@ -27,18 +31,23 @@ export class GraphbackPluginEngine {
         } else {
             this.schema = schema;
         }
+        this.metadata = new GraphbackCoreMetadata(config, this.schema);
     }
 
     public registerPlugin(...plugins: GraphbackPlugin[]): void {
         this.plugins.concat(plugins);
     }
 
-    public execute(): GraphQLSchema {
+    public execute(): GraphbackCoreMetadata {
         let newSchema = this.schema;
         for (const plugin of this.plugins) {
-            newSchema = plugin.transformSchema(newSchema);
+            newSchema = plugin.transformSchema(this.metadata);
+            // FIXME kinda convoluted 
+            // FIXME - should schema stay original object?
+            this.metadata.setSchema(newSchema);
+
         }
 
-        return newSchema;
+        return this.metadata;
     }
 }

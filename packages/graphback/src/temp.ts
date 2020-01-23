@@ -64,5 +64,5 @@ const engine = new GraphbackEngine(schema, {
     crudMethods: globalCRUDMethods
   }
 })
-const backend = engine.buildBackend({ format: 'ts' });
+const backend = engine.buildServer({ format: 'ts' });
 console.info(backend);

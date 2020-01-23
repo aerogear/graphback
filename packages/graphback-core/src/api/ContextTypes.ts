@@ -1,5 +1,5 @@
 import { KindEnum } from 'graphql';
-import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
+import { GraphbackCRUDGeneratorConfig } from '../plugin/GraphbackCRUDGeneratorConfig';
 
 export const INTERFACE_TYPE_DEFINITION = 'InterfaceTypeDefinition';
 export const OBJECT_TYPE_DEFINITION = 'ObjectTypeDefinition';
