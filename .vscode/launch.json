@@ -1,16 +1,34 @@
 {
   "version": "0.2.0",
   "configurations": [
-
-
-     {
+    {
+      "name": "Temp File",
+      "type": "node",
+      "request": "launch",
+      "env": {},
+      "args": [
+        "${workspaceRoot}/packages/graphback/src/temp.ts"
+      ],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
       "name": "Current TS File",
       "type": "node",
       "request": "launch",
-      "env": {
-      },
-      "args": ["${relativeFile}"],
-      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {},
+      "args": [
+        "${relativeFile}"
+      ],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
@@ -19,10 +37,14 @@
       "name": "Generator template app",
       "type": "node",
       "request": "launch",
-      "env": {
-      },
-      "args": ["${workspaceRoot}/examples/generator-fullstack/server/src/index.ts"],
-      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {},
+      "args": [
+        "${workspaceRoot}/examples/generator-fullstack/server/src/index.ts"
+      ],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
       "cwd": "${workspaceRoot}/examples/generator-fullstack/server",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
@@ -31,10 +53,14 @@
       "name": "Runtime template app",
       "type": "node",
       "request": "launch",
-      "env": {
-      },
-      "args": ["${workspaceRoot}/examples/runtime-example/src/index.ts"],
-      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {},
+      "args": [
+        "${workspaceRoot}/examples/runtime-example/src/index.ts"
+      ],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
       "cwd": "${workspaceRoot}/examples/runtime-example",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
@@ -58,7 +84,11 @@
       "request": "launch",
       "name": "CLI generate",
       "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
       "sourceMaps": true,
       "protocol": "inspector",
       "args": [
@@ -71,7 +101,11 @@
       "request": "launch",
       "name": "CLI openapi",
       "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
       "sourceMaps": true,
       "protocol": "inspector",
       "args": [
@@ -84,7 +118,11 @@
       "request": "launch",
       "name": "CLI db",
       "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
       "sourceMaps": true,
       "protocol": "inspector",
       "args": [
