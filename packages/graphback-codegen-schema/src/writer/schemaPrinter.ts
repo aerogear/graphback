@@ -6,6 +6,7 @@ import { GraphQLObjectType, GraphQLSchema, print } from 'graphql';
  * 
  * @param schema 
  */
+// TODO remove this method and use `printSchema(lexicographicSortSchema(schema))`
 export function printSortedSchema(schema: GraphQLSchema) {
     const schemaTypes = Object.values(schema.getTypeMap());
 
