@@ -1,7 +1,7 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { GraphbackPlugin } from './GraphbackPlugin';
 import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
+import { GraphbackPlugin } from './GraphbackPlugin';
 
 /**
  * Allows to execute chain of plugins that create resources. 
@@ -35,7 +35,7 @@ export class GraphbackPluginEngine {
     }
 
     public registerPlugin(...plugins: GraphbackPlugin[]): void {
-        this.plugins.concat(plugins);
+        this.plugins.push(...plugins);
     }
 
     public execute(): GraphbackCoreMetadata {
