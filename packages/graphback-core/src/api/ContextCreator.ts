@@ -1,5 +1,5 @@
 import { InputModelTypeContext } from './ContextTypes';
-import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
+import { GraphbackCRUDGeneratorConfig } from '../plugin/GraphbackCRUDGeneratorConfig';
 
 /**
  * Interface that defines set of operations for creating context object from provided input (string)

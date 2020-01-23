@@ -10,7 +10,7 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLType, isObjectType } from 'gra
  * @param schema 
  */
 //FIXME: Swap with https://github.com/ardatan/graphql-toolkit/pull/422
-export const getUserTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectType[] => {
+export const getModelTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectType[] => {
     const allTypesMap = schema.getTypeMap();
     const types = Object.values(allTypesMap);
 

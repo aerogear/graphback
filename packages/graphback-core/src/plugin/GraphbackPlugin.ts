@@ -1,6 +1,5 @@
-import { GraphQLObjectType, GraphQLSchema } from "graphql";
-import { parseMarker } from 'graphql-metadata';
-import { getUserTypesFromSchema } from './getUserTypesFromSchema';
+import { GraphQLSchema } from "graphql";
+import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
 
 /**
  * Graphback plugin interface
@@ -19,7 +18,7 @@ export abstract class GraphbackPlugin {
      * Performs transformation on the schema and returns target schemaƒ
      * @param schema 
      */
-    public abstract transformSchema(schema: GraphQLSchema): GraphQLSchema;
+    public abstract transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema;
 
     /**
      * @returns Unique name of the plugin
@@ -36,16 +35,5 @@ export abstract class GraphbackPlugin {
         console.error(`Error - ${this.getPluginName()}: ${message}`)
     }
 
-    /**
-     * Helper for plugins to fetch all types that should be processed by Graphback plugins.
-     * To mark type as enabled for graphback generators we need to add `model` annotations over the type. 
-     * 
-     * Returns all user types that have @model in description
-     * @param schema 
-     */
-    protected getUserModels(schema: GraphQLSchema): GraphQLObjectType[] {
-        const types = getUserTypesFromSchema(schema)
-
-        return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
-    }
+  
 };
