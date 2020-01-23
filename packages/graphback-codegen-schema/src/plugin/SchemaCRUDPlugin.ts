@@ -1,4 +1,4 @@
-import { GraphbackPlugin, GraphbackCoreMetadata, ModelDefinition } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import * as pluralize from "pluralize";
