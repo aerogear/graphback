@@ -65,7 +65,12 @@ export const schema: GraphQLSchema = buildSchema(schemaText);
 const engine = new GraphbackEngine(schema, {
   global: {
     crudMethods: globalCRUDMethods
+  },
+  plugins: {
+    ApolloResolversCRUD: {
+      resolverPath: `./src/resolvers`
+    }
   }
 })
-const backend = engine.buildServer({ format: 'ts' });
+const backend = engine.buildServer();
 console.info(backend.schema);

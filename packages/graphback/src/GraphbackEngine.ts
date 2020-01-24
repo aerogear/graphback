@@ -1,4 +1,4 @@
-import { createResolvers, ResolverGeneratorOptions, ResolverGeneratorPlugin } from "@graphback/codegen-resolvers"
+import { createResolvers, ResolverGeneratorOptions, ResolverGeneratorPlugin, ResolverGeneratorPluginOptions } from "@graphback/codegen-resolvers"
 import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
 import { GraphbackGlobalConfig, GraphbackPluginEngine, graphQLInputContext } from '@graphback/core';
 import { GraphQLSchema, printSchema } from 'graphql';
@@ -10,7 +10,7 @@ interface GraphbackEngineConfig {
   global?: GraphbackGlobalConfig
   // Plugins configuration
   plugins?: {
-    ApolloResolversCRUD?: ResolverGeneratorOptions
+    ApolloResolversCRUD?: ResolverGeneratorPluginOptions
     SchemaCRUD?: SchemaCRUDPluginConfig
   }
 }
@@ -41,7 +41,7 @@ export class GraphbackEngine {
    * Create backend with all related resources
    */
   // FIXME generator options should be moved to plugin config
-  public buildServer(resolverOptions: ResolverGeneratorOptions): IGraphQLBackend {
+  public buildServer(): IGraphQLBackend {
     const backend: IGraphQLBackend = {};
 
     const pluginEngine = new GraphbackPluginEngine(this.schema, this.config.global);
@@ -51,10 +51,7 @@ export class GraphbackEngine {
     pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin);
     const resultSchema = pluginEngine.execute().getSchema();
 
-    resolverPlugin.createResolvers(resultSchema)
-
     backend.schema = schemaCRUDPlugin.transformSchemaToString(resultSchema);
-    backend.resolvers = createResolvers(this.inputContext, resolverOptions);
 
     return backend;
   }
