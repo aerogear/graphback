@@ -14,7 +14,7 @@ import { loadSchema } from './loadSchema';
  * Method used to create runtime schema
  * It will be part of of the integration tests
  */
-export const createRuntime = async (client: Knex) => {
+export const createRuntime = async (client: any) => {
   const schemaText = loadSchema(jsonConfig.folders.model);
 
   const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
