@@ -41,6 +41,9 @@ interface aestInterface {
     comment: [Comment]!
   }
   
+  """
+  @model
+  """
   type Comment {
     id: ID!
     title: String!
@@ -62,7 +65,12 @@ export const schema: GraphQLSchema = buildSchema(schemaText);
 const engine = new GraphbackEngine(schema, {
   global: {
     crudMethods: globalCRUDMethods
+  },
+  plugins: {
+    ApolloResolversCRUD: {
+      resolverPath: `./src/resolvers`
+    }
   }
 })
-const backend = engine.buildServer({ format: 'ts' });
-console.info(backend);
+const backend = engine.buildServer();
+console.info(backend.schema);
