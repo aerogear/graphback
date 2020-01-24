@@ -66,8 +66,17 @@ The project has been created using `graphback`. Run the project using the follow
   },
   "database": "sqlite3"
 },
+```
+
+- Define your schema in the `model/runtime.graphql` file. Or use the default:
 
 ```
+type User {
+  id: ID!
+  name: String
+}
+```
+
 - Start the server (for the first time)
 ```
 npm run develop
