@@ -1,31 +1,33 @@
-import { getModelTypesFromSchema, GraphbackCoreMetadata, GraphbackPlugin, TypeScriptResolversVisitor } from '@graphback/core';
-import { buildASTSchema, GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLOutputType, GraphQLSchema, isListType, isNonNullType, parse, printSchema, visit } from 'graphql';
-import { ResolverGeneratorOptions } from '../api/ResolverGeneratorOptions';
-import * as pluralize from "pluralize";
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getFieldName, GraphbackOperationType } from '@graphback/core';
+import { GraphQLSchema } from 'graphql';
+import { join } from 'path';
 
-export interface ResolverDefinition {
-    generated: ResolverBaseTypeMap[]
-}
+export interface ResolverGeneratorPluginOptions {
+    resolverPath: string
+    // Provides extension for graphql-code-generator types
+    // generated for resolvers
+    types?: {
+        /**
+         * Name of the resolver import
+         * For example `Resolvers`
+         */
+        resolverRootType: string
 
-export interface ResolverBaseTypeMap {
-    [typeName: string]: ResolverMap
-}
-
-export interface ResolverMap {
-    Query?: ResolverFunctionMap[]
-}
-
-export interface ResolverFunctionMap {
-    [name: string]: string;
+        /**
+         * Relative location for root resolver typings.
+         * For example: '../../types'
+         */
+        resolverRootLocation: string
+    }
 }
 
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
-    private resolverDefinition: ResolverDefinition;
-    constructor(config?: ResolverGeneratorOptions) {
+    private options: ResolverGeneratorPluginOptions;
+    constructor(options: ResolverGeneratorPluginOptions) {
         super();
-        this.resolverDefinition = {
-            generated: []
-        }
+
+        // TODO: default options
+        this.options = options;
     }
 
     public getPluginName() {
@@ -33,54 +35,165 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
+        const resolvers = this.generate(metadata.getModelDefinitions());
+
+        this.write(resolvers);
+
         return metadata.getSchema();
+        // metadata.getGraphQLTypesWithModel
     }
 
-    public createResolvers(schema: GraphQLSchema) {
-        const models = getModelTypesFromSchema(schema);
-        const queryType = schema.getQueryType();
-        const queryFields = queryType.getFields();
+    private write(resolvers: { generated: any; custom: any; }) {
+        const resolversDir = join(process.cwd(), this.options.resolverPath);
 
-        for (const model of models) {
-            this.resolverDefinition[model.name] = {
-                generated: []
+        const generated = resolvers.generated;
+
+        for (const typeName of Object.keys(resolvers.generated)) {
+            const typeResolver = resolvers.generated[typeName];
+            const resolverTemplate = this.generateResolverTemplate(typeResolver);
+            console.log(resolverTemplate);
+        }
+    }
+
+    private generateResolverTemplate(typeResolvers: { Query: any, Mutation: any, Subscription: any }) {
+        const mutations = this.printResolverFunctions(typeResolvers.Mutation);
+
+        return `import { validateRuntimeContext } from "@graphback/runtime";
+
+export default {
+    Query: {
+    },
+    Mutation: {
+    ${mutations}
+    }
+};
+        `;
+    }
+
+    private printResolverFunctions(resolvers: any) {
+        const resolverNames = Object.keys(resolvers);
+
+        return resolverNames.map((resolverName: string, i: number) => {
+            const resolverFn = resolvers[resolverName];
+            if (resolverNames.length === i) {
+                return '';
             }
 
-            this.createQueries(Object.values(queryFields), model.name);
+            return `${resolverName}: ${resolverFn}\n`;
+        });
+    }
+
+    private generate(modelDefinitions: ModelDefinition[]) {
+        const resolvers = {
+            generated: {},
+            custom: {}
+        };
+
+        for (const { graphqlType, crudOptions } of modelDefinitions) {
+            if (crudOptions.disableGen) {
+                continue;
+            }
+
+            const generatedResolvers = {
+                Query: {},
+                Mutation: {},
+                Subscription: {}
+            };
+
+
+            const objectName = graphqlType.name.toLowerCase();
+            if (crudOptions.create) {
+                const resolverCreateField = getFieldName(graphqlType.name, GraphbackOperationType.CREATE);
+                // tslint:disable-next-line: no-any
+                generatedResolvers.Mutation[resolverCreateField] = `(_, args, context) => {
+            validateRuntimeContext(context);
+            return context.crudService.create("${objectName}", {
+                args.input, {
+                    publishEvent: ${crudOptions.subCreate}
+                }
+            })
+        }`
+            }
+            // if (crudOptions.update) {
+            //     const updateField = getFieldName(graphqlType.name, GraphbackOperationType.UPDATE);
+            //     // tslint:disable-next-line: no-any
+            //     generatedResolvers.Mutation[updateField] = `(_, args, context) => {
+            //         validateRuntimeContext(context);
+            //         return context.crudService.update("${objectName}", args.id, args.input, {
+            //             publishEvent: ${crudOptions.subUpdate}
+            //         })
+            //     }`
+            // }
+            // if (resolverElement.config.delete) {
+            //     const deleteField = getFieldName(graphqlType.name, GraphbackOperationType.DELETE);
+            //     // tslint:disable-next-line: no-any
+            //     resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
+            //         rgeneratedResolvers;
+            // }
+
+            // if (resolverElement.config.findAll) {
+            //     const findAllField = getFieldName(graphqlType.name, GraphbackOperationType.FIND_ALL, 's');
+            //     // tslint:disable-next-line: no-any
+            //     resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
+            //         return this.service.findAll(objectName, context)
+            //     }
+            // }
+            // if (resolverElement.config.find) {
+            //     const findField = getFieldName(graphqlType.name, GraphbackOperationType.FIND, 's');
+            //     // tslint:disable-next-line: no-any
+            //     resolvers.Query[findField] = (parent: any, args: any, context: any) => {
+            //         return this.service.findBy(objectName, args.fields, context)
+            //     }
+            // }
+
+            // this.createRelations(resolverElement, resolvers)
+
+            // this.createSubscriptions(resolverElement, resolvers, objectName)
+
+            resolvers.generated[graphqlType.name] = generatedResolvers;
         }
-            console.log('h');
+
+        // Delete Mutations key if not needed.
+        // if (Object.keys(resolvers.Mutation).length === 0) {
+        //     delete resolvers.Mutation;
+        // }
+
+        // // Delete Subscriptions key if not needed.
+        // if (Object.keys(resolvers.Subscription).length === 0) {
+        //     delete resolvers.Subscription;
+        // }
+        // TODO relationships
+
+        return resolvers;
     }
 
-    private createQueries(queryFields: GraphQLField<any, any>[], modelName: string) {
-        const modelQueries = getModelQueryFields(queryFields, modelName);
-        const pluralizedModelName = pluralize(modelName);
+    // tslint:disable-next-line: no-any
+    // private createSubscriptions(resolverElement: InputModelTypeContext, resolvers: any, objectName: string) {
+    //     if (resolverElement.config.create && resolverElement.config.subCreate) {
+    //         resolvers.Subscription[`new${graphqlType.name}`] = {
+    //             // tslint:disable-next-line: no-any
+    //             subscribe: (_: any, __: any, context: any) => {
+    //                 return this.service.subscribeToCreate(objectName, context);
+    //             }
+    //         }
+    //     }
 
-        const queryNames = modelQueries.map((field: GraphQLField<any, any>) => field.name);
+    //     if (resolverElement.config.update && resolverElement.config.subUpdate) {
+    //         resolvers.Subscription[`updated${graphqlType.name}`] = {
+    //             // tslint:disable-next-line: no-any
+    //             subscribe: (_: any, __: any, context: any) => {
+    //                 return this.service.subscribeToUpdate(objectName, context);
+    //             }
+    //         }
+    //     }
 
-        const pName = `findAll${pluralizedModelName}`;
-        const x = queryNames[`findAll${pluralizedModelName}`];
-        const y = queryNames[0];
-
-        console.log(queryNames, y, x === y)
-
-        if (queryNames[`findAll${pluralizedModelName}`]) {
-            console.log('hello');
-        }
-    }
-}
-
-export function getBaseType(graphqlType: GraphQLOutputType) {
-    if (isListType(graphqlType) || isNonNullType(graphqlType)) {
-        return getBaseType(graphqlType.ofType);
-    }
-
-    return graphqlType;
-}
-
-function getModelQueryFields(queryFields: GraphQLField<any, any>[], modelName: string) {
-    return queryFields.filter((field: GraphQLField<any, any>) => {
-        const baseType = getBaseType(field.type);
-
-        return baseType.name === modelName;
-    });
+    //     if (resolverElement.config.delete && resolverElement.config.subDelete) {
+    //         resolvers.Subscription[`deleted${graphqlType.name}`] = {
+    //             // tslint:disable-next-line: no-any
+    //             subscribe: (_: any, __: any, context: any) => {
+    //                 return this.service.subscribeToDelete(objectName, context);
+    //             }
+    //         }
+    //     }
+    // }
 }
