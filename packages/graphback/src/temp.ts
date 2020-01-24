@@ -41,6 +41,9 @@ interface aestInterface {
     comment: [Comment]!
   }
   
+  """
+  @model
+  """
   type Comment {
     id: ID!
     title: String!
@@ -65,4 +68,4 @@ const engine = new GraphbackEngine(schema, {
   }
 })
 const backend = engine.buildServer({ format: 'ts' });
-console.info(backend);
+console.info(backend.schema);
