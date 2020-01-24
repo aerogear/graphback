@@ -27,7 +27,7 @@ Then developers can create runtime instance:
 
 See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/examples/runtime-example/src/runtime.ts#L32) for a fully functional example.
 
-### Running example (postgres)
+### Running example using Postgres database
 
 The project has been created using `graphback`. Run the project using the following steps. 
 - Start the database
@@ -55,7 +55,7 @@ Or, if using yarn
 yarn develop
 ```
 
-### Running example (sqlite)
+### Running example using SQLite database
 
 The project has been created using `graphback`. Run the project using the following steps. 
 - Modify the db json object in the `graphback.json` config file. For an in-memory database, use the below config as-is, alternatively replace `:in-memory:` with the desired filename.
@@ -66,6 +66,22 @@ The project has been created using `graphback`. Run the project using the follow
   },
   "database": "sqlite3"
 },
+```
+
+- Next modify the `runtime.ts` file and change the `PGKnexDataProvider` to `KnexDBDataProvider`.
+```
+...
+
+import {
+  ...
+  KnexDBDataProvider
+} from 'graphback'
+
+...
+
+const dbClientProvider = new KnexDBDataProvider(client);
+
+...
 ```
 
 - Define your schema in the `model/runtime.graphql` file. Or use the default:
@@ -86,7 +102,7 @@ Or, if using yarn
 yarn develop
 ```
 
-If the server is being re-run, modify the `src/runtime.ts` and comment out the `migrateDb` function, since it will not be possible to re-migrate the database with sqllite3.
+If the server is being re-run, modify the `src/runtime.ts` and comment out the `migrateDb` function, since it will not be possible to re-migrate the database with SQLite3.
 
 
 Enjoy the runtime app
