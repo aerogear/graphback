@@ -51,6 +51,8 @@ export class GraphbackEngine {
     pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin);
     const resultSchema = pluginEngine.execute().getSchema();
 
+    resolverPlugin.createResolvers(resultSchema)
+
     backend.schema = schemaCRUDPlugin.transformSchemaToString(resultSchema);
     backend.resolvers = createResolvers(this.inputContext, resolverOptions);
 
