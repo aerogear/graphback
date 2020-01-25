@@ -1,10 +1,11 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
+import { resolve } from 'path';
 import { logInfo } from '../utils'
 
 export interface GraphQLModel {
- name: string
- content: string
+  name: string
+  content: string
 }
 
 const modelsPath = `${__dirname}/resources/models`
@@ -39,8 +40,8 @@ export const allModels: GraphQLModel[] = [
  * @param content Content of the graphql file
  */
 export function addModel(projectName: string, modelName: string, content: string): void {
-  const path = `${process.cwd()}/${projectName}/model/${modelName}.graphql`
-  logInfo('Creating model')
+  const path = resolve(projectName, "model", `${modelName}.graphql`);
+  logInfo(`Creating model in ${path}`)
   writeFileSync(path, content)
 }
 

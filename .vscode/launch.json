@@ -42,6 +42,20 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "CLI config",
+      "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "console": "integratedTerminal",
+      "protocol": "inspector",
+      "args": [
+        "config"
+      ],
+      "cwd": "${workspaceRoot}/examples/generator-fullstack",
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "CLI generate",
       "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
