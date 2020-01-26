@@ -50,37 +50,9 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
         for (const typeName of Object.keys(resolvers.generated)) {
             const typeResolver = resolvers.generated[typeName];
-            const resolverTemplate = this.generateResolverTemplate(typeResolver);
+            const resolverTemplate = generateResolverTemplate(typeResolver);
             console.log(resolverTemplate);
         }
-    }
-
-    private generateResolverTemplate(typeResolvers: { Query: any, Mutation: any, Subscription: any }) {
-        const mutations = this.printResolverFunctions(typeResolvers.Mutation);
-
-        return `import { validateRuntimeContext } from "@graphback/runtime";
-
-export default {
-    Query: {
-    },
-    Mutation: {
-    ${mutations}
-    }
-};
-        `;
-    }
-
-    private printResolverFunctions(resolvers: any) {
-        const resolverNames = Object.keys(resolvers);
-
-        return resolverNames.map((resolverName: string, i: number) => {
-            const resolverFn = resolvers[resolverName];
-            if (resolverNames.length === i) {
-                return '';
-            }
-
-            return `${resolverName}: ${resolverFn}\n`;
-        });
     }
 
     private generate(modelDefinitions: ModelDefinition[]) {
@@ -103,16 +75,13 @@ export default {
 
             const objectName = graphqlType.name.toLowerCase();
             if (crudOptions.create) {
-                const resolverCreateField = getFieldName(graphqlType.name, GraphbackOperationType.CREATE);
+                const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.CREATE);
                 // tslint:disable-next-line: no-any
-                generatedResolvers.Mutation[resolverCreateField] = `(_, args, context) => {
-            validateRuntimeContext(context);
-            return context.crudService.create("${objectName}", {
-                args.input, {
-                    publishEvent: ${crudOptions.subCreate}
-                }
-            })
-        }`
+                generatedResolvers.Mutation[fieldName] = createTemplate(objectName, crudOptions.subCreate)
+            }
+            if (crudOptions.update) {
+                const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.UPDATE);
+                generatedResolvers.Mutation[fieldName] = updateTemplate(objectName, crudOptions.subUpdate);
             }
             // if (crudOptions.update) {
             //     const updateField = getFieldName(graphqlType.name, GraphbackOperationType.UPDATE);
@@ -196,4 +165,50 @@ export default {
     //         }
     //     }
     // }
+}
+
+const assignResolverKeys = (resolvers: any) => {
+    const resolverNames = Object.keys(resolvers);
+
+    return resolverNames.map((resolverName: string, i: number) => {
+        const resolverFn = resolvers[resolverName];
+
+        return `${resolverName}: ${resolverFn}`;
+    });
+
+}
+
+const generateResolverTemplate = (typeResolvers: { Query: any, Mutation: any, Subscription: any }) => {
+    const mutations = assignResolverKeys(typeResolvers.Mutation)
+
+    return `import { validateRuntimeContext } from "@graphback/runtime";
+
+export default {
+    Query: {
+    },
+    Mutation: {
+        ${mutations.join(',\n\t')}
+    }
+};
+`;
+}
+
+const defaultResolverArgs = `_, args, context`;
+
+const createTemplate = (tableName: string, subscription: boolean): string => {
+    return `fieldName: (${defaultResolverArgs}) => {
+            validateRuntimeContext(context);
+            return context.crudService.create("${tableName}", args.input, {
+                publishEvent: ${subscription}
+            }, context);
+        }`;
+}
+
+const updateTemplate = (tableName: string, subscription: boolean): string => {
+    return `fieldName: (${defaultResolverArgs}) => {
+            validateRuntimeContext(context);
+            return context.crudService.update("${tableName}", args.id, args.input, {
+                publishEvent: ${subscription}
+            }, context);
+        }`
 }
