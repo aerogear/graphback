@@ -1,6 +1,6 @@
 import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { writeFileSync } from 'fs';
-import { GraphQLField, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLOutputType, GraphQLSchema, isListType, isNonNullType } from 'graphql';
+import { GraphQLField, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLOutputType, GraphQLSchema, isListType, isNonNullType, isWrappingType } from 'graphql';
 import { join, resolve } from 'path';
 import * as prettier from 'prettier';
 import { generateResolverTemplate, resolversIndexFileTemplate } from './ApolloTypeScriptResolverFormatter';
@@ -221,13 +221,9 @@ function getCustomResolverKeys(graphqlType: GraphQLObjectType, resolverObject: G
     return arrayDiff(generatedKeys, modelKeys);
 }
 
-export function isWrapperType(t: GraphQLOutputType): t is GraphQLNonNull<any> | GraphQLList<any> {
-    return isListType(t) || isNonNullType(t);
-}
-
 // tslint:disable-next-line: no-reserved-keywords
 export function getBaseType(type: GraphQLOutputType): GraphQLNamedType {
-    if (isWrapperType(type)) {
+    if (isWrappingType(type)) {
         return getBaseType(type.ofType);
     } else {
         return type;
