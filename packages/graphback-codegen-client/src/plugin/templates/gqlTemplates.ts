@@ -1,16 +1,30 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
-import { isWrappingType } from 'graphql'
+import { isWrappingType, getNamedType, GraphQLType, GraphQLObjectType, isOutputType, isLeafType, isCompositeType, isAbstractType } from 'graphql'
 
-export const fragment = (t: ModelDefinition) => {
-  const fieldsMap = t.graphqlType.getFields();
-  const queryReturnFields = Object.keys(fieldsMap).map(key => {
+function buildReturnFields(t: GraphQLObjectType) {
+  const fieldsMap = t.getFields();
+
+  return Object.keys(fieldsMap).map(key => {
     const field = fieldsMap[key];
     if (isWrappingType(field.type)) {
-      return field.args;
-    } else {
+      const modelType = getNamedType(field.type);
+      if (isCompositeType(modelType)) {
+        return `${field.name}: {
+        // TODO
+        // buildReturnFields(modelType);
+      } `
+      } else {
+        return field.name;
+      }
+    }
+    else {
       return field.name;
     }
-  })
+  });
+}
+
+export const fragment = (t: ModelDefinition) => {
+  const queryReturnFields = buildReturnFields(t.graphqlType);
 
 
   console.log("FIELDS", JSON.stringify(queryReturnFields, undefined, 2))
@@ -185,3 +199,4 @@ export const createClientDocumentsGQL = (inputContext: ModelDefinition[]) => {
     subscriptions: createSubscriptions(inputContext)
   }
 }
+
