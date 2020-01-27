@@ -36,7 +36,6 @@
     "access": "public"
   },
   "devDependencies": {
-
     "@types/node": "12.12.25",
     "ava": "2.4.0",
     "graphql": "14.5.8",
@@ -47,7 +46,8 @@
     "typescript": "3.7.5"
   },
   "dependencies": {
-    "@graphback/core": "0.10.2"
+    "@graphback/core": "0.10.2",
+    "pluralize": "^8.0.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

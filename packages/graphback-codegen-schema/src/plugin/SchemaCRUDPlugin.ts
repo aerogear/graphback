@@ -118,6 +118,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     private createSubscriptions(model: ModelDefinition, subscriptionTypes: any, modelInputType: GraphQLInputObjectType) {
         if (model.crudOptions.subCreate) {
+             // FIXME name of the field should be comming using `getFieldName` helper
             subscriptionTypes[`new${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -128,6 +129,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.subUpdate) {
+             // FIXME name of the field should be comming using `getFieldName` helper
             subscriptionTypes[`updated${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -174,6 +176,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     private createMutations(model: ModelDefinition, mutationTypes: any, modelInputType: GraphQLInputObjectType) {
         if (model.crudOptions.create) {
+             // FIXME name of the field should be comming using `getFieldName` helper
             mutationTypes[`create${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -184,6 +187,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.update) {
+             // FIXME name of the field should be comming using `getFieldName` helper
             mutationTypes[`update${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -213,12 +217,14 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     private createQueries(model: ModelDefinition, queryTypes: any, modelInputType: GraphQLInputObjectType) {
         const pluralModelName = pluralize(model.graphqlType.name);
         if (model.crudOptions.findAll) {
+            // FIXME name of the field should be comming using `getFieldName` helper
             queryTypes[`findAll${pluralModelName}`] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {}
             };
         }
         if (model.crudOptions.find) {
+             // FIXME name of the field should be comming using `getFieldName` helper
             queryTypes[`find${pluralModelName}`] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {
