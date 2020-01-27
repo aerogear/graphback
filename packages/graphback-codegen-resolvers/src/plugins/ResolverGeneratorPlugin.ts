@@ -3,7 +3,7 @@ import { writeFileSync } from 'fs';
 import { GraphQLField, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLOutputType, GraphQLSchema, isListType, isNonNullType, isWrappingType } from 'graphql';
 import { join, resolve } from 'path';
 import * as prettier from 'prettier';
-import { generateResolverTemplate, resolversIndexFileTemplate } from './ApolloTypeScriptResolverFormatter';
+import { generateResolverTemplate, resolversIndexTemplate, resolversRootIndexTemplate } from './ApolloTypeScriptResolverFormatter';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 
 export interface ResolverGeneratorPluginOptions {
@@ -49,7 +49,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     private write(resolvers: { generated: any; custom: any; }) {
         const resolversDir = resolve(this.options.resolverPath);
 
-        const modules = {};
+        const resolverGroups = {};
         for (const groupKey of Object.keys(resolvers)) {
             const resolverGroup = resolvers[groupKey];
             for (const typeName of Object.keys(resolverGroup)) {
@@ -60,26 +60,25 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
                 const fileName = typeName.toLowerCase();
 
-                if (!modules[groupKey]) {
-                    modules[groupKey] = [fileName];
+                if (!resolverGroups[groupKey]) {
+                    resolverGroups[groupKey] = [fileName];
                 } else {
-                    modules[groupKey].push(fileName);
+                    resolverGroups[groupKey].push(fileName);
                 }
 
                 writeFileSync(join(resolversDir, groupKey, `${fileName}.ts`), formattedTemplate);
             }
         }
 
-        for (const group of Object.keys(modules)) {
-            let exportName: string;
-            if (group === 'custom') {
-                exportName = 'customResolvers';
-            }
-            const indexOutput = resolversIndexFileTemplate(modules[group], exportName);
+        for (const group of Object.keys(resolverGroups)) {
+            const indexOutput = resolversIndexTemplate(resolverGroups[group], `${group}Resolvers`);
 
             const formattedIndex = prettier.format(indexOutput, { semi: false, parser: "babel" });
             writeFileSync(join(resolversDir, group, 'index.ts'), formattedIndex);
         }
+        const indexOutput = resolversRootIndexTemplate(Object.keys(resolverGroups));
+        const formattedIndex = prettier.format(indexOutput, { semi: false, parser: "babel" });
+        writeFileSync(join(resolversDir, 'index.ts'), formattedIndex);
     }
 
     private generateResolvers(modelDefinitions: ModelDefinition[]) {

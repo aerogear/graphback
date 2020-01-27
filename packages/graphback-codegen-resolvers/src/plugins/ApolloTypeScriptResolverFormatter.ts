@@ -64,16 +64,30 @@ const alphabeticSort = (a: string, b: string) => {
     return 0
 }
 
-const getFileImports = (path: string, names: string[]) => {
+const getDefaultResolverImports = (path: string, names: string[]) => {
     return names.sort(alphabeticSort).map((name: string) => {
         return `import ${name}Resolvers from '${path}/${name}'`;
     }).join('\n');
 }
 
-export const resolversIndexFileTemplate = (modules: string[], exportName?: string) => {
-    const fileImports = getFileImports('.', modules);
+const getResolverImports = (path: string, names: string[]) => {
+    return names.sort(alphabeticSort).map((name: string) => {
+        return `import { ${name}Resolvers } from '${path}/${name}'`;
+    }).join('\n');
+}
+
+export const resolversIndexTemplate = (modules: string[], exportName?: string) => {
+    const fileImports = getDefaultResolverImports('.', modules);
 
     return `${fileImports}
     
 export const ${exportName || 'resolvers'} = [${modules.map((name: string) => `${name}Resolvers`).join(', ')}]`;
+}
+
+export const resolversRootIndexTemplate = (resolverGroups: string[]) => {
+    const sortedImportNames = resolverGroups.map((name: string) => name).sort(alphabeticSort);
+    
+    return `${sortedImportNames.map((name: string) => getResolverImports('.', [name])).join('\n')}
+    
+export const resolvers = [${resolverGroups.map((name: string) => `...${name}Resolvers`)}];`;
 }
