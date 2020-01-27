@@ -36,8 +36,8 @@
     "access": "public"
   },
   "devDependencies": {
-
     "@types/node": "12.12.25",
+    "@types/prettier": "^1.19.0",
     "ava": "2.4.0",
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
@@ -50,6 +50,8 @@
     "@graphback/core": "0.10.2",
     "knex": "0.20.8",
     "pg": "7.17.1",
+    "pluralize": "^8.0.0",
+    "prettier": "^1.19.1",
     "sqlite3": "4.1.1"
   },
   "peerDependencies": {

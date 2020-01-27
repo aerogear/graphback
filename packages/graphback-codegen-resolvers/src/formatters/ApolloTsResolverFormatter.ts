@@ -14,7 +14,7 @@ const generateRuntimeImport = (): string => {
  * @param name name of the Type
  */
 // tslint:disable-next-line: max-func-body-length
-const generateTypeResolvers = (context: TargetResolverContext, name: string, options: ResolverGeneratorOptions): string => {
+export const generateTypeResolvers = (context: TargetResolverContext, name: string, options: ResolverGeneratorOptions): string => {
   const { relations, queries, mutations, subscriptions } = context
 
   const outputResolvers = []
