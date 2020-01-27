@@ -1,4 +1,5 @@
-import { createResolvers, ResolverGeneratorOptions, ResolverGeneratorPlugin, ResolverGeneratorPluginOptions } from "@graphback/codegen-resolvers"
+import { ClientCRUDPlugin } from '@graphback/codegen-client';
+import { ResolverGeneratorPlugin, ResolverGeneratorPluginOptions } from "@graphback/codegen-resolvers"
 import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
 import { GraphbackGlobalConfig, GraphbackPluginEngine, graphQLInputContext } from '@graphback/core';
 import { GraphQLSchema, printSchema } from 'graphql';
@@ -49,6 +50,9 @@ export class GraphbackEngine {
     const schemaCRUDPlugin = new SchemaCRUDPlugin(schemaConfig);
     const resolverPlugin = new ResolverGeneratorPlugin(this.config.plugins?.ApolloResolversCRUD);
     pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin);
+    // TODO proper location mapping
+    const clientCRUDPlugin = new ClientCRUDPlugin({ output: 'ts', outputPath: './client' })
+    pluginEngine.registerPlugin(clientCRUDPlugin);
     const resultSchema = pluginEngine.execute().getSchema();
 
     backend.schema = schemaCRUDPlugin.transformSchemaToString(resultSchema);
