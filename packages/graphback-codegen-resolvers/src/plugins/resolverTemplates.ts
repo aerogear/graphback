@@ -67,3 +67,17 @@ export const deletedSubscriptionTemplate = (tableName: string): string => {
       }
     }`
 }
+
+export const blankResolver = () => {
+    return `(_, args, context) => {
+      // Implementation here
+    }`
+}
+
+export const blankSubscription = () => {
+    return `{
+      subscribe: (_, args, context) => {
+        // Implementation here
+      }
+    }`
+}

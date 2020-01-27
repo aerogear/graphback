@@ -1,4 +1,5 @@
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
+import { join } from 'path';
 
 const generateRuntimeImport = (): string => {
     return `import { validateRuntimeContext } from "@graphback/runtime";`
@@ -50,4 +51,29 @@ export const generateResolverTemplate = (typeResolvers: { Query: any, Mutation: 
     return `${generateRuntimeImport()}\n${typedImports}\nexport default {
         ${outputResolvers.join(`,\n\n  `)}
 }${resolverType};`;
+}
+
+const alphabeticSort = (a: string, b: string) => {
+    if (a < b) {
+        return -1
+    }
+    if (a > b) {
+        return 1
+    }
+
+    return 0
+}
+
+const getFileImports = (path: string, names: string[]) => {
+    return names.sort(alphabeticSort).map((name: string) => {
+        return `import ${name}Resolvers from '${path}/${name}'`;
+    }).join('\n');
+}
+
+export const resolversIndexFileTemplate = (modules: string[], exportName?: string) => {
+    const fileImports = getFileImports('.', modules);
+
+    return `${fileImports}
+    
+export const ${exportName || 'resolvers'} = [${modules.map((name: string) => `${name}Resolvers`).join(', ')}]`;
 }
