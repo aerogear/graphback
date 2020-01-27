@@ -1,10 +1,10 @@
-import { getFieldName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, GraphbackCRUDGeneratorConfig } from '@graphback/core';
-import { GraphQLSchema, GraphQLObjectType } from 'graphql';
-import { join } from 'path';
-import * as pluralize from 'pluralize';
+import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core';
+import { writeFileSync } from 'fs';
+import { GraphQLField, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLOutputType, GraphQLSchema, isListType, isNonNullType } from 'graphql';
+import { join, resolve } from 'path';
 import * as prettier from 'prettier';
-import { generateResolverTemplate } from './ApolloTypeScriptResolverFormatter';
-import { createTemplate, findAllTemplate, findTemplate, updateTemplate, newSubscriptionTemplate, deletedSubscriptionTemplate, updatedSubscriptionTemplate } from './resolverTemplates';
+import { generateResolverTemplate, resolversIndexFileTemplate } from './ApolloTypeScriptResolverFormatter';
+import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 
 export interface ResolverGeneratorPluginOptions {
     resolverPath: string
@@ -38,57 +38,95 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        const resolvers = this.generate(metadata.getModelDefinitions());
+        const generatedResolvers = this.generateResolvers(metadata.getModelDefinitions());
+        const customResolvers = this.generateCustomResolvers(metadata.getSchema(), metadata.getModelDefinitions(), generatedResolvers);
 
-        this.write(resolvers);
+        this.write({ generated: generatedResolvers, custom: customResolvers });
 
         return metadata.getSchema();
     }
 
     private write(resolvers: { generated: any; custom: any; }) {
-        const resolversDir = join(process.cwd(), this.options.resolverPath);
+        const resolversDir = resolve(this.options.resolverPath);
 
-        for (const typeName of Object.keys(resolvers.generated)) {
-            const typeResolver = resolvers.generated[typeName];
-            const resolverTemplate = generateResolverTemplate(typeResolver, this.options);
-            // TODO: smarter formatting based on environment
-            const formattedTemplate = prettier.format(resolverTemplate, { semi: false, parser: "babel" });
-            console.log(formattedTemplate);
+        const modules = {};
+        for (const groupKey of Object.keys(resolvers)) {
+            const resolverGroup = resolvers[groupKey];
+            for (const typeName of Object.keys(resolverGroup)) {
+                const resolversOutput = resolverGroup[typeName];
+                const resolverTemplate = generateResolverTemplate(resolversOutput, this.options);
+                // TODO: smarter formatting based on environment
+                const formattedTemplate = prettier.format(resolverTemplate, { semi: false, parser: "babel" });
+
+                const fileName = typeName.toLowerCase();
+
+                if (!modules[groupKey]) {
+                    modules[groupKey] = [fileName];
+                } else {
+                    modules[groupKey].push(fileName);
+                }
+
+                writeFileSync(join(resolversDir, groupKey, `${fileName}.ts`), formattedTemplate);
+            }
+        }
+
+        for (const group of Object.keys(modules)) {
+            let exportName: string;
+            if (group === 'custom') {
+                exportName = 'customResolvers';
+            }
+            const indexOutput = resolversIndexFileTemplate(modules[group], exportName);
+
+            const formattedIndex = prettier.format(indexOutput, { semi: false, parser: "babel" });
+            writeFileSync(join(resolversDir, group, 'index.ts'), formattedIndex);
         }
     }
 
-    private generate(modelDefinitions: ModelDefinition[]) {
-        const resolvers = {
-            generated: {},
-            custom: {}
-        };
+    private generateResolvers(modelDefinitions: ModelDefinition[]) {
+        const outputResolvers = {};
 
         for (const { graphqlType, crudOptions } of modelDefinitions) {
             if (crudOptions.disableGen) {
                 continue;
             }
 
-            const generatedResolvers = {
+            const typeResolvers = {
                 Query: this.createQueries(graphqlType, crudOptions),
                 Mutation: this.createMutations(graphqlType, crudOptions),
                 Subscription: this.createSubscriptions(graphqlType, crudOptions)
             };
 
-            resolvers.generated[graphqlType.name] = generatedResolvers;
+            outputResolvers[graphqlType.name] = typeResolvers;
+
+            // TODO relationships
         }
 
-        // Delete Mutations key if not needed.
-        // if (Object.keys(resolvers.Mutation).length === 0) {
-        //     delete resolvers.Mutation;
-        // }
+        return outputResolvers;
+    }
 
-        // // Delete Subscriptions key if not needed.
-        // if (Object.keys(resolvers.Subscription).length === 0) {
-        //     delete resolvers.Subscription;
-        // }
-        // TODO relationships
+    private generateCustomResolvers(schema: GraphQLSchema, models: ModelDefinition[], generatedResolvers: any) {
+        const queryType = schema.getQueryType();
+        const mutationType = schema.getMutationType();
+        const subscriptionType = schema.getSubscriptionType();
 
-        return resolvers;
+        const outputResolvers = {};
+        for (const { graphqlType } of models) {
+            const modelResolvers = generatedResolvers[graphqlType.name];
+
+            const queries = this.createCustomResolvers(graphqlType, queryType, modelResolvers.Query);
+            const mutations = this.createCustomResolvers(graphqlType, mutationType, modelResolvers.Mutation);
+            const subscriptions = this.createCustomSubscriptionResolvers(graphqlType, subscriptionType, modelResolvers.Subscription);
+
+            const typeResolvers = {
+                Query: queries,
+                Mutation: mutations,
+                Subscription: subscriptions
+            }
+
+            outputResolvers[graphqlType.name] = typeResolvers;
+        }
+
+        return outputResolvers;
     }
 
     private createMutations(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
@@ -121,11 +159,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const objectName = graphqlType.name.toLowerCase();
 
         if (crudOptions.find) {
-            const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.FIND);
+            const fieldName = getFieldName(objectName, GraphbackOperationType.FIND, 's');
             queries[fieldName] = findTemplate(objectName);
         }
         if (crudOptions.findAll) {
-            const fieldName = pluralize(getFieldName(graphqlType.name, GraphbackOperationType.FIND_ALL));
+            const fieldName = getFieldName(objectName, GraphbackOperationType.FIND_ALL, 's');
             queries[fieldName] = findAllTemplate(objectName);
         }
 
@@ -151,4 +189,57 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
         return subscriptions;
     }
+
+    private createCustomResolvers(graphqlType: GraphQLObjectType, queryType: GraphQLObjectType, generatedResolvers: any) {
+        const customKeys = getCustomResolverKeys(graphqlType, queryType, generatedResolvers);
+
+        const resolvers = {};
+        for (const key of customKeys) {
+            resolvers[key] = blankResolver();
+        }
+
+        return resolvers;
+    }
+
+    private createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, queryType: GraphQLObjectType, generatedResolvers: any) {
+        const customKeys = getCustomResolverKeys(graphqlType, queryType, generatedResolvers);
+
+        const resolvers = {};
+        for (const key of customKeys) {
+            resolvers[key] = blankSubscription();
+        }
+
+        return resolvers;
+    }
+}
+
+function getCustomResolverKeys(graphqlType: GraphQLObjectType, resolverObject: GraphQLObjectType<any, any, { [key: string]: any; }>, generatedResolvers: any) {
+    const modelQueries = getTypeResolvers(graphqlType, resolverObject);
+    const modelKeys = modelQueries.map((query: GraphQLField<any, any>) => query.name);
+    const generatedKeys = Object.keys(generatedResolvers);
+
+    return arrayDiff(generatedKeys, modelKeys);
+}
+
+export function isWrapperType(t: GraphQLOutputType): t is GraphQLNonNull<any> | GraphQLList<any> {
+    return isListType(t) || isNonNullType(t);
+}
+
+// tslint:disable-next-line: no-reserved-keywords
+export function getBaseType(type: GraphQLOutputType): GraphQLNamedType {
+    if (isWrapperType(type)) {
+        return getBaseType(type.ofType);
+    } else {
+        return type;
+    }
+}
+
+function getTypeResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType) {
+    const resolverFields = Object.values(resolverType.getFields());
+
+    return resolverFields.filter((field: GraphQLField<any, any>) => getBaseType(field.type).name === graphqlType.name);
+}
+
+function arrayDiff(defaultKeys: string[], allKeys: string[]): string[] {
+    return allKeys.filter((key: string) => defaultKeys.indexOf(key) === -1);
 }
