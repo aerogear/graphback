@@ -1,37 +1,25 @@
-import { getFieldName, GraphbackOperationType, InputModelFieldContext, ModelDefinition } from '@graphback/core'
-import { print } from 'graphql'
-
-
-const getFields = (t: ModelDefinition) => {
-  return Object.values(t.graphqlType.getFields());
-}
+import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { isWrappingType } from 'graphql'
 
 export const fragment = (t: ModelDefinition) => {
-  // TODO
+  const fieldsMap = t.graphqlType.getFields();
+  const queryReturnFields = Object.keys(fieldsMap).map(key => {
+    const field = fieldsMap[key];
+    if (isWrappingType(field.type)) {
+      return field.args;
+    } else {
+      return field.name;
+    }
+  })
+
+
+  console.log("FIELDS", JSON.stringify(queryReturnFields, undefined, 2))
+
   return `fragment ${t.graphqlType.name}Fields on ${t.graphqlType.name} {
-    ${getFields(t).map(f => `${print(f.astNode)}`).join('\n    ')}
+      ${queryReturnFields.join(',\n')}
   }`
 }
 
-export const variableFields = (t: ModelDefinition) => {
-  // TODO
-  return getFields(t).map(f => `${f.name}:${f.type}`).join(', ')
-}
-
-export const inputVariableFields = (t: ModelDefinition) => {
-  // TODO
-  return getFields(t).map(f => `${f.name}:${f.type}`).join(', ')
-}
-
-export const variables = (t: ModelDefinition) => {
-  // TODO
-  return getFields(t).map(f => `${f.name}:${f.type}`).join(', ')
-}
-
-export const inputVariables = (t: ModelDefinition) => {
-  // TODO
-  return getFields(t).join(', ')
-}
 
 export const findAllQuery = (t: ModelDefinition) => {
   const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL, 's')
@@ -46,8 +34,8 @@ export const findAllQuery = (t: ModelDefinition) => {
 export const findQuery = (t: ModelDefinition) => {
   const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.FIND, 's')
 
-  return `query ${fieldName}(${variableFields(t)}) {
-    ${fieldName}(fields: {${variables(t)}}) {
+  return `query ${fieldName}($filter: NoteFilter!)}) {
+    ${fieldName}(filter: $filter}) {
       ...${t.graphqlType.name}Fields
     }
   }`
@@ -57,8 +45,8 @@ export const findQuery = (t: ModelDefinition) => {
 export const createMutation = (t: ModelDefinition) => {
   const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName}(${inputVariableFields(t)}) {
-    ${fieldName}(input: {${inputVariables(t)}}) {
+  return `mutation ${fieldName}($input: ${fieldName}Input!) {
+    ${fieldName}(input: ${fieldName}Input!) {
       ...${t.graphqlType.name}Fields
     }
   }
@@ -68,8 +56,8 @@ export const createMutation = (t: ModelDefinition) => {
 export const updateMutation = (t: ModelDefinition) => {
   const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.UPDATE)
 
-  return `mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
-    ${fieldName}(id: $id, input: {${inputVariables(t)}}) {
+  return `mutation ${fieldName}($input: ${fieldName}Input!) {
+    ${fieldName}(input: ${fieldName}Input!) {
       ...${t.graphqlType.name}Fields
     }
   }
@@ -79,8 +67,10 @@ export const updateMutation = (t: ModelDefinition) => {
 export const deleteMutation = (t: ModelDefinition, ) => {
   const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.DELETE)
 
-  return `mutation ${fieldName}($id: ID!) {
-    ${fieldName}(id: $id)
+  return `mutation ${fieldName}($input: ${fieldName}Input!) {
+    ${fieldName}(input: ${fieldName}Input!) {
+      ...${t.graphqlType.name}Fields
+    }
   }
 `
 }
