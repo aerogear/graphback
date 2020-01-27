@@ -3,6 +3,7 @@ import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-sch
 import { GraphbackGlobalConfig, GraphbackPluginEngine, graphQLInputContext } from '@graphback/core';
 import { GraphQLSchema, printSchema } from 'graphql';
 import { IGraphQLBackend } from './IGraphQLBackend';
+import { ClientCRUDPlugin } from '@graphback/codegen-client';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 
  */
@@ -49,6 +50,9 @@ export class GraphbackEngine {
     const schemaCRUDPlugin = new SchemaCRUDPlugin(schemaConfig);
     const resolverPlugin = new ResolverGeneratorPlugin(this.config.plugins?.ApolloResolversCRUD);
     pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin);
+    // TODO proper location mapping
+    const clientCRUDPlugin = new ClientCRUDPlugin({ output: 'ts', outputPath: './client' })
+    pluginEngine.registerPlugin(clientCRUDPlugin);
     const resultSchema = pluginEngine.execute().getSchema();
 
     backend.schema = schemaCRUDPlugin.transformSchemaToString(resultSchema);
