@@ -1,6 +1,6 @@
 import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { getCustomTypeResolverKeys } from '../util/getCustomResolverFieldNames';
+import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 import { writeTypeScriptResolvers } from './writeTypeScriptResolvers';
 
@@ -187,7 +187,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     private createCustomResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
-        const customKeys = getCustomTypeResolverKeys(graphqlType, resolverType, generatedResolverKeys);
+        const customKeys = getCustomTypeResolverFieldNames(graphqlType, resolverType, generatedResolverKeys);
 
         const resolvers = {};
         for (const key of customKeys) {
@@ -198,7 +198,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     private createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, subscriptionType: GraphQLObjectType, generatedResolverKeys: string[]) {
-        const customKeys = getCustomTypeResolverKeys(graphqlType, subscriptionType, generatedResolverKeys);
+        const customKeys = getCustomTypeResolverFieldNames(graphqlType, subscriptionType, generatedResolverKeys);
 
         const resolvers = {};
         for (const key of customKeys) {
