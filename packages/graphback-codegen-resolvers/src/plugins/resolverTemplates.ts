@@ -1,4 +1,4 @@
-const defaultResolverArgs = `_, args, context`;
+const defaultResolverArgs = `parent, args, context`;
 
 export const createTemplate = (tableName: string, subscription: boolean): string => {
     return `(${defaultResolverArgs}) => {

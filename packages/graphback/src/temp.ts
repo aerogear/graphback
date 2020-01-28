@@ -74,6 +74,7 @@ const engine = new GraphbackEngine(schema, {
   plugins: {
     ApolloResolversCRUD: {
       format: 'ts',
+      // FIXME: Pass absolute path to resolvers directory
       resolverPath: `./examples/generator-fullstack/server/src/resolvers`
     }
   }

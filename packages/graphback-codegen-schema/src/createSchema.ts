@@ -1,6 +1,6 @@
 import { InputModelTypeContext } from '@graphback/core'
 import { SchemaGenerator } from './SchemaGenerator';
-import { jsSchemaFormatter, tsSchemaFormatter, gqlSchemaFormatter } from './writer/schemaFormatters';
+import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 
 export interface SchemaWriterOptions {
     // output format
