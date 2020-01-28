@@ -73,6 +73,7 @@ const engine = new GraphbackEngine(schema, {
   },
   plugins: {
     ApolloResolversCRUD: {
+      format: 'ts',
       resolverPath: `./examples/generator-fullstack/server/src/resolvers`
     }
   }
