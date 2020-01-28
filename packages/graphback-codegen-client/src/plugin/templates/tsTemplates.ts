@@ -93,17 +93,26 @@ export const ${t.name}Fragment = gql\`
 `
 }
 
+const expandedFragmentTs = (t: GraphQLObjectType) => {
+  return `${gqlImport}
+
+export const ${t.name}ExpandedFragment = gql\`
+  ${expandedFragment(t)}
+\`
+`
+}
+
 export const createFragmentsTS = (types: ModelDefinition[]) => {
   return types.reduce((data: ClientTemplate[], model: ModelDefinition) => {
     data.push({
       name: model.graphqlType.name,
-      implementation: fragment(model.graphqlType)
+      implementation: fragmentTS(model.graphqlType)
     })
     data.push({
       name: `${model.graphqlType.name}Expanded`,
-      implementation: expandedFragment(model.graphqlType)
+      implementation: expandedFragmentTs(model.graphqlType)
     });
-    
+
     return data;
   }, [])
 }
