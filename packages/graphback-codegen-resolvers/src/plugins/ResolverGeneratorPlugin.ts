@@ -107,7 +107,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
         const outputResolvers = {};
         for (const { graphqlType } of models) {
-            const modelResolvers = generatedResolvers[graphqlType.name];
+            const modelResolvers = generatedResolvers[graphqlType.name] || { Query: {}, Mutation: {}, Subscription: {} };
 
             const queries = this.createCustomResolvers(graphqlType, queryType, Object.keys(modelResolvers.Query));
             const mutations = this.createCustomResolvers(graphqlType, mutationType, Object.keys(modelResolvers.Mutation));
@@ -126,9 +126,13 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     private createMutations(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
-        const mutations = {};
-
         const objectName = graphqlType.name.toLowerCase();
+
+        const mutations = {};
+        if (crudOptions.disableGen) {
+            return mutations;
+        }
+
         if (crudOptions.create) {
             const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.CREATE);
             // tslint:disable-next-line: no-any
@@ -147,8 +151,12 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     private createQueries(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
-        const queries = {};
         const objectName = graphqlType.name.toLowerCase();
+
+        const queries = {};
+        if (crudOptions.disableGen) {
+            return queries;
+        }
 
         if (crudOptions.find) {
             const fieldName = getFieldName(objectName, GraphbackOperationType.FIND, 's');
@@ -166,6 +174,10 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const objectName = graphqlType.name.toLowerCase();
 
         const subscriptions = {};
+        if (crudOptions.disableGen) {
+            return subscriptions;
+        }
+
         if (crudOptions.create && crudOptions.subCreate) {
             const fieldName = `new${graphqlType.name}`;
             subscriptions[fieldName] = newSubscriptionTemplate(objectName);
