@@ -1,5 +1,5 @@
-import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 import { join } from 'path';
+import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
 const generateRuntimeImport = (): string => {
     return `import { validateRuntimeContext } from "@graphback/runtime";`
@@ -13,6 +13,14 @@ const mapResolverKeys = (resolvers: any) => {
 
         return `${resolverName}: ${resolverFn}`;
     });
+}
+
+export const generateBlankResolverTemplate = (resolverType: string, name: string, output: string) => {
+    return `export default {
+        ${resolverType}: {
+            ${name}: ${output}
+        }
+    }`;
 }
 
 export const generateResolverTemplate = (typeResolvers: { Query: any, Mutation: any, Subscription: any }, options: ResolverGeneratorPluginOptions) => {
@@ -53,41 +61,29 @@ export const generateResolverTemplate = (typeResolvers: { Query: any, Mutation: 
 }${resolverType};`;
 }
 
-const alphabeticSort = (a: string, b: string) => {
-    if (a < b) {
-        return -1
-    }
-    if (a > b) {
-        return 1
-    }
-
-    return 0
-}
-
-const getDefaultResolverImports = (path: string, names: string[]) => {
-    return names.sort(alphabeticSort).map((name: string) => {
-        return `import ${name}Resolvers from '${path}/${name}'`;
+const getDefaultResolverImports = (path: string, modules: { importAs: string; importFrom: string }[]) => {
+    return modules.map((m: any) => {
+        return `import ${m.importAs} from '${path}/${m.importFrom}'`;
     }).join('\n');
 }
 
-const getResolverImports = (path: string, names: string[]) => {
-    return names.sort(alphabeticSort).map((name: string) => {
-        return `import { ${name}Resolvers } from '${path}/${name}'`;
+const getResolverImports = (path: string, modules: { importAs: string; importFrom: string }[]) => {
+    return modules.map((m: any) => {
+        return `import { ${m.importAs} } from '${path}/${m.importFrom}'`;
     }).join('\n');
 }
 
-export const resolversIndexTemplate = (modules: string[], exportName?: string) => {
+export const resolversIndexTemplate = (modules: { importAs: string; importFrom: string }[], exportName?: string) => {
     const fileImports = getDefaultResolverImports('.', modules);
 
     return `${fileImports}
     
-export const ${exportName || 'resolvers'} = [${modules.map((name: string) => `${name}Resolvers`).join(', ')}]`;
+export const ${exportName || 'resolvers'} = [${modules.map((m: any) => `${m.importAs}`).join(', ')}]`;
 }
 
 export const resolversRootIndexTemplate = (resolverGroups: string[]) => {
-    const sortedImportNames = resolverGroups.map((name: string) => name).sort(alphabeticSort);
+
+    return `${resolverGroups.map((name: string) => getResolverImports('.', [{ importAs: name, importFrom: name }])).join('\n')}
     
-    return `${sortedImportNames.map((name: string) => getResolverImports('.', [name])).join('\n')}
-    
-export const resolvers = [${resolverGroups.map((name: string) => `...${name}Resolvers`)}];`;
+export const resolvers = [${resolverGroups.map((name: string) => `...${name}`)}];`;
 }

@@ -53,6 +53,11 @@ interface aestInterface {
   
   type Query {
     getLikedNote(id: ID!, names: [String]!): Note!
+    getLikedNotes(id: ID!, names: [String]!): [Note!]
+  }
+
+  type Subscription {
+    commentAdded(repoFullName: String!): Comment
   }
   
   type Mutation {
