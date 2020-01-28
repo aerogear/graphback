@@ -8,7 +8,7 @@ export const fragment = (t: GraphQLObjectType) => {
   const returnFieldsString = printReturnFields(queryReturnFields);
 
   return `fragment ${t.name}Fields on ${t.name} {
-  ${returnFieldsString}
+${returnFieldsString}
 } `
 }
 
@@ -18,16 +18,15 @@ export const expandedFragment = (t: GraphQLObjectType) => {
   const returnFieldsString = printReturnFields(queryReturnFields);
 
   return `fragment ${t.name}ExpandedField on ${t.name} {
-  ${returnFieldsString}
+${returnFieldsString}
 } `
 }
-
 
 export const findAllQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
 
   return `query ${fieldName} {
-            ${fieldName} {
+    ${fieldName} {
       ...${t.name}ExpandedFields
     }
   }`
@@ -37,9 +36,9 @@ export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
   return `query ${fieldName} ($filter: NoteFilter!)}) {
-  ${ fieldName} (filter: $filter}) {
+    ${fieldName}(filter: $filter}) {
       ...${ t.name}ExpandedFields
-}
+    }
   }`
 }
 
@@ -47,8 +46,8 @@ export const findQuery = (t: GraphQLObjectType) => {
 export const createMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName} ($input: ${fieldName}Input!) {
-  ${ fieldName} (input: ${fieldName}Input!) {
+  return `mutation ${fieldName} ($input: ${t.name}Input!) {
+  ${ fieldName} (input: ${t.name}Input!) {
       ...${ t.name}Fields
   }
 }
@@ -58,8 +57,8 @@ export const createMutation = (t: GraphQLObjectType) => {
 export const updateMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
-  return `mutation ${fieldName} ($input: ${fieldName}Input!) {
-  ${ fieldName} (input: ${fieldName}Input!) {
+  return `mutation ${fieldName} ($input: ${t.name}Input!) {
+  ${ fieldName} (input: ${t.name}Input!) {
       ...${ t.name}Fields
   }
 }
@@ -69,20 +68,20 @@ export const updateMutation = (t: GraphQLObjectType) => {
 export const deleteMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
-  return `mutation ${fieldName} ($input: ${fieldName}Input!) {
-  ${ fieldName} (input: ${fieldName}Input!) {
-      ...${ t.name}Fields
+  return `mutation ${fieldName} ($input: ${t.name}Input!) {
+  ${fieldName} (input: ${t.name}Input!) {
+      ...${t.name}Fields
   }
 }
 `
 }
 
 export const subscription = (t: GraphQLObjectType, subscriptionType: string) => {
-  const fieldName = `${subscriptionType} ${t.name} `
+  const fieldName = `${subscriptionType}${t.name} `
 
   return `subscription ${fieldName} {
-  ${ fieldName} {
-      ...${ t.name}Fields
+  ${fieldName} {
+      ...${t.name}Fields
   }
 } `
 }
@@ -97,7 +96,7 @@ export const createFragments = (types: ModelDefinition[]) => {
       name: `${model.graphqlType.name}Expanded`,
       implementation: expandedFragment(model.graphqlType)
     });
-    
+
     return data;
   }, [])
 }

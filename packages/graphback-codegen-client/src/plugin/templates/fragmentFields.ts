@@ -43,8 +43,8 @@ export function buildReturnFields(t: GraphQLObjectType, level?: number) {
       if (element instanceof Object) {
         const key = Object.keys(element)[0];
         resultString += `   ${key}: {
-  ${printReturnFields(element[key], '   ')}
-     }`
+${printReturnFields(element[key], '   ')}
+   }`
       } else {
         resultString += `${shift}   ${element}\n`;
       }
