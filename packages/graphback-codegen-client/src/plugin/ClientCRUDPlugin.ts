@@ -1,6 +1,7 @@
 import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core'
 import { GraphQLSchema } from 'graphql';
-import { createDocumentsGQL, createDocumentsGqlComplete, createDocumentsTS } from './creators'
+import { createClientDocumentsTS, createClientDocumentsGQL, createClientDocumentsGqlComplete } from './templates'
+import { ClientTemplates } from './templates/ClientTemplates'
 import { writeDocumentsToFilesystem } from './writeDocuments';
 
 // TODO move to core
@@ -27,7 +28,7 @@ export interface ClientGeneratorPluginConfig extends GeneratorOutputSpec {
      * - gql - .graphql file
      * - gqlwithfragment - complete gql queries containing fragments for redundancy
      */
-    output: 'ts' | 'gql' | 'gqlwithfragment'
+    outputFormat: 'ts' | 'gql' | 'gqlwithfragment'
 }
 
 export const CLIENT_CRUD_PLUGIN = "ClientCRUDPlugin";
@@ -50,10 +51,10 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
     constructor(pluginConfig?: ClientGeneratorPluginConfig) {
         super()
-        this.pluginConfig = Object.assign({ format: 'ts' }, pluginConfig);
+        this.pluginConfig = Object.assign({ outputFormat: 'ts' }, pluginConfig);
 
     }
-
+    // TODO change interface to return metadata instead of schema
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
         const schema = metadata.getSchema()
         const models = metadata.getModelDefinitions();
@@ -62,18 +63,22 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
             return schema;
         }
-        let documents;
-        if (this.pluginConfig.output === 'ts') {
-            documents = createDocumentsTS(models)
+        let documents: ClientTemplates;
+        let outputFormat
+        if (this.pluginConfig.outputFormat === 'ts') {
+            documents = createClientDocumentsTS(models)
+            outputFormat = this.pluginConfig.outputFormat;
+        } else if (this.pluginConfig.outputFormat === 'gql') {
+            documents = createClientDocumentsGQL(models)
+            outputFormat = this.pluginConfig.outputFormat;
+        } else if (this.pluginConfig.outputFormat === 'gqlwithfragment') {
+            documents = createClientDocumentsGqlComplete(models)
+            outputFormat = 'gql'
+        } else {
+            throw new Error("Invalid output format for client plugin");
         }
-        if (this.pluginConfig.output === 'gql') {
-            documents = createDocumentsGQL(models)
-        }
-        if (this.pluginConfig.output === 'gqlwithfragment') {
-            documents = createDocumentsGqlComplete(models)
-        }
-
-        writeDocumentsToFilesystem(documents);
+        
+        writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
 
         return schema;
     }

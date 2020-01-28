@@ -1,6 +1,7 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql'
-import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
+import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
+import { ClientTemplate } from './ClientTemplates'
 
 const gqlImport = `import gql from "graphql-tag"`
 
@@ -93,17 +94,18 @@ export const ${t.name}Fragment = gql\`
 }
 
 export const createFragmentsTS = (types: ModelDefinition[]) => {
-  return types.map((t: ModelDefinition) => {
-    return [{
-      name: t.graphqlType.name,
-      implementation: fragmentTS(t.graphqlType)
-    },
-    {
-      name: t.graphqlType.name,
-      implementation: fragmentTS(t.graphqlType)
-    }
-  ]
-  })
+  return types.reduce((data: ClientTemplate[], model: ModelDefinition) => {
+    data.push({
+      name: model.graphqlType.name,
+      implementation: fragment(model.graphqlType)
+    })
+    data.push({
+      name: `${model.graphqlType.name}Expanded`,
+      implementation: expandedFragment(model.graphqlType)
+    });
+    
+    return data;
+  }, [])
 }
 
 export const createQueriesTS = (types: ModelDefinition[]) => {
@@ -200,7 +202,7 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
 }
 
 
-export const createClientDocumentsGQL = (inputContext: ModelDefinition[]) => {
+export const createClientDocumentsTS = (inputContext: ModelDefinition[]) => {
 
   return {
     fragments: createFragmentsTS(inputContext),

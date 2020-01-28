@@ -1,6 +1,7 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
 import { buildReturnFields, printReturnFields } from './fragmentFields';
+import { ClientTemplate } from './ClientTemplates';
 
 export const fragment = (t: GraphQLObjectType) => {
   const queryReturnFields = buildReturnFields(t, 0);
@@ -87,16 +88,18 @@ export const subscription = (t: GraphQLObjectType, subscriptionType: string) => 
 }
 
 export const createFragments = (types: ModelDefinition[]) => {
-  return types.map((model: ModelDefinition) => {
-    return [{
+  return types.reduce((data: ClientTemplate[], model: ModelDefinition) => {
+    data.push({
       name: model.graphqlType.name,
       implementation: fragment(model.graphqlType)
-    },
-    {
+    })
+    data.push({
       name: `${model.graphqlType.name}Expanded`,
       implementation: expandedFragment(model.graphqlType)
-    }]
-  })
+    });
+    
+    return data;
+  }, [])
 }
 
 export const createQueries = (types: ModelDefinition[]) => {
