@@ -42,7 +42,7 @@ export function buildReturnFields(t: GraphQLObjectType, level?: number) {
     for (const element of resultArray) {
       if (element instanceof Object) {
         const key = Object.keys(element)[0];
-        resultString += `   ${key}: {
+        resultString += `   ${key} {
 ${printReturnFields(element[key], '   ')}
    }`
       } else {

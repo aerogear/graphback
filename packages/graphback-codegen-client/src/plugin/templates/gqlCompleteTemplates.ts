@@ -1,65 +1,66 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
-import { expandedFragment, fragment } from './gqlTemplates';
+import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates';
 
-export const findAllQuery = (t: GraphQLObjectType) => {
+export const findAllQueryComplete = (t: GraphQLObjectType) => {
   return `
 
-  ${findAllQuery(t)}
+${findAllQuery(t)}
 
-  ${expandedFragment(t)}
+${expandedFragment(t)}
 
 `
 }
 
-export const findQuery = (t: GraphQLObjectType) => {
+export const findQueryComplete = (t: GraphQLObjectType) => {
 
   return `
 
-  ${findQuery(t)}
+${findQuery(t)}
 
-  ${expandedFragment(t)}
+${expandedFragment(t)}
 
 `
 }
 
 
-export const createMutation = (t: GraphQLObjectType) => {
+export const createMutationComplete = (t: GraphQLObjectType) => {
 
   return `
 
-  ${createMutation(t)}
+${createMutation(t)}
 
-  ${fragment(t)}
+${fragment(t)}
 
 `
 }
 
-export const updateMutation = (t: GraphQLObjectType) => {
+export const updateMutationComplete = (t: GraphQLObjectType) => {
   return `
 
-  ${updateMutation(t)}
+${updateMutation(t)}
 
-  ${fragment(t)}
+${fragment(t)}
 
 `
 }
 
-export const deleteMutation = (t: GraphQLObjectType) => {
+export const deleteMutationComplete = (t: GraphQLObjectType) => {
   return `
 
-  ${deleteMutation(t)}
+${deleteMutation(t)}
 
-  ${fragment(t)}
+${fragment(t)}
+
 `
 }
 
-export const subscription = (t: GraphQLObjectType, subscriptionType: string) => {
+export const subscriptionComplete = (t: GraphQLObjectType, subscriptionType: string) => {
   return `
 
-  ${subscription(t, subscriptionType)}
+${subscription(t, subscriptionType)}
 
-  ${fragment(t)}
+${fragment(t)}
 
 `
 }
@@ -73,14 +74,14 @@ export const createQueries = (types: ModelDefinition[]) => {
     if (t.crudOptions.find) {
       queries.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND),
-        implementation: findQuery(t.graphqlType)
+        implementation: findQueryComplete(t.graphqlType)
       })
     }
 
     if (t.crudOptions.findAll) {
       queries.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL, 's'),
-        implementation: findAllQuery(t.graphqlType)
+        implementation: findAllQueryComplete(t.graphqlType)
       })
     }
   })
@@ -95,21 +96,21 @@ const createMutations = (types: ModelDefinition[]) => {
     if (t.crudOptions.create) {
       mutations.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.CREATE),
-        implementation: createMutation(t.graphqlType)
+        implementation: createMutationComplete(t.graphqlType)
       })
     }
 
     if (t.crudOptions.update) {
       mutations.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.UPDATE),
-        implementation: updateMutation(t.graphqlType)
+        implementation: updateMutationComplete(t.graphqlType)
       })
     }
 
     if (t.crudOptions.delete) {
       mutations.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.DELETE),
-        implementation: deleteMutation(t.graphqlType)
+        implementation: deleteMutationComplete(t.graphqlType)
       })
     }
   })
@@ -124,7 +125,7 @@ const createSubscriptions = (types: ModelDefinition[]) => {
     if (t.crudOptions.create && t.crudOptions.subCreate) {
       subscriptions.push({
         name: `new${t.graphqlType.name} `,
-        implementation: subscription(t.graphqlType, 'new')
+        implementation: subscriptionComplete(t.graphqlType, 'new')
       })
     }
 
