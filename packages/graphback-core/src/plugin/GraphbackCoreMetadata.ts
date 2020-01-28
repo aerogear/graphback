@@ -1,9 +1,9 @@
-import { GraphQLSchema, GraphQLObjectType } from 'graphql'
+import { GraphQLObjectType, GraphQLSchema } from 'graphql'
+import { parseAnnotations, parseMarker } from 'graphql-metadata'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
-import { parseMarker, parseAnnotations } from 'graphql-metadata'
-import { ModelDefinition } from './ModelDefinition';
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
+import { ModelDefinition } from './ModelDefinition';
 
 const defaultCRUDGeneratorConfig = {
     "create": true,
