@@ -24,7 +24,7 @@ export interface ResolverGeneratorPluginOptions {
     }
 }
 
-const PLUGIN_NAME = 'RESOLVER_GENERATOR';
+const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
 
 /**
  * Graphback Resolver File Generator Plugin
@@ -58,8 +58,8 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
             return schema;
         }
 
-        const generatedResolvers = this.generateResolvers(models);
-        const customResolvers = this.generateCustomResolvers(schema, models, generatedResolvers);
+        const generatedResolvers = this.generateCRUDResolvers(models);
+        const customResolvers = this.generateCustomCRUDResolvers(schema, models, generatedResolvers);
 
         if (this.options.format === 'ts') {
             writeTypeScriptResolvers({ generated: generatedResolvers, custom: customResolvers }, this.options);
@@ -75,7 +75,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
      * 
      * @param models 
      */
-    private generateResolvers(models: ModelDefinition[]) {
+    private generateCRUDResolvers(models: ModelDefinition[]) {
         const outputResolvers = {};
 
         for (const { graphqlType, crudOptions } of models) {
@@ -100,7 +100,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
      * 
      * @param models 
      */
-    private generateCustomResolvers(schema: GraphQLSchema, models: ModelDefinition[], generatedResolvers: any) {
+    private generateCustomCRUDResolvers(schema: GraphQLSchema, models: ModelDefinition[], generatedResolvers: any) {
         const queryType = schema.getQueryType();
         const mutationType = schema.getMutationType();
         const subscriptionType = schema.getSubscriptionType();
