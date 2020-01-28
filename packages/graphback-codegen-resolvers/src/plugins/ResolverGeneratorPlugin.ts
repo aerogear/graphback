@@ -26,6 +26,17 @@ export interface ResolverGeneratorPluginOptions {
 
 const PLUGIN_NAME = 'RESOLVER_GENERATOR';
 
+/**
+ * Graphback Resolver File Generator Plugin
+ * 
+ * Generates:
+ * 
+ * - default CRUD resolvers for all model types.
+ * - blank resolver files to implements custom resolvers
+ * 
+ * And then writes to content to resolver files in the server.
+ * 
+ */
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
     private options: ResolverGeneratorPluginOptions;
     constructor(options: ResolverGeneratorPluginOptions) {
@@ -59,6 +70,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return metadata.getSchema();
     }
 
+    /**
+     * Creates generated resolvers for each model in the schema.
+     * 
+     * @param models 
+     */
     private generateResolvers(models: ModelDefinition[]) {
         const outputResolvers = {};
 
@@ -79,6 +95,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return outputResolvers;
     }
 
+    /**
+     * Creates custom resolvers for each model in the schema.
+     * 
+     * @param models 
+     */
     private generateCustomResolvers(schema: GraphQLSchema, models: ModelDefinition[], generatedResolvers: any) {
         const queryType = schema.getQueryType();
         const mutationType = schema.getMutationType();
@@ -146,9 +167,9 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     private createSubscriptions(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
-        const subscriptions = {};
         const objectName = graphqlType.name.toLowerCase();
 
+        const subscriptions = {};
         if (crudOptions.create && crudOptions.subCreate) {
             const fieldName = `new${graphqlType.name}`;
             subscriptions[fieldName] = newSubscriptionTemplate(objectName);
@@ -165,8 +186,8 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return subscriptions;
     }
 
-    private createCustomResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType, generatedResolvers: string[]) {
-        const customKeys = getCustomTypeResolverKeys(graphqlType, resolverType, generatedResolvers);
+    private createCustomResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
+        const customKeys = getCustomTypeResolverKeys(graphqlType, resolverType, generatedResolverKeys);
 
         const resolvers = {};
         for (const key of customKeys) {
@@ -176,8 +197,8 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return resolvers;
     }
 
-    private createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, subscriptionType: GraphQLObjectType, generatedResolvers: string[]) {
-        const customKeys = getCustomTypeResolverKeys(graphqlType, subscriptionType, generatedResolvers);
+    private createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, subscriptionType: GraphQLObjectType, generatedResolverKeys: string[]) {
+        const customKeys = getCustomTypeResolverKeys(graphqlType, subscriptionType, generatedResolverKeys);
 
         const resolvers = {};
         for (const key of customKeys) {
