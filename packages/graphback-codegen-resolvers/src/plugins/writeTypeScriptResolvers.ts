@@ -1,14 +1,14 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 import * as prettier from 'prettier';
-import { generateBlankResolverTemplate, generateResolverTemplate, resolversIndexTemplate, resolversRootIndexTemplate } from './ApolloTypeScriptResolverFormatter';
+import { generateBlankResolverTemplate, generateResolverTemplate, resolversIndexTemplate } from './ApolloTypeScriptResolverFormatter';
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
 export function writeTypeScriptResolvers(resolvers: { generated: any; custom: any; }, options: ResolverGeneratorPluginOptions) {
-    const resolversDir = resolve(options.resolverPath);
+    const resolversPath = resolve(options.resolverPath);
 
-    if (!existsSync(resolversDir)) {
-        mkdirSync(resolversDir);
+    if (!existsSync(resolversPath)) {
+        mkdirSync(resolversPath, { recursive: true });
     }
 
     writeGeneratedResolvers(resolvers.generated, options);
@@ -16,10 +16,10 @@ export function writeTypeScriptResolvers(resolvers: { generated: any; custom: an
 }
 
 function writeGeneratedResolvers(resolvers: any, options: ResolverGeneratorPluginOptions) {
-    const generatedDir = resolve(options.resolverPath, 'generated');
+    const generatedResolversPath = resolve(options.resolverPath, 'generated');
 
-    if (!existsSync(generatedDir)) {
-        mkdirSync(generatedDir);
+    if (!existsSync(generatedResolversPath)) {
+        mkdirSync(generatedResolversPath, { recursive: true });
     }
 
     const importNames = [];
@@ -34,7 +34,7 @@ function writeGeneratedResolvers(resolvers: any, options: ResolverGeneratorPlugi
 
         importNames.push(fileName);
 
-        writeFileSync(join(generatedDir, `${fileName}.ts`), formattedTemplate);
+        writeFileSync(join(generatedResolversPath, `${fileName}.ts`), formattedTemplate);
     }
 
     const indexOutput = resolversIndexTemplate(importNames.map((name: string) => ({ importAs: `${name}Resolvers`, importFrom: name })), `resolvers`);
@@ -44,10 +44,10 @@ function writeGeneratedResolvers(resolvers: any, options: ResolverGeneratorPlugi
 }
 
 function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOptions) {
-    const customDir = resolve(options.resolverPath, 'custom');
+    const customResolversPath = resolve(options.resolverPath, 'custom');
 
-    if (!existsSync(customDir)) {
-        mkdirSync(customDir);
+    if (!existsSync(customResolversPath)) {
+        mkdirSync(customResolversPath, { recursive: true });
     }
 
     const importNames = [];
@@ -60,7 +60,7 @@ function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOp
                 const resolverTemplate = generateBlankResolverTemplate(resolverType, resolverField, typeResolvers[resolverField]);
                 const formattedTemplate = prettier.format(resolverTemplate, { semi: false, parser: "babel" });
 
-                writeFileSync(join(customDir, `${resolverField}.ts`), formattedTemplate);
+                writeFileSync(join(customResolversPath, `${resolverField}.ts`), formattedTemplate);
 
                 importNames.push(resolverField);
             }
