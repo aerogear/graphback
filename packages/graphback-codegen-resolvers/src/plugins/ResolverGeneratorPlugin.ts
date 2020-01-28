@@ -2,7 +2,7 @@ import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, Grap
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate, deleteTemplate } from './resolverTemplates';
-import { writeTypeScriptResolvers } from './writeTypeScriptResolvers';
+import { writeResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginOptions {
     format: 'ts' | 'js'
@@ -62,7 +62,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const customResolvers = this.generateCustomCRUDResolvers(schema, models, generatedResolvers);
 
         if (this.options.format === 'ts') {
-            writeTypeScriptResolvers({ generated: generatedResolvers, custom: customResolvers }, this.options);
+            writeResolvers({ generated: generatedResolvers, custom: customResolvers }, this.options);
         } else {
             throw new Error("Not implemented");
         }
