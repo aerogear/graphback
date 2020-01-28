@@ -1,7 +1,7 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
-import { buildReturnFields, printReturnFields } from './fragmentFields';
 import { ClientTemplate } from './ClientTemplates';
+import { buildReturnFields, printReturnFields } from './fragmentFields';
 
 export const fragment = (t: GraphQLObjectType) => {
   const queryReturnFields = buildReturnFields(t, 0);

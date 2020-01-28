@@ -1,7 +1,7 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql'
-import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
 import { ClientTemplate } from './ClientTemplates'
+import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
 
 const gqlImport = `import gql from "graphql-tag"`
 
