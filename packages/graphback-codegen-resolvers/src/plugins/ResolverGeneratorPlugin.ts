@@ -5,6 +5,7 @@ import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTe
 import { writeTypeScriptResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginOptions {
+    format: 'ts' | 'js'
     resolverPath: string
     // Provides extension for graphql-code-generator types
     // generated for resolvers
@@ -30,7 +31,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     constructor(options: ResolverGeneratorPluginOptions) {
         super();
         // TODO: default options
-        this.options = options;
+        this.options = { ...options };
     }
 
     public getPluginName() {
@@ -41,7 +42,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const generatedResolvers = this.generateResolvers(metadata.getModelDefinitions());
         const customResolvers = this.generateCustomResolvers(metadata.getSchema(), metadata.getModelDefinitions(), generatedResolvers);
 
-        writeTypeScriptResolvers({ generated: generatedResolvers, custom: customResolvers }, this.options);
+        if (this.options.format === 'ts') {
+            writeTypeScriptResolvers({ generated: generatedResolvers, custom: customResolvers }, this.options);
+        } else {
+            console.log('Not implemented');
+        }
 
         return metadata.getSchema();
     }
