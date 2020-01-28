@@ -1,7 +1,7 @@
 import { getBaseType } from '@graphback/core';
 import { GraphQLField, GraphQLObjectType } from "graphql";
 
-export function getCustomTypeResolverKeys(graphqlType: GraphQLObjectType, resolverObject: GraphQLObjectType, generatedResolverKeys: string[]) {
+export function getCustomTypeResolverFieldNames(graphqlType: GraphQLObjectType, resolverObject: GraphQLObjectType, generatedResolverKeys: string[]) {
     const typeResolverFields = getTypeResolvers(graphqlType, resolverObject);
     const modelKeys = typeResolverFields.map((field: GraphQLField<any, any>) => field.name);
 

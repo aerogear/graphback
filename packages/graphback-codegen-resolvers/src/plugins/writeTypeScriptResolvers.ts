@@ -68,7 +68,11 @@ function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOp
             for (const resolverField of Object.keys(typeResolvers)) {
                 const resolverTemplate = generateBlankResolverTemplate(resolverType, resolverField, typeResolvers[resolverField]);
 
-                writeFileSync(join(customResolversPath, `${resolverField}.ts`), formatFile(resolverTemplate));
+                const customResolverPath = join(customResolversPath, `${resolverField}.ts`);
+
+                if (!existsSync(customResolverPath)) {
+                    writeFileSync(customResolverPath, formatFile(resolverTemplate));
+                }
 
                 importNames.push(resolverField);
             }

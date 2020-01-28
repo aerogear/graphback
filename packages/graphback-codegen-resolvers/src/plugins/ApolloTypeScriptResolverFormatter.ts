@@ -82,7 +82,7 @@ export const ${exportName || 'resolvers'} = [${modules.map((m: any) => `${m.impo
 
 export const resolversRootIndexTemplate = (resolverGroups: string[]) => {
 
-    return `${resolverGroups.map((name: string) => getResolverImports('.', [{ importAs: name, importFrom: name }])).join('\n')}
+    return `${resolverGroups.map((name: string) => getResolverImports('.', [{ importAs: `${name}Resolvers`, importFrom: name }])).join('\n')}
     
-export const resolvers = [${resolverGroups.map((name: string) => `...${name}`)}];`;
+export const resolvers = [${resolverGroups.map((name: string) => `...${name}Resolvers`)}];`;
 }
