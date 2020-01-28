@@ -2,7 +2,7 @@ import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, Grap
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { getCustomTypeResolverKeys } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
-import { writeTypeScriptResolvers } from './writeResolvers';
+import { writeTypeScriptResolvers } from './writeTypeScriptResolvers';
 
 export interface ResolverGeneratorPluginOptions {
     format: 'ts' | 'js'
@@ -39,22 +39,30 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        const generatedResolvers = this.generateResolvers(metadata.getModelDefinitions());
-        const customResolvers = this.generateCustomResolvers(metadata.getSchema(), metadata.getModelDefinitions(), generatedResolvers);
+        const schema = metadata.getSchema()
+        const models = metadata.getModelDefinitions();
+        if (models.length === 0) {
+            this.logWarning("Provided schema has no models. Returning original schema without generating resolvers.")
+
+            return schema;
+        }
+
+        const generatedResolvers = this.generateResolvers(models);
+        const customResolvers = this.generateCustomResolvers(schema, models, generatedResolvers);
 
         if (this.options.format === 'ts') {
             writeTypeScriptResolvers({ generated: generatedResolvers, custom: customResolvers }, this.options);
         } else {
-            console.log('Not implemented');
+            throw new Error("Not implemented");
         }
 
         return metadata.getSchema();
     }
 
-    private generateResolvers(modelDefinitions: ModelDefinition[]) {
+    private generateResolvers(models: ModelDefinition[]) {
         const outputResolvers = {};
 
-        for (const { graphqlType, crudOptions } of modelDefinitions) {
+        for (const { graphqlType, crudOptions } of models) {
             if (crudOptions.disableGen) {
                 continue;
             }
