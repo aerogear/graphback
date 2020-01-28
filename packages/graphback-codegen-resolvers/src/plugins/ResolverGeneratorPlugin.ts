@@ -1,9 +1,6 @@
 import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core';
-import { writeFileSync } from 'fs';
-import { GraphQLField, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLOutputType, GraphQLSchema, isListType, isNonNullType, isWrappingType } from 'graphql';
-import { join, resolve } from 'path';
-import * as prettier from 'prettier';
-import { generateResolverTemplate, resolversIndexTemplate, resolversRootIndexTemplate } from './ApolloTypeScriptResolverFormatter';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { getCustomTypeResolverKeys } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 import { writeTypeScriptResolvers } from './writeResolvers';
 
@@ -26,6 +23,8 @@ export interface ResolverGeneratorPluginOptions {
     }
 }
 
+const PLUGIN_NAME = 'RESOLVER_GENERATOR';
+
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
     private options: ResolverGeneratorPluginOptions;
     constructor(options: ResolverGeneratorPluginOptions) {
@@ -35,7 +34,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     }
 
     public getPluginName() {
-        return 'RESOLVER_GENERATOR';
+        return PLUGIN_NAME;
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -62,8 +61,6 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
             };
 
             outputResolvers[graphqlType.name] = typeResolvers;
-
-            // TODO relationships
         }
 
         return outputResolvers;
@@ -78,9 +75,9 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         for (const { graphqlType } of models) {
             const modelResolvers = generatedResolvers[graphqlType.name];
 
-            const queries = this.createCustomQueries(graphqlType, queryType, modelResolvers.Query);
-            const mutations = this.createCustomQueries(graphqlType, mutationType, modelResolvers.Mutation);
-            const subscriptions = this.createCustomSubscriptionResolvers(graphqlType, subscriptionType, modelResolvers.Subscription);
+            const queries = this.createCustomResolvers(graphqlType, queryType, Object.keys(modelResolvers.Query));
+            const mutations = this.createCustomResolvers(graphqlType, mutationType, Object.keys(modelResolvers.Mutation));
+            const subscriptions = this.createCustomSubscriptionResolvers(graphqlType, subscriptionType, Object.keys(modelResolvers.Subscription));
 
             const typeResolvers = {
                 Query: queries,
@@ -155,8 +152,8 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return subscriptions;
     }
 
-    private createCustomQueries(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType, generatedResolvers: any) {
-        const customKeys = getCustomResolverKeys(graphqlType, resolverType, generatedResolvers);
+    private createCustomResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType, generatedResolvers: string[]) {
+        const customKeys = getCustomTypeResolverKeys(graphqlType, resolverType, generatedResolvers);
 
         const resolvers = {};
         for (const key of customKeys) {
@@ -166,8 +163,8 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return resolvers;
     }
 
-    private createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, subscriptionType: GraphQLObjectType, generatedResolvers: any) {
-        const customKeys = getCustomResolverKeys(graphqlType, subscriptionType, generatedResolvers);
+    private createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, subscriptionType: GraphQLObjectType, generatedResolvers: string[]) {
+        const customKeys = getCustomTypeResolverKeys(graphqlType, subscriptionType, generatedResolvers);
 
         const resolvers = {};
         for (const key of customKeys) {
@@ -176,31 +173,4 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
         return resolvers;
     }
-}
-
-function getCustomResolverKeys(graphqlType: GraphQLObjectType, resolverObject: GraphQLObjectType<any, any, { [key: string]: any; }>, generatedResolvers: any) {
-    const typeResolverFields = getTypeResolvers(graphqlType, resolverObject);
-    const modelKeys = typeResolverFields.map((field: GraphQLField<any, any>) => field.name);
-    const generatedKeys = Object.keys(generatedResolvers);
-
-    return arrayDiff(generatedKeys, modelKeys);
-}
-
-// tslint:disable-next-line: no-reserved-keywords
-export function getBaseType(type: GraphQLOutputType): GraphQLNamedType {
-    if (isWrappingType(type)) {
-        return getBaseType(type.ofType);
-    } else {
-        return type;
-    }
-}
-
-function getTypeResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType) {
-    const resolverFields = Object.values(resolverType.getFields());
-
-    return resolverFields.filter((field: GraphQLField<any, any>) => getBaseType(field.type).name === graphqlType.name);
-}
-
-function arrayDiff(defaultKeys: string[], allKeys: string[]): string[] {
-    return allKeys.filter((key: string) => defaultKeys.indexOf(key) === -1);
 }

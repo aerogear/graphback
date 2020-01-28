@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
 const generateRuntimeImport = (): string => {
