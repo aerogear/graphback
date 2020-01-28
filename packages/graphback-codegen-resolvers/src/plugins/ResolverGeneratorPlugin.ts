@@ -1,7 +1,7 @@
 import { getFieldName, GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
-import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
+import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate, deleteTemplate } from './resolverTemplates';
 import { writeTypeScriptResolvers } from './writeTypeScriptResolvers';
 
 export interface ResolverGeneratorPluginOptions {
@@ -136,15 +136,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         }
         if (crudOptions.update) {
             const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.UPDATE);
-            mutations[fieldName] = updateTemplate(objectName, crudOptions.subUpdate);
-        }
-        if (crudOptions.update) {
-            const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.UPDATE);
             mutations[fieldName] = updateTemplate(objectName, crudOptions.update);
         }
         if (crudOptions.delete) {
             const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.DELETE);
-            mutations[fieldName] = updateTemplate(objectName, crudOptions.delete);
+            mutations[fieldName] = deleteTemplate(objectName, crudOptions.delete);
         }
 
         return mutations;
