@@ -9,7 +9,7 @@ function formatFile(contents: string) {
     return prettier.format(contents, { semi: false, parser: 'typescript' });
 }
 
-export function writeTypeScriptResolvers(resolvers: { generated: any; custom: any; }, options: ResolverGeneratorPluginOptions) {
+export function writeResolvers(resolvers: { generated: any; custom: any; }, options: ResolverGeneratorPluginOptions) {
     const resolversPath = resolve(options.resolverPath);
 
     if (!existsSync(resolversPath)) {
@@ -18,12 +18,12 @@ export function writeTypeScriptResolvers(resolvers: { generated: any; custom: an
 
     writeGeneratedResolvers(resolvers.generated, options);
     writeCustomResolvers(resolvers.custom, options);
-    writeResolversIndex(resolversPath, Object.keys(resolvers));
+    writeResolversIndex(resolversPath, Object.keys(resolvers), options.format);
 }
 
-function writeResolversIndex(resolversPath: string, modules: string[]) {
+function writeResolversIndex(resolversPath: string, modules: string[], extension: 'js' | 'ts') {
     const template = resolversRootIndexTemplate(modules);
-    writeFileSync(join(resolversPath, 'index.ts'), formatFile(template));
+    writeFileSync(join(resolversPath, `index.${extension}`), formatFile(template));
 }
 
 function writeGeneratedResolvers(resolvers: any, options: ResolverGeneratorPluginOptions) {
@@ -43,12 +43,12 @@ function writeGeneratedResolvers(resolvers: any, options: ResolverGeneratorPlugi
 
         importNames.push(fileName);
 
-        writeFileSync(join(generatedResolversPath, `${fileName}.ts`), formatFile(resolverTemplate));
+        writeFileSync(join(generatedResolversPath, `${fileName}.${options.format}`), formatFile(resolverTemplate));
     }
 
     const indexOutput = resolversIndexTemplate(importNames.map((name: string) => ({ importAs: `${name}Resolvers`, importFrom: name })), `generatedResolvers`);
 
-    writeFileSync(resolve(options.resolverPath, 'generated', 'index.ts'), formatFile(indexOutput));
+    writeFileSync(resolve(options.resolverPath, 'generated', `index.${options.format}`), formatFile(indexOutput));
 }
 
 function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOptions) {
@@ -68,7 +68,7 @@ function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOp
             for (const resolverField of Object.keys(typeResolvers)) {
                 const resolverTemplate = generateBlankResolverTemplate(resolverType, resolverField, typeResolvers[resolverField]);
 
-                const customResolverPath = join(customResolversPath, `${resolverField}.ts`);
+                const customResolverPath = join(customResolversPath, `${resolverField}.${options.format}`);
 
                 if (!existsSync(customResolverPath)) {
                     writeFileSync(customResolverPath, formatFile(resolverTemplate));
@@ -81,5 +81,5 @@ function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOp
 
     const indexOutput = resolversIndexTemplate(importNames.map((name: string) => ({ importAs: name, importFrom: name })), `customResolvers`);
 
-    writeFileSync(resolve(options.resolverPath, 'custom', 'index.ts'), indexOutput);
+    writeFileSync(resolve(options.resolverPath, 'custom', `index.${options.format}`), indexOutput);
 }
