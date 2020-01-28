@@ -1,103 +1,69 @@
 import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
-import { buildReturnFields, printReturnFields } from './fragmentFields';
-
-export const fragment = (t: GraphQLObjectType) => {
-  const queryReturnFields = buildReturnFields(t, 0);
-  const returnFieldsString = printReturnFields(queryReturnFields);
-
-  return `fragment ${t.name}Fields on ${t.name} {
-  ${returnFieldsString}
-} `
-}
-
-// TODO describe fragments in doc CRUD spec
-export const expandedFragment = (t: GraphQLObjectType) => {
-  const queryReturnFields = buildReturnFields(t, 1);
-  const returnFieldsString = printReturnFields(queryReturnFields);
-
-  return `fragment ${t.name}ExpandedField on ${t.name} {
-  ${returnFieldsString}
-} `
-}
-
+import { expandedFragment, fragment } from './gqlTemplates';
 
 export const findAllQuery = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
+  return `
 
-  return `query ${fieldName} {
-            ${fieldName} {
-      ...${t.name}ExpandedFields
-    }
-  }`
+  ${findAllQuery(t)}
+
+  ${expandedFragment(t)}
+
+`
 }
 
 export const findQuery = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
-  return `query ${fieldName} ($filter: NoteFilter!)}) {
-  ${ fieldName} (filter: $filter}) {
-      ...${ t.name}ExpandedFields
-}
-  }`
+  return `
+
+  ${findQuery(t)}
+
+  ${expandedFragment(t)}
+
+`
 }
 
 
 export const createMutation = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName} ($input: ${fieldName}Input!) {
-  ${ fieldName} (input: ${fieldName}Input!) {
-      ...${ t.name}Fields
-  }
-}
+  return `
+
+  ${createMutation(t)}
+
+  ${fragment(t)}
+
 `
 }
 
 export const updateMutation = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
+  return `
 
-  return `mutation ${fieldName} ($input: ${fieldName}Input!) {
-  ${ fieldName} (input: ${fieldName}Input!) {
-      ...${ t.name}Fields
-  }
-}
+  ${updateMutation(t)}
+
+  ${fragment(t)}
+
 `
 }
 
 export const deleteMutation = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
+  return `
 
-  return `mutation ${fieldName} ($input: ${fieldName}Input!) {
-  ${ fieldName} (input: ${fieldName}Input!) {
-      ...${ t.name}Fields
-  }
-}
+  ${deleteMutation(t)}
+
+  ${fragment(t)}
 `
 }
 
 export const subscription = (t: GraphQLObjectType, subscriptionType: string) => {
-  const fieldName = `${subscriptionType} ${t.name} `
+  return `
 
-  return `subscription ${fieldName} {
-  ${ fieldName} {
-      ...${ t.name}Fields
-  }
-} `
-}
+  ${subscription(t, subscriptionType)}
 
-export const createFragments = (types: ModelDefinition[]) => {
-  return types.map((model: ModelDefinition) => {
-    return [{
-      name: model.graphqlType.name,
-      implementation: fragment(model.graphqlType)
-    },
-    {
-      name: `${model.graphqlType.name}Expanded`,
-      implementation: expandedFragment(model.graphqlType)
-    }]
-  })
+  ${fragment(t)}
+
+`
 }
+ 
 
 export const createQueries = (types: ModelDefinition[]) => {
   const queries = []
@@ -181,10 +147,10 @@ const createSubscriptions = (types: ModelDefinition[]) => {
 }
 
 
-export const createClientDocumentsGQL = (inputContext: ModelDefinition[]) => {
+export const createClientDocumentsGqlComplete = (inputContext: ModelDefinition[]) => {
 
   return {
-    fragments: createFragments(inputContext),
+    fragments: [],
     queries: createQueries(inputContext),
     mutations: createMutations(inputContext),
     subscriptions: createSubscriptions(inputContext)
