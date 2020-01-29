@@ -107,14 +107,17 @@ export function createSubscriptions(graphqlType: GraphQLObjectType, crudOptions:
     }
 
     if (crudOptions.create && crudOptions.subCreate) {
+        // TOOO: Use core helper to get method name
         const fieldName = `new${graphqlType.name}`;
         subscriptions[fieldName] = newSubscriptionTemplate(objectName);
     }
     if (crudOptions.update && crudOptions.subUpdate) {
+        // TOOO: Use core helper to get method name
         const fieldName = `updated${graphqlType.name}`;
         subscriptions[fieldName] = updatedSubscriptionTemplate(objectName);
     }
     if (crudOptions.delete && crudOptions.subDelete) {
+        // TOOO: Use core helper to get method name
         const fieldName = `deleted${graphqlType.name}`;
         subscriptions[fieldName] = deletedSubscriptionTemplate(objectName);
     }
