@@ -65,7 +65,7 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         }
 
 
-        const { documents, outputFormat } = this.createDocuments(models));
+        const { documents, outputFormat } = this.createDocuments(models);
 
         writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
 
