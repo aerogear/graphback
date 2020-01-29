@@ -29,7 +29,6 @@
     "@test-graphql-cli/validate": "canary",
     "graphql": "14.5.8",
     "graphql-cli": "canary",
-    "tslint": "5.20.1",
     "typescript": "3.7.5"
   },
   "dependencies": {
