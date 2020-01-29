@@ -1,4 +1,4 @@
-import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { GraphQLSchema } from 'graphql';
 import { createClientDocumentsGQL, createClientDocumentsGqlComplete, createClientDocumentsTS } from './templates'
 import { ClientTemplates } from './templates/ClientTemplates'
@@ -63,24 +63,34 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
             return schema;
         }
-        let documents: ClientTemplates;
-        let outputFormat
-        if (this.pluginConfig.outputFormat === 'ts') {
-            documents = createClientDocumentsTS(models)
-            outputFormat = this.pluginConfig.outputFormat;
-        } else if (this.pluginConfig.outputFormat === 'gql') {
-            documents = createClientDocumentsGQL(models)
-            outputFormat = this.pluginConfig.outputFormat;
-        } else if (this.pluginConfig.outputFormat === 'gqlwithfragment') {
-            documents = createClientDocumentsGqlComplete(models)
-            outputFormat = 'gql'
-        } else {
-            throw new Error("Invalid output format for client plugin");
-        }
-        
+
+
+        const { documents, outputFormat } = this.createDocuments(models));
+
         writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
 
         return schema;
+    }
+
+    private createDocuments(models: ModelDefinition[]) {
+        let documents: ClientTemplates;
+        let outputFormat
+        if (this.pluginConfig.outputFormat === 'ts') {
+            documents = createClientDocumentsTS(models);
+            outputFormat = this.pluginConfig.outputFormat;
+        }
+        else if (this.pluginConfig.outputFormat === 'gql') {
+            documents = createClientDocumentsGQL(models);
+            outputFormat = this.pluginConfig.outputFormat;
+        }
+        else if (this.pluginConfig.outputFormat === 'gqlwithfragment') {
+            documents = createClientDocumentsGqlComplete(models);
+            outputFormat = 'gql';
+        } else {
+            throw new Error("Invalid output format for client plugin");
+        }
+
+        return { documents, outputFormat };
     }
 
     public getPluginName(): string {

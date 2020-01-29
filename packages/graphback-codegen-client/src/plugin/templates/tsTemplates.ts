@@ -121,6 +121,9 @@ export const createQueriesTS = (types: ModelDefinition[]) => {
   const queries = []
 
   types.forEach((model: ModelDefinition) => {
+    if (model.crudOptions.disableGen) {
+      return;
+    }
     const t = model.graphqlType;
     const imports = `import gql from "graphql-tag"
 import { ${t.name}ExpandedFragment } from "../fragments/${t.name}Expanded"`
@@ -147,6 +150,10 @@ export const createMutationsTS = (types: ModelDefinition[]) => {
   const mutations = []
 
   types.forEach((model: ModelDefinition) => {
+    if (model.crudOptions.disableGen) {
+      return;
+    }
+
     const t = model.graphqlType;
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
@@ -180,8 +187,10 @@ export const createSubscriptionsTS = (types: ModelDefinition[]) => {
   const subscriptions = []
 
   types.forEach((model: ModelDefinition) => {
+    if (model.crudOptions.disableGen) {
+      return;
+    }
     const t = model.graphqlType;
-
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 

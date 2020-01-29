@@ -64,13 +64,15 @@ ${fragment(t)}
 
 `
 }
- 
+
 
 export const createQueries = (types: ModelDefinition[]) => {
   const queries = []
 
   types.forEach((t: ModelDefinition) => {
-
+    if (t.crudOptions.disableGen) {
+      return;
+    }
     if (t.crudOptions.find) {
       queries.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND),
@@ -93,6 +95,9 @@ const createMutations = (types: ModelDefinition[]) => {
   const mutations = []
 
   types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
     if (t.crudOptions.create) {
       mutations.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.CREATE),
@@ -122,6 +127,9 @@ const createSubscriptions = (types: ModelDefinition[]) => {
   const subscriptions = []
 
   types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
     if (t.crudOptions.create && t.crudOptions.subCreate) {
       subscriptions.push({
         name: `new${t.graphqlType.name} `,
