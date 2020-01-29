@@ -125,6 +125,7 @@ export function createSubscriptions(graphqlType: GraphQLObjectType, crudOptions:
     return subscriptions;
 }
 
+// TODO: Check for custom resolvers using default resolver names
 export function createCustomResolvers(graphqlTypeName: string, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
     const customKeys = getCustomTypeResolverFieldNames(graphqlTypeName, resolverType, generatedResolverKeys);
 
