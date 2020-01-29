@@ -122,8 +122,8 @@ export function createSubscriptions(graphqlType: GraphQLObjectType, crudOptions:
     return subscriptions;
 }
 
-export function createCustomResolvers(graphqlType: GraphQLObjectType, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
-    const customKeys = getCustomTypeResolverFieldNames(graphqlType, resolverType, generatedResolverKeys);
+export function createCustomResolvers(graphqlTypeName: string, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
+    const customKeys = getCustomTypeResolverFieldNames(graphqlTypeName, resolverType, generatedResolverKeys);
 
     const resolvers = {};
     for (const key of customKeys) {
@@ -133,8 +133,8 @@ export function createCustomResolvers(graphqlType: GraphQLObjectType, resolverTy
     return resolvers;
 }
 
-export function createCustomSubscriptionResolvers(graphqlType: GraphQLObjectType, subscriptionType: GraphQLObjectType, generatedResolverKeys: string[]) {
-    const customKeys = getCustomTypeResolverFieldNames(graphqlType, subscriptionType, generatedResolverKeys);
+export function createCustomSubscriptionResolvers(graphqlTypeName: string, subscriptionType: GraphQLObjectType, generatedResolverKeys: string[]) {
+    const customKeys = getCustomTypeResolverFieldNames(graphqlTypeName, subscriptionType, generatedResolverKeys);
 
     const resolvers = {};
     for (const key of customKeys) {
