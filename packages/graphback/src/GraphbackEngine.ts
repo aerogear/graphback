@@ -51,7 +51,7 @@ export class GraphbackEngine {
     const resolverPlugin = new ResolverGeneratorPlugin(this.config.plugins?.ApolloResolversCRUD);
     pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin);
     // TODO proper location mapping
-    const clientCRUDPlugin = new ClientCRUDPlugin({ output: 'ts', outputPath: './client' })
+    const clientCRUDPlugin = new ClientCRUDPlugin({ outputFormat: 'ts', outputPath: './client' })
     pluginEngine.registerPlugin(clientCRUDPlugin);
     const resultSchema = pluginEngine.execute().getSchema();
 
