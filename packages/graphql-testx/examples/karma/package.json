@@ -1,0 +1,19 @@
+{
+  "name": "graphql-testx-karma-example",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "chai": "4.2.0",
+    "graphql-request": "1.8.2",
+    "gulp": "4.0.2",
+    "karma": "4.4.1",
+    "karma-chai": "0.1.0",
+    "karma-chrome-launcher": "3.1.0",
+    "karma-mocha": "1.3.0",
+    "karma-mocha-reporter": "2.2.5",
+    "karma-webpack": "4.0.2",
+    "mocha": "6.2.2",
+    "webpack": "4.41.2"
+  }
+}
