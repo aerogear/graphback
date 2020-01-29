@@ -3,8 +3,6 @@ import _test, { TestInterface } from 'ava';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 
-//tslint:disable: typedef
-
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;
