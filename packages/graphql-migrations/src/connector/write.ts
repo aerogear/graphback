@@ -1,7 +1,9 @@
+/* eslint-disable max-lines */
+/* eslint-disable @typescript-eslint/tslint/config */
+/* eslint-disable default-case */
 import * as Knex from 'knex'
-// eslint-disable-next-line import/no-duplicates
 import * as Operations from '../diff/Operation'
-// eslint-disable-next-line import/no-duplicates
+// eslint-disable-next-line no-duplicate-imports
 import { Operation, OperationType } from '../diff/Operation'
 import { MigratePlugin, WriteCallback } from '../plugin/MigratePlugin'
 import { sortOps } from '../util/sortOps'
@@ -31,26 +33,6 @@ const ALTER_TABLE_CHILD_OPS: OperationType[] = [
  * @param {string} tablePrefix Table name prefix: `<prefix><tableName>`
  * @param {string} columnPrefix Column name prefix: `<prefix><columnName>`
  */
-export async function write(
-  operations: Operation[],
-  config: Knex.Config,
-  schemaName: string = 'public',
-  tablePrefix: string = '',
-  columnPrefix: string = '',
-  plugins: MigratePlugin[] = [],
-) {
-
-  const writer = new Writer(
-    operations,
-    config,
-    schemaName,
-    tablePrefix,
-    columnPrefix,
-    plugins,
-  )
-
-  return writer.write()
-}
 
 class Writer {
   private operations: Operation[]
@@ -60,7 +42,7 @@ class Writer {
   private plugins: MigratePlugin[]
   private knex: Knex
   private hooks: { [key: string]: WriteCallback[] } = {}
-  // @ts-ignore
+  //@ts-ignore
   private trx: knex.Transaction
 
   constructor(
@@ -189,7 +171,6 @@ class Writer {
             case 'table.primary.set':
               const tpop = (childOp as Operations.TablePrimarySetOperation)
               table[tpop.columnType](tpop.column).primary();
-              break
           }
           this.removeOperation(childOp)
         }
@@ -202,7 +183,7 @@ class Writer {
 
   private createColumn(op: Operations.ColumnCreateOperation, table: Knex.CreateTableBuilder) {
     if (op.columnType in table) {
-      // @ts-ignore
+      //@ts-ignore
       let col: knex.ColumnBuilder = table[op.columnType](
         this.getColumnName(op.column),
         ...this.getColumnTypeArgs(op),
@@ -218,6 +199,7 @@ class Writer {
       if (typeof op.defaultValue !== 'undefined') {
         col = col.defaultTo(op.defaultValue)
       }
+
       return col
     } else {
       throw new Error(`Table ${op.table} column ${op.column}: Unsupported column type ${op.columnType}`)
@@ -238,7 +220,7 @@ class Writer {
       if (childOp.type === 'column.alter') {
         const aop = childOp as Operations.ColumnAlterOperation
         if (aop.columnType === 'enum' && (aop.args.length < 2 || !aop.args[1].useNative)) {
-          // Prepared statement no supported here
+          //Prepared statement no supported here
           const constraintName = this.knex.raw(`${tableName}_${aop.column}_check`)
           await this.trx.raw(`ALTER TABLE "?"."?" DROP CONSTRAINT "?", ADD CONSTRAINT "?" CHECK (? IN (?)) `, [
             this.knex.raw(this.schemaName),
@@ -300,7 +282,6 @@ class Writer {
               break
             case 'column.drop':
               table.dropColumn(this.getColumnName((childOp as Operations.ColumnDropOperation).column))
-              break
           }
           this.removeOperation(childOp)
         }
@@ -311,7 +292,7 @@ class Writer {
   }
 
   private alterColumn(table: Knex.TableBuilder, op: Operations.ColumnAlterOperation) {
-    // @ts-ignore
+    //@ts-ignore
     let col: knex.ColumnBuilder = table[op.columnType](
       op.column,
       ...this.getColumnTypeArgs(op),
@@ -328,6 +309,7 @@ class Writer {
       col = col.defaultTo(op.defaultValue)
     }
     col = col.alter()
+
     return col
   }
 
@@ -351,6 +333,28 @@ class Writer {
         args = []
       }
     }
+
     return args
   }
+}
+
+export async function write(
+  operations: Operation[],
+  config: Knex.Config,
+  schemaName: string = 'public',
+  tablePrefix: string = '',
+  columnPrefix: string = '',
+  plugins: MigratePlugin[] = [],
+) {
+
+  const writer = new Writer(
+    operations,
+    config,
+    schemaName,
+    tablePrefix,
+    columnPrefix,
+    plugins,
+  )
+
+  return writer.write()
 }

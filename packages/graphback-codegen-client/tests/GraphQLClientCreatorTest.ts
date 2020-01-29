@@ -1,7 +1,7 @@
-import { graphQLInputContext } from '@graphback/core';
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
+import { graphQLInputContext } from '@graphback/core';
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+import ava, { ExecutionContext } from 'ava';
 import { parse } from 'graphql';
 import { createClient } from '../src';
 
@@ -84,20 +84,20 @@ ava('Test parse', async (t: ExecutionContext) => {
   for(const documentObj of client.queries){
     const doc = parse(documentObj.implementation);
     t.true(doc.kind === 'Document');
-    // TODO Requries full schema generator
-    // validate(schema, doc));
+    //TODO Requries full schema generator
+    //validate(schema, doc));
   }
   for(const documentObj of client.mutations){
     const doc = parse(documentObj.implementation);
     t.true(doc.kind === 'Document');
-    // TODO Requries full schema generator
-    // validate(schema, doc));
+    //TODO Requries full schema generator
+    //validate(schema, doc));
   }
   for(const documentObj of client.subscriptions){
     const doc = parse(documentObj.implementation);
     t.true(doc.kind === 'Document');
-    // TODO Requries full schema generator
-    // validate(schema, doc));
+    //TODO Requries full schema generator
+    //validate(schema, doc));
   }
 });
 

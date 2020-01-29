@@ -1,6 +1,6 @@
 import { InputModelFieldContext, InputModelTypeContext } from '@graphback/core';
 import chalk from 'chalk';
-// tslint:disable-next-line: match-default-export-name
+//tslint:disable-next-line: match-default-export-name
 import knex from 'knex';
 import { logError, logInfo } from '../../util/log';
 import { ModelChange } from '../changes/ChangeTypes';
@@ -23,7 +23,7 @@ const handleError = (err: { code: string; message: string }) => {
  * @class KnexMigrationManager
  */
 export class KnexMigrationManager {
-  // tslint:disable-next-line:typedef
+  //tslint:disable-next-line:typedef
   protected primitiveTypesMapping = {
     String: 'text',
     Int: 'integer',
@@ -31,15 +31,15 @@ export class KnexMigrationManager {
     Boolean: 'boolean',
   };
 
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   protected tables: any = {
     migrations: 'gb_schema_migrations',
     tables: 'gb_tables'
   };
 
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   protected db: knex<any, unknown[]>;
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   constructor(db: knex<any, unknown[]>) {
     this.db = db;
   }
@@ -109,7 +109,7 @@ export class KnexMigrationManager {
    */
   public async createMigration(migration: SchemaMigration): Promise<void> {
     try {
-      // tslint:disable-next-line: await-promise
+      //tslint:disable-next-line: await-promise
       await this.db.table(this.tables.migrations).insert(migration);
     } catch (err) {
       handleError(err);
@@ -129,7 +129,7 @@ export class KnexMigrationManager {
 
     if (!hasTable) {
       try {
-        // tslint:disable-next-line: await-promise
+        //tslint:disable-next-line: await-promise
         await this.db.schema.createTable(this.tables.migrations, (table: knex.TableBuilder) => {
           table.bigInteger('id').primary();
           table.timestamp('applied_at').nullable();
@@ -156,7 +156,7 @@ export class KnexMigrationManager {
    */
   public async applyMigration(migration: SchemaMigration): Promise<void> {
     try {
-      // tslint:disable-next-line: await-promise
+      //tslint:disable-next-line: await-promise
       await this.db.raw(migration.sql_up);
 
       logInfo(`Executed migration ${chalk.cyan(migration.id.toString())}`)
@@ -167,7 +167,7 @@ export class KnexMigrationManager {
     const now = new Date();
 
     try {
-      // tslint:disable-next-line: await-promise
+      // eslint-disable-next-line camelcase
       await this.db(this.tables.migrations).where({ id: migration.id }).update({ applied_at: now });
     } catch (err) {
       handleError(err);
@@ -185,7 +185,7 @@ export class KnexMigrationManager {
   public async getMigrations(): Promise<SchemaMigration[]> {
     let migrations: SchemaMigration[] = [];
     try {
-      // tslint:disable-next-line: await-promise
+      //tslint:disable-next-line: await-promise
       migrations = await this.db.select().from(this.tables.migrations);
     } catch (err) {
       handleError(err);

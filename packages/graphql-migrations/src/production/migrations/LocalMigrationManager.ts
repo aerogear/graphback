@@ -1,6 +1,6 @@
-import chalk from 'chalk';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import chalk from 'chalk';
 import { logError } from '../../util/log';
 import { SchemaMigration } from './SchemaMigration';
 
@@ -53,6 +53,7 @@ export class LocalMigrationManager {
       const schemaMigration: SchemaMigration = { id: migrationId };
 
       try {
+        //eslint-disable-next-line camelcase
         schemaMigration.sql_up = readFileSync(sqlFilePath, 'utf8');
       } catch (err) {
         handleError(err, migrationDir, sqlFile);

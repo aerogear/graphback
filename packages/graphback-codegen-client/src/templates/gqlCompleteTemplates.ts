@@ -167,7 +167,7 @@ export const createClientDocumentsGqlComplete = (inputContext: InputModelTypeCon
   const context = inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
   return {
-    // Fragments are embeeded and not needed here :)
+    //Fragments are embeeded and not needed here :)
     fragments: [],
     queries: createQueriesGqlComplete(context),
     mutations: createMutationsGqlComplete(context),

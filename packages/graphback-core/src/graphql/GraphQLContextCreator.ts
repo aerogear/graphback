@@ -1,34 +1,11 @@
 import { parse, visit } from 'graphql';
 import { InputModelTypeContext } from '../api/ContextTypes'
 import { GraphbackCRUDGeneratorConfig } from "../api/GraphbackCRUDGeneratorConfig";
-import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './graphqlUtils';
-
 import { InputContextCreator } from '../api';
+import { filterInterfaceTypes, filterObjectExtensions, filterObjectTypes } from './graphqlUtils';
 import { inputTypeVisitor } from './InputTypeVisitor';
 
-
-
-/**
- * Create input context to be reused for:
- * - schema
- * - various generators
- * - database creation
- */
-export const graphQLInputContext: InputContextCreator = {
-
-  createModelContext(schemaText: string, defaultConfig: GraphbackCRUDGeneratorConfig): InputModelTypeContext[] {
-    const astNode = parse(schemaText)
-    const schemaDef = visit(astNode, { leave: inputTypeVisitor });
-    const context = applyDefaultConfig(schemaDef, defaultConfig)
-    const interfaces = filterInterfaceTypes(context)
-    const finalTypes = applyExtensionsToOriginalTypes(context)
-
-    return [...finalTypes, ...interfaces]
-
-  }
-}
-
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 function applyExtensionsToOriginalTypes(context: any) {
   const extendNodes = filterObjectExtensions(context)
   const filteredContext = filterObjectTypes(context)
@@ -49,7 +26,7 @@ function applyExtensionsToOriginalTypes(context: any) {
   });
 }
 
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 function applyDefaultConfig(schemaDef: any, defaultConfig: GraphbackCRUDGeneratorConfig) {
   return schemaDef.definitions.map((t: InputModelTypeContext) => {
     return {
@@ -57,5 +34,25 @@ function applyDefaultConfig(schemaDef: any, defaultConfig: GraphbackCRUDGenerato
       config: { ...defaultConfig, ...t.config }
     };
   });
+}
+
+/**
+ * Create input context to be reused for:
+ * - schema
+ * - various generators
+ * - database creation
+ */
+export const graphQLInputContext: InputContextCreator = {
+
+  createModelContext(schemaText: string, defaultConfig: GraphbackCRUDGeneratorConfig): InputModelTypeContext[] {
+    const astNode = parse(schemaText)
+    const schemaDef = visit(astNode, { leave: inputTypeVisitor });
+    const context = applyDefaultConfig(schemaDef, defaultConfig)
+    const interfaces = filterInterfaceTypes(context)
+    const finalTypes = applyExtensionsToOriginalTypes(context)
+
+    return [...finalTypes, ...interfaces]
+
+  }
 }
 

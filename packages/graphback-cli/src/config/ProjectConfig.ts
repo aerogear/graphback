@@ -15,7 +15,7 @@ import { OpenApiConfig } from './OpenApiConfig'
      * Database configuration
      */
     db?: {
-        // tslint:disable-next-line: no-any
+        //tslint:disable-next-line: no-any
         dbConfig: any,
         database: string
         initialization?: string

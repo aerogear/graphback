@@ -1,3 +1,4 @@
+/*eslint-disable max-lines */
 import ava, { ExecutionContext } from 'ava';
 import { buildSchema } from 'graphql'
 import { generateAbstractDatabase } from '../../src'
@@ -399,6 +400,7 @@ ava('custom scalar map', async (t: ExecutionContext) => {
       }
     `)
   const adb = await generateAbstractDatabase(schema, {
+    //eslint-disable-next-line @typescript-eslint/tslint/config
     scalarMap: (field) => {
       if (field.name === 'name') {
         return {
@@ -406,6 +408,7 @@ ava('custom scalar map', async (t: ExecutionContext) => {
           args: [],
         }
       }
+
       return null
     },
   })
@@ -463,16 +466,20 @@ ava('custom name transforms', async (t: ExecutionContext) => {
       }
     `)
   const adb = await generateAbstractDatabase(schema, {
+    //eslint-disable-next-line @typescript-eslint/tslint/config
     transformTableName: (name, direction) => {
       if (direction === 'to-db') {
         return `Foo${name}`
       }
+
       return name
     },
+    //eslint-disable-next-line @typescript-eslint/tslint/config
     transformColumnName: (name, direction) => {
       if (direction === 'to-db') {
         return `bar_${name}`
       }
+
       return name
     },
   })

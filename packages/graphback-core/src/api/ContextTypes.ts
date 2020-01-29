@@ -43,7 +43,7 @@ export interface InputModelFieldAnnotations {
 }
 
 export interface ModelArgumentValue {
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   type: string
   isArray: boolean
   isNull: boolean
@@ -60,13 +60,13 @@ export interface InputModelArgument {
  */
 export interface InputModelFieldContext {
   name: string
-  // tslint:disable-next-line
+  //tslint:disable-next-line
   type: string
   isArray: boolean
   isType: boolean
   isNull: boolean
   annotations: InputModelFieldAnnotations
-  // tslint:disable-next-line: no-banned-terms
+  //tslint:disable-next-line: no-banned-terms
   arguments?: InputModelArgument[]
 }
 
@@ -77,7 +77,7 @@ export interface InputModelFieldContext {
  * Context type returned from `InputTypeVisitor`
  */
 export interface InputModelTypeContext {
-  // FIXME Make this GraphQL independent so developers do not need to introduce another library
+  //FIXME Make this GraphQL independent so developers do not need to introduce another library
   kind: KindEnum
   name: string
   state?: string
@@ -90,7 +90,7 @@ export interface InputModelTypeContext {
  * Interface information for Graphback model
  */
 export interface InputInterfaceType {
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   type: string
   isArray: boolean
   isNull: boolean

@@ -1,3 +1,4 @@
+/*eslint-disable max-lines */
 import ava, { ExecutionContext } from 'ava';
 import { computeDiff } from '../../src'
 import { AbstractDatabase } from '../../src/abstract/AbstractDatabase'

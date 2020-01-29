@@ -1,5 +1,5 @@
-import { getTableName, InputModelTypeContext } from "@graphback/core"
 import { execSync } from 'child_process';
+import { getTableName, InputModelTypeContext } from "@graphback/core"
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
@@ -14,7 +14,7 @@ import { NoDataError } from './NoDataError';
  *
  * NOTE: For Postgres use dedicated `PgKnexDBDataProvider` that implements more performant creation method.
  */
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
 
   protected db: Knex;
@@ -43,7 +43,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot update ${name}`);
   }
 
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   public async delete(name: string, id: string, data?: Type): Promise<string> {
     const dbResult = await this.db(name).where('id', '=', id).del()
     if (dbResult) {

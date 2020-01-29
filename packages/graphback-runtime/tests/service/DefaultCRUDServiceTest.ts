@@ -1,11 +1,11 @@
-// tslint:disable-next-line: match-default-export-name
+//tslint:disable-next-line: match-default-export-name
 import _test, { TestInterface } from 'ava';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 import { CRUDService } from  '../../src/service/CRUDService'
 
-// tslint:disable: typedef
+//tslint:disable: typedef
 
 interface Context {
   db: Knex;
@@ -18,8 +18,8 @@ interface Todo {
   text: string;
 }
 
-const test = _test as TestInterface<Context>;
-// tslint:disable-next-line: no-any
+const test = _test;
+//tslint:disable-next-line: no-any
 const typeContext = {
   name: 'todos', config: {
     subCreate: true,
@@ -28,8 +28,8 @@ const typeContext = {
   }
 } as any
 
-// Create a new database before each tests so that
-// all tests can run parallel
+//Create a new database before each tests so that
+//all tests can run parallel
 test.beforeEach(async t => {
   const db = Knex({
     client: 'sqlite3',
@@ -40,11 +40,11 @@ test.beforeEach(async t => {
   });
 
   await db.schema.createTable('todos', table => {
-    table.increments(); // id
+    table.increments(); //id
     table.string('text');
   });
 
-  // insert a couple of default data
+  //insert a couple of default data
   await db('todos').insert({ text: 'my first default todo' });
   await db('todos').insert({ text: 'the second todo' });
   await db('todos').insert({ text: 'just another todo' });

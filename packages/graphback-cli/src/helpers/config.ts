@@ -34,9 +34,9 @@ Next Steps:
  */
 export interface InitOptions {
   client?: boolean,
-  // Type of database
+  //Type of database
   database?: string
-  // example model
+  //example model
   model?: ModelTemplate
 }
 

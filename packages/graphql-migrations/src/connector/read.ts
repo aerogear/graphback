@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/tslint/config */
 import * as Knex from 'knex'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table } from '../abstract/Table'
@@ -18,16 +19,8 @@ import transformDefaultValue from '../util/transformDefaultValue'
  * @param {string} tablePrefix Table name prefix: `<prefix><tableName>`
  * @param {string} columnPrefix Column name prefix: `<prefix><columnName>`
  */
-export function read(
-  config: Knex.Config,
-  schemaName = 'public',
-  tablePrefix = '',
-  columnPrefix = '',
-): Promise<AbstractDatabase> {
-  const reader = new Reader(config, schemaName, tablePrefix, columnPrefix)
-  return reader.read()
-}
 
+// eslint-disable-next-line @typescript-eslint/tslint/config
 class Reader {
   public config: Knex.Config
   public schemaName: string
@@ -54,7 +47,7 @@ class Reader {
   }
 
   public async read() {
-    const tables: Array<{ name: string, comment: string }> = await listTables(this.knex, this.schemaName)
+    const tables: { name: string, comment: string }[] = await listTables(this.knex, this.schemaName)
     for (const { name: tableName, comment } of tables) {
       const name = this.getTableName(tableName)
       if (!name) { continue }
@@ -71,16 +64,17 @@ class Reader {
       this.database.tables.push(table)
       this.database.tableMap.set(name, table)
 
-      // Foreign keys
+      //Foreign keys
       const foreignKeys = await getForeignKeys(this.knex, tableName, this.schemaName)
 
       const checkContraints = await getCheckConstraints(this.knex, tableName, this.schemaName)
 
-      // Columns
+      //Columns
       const columnComments = await getColumnComments(this.knex, tableName, this.schemaName)
       const columnInfo: { [key: string]: Knex.ColumnInfo } = await this.knex(tableName)
         .withSchema(this.schemaName)
         .columnInfo() as any
+      // eslint-disable-next-line no-restricted-syntax
       for (const key in columnInfo) {
         if (columnInfo[key]) {
           const columnName = this.getColumnName(key)
@@ -113,18 +107,18 @@ class Reader {
         }
       }
 
-      // Primary key
+      //Primary key
       const primaries = await getPrimaryKey(this.knex, tableName, this.schemaName)
       table.primaries = primaries.map((p) => ({
         columns: this.getColumnNames([p.column]),
         name: p.indexName,
       }))
 
-      // Index
+      //Index
       const indexes = await getIndexes(this.knex, tableName, this.schemaName)
       table.indexes = indexes.filter(
         (i) => i.columnNames.length > 1 ||
-          // Not already the primary key
+          //Not already the primary key
           !primaries.find((p) => p.column === i.columnNames[0]),
       ).map((i) => ({
         name: i.indexName,
@@ -132,14 +126,14 @@ class Reader {
         type: i.type,
       }))
 
-      // Unique constraints
+      //Unique constraints
       const uniques = await getUniques(this.knex, tableName, this.schemaName)
       table.uniques = uniques.map((u) => ({
         columns: this.getColumnNames(u.columnNames),
         name: u.indexName,
       }))
 
-      // Deduplicate unique index
+      //Deduplicate unique index
       for (const unique of table.uniques) {
         for (let i = 0; i < table.indexes.length; i++) {
           if (unique.name === table.indexes[i].name) {
@@ -159,6 +153,7 @@ class Reader {
     if (name.startsWith(this.tablePrefix)) {
       return name.substr(this.tablePrefix.length)
     }
+
     return null
   }
 
@@ -166,19 +161,32 @@ class Reader {
     if (name.startsWith(this.columnPrefix)) {
       return name.substr(this.columnPrefix.length)
     }
+
     return null
   }
 
   private getColumnNames(names: string[]): string [] {
-    // @ts-ignore
+    //@ts-ignore
     return names.map((name) => this.getColumnName(name)).filter((n) => !!n)
   }
 
-  private getComment(comments: Array<{ column: string, comment: string }>, column: string) {
+  private getComment(comments: { column: string, comment: string }[], column: string) {
     const row = comments.find((c) => c.column === column)
     if (row && row.comment != null) {
       return row.comment.replace(/'/g, `''`)
     }
+
     return null
   }
+}
+
+export function read(
+  config: Knex.Config,
+  schemaName = 'public',
+  tablePrefix = '',
+  columnPrefix = '',
+): Promise<AbstractDatabase> {
+  const reader = new Reader(config, schemaName, tablePrefix, columnPrefix)
+
+  return reader.read()
 }

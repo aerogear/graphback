@@ -1,6 +1,6 @@
+import { readFileSync } from 'fs';
 import { graphQLInputContext } from '@graphback/core';
 import ava, { ExecutionContext } from 'ava';
-import { readFileSync } from 'fs';
 import { createResolvers } from '../src';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')

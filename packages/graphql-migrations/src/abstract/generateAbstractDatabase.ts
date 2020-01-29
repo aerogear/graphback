@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+/* eslint-disable @typescript-eslint/tslint/config */
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -70,14 +72,6 @@ export const defaultOptions: GenerateAbstractDatabaseOptions = {
   transformColumnName: defaultColumnNameTransform,
 }
 
-export async function generateAbstractDatabase(
-  schema: GraphQLSchema,
-  options: GenerateAbstractDatabaseOptions = defaultOptions,
-): Promise<AbstractDatabase> {
-  const builder = new AbstractDatabaseBuilder(schema, options)
-  return builder.build()
-}
-
 class AbstractDatabaseBuilder {
   private schema: GraphQLSchema
   private scalarMap: ScalarMap | null
@@ -86,7 +80,7 @@ class AbstractDatabaseBuilder {
   private transformColumnName: NameTransform | null
   private typeMap: TypeMap
   private database: AbstractDatabase
-  /** Used to push new intermediary tables after current table */
+  /**Used to push new intermediary tables after current table */
   private tableQueue: Table[] = []
   private oneToManyQueue: OneToManyRelationship[] = [];
   private currentTable: Table | null = null
@@ -96,8 +90,8 @@ class AbstractDatabaseBuilder {
     this.schema = schema
     this.transformTableName = options.transformTableName
     this.transformColumnName = options.transformColumnName
-    this.scalarMap = options.scalarMap as ScalarMap | null
-    this.mapListToJson = options.mapListToJson || defaultOptions.mapListToJson as boolean
+    this.scalarMap = options.scalarMap
+    this.mapListToJson = options.mapListToJson || defaultOptions.mapListToJson
     this.typeMap = this.schema.getTypeMap()
 
     this.database = {
@@ -107,23 +101,25 @@ class AbstractDatabaseBuilder {
   }
 
   public build(): AbstractDatabase {
+    // eslint-disable-next-line no-restricted-syntax
     for (const key in this.typeMap) {
       if (this.typeMap[key]) {
         const type = this.typeMap[key]
-        // Tables
+        //Tables
         if (isObjectType(type) && !type.name.startsWith('__') && !ROOT_TYPES.includes(type.name)) {
           this.buildTable(type)
         }
       }
     }
 
-    // create relationships from OneToMany
+    //create relationships from OneToMany
     for (const oneToMany of this.oneToManyQueue) {
       this.createOneToManyRelationship(oneToMany)
     }
 
     this.database.tables.push(...this.tableQueue)
     this.fillForeignKeys()
+
     return this.database
   }
 
@@ -131,6 +127,7 @@ class AbstractDatabaseBuilder {
     if (this.transformTableName) {
       return this.transformTableName(name, 'to-db')
     }
+
     return name
   }
 
@@ -138,6 +135,7 @@ class AbstractDatabaseBuilder {
     if (this.transformColumnName) {
       return this.transformColumnName(name, 'to-db')
     }
+
     return name
   }
 
@@ -168,6 +166,7 @@ class AbstractDatabaseBuilder {
       throw new Error(`Required type ${this.currentType}.id not found`);
     }
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const key in fields) {
       if (fields[key]) {
         const field = fields[key]
@@ -200,9 +199,11 @@ class AbstractDatabaseBuilder {
     if (!descriptor) { return undefined }
     table.columns.push(descriptor)
     table.columnMap.set(field.name, descriptor)
+
     return descriptor
   }
 
+  // eslint-disable-next-line complexity
   private getFieldDescriptor(
     field: GraphQLField<any, any>,
     fieldType: GraphQLOutputType | null = null,
@@ -227,7 +228,7 @@ class AbstractDatabaseBuilder {
       throw new Error(`Scalar ID is missing on type ${this.currentType}.${field.name}`);
     }
 
-    // Scalar
+    //Scalar
     if (isScalarType(fieldType) || annotations.type) {
       let descriptor
       if (this.scalarMap) {
@@ -238,38 +239,43 @@ class AbstractDatabaseBuilder {
       }
       if (!descriptor) {
         console.warn(`Unsupported type ${fieldType} on field ${this.currentType}.${field.name}.`)
+
         return null
       }
       type = descriptor.type
       args = descriptor.args
 
-      // Enum
+      //Enum
     } else if (isEnumType(fieldType)) {
       type = 'enum'
       args = [fieldType.getValues().map((v) => v.name)]
 
-      // Object
+      //Object
     } else if (isObjectType(fieldType)) {
       columnName = annotations.name || this.getColumnName(`${field.name}Id`)
       const foreignType = this.typeMap[fieldType.name]
       if (!foreignType) {
         console.warn(`Foreign type ${fieldType.name} not found on field ${this.currentType}.${field.name}.`)
+
         return null
       }
       if (!isObjectType(foreignType)) {
         console.warn(`Foreign type ${fieldType.name} is not Object type on field ${this.currentType}.${field.name}.`)
+
         return null
       }
       const foreignKey: string = annotations.foreign || 'id'
       const foreignField = foreignType.getFields()[foreignKey]
       if (!foreignField) {
         console.warn(`Foreign field ${foreignKey} on type ${fieldType.name} not found on field ${field.name}.`)
+
         return null
       }
       const descriptor = this.getFieldDescriptor(foreignField)
       if (!descriptor) {
-        // tslint:disable-next-line max-line-length
+        //tslint:disable-next-line max-line-length
         console.warn(`Couldn't create foreign field ${foreignKey} on type ${fieldType.name} on field ${field.name}. See above messages.`)
+
         return null
       }
       type = descriptor.type
@@ -281,36 +287,38 @@ class AbstractDatabaseBuilder {
         columnName: null,
       }
 
-      // List
+      //List
     } else if (isListType(fieldType) && this.currentTable) {
       let ofType = fieldType.ofType
       ofType = isNonNullType(ofType) ? ofType.ofType : ofType
       if (isObjectType(ofType)) {
-        // Foreign Type
+        //Foreign Type
         const onSameType = this.currentType === ofType.name
         const foreignType = this.typeMap[ofType.name]
         if (!foreignType) {
           console.warn(`Foreign type ${ofType.name} not found on field ${this.currentType}.${field.name}.`)
+
           return null
         }
         if (!isObjectType(foreignType)) {
           console.warn(`Foreign type ${ofType.name} is not Object type on field ${this.currentType}.${field.name}.`)
+
           return null
         }
 
-        // Foreign Field
+        //Foreign Field
         const foreignKey = onSameType ? field.name : annotations.manyToMany || this.currentTable.name
         const foreignField = foreignType.getFields()[foreignKey]
         if (!foreignField) { return null }
-        // @db.foreign
+        //@db.foreign
         const foreignAnnotations: any = parseAnnotations('db', foreignField.description || null)
         const foreignAnnotation = foreignAnnotations.foreign
         if (foreignAnnotation && foreignAnnotation !== field.name) { return null }
-        // Type
+        //Type
         const foreignFieldType = isNonNullType(foreignField.type) ? foreignField.type.ofType : foreignField.type
         if (!isListType(foreignFieldType)) { return null }
 
-        // Create join table for many-to-many
+        //Create join table for many-to-many
         const tableName = this.getTableName([
           `${this.currentType}_${field.name}`,
           `${foreignType.name}_${foreignField.name}`,
@@ -320,7 +328,7 @@ class AbstractDatabaseBuilder {
           joinTable = {
             name: tableName,
             comment: escapeComment(annotations.tableComment) ||
-              // tslint:disable-next-line max-line-length
+              //tslint:disable-next-line max-line-length
               `[Auto] Join table between ${this.currentType}.${field.name} and ${foreignType.name}.${foreignField.name}`,
             annotations: {},
             columns: [],
@@ -337,8 +345,9 @@ class AbstractDatabaseBuilder {
           const key = annotations.manyToMany || 'id'
           const sameTypeForeignField = foreignType.getFields()[key]
           if (!sameTypeForeignField) {
-            // tslint:disable-next-line max-line-length
+            //tslint:disable-next-line max-line-length
             console.warn(`Foreign field ${key} on type ${ofType.name} not found on field ${this.currentType}.${field.name}.`)
+
             return null
           }
           const descriptor = this.getFieldDescriptor(sameTypeForeignField, ofType)
@@ -361,32 +370,35 @@ class AbstractDatabaseBuilder {
           joinTable.columns.push(descriptor)
           joinTable.columnMap.set(descriptor.name, descriptor)
         }
-        // Index
+        //Index
         joinTable.indexes.push({
           columns: descriptors.map((d) => d.name),
           name: `${joinTable.name}_${descriptors.map((d) => d.name).join('_')}_index`.substr(0, 63),
           type: null,
         })
+
         return null
       } else if (this.mapListToJson) {
         type = 'json'
         args = []
       } else {
         console.warn(`Unsupported Scalar/Enum list on field ${this.currentType}.${field.name}. Use @db.type: "json"`)
+
         return null
       }
-      // Unsupported
+      //Unsupported
     } else {
-      // tslint:disable-next-line max-line-length
+      //tslint:disable-next-line max-line-length
       console.warn(`Field ${this.currentType}.${field.name} of type ${fieldType ? fieldType.toString() : '*unknown*'} not supported. Consider specifying column type with:
       """
       @db.type: "text"
       """
       as the field comment.`)
+
       return null
     }
 
-    // Index
+    //Index
     for (const indexTypeDef of INDEX_TYPES) {
       const annotation = annotations[indexTypeDef.annotation]
       if (this.currentTable && (annotation ||
@@ -401,7 +413,7 @@ class AbstractDatabaseBuilder {
           indexName = annotation.name
           indexType = annotation.type
         }
-        // @ts-ignore
+        //@ts-ignore
         const list: any[] = this.currentTable[indexTypeDef.list]
         let index = indexName ? list.find((i) => i.name === indexName) : null
         if (!index) {
@@ -460,6 +472,7 @@ class AbstractDatabaseBuilder {
 
     return this.database.tables.find((table: Table) => {
       const tableName = annotations.name || this.getTableName(oneToMany.type.name);
+
       return table.name === tableName;
     });
   }
@@ -497,7 +510,7 @@ class AbstractDatabaseBuilder {
           }
           const foreignColumn = foreignTable.columnMap.get(column.foreign.field || '')
           if (!foreignColumn) {
-            // tslint:disable-next-line max-line-length
+            //tslint:disable-next-line max-line-length
             console.warn(`Foreign key ${table.name}.${column.name}: Column not found for field ${column.foreign.field} in table ${foreignTable.name}.`)
             continue
           }
@@ -507,4 +520,13 @@ class AbstractDatabaseBuilder {
       }
     }
   }
+}
+
+export async function generateAbstractDatabase(
+  schema: GraphQLSchema,
+  options: GenerateAbstractDatabaseOptions = defaultOptions,
+): Promise<AbstractDatabase> {
+  const builder = new AbstractDatabaseBuilder(schema, options)
+
+  return builder.build()
 }

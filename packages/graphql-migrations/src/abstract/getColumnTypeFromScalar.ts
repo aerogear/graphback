@@ -13,6 +13,7 @@ export interface TableColumnTypeDescriptor {
   args: any[]
 }
 
+// eslint-disable-next-line complexity
 export default function(
   field: GraphQLField<any, any>,
   scalarType: GraphQLScalarType | null = null,
@@ -22,7 +23,7 @@ export default function(
     annotations = parseAnnotations('db', field.description || null)
   }
 
-  // increments
+  //increments
   if (scalarType && scalarType.name === 'ID') {
     if (annotations.type) {
       throw new Error(`@db.type annotation is not permitted on ID field.`);
@@ -35,7 +36,7 @@ export default function(
   }
 
 
-  // text
+  //text
   if (annotations.type === 'text') {
     return {
       type: 'text',
@@ -43,7 +44,7 @@ export default function(
     }
   }
 
-  // string
+  //string
   if ((scalarType && scalarType.name === 'String') || annotations.type === 'string') {
     return {
       type: 'string',
@@ -51,7 +52,7 @@ export default function(
     }
   }
 
-  // integer
+  //integer
   if ((scalarType && scalarType.name === 'Int') || annotations.type === 'integer') {
     return {
       type: 'integer',
@@ -59,7 +60,7 @@ export default function(
     }
   }
 
-  // float
+  //float
   if ((scalarType && scalarType.name === 'Float') || annotations.type === 'float') {
     return {
       type: 'float',
@@ -67,7 +68,7 @@ export default function(
     }
   }
 
-  // boolean
+  //boolean
   if ((scalarType && scalarType.name === 'Boolean') || annotations.type === 'boolean') {
     return {
       type: 'boolean',
@@ -75,7 +76,7 @@ export default function(
     }
   }
 
-  // date
+  //date
   if (annotations.type === 'date') {
     return {
       type: 'date',
@@ -83,7 +84,7 @@ export default function(
     }
   }
 
-  // datetime & time
+  //datetime & time
   if (['datetime', 'time'].includes(annotations.type)) {
     return {
       type: annotations.type,
@@ -91,7 +92,7 @@ export default function(
     }
   }
 
-  // timestamp
+  //timestamp
   if (annotations.type === 'timestamp') {
     return {
       type: 'timestamp',
@@ -99,7 +100,7 @@ export default function(
     }
   }
 
-  // binary
+  //binary
   if (annotations.type === 'binary') {
     return {
       type: 'binary',
@@ -107,7 +108,7 @@ export default function(
     }
   }
 
-  // json & jsonb
+  //json & jsonb
   if (['json', 'jsonb'].includes(annotations.type)) {
     return {
       type: annotations.type,
@@ -115,7 +116,7 @@ export default function(
     }
   }
 
-  // unknown type
+  //unknown type
   if (annotations.type) {
     return {
       type: annotations.type,

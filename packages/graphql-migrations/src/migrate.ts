@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { buildSchema, GraphQLSchema, printSchema } from 'graphql'
 import * as Knex from 'knex';
 import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/generateAbstractDatabase'
@@ -83,7 +84,7 @@ export async function migrateDB(
   schemaText: string,
   options: MigrateOptions = {},
 ): Promise<MigrationResults> {
-  // Default options
+  //Default options
   const finalOptions = {
     ...defaultOptions,
     ...options
@@ -107,7 +108,7 @@ export async function migrateDB(
     schema = buildSchema(schemaText)
   }
 
-  // Read current
+  //Read current
   const existingAdb = await read(
     config,
     finalOptions.dbSchemaName,
@@ -115,7 +116,7 @@ export async function migrateDB(
     finalOptions.dbColumnPrefix,
   )
 
-  // Generate new
+  //Generate new
   const newAdb = await generateAbstractDatabase(schema, {
     transformTableName: finalOptions.transformTableName,
     transformColumnName: finalOptions.transformColumnName,
@@ -125,7 +126,7 @@ export async function migrateDB(
     console.log('BEFORE', JSON.stringify(existingAdb.tables, null, 2))
     console.log('AFTER', JSON.stringify(newAdb.tables, null, 2))
   }
-  // Diff
+  //Diff
   let ops = await computeDiff(existingAdb, newAdb, {
     updateComments: finalOptions.updateComments,
   })
@@ -137,7 +138,7 @@ export async function migrateDB(
   if (finalOptions.debug) {
     console.log('OPERATIONS', ops)
   }
-  // Write back to DB
+  //Write back to DB
   await write(
     ops,
     config,

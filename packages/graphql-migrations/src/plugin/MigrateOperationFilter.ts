@@ -23,6 +23,7 @@ export const removeNonSafeOperationsFilter: MigrateOperationFilter = {
                 op.type === 'column.rename') {
                 return false;
             }
+
             return true;
         })
     }

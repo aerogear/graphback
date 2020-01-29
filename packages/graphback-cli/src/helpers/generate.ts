@@ -1,8 +1,8 @@
-import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { join } from 'path'
+import chalk from 'chalk';
 import { GlobSync } from 'glob'
 import { GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
-import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
@@ -20,6 +20,23 @@ followed by ${chalk.cyan(`${cliName}db`)} to create database.
 
 After changing your data model, run ${chalk.cyan(`graphback update-db`)} to update the database.
 `)
+}
+
+function checkAndCreateFolders(pathForSchema: string, customResolvers: string, generatedResolvers: string) {
+  try {
+    if (!existsSync(pathForSchema)) {
+      mkdirSync(pathForSchema, { recursive: true });
+    }
+    if (!existsSync(customResolvers)) {
+      mkdirSync(customResolvers, { recursive: true });
+    }
+    if (!existsSync(generatedResolvers)) {
+      mkdirSync(generatedResolvers, { recursive: true });
+    }
+  } catch (err) {
+    logError(`Error when creating folder structure: ${err}`)
+  }
+
 }
 
 /**
@@ -73,30 +90,13 @@ export async function generateBackend(): Promise<void> {
         if (!existsSync(currentFolder)) {
           mkdirSync(currentFolder)
         }
-        // tslint:disable-next-line: no-any
+        //tslint:disable-next-line: no-any
         generatedClient[folder].forEach((c: any) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))
       })
     }
   } catch (err) {
     logError(err)
     process.exit(0)
-  }
-
-  function checkAndCreateFolders(pathForSchema: string, customResolvers: string, generatedResolvers: string) {
-    try {
-      if (!existsSync(pathForSchema)) {
-        mkdirSync(pathForSchema, { recursive: true });
-      }
-      if (!existsSync(customResolvers)) {
-        mkdirSync(customResolvers, { recursive: true });
-      }
-      if (!existsSync(generatedResolvers)) {
-        mkdirSync(generatedResolvers, { recursive: true });
-      }
-    } catch (err) {
-      logError(`Error when creating folder structure: ${err}`)
-    }
-
   }
 }
 

@@ -7,12 +7,12 @@ import { buildASTSchema, GraphQLObjectType, GraphQLSchema, isInputType, parse, p
  * @return schema without comments
  */
 export const removeCommentsFromSchema = (schema: GraphQLSchema) => {
-    // Parse it to get ast
+    //Parse it to get ast
     const schemaAST = parse(printSchema(schema));
     const result = visit(schemaAST, {
-        // tslint:disable-next-line: no-any
+        //tslint:disable-next-line: no-any
         leave: (node: any) => {
-            // leave any node
+            //leave any node
             if (node.description) {
                 node.description = undefined;
             }
@@ -31,9 +31,9 @@ export const removeCommentsFromSchema = (schema: GraphQLSchema) => {
  */
 export const removeOperationsFromSchema = (schema: GraphQLSchema) => {
     const schemaConfig = schema.toConfig();
-    // Filter typemap for individual query/mutation/subscription types
-    // Names can be different depending on user setting
-    // This is much faster than using visitor
+    //Filter typemap for individual query/mutation/subscription types
+    //Names can be different depending on user setting
+    //This is much faster than using visitor
     schemaConfig.types = schemaConfig.types.filter((graphQLType: GraphQLObjectType) => {
         if(isInputType(graphQLType)){
             return false;
@@ -49,7 +49,7 @@ export const removeOperationsFromSchema = (schema: GraphQLSchema) => {
     })
     schemaConfig.query = undefined
     schemaConfig.mutation = undefined;
-    // Required when query is missing
+    //Required when query is missing
     schemaConfig.assumeValid = true;
 
     return new GraphQLSchema(schemaConfig);

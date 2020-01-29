@@ -3,7 +3,7 @@ import * as templates from "../templates/LayeredResolverTemplates"
 import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 import { ResolverRelationContext, ResolverTypeContext, TargetResolverContext } from './resolverTypes';
 
-// TODO extract to separate class that will support different types
+//TODO extract to separate class that will support different types
 /**
  * Resolver crud methods - create, update, delete, find and findAll
  */
@@ -96,12 +96,38 @@ export const buildGraphbackOperationTypeContext = (context: InputModelTypeContex
   return typeContext
 }
 
+function createRelations(inputContext: InputModelTypeContext[]) {
+  const relations = [];
+  inputContext.forEach((t: InputModelTypeContext) => {
+    t.fields.forEach((f: InputModelFieldContext) => {
+      if (f.isType) {
+        const fieldName = getRelationFieldName(f, t);
+        const columnName = `${fieldName}Id`;
+        if (f.annotations.OneToOne || !f.isArray) {
+          relations.push({
+            typeName: t.name,
+            implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
+          });
+        }
+        else if (f.annotations.OneToMany || f.isArray) {
+          relations.push({
+            typeName: t.name,
+            implementation: templates.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
+          });
+        }
+      }
+    });
+  });
+
+  return relations;
+}
+
 /**
  * Create context of all the types
  *
  * @param input InputModelTypeContext representing model
  */
-// FIXME remove this class and build proper relationship support
+//FIXME remove this class and build proper relationship support
 export const buildResolverTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
   const output: ResolverTypeContext[] = []
@@ -162,30 +188,4 @@ export const createCustomContext = (inputContext: InputModelTypeContext[]) => {
   }
 
   return [...customQueries, ...customMutations, ...customSubscriptions]
-}
-
-function createRelations(inputContext: InputModelTypeContext[]) {
-  const relations = [];
-  inputContext.forEach((t: InputModelTypeContext) => {
-    t.fields.forEach((f: InputModelFieldContext) => {
-      if (f.isType) {
-        const fieldName = getRelationFieldName(f, t);
-        const columnName = `${fieldName}Id`;
-        if (f.annotations.OneToOne || !f.isArray) {
-          relations.push({
-            typeName: t.name,
-            implementation: templates.typeRelation('OneToOne', columnName, f.name, f.type.toLowerCase())
-          });
-        }
-        else if (f.annotations.OneToMany || f.isArray) {
-          relations.push({
-            typeName: t.name,
-            implementation: templates.typeRelation('OneToMany', columnName, f.name, f.type.toLowerCase())
-          });
-        }
-      }
-    });
-  });
-
-  return relations;
 }

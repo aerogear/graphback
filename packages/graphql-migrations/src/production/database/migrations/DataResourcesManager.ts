@@ -1,7 +1,7 @@
-// tslint:disable: await-promise
+/* eslint-disable max-lines */
+import { unlinkSync } from 'fs';
 import { InputModelFieldContext, InputModelTypeContext, logger } from '@graphback/core';
 import { Change, ChangeType } from '@graphql-inspector/core';
-import { unlinkSync } from 'fs';
 import { GlobSync } from 'glob';
 import * as Knex from 'knex';
 import { DatabaseContextProvider } from './DatabaseContextProvider';
@@ -76,7 +76,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
   protected dbConnection: Knex;
   private client: string;
 
-  // tslint:disable-next-line:typedef
+  //tslint:disable-next-line:typedef
   private primitiveTypesMapping = {
     String: 'string',
     Int: 'integer',
@@ -86,7 +86,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
 
   constructor(
     client: string,
-    // tslint:disable-next-line: no-any
+    //tslint:disable-next-line: no-any
     db: Knex<any, unknown[]>
   ) {
     this.dbConnection = db;
@@ -153,7 +153,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
       fieldname = gqlField.annotations.OneToOne.field;
     }
     if (!gqlField.isArray) {
-      // tslint:disable-next-line: no-parameter-reassignment
+      //tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase();
       const hasColumn = await this.dbConnection.schema.hasColumn(
         tableName,
@@ -196,9 +196,9 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
       fieldname = gqlField.annotations.OneToMany.field;
     }
     if (gqlField.isArray) {
-      // tslint:disable-next-line: no-parameter-reassignment
+      //tslint:disable-next-line: no-parameter-reassignment
       tableName = gqlField.type.toLowerCase();
-      // tslint:disable-next-line: await-promise
+      //tslint:disable-next-line: await-promise
       const hasColumn = await this.dbConnection.schema.hasColumn(
         tableName,
         fieldname,
@@ -233,7 +233,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     Promise<void> {
     const newTable = `${currentTable}_${gqlField.type.toLowerCase()}`;
 
-    // tslint:disable-next-line: await-promise
+    //tslint:disable-next-line: await-promise
     const hasTable = await this.dbConnection.schema.hasTable(newTable);
     if (gqlField.isArray) {
       if (hasTable) {
@@ -313,7 +313,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
         }
       } else {
         await this.getConnection().raw('DROP SCHEMA public CASCADE;')
-        // tslint:disable-next-line: await-promise
+        //tslint:disable-next-line: await-promise
         await this.getConnection().raw('CREATE SCHEMA public;')
       }
 
@@ -369,7 +369,7 @@ export class DatabaseSchemaManager implements IDataLayerResourcesManager {
     }
   }
 
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   private handleError(err: any): void {
     if (err.code === 'ECONNREFUSED') {
       logger.warn('Database not running. Run docker-compose up -d or docker-compose start to start the database.')

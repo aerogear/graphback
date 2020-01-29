@@ -39,7 +39,7 @@ export const createDBResources = async (config: ProjectConfig): Promise<any> => 
     }
 
     const migrateOptions: MigrateOptions = {
-      // Do not perform delete operations on tables
+      //Do not perform delete operations on tables
       operationFilter: removeNonSafeOperationsFilter
     }
 
@@ -63,7 +63,7 @@ export const createDB = async (): Promise<any> => {
 
   checkDirectory(configInstance)
 
-  // tslint:disable-next-line: no-unnecessary-local-variable
+  //tslint:disable-next-line: no-unnecessary-local-variable
   const operations = await createDBResources(configInstance.config)
 
   return operations

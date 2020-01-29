@@ -1,4 +1,4 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 
 import ava, { ExecutionContext } from 'ava';
 

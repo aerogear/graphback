@@ -28,6 +28,6 @@ export class DefaultDataContextProvider implements DatabaseContextProvider {
   }
 
   public getFieldName(field: InputModelTypeContext) {
-    return this.prefix + field.name.toLowerCase();
+    return `${this.prefix}${field.name.toLowerCase()}`
   }
 }

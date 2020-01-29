@@ -1,9 +1,9 @@
 export interface ResolverGeneratorOptions {
-  // output format
+  //output format
   format: 'ts' | 'js'
 
-  // Provides extension for graphql-code-generator types
-  // generated for resolvers
+  //Provides extension for graphql-code-generator types
+  //generated for resolvers
   types?: {
     /**
      * Name of the resolver import

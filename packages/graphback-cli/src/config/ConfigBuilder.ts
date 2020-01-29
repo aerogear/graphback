@@ -36,7 +36,7 @@ export class ConfigBuilder {
   private applyAbsolutePaths() {
     this.config.folders = Object.assign(getDefaultFoldersLocations(), this.config.folders)
 
-    // tslint:disable-next-line: no-for-in
+    //eslint-disable-next-line no-restricted-syntax
     for (const fileType in this.config.folders) {
       if (this.config.folders[fileType]) {
         this.config.folders[fileType] = join(process.cwd(), this.config.folders[fileType]);

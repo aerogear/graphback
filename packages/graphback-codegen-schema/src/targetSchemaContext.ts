@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { filterInterfaceTypes, filterObjectTypes, getFieldName, getRelationFieldName, GraphbackOperationType, InputInterfaceType, InputModelArgument, InputModelFieldContext, InputModelTypeContext } from '@graphback/core'
 
 export interface TargetType {
@@ -17,7 +18,7 @@ interface RelationInfo {
 
 interface RelationFieldInfo {
   name: string
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   type: string
   isArray: boolean
 }
@@ -31,7 +32,7 @@ export interface TargetContext {
   interfaces: TargetType[]
   inputFields: TargetType[]
   filterFields: TargetType[],
-  // pagination: Type[],
+  //pagination: Type[],
   queries: string[],
   mutations: string[],
   subscriptions: string[]
@@ -163,6 +164,83 @@ const getFieldByName = (name: string, fields: InputModelFieldContext[]) => {
   });
 }
 
+//Add 1:1 fields to relationships list. Does not add fields that already exist.
+function addManyToOneRelations(manyToOneRelationQueue: RelationInfo[], relations: RelationInfo[]) {
+  for (const manyToOneRelation of manyToOneRelationQueue) {
+    const existingRelation = findRelationByFieldName(manyToOneRelation, relations)
+    if (existingRelation && existingRelation.fieldInfo.type !== manyToOneRelation.fieldInfo.type) {
+      throw new Error(`Cannot add relation to schema: Field ${manyToOneRelation.name}.${manyToOneRelation.fieldInfo.name} does not match type ${manyToOneRelation.fieldInfo.type}`)
+    }
+    if (!existingRelation || !relationExists(existingRelation.fieldInfo, relations)) {
+      relations.push(manyToOneRelation)
+    }
+  }
+}
+
+function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
+  const manyToOneRelationQueue = [];
+
+  inputContext.forEach((t: InputModelTypeContext) => {
+    t.fields.forEach((f: InputModelFieldContext) => {
+      if (f.isType) {
+        if (f.annotations.OneToOne || !f.isArray) {
+          relations.push({
+            "name": t.name,
+            "type": 'Type',
+            "fieldInfo": {
+              "name": f.name,
+              "type": f.type,
+              "isArray": f.isArray
+            },
+            "relation": `${f.name}: ${f.type}!`,
+          })
+        } else if (f.annotations.OneToMany || f.isArray) {
+          relations.push({
+            "name": t.name,
+            "type": 'Type',
+            "fieldInfo": {
+              "name": f.name,
+              "type": f.type,
+              "isArray": f.isArray
+            },
+            "relation": `${f.name}: [${f.type}!]!`
+          })
+
+          const relationFieldName = getRelationFieldName(f, t)
+          const fieldInfo = {
+            "name": relationFieldName,
+            "type": t.name,
+            "isArray": false
+          };
+
+          relations.push({
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "idField": `${relationFieldName}Id: ID!`,
+            "fieldInfo": fieldInfo
+          }, {
+            "name": f.type,
+            "type": 'ID',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "idField": `${relationFieldName}Id: ID!`,
+            "fieldInfo": fieldInfo
+          });
+
+          manyToOneRelationQueue.push({
+            "name": f.type,
+            "type": 'Type',
+            "relation": `${relationFieldName}: ${t.name}!`,
+            "fieldInfo": fieldInfo
+          })
+        }
+      }
+    })
+  });
+
+  addManyToOneRelations(manyToOneRelationQueue, relations)
+}
+
 /**
  * Build schema context for the string templates
  * relations - if the model has relations
@@ -174,7 +252,7 @@ const getFieldByName = (name: string, fields: InputModelFieldContext[]) => {
  * subscriptions - generated subscription according to config - new, updated, deleted
  * @param input input visted object from model
  */
-// tslint:disable-next-line: max-func-body-length
+//tslint:disable-next-line: max-func-body-length
 export const buildTargetContext = (input: InputModelTypeContext[]) => {
   const inputContext = input.filter((t: InputModelTypeContext) => t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
 
@@ -266,82 +344,5 @@ export const createCustomSchemaContext = (inputContext: InputModelTypeContext[])
   }
 
   return { customQueries, customMutations, customSubscriptions }
-}
-
-function addRelations(inputContext: InputModelTypeContext[], relations: any[]) {
-  const manyToOneRelationQueue = [];
-
-  inputContext.forEach((t: InputModelTypeContext) => {
-    t.fields.forEach((f: InputModelFieldContext) => {
-      if (f.isType) {
-        if (f.annotations.OneToOne || !f.isArray) {
-          relations.push({
-            "name": t.name,
-            "type": 'Type',
-            "fieldInfo": {
-              "name": f.name,
-              "type": f.type,
-              "isArray": f.isArray
-            },
-            "relation": `${f.name}: ${f.type}!`,
-          })
-        } else if (f.annotations.OneToMany || f.isArray) {
-          relations.push({
-            "name": t.name,
-            "type": 'Type',
-            "fieldInfo": {
-              "name": f.name,
-              "type": f.type,
-              "isArray": f.isArray
-            },
-            "relation": `${f.name}: [${f.type}!]!`
-          })
-
-          const relationFieldName = getRelationFieldName(f, t)
-          const fieldInfo = {
-            "name": relationFieldName,
-            "type": t.name,
-            "isArray": false
-          };
-
-          relations.push({
-            "name": f.type,
-            "type": 'ID',
-            "relation": `${relationFieldName}: ${t.name}!`,
-            "idField": `${relationFieldName}Id: ID!`,
-            "fieldInfo": fieldInfo
-          }, {
-            "name": f.type,
-            "type": 'ID',
-            "relation": `${relationFieldName}: ${t.name}!`,
-            "idField": `${relationFieldName}Id: ID!`,
-            "fieldInfo": fieldInfo
-          });
-
-          manyToOneRelationQueue.push({
-            "name": f.type,
-            "type": 'Type',
-            "relation": `${relationFieldName}: ${t.name}!`,
-            "fieldInfo": fieldInfo
-          })
-        }
-      }
-    })
-  });
-
-  addManyToOneRelations(manyToOneRelationQueue, relations)
-}
-
-// Add 1:1 fields to relationships list. Does not add fields that already exist.
-function addManyToOneRelations(manyToOneRelationQueue: RelationInfo[], relations: RelationInfo[]) {
-  for (const manyToOneRelation of manyToOneRelationQueue) {
-    const existingRelation = findRelationByFieldName(manyToOneRelation, relations)
-    if (existingRelation && existingRelation.fieldInfo.type !== manyToOneRelation.fieldInfo.type) {
-      throw new Error(`Cannot add relation to schema: Field ${manyToOneRelation.name}.${manyToOneRelation.fieldInfo.name} does not match type ${manyToOneRelation.fieldInfo.type}`)
-    }
-    if (!existingRelation || !relationExists(existingRelation.fieldInfo, relations)) {
-      relations.push(manyToOneRelation)
-    }
-  }
 }
 

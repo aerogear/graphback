@@ -1,6 +1,6 @@
 
-import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
+import ava, { ExecutionContext } from 'ava';
 import { graphQLInputContext, InputModelTypeContext } from '../../graphback/src';
 import { maybeNullFieldArgs } from '../src/targetSchemaContext';
 

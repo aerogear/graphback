@@ -4,7 +4,7 @@ export enum DatabaseChangeType {
 }
 
 export interface DatabaseChange {
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   type: DatabaseChangeType
   sql: string
 }

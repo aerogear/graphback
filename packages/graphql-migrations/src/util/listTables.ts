@@ -43,9 +43,11 @@ const queries: any = {
 export default async function(knex: Knex, schemaName: string) {
   const query = queries[knex.client.config.client]
   if (!query) {
+    //eslint-disable-next-line no-console
     console.error(`Client ${knex.client.config.client} not supported`)
   }
   const { sql, bindings, output } = query(knex, schemaName)
   const resp = await knex.raw(sql, bindings)
+
   return output(resp)
 }

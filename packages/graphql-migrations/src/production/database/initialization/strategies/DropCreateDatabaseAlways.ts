@@ -14,7 +14,7 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
 export class DropCreateDatabaseAlways implements DatabaseInitializationStrategy {
   private schemaManager: DatabaseSchemaManager;
   private context: DatabaseContextProvider;
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   constructor(client: string, db: knex<any, unknown[]>) {
     this.schemaManager = new DatabaseSchemaManager(client, db);
     this.context = new DefaultDataContextProvider();

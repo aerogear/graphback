@@ -1,4 +1,4 @@
-// tslint:disable: no-string-literal
+//tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 import { prompt as ask } from 'inquirer'
 import { getDefaultFoldersLocations } from '../config/ConfigBuilder';
@@ -75,13 +75,13 @@ export const createConfig = async (database: string, client: boolean) => {
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const config = {}
   const [dbConfig, dockerCompose] = getConfig(database)
-  config['db'] = {
+  config.db = {
     dbConfig: JSON.parse(dbConfig),
     database: database
   }
-  config["graphqlCRUD"] = generationConfig
-  config["folders"] = getDefaultFoldersLocations();
-  config["client"] = client
+  config.graphqlCRUD = generationConfig
+  config.folders = getDefaultFoldersLocations();
+  config.client = client
   if (dockerCompose) {
     writeFileSync(dockerComposePath, dockerCompose)
   }

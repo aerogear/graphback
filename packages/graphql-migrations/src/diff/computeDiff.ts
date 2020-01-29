@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+/* eslint-disable complexity */
 import { isEqual } from 'lodash'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table, TableIndex, TableUnique } from '../abstract/Table'
@@ -5,21 +7,13 @@ import { TableColumn } from '../abstract/TableColumn'
 import getKnexColumnType from '../util/getKnexColumnType'
 import * as Operations from './Operation'
 
-export async function computeDiff(from: AbstractDatabase, to: AbstractDatabase, {
-  updateComments = false,
-} = {}): Promise<Operations.Operation[]> {
-  const differ = new Differ(from, to, {
-    updateComments,
-  })
-  return differ.diff()
-}
-
+// eslint-disable-next-line @typescript-eslint/tslint/config
 class Differ {
   private from: AbstractDatabase
   private to: AbstractDatabase
   private updateComments: boolean
   private operations: Operations.Operation[] = []
-  private tableCount = 0
+  private tableCount: number = 0
 
   constructor(from: AbstractDatabase, to: AbstractDatabase, options: any) {
     this.from = from
@@ -30,85 +24,85 @@ class Differ {
   public diff(): Operations.Operation[] {
     this.operations.length = 0
 
-    const sameTableQueue: Array<{ fromTable: Table, toTable: Table }> = []
+    const sameTableQueue: { fromTable: Table, toTable: Table }[] = []
     const addTableQueue = this.to.tables.slice()
     for (const fromTable of this.from.tables) {
       let removed = true
       for (let i = 0, l = addTableQueue.length; i < l; i++) {
         const toTable = addTableQueue[i]
-        // Same table
+        //Same table
         if (toTable.name === fromTable.name) {
           removed = false
         }
 
-        // Rename table
+        //Rename table
         const { annotations } = toTable
         if (annotations && annotations.oldNames && annotations.oldNames.includes(fromTable.name)) {
           removed = false
           this.renameTable(fromTable, toTable)
         }
 
-        // Same or Rename
+        //Same or Rename
         if (!removed) {
           sameTableQueue.push({ fromTable, toTable })
-          // A new table shouldn't be added
+          //A new table shouldn't be added
           addTableQueue.splice(i, 1)
           break
         }
       }
 
-      // Drop table
+      //Drop table
       if (removed) {
         this.dropTable(fromTable)
       }
     }
 
-    // Create table
+    //Create table
     for (const toTable of addTableQueue) {
       this.createTable(toTable)
     }
 
-    // Compare tables
+    //Compare tables
     for (const { fromTable, toTable } of sameTableQueue) {
-      // Comment
+      //Comment
       if (this.updateComments && fromTable.comment !== toTable.comment) {
         this.setTableComment(toTable)
       }
 
-      const sameColumnQueue: Array<{ fromCol: TableColumn, toCol: TableColumn }> = []
+      const sameColumnQueue: { fromCol: TableColumn, toCol: TableColumn }[] = []
       const addColumnQueue = toTable.columns.slice()
       for (const fromCol of fromTable.columns) {
         let removed = true
         for (let i = 0, l = addColumnQueue.length; i < l; i++) {
           const toCol = addColumnQueue[i]
-          // Same column
+          //Same column
           if (toCol.name === fromCol.name) {
             removed = false
           }
 
-          // Rename column
+          //Rename column
           const { annotations } = toCol
           if (annotations && annotations.oldNames && annotations.oldNames.includes(fromCol.name)) {
             removed = false
             this.renameColumn(toTable, fromCol, toCol)
           }
 
-          // Same or Rename
+          //Same or Rename
           if (!removed) {
             sameColumnQueue.push({ fromCol, toCol })
-            // A new table shouldn't be added
+            //A new table shouldn't be added
             addColumnQueue.splice(i, 1)
             break
           }
         }
 
-        // Drop column
+        //Drop column
         if (removed) {
           this.dropColumn(fromTable, fromCol)
         }
       }
 
-      // Add columns
+      //Add columns
       for (const column of addColumnQueue) {
         if (column.name === 'id') {
           this.setPrimary(toTable, column)
@@ -117,7 +111,7 @@ class Differ {
         }
       }
 
-      // Compare columns
+      //Compare columns
       for (const { fromCol, toCol } of sameColumnQueue) {
         if (toCol.name === 'id') {
           const fromPrimaryKeyType = getKnexColumnType(fromCol.type);
@@ -139,7 +133,7 @@ class Differ {
           this.alterColumn(toTable, toCol)
         }
 
-        // Foreign key
+        //Foreign key
         if ((fromCol.foreign && !toCol.foreign) ||
           (!fromCol.foreign && toCol.foreign) ||
           (fromCol.foreign && toCol.foreign &&
@@ -151,16 +145,16 @@ class Differ {
         }
       }
 
-      // Index
+      //Index
       this.compareIndex(
         fromTable.indexes,
         toTable.indexes,
-        // @ts-ignore
+        //@ts-ignore
         (index: TableIndex) => this.createIndex(toTable, index),
         (index: TableIndex) => this.dropIndex(fromTable, index),
       )
 
-      // Unique contraint
+      //Unique contraint
       this.compareIndex(
         fromTable.uniques,
         toTable.uniques,
@@ -180,12 +174,12 @@ class Differ {
     }
     this.operations.push(op)
 
-    // Comment
+    //Comment
     if (table.comment) {
       this.setTableComment(table)
     }
 
-    // Columns
+    //Columns
     for (const column of table.columns) {
       if (column.name === 'id') {
         this.setPrimary(table, column)
@@ -194,12 +188,12 @@ class Differ {
       }
     }
 
-    // Index
+    //Index
     for (const index of table.indexes) {
       this.createIndex(table, index)
     }
 
-    // Unique contraint
+    //Unique contraint
     for (const index of table.uniques) {
       this.createUnique(table, index)
     }
@@ -325,7 +319,7 @@ class Differ {
       type: 'column.create',
       table: table.name,
       column: column.name,
-      columnType: getKnexColumnType(column.type), // TODO: Move column type mapping to abstraction layer
+      columnType: getKnexColumnType(column.type), //TODO: Move column type mapping to abstraction layer
       args: column.args,
       comment: column.comment,
       nullable: column.nullable,
@@ -334,7 +328,7 @@ class Differ {
     }
     this.operations.push(op)
 
-    // Foreign key
+    //Foreign key
     this.createForeignKey(table, column)
   }
 
@@ -375,8 +369,8 @@ class Differ {
   }
 
   private compareIndex(
-    fromList: Array<TableIndex | TableUnique>,
-    toList: Array<TableIndex | TableUnique>,
+    fromList: (TableIndex | TableUnique)[],
+    toList: (TableIndex | TableUnique)[],
     create: (index: TableIndex | TableUnique) => void,
     drop: (index: TableIndex | TableUnique) => void,
   ) {
@@ -387,7 +381,7 @@ class Differ {
         const toIndex = addIndexQueue[i]
         if (
           fromIndex.name === toIndex.name &&
-          // @ts-ignore
+          //@ts-ignore
           fromIndex.type === toIndex.type &&
           isEqual(fromIndex.columns.sort(), toIndex.columns.sort())
         ) {
@@ -405,4 +399,15 @@ class Differ {
       create(index)
     }
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/tslint/config
+export async function computeDiff(from: AbstractDatabase, to: AbstractDatabase, {
+  updateComments = false,
+} = {}): Promise<Operations.Operation[]> {
+  const differ = new Differ(from, to, {
+    updateComments,
+  })
+
+  return differ.diff()
 }

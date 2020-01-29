@@ -1,6 +1,6 @@
-// Welcome to the generator codebase :)
+//Welcome to the generator codebase :)
 
-// Top level Api
+//Top level Api
 export * from './GraphQLBackendCreator'
 export * from './IGraphQLBackend'
 

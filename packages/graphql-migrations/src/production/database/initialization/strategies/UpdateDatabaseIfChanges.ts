@@ -10,10 +10,10 @@ import { DatabaseInitializationStrategy } from '../DatabaseInitializationStrateg
  * @implements {DatabaseInitializationStrategy}
  */
 export class UpdateDatabaseIfChanges implements DatabaseInitializationStrategy {
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   private db: knex<any, unknown[]>;
   private migrationsDir: string;
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   constructor(db: knex<any, unknown[]>, migrationsDir?: string) {
     this.db = db;
     this.migrationsDir = migrationsDir;

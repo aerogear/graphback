@@ -17,7 +17,7 @@ import { findMigrationsToApply } from './utils';
 export class KnexMigrationProvider implements MigrationProvider {
   private knexMigrationManager: KnexMigrationManager;
   private localMigrationManager: LocalMigrationManager;
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   constructor(db: knex<any, unknown[]>, migrationsDir: string) {
     this.knexMigrationManager = new KnexMigrationManager(db);
     this.localMigrationManager = new LocalMigrationManager(migrationsDir);

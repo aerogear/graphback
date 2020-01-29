@@ -9,7 +9,7 @@ import { NoDataError } from './NoDataError';
  * NOTE: This class implements Postgres specific implementaion that provides more performant object creation than generic `KnexDBDataProvider`
  * that works with the rest of the databases.
  */
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends KnexDBDataProvider<Type, GraphbackContext>{
 
     constructor(db: Knex) {

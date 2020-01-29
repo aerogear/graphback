@@ -16,7 +16,7 @@ import { subscriptionTopicMapping } from './subscriptionTopicMapping';
  * - Subscriptions: using default publish subscribe method
  * - Logging: using logging abstraction
  */
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRuntimeContext | any>  {
     private db: GraphbackDataProvider;
     private logger: GraphbackMessageLogger;
@@ -53,7 +53,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         return result;
     }
 
-    // tslint:disable-next-line: no-reserved-keywords
+    //tslint:disable-next-line: no-reserved-keywords
     public async delete(name: string, id: string, data?: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<string> {
         this.logger.log(`deleting object ${name}`)
 
@@ -79,7 +79,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         return this.db.findAll(name, context);
     }
 
-    // tslint:disable-next-line: no-any
+    //tslint:disable-next-line: no-any
     public findBy(name: string, filter: any, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T[]> {
         this.logger.log(`querying object ${name} with filter ${JSON.stringify(filter)}`)
 

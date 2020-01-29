@@ -24,5 +24,6 @@ export default function(dataType: string, maxLength: any): { type: string, args:
     alias = { type: dataType, args: [] }
   }
   if (alias.type === 'string' && maxLength) { alias.args = [maxLength] }
+
   return alias
 }

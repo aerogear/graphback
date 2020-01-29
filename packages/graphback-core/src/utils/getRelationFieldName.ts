@@ -1,7 +1,7 @@
 import { InputModelFieldContext, InputModelTypeContext } from '../api';
 import { lowerCaseFirstChar } from './lowerCaseFirstChar';
 
-// tslint:disable-next-line: no-reserved-keywords
+//tslint:disable-next-line: no-reserved-keywords
 export function getRelationFieldName(field: InputModelFieldContext, type: InputModelTypeContext) {
   let fieldName: string;
   if (field.annotations.OneToOne) {

@@ -1,7 +1,7 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { existsSync } from 'fs';
 import { join, resolve } from 'path';
+import ava, { ExecutionContext } from 'ava';
 import { createDB, generate, initConfig } from '../src';
 
 const model = {

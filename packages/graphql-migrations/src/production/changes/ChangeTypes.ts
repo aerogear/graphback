@@ -6,17 +6,17 @@ export enum ModelChangeType {
 }
 
 export interface ModelChange {
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   type: ModelChangeType
   path: {
-    // tslint:disable-next-line: no-reserved-keywords
+    //tslint:disable-next-line: no-reserved-keywords
     type: string
     field?: string
   }
 }
 
 export interface ModelChangeGroup {
-  // tslint:disable-next-line: no-reserved-keywords
+  //tslint:disable-next-line: no-reserved-keywords
   name: string
   changes: ModelChange[]
 }

@@ -2,7 +2,6 @@ import { graphQLInputContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } fr
 import { diff } from '@graphql-inspector/core';
 import { buildSchema, GraphQLSchema, printSchema } from 'graphql';
 import * as knex from 'knex';
-import { KnexMigrationProvider, LocalMigrationManager } from '.';
 import { removeDirectivesFromSchema } from '../../util/removeDirectivesFromSchema';
 import { ModelChange, ModelChangeType } from '../changes/ChangeTypes';
 import { DatabaseChange, DatabaseChangeType, DatabaseInitializationStrategy } from '../database';
@@ -11,9 +10,11 @@ import { KnexMigrationManager } from './KnexMigrationManager';
 import { MigrationProvider } from './MigrationProvider';
 import { SchemaMigration } from './SchemaMigration';
 import { getChanges } from './utils';
+import { KnexMigrationProvider, LocalMigrationManager } from '.';
 
 export async function migrateDBUsingSchema(schemaText: string, strategy: DatabaseInitializationStrategy) {
   const changes = await strategy.init(schemaText);
+
   return changes;
 }
 /**
@@ -32,7 +33,7 @@ export class GraphQLMigrationCreator {
   private localMigrationManager: LocalMigrationManager;
   private migrationProvider: MigrationProvider;
   private inputContext: InputModelTypeContext[];
-  // tslint:disable-next-line: no-any
+  //tslint:disable-next-line: no-any
   constructor(schemaText: string, db: knex<any, unknown[]>, migrationsDir: string) {
     this.schema = removeDirectivesFromSchema(schemaText);
     this.inputContext = graphQLInputContext.createModelContext(schemaText, {});
@@ -61,6 +62,7 @@ export class GraphQLMigrationCreator {
     const appliedMigrations = await this.applyMigrations(migrations);
 
     const changes = getChanges(appliedMigrations);
+
     return changes;
   }
 
@@ -106,6 +108,7 @@ export class GraphQLMigrationCreator {
       return undefined;
     }
 
+    // eslint-disable-next-line camelcase
     newMigration.sql_up = this.getSqlStatements(changes).map((d: DatabaseChange) => d.sql).join('\n\n');
     newMigration.changes = JSON.stringify(changes);
 
@@ -153,7 +156,7 @@ export class GraphQLMigrationCreator {
       acc[current.path.type].push(current);
 
       return acc;
-      // tslint:disable-next-line: no-object-literal-type-assertion
+      //tslint:disable-next-line: no-object-literal-type-assertion
     }, {} as ModelChange);
   }
 

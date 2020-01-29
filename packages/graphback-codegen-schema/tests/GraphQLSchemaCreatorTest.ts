@@ -1,9 +1,9 @@
-import { tsSchemaFormatter, gqlSchemaFormatter } from '../src/schemaFormatters';
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+import { readFileSync } from 'fs';
 import { graphQLInputContext } from '@graphback/core/src';
 import ava, { ExecutionContext } from 'ava';
-import { readFileSync } from 'fs';
 import { buildSchema, parse } from 'graphql';
+import { tsSchemaFormatter, gqlSchemaFormatter } from '../src/schemaFormatters';
 import { SchemaGenerator } from '../src/SchemaGenerator';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
