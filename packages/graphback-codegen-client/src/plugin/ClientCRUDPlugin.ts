@@ -72,6 +72,10 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         return schema;
     }
 
+    public getPluginName(): string {
+        return CLIENT_CRUD_PLUGIN;
+    }
+
     private createDocuments(models: ModelDefinition[]) {
         let documents: ClientTemplates;
         let outputFormat
@@ -91,9 +95,5 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         }
 
         return { documents, outputFormat };
-    }
-
-    public getPluginName(): string {
-        return CLIENT_CRUD_PLUGIN;
     }
 }
