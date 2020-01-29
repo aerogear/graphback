@@ -1,0 +1,81 @@
+version: 2
+jobs:
+  ## Build
+  build:
+    docker:
+      - image: circleci/node:lts-browsers
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn pretty
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test
+      - run:
+          name: test apollo-client example
+          command: |
+            cd examples/apollo-client
+            yarn install
+            yarn test
+      - run:
+          name: test offix example
+          command: |
+            cd examples/offix
+            yarn install
+            yarn test
+      - run:
+          name: test karma example
+          command: |
+            cd examples/karma
+            yarn install
+            yarn test
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+  ## Publish
+  publish_master:
+    docker:
+      - image: circleci/node:12.14
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+          chmod 600 .npmrc
+      - run: ./scripts/release.sh --release dev
+
+  publish:
+    docker:
+      - image: circleci/node:12.14
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+          chmod 600 .npmrc
+      - run: ./scripts/release.sh --release "${CIRCLE_TAG}"
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - publish_master:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master/
+      - publish:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/

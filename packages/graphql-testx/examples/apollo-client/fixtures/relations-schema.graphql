@@ -1,0 +1,10 @@
+type Foo {
+  id: ID!
+  title: String!
+  bars: [Bar]!
+}
+
+type Bar {
+  id: ID!
+  description: String!
+}

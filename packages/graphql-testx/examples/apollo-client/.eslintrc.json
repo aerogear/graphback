@@ -1,0 +1,5 @@
+{
+  "parserOptions": {
+    "project": "./examples/apollo-client/tsconfig.json"
+  }
+}

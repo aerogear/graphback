@@ -1,0 +1,12 @@
+# editors
+.vscode
+/tmp
+
+# we use yarn
+package-lock.json
+
+# depedendencies
+node_modules
+
+# artifacts
+dist
