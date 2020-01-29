@@ -80,9 +80,8 @@ export const resolversIndexTemplate = (modules: { importAs: string; importFrom: 
 export const ${exportName || 'resolvers'} = [${modules.map((m: any) => `${m.importAs}`).join(', ')}]`;
 }
 
-export const resolversRootIndexTemplate = (resolverGroups: string[]) => {
-
-    return `${resolverGroups.map((name: string) => getResolverImports('.', [{ importAs: `${name}Resolvers`, importFrom: name }])).join('\n')}
+export const resolversRootIndexTemplate = (groups: string[] = ['generated', 'custom']) => {
+    return `${groups.map((name: string) => `import { ${name}Resolvers } from './${name}'`).join('\n')}
     
-export const resolvers = [${resolverGroups.map((name: string) => `...${name}Resolvers`)}];`;
+export const resolvers = [${groups.map((name: string) => `...${name}Resolvers`)}];`;
 }
