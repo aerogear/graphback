@@ -37,9 +37,9 @@ export function generateCustomCRUDResolvers(schema: GraphQLSchema, models: Model
     for (const { graphqlType } of models) {
         const modelResolvers = generatedResolvers[graphqlType.name] || { Query: {}, Mutation: {}, Subscription: {} };
 
-        const queries = createCustomResolvers(graphqlType, queryType, Object.keys(modelResolvers.Query));
-        const mutations = createCustomResolvers(graphqlType, mutationType, Object.keys(modelResolvers.Mutation));
-        const subscriptions = createCustomSubscriptionResolvers(graphqlType, subscriptionType, Object.keys(modelResolvers.Subscription));
+        const queries = createCustomResolvers(graphqlType.name, queryType, Object.keys(modelResolvers.Query));
+        const mutations = createCustomResolvers(graphqlType.name, mutationType, Object.keys(modelResolvers.Mutation));
+        const subscriptions = createCustomSubscriptionResolvers(graphqlType.name, subscriptionType, Object.keys(modelResolvers.Subscription));
 
         const typeResolvers = {
             Query: queries,
