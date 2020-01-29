@@ -12,7 +12,6 @@
     "clean": "rimraf coverage dist types",
     "build": "tsc",
     "watch": "tsc -w ",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
     "pretest": "npm run build"
   },
@@ -42,7 +41,6 @@
     "graphql": "14.5.8",
     "rimraf": "3.0.0",
     "ts-node": "8.6.2",
-    "tslint": "5.20.1",
     "tsutils": "3.17.1",
     "typescript": "3.7.5"
   },
