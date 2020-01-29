@@ -11,7 +11,7 @@ export function getCustomTypeResolverFieldNames(graphqlTypeName: string, resolve
 function getTypeResolvers(graphqlTypeName: string, resolverType: GraphQLObjectType) {
     const resolverFields = Object.values(resolverType.getFields());
 
-    return resolverFields.filter((field: GraphQLField<any, any>) => getBaseType(field.type).name === graphqlTypeName.name);
+    return resolverFields.filter((field: GraphQLField<any, any>) => getBaseType(field.type).name === graphqlTypeName);
 }
 
 // Finds the keys that are unique to `allKeys`
