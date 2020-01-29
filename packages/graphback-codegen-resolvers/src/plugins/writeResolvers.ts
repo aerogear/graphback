@@ -1,85 +1,44 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import * as prettier from 'prettier';
-import { generateBlankResolverTemplate, generateResolverTemplate, resolversIndexTemplate, resolversRootIndexTemplate } from './ApolloTypeScriptResolverFormatter';
+import { OutputResolvers, ResolverOutputDefinition } from './outputResolvers';
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
 // TODO: Move code formatting to core
-function formatFile(contents: string) {
-    return prettier.format(contents, { semi: false, parser: 'typescript' });
+function formatDocument(contents: string) {
+    return prettier.format(contents, { semi: false, parser: 'babel' });
 }
 
-export function writeResolvers(resolvers: { generated: any; custom: any; }, options: ResolverGeneratorPluginOptions) {
-    const resolversPath = resolve(options.resolverPath);
+export function writeResolvers(outputResolvers: OutputResolvers, options: ResolverGeneratorPluginOptions) {
+    const customResolversPath: string = join(options.resolverPath, "/custom")
+    const generatedResolversPath: string = join(options.resolverPath, "/generated")
 
-    if (!existsSync(resolversPath)) {
-        mkdirSync(resolversPath, { recursive: true });
-    }
+    createFolders(customResolversPath, generatedResolversPath);
 
-    writeGeneratedResolvers(resolvers.generated, options);
-    writeCustomResolvers(resolvers.custom, options);
-    writeResolversIndex(resolversPath, Object.keys(resolvers), options.format);
-}
+    outputResolvers.generated.resolvers.forEach((resolverDefinition: ResolverOutputDefinition) => {
+        writeFileSync(`${generatedResolversPath}/${resolverDefinition.name}.${options.format}`, formatDocument(resolverDefinition.output));
+    });
+    writeFileSync(`${generatedResolversPath}/index.${options.format}`, formatDocument(outputResolvers.generated.index));
 
-function writeResolversIndex(resolversPath: string, modules: string[], extension: 'js' | 'ts') {
-    const template = resolversRootIndexTemplate(modules);
-    writeFileSync(join(resolversPath, `index.${extension}`), formatFile(template));
-}
-
-function writeGeneratedResolvers(resolvers: any, options: ResolverGeneratorPluginOptions) {
-    const generatedResolversPath = resolve(options.resolverPath, 'generated');
-
-    if (!existsSync(generatedResolversPath)) {
-        mkdirSync(generatedResolversPath, { recursive: true });
-    }
-
-    const importNames = [];
-    const generatedKeys = Object.keys(resolvers);
-    for (const typeName of generatedKeys) {
-        const resolversOutput = resolvers[typeName];
-        const resolverTemplate = generateResolverTemplate(resolversOutput, options);
-
-        const fileName = typeName.toLowerCase();
-
-        importNames.push(fileName);
-
-        writeFileSync(join(generatedResolversPath, `${fileName}.${options.format}`), formatFile(resolverTemplate));
-    }
-
-    const indexOutput = resolversIndexTemplate(importNames.map((name: string) => ({ importAs: `${name}Resolvers`, importFrom: name })), `generatedResolvers`);
-
-    writeFileSync(resolve(options.resolverPath, 'generated', `index.${options.format}`), formatFile(indexOutput));
-}
-
-function writeCustomResolvers(resolvers: any, options: ResolverGeneratorPluginOptions) {
-    const customResolversPath = resolve(options.resolverPath, 'custom');
-
-    if (!existsSync(customResolversPath)) {
-        mkdirSync(customResolversPath, { recursive: true });
-    }
-
-    const importNames = [];
-    const resolverBase = Object.values(resolvers);
-    // TODO: Refactor to remove need for 3-level nested for loop
-    for (const graphqlBaseType of resolverBase) {
-        for (const resolverType of Object.keys(graphqlBaseType)) {
-            const typeResolvers = graphqlBaseType[resolverType];
-
-            for (const resolverField of Object.keys(typeResolvers)) {
-                const resolverTemplate = generateBlankResolverTemplate(resolverType, resolverField, typeResolvers[resolverField]);
-
-                const customResolverPath = join(customResolversPath, `${resolverField}.${options.format}`);
-
-                if (!existsSync(customResolverPath)) {
-                    writeFileSync(customResolverPath, formatFile(resolverTemplate));
-                }
-
-                importNames.push(resolverField);
-            }
+    outputResolvers.custom.resolvers.forEach((resolverDefinition: ResolverOutputDefinition) => {
+        const fileName = `${customResolversPath}/${resolverDefinition.name}.${options.format}`;
+        if (!existsSync(fileName)) {
+            writeFileSync(fileName, formatDocument(resolverDefinition.output));
         }
+    });
+    writeFileSync(`${customResolversPath}/index.${options.format}`, formatDocument(outputResolvers.custom.index));
+    writeFileSync(`${options.resolverPath}/index.${options.format}`, formatDocument(outputResolvers.index));
+}
+
+function createFolders(generatedResolversPath: string, customResolversPath: string) {
+    try {
+        if (!existsSync(generatedResolversPath)) {
+            mkdirSync(generatedResolversPath, { recursive: true });
+        }
+        if (!existsSync(customResolversPath)) {
+            mkdirSync(customResolversPath, { recursive: true });
+        }
+    } catch (err) {
+        throw new Error(`Error when creating resolvers folders: ${err}`)
     }
-
-    const indexOutput = resolversIndexTemplate(importNames.map((name: string) => ({ importAs: name, importFrom: name })), `customResolvers`);
-
-    writeFileSync(resolve(options.resolverPath, 'custom', `index.${options.format}`), indexOutput);
 }
