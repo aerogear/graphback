@@ -43,7 +43,7 @@ export const findTemplate = (tableName: string): string => {
 
 export const newSubscriptionTemplate = (tableName: string): string => {
     return `{
-      subscribe: (_, args, context) => {
+      subscribe: (${defaultResolverArgs}) => {
         validateRuntimeContext(context)
         return context.crudService.subscribeToCreate("${tableName}", context);
       }
@@ -52,7 +52,7 @@ export const newSubscriptionTemplate = (tableName: string): string => {
 
 export const updatedSubscriptionTemplate = (tableName: string): string => {
     return `{
-      subscribe: (_, args, context) => {
+      subscribe: (${defaultResolverArgs}) => {
         validateRuntimeContext(context)
         return context.crudService.subscribeToUpdate("${tableName}", context);
       }
@@ -61,19 +61,19 @@ export const updatedSubscriptionTemplate = (tableName: string): string => {
 
 export const deletedSubscriptionTemplate = (tableName: string): string => {
     return `{
-      subscribe: (_, args, context) => {
+      subscribe: (${defaultResolverArgs}) => {
         validateRuntimeContext(context)
         return context.crudService.subscribeToDelete("${tableName}", context);
       }
     }`
 }
 
-export const blankResolver = `(_, args, context) => {
+export const blankResolver = `(${defaultResolverArgs}) => {
     // Implementation here
 }`;
 
 export const blankSubscription = `{
-    subscribe: (_, args, context) => {
+    subscribe: (${defaultResolverArgs}) => {
         // Implementation here
     }
 }`
