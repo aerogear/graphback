@@ -1,5 +1,3 @@
-import { getTableName, InputModelTypeContext } from "@graphback/core"
-import { execSync } from 'child_process';
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
