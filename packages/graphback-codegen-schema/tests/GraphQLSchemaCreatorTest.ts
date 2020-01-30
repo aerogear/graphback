@@ -1,10 +1,10 @@
 import { gqlSchemaFormatter } from '../src/writer/schemaFormatters';
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { graphQLInputContext } from '@graphback/core/src';
 import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { parse } from 'graphql';
-import { SchemaGenerator } from '../src/SchemaGenerator';
+import { parse, buildSchema } from 'graphql';
+import { SchemaCRUDPlugin } from '../src/plugin/SchemaCRUDPlugin';
+import { GraphbackCoreMetadata } from '@graphback/core';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
@@ -20,10 +20,11 @@ ava('Test snapshot config gql', async (t: ExecutionContext) => {
     "subDelete": true
   }
 
-  const inputContext = graphQLInputContext.createModelContext(schemaText, defautConfig)
 
-  const schemaGenerator = new SchemaGenerator(inputContext, gqlSchemaFormatter)
-  const schema = schemaGenerator.generate()
+  const schemaGenerator = new SchemaCRUDPlugin({ format: 'gql' })
+  const metadata = new GraphbackCoreMetadata({
+    crudMethods: defautConfig
+  }, buildSchema(schemaText))
+  const schema = schemaGenerator.transformSchema(metadata)
   t.snapshot(schema);
-  t.true(parse(schema).definitions.length > 0);
 });

@@ -1,5 +1,6 @@
-import { GraphbackOperationType} from '.';
+import { GraphbackOperationType } from './GraphbackOperationType';
 
+// TODO Talk with Enda. Should mapping be dynamic and swapable or we going strong with CRUD spec
 // TODO is is esential to document this element
 export const getFieldName = (typeName: string, action: GraphbackOperationType, plural: string = ''): string => {
   const upperCasedType = typeName.charAt(0).toUpperCase() + typeName.substr(1);
@@ -16,7 +17,7 @@ export const getIdFieldName = (typeName: string): string => {
 }
 
 // TODO use everywhere
-export const getSubscriptionName = (typeName: string,  action: GraphbackOperationType, ): string => {
+export const getSubscriptionName = (typeName: string, action: GraphbackOperationType, ): string => {
   return 'id'// TODO
 }
 

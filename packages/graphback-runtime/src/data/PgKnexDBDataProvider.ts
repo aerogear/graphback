@@ -1,4 +1,3 @@
-import { getTableName, InputModelTypeContext } from "@graphback/core"
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 import { NoDataError } from './NoDataError';
