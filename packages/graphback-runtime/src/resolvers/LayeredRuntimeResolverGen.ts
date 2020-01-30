@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, InputModelTypeContext } from "@graphback/core"
+import { getFieldName, ModelDefinition, GraphbackOperationType } from '@graphback/core';
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -16,12 +16,13 @@ import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
  * }
  * ```
  */
+// TODO
 export class LayeredRuntimeResolverGenerator {
-  private inputContext: InputModelTypeContext[]
   private service: GraphbackCRUDService
+  private models: ModelDefinition[];
 
-  constructor(inputContext: InputModelTypeContext[], service: GraphbackCRUDService) {
-    this.inputContext = inputContext
+  constructor(models: ModelDefinition[], service: GraphbackCRUDService) {
+    this.models = models
     this.service = service;
   }
 
@@ -31,48 +32,48 @@ export class LayeredRuntimeResolverGenerator {
       Mutation: {},
       Subscription: {}
     };
-    for (const resolverElement of this.inputContext) {
-      if (resolverElement.config.disableGen) {
+    for (const resolverElement of this.models) {
+      if (resolverElement.crudOptions.disableGen) {
         continue;
       }
-      const objectName = resolverElement.name.toLowerCase();
-      if (resolverElement.config.create) {
-        const resolverCreateField = getFieldName(resolverElement.name, GraphbackOperationType.CREATE);
+      const objectName = resolverElement.graphqlType.name.toLowerCase();
+      if (resolverElement.crudOptions.create) {
+        const resolverCreateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
           return this.service.create(objectName, args.input, {
-            publishEvent: resolverElement.config.subCreate
+            publishEvent: resolverElement.crudOptions.subCreate
           }, context)
         }
       }
-      if (resolverElement.config.update) {
-        const updateField = getFieldName(resolverElement.name, GraphbackOperationType.UPDATE);
+      if (resolverElement.crudOptions.update) {
+        const updateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
           return this.service.update(objectName, args.id, args.input, {
-            publishEvent: resolverElement.config.subUpdate
+            publishEvent: resolverElement.crudOptions.subUpdate
           }, context)
         }
       }
-      if (resolverElement.config.delete) {
-        const deleteField = getFieldName(resolverElement.name, GraphbackOperationType.DELETE);
+      if (resolverElement.crudOptions.delete) {
+        const deleteField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
           return this.service.delete(objectName, args.id, args.input, {
-            publishEvent: resolverElement.config.subDelete
+            publishEvent: resolverElement.crudOptions.subDelete
           }, context)
         }
       }
 
-      if (resolverElement.config.findAll) {
-        const findAllField = getFieldName(resolverElement.name, GraphbackOperationType.FIND_ALL, 's');
+      if (resolverElement.crudOptions.findAll) {
+        const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND_ALL, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
           return this.service.findAll(objectName, context)
         }
       }
-      if (resolverElement.config.find) {
-        const findField = getFieldName(resolverElement.name, GraphbackOperationType.FIND, 's');
+      if (resolverElement.crudOptions.find) {
+        const findField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND, 's');
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           return this.service.findBy(objectName, args.fields, context)
@@ -99,9 +100,10 @@ export class LayeredRuntimeResolverGenerator {
   }
 
   // tslint:disable-next-line: no-any
-  private createSubscriptions(resolverElement: InputModelTypeContext, resolvers: any, objectName: string) {
-    if (resolverElement.config.create && resolverElement.config.subCreate) {
-      resolvers.Subscription[`new${resolverElement.name}`] = {
+  private createSubscriptions(resolverElement: ModelDefinition, resolvers: any, objectName: string) {
+    if (resolverElement.crudOptions.create && resolverElement.crudOptions.subCreate) {
+      // TODO use mapping for subscriptions
+      resolvers.Subscription[`new${resolverElement.graphqlType.name}`] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
           return this.service.subscribeToCreate(objectName, context);
@@ -109,8 +111,8 @@ export class LayeredRuntimeResolverGenerator {
       }
     }
 
-    if (resolverElement.config.update && resolverElement.config.subUpdate) {
-      resolvers.Subscription[`updated${resolverElement.name}`] = {
+    if (resolverElement.crudOptions.update && resolverElement.crudOptions.subUpdate) {
+      resolvers.Subscription[`updated${resolverElement.graphqlType.name}`] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
           return this.service.subscribeToUpdate(objectName, context);
@@ -118,8 +120,8 @@ export class LayeredRuntimeResolverGenerator {
       }
     }
 
-    if (resolverElement.config.delete && resolverElement.config.subDelete) {
-      resolvers.Subscription[`deleted${resolverElement.name}`] = {
+    if (resolverElement.crudOptions.delete && resolverElement.crudOptions.subDelete) {
+      resolvers.Subscription[`deleted${resolverElement.graphqlType.name}`] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
           return this.service.subscribeToDelete(objectName, context);
@@ -128,34 +130,39 @@ export class LayeredRuntimeResolverGenerator {
     }
   }
 
-  private createRelations(resolverElement: InputModelTypeContext, resolvers: any) {
-    for (const field of resolverElement.fields) {
+  private createRelations(resolverElement: ModelDefinition, resolvers: any) {
+    const fields = Object.values(resolverElement.graphqlType.getFields());
+    for (const field of fields) {
+      // This is very very broken. Commented out 
+      // FIXME
+      // TODO
+      // Warning!
+      // if (field.isType) {
+      //   if (field.annotations.OneToOne || !field.isArray) {
+      //     // TODO - this is very wrong
+      //     let foreignIdName = `${resolverElement.graphqlType.name.toLowerCase()}Id`;
+      //     if (field.annotations.OneToOne) {
+      //       foreignIdName = field.annotations.OneToOne.field;
+      //     }
+      //   }
+      //   else if (field.annotations.OneToMany || field.isArray) {
+      //     // TODO - this is very wrong
+      //     let foreignId = `${resolverElement.graphqlType.name.toLowerCase()}Id`;
+      //     if (field.annotations.OneToMany) {
+      //       foreignId = field.annotations.OneToMany.field;
+      //     }
 
-      if (field.isType) {
-        if (field.annotations.OneToOne || !field.isArray) {
-          // OneToOne
-          let foreignIdName = `${resolverElement.name.toLowerCase()}Id`;
-          if (field.annotations.OneToOne) {
-            foreignIdName = field.annotations.OneToOne.field;
-          }
-        }
-        else if (field.annotations.OneToMany || field.isArray) {
-          // OneToMany
-          let foreignId = `${resolverElement.name.toLowerCase()}Id`;
-          if (field.annotations.OneToMany) {
-            foreignId = field.annotations.OneToMany.field;
-          }
+      //     if (resolvers[resolverElement.graphqlType.name] === undefined) {
+      //       resolvers[resolverElement.graphqlType.name] = {};
+      //     }
 
-          if (resolvers[resolverElement.name] === undefined) {
-            resolvers[resolverElement.name] = {};
-          }
-
-          // tslint:disable-next-line: no-any
-          resolvers[resolverElement.name][field.name] = (parent: any, args: any, context: any) => {
-            return this.service.findBy(field.type.toLowerCase(), { [foreignId]: parent.id }, context);
-          };
-        }
-      }
+      //     // tslint:disable-next-line: no-any
+      //     // TODO - this is very wrong
+      //     resolvers[resolverElement.graphqlType.name][field.name] = (parent: any, args: any, context: any) => {
+      //       return this.service.findBy(field.type.toLowerCase(), { [foreignId]: parent.id }, context);
+      //     };
+      //  }
+      // }
     }
   }
 }
