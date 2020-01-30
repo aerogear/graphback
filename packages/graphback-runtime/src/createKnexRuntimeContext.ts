@@ -6,7 +6,7 @@ import { GraphbackRuntimeContext } from './api/GraphbackRuntimeContext';
 /**
  * Create context object required for the graphback runtime layer 
  */
-export const createKnexRuntimeContext = (db: Knex, pubSub: PubSubEngine): GraphbackRuntimeContext => {
+export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine): GraphbackRuntimeContext => {
   const crudDb = new PgKnexDBDataProvider(db);
   const crudService = new CRUDService(crudDb, pubSub);
 
