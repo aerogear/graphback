@@ -1,7 +1,7 @@
 
 // Top level API
 
-export * from './utils/getRelationFieldName';
+export * from './crud'
 export * from './utils/getBaseType';
 export * from './plugin/GraphbackPlugin'
 export * from './plugin/getModelTypesFromSchema'
