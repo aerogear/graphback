@@ -1,9 +1,8 @@
 import { FieldDefinitionNode, TypeDefinitionNode } from 'graphql';
 import { parseAnnotations } from 'graphql-metadata';
-import { InputModelFieldAnnotations } from '../api';
 
-export const parseFieldAnnotations = (node: FieldDefinitionNode): InputModelFieldAnnotations => {
-    const fieldAnnotations: InputModelFieldAnnotations = {};
+export const parseFieldAnnotations = (node: FieldDefinitionNode) => {
+    const fieldAnnotations: any = {};
 
     const dbAnnotations: any = node.description ? parseAnnotations('db', String(node.description)) : undefined;
 
@@ -26,17 +25,7 @@ export const parseFieldAnnotations = (node: FieldDefinitionNode): InputModelFiel
             field: dbAnnotations.manyToOne
         }
     }
-    if (dbAnnotations.manyToMany) {
-        fieldAnnotations.ManyToMany = {
-            field: dbAnnotations.manyToMany
-        }
-    }
 
     return fieldAnnotations;
 }
 
-
-export const parseTypeAnnotations = (node: TypeDefinitionNode) => {
-
-    return node.description ? parseAnnotations('crud', String(node.description)) : undefined;
-}

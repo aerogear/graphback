@@ -1,9 +1,11 @@
-import { getFieldName, GraphbackOperationType, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
-import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation} from './gqlTemplates'
+import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { GraphQLObjectType } from 'graphql'
+import { ClientTemplate } from './ClientTemplates'
+import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
 
 const gqlImport = `import gql from "graphql-tag"`
 
-const findAllQueryTS = (t: InputModelTypeContext, imports: string) => {
+const findAllQueryTS = (t: GraphQLObjectType, imports: string) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
 
   return `${imports}
@@ -11,12 +13,12 @@ const findAllQueryTS = (t: InputModelTypeContext, imports: string) => {
 export const ${fieldName} = gql\`
   ${findAllQuery(t)}
 
-  \$\{${t.name}Fragment}
+  \$\{${t.name}ExpandedFragment}
 \`
 `
 }
 
-const findQueryTS = (t: InputModelTypeContext, imports: string) => {
+const findQueryTS = (t: GraphQLObjectType, imports: string) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
   return `${imports}
@@ -24,13 +26,13 @@ const findQueryTS = (t: InputModelTypeContext, imports: string) => {
 export const ${fieldName} = gql\`
   ${findQuery(t)}
 
-  \$\{${t.name}Fragment}
+  \$\{${t.name}ExpandedFragment}
 \`
 `
 }
 
 
-const createMutationTS = (t: InputModelTypeContext, imports: string) => {
+const createMutationTS = (t: GraphQLObjectType, imports: string) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
   return `${imports}
@@ -43,7 +45,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const updateMutationTS = (t: InputModelTypeContext, imports: string) => {
+const updateMutationTS = (t: GraphQLObjectType, imports: string) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
   return `${imports}
@@ -56,7 +58,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const deleteMutationTS = (t: InputModelTypeContext, imports: string) => {
+const deleteMutationTS = (t: GraphQLObjectType, imports: string) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
   return `${imports}
@@ -69,7 +71,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const subscriptionTS = (t: InputModelTypeContext, imports: string, subscriptionType: string) => {
+const subscriptionTS = (t: GraphQLObjectType, imports: string, subscriptionType: string) => {
   const fieldName = `${subscriptionType}${t.name}`
 
   return `${imports}
@@ -82,7 +84,7 @@ export const ${fieldName} = gql\`
 `
 }
 
-const fragmentTS = (t: InputModelTypeContext) => {
+const fragmentTS = (t: GraphQLObjectType) => {
   return `${gqlImport}
 
 export const ${t.name}Fragment = gql\`
@@ -91,30 +93,49 @@ export const ${t.name}Fragment = gql\`
 `
 }
 
-export const createFragmentsTS = (types: InputModelTypeContext[]) => {
-  return types.map((t: InputModelTypeContext) => {
-    return {
-      name: t.name,
-      implementation: fragmentTS(t)
-    }
-  })
+const expandedFragmentTs = (t: GraphQLObjectType) => {
+  return `${gqlImport}
+
+export const ${t.name}ExpandedFragment = gql\`
+  ${expandedFragment(t)}
+\`
+`
 }
 
-export const createQueriesTS = (types: InputModelTypeContext[]) => {
+export const createFragmentsTS = (types: ModelDefinition[]) => {
+  return types.reduce((data: ClientTemplate[], model: ModelDefinition) => {
+    data.push({
+      name: model.graphqlType.name,
+      implementation: fragmentTS(model.graphqlType)
+    })
+    data.push({
+      name: `${model.graphqlType.name}Expanded`,
+      implementation: expandedFragmentTs(model.graphqlType)
+    });
+
+    return data;
+  }, [])
+}
+
+export const createQueriesTS = (types: ModelDefinition[]) => {
   const queries = []
 
-  types.forEach((t: InputModelTypeContext) => {
+  types.forEach((model: ModelDefinition) => {
+    if (model.crudOptions.disableGen) {
+      return;
+    }
+    const t = model.graphqlType;
     const imports = `import gql from "graphql-tag"
-import { ${t.name}Fragment } from "../fragments/${t.name}"`
+import { ${t.name}ExpandedFragment } from "../fragments/${t.name}Expanded"`
 
-    if (t.config.find) {
+    if (model.crudOptions.find) {
       queries.push({
         name: getFieldName(t.name, GraphbackOperationType.FIND, 's'),
         implementation: findQueryTS(t, imports)
       })
     }
 
-    if (t.config.findAll) {
+    if (model.crudOptions.findAll) {
       queries.push({
         name: getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'),
         implementation: findAllQueryTS(t, imports)
@@ -125,28 +146,33 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
   return queries
 }
 
-export const createMutationsTS = (types: InputModelTypeContext[]) => {
+export const createMutationsTS = (types: ModelDefinition[]) => {
   const mutations = []
 
-  types.forEach((t: InputModelTypeContext) => {
+  types.forEach((model: ModelDefinition) => {
+    if (model.crudOptions.disableGen) {
+      return;
+    }
+
+    const t = model.graphqlType;
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
-    if (t.config.create) {
+    if (model.crudOptions.create) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.CREATE),
         implementation: createMutationTS(t, imports)
       })
     }
 
-    if (t.config.update) {
+    if (model.crudOptions.update) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.UPDATE),
         implementation: updateMutationTS(t, imports)
       })
     }
 
-    if (t.config.delete) {
+    if (model.crudOptions.delete) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.DELETE),
         implementation: deleteMutationTS(t, imports)
@@ -157,28 +183,32 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
   return mutations
 }
 
-export const createSubscriptionsTS = (types: InputModelTypeContext[]) => {
+export const createSubscriptionsTS = (types: ModelDefinition[]) => {
   const subscriptions = []
 
-  types.forEach((t: InputModelTypeContext) => {
+  types.forEach((model: ModelDefinition) => {
+    if (model.crudOptions.disableGen) {
+      return;
+    }
+    const t = model.graphqlType;
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
-    if (t.config.create && t.config.subCreate) {
+    if (model.crudOptions.create && model.crudOptions.subCreate) {
       subscriptions.push({
         name: `new${t.name}`,
         implementation: subscriptionTS(t, imports, 'new')
       })
     }
 
-    if (t.config.update && t.config.subUpdate) {
+    if (model.crudOptions.update && model.crudOptions.subUpdate) {
       subscriptions.push({
         name: `updated${t.name}`,
         implementation: subscriptionTS(t, imports, 'updated')
       })
     }
 
-    if (t.config.delete && t.config.subDelete) {
+    if (model.crudOptions.delete && model.crudOptions.subDelete) {
       subscriptions.push({
         name: `deleted${t.name}`,
         implementation: subscriptionTS(t, imports, 'deleted')
@@ -190,13 +220,12 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
 }
 
 
-export const createClientDocumentsTS = (inputContext: InputModelTypeContext[]) => {
-  const context = inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+export const createClientDocumentsTS = (inputContext: ModelDefinition[]) => {
 
   return {
-    fragments: createFragmentsTS(context),
-    queries: createQueriesTS(context),
-    mutations: createMutationsTS(context),
-    subscriptions: createSubscriptionsTS(context)
+    fragments: createFragmentsTS(inputContext),
+    queries: createQueriesTS(inputContext),
+    mutations: createMutationsTS(inputContext),
+    subscriptions: createSubscriptionsTS(inputContext)
   }
 }
