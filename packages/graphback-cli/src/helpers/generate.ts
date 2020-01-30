@@ -42,10 +42,19 @@ export async function generateBackend(): Promise<void> {
 
     const schemaText = loadSchema(folders.model);
     const schema: GraphQLSchema = buildSchema(schemaText);
-
+    // TODO COnfig should be moved to GraphQL-Config
     const engine = new GraphbackEngine(schema, {
       global: {
         crudMethods: graphqlCRUD
+      },
+      plugins:{
+        SchemaCRUD: {
+          format:'ts',
+        },
+        ApolloResolversCRUD:{
+          format: 'ts',
+          types: undefined
+        }
       }
     })
     const generatedBackend = engine.buildServer({ format: 'ts' });
