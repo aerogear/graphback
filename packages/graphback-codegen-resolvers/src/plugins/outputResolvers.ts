@@ -20,7 +20,7 @@ export interface ResolverOutputDefinition {
 
 const createResolversIndex = (resolverNames: string[], exportName: string = 'resolvers'): string => {
     const imports = resolverNames.map((name: string) => {
-        return `import * as ${name}Resolvers from './${name}'`;
+        return `import ${name}Resolvers from './${name}'`;
     }).join('\n');
 
     const importNames = resolverNames.map((name: string) => `${name}Resolvers`);
