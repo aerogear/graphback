@@ -117,7 +117,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     private createSubscriptions(model: ModelDefinition, subscriptionTypes: any, modelInputType: GraphQLInputObjectType) {
-        if (model.crudOptions.subCreate) {
+        if (model.crudOptions.subCreate && model.crudOptions.create) {
              // FIXME name of the field should be comming using `getFieldName` helper
             subscriptionTypes[`new${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
@@ -128,7 +128,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 }
             };
         }
-        if (model.crudOptions.subUpdate) {
+        if (model.crudOptions.subUpdate && model.crudOptions.update) {
              // FIXME name of the field should be comming using `getFieldName` helper
             subscriptionTypes[`updated${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
@@ -139,7 +139,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 }
             };
         }
-        if (model.crudOptions.subDelete) {
+        if (model.crudOptions.subDelete && model.crudOptions.delete) {
             subscriptionTypes[`deleted${model.graphqlType.name}`] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
