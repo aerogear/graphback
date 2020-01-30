@@ -1,124 +1,125 @@
-import { getFieldName, GraphbackOperationType, InputModelFieldContext, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
+import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { GraphQLObjectType } from 'graphql';
+import { ClientTemplate } from './ClientTemplates';
+import { buildReturnFields, printReturnFields } from './fragmentFields';
 
+export const fragment = (t: GraphQLObjectType) => {
+  const queryReturnFields = buildReturnFields(t, 0);
+  const returnFieldsString = printReturnFields(queryReturnFields);
 
-export const variableFields = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isArray)
-    .map((f: InputModelFieldContext) => `\$${f.name}${f.isType ? 'Id' : ''}: ${f.isType ? 'Int' : f.type}${f.isNull ? '' : '!'}`)
-    .join(', ')
+  return `fragment ${t.name}Fields on ${t.name} {
+${returnFieldsString}
+} `
 }
 
+// TODO describe fragments in doc CRUD spec
+export const expandedFragment = (t: GraphQLObjectType) => {
+  const queryReturnFields = buildReturnFields(t, 1);
+  const returnFieldsString = printReturnFields(queryReturnFields);
 
-export const inputVariableFields = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isArray && f.type !== 'ID')
-    .map((f: InputModelFieldContext) => `\$${f.name}${f.isType ? 'Id' : ''}: ${f.isType ? 'Int' : f.type}${f.isNull ? '' : '!'}`)
-    .join(', ')
+  return `fragment ${t.name}ExpandedField on ${t.name} {
+${returnFieldsString}
+} `
 }
 
-export const variables = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isArray)
-    .map((f: InputModelFieldContext) => `${f.name}: \$${f.name}${f.isType ? 'Id' : ''}`)
-    .join(', ')
-}
-
-export const inputVariables = (t: InputModelTypeContext) => {
-  return t.fields.filter((f: InputModelFieldContext) => !f.isArray && f.type !== 'ID')
-    .map((f: InputModelFieldContext) => `${f.name}${f.isType ? 'Id' : ''}: \$${f.name}${f.isType ? 'Id' : ''}`)
-    .join(', ')
-}
-
-export const findAllQuery = (t: InputModelTypeContext) => {
+export const findAllQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
 
   return `query ${fieldName} {
     ${fieldName} {
-      ...${t.name}Fields
+      ...${t.name}ExpandedFields
     }
   }`
 }
 
-export const findQuery = (t: InputModelTypeContext) => {
+export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
 
-  return `query ${fieldName}(${variableFields(t)}) {
-    ${fieldName}(fields: {${variables(t)}}) {
-      ...${t.name}Fields
+  return `query ${fieldName} ($filter: NoteFilter!)}) {
+    ${fieldName}(filter: $filter}) {
+      ...${ t.name}ExpandedFields
     }
   }`
 }
 
 
-export const createMutation = (t: InputModelTypeContext) => {
+export const createMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName}(${inputVariableFields(t)}) {
-    ${fieldName}(input: {${inputVariables(t)}}) {
-      ...${t.name}Fields
-    }
+  return `mutation ${fieldName} ($input: ${t.name}Input!) {
+  ${ fieldName} (input: ${t.name}Input!) {
+      ...${ t.name}Fields
   }
+}
 `
 }
 
-export const updateMutation = (t: InputModelTypeContext) => {
+export const updateMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
-  return `mutation ${fieldName}($id: ID!, ${inputVariableFields(t)}) {
-    ${fieldName}(id: $id, input: {${inputVariables(t)}}) {
-      ...${t.name}Fields
-    }
+  return `mutation ${fieldName} ($input: ${t.name}Input!) {
+  ${ fieldName} (input: ${t.name}Input!) {
+      ...${ t.name}Fields
   }
+}
 `
 }
 
-export const deleteMutation = (t: InputModelTypeContext, ) => {
+export const deleteMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
-  return `mutation ${fieldName}($id: ID!) {
-    ${fieldName}(id: $id)
+  return `mutation ${fieldName} ($input: ${t.name}Input!) {
+  ${fieldName} (input: ${t.name}Input!) {
+      ...${t.name}Fields
   }
+}
 `
 }
 
-export const subscription = (t: InputModelTypeContext, subscriptionType: string) => {
-  const fieldName = `${subscriptionType}${t.name}`
+export const subscription = (t: GraphQLObjectType, subscriptionType: string) => {
+  const fieldName = `${subscriptionType}${t.name} `
 
   return `subscription ${fieldName} {
-    ${fieldName} {
+  ${fieldName} {
       ...${t.name}Fields
-    }
-  }`
+  }
+} `
 }
 
-export const fragment = (t: InputModelTypeContext) => {
-  return `fragment ${t.name}Fields on ${t.name} {
-    ${t.fields.filter((f: InputModelFieldContext) => !f.isArray).map((f: InputModelFieldContext) => `${f.name}${f.isType ? 'Id' : ''}`).join('\n    ')}
-  }`
+export const createFragments = (types: ModelDefinition[]) => {
+  return types.reduce((data: ClientTemplate[], model: ModelDefinition) => {
+    data.push({
+      name: model.graphqlType.name,
+      implementation: fragment(model.graphqlType)
+    })
+    data.push({
+      name: `${model.graphqlType.name}Expanded`,
+      implementation: expandedFragment(model.graphqlType)
+    });
+
+    return data;
+  }, [])
 }
 
-export const createFragments = (types: InputModelTypeContext[]) => {
-  return types.map((t: InputModelTypeContext) => {
-    return {
-      name: t.name,
-      implementation: fragment(t)
-    }
-  })
-}
-
-export const createQueries = (types: InputModelTypeContext[]) => {
+export const createQueries = (types: ModelDefinition[]) => {
   const queries = []
 
-  types.forEach((t: InputModelTypeContext) => {
+  types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
 
-    if (t.config.find) {
+    if (t.crudOptions.find) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND),
-        implementation: findQuery(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND),
+        implementation: findQuery(t.graphqlType)
       })
     }
 
-    if (t.config.findAll) {
+    if (t.crudOptions.findAll) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'),
-        implementation: findAllQuery(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL, 's'),
+        implementation: findAllQuery(t.graphqlType)
       })
     }
   })
@@ -126,28 +127,31 @@ export const createQueries = (types: InputModelTypeContext[]) => {
   return queries
 }
 
-const createMutations = (types: InputModelTypeContext[]) => {
+const createMutations = (types: ModelDefinition[]) => {
   const mutations = []
 
-  types.forEach((t: InputModelTypeContext) => {
-    if (t.config.create) {
+  types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
+    if (t.crudOptions.create) {
       mutations.push({
-        name: getFieldName(t.name, GraphbackOperationType.CREATE),
-        implementation: createMutation(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.CREATE),
+        implementation: createMutation(t.graphqlType)
       })
     }
 
-    if (t.config.update) {
+    if (t.crudOptions.update) {
       mutations.push({
-        name: getFieldName(t.name, GraphbackOperationType.UPDATE),
-        implementation: updateMutation(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.UPDATE),
+        implementation: updateMutation(t.graphqlType)
       })
     }
 
-    if (t.config.delete) {
+    if (t.crudOptions.delete) {
       mutations.push({
-        name: getFieldName(t.name, GraphbackOperationType.DELETE),
-        implementation: deleteMutation(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.DELETE),
+        implementation: deleteMutation(t.graphqlType)
       })
     }
   })
@@ -155,28 +159,31 @@ const createMutations = (types: InputModelTypeContext[]) => {
   return mutations
 }
 
-const createSubscriptions = (types: InputModelTypeContext[]) => {
+const createSubscriptions = (types: ModelDefinition[]) => {
   const subscriptions = []
 
-  types.forEach((t: InputModelTypeContext) => {
-    if (t.config.create && t.config.subCreate) {
+  types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
+    if (t.crudOptions.create && t.crudOptions.subCreate) {
       subscriptions.push({
-        name: `new${t.name}`,
-        implementation: subscription(t, 'new')
+        name: `new${t.graphqlType.name} `,
+        implementation: subscription(t.graphqlType, 'new')
       })
     }
 
-    if (t.config.update && t.config.subUpdate) {
+    if (t.crudOptions.update && t.crudOptions.subUpdate) {
       subscriptions.push({
-        name: `updated${t.name}`,
-        implementation: subscription(t, 'updated')
+        name: `updated${t.graphqlType.name} `,
+        implementation: subscription(t.graphqlType, 'updated')
       })
     }
 
-    if (t.config.delete && t.config.subDelete) {
+    if (t.crudOptions.delete && t.crudOptions.subDelete) {
       subscriptions.push({
-        name: `deleted${t.name}`,
-        implementation: subscription(t, 'deleted')
+        name: `deleted${t.graphqlType.name} `,
+        implementation: subscription(t.graphqlType, 'deleted')
       })
     }
   })
@@ -185,13 +192,13 @@ const createSubscriptions = (types: InputModelTypeContext[]) => {
 }
 
 
-export const createClientDocumentsGQL = (inputContext: InputModelTypeContext[]) => {
-  const context = inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+export const createClientDocumentsGQL = (inputContext: ModelDefinition[]) => {
 
   return {
-    fragments: createFragments(context),
-    queries: createQueries(context),
-    mutations: createMutations(context),
-    subscriptions: createSubscriptions(context)
+    fragments: createFragments(inputContext),
+    queries: createQueries(inputContext),
+    mutations: createMutations(inputContext),
+    subscriptions: createSubscriptions(inputContext)
   }
 }
+

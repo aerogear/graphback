@@ -10,8 +10,8 @@ function formatDocument(contents: string) {
 }
 
 export function writeResolvers(outputResolvers: OutputResolvers, options: ResolverGeneratorPluginOptions) {
-    const customResolversPath: string = join(options.resolverPath, "/custom")
-    const generatedResolversPath: string = join(options.resolverPath, "/generated")
+    const customResolversPath: string = join(options.outputPath, "/custom")
+    const generatedResolversPath: string = join(options.outputPath, "/generated")
 
     createFolders(customResolversPath, generatedResolversPath);
 
@@ -27,7 +27,7 @@ export function writeResolvers(outputResolvers: OutputResolvers, options: Resolv
         }
     });
     writeFileSync(`${customResolversPath}/index.${options.format}`, formatDocument(outputResolvers.custom.index));
-    writeFileSync(`${options.resolverPath}/index.${options.format}`, formatDocument(outputResolvers.index));
+    writeFileSync(`${options.outputPath}/index.${options.format}`, formatDocument(outputResolvers.index));
 }
 
 function createFolders(generatedResolversPath: string, customResolversPath: string) {

@@ -1,6 +1,5 @@
 import { gql } from 'apollo-server-core';
 import {
-  GraphQLBackendCreator,
   PgKnexDBDataProvider,
 } from 'graphback';
 import { migrateDB } from 'graphql-migrations';
@@ -17,8 +16,8 @@ import { loadSchema } from './loadSchema';
 export const createRuntime = async (client: Knex) => {
   const schemaText = loadSchema(jsonConfig.folders.model);
 
-  const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
-  const dbClientProvider = new PgKnexDBDataProvider(client);
+  // const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
+  // const dbClientProvider = new PgKnexDBDataProvider(client);
 
   const dbConfig: any = {
     client: jsonConfig.db.database,
@@ -30,12 +29,15 @@ export const createRuntime = async (client: Knex) => {
   });
 
   const pubSub = new PubSub();
-  const runtime = await backend.createRuntime(dbClientProvider, pubSub);
-  const generatedSchema = runtime.schema;
+  // TODO migrate runtime layer
+  // const runtime = await backend.createRuntime(dbClientProvider, pubSub);
+  // const generatedSchema = runtime.schema;
 
   const executableSchema = makeExecutableSchema({
-    typeDefs: gql`${generatedSchema}`,
-    resolvers: runtime.resolvers,
+    typeDefs: ``,
+    resolvers: {},
+    // typeDefs: gql`${generatedSchema}`,
+    // resolvers: runtime.resolvers,
     resolverValidationOptions: {
       requireResolversForResolveType: false
     }

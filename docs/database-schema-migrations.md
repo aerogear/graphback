@@ -27,6 +27,7 @@ import { schemaText } from './schema';
 import { migrateDB } from 'graphql-migrations';
 import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
 
+// TODO change description here to use schema without CRUD interface
 const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
 const dbClientProvider = new PgKnexDBDataProvider(client);
 

@@ -5,9 +5,16 @@ import { generateCRUDResolvers, generateCustomCRUDResolvers } from './createReso
 import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './outputResolvers';
 import { writeResolvers } from './writeResolvers';
 
+// TODO We are mixing apollo/non appollo stuff. WE should go generic.
 export interface ResolverGeneratorPluginOptions {
+    // TODO format is not used!
     format: 'ts' | 'js'
-    resolverPath: string
+
+    /**
+     * RelativePath for the output files created by generator
+     */
+    outputPath: string
+    
     // Provides extension for graphql-code-generator types
     // generated for resolvers
     types?: {
@@ -71,7 +78,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.options);
         const customResolverGroup = createCustomOutputResolvers(customResolvers);
         const rootResolverIndex = resolversRootIndexTemplate();
-        
+
         const outputResolvers: OutputResolvers = {
             generated: generatedResolverGroup,
             custom: customResolverGroup,
