@@ -20,6 +20,10 @@ export abstract class GraphbackPlugin {
      */
     public abstract transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema;
 
+    public saveResources() {
+        // Empty for plugins that do not need to save resources
+    }
+    
     /**
      * @returns Unique name of the plugin
      */
