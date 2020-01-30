@@ -1,4 +1,4 @@
-import { GraphbackOperationType} from '../api';
+import { GraphbackOperationType} from '.';
 
 // TODO is is esential to document this element
 export const getFieldName = (typeName: string, action: GraphbackOperationType, plural: string = ''): string => {
