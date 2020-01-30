@@ -1,5 +1,5 @@
+import { createResolverTemplate, createBlankResolverTemplate } from '../formatters/apollo/apolloResolverFormatter';
 import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
-import { generateBlankResolverTemplate, generateResolverTemplate } from './apolloTSResolverFormatter';
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
 export interface OutputResolvers {
@@ -42,15 +42,15 @@ const createCustomResolversIndex = (resolverNames: string[], exportName: string 
     export const ${exportName} = [${importNames.join(', ')}];`;
 }
 
-export const createOutputResolvers = (resolverTypes: any, options: ResolverGeneratorPluginOptions): OutputResolverGroup => {
+export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverGeneratorPluginOptions): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
-    for (const resolverType of Object.keys(resolverTypes)) {
-        const typeResolvers = resolverTypes[resolverType];
-        const output = generateResolverTemplate(typeResolvers, options);
+    for (const baseTypeName of Object.keys(baseTypeResolvers)) {
+        const typeResolvers = baseTypeResolvers[baseTypeName];
+        const output = createResolverTemplate(baseTypeName, typeResolvers, options);
 
         const outputResolver = {
-            name: lowerCaseFirstChar(resolverType),
+            name: lowerCaseFirstChar(baseTypeName),
             output
         }
 
@@ -89,7 +89,7 @@ export const createCustomOutputResolvers = (resolverTypes: any): OutputResolverG
 
         for (const fieldName of Object.keys(resolverFields)) {
             const resolverValue = resolverFields[fieldName];
-            const resolverOutput = generateBlankResolverTemplate(resolverType, fieldName, resolverValue);
+            const resolverOutput = createBlankResolverTemplate(resolverType, fieldName, resolverValue);
 
             const outputResolver = {
                 name: fieldName,

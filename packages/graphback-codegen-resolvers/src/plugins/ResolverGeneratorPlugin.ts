@@ -1,6 +1,6 @@
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
-import { resolversRootIndexTemplate } from './apolloTSResolverFormatter';
+import { resolversRootIndexTemplate } from '../formatters/apollo/apolloTSResolverFormatter';
 import { generateCRUDResolvers, generateCustomCRUDResolvers } from './createResolvers';
 import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './outputResolvers';
 import { writeResolvers } from './writeResolvers';
