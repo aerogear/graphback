@@ -7,7 +7,7 @@ import { IGraphQLBackend } from './IGraphQLBackend';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 
  */
-interface GraphbackEngineConfig {
+export interface GraphbackEngineConfig {
   global?: GraphbackGlobalConfig
   // Plugins configuration
   plugins?: {

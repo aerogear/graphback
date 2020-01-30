@@ -1,4 +1,5 @@
 """ 
+@model
 @crud.delete: false 
 """
 type Note {
