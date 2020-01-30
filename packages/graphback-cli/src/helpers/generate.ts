@@ -1,12 +1,13 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphQLBackendCreator, IGraphQLBackend, OutputResolver } from 'graphback'
+import { GraphQLBackendCreator, GraphbackEngine, IGraphQLBackend, OutputResolver } from 'graphback'
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
 import { checkDirectory } from './common';
 import { loadSchema } from './loadSchema';
+import { GraphQLSchema, buildSchema } from 'graphql';
 
 /**
  * Message after command execution
@@ -39,65 +40,25 @@ export async function generateBackend(): Promise<void> {
       process.exit(0)
     }
 
-    const pathForSchema: string = folders.schema
-    const outputSchemaPath: string = join(pathForSchema, 'generated.ts')
-
-    const customResolvers: string = join(folders.resolvers, "/custom")
-    const generatedResolvers: string = join(folders.resolvers, "/generated")
-
     const schemaText = loadSchema(folders.model);
+    const schema: GraphQLSchema = buildSchema(schemaText);
 
-    const backend: GraphQLBackendCreator = new GraphQLBackendCreator(schemaText, graphqlCRUD)
-    const generated: IGraphQLBackend = await backend.createBackend({ format: 'ts' })
-
-    checkAndCreateFolders(pathForSchema, customResolvers, generatedResolvers);
-
-    generated.resolvers.custom.forEach((output: OutputResolver) => {
-      if (!existsSync(`${customResolvers}/${output.name}.ts`) || output.name === 'index') {
-        writeFileSync(`${customResolvers}/${output.name}.ts`, output.output)
+    const engine = new GraphbackEngine(schema, {
+      global: {
+        crudMethods: graphqlCRUD
       }
     })
+    const generatedBackend = engine.buildServer({ format: 'ts' });
 
-    writeFileSync(outputSchemaPath, generated.schema)
-    writeFileSync(`${folders.resolvers}/index.ts`, generated.resolvers.index)
-
-    generated.resolvers.types.forEach((output: OutputResolver) => writeFileSync(`${generatedResolvers}/${output.name}.ts`, output.output))
-
-    if (client) {
-      const generatedClient = await backend.createClient()
-      if (!existsSync(folders.client)) {
-        mkdirSync(folders.client, { recursive: true })
-      }
-      Object.keys(generatedClient).forEach((folder: string) => {
-        const currentFolder = `${folders.client}/${folder}`
-        if (!existsSync(currentFolder)) {
-          mkdirSync(currentFolder)
-        }
-        // tslint:disable-next-line: no-any
-        generatedClient[folder].forEach((c: any) => writeFileSync(`${currentFolder}/${c.name}.ts`, c.implementation))
-      })
-    }
+    // TODO this should be part of the core
+    const outputSchemaPath: string = join(folders.schema, 'generated.ts')
+    writeFileSync(outputSchemaPath, generatedBackend.schema)
   } catch (err) {
     logError(err)
     process.exit(0)
   }
 
-  function checkAndCreateFolders(pathForSchema: string, customResolvers: string, generatedResolvers: string) {
-    try {
-      if (!existsSync(pathForSchema)) {
-        mkdirSync(pathForSchema, { recursive: true });
-      }
-      if (!existsSync(customResolvers)) {
-        mkdirSync(customResolvers, { recursive: true });
-      }
-      if (!existsSync(generatedResolvers)) {
-        mkdirSync(generatedResolvers, { recursive: true });
-      }
-    } catch (err) {
-      logError(`Error when creating folder structure: ${err}`)
-    }
 
-  }
 }
 
 /**
