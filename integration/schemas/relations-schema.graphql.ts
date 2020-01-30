@@ -1,4 +1,3 @@
-
 export const schema =
   `type Item {
     id: ID!

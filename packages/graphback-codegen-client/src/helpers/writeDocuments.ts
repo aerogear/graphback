@@ -1,7 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { ClientTemplates } from './templates/ClientTemplates';
-
-
+import { ClientTemplates } from '../templates/ClientTemplates';
 
 export const writeDocumentsToFilesystem = (clientPath: string, generatedClient: ClientTemplates, extension: 'ts' | 'gql') => {
     if (!existsSync(clientPath)) {

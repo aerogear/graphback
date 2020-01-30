@@ -25,7 +25,7 @@ Then developers can create runtime instance:
     const client = new Knex(...);
     const graphbackOptions = {...}
     const modelString = `type Test ...`
-    
+    // TODO change this to reflect actual interface
     // Create backend
     const backend = new GraphQLBackendCreator(modelString, graphbackOptions);
     const dbClientProvider = new PgKnexDBDataProvider(client);
