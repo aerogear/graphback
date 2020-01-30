@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts", "../graphback-codegen-resolvers/src/util/lowerCaseFirstChar.ts"
   ],
   "compilerOptions": {
     "outDir": "./dist/",
