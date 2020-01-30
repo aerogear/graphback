@@ -1,97 +1,89 @@
-import { getFieldName, GraphbackOperationType, InputModelTypeContext, OBJECT_TYPE_DEFINITION } from '@graphback/core'
-import { createMutation, deleteMutation, findAllQuery, findQuery, fragment, subscription, updateMutation} from './gqlTemplates'
+import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { GraphQLObjectType } from 'graphql';
+import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates';
 
-
-const findAllQueryGqlComplete = (t: InputModelTypeContext) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
-
+export const findAllQueryComplete = (t: GraphQLObjectType) => {
   return `
 
+${findAllQuery(t)}
 
-  ${findAllQuery(t)}
-
-  ${fragment(t)}
+${expandedFragment(t)}
 
 `
 }
 
-const findQueryGqlComplete = (t: InputModelTypeContext) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
+export const findQueryComplete = (t: GraphQLObjectType) => {
 
   return `
 
+${findQuery(t)}
 
-  ${findQuery(t)}
-
-  ${fragment(t)}
+${expandedFragment(t)}
 
 `
 }
 
 
-const createMutationGqlComplete = (t: InputModelTypeContext) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
-
-  return `
-  ${createMutation(t)}
-
-  ${fragment(t)}
-`
-}
-
-const updateMutationGqlComplete = (t: InputModelTypeContext) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
+export const createMutationComplete = (t: GraphQLObjectType) => {
 
   return `
 
-  ${updateMutation(t)}
+${createMutation(t)}
 
-  ${fragment(t)}
+${fragment(t)}
 
 `
 }
 
-const deleteMutationGqlComplete = (t: InputModelTypeContext) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
-
+export const updateMutationComplete = (t: GraphQLObjectType) => {
   return `
 
-  ${deleteMutation(t)}
+${updateMutation(t)}
 
-  ${fragment(t)}
+${fragment(t)}
 
 `
 }
 
-const subscriptionGqlComplete = (t: InputModelTypeContext, subscriptionType: string) => {
-  const fieldName = `${subscriptionType}${t.name}`
-
+export const deleteMutationComplete = (t: GraphQLObjectType) => {
   return `
 
-  ${subscription(t, subscriptionType)}
+${deleteMutation(t)}
 
-  ${fragment(t)}
+${fragment(t)}
 
 `
 }
 
- 
+export const subscriptionComplete = (t: GraphQLObjectType, subscriptionType: string) => {
+  return `
 
-export const createQueriesGqlComplete = (types: InputModelTypeContext[]) => {
+${subscription(t, subscriptionType)}
+
+${fragment(t)}
+
+`
+}
+
+
+export const createQueries = (types: ModelDefinition[]) => {
   const queries = []
 
-  types.forEach((t: InputModelTypeContext) => {
-    if (t.config.find) {
+  types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
+    if (t.crudOptions.find) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND, 's'),
-        implementation: findQueryGqlComplete(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND),
+        implementation: findQueryComplete(t.graphqlType)
       })
     }
 
-    if (t.config.findAll) {
+    if (t.crudOptions.findAll) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'),
-        implementation: findAllQueryGqlComplete(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL, 's'),
+        implementation: findAllQueryComplete(t.graphqlType)
       })
     }
   })
@@ -99,28 +91,31 @@ export const createQueriesGqlComplete = (types: InputModelTypeContext[]) => {
   return queries
 }
 
-export const createMutationsGqlComplete = (types: InputModelTypeContext[]) => {
+const createMutations = (types: ModelDefinition[]) => {
   const mutations = []
 
-  types.forEach((t: InputModelTypeContext) => {
-    if (t.config.create) {
+  types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
+    if (t.crudOptions.create) {
       mutations.push({
-        name: getFieldName(t.name, GraphbackOperationType.CREATE),
-        implementation: createMutationGqlComplete(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.CREATE),
+        implementation: createMutationComplete(t.graphqlType)
       })
     }
 
-    if (t.config.update) {
+    if (t.crudOptions.update) {
       mutations.push({
-        name: getFieldName(t.name, GraphbackOperationType.UPDATE),
-        implementation: updateMutationGqlComplete(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.UPDATE),
+        implementation: updateMutationComplete(t.graphqlType)
       })
     }
 
-    if (t.config.delete) {
+    if (t.crudOptions.delete) {
       mutations.push({
-        name: getFieldName(t.name, GraphbackOperationType.DELETE),
-        implementation: deleteMutationGqlComplete(t)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.DELETE),
+        implementation: deleteMutationComplete(t.graphqlType)
       })
     }
   })
@@ -128,28 +123,31 @@ export const createMutationsGqlComplete = (types: InputModelTypeContext[]) => {
   return mutations
 }
 
-export const createSubscriptionsGqlComplete = (types: InputModelTypeContext[]) => {
+const createSubscriptions = (types: ModelDefinition[]) => {
   const subscriptions = []
 
-  types.forEach((t: InputModelTypeContext) => {
-    if (t.config.create && t.config.subCreate) {
+  types.forEach((t: ModelDefinition) => {
+    if (t.crudOptions.disableGen) {
+      return;
+    }
+    if (t.crudOptions.create && t.crudOptions.subCreate) {
       subscriptions.push({
-        name: `new${t.name}`,
-        implementation: subscriptionGqlComplete(t, 'new')
+        name: `new${t.graphqlType.name} `,
+        implementation: subscriptionComplete(t.graphqlType, 'new')
       })
     }
 
-    if (t.config.update && t.config.subUpdate) {
+    if (t.crudOptions.update && t.crudOptions.subUpdate) {
       subscriptions.push({
-        name: `updated${t.name}`,
-        implementation: subscriptionGqlComplete(t, 'updated')
+        name: `updated${t.graphqlType.name} `,
+        implementation: subscription(t.graphqlType, 'updated')
       })
     }
 
-    if (t.config.delete && t.config.subDelete) {
+    if (t.crudOptions.delete && t.crudOptions.subDelete) {
       subscriptions.push({
-        name: `deleted${t.name}`,
-        implementation: subscriptionGqlComplete(t, 'deleted')
+        name: `deleted${t.graphqlType.name} `,
+        implementation: subscription(t.graphqlType, 'deleted')
       })
     }
   })
@@ -158,19 +156,13 @@ export const createSubscriptionsGqlComplete = (types: InputModelTypeContext[]) =
 }
 
 
-/**
- * GQL templates that will have embedded fragments
- * 
- * @param inputContext 
- */
-export const createClientDocumentsGqlComplete = (inputContext: InputModelTypeContext[]) => {
-  const context = inputContext.filter((t: InputModelTypeContext) => t.kind === OBJECT_TYPE_DEFINITION && t.name !== 'Query' && t.name !== 'Mutation' && t.name !== 'Subscription')
+export const createClientDocumentsGqlComplete = (inputContext: ModelDefinition[]) => {
 
   return {
-    // Fragments are embeeded and not needed here :)
     fragments: [],
-    queries: createQueriesGqlComplete(context),
-    mutations: createMutationsGqlComplete(context),
-    subscriptions: createSubscriptionsGqlComplete(context)
+    queries: createQueries(inputContext),
+    mutations: createMutations(inputContext),
+    subscriptions: createSubscriptions(inputContext)
   }
 }
+

@@ -7,6 +7,7 @@ export interface OutputResolvers {
     custom: OutputResolverGroup
     index: string
 }
+
 export interface OutputResolverGroup {
     resolvers?: ResolverOutputDefinition[]
     index?: string

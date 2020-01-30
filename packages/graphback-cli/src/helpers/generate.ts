@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphQLBackendCreator, GraphbackEngine, IGraphQLBackend, OutputResolver } from 'graphback'
+import { GraphbackEngine } from 'graphback'
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
 import { logError, logInfo } from '../utils';
@@ -47,21 +47,26 @@ export async function generateBackend(): Promise<void> {
       global: {
         crudMethods: graphqlCRUD
       },
-      plugins:{
+      plugins: {
         SchemaCRUD: {
-          format:'ts',
-        },
-        ApolloResolversCRUD:{
           format: 'ts',
+        },
+        ResolversCRUD: {
+          format: 'ts',
+          outputPath: folders.resolvers,
           types: undefined
+        },
+        ClientCRUD: {
+          format: "ts",
+          outputPath: folders.client,
         }
       }
     })
-    const generatedBackend = engine.buildServer({ format: 'ts' });
+    const generatedSchemaString = engine.buildServer();
 
     // TODO this should be part of the core
     const outputSchemaPath: string = join(folders.schema, 'generated.ts')
-    writeFileSync(outputSchemaPath, generatedBackend.schema)
+    writeFileSync(outputSchemaPath, generatedSchemaString)
   } catch (err) {
     logError(err)
     process.exit(0)
