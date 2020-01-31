@@ -10,9 +10,13 @@ Please follow individual releases for more information.
 
 # 0.11.0
 
-BREAKING changes for config
+
 
 ### Graphback
+
+- BREAKING: Removed GraphbackBackend and related interfaces.
+
+- BREAKING: Removed Production migrations engine
 
 - BREAKING: Removed directives for CRUD operations
 Graphback no longer uses GraphQL directives for controling generation of the CRUD operations.
