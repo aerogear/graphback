@@ -1,7 +1,6 @@
-import { getBaseType, GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getSubscriptionName, GraphbackOperationType, getFieldName, getBaseType } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
-import * as pluralize from "pluralize";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
 import { printSortedSchema } from '../writer/schemaPrinter';
 
@@ -104,6 +103,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         const modelFields = Object.values(model.graphqlType.getFields());
 
         return new GraphQLInputObjectType({
+            // TODO
             name: `${model.graphqlType.name}Input`,
             fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
                 const fieldBaseType = getBaseType(field.type);
@@ -121,9 +121,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     private createSubscriptions(model: ModelDefinition, subscriptionTypes: any, modelInputType: GraphQLInputObjectType) {
+        const name = model.graphqlType.name
         if (model.crudOptions.subCreate && model.crudOptions.create) {
-             // FIXME name of the field should be comming using `getFieldName` helper
-            subscriptionTypes[`new${model.graphqlType.name}`] = {
+            const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
+            subscriptionTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     input: {
@@ -133,8 +134,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.subUpdate && model.crudOptions.update) {
-             // FIXME name of the field should be comming using `getFieldName` helper
-            subscriptionTypes[`updated${model.graphqlType.name}`] = {
+            const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
+            subscriptionTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     input: {
@@ -143,8 +144,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 }
             };
         }
-        if (model.crudOptions.subDelete && model.crudOptions.delete) {
-            subscriptionTypes[`deleted${model.graphqlType.name}`] = {
+       if (model.crudOptions.subDelete && model.crudOptions.delete) {
+            const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
+            subscriptionTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     input: {
@@ -179,9 +181,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     private createMutations(model: ModelDefinition, mutationTypes: any, modelInputType: GraphQLInputObjectType) {
+        const name = model.graphqlType.name
         if (model.crudOptions.create) {
-             // FIXME name of the field should be comming using `getFieldName` helper
-            mutationTypes[`create${model.graphqlType.name}`] = {
+            const operation = getFieldName(name,GraphbackOperationType.CREATE)
+            mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     input: {
@@ -191,8 +194,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.update) {
-             // FIXME name of the field should be comming using `getFieldName` helper
-            mutationTypes[`update${model.graphqlType.name}`] = {
+            const operation = getFieldName(name,GraphbackOperationType.UPDATE)
+            mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     id: {
@@ -205,7 +208,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.delete) {
-            mutationTypes[`delete${model.graphqlType.name}`] = {
+            const operation = getFieldName(name,GraphbackOperationType.DELETE)
+            mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     id: {
@@ -219,17 +223,17 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     private createQueries(model: ModelDefinition, queryTypes: any, modelInputType: GraphQLInputObjectType) {
-        const pluralModelName = pluralize(model.graphqlType.name);
+        const name = model.graphqlType.name;
         if (model.crudOptions.findAll) {
-            // FIXME name of the field should be comming using `getFieldName` helper
-            queryTypes[`findAll${pluralModelName}`] = {
+            const operation = getFieldName(name,GraphbackOperationType.FIND_ALL)
+            queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {}
             };
         }
         if (model.crudOptions.find) {
-             // FIXME name of the field should be comming using `getFieldName` helper
-            queryTypes[`find${pluralModelName}`] = {
+            const operation = getFieldName(name,GraphbackOperationType.FIND)
+            queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {
                     filter: {
