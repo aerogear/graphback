@@ -1,6 +1,6 @@
 import { ResolverGeneratorPluginOptions } from '../../plugin/ResolverGeneratorPlugin';
-import { createCustomResolversIndex as createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './apolloJSResolverFormatter';
-import { createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './apolloTSResolverFormatter';
+import { createCustomResolversIndex as createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
+import { createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
 
 const mapResolverKeyValueTemplates = (resolvers: any) => {
     const resolverNames = Object.keys(resolvers);
