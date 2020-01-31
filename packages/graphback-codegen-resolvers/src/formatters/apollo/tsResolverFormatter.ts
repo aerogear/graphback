@@ -17,7 +17,7 @@ export const resolverFileTemplateTS = (outputResolvers: string[], options: Resol
     }
 
     return `
-    9q${runtimeImportTemplate}\n${typedImports}\nexport default {
+    ${runtimeImportTemplate}\n${typedImports}\nexport default {
       ${outputResolvers.join(',\n\n\t')}  
     }${resolverType}`
 }

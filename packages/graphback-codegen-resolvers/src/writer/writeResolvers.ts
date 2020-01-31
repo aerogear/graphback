@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import * as prettier from 'prettier';
-import { OutputResolvers, ResolverOutputDefinition } from './outputResolvers';
-import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
+import { OutputResolvers, ResolverOutputDefinition } from '../output/outputResolvers';
+import { ResolverGeneratorPluginOptions } from '../plugin/ResolverGeneratorPlugin';
 
 // TODO: Move code formatting to core
 function formatDocument(contents: string) {
