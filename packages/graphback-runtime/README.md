@@ -29,6 +29,8 @@ and provides great developer experience.
 
 Then developers can create runtime instance:
 
+// TODO runtime docs
+
 ```ts
     import { SchemaGenerator, gqlSchemaFormatter } from "@graphback/codegen-schema"
     import { graphQLInputContext } from "@graphback/core"
