@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { getFieldName, GraphbackOperationType, ModelDefinition, getSubscriptionName } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql'
 import { ClientTemplate } from './ClientTemplates'
 import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
@@ -6,7 +6,7 @@ import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQue
 const gqlImport = `import gql from "graphql-tag"`
 
 const findAllQueryTS = (t: GraphQLObjectType, imports: string) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's')
+  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL)
 
   return `${imports}
 
@@ -19,7 +19,7 @@ export const ${fieldName} = gql\`
 }
 
 const findQueryTS = (t: GraphQLObjectType, imports: string) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND, 's')
+  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
 
   return `${imports}
 
@@ -71,13 +71,11 @@ export const ${fieldName} = gql\`
 `
 }
 
-const subscriptionTS = (t: GraphQLObjectType, imports: string, subscriptionType: string) => {
-  const fieldName = `${subscriptionType}${t.name}`
-
+const subscriptionTS = (t: GraphQLObjectType, imports: string, subscriptionName: string) => {
   return `${imports}
 
-export const ${fieldName} = gql\`
-  ${subscription(t, subscriptionType)}
+export const ${subscriptionName} = gql\`
+  ${subscription(t, subscriptionName)}
 
   \$\{${t.name}Fragment}
 \`
@@ -130,14 +128,14 @@ import { ${t.name}ExpandedFragment } from "../fragments/${t.name}Expanded"`
 
     if (model.crudOptions.find) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND, 's'),
+        name: getFieldName(t.name, GraphbackOperationType.FIND),
         implementation: findQueryTS(t, imports)
       })
     }
 
     if (model.crudOptions.findAll) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND_ALL, 's'),
+        name: getFieldName(t.name, GraphbackOperationType.FIND_ALL),
         implementation: findAllQueryTS(t, imports)
       })
     }
@@ -191,27 +189,31 @@ export const createSubscriptionsTS = (types: ModelDefinition[]) => {
       return;
     }
     const t = model.graphqlType;
+    const name = model.graphqlType.name;
     const imports = `import gql from "graphql-tag"
 import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
     if (model.crudOptions.create && model.crudOptions.subCreate) {
+      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
       subscriptions.push({
-        name: `new${t.name}`,
-        implementation: subscriptionTS(t, imports, 'new')
+        name: operation,
+        implementation: subscriptionTS(t, imports, operation)
       })
     }
 
     if (model.crudOptions.update && model.crudOptions.subUpdate) {
+      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE);
       subscriptions.push({
-        name: `updated${t.name}`,
-        implementation: subscriptionTS(t, imports, 'updated')
+        name: operation,
+        implementation: subscriptionTS(t, imports, operation)
       })
     }
 
     if (model.crudOptions.delete && model.crudOptions.subDelete) {
+      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE);
       subscriptions.push({
-        name: `deleted${t.name}`,
-        implementation: subscriptionTS(t, imports, 'deleted')
+        name: operation,
+        implementation: subscriptionTS(t, imports, operation)
       })
     }
   })

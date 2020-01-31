@@ -1,4 +1,4 @@
-import { getFieldName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { getFieldName, GraphbackOperationType, ModelDefinition, getSubscriptionName } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
 import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates';
 
@@ -55,10 +55,10 @@ ${fragment(t)}
 `
 }
 
-export const subscriptionComplete = (t: GraphQLObjectType, subscriptionType: string) => {
+export const subscriptionComplete = (t: GraphQLObjectType, subscriptionName: string) => {
   return `
 
-${subscription(t, subscriptionType)}
+${subscription(t, subscriptionName)}
 
 ${fragment(t)}
 
@@ -82,7 +82,7 @@ export const createQueries = (types: ModelDefinition[]) => {
 
     if (t.crudOptions.findAll) {
       queries.push({
-        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL, 's'),
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL),
         implementation: findAllQueryComplete(t.graphqlType)
       })
     }
@@ -130,24 +130,28 @@ const createSubscriptions = (types: ModelDefinition[]) => {
     if (t.crudOptions.disableGen) {
       return;
     }
+    const name = t.graphqlType.name;
     if (t.crudOptions.create && t.crudOptions.subCreate) {
+      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
       subscriptions.push({
-        name: `new${t.graphqlType.name} `,
-        implementation: subscriptionComplete(t.graphqlType, 'new')
+        name: operation,
+        implementation: subscriptionComplete(t.graphqlType, operation)
       })
     }
 
     if (t.crudOptions.update && t.crudOptions.subUpdate) {
+      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE);
       subscriptions.push({
-        name: `updated${t.graphqlType.name} `,
-        implementation: subscription(t.graphqlType, 'updated')
+        name: operation,
+        implementation: subscriptionComplete(t.graphqlType, operation)
       })
     }
 
     if (t.crudOptions.delete && t.crudOptions.subDelete) {
+      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE);
       subscriptions.push({
-        name: `deleted${t.graphqlType.name} `,
-        implementation: subscription(t.graphqlType, 'deleted')
+        name: operation,
+        implementation: subscriptionComplete(t.graphqlType, operation)
       })
     }
   })

@@ -2,6 +2,7 @@
 /**
  * Enum with list of possible resolvers that can be created
  */
+// TODO Add CRUD to name
 export enum GraphbackOperationType {
     CREATE = 'create',
     UPDATE = 'update',
