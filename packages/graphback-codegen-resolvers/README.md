@@ -11,23 +11,5 @@
 **Repository**: https://github.com/aerogear/graphback/
 
 ## Graphback-Codegen-Resolvers 
+// TODO update README
 
-Generator for Graphback Resolver layer.
-Supports generating resolvers using typescript or javascript languages
-## Usage
-
-```ts
-import { generateResolvers } from "@graphback/codegen-resolvers"
-import { graphQLInputContext } from "@graphback/core"
-
-const inputContext = graphQLInputContext.createModelContext(schemaText, {})
-const resolverOptions = {
-  format: 'ts',
-  types: {
-    resolverRootLocation: '../../generated-types',
-    resolverRootType : 'Resolvers',
-  }
-};
-
-const resolvers = generateResolvers(inputContext, resolverOptions);
-```
