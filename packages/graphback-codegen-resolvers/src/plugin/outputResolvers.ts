@@ -1,4 +1,4 @@
-import { createBlankResolverTemplate, createCustomResolversIndex, createResolversIndex, createResolverTemplate } from '../formatters/apollo/apolloResolverFormatter';
+import { createBlankResolverTemplate, createCustomResolversIndex, createResolversIndex, createResolverTemplate } from '../formatters/apollo';
 import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
