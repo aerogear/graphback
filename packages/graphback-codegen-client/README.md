@@ -16,10 +16,6 @@ Generator for client side queries
 
 ## Usage
 
-```ts
-import { createClient } from "@graphback/codegen-client"
-import { graphQLInputContext } from "@graphback/core"
+// TODO UPDATE README
 
-const inputContext = graphQLInputContext.createModelContext(schemaText, {})
-console.log(createClient(inputContext));
-```
+ 
