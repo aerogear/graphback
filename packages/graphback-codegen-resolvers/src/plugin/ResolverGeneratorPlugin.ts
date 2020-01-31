@@ -1,9 +1,9 @@
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
-import { resolversRootIndexTemplate } from './apolloTSResolverFormatter';
-import { generateCRUDResolvers, generateCustomCRUDResolvers } from './createResolvers';
-import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './outputResolvers';
-import { writeResolvers } from './writeResolvers';
+import { createRootResolversIndex } from '../formatters/apollo';
+import { generateCRUDResolvers, generateCustomCRUDResolvers } from '../output/createResolvers';
+import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from '../output/outputResolvers';
+import { writeResolvers } from '../writer/writeResolvers';
 
 // TODO We are mixing apollo/non appollo stuff. WE should go generic.
 export interface ResolverGeneratorPluginOptions {
@@ -76,8 +76,8 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
 
         const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.options);
-        const customResolverGroup = createCustomOutputResolvers(customResolvers);
-        const rootResolverIndex = resolversRootIndexTemplate();
+        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.options.format);
+        const rootResolverIndex = createRootResolversIndex(this.options.format);
 
         const outputResolvers: OutputResolvers = {
             generated: generatedResolverGroup,
