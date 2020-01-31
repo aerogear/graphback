@@ -55,6 +55,7 @@ const groupResolversByResolverType = (resolversByType: any): { Query: any; Mutat
     return resolvers;
 }
 
+// TODO: Enable custom resolvers using default CRUD names
 export const createCustomOutputResolvers = (resolverTypes: any, format: string): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
