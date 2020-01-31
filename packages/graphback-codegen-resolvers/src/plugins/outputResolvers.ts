@@ -1,4 +1,4 @@
-import { createResolverTemplate, createBlankResolverTemplate } from '../formatters/apollo/apolloResolverFormatter';
+import { createBlankResolverTemplate, createCustomResolversIndex, createResolversIndex, createResolverTemplate } from '../formatters/apollo/apolloResolverFormatter';
 import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
@@ -18,30 +18,6 @@ export interface ResolverOutputDefinition {
     output: string
 }
 
-const createResolversIndex = (resolverNames: string[], exportName: string = 'resolvers'): string => {
-    const imports = resolverNames.map((name: string) => {
-        return `import ${name}Resolvers from './${name}'`;
-    }).join('\n');
-
-    const importNames = resolverNames.map((name: string) => `${name}Resolvers`);
-
-    return `${imports}
-
-    export const ${exportName} = [${importNames.join(', ')}];`;
-}
-
-const createCustomResolversIndex = (resolverNames: string[], exportName: string = 'resolvers'): string => {
-    const imports = resolverNames.map((name: string) => {
-        return `import ${name} from './${name}'`;
-    }).join('\n');
-
-    const importNames = resolverNames.map((name: string) => name);
-
-    return `${imports}
-
-    export const ${exportName} = [${importNames.join(', ')}];`;
-}
-
 export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverGeneratorPluginOptions): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
@@ -57,7 +33,7 @@ export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverG
         resolverGroup.resolvers.push(outputResolver);
     }
 
-    resolverGroup.index = createResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'generatedResolvers');
+    resolverGroup.index = createResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'generatedResolvers', options.format);
 
     return resolverGroup;
 }
@@ -79,7 +55,7 @@ const groupResolversByResolverType = (resolversByType: any): { Query: any; Mutat
     return resolvers;
 }
 
-export const createCustomOutputResolvers = (resolverTypes: any): OutputResolverGroup => {
+export const createCustomOutputResolvers = (resolverTypes: any, format: string): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
     const resolvers = groupResolversByResolverType(resolverTypes);
@@ -100,7 +76,7 @@ export const createCustomOutputResolvers = (resolverTypes: any): OutputResolverG
         }
     }
 
-    resolverGroup.index = createCustomResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'customResolvers');
+    resolverGroup.index = createCustomResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'customResolvers', format);
 
     return resolverGroup;
 }

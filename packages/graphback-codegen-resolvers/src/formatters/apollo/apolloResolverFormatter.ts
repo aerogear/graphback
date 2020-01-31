@@ -1,8 +1,6 @@
 import { ResolverGeneratorPluginOptions } from '../../plugins/ResolverGeneratorPlugin';
-import { resolverFileTemplate as resolverJSFileTemplate } from './apolloJSResolverFormatter';
-import { resolverFileTemplate as resolverTSFileTemplate } from './apolloTSResolverFormatter';
-
-export const runtimeImportTemplate = `import { validateRuntimeContext } from "@graphback/runtime";`
+import { createCustomResolversIndex as createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './apolloJSResolverFormatter';
+import { createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './apolloTSResolverFormatter';
 
 const mapResolverKeyValueTemplates = (resolvers: any) => {
     const resolverNames = Object.keys(resolvers);
@@ -60,4 +58,37 @@ export const createResolverTemplate = (name: string, typeResolvers: { Query: any
     }
 
     return createResolverFileTemplate(name, outputResolvers, options);
+}
+
+export const createResolversIndex = (resolverNames: string[], exportName: string = 'resolvers', format: string): string => {
+    switch (format) {
+        case 'js':
+            return createResolversIndexJS(resolverNames, exportName);
+        case 'ts':
+            return createResolversIndexTS(resolverNames, exportName);
+        default:
+            throw new Error(`"${format}" resolver format not supported.`)
+    }
+}
+
+export const createCustomResolversIndex = (resolverNames: string[], exportName: string = 'resolvers', format: string): string => {
+    switch (format) {
+        case 'js':
+            return createCustomResolversIndexJS(resolverNames, exportName);
+        case 'ts':
+            return createResolversIndexTS(resolverNames, exportName);
+        default:
+            throw new Error(`"${format}" resolver format not supported.`)
+    }
+}
+
+export const createRootResolversIndex = (format: string, groups: string[] = ['generated', 'custom']) => {
+    switch (format) {
+        case 'js':
+            return rootResolversIndexJS(groups);
+        case 'ts':
+            return rootResolversIndexTS(groups);
+        default:
+            throw new Error(`"${format}" resolver format not supported.`)
+    }
 }
