@@ -1,6 +1,6 @@
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core'
+import { getBaseType, GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
 import * as pluralize from "pluralize";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
 import { printSortedSchema } from '../writer/schemaPrinter';
@@ -105,7 +105,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
         return new GraphQLInputObjectType({
             name: `${model.graphqlType.name}Input`,
-            fields: () => (modelFields.reduce((fieldObj: any, current: any) => {
+            fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
+                const fieldBaseType = getBaseType(field.type);
+
+                return !isObjectType(fieldBaseType);
+            }).reduce((fieldObj: any, current: any) => {
                 // FIXME read id annotation instead of hardcoding id!
                 if (current.name !== 'id') {
                     fieldObj[current.name] = { type: current.type, description: '' };
