@@ -1,9 +1,9 @@
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
 import { createRootResolversIndex } from '../formatters/apollo';
-import { generateCRUDResolvers, generateCustomCRUDResolvers } from './createResolvers';
-import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './outputResolvers';
-import { writeResolvers } from './writeResolvers';
+import { generateCRUDResolvers, generateCustomCRUDResolvers } from '../output/createResolvers';
+import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from '../output/outputResolvers';
+import { writeResolvers } from '../writer/writeResolvers';
 
 // TODO We are mixing apollo/non appollo stuff. WE should go generic.
 export interface ResolverGeneratorPluginOptions {

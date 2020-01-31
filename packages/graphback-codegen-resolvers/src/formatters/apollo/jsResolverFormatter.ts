@@ -24,7 +24,7 @@ export const rootResolversIndexJS = (groups: string[] = ['generated', 'custom'])
 exports.resolvers = [${groups.map((name: string) => `...${name}Resolvers`)}];`;
 }
 
-export const createCustomResolversIndex = (resolverNames: string[], exportName: string = 'resolvers'): string => {
+export const createCustomResolversIndexJS = (resolverNames: string[], exportName: string = 'resolvers'): string => {
     const imports = resolverNames.map((name: string) => {
         return `const { ${name} } = require('./${name}')`;
     }).join('\n');
