@@ -87,11 +87,11 @@ export function createQueries(graphqlType: GraphQLObjectType, crudOptions: Graph
     }
 
     if (crudOptions.find) {
-        const fieldName = getFieldName(objectName, GraphbackOperationType.FIND, 's');
+        const fieldName = getFieldName(objectName, GraphbackOperationType.FIND);
         queries[fieldName] = findTemplate(objectName);
     }
     if (crudOptions.findAll) {
-        const fieldName = getFieldName(objectName, GraphbackOperationType.FIND_ALL, 's');
+        const fieldName = getFieldName(objectName, GraphbackOperationType.FIND_ALL);
         queries[fieldName] = findAllTemplate(objectName);
     }
 
