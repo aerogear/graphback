@@ -1,6 +1,6 @@
 import { createBlankResolverTemplate, createCustomResolversIndex, createResolversIndex, createResolverTemplate } from '../formatters/apollo';
+import { ResolverGeneratorPluginOptions } from '../plugin/ResolverGeneratorPlugin';
 import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
-import { ResolverGeneratorPluginOptions } from './ResolverGeneratorPlugin';
 
 export interface OutputResolvers {
     generated: OutputResolverGroup
