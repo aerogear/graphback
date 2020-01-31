@@ -1,4 +1,4 @@
-import { getFieldName, ModelDefinition, GraphbackOperationType } from '@graphback/core';
+import { getFieldName, GraphbackOperationType, ModelDefinition, getSubscriptionName } from '@graphback/core';
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -36,6 +36,7 @@ export class LayeredRuntimeResolverGenerator {
       if (resolverElement.crudOptions.disableGen) {
         continue;
       }
+      // TODO this should use mapping
       const objectName = resolverElement.graphqlType.name.toLowerCase();
       if (resolverElement.crudOptions.create) {
         const resolverCreateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.CREATE);
@@ -66,14 +67,14 @@ export class LayeredRuntimeResolverGenerator {
       }
 
       if (resolverElement.crudOptions.findAll) {
-        const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND_ALL, 's');
+        const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND_ALL);
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
           return this.service.findAll(objectName, context)
         }
       }
       if (resolverElement.crudOptions.find) {
-        const findField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND, 's');
+        const findField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND);
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           return this.service.findBy(objectName, args.fields, context)
@@ -101,9 +102,10 @@ export class LayeredRuntimeResolverGenerator {
 
   // tslint:disable-next-line: no-any
   private createSubscriptions(resolverElement: ModelDefinition, resolvers: any, objectName: string) {
+    const name = resolverElement.graphqlType.name;
     if (resolverElement.crudOptions.create && resolverElement.crudOptions.subCreate) {
-      // TODO use mapping for subscriptions
-      resolvers.Subscription[`new${resolverElement.graphqlType.name}`] = {
+      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
+      resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
           return this.service.subscribeToCreate(objectName, context);
@@ -112,7 +114,8 @@ export class LayeredRuntimeResolverGenerator {
     }
 
     if (resolverElement.crudOptions.update && resolverElement.crudOptions.subUpdate) {
-      resolvers.Subscription[`updated${resolverElement.graphqlType.name}`] = {
+      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
+      resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
           return this.service.subscribeToUpdate(objectName, context);
@@ -121,7 +124,8 @@ export class LayeredRuntimeResolverGenerator {
     }
 
     if (resolverElement.crudOptions.delete && resolverElement.crudOptions.subDelete) {
-      resolvers.Subscription[`deleted${resolverElement.graphqlType.name}`] = {
+      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
+      resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
           return this.service.subscribeToDelete(objectName, context);
