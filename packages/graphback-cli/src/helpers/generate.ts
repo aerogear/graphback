@@ -52,7 +52,7 @@ export async function generateBackend(): Promise<void> {
           format: 'ts',
         },
         ResolversCRUD: {
-          format: 'js',
+          format: 'ts',
           outputPath: folders.resolvers,
           types: undefined
         },
