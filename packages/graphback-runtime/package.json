@@ -12,7 +12,7 @@
     "clean": "rimraf coverage dist types",
     "build": "tsc",
     "watch": "tsc -w ",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "lint": "eslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
     "pretest": "yarn build"
   },
@@ -43,7 +43,6 @@
     "rimraf": "3.0.2",
     "sqlite3": "4.1.1",
     "ts-node": "8.6.2",
-    "tslint": "5.20.1",
     "tsutils": "3.17.1",
     "typescript": "3.7.5"
   },
