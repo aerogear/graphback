@@ -16,7 +16,7 @@
     "build": "tsc && cp -Rf ./src/templates/resources ./dist/templates/resources",
     "cmd": "node ./dist/index.js",
     "watch": "tsc -w",
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "lint": "eslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
     "pretest": "yarn build"
   },
@@ -47,9 +47,6 @@
     "lint-staged": "9.5.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
-    "tslint": "5.20.1",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-microsoft-contrib": "6.2.0",
     "tsutils": "3.17.1",
     "typescript": "3.7.5",
     "typescript-eslint-parser": "21.0.2"
