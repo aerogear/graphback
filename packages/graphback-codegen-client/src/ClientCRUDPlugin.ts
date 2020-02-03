@@ -41,27 +41,27 @@ export const CLIENT_CRUD_PLUGIN = "ClientCRUDPlugin";
  */
 export class ClientCRUDPlugin extends GraphbackPlugin {
     private pluginConfig: ClientGeneratorPluginConfig;
-    private documents: ClientTemplates;
-
+     
     constructor(pluginConfig?: ClientGeneratorPluginConfig) {
         super()
         this.pluginConfig = Object.assign({ outputFormat: 'ts' }, pluginConfig);
 
     }
 
-    public init(metadata: GraphbackCoreMetadata): void {
+    public init(metadata: GraphbackCoreMetadata) {
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. No client side queries will be generated")
         }
 
-        this.documents = this.createDocuments(models);
+        return this.createDocuments(models);
     }
 
-    public generateResources(): void {
+    public generateResources(metadata: GraphbackCoreMetadata): void {
+        const documents = this.init(metadata)
         const outputFormat = this.pluginConfig.format === 'gqlwithfragment' ? 'gql' : this.pluginConfig.format;
 
-        writeDocumentsToFilesystem(this.pluginConfig.outputPath, this.documents, outputFormat);
+        writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
     }
 
     public getPluginName(): string {

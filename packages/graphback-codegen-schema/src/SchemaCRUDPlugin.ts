@@ -1,8 +1,8 @@
 import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
-import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
-import { printSortedSchema } from '../writer/schemaPrinter';
+import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
+import { printSortedSchema } from './writer/schemaPrinter';
 import { fstat, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, resolve } from 'path';
 
@@ -38,15 +38,10 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
 export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     private pluginConfig: SchemaCRUDPluginConfig;
-    private schema: GraphQLSchema;
 
     constructor(pluginConfig?: SchemaCRUDPluginConfig) {
         super()
         this.pluginConfig = Object.assign({ format: 'gql' }, pluginConfig);
-    }
-
-    public init(metadata: GraphbackCoreMetadata): void {
-        // No need for initialization
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -59,27 +54,27 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
 
         const modelsSchema = this.buildSchemaForModels(models);
-        this.schema = mergeSchemas({ schemas: [modelsSchema, schema] });
 
-        return this.schema;
+        return mergeSchemas({ schemas: [modelsSchema, schema] });
     }
 
-    public generateResources(): void {
-        const schemString = this.transformSchemaToString();
+    public generateResources(metadata: GraphbackCoreMetadata): void {
+        const schemString = this.transformSchemaToString(metadata.getSchema());
         if (!existsSync(this.pluginConfig.outputPath)) {
             mkdirSync(this.pluginConfig.outputPath, { recursive: true });
         }
-        const location = resolve(this.pluginConfig.outputPath, "schema.", this.pluginConfig.format);
+        const location = resolve(this.pluginConfig.outputPath, `schema.${this.pluginConfig.format}`);
         writeFileSync(location, schemString);
     }
 
     /**
      * Create resolvers function that 
+     * 
      * @param inputContext 
      * @param options 
      */
-    public transformSchemaToString() {
-        const schemaString = printSortedSchema(this.schema);
+    public transformSchemaToString(schema: GraphQLSchema) {
+        const schemaString = printSortedSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
@@ -93,8 +88,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
         throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `gql` flags");
     }
-
-
 
     public getPluginName() {
         return SCHEMA_CRUD_PLUGIN_NAME;

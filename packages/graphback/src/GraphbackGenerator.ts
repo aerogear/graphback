@@ -29,7 +29,6 @@ export class GraphbackGenerator {
   constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
     this.schema = schema;
     this.config = config;
-
   }
 
   /**
