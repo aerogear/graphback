@@ -1,4 +1,4 @@
-import { buildSchema, GraphQLSchema, printSchema } from 'graphql'
+import { buildSchema, GraphQLSchema } from 'graphql'
 import * as Knex from 'knex';
 import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/generateAbstractDatabase'
 import { read } from './connector/read'
