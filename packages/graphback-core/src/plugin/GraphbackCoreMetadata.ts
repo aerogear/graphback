@@ -43,9 +43,7 @@ export class GraphbackCoreMetadata {
      * Get Graphback Models - GraphQL Types with additional CRUD configuration
      */
     public getModelDefinitions() {
-        if (this.models) {
-            return this.models;
-        }
+
         // Contains map of the models with their underlying CRUD configuration
         this.models = [];
         // Get actual user types 

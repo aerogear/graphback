@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import * as prettier from 'prettier';
 import { OutputResolvers, ResolverOutputDefinition } from '../output/outputResolvers';
-import { ResolverGeneratorPluginOptions } from '../plugin/ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginOptions } from '../ResolverGeneratorPlugin';
 
 // TODO: Move code formatting to core
 function formatDocument(contents: string) {
@@ -10,6 +10,7 @@ function formatDocument(contents: string) {
 }
 
 export function writeResolvers(outputResolvers: OutputResolvers, options: ResolverGeneratorPluginOptions) {
+    // TODO (this should be configurable
     const customResolversPath: string = join(options.outputPath, "/custom")
     const generatedResolversPath: string = join(options.outputPath, "/generated")
 
