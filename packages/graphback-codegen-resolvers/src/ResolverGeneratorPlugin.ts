@@ -59,7 +59,14 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return PLUGIN_NAME;
     }
 
-    public init(metadata: GraphbackCoreMetadata) {
+    public createResources(metadata: GraphbackCoreMetadata): void {
+        const outputResolves = this.generateResolvers(metadata);
+        if (outputResolves){
+            writeResolvers(outputResolves, this.options);
+        }
+    }
+
+    public generateResolvers(metadata: GraphbackCoreMetadata) {
         const schema = metadata.getSchema()
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
@@ -67,18 +74,6 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
             return undefined;
         }
-
-        return this.createResolvers(schema, models);
-    }
-
-    public generateResources(metadata: GraphbackCoreMetadata): void {
-        const outputResolves = this.init(metadata);
-        if (outputResolves){
-            writeResolvers(outputResolves, this.options);
-        }
-    }
-
-    private createResolvers(schema: GraphQLSchema, models: ModelDefinition[]) {
         const generatedResolvers = generateCRUDResolvers(models);
         const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
 

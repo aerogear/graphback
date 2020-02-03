@@ -50,7 +50,8 @@ export async function generateBackend(): Promise<void> {
       plugins: {
         SchemaCRUD: {
           format: 'ts',
-          outputPath: folders.schema
+          outputPath: folders.schema,
+          outputFileName: 'generated'
         },
         ResolversCRUD: {
           format: 'ts',

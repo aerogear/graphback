@@ -48,17 +48,8 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
     }
 
-    public init(metadata: GraphbackCoreMetadata) {
-        const models = metadata.getModelDefinitions();
-        if (models.length === 0) {
-            this.logWarning("Provided schema has no models. No client side queries will be generated")
-        }
-
-        return this.createDocuments(models);
-    }
-
-    public generateResources(metadata: GraphbackCoreMetadata): void {
-        const documents = this.init(metadata)
+    public createResources(metadata: GraphbackCoreMetadata): void {
+        const documents = this.getDocuments(metadata)
         const outputFormat = this.pluginConfig.format === 'gqlwithfragment' ? 'gql' : this.pluginConfig.format;
 
         writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
@@ -68,7 +59,12 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         return CLIENT_CRUD_PLUGIN;
     }
 
-    private createDocuments(models: ModelDefinition[]) {
+    public getDocuments(metadata: GraphbackCoreMetadata) {
+        const models = metadata.getModelDefinitions();
+        if (models.length === 0) {
+            this.logWarning("Provided schema has no models. No client side queries will be generated")
+        }
+
         let documents: ClientTemplates;
 
         if (this.pluginConfig.format === 'ts') {

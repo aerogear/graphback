@@ -39,6 +39,9 @@ export class GraphbackPluginEngine {
     }
 
     public execute(): GraphbackCoreMetadata {
+        if (this.plugins.length === 0) {
+            throw new Error("GraphbackEngine: No Graphback plugins registered")
+        }
         
         // First we need to apply all required changes to the schema we need 
         // This is to ensure that every plugin can add changes to the schema
@@ -49,7 +52,7 @@ export class GraphbackPluginEngine {
 
         // Now we can save schema and all resouces that are related to it
         for (const plugin of this.plugins) {
-            plugin.generateResources(this.metadata);
+            plugin.createResources(this.metadata);
         }
 
         return this.metadata;

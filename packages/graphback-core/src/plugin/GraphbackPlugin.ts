@@ -28,7 +28,7 @@ export abstract class GraphbackPlugin {
      * Create resources like files etc. for this plugin.
      * This method should write resouces to filesystem
      */
-    public abstract generateResources(metadata: GraphbackCoreMetadata): void
+    public abstract createResources(metadata: GraphbackCoreMetadata): void
 
     /**
      * @returns Unique name of the plugin

@@ -17,6 +17,11 @@ export interface SchemaCRUDPluginConfig {
      * RelativePath for the output files created by generator
      */
     outputPath: string
+
+    /**
+     * Name of the output file (by default `schema`)
+     */
+    outputFileName?: string
 }
 
 export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
@@ -41,7 +46,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     constructor(pluginConfig?: SchemaCRUDPluginConfig) {
         super()
-        this.pluginConfig = Object.assign({ format: 'gql' }, pluginConfig);
+        this.pluginConfig = Object.assign({ format: 'gql', outputFileName: 'schema' }, pluginConfig);
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -58,13 +63,14 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return mergeSchemas({ schemas: [modelsSchema, schema] });
     }
 
-    public generateResources(metadata: GraphbackCoreMetadata): void {
-        const schemString = this.transformSchemaToString(metadata.getSchema());
+    public createResources(metadata: GraphbackCoreMetadata): void {
+        const schemaString = this.transformSchemaToString(metadata.getSchema());
         if (!existsSync(this.pluginConfig.outputPath)) {
             mkdirSync(this.pluginConfig.outputPath, { recursive: true });
         }
-        const location = resolve(this.pluginConfig.outputPath, `schema.${this.pluginConfig.format}`);
-        writeFileSync(location, schemString);
+        
+        const location = resolve(this.pluginConfig.outputPath, `${this.pluginConfig.outputFileName}.${this.pluginConfig.format}`);
+        writeFileSync(location, schemaString);
     }
 
     /**

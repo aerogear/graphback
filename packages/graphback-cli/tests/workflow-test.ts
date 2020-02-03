@@ -24,8 +24,8 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
 
   t.true(existsSync(join(basePath, "graphback.json")))
   t.true(existsSync(join(basePath, "db.sqlite")))
-  t.true(existsSync(join(basePath, "client/src/graphql/fragments/Test.ts")))
-  t.true(existsSync(join(basePath, "src/schema/generated.ts")))
-  t.true(existsSync(join(basePath, "src/resolvers/generated/note.ts")))
+  t.true(existsSync(join(basePath, "client/src/graphql/fragments/Note.ts")))
+  t.true(existsSync(join(basePath, "src/schema/schema.ts")))
+  t.true(existsSync(join(basePath, "src/resolvers/generated/Note.ts")))
 });
 
