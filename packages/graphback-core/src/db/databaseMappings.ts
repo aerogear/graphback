@@ -22,14 +22,15 @@ export const getDatabaseTypeMappings = (schema: GraphQLSchema) => {
 function mapTypes(models: GraphQLObjectType[]) {
   return models.map((model: GraphQLObjectType) => {
     return {
+      id: getPrimaryKey(model.getFields()),
       [model.name]: getDbName(model),
       fields: mapFields(model.getFields())
     }
   });
 }
 
-function mapFields(fields: GraphQLFieldMap<any, any>) {
-  return Object.values(fields).reduce((obj: any, field: GraphQLField<any, any>) => {
+function mapFields(fieldMap: GraphQLFieldMap<any, any>) {
+  return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
     obj[field.name] = getDbName(field);
 
     return obj;
@@ -39,6 +40,14 @@ function mapFields(fields: GraphQLFieldMap<any, any>) {
 // TODO: Common annotation helper?
 const parseDbAnnotations = (description?: string): any => {
   return description ? parseAnnotations('db', String(description)) : {};
+}
+
+function getPrimaryKey(fieldMap: GraphQLFieldMap<any, any>) {
+  const fields = Object.values(fieldMap);
+  
+  // const primaryKey = fields.find(())
+
+  return 'id';
 }
 
 function getDbName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
