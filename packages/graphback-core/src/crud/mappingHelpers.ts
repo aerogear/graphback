@@ -26,7 +26,7 @@ import { GraphbackOperationType } from './GraphbackOperationType';
  */
 export const getFieldName = (typeName: string, action: GraphbackOperationType): string => {
   let finalName = upperCaseFirstChar(typeName);
-  if (action === GraphbackOperationType.FIND_ALL && GraphbackOperationType.FIND) {
+  if (action === GraphbackOperationType.FIND_ALL || action === GraphbackOperationType.FIND) {
     finalName = pluralize(finalName);
   }
 
@@ -93,10 +93,10 @@ export function getRelationFieldName(field: any, type: any) {
   return fieldName;
 }
 
-function lowerCaseFirstChar(text: string) {
+export function lowerCaseFirstChar(text: string) {
   return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
 
-function upperCaseFirstChar(text: string) {
+export function upperCaseFirstChar(text: string) {
   return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 }
