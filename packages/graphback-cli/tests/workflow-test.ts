@@ -17,7 +17,7 @@ const model = {
 ava('Test cli workflow', async (t: ExecutionContext) => {
   const basePath = resolve(`${__dirname}/../../../examples/generator-fullstack`);
   process.chdir(basePath)
-  await initConfig("testback ", { model, database: "sqlite3", client: true });
+  await initConfig("testback ", { model, database: "sqlite3", client: true }, true);
   await generate();
 
   await createDB();
