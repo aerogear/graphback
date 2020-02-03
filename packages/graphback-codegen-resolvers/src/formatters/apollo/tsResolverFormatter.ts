@@ -1,4 +1,4 @@
-import { ResolverGeneratorPluginOptions } from '../../plugin/ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginOptions } from '../../ResolverGeneratorPlugin';
 
 const runtimeImportTemplate = `import { validateRuntimeContext } from "@graphback/runtime";`
 

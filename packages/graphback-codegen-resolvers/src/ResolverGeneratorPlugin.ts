@@ -1,9 +1,9 @@
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
-import { createRootResolversIndex } from '../formatters/apollo';
-import { generateCRUDResolvers, generateCustomCRUDResolvers } from '../output/createResolvers';
-import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from '../output/outputResolvers';
-import { writeResolvers } from '../writer/writeResolvers';
+import { createRootResolversIndex } from './formatters/apollo';
+import { generateCRUDResolvers, generateCustomCRUDResolvers } from './output/createResolvers';
+import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './output/outputResolvers';
+import { writeResolvers } from './writer/writeResolvers';
 
 // TODO We are mixing apollo/non appollo stuff. WE should go generic.
 export interface ResolverGeneratorPluginOptions {
@@ -14,7 +14,7 @@ export interface ResolverGeneratorPluginOptions {
      * RelativePath for the output files created by generator
      */
     outputPath: string
-    
+
     // Provides extension for graphql-code-generator types
     // generated for resolvers
     types?: {
@@ -46,7 +46,9 @@ const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
  * 
  */
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
+
     private options: ResolverGeneratorPluginOptions;
+
     constructor(options: ResolverGeneratorPluginOptions) {
         super();
         // TODO: default options
@@ -57,21 +59,21 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return PLUGIN_NAME;
     }
 
-    public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
+    public createResources(metadata: GraphbackCoreMetadata): void {
+        const outputResolves = this.generateResolvers(metadata);
+        if (outputResolves){
+            writeResolvers(outputResolves, this.options);
+        }
+    }
+
+    public generateResolvers(metadata: GraphbackCoreMetadata) {
         const schema = metadata.getSchema()
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
-            this.logWarning("Provided schema has no models. Returning original schema without generating resolvers.")
+            this.logWarning("Provided schema has no models. Cannot generate resolvers")
 
-            return schema;
+            return undefined;
         }
-
-        this.createResolvers(schema, models);
-
-        return metadata.getSchema();
-    }
-
-    private createResolvers(schema: GraphQLSchema, models: ModelDefinition[]) {
         const generatedResolvers = generateCRUDResolvers(models);
         const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
 
@@ -79,12 +81,13 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const customResolverGroup = createCustomOutputResolvers(customResolvers, this.options.format);
         const rootResolverIndex = createRootResolversIndex(this.options.format);
 
+        // tslint:disable-next-line: no-unnecessary-local-variable
         const outputResolvers: OutputResolvers = {
             generated: generatedResolverGroup,
             custom: customResolverGroup,
             index: rootResolverIndex
         }
 
-        writeResolvers(outputResolvers, this.options);
+        return outputResolvers;
     }
 }

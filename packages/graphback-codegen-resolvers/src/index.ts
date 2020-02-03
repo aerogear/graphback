@@ -1,1 +1,1 @@
-export * from './plugin/ResolverGeneratorPlugin';
+export * from './ResolverGeneratorPlugin';

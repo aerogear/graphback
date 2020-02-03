@@ -69,7 +69,7 @@ export const getTableName = (typeName: string): string => {
 }
 
 // TODO this is db level mapping. To be moved
-export const getIdFieldName = (type: any): string => {
+export const getIdFieldName = (graphqlType: any): string => {
   return 'id'
 }
 

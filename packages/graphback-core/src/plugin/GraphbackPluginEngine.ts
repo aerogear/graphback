@@ -18,7 +18,6 @@ import { GraphbackPlugin } from './GraphbackPlugin';
 export class GraphbackPluginEngine {
 
     private plugins: GraphbackPlugin[]
-    private schema: GraphQLSchema
     private metadata: GraphbackCoreMetadata;
 
     constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
@@ -26,12 +25,13 @@ export class GraphbackPluginEngine {
         if (!schema) {
             throw new Error("Plugin engine requires schema");
         }
+        let graphQLSchema;
         if (typeof schema === "string") {
-            this.schema = buildSchema(schema);
+            graphQLSchema = buildSchema(schema);
         } else {
-            this.schema = schema;
+            graphQLSchema = schema;
         }
-        this.metadata = new GraphbackCoreMetadata(config, this.schema);
+        this.metadata = new GraphbackCoreMetadata(config, graphQLSchema);
     }
 
     public registerPlugin(...plugins: GraphbackPlugin[]): void {
@@ -39,13 +39,20 @@ export class GraphbackPluginEngine {
     }
 
     public execute(): GraphbackCoreMetadata {
-        let newSchema = this.schema;
+        if (this.plugins.length === 0) {
+            throw new Error("GraphbackEngine: No Graphback plugins registered")
+        }
+        
+        // First we need to apply all required changes to the schema we need 
+        // This is to ensure that every plugin can add changes to the schema
         for (const plugin of this.plugins) {
-            newSchema = plugin.transformSchema(this.metadata);
-            // FIXME kinda convoluted 
-            // FIXME - should schema stay original object?
+            const newSchema = plugin.transformSchema(this.metadata);
             this.metadata.setSchema(newSchema);
+        }
 
+        // Now we can save schema and all resouces that are related to it
+        for (const plugin of this.plugins) {
+            plugin.createResources(this.metadata);
         }
 
         return this.metadata;

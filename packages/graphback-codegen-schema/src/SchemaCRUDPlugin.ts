@@ -1,15 +1,27 @@
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getSubscriptionName, GraphbackOperationType, getFieldName, getBaseType } from '@graphback/core'
+import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
+import { existsSync, fstat, mkdirSync, writeFileSync } from 'fs';
 import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
-import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
-import { printSortedSchema } from '../writer/schemaPrinter';
+import { resolve } from 'path';
+import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
+import { printSortedSchema } from './writer/schemaPrinter';
 
 /**
  * Configuration for Schema generator CRUD plugin
  */
 export interface SchemaCRUDPluginConfig {
     // output format for schema string
-    format: 'ts' | 'js' | 'gql'
+    format: 'ts' | 'js' | 'gql',
+
+    /**
+     * RelativePath for the output files created by generator
+     */
+    outputPath: string
+
+    /**
+     * Name of the output file (by default `schema`)
+     */
+    outputFileName?: string
 }
 
 export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
@@ -34,8 +46,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     constructor(pluginConfig?: SchemaCRUDPluginConfig) {
         super()
-        this.pluginConfig = Object.assign({ format: 'gql' }, pluginConfig);
-
+        this.pluginConfig = Object.assign({ format: 'gql', outputFileName: 'schema' }, pluginConfig);
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -52,8 +63,19 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return mergeSchemas({ schemas: [modelsSchema, schema] });
     }
 
+    public createResources(metadata: GraphbackCoreMetadata): void {
+        const schemaString = this.transformSchemaToString(metadata.getSchema());
+        if (!existsSync(this.pluginConfig.outputPath)) {
+            mkdirSync(this.pluginConfig.outputPath, { recursive: true });
+        }
+        
+        const location = resolve(this.pluginConfig.outputPath, `${this.pluginConfig.outputFileName}.${this.pluginConfig.format}`);
+        writeFileSync(location, schemaString);
+    }
+
     /**
      * Create resolvers function that 
+     * 
      * @param inputContext 
      * @param options 
      */
@@ -73,13 +95,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `gql` flags");
     }
 
-
-
     public getPluginName() {
         return SCHEMA_CRUD_PLUGIN_NAME;
     }
 
-    private buildSchemaForModels(models: ModelDefinition[]) {
+    protected buildSchemaForModels(models: ModelDefinition[]) {
         let queryTypes = {};
         let mutationTypes = {};
         let subscriptionTypes = {};
@@ -99,7 +119,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return this.createSchema(queryTypes, mutationTypes, subscriptionTypes);
     }
 
-    private createInputTypes(model: ModelDefinition) {
+    protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
 
         return new GraphQLInputObjectType({
@@ -120,7 +140,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         });
     }
 
-    private createSubscriptions(model: ModelDefinition, subscriptionTypes: any, modelInputType: GraphQLInputObjectType) {
+    protected createSubscriptions(model: ModelDefinition, subscriptionTypes: any, modelInputType: GraphQLInputObjectType) {
         const name = model.graphqlType.name
         if (model.crudOptions.subCreate && model.crudOptions.create) {
             const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
@@ -144,7 +164,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 }
             };
         }
-       if (model.crudOptions.subDelete && model.crudOptions.delete) {
+        if (model.crudOptions.subDelete && model.crudOptions.delete) {
             const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
             subscriptionTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
@@ -159,7 +179,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return subscriptionTypes;
     }
 
-    private createSchema(queryTypes: any, mutationTypes: any, subscriptionTypes: any) {
+    protected createSchema(queryTypes: any, mutationTypes: any, subscriptionTypes: any) {
         const queryType = new GraphQLObjectType({
             name: 'Query',
             fields: () => (queryTypes)
@@ -180,10 +200,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         });
     }
 
-    private createMutations(model: ModelDefinition, mutationTypes: any, modelInputType: GraphQLInputObjectType) {
+    protected createMutations(model: ModelDefinition, mutationTypes: any, modelInputType: GraphQLInputObjectType) {
         const name = model.graphqlType.name
         if (model.crudOptions.create) {
-            const operation = getFieldName(name,GraphbackOperationType.CREATE)
+            const operation = getFieldName(name, GraphbackOperationType.CREATE)
             mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -194,7 +214,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.update) {
-            const operation = getFieldName(name,GraphbackOperationType.UPDATE)
+            const operation = getFieldName(name, GraphbackOperationType.UPDATE)
             mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -208,7 +228,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             };
         }
         if (model.crudOptions.delete) {
-            const operation = getFieldName(name,GraphbackOperationType.DELETE)
+            const operation = getFieldName(name, GraphbackOperationType.DELETE)
             mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
@@ -222,17 +242,17 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return mutationTypes;
     }
 
-    private createQueries(model: ModelDefinition, queryTypes: any, modelInputType: GraphQLInputObjectType) {
+    protected createQueries(model: ModelDefinition, queryTypes: any, modelInputType: GraphQLInputObjectType) {
         const name = model.graphqlType.name;
         if (model.crudOptions.findAll) {
-            const operation = getFieldName(name,GraphbackOperationType.FIND_ALL)
+            const operation = getFieldName(name, GraphbackOperationType.FIND_ALL)
             queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {}
             };
         }
         if (model.crudOptions.find) {
-            const operation = getFieldName(name,GraphbackOperationType.FIND)
+            const operation = getFieldName(name, GraphbackOperationType.FIND)
             queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {

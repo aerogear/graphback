@@ -45,7 +45,7 @@ export interface InitOptions {
  * config command handler
  * @param options used for initializting config without asking user for input
  */
-export async function initConfig(commandRoot?: string, options: InitOptions = {}) {
+export async function initConfig(commandRoot?: string, options: InitOptions = {}, skipInstall: boolean = false) {
   logInfo(chalk.yellow(
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
   ))
@@ -54,7 +54,9 @@ export async function initConfig(commandRoot?: string, options: InitOptions = {}
   const database = options.database || await chooseDatabase()
   const client = options.client || await askForClient()
   addModel("", modelName, content)
-  await installDependencies(database)
+  if (!skipInstall) {
+    await installDependencies(database)
+  }
   await createConfig(database, client)
   logInfo(postSetupMessage(commandRoot))
 }
