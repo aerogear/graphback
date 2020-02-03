@@ -27,13 +27,13 @@
     "@test-graphql-cli/serve": "canary",
     "@test-graphql-cli/similar": "canary",
     "@test-graphql-cli/validate": "canary",
-    "graphql": "14.6.0",
+    "graphql": "14.5.8",
     "graphql-cli": "canary",
     "tslint": "5.20.1",
     "typescript": "3.7.5"
   },
   "dependencies": {
-    "pg": "7.18.1",
+    "pg": "7.17.1",
     "sqlite3": "4.1.1"
   }
 }
