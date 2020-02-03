@@ -1,4 +1,4 @@
-import { ResolverGeneratorPluginOptions } from '../../plugin/ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginOptions } from '../../ResolverGeneratorPlugin';
 import { createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
 import { createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
 
