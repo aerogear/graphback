@@ -19,7 +19,7 @@ Successfully generated schema and resolvers :tada:.
 Run ${chalk.cyan(`docker-compose up -d`)} or ${chalk.cyan(`docker-compose start`)}
 followed by ${chalk.cyan(`${cliName}db`)} to create database.
 
-After changing your data model, run ${chalk.cyan(`graphback update-db`)} to update the database.
+After changing your data model, run ${chalk.cyan(`graphback update`)} to update the database.
 `)
 }
 
