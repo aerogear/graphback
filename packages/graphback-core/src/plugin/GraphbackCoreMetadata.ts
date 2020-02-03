@@ -41,9 +41,11 @@ export class GraphbackCoreMetadata {
 
     /**
      * Get Graphback Models - GraphQL Types with additional CRUD configuration
+     * 
+     * @param forceRefresh - refresh models calculated from schema
      */
-    public getModelDefinitions() {
-        if (this.models) {
+    public getModelDefinitions(forceRefresh?: boolean) {
+        if (this.models && !forceRefresh) {
             return this.models;
         }
         // Contains map of the models with their underlying CRUD configuration

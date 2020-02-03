@@ -14,7 +14,7 @@ export interface ResolverGeneratorPluginOptions {
      * RelativePath for the output files created by generator
      */
     outputPath: string
-    
+
     // Provides extension for graphql-code-generator types
     // generated for resolvers
     types?: {
@@ -46,7 +46,9 @@ const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
  * 
  */
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
+
     private options: ResolverGeneratorPluginOptions;
+    private outputResolves: OutputResolvers;
     constructor(options: ResolverGeneratorPluginOptions) {
         super();
         // TODO: default options
@@ -57,19 +59,24 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         return PLUGIN_NAME;
     }
 
-    public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
+
+    public init(metadata: GraphbackCoreMetadata): void {
         const schema = metadata.getSchema()
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
-            this.logWarning("Provided schema has no models. Returning original schema without generating resolvers.")
+            this.logWarning("Provided schema has no models. Cannot generate resolvers")
 
-            return schema;
+            return;
         }
 
         this.createResolvers(schema, models);
-
-        return metadata.getSchema();
     }
+
+
+    public generateResources(): void {
+        writeResolvers(this.outputResolves, this.options);
+    }
+
 
     private createResolvers(schema: GraphQLSchema, models: ModelDefinition[]) {
         const generatedResolvers = generateCRUDResolvers(models);
@@ -84,7 +91,6 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
             custom: customResolverGroup,
             index: rootResolverIndex
         }
-
-        writeResolvers(outputResolvers, this.options);
+        this.outputResolves = outputResolvers;
     }
 }

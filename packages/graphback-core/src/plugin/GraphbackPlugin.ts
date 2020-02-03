@@ -15,15 +15,33 @@ import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
 export abstract class GraphbackPlugin {
 
     /**
-     * Performs transformation on the schema and returns target schemaƒ
-     * @param schema 
+     * Initialize plugin by passing metadata object.
+     * Initialization can setup required data and related visitors that can be shared between:
+     * 
+     * - transformSchema()
+     * - saveResources()
+     * 
+     * @param metadata - metadata object containing schema
      */
-    public abstract transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema;
+    public abstract init(metadata: GraphbackCoreMetadata): void;
 
-    public saveResources() {
-        // Empty for plugins that do not need to save resources
+    /**
+     * Performs transformation on the schema and returns target schema
+     * Implementations should extend this method if they wish to apply some changes
+     * to schema. Otherwise unchanged schema should be returned
+     * 
+     * @param metadata - metadata object containing schema
+     */
+    public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
+        return metadata.getSchema();
     }
-    
+
+    /**
+     * Create resources like files etc. for this plugin.
+     * This method should write resouces to filesystem
+     */
+    public abstract generateResources(): void
+
     /**
      * @returns Unique name of the plugin
      */
@@ -39,5 +57,5 @@ export abstract class GraphbackPlugin {
         console.error(`Error - ${this.getPluginName()}: ${message}`)
     }
 
-  
+
 };

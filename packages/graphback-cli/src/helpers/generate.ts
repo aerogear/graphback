@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob'
-import { GraphbackEngine } from 'graphback'
+import { GraphbackGenerator } from 'graphback'
 import { buildSchema, GraphQLSchema } from 'graphql';
 import { join } from 'path'
 import { ConfigBuilder } from '../config/ConfigBuilder';
@@ -43,13 +43,14 @@ export async function generateBackend(): Promise<void> {
     const schemaText = loadSchema(folders.model);
     const schema: GraphQLSchema = buildSchema(schemaText);
     // TODO COnfig should be moved to GraphQL-Config
-    const engine = new GraphbackEngine(schema, {
+    const engine = new GraphbackGenerator(schema, {
       global: {
         crudMethods: graphqlCRUD
       },
       plugins: {
         SchemaCRUD: {
           format: 'ts',
+          outputPath: folders.schema
         },
         ResolversCRUD: {
           format: 'ts',
@@ -62,11 +63,8 @@ export async function generateBackend(): Promise<void> {
         }
       }
     })
-    const generatedSchemaString = engine.buildServer();
+    engine.buildServer();
 
-    // TODO this should be part of the core
-    const outputSchemaPath: string = join(folders.schema, 'generated.ts')
-    writeFileSync(outputSchemaPath, generatedSchemaString)
   } catch (err) {
     logError(err)
     process.exit(0)

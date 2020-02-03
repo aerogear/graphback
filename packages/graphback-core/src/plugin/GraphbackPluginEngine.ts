@@ -40,12 +40,17 @@ export class GraphbackPluginEngine {
 
     public execute(): GraphbackCoreMetadata {
         let newSchema = this.schema;
+        // First we need to apply all required changes to the schema we need 
+        // This is to ensure that every plugin can add code to the schema
         for (const plugin of this.plugins) {
+            plugin.init(this.metadata);
             newSchema = plugin.transformSchema(this.metadata);
-            // FIXME kinda convoluted 
-            // FIXME - should schema stay original object?
             this.metadata.setSchema(newSchema);
+        }
 
+        // Now we can save schema and all resouces that are related to it
+        for (const plugin of this.plugins) {
+            plugin.generateResources();
         }
 
         return this.metadata;
