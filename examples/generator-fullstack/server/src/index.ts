@@ -2,15 +2,13 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 
-import { ApolloServer } from "apollo-server-express"
+import { ApolloServer, PubSub } from "apollo-server-express"
 import { loadConfig } from 'graphql-config';
-import { makeExecutableSchema } from 'graphql-tools';
+import { join } from 'path';
 
 import { createKnexRuntimeContext } from '@graphback/runtime'
-import { PubSub } from 'graphql-subscriptions';
-import { connect } from './db'
-import { resolvers } from './resolvers';
-import { typeDefs } from './schema';
+import { loadResolversFiles, loadSchemaFiles } from '@graphql-toolkit/file-loading';
+import knex from 'knex'
 
 async function start() {
   const app = express();
@@ -26,34 +24,34 @@ async function start() {
   const generateConfig = await config!.getDefault().extension('generate');
 
   // connect to db
-  const db = await connect(generateConfig.db.dbConfig);
-
-  const schema = makeExecutableSchema({
-    typeDefs,
-    resolvers,
-    resolverValidationOptions: {
-      requireResolversForResolveType: false
-    }
-  });
+  // TODO Embed knex as part of the runtime codegeneration
+  const db = knex({
+    client: generateConfig.db.database,
+    connection: generateConfig.db.dbConfig,
+  })
 
   const pubSub = new PubSub();
-  const context = createKnexRuntimeContext(db, pubSub);
-  const apolloConfig = {
-    schema,
-    context
-  }
 
-  const apolloServer = new ApolloServer(apolloConfig)
+  const apolloServer = new ApolloServer({
+    typeDefs: loadSchemaFiles(join(__dirname, '/schema/')),
+    resolvers: loadResolversFiles(join(__dirname, '/resolvers/')),
+    context: createKnexRuntimeContext(db as any, pubSub),
+    playground: true,
+  })
 
   apolloServer.applyMiddleware({ app })
 
   const httpServer = http.createServer(app)
   apolloServer.installSubscriptionHandlers(httpServer)
 
-  httpServer.listen({ port: 4000 }, () => {
-    // tslint:disable-next-line: no-console
-    console.log(`🚀  Server ready at http://localhost:4000/graphql`)
+  const port = process.env.PORT || 4000;
+
+  httpServer.listen({ port }, () => {
+    console.log(`🚀  Server ready at http://localhost:${port}/graphql`)
   })
 }
 
-start().catch((err) => console.error(err));
+start().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
