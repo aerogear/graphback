@@ -1,31 +1,25 @@
 import { GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLSchema } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
 import { getUserModels } from '../crud';
+import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
 import { defaultTableNameTransform } from './defaultNameTransforms';
 import { getPrimaryKey } from './getPrimaryKey';
 
-export interface DatabaseMap {
-  modelMap: ModelMap[]
-}
-
-export interface ModelMap {
+export interface ModelTableMapping {
   typeName: string
   tableName: string
   id: string
   fieldMap: any
 }
 
-export const getModelTableMappings = (schema: GraphQLSchema): DatabaseMap => {
-  const models = getUserModels(schema);
+export const getModelTableMappings = (schema: GraphQLSchema): ModelTableMapping[] => {
+  const modelTypes = getModelTypesFromSchema(schema);
+  const models = getUserModels(modelTypes);
 
-  const modelMap = mapModelsToTables(models);
-
-  return {
-    modelMap
-  }
+  return mapModelsToTables(models);
 }
 
-function mapModelsToTables(models: GraphQLObjectType[]): ModelMap[] {
+function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
   return models.map((model: GraphQLObjectType) => {
     return {
       id: getPrimaryKey(model),

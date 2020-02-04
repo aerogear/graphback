@@ -65,10 +65,8 @@ export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
 }
 
-export function getUserModels(schema: GraphQLSchema) {
-  const types = getModelTypesFromSchema(schema)
-
-  return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
+export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
+  return modelTypes.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
 }
 
 
