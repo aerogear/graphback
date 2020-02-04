@@ -1,4 +1,4 @@
-import { defaultColumnNameTransform, defaultTableNameTransform, NameTransform } from '@graphback/core';
+import { defaultColumnNameTransform, defaultTableNameTransform, DatabaseNameTransform } from '@graphback/core';
 import { buildSchema, GraphQLSchema } from 'graphql'
 import * as Knex from 'knex';
 import { generateAbstractDatabase, ScalarMap } from './abstract/generateAbstractDatabase'
@@ -30,11 +30,11 @@ export interface MigrateOptions {
   /**
    * Transform the table names.
    */
-  transformTableName?: NameTransform | null
+  transformTableName?: DatabaseNameTransform | null
   /**
    * Transform the column names.
    */
-  transformColumnName?: NameTransform | null
+  transformColumnName?: DatabaseNameTransform | null
   /**
    * Custom Scalar mapping
    */

@@ -1,4 +1,4 @@
-import { defaultTableNameTransform, defaultColumnNameTransform, NameTransform, lowerCaseFirstChar } from '@graphback/core';
+import { defaultTableNameTransform, defaultColumnNameTransform, DatabaseNameTransform, lowerCaseFirstChar } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -53,8 +53,8 @@ export type ScalarMap = (
 export interface GenerateAbstractDatabaseOptions {
   scalarMap?: ScalarMap | null
   mapListToJson?: boolean
-  transformTableName?: NameTransform | null
-  transformColumnName?: NameTransform | null
+  transformTableName?: DatabaseNameTransform | null
+  transformColumnName?: DatabaseNameTransform | null
 }
 
 export const defaultOptions: GenerateAbstractDatabaseOptions = {
@@ -75,8 +75,8 @@ class AbstractDatabaseBuilder {
   private schema: GraphQLSchema
   private scalarMap: ScalarMap | null
   private mapListToJson: boolean
-  private transformTableName: NameTransform | null
-  private transformColumnName: NameTransform | null
+  private transformTableName: DatabaseNameTransform | null
+  private transformColumnName: DatabaseNameTransform | null
   private typeMap: TypeMap
   private database: AbstractDatabase
   /** Used to push new intermediary tables after current table */
