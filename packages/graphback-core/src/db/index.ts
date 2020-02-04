@@ -1,2 +1,2 @@
 export * from './defaultNameTransforms';
-export { getModelMappings } from './databaseMappings';
+export { getModelTableMappings } from './databaseMapper';

@@ -15,28 +15,28 @@ export interface ModelMap {
   fieldMap: any
 }
 
-export const getModelMappings = (schema: GraphQLSchema): DatabaseMap => {
+export const getModelTableMappings = (schema: GraphQLSchema): DatabaseMap => {
   const models = getUserModels(schema);
 
-  const modelMap = mapTypes(models);
+  const modelMap = mapModelsToTables(models);
 
   return {
     modelMap
   }
 }
 
-function mapTypes(models: GraphQLObjectType[]): ModelMap[] {
+function mapModelsToTables(models: GraphQLObjectType[]): ModelMap[] {
   return models.map((model: GraphQLObjectType) => {
     return {
       idField: getPrimaryKey(model),
       typeName: model.name,
       tableName: getTableName(model),
-      fieldMap: mapFields(model.getFields())
+      fieldMap: mapFieldsToColumns(model.getFields())
     }
   });
 }
 
-function mapFields(fieldMap: GraphQLFieldMap<any, any>) {
+function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>) {
   return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
     obj[field.name] = getTableName(field);
 
@@ -44,7 +44,7 @@ function mapFields(fieldMap: GraphQLFieldMap<any, any>) {
   }, {});
 }
 
-function getTableName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
+export function getTableName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
   let tableName = defaultTableNameTransform(modelOrField.name, 'to-db');
   const dbAnnotations = parseDbAnnotations(modelOrField) || {};
 

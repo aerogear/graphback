@@ -1,9 +1,9 @@
-import { getModelMappings } from '@graphback/core';
+import { getModelTableMappings } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { CRUDService, PgKnexDBDataProvider } from '.';
 import { GraphbackRuntimeContext } from './api/GraphbackRuntimeContext';
- 
+
 /**
  * Create context object required for the graphback runtime layer 
  */
@@ -11,7 +11,9 @@ export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine, schema: 
   const crudDb = new PgKnexDBDataProvider(db);
   const crudService = new CRUDService(crudDb, pubSub);
 
-  const mappingDefinitions = getModelMappings(schema);
+  const mappingDefinitions = getModelTableMappings(schema);
+
+  console.log(mappingDefinitions);
 
   return {
     crudService,
