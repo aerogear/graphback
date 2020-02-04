@@ -1,5 +1,5 @@
 import { createBlankResolverTemplate, createCustomResolversIndex, createResolversIndex, createResolverTemplate } from '../formatters/apollo';
-import { ResolverGeneratorPluginOptions } from '../ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
 import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 
 export interface OutputResolvers {
@@ -18,7 +18,7 @@ export interface ResolverOutputDefinition {
     output: string
 }
 
-export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverGeneratorPluginOptions): OutputResolverGroup => {
+export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverGeneratorPluginConfig): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
     for (const baseTypeName of Object.keys(baseTypeResolvers)) {

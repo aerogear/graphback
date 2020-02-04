@@ -1,3 +1,4 @@
+""" @model """
 type Note {
   id: ID!
   title: String!
@@ -5,6 +6,7 @@ type Note {
   comments: [Comment]!
 }
 
+""" @model """
 type Comment {
   id: ID!
   text: String!

@@ -1,4 +1,4 @@
-import { checkDirectory, transformOpenApiSpec } from '../helpers'
+import { transformOpenApiSpec } from '../components'
 
 export const command = 'openapi'
 

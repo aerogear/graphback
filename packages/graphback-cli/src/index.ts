@@ -2,7 +2,7 @@
 
 import * as yargs from 'yargs';
 
-export * from './helpers'
+export * from './components'
 
 if (require.main === module) {
   // tslint:disable-next-line: no-unused-expression

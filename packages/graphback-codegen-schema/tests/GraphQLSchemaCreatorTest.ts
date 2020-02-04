@@ -21,7 +21,7 @@ ava('Test snapshot config gql', async (t: ExecutionContext) => {
   }
 
 
-  const schemaGenerator = new SchemaCRUDPlugin({ format: 'gql', outputPath: './tmp' })
+  const schemaGenerator = new SchemaCRUDPlugin({ format: 'graphql', outputPath: './tmp' })
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))

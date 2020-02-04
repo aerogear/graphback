@@ -1,14 +1,13 @@
+""" @model """
 type Note {
   id: ID!
   title: String!
   description: String!
-  ## Relationship
-  """
-  @db.oneToMany: 'noteComment'
-  """
+
   comment: [Comment]!
 }
 
+""" @model """
 type Comment {
   id: ID!
   title: String!

@@ -1,4 +1,4 @@
-import { ResolverGeneratorPluginOptions } from '../../ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginConfig } from '../../ResolverGeneratorPlugin';
 
 const runtimeImportTemplate = `import { validateRuntimeContext } from "@graphback/runtime";`
 
@@ -8,12 +8,12 @@ export const rootResolversIndexTS = (groups: string[] = ['generated', 'custom'])
 export const resolvers = [${groups.map((name: string) => `...${name}Resolvers`)}];`;
 }
 
-export const resolverFileTemplateTS = (outputResolvers: string[], options: ResolverGeneratorPluginOptions) => {
+export const resolverFileTemplateTS = (outputResolvers: string[], options: ResolverGeneratorPluginConfig) => {
     let resolverType = '';
     let typedImports = '';
     if (options.types) {
-        resolverType = ` as ${options.types.resolverRootType}`;
-        typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}\n"`;
+        resolverType = ` as ${options.types.resolverRootType};\n`;
+        typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}";\n`;
     }
 
     return `

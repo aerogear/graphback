@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { ClientTemplates } from '../templates/ClientTemplates';
 
-export const writeDocumentsToFilesystem = (clientPath: string, generatedClient: ClientTemplates, extension: 'ts' | 'gql') => {
+export const writeDocumentsToFilesystem = (clientPath: string, generatedClient: ClientTemplates, extension: 'ts' | 'graphql') => {
     if (!existsSync(clientPath)) {
         mkdirSync(clientPath, { recursive: true })
     }

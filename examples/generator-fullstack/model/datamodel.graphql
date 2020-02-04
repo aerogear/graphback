@@ -1,7 +1,4 @@
-""" 
-@model
-@crud.delete: false 
-"""
+""" @model """
 type Note {
   id: ID!
   """

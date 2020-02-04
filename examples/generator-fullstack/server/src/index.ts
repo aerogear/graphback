@@ -18,16 +18,16 @@ async function start() {
   app.get('/health', (req, res) => res.sendStatus(200));
 
   const config = await loadConfig({
-    extensions: [() => ({ name: 'generate' })]
+    extensions: [() => ({ name: 'graphback' })]
   });
 
-  const generateConfig = await config!.getDefault().extension('generate');
+  const generateConfig = await config!.getDefault().extension('graphback');
 
   // connect to db
   // TODO Embed knex as part of the runtime codegeneration
   const db = knex({
-    client: generateConfig.db.database,
-    connection: generateConfig.db.dbConfig,
+    client: generateConfig.dbmigrations.database,
+    connection: generateConfig.dbmigrations.dbConfig,
   })
 
   const pubSub = new PubSub();
@@ -37,7 +37,7 @@ async function start() {
     resolvers: loadResolversFiles(join(__dirname, '/resolvers/')),
     context: createKnexRuntimeContext(db as any, pubSub),
     playground: true,
-  })
+  } as any)
 
   apolloServer.applyMiddleware({ app })
 

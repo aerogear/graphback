@@ -1,18 +1,12 @@
-schema:
-  ./server/src/schema/index.ts:
-    require: ts-node/register
-documents: "./client/src/graphql/**/*.ts"
+schema: ./server/src/schema/*.graphql
+documents: ./client/src/graphql/**/*.graphql
 extensions:
-  generate:
-    db:
-      dbConfig:
-        user: postgresql
-        password: postgres
-        database: users
-        host: localhost
-        port: 55432
-      database: pg
-    graphqlCRUD:
+  # Graphback configuration
+  graphback:
+    ##  Input schema
+    model: ./model
+    ## Global configuration for CRUD generator
+    crud:
       create: true
       update: true
       findAll: true
@@ -21,23 +15,51 @@ extensions:
       subCreate: false
       subUpdate: false
       subDelete: false
-      disableGen: false
-    folders:
-      model: ./model
-      resolvers: ./server/src/resolvers
-      schema: ./server/src/schema
-      client: ./client/src/graphql
+    ## Codegen plugins
+    plugins:
+        graphback-schema:
+          format: 'graphql'
+          outputPath: ./server/src/schema
+        graphback-client:
+          format: 'graphql'
+          outputPath: ./client/src/graphql
+        graphback-resolvers:
+          format: ts
+          outputPath: ./server/src/resolvers
+          types:
+            resolverRootLocation: ../../generated-types
+            resolverRootType: Resolvers
+    ## Knex DB Migration config
+    dbmigrations:
+      ## See knex.js config format
+      dbConfig:
+        user: postgresql
+        password: postgres
+        database: users
+        host: localhost
+        port: 55432
+      database: pg
   codegen:
-    ./server/src/generated-types.ts:
-      plugins:
-        - typescript
-        - typescript-resolvers
-    ./client/src/generated-types.tsx:
-      plugins:
-        - typescript
-        - typescript-operations
-        - typescript-react-apollo
-      config:
-        withComponent: false
-        withHOC: false
-        withHooks: true
+    generates:
+      ./client/src/generated-types.tsx:
+        config:
+          withComponent: false
+          withHOC: false
+          withHooks: true
+          skipDocumentsValidation: true
+        plugins:
+          - add: '/* tslint:disable */'
+          - typescript
+          - typescript-operations
+          - typescript-react-apollo
+      ./server/src/generated-types.ts:
+        config:
+          mappers:
+            Comment: './generated-db-types#comment'
+            Note: './generated-db-types#note'
+          useIndexSignature: true
+          skipDocumentsValidation: true
+        plugins:
+          - add: '/* tslint:disable */'
+          - typescript
+          - typescript-resolvers
