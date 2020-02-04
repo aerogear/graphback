@@ -24,6 +24,7 @@
     "pg": "7.17.1"
   },
   "devDependencies": {
+    "@types/glob": "7.1.1",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.4",
     "ts-node": "8.6.2",
