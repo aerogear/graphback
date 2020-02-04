@@ -13,7 +13,7 @@ export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine, schema: 
 
   const mappingDefinitions = getModelTableMappings(schema);
 
-  console.log(mappingDefinitions);
+  console.log(JSON.stringify(mappingDefinitions));
 
   return {
     crudService,

@@ -2,7 +2,7 @@ import { GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLSchema } from 
 import { parseDbAnnotations } from '../annotations/parser';
 import { getUserModels } from '../crud';
 import { defaultTableNameTransform } from './defaultNameTransforms';
-import { getPrimaryKey } from './utils';
+import { getPrimaryKey } from './getPrimaryKey';
 
 export interface DatabaseMap {
   modelMap: ModelMap[]
@@ -11,7 +11,7 @@ export interface DatabaseMap {
 export interface ModelMap {
   typeName: string
   tableName: string
-  idField: string
+  id: string
   fieldMap: any
 }
 
@@ -28,7 +28,7 @@ export const getModelTableMappings = (schema: GraphQLSchema): DatabaseMap => {
 function mapModelsToTables(models: GraphQLObjectType[]): ModelMap[] {
   return models.map((model: GraphQLObjectType) => {
     return {
-      idField: getPrimaryKey(model),
+      id: getPrimaryKey(model),
       typeName: model.name,
       tableName: getTableName(model),
       fieldMap: mapFieldsToColumns(model.getFields())
