@@ -85,10 +85,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         let subscriptionTypes = {};
 
         for (const model of Object.values(models)) {
-            if (model.crudOptions.disableGen) {
-                continue;
-            }
-
             const modelInputType = this.createInputTypes(model);
             queryTypes = this.createQueries(model, queryTypes, modelInputType);
             mutationTypes = this.createMutations(model, mutationTypes, modelInputType);
