@@ -37,7 +37,7 @@ async function start() {
   });
 
   const pubSub = new PubSub();
-  const context = createKnexRuntimeContext(db, pubSub);
+  const context = createKnexRuntimeContext(db, pubSub, schema);
   const apolloConfig = {
     schema,
     context
