@@ -20,7 +20,13 @@ export const transformOpenApiSpec = async () => {
     const configInstance = new ConfigBuilder();
     checkDirectory(configInstance);
 
-    const { folders, openApi } = configInstance.config;
+    const { folders } = configInstance.config;
+    const openApi = configInstance.config.openApi || {
+        includeComments : false,
+        reuseOpenAPIModel: false,
+        includeQueriesAndMutations: false
+    }
+
     const models = new GlobSync(`${folders.model}/*.yaml`)
     const jsonModels = new GlobSync(`${folders.model}/*.json`)
 
@@ -39,7 +45,7 @@ export const transformOpenApiSpec = async () => {
 
     logInfo(`
    Successfully generated GraphQL schema from OpenAPI definition.
-   You can review your schema in model folder and modify it for your own needs. 
+   You can review your schema in model folder and modify it for your own needs.
    You can then generate your backend using ${chalk.cyan(`generate`)} command that will create resolvers.
    OpenAPI files will not longer be processed by generator.`)
 }
