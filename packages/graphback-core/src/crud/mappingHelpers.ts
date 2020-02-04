@@ -1,6 +1,9 @@
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
+import { lowerCaseFirstChar, upperCaseFirstChar } from '../db';
+import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
 import { GraphbackOperationType } from './GraphbackOperationType';
-
 
 // TODO is is esential to document this element
 
@@ -62,15 +65,10 @@ export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
 }
 
+export function getUserModels(schema: GraphQLSchema) {
+  const types = getModelTypesFromSchema(schema)
 
-// TODO this is db level mapping. To be moved
-export const getTableName = (typeName: string): string => {
-  return typeName.toLowerCase()
-}
-
-// TODO this is db level mapping. To be moved
-export const getIdFieldName = (type: any): string => {
-  return 'id'
+  return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
 }
 
 
@@ -91,12 +89,4 @@ export function getRelationFieldName(field: any, type: any) {
   }
 
   return fieldName;
-}
-
-export function lowerCaseFirstChar(text: string) {
-  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
-}
-
-export function upperCaseFirstChar(text: string) {
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 }

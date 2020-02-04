@@ -1,68 +1,56 @@
 import { GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLSchema } from "graphql";
-import { parseAnnotations, parseMarker } from 'graphql-metadata';
-import { lowerCaseFirstChar } from '../crud';
-import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
+import { parseDbAnnotations } from '../annotations/parser';
+import { getUserModels } from '../crud';
+import { defaultTableNameTransform } from './defaultNameTransforms';
+import { getPrimaryKey } from './utils';
 
-export const getFieldMapping = (fieldMappings: any[]) => {
-  return Object.assign({}, ...fieldMappings.map((item: any) => {
-    const fieldKey = Object.keys(item)[0];
-
-    return {
-      [fieldKey]: item[fieldKey]
-    }
-  }))
+export interface DatabaseMap {
+  modelMap: ModelMap[]
 }
 
-export const getDatabaseTypeMappings = (schema: GraphQLSchema) => {
+export interface ModelMap {
+  typeName: string
+  tableName: string
+  idField: string
+  fieldMap: any
+}
+
+export const getModelMappings = (schema: GraphQLSchema): DatabaseMap => {
   const models = getUserModels(schema);
 
-  return mapTypes(models);
+  const modelMap = mapTypes(models);
+
+  return {
+    modelMap
+  }
 }
 
-function mapTypes(models: GraphQLObjectType[]) {
+function mapTypes(models: GraphQLObjectType[]): ModelMap[] {
   return models.map((model: GraphQLObjectType) => {
     return {
-      id: getPrimaryKey(model.getFields()),
-      [model.name]: getDbName(model),
-      fields: mapFields(model.getFields())
+      idField: getPrimaryKey(model),
+      typeName: model.name,
+      tableName: getTableName(model),
+      fieldMap: mapFields(model.getFields())
     }
   });
 }
 
 function mapFields(fieldMap: GraphQLFieldMap<any, any>) {
   return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
-    obj[field.name] = getDbName(field);
+    obj[field.name] = getTableName(field);
 
     return obj;
   }, {});
 }
 
-// TODO: Common annotation helper?
-const parseDbAnnotations = (description?: string): any => {
-  return description ? parseAnnotations('db', String(description)) : {};
-}
-
-function getPrimaryKey(fieldMap: GraphQLFieldMap<any, any>) {
-  const fields = Object.values(fieldMap);
-  
-  // const primaryKey = fields.find(())
-
-  return 'id';
-}
-
-function getDbName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
-  let tableName = lowerCaseFirstChar(modelOrField.name);
-  const dbAnnotations = parseDbAnnotations(modelOrField.description);
+function getTableName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
+  let tableName = defaultTableNameTransform(modelOrField.name, 'to-db');
+  const dbAnnotations = parseDbAnnotations(modelOrField) || {};
 
   if (dbAnnotations.name) {
     tableName = dbAnnotations.name;
   }
 
   return tableName;
-}
-
-function getUserModels(schema: GraphQLSchema) {
-  const types = getModelTypesFromSchema(schema)
-
-  return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
 }

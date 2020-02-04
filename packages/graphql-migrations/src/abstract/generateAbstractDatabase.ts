@@ -1,3 +1,4 @@
+import { defaultTableNameTransform, defaultColumnNameTransform, NameTransform, lowerCaseFirstChar } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -13,7 +14,6 @@ import {
 import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
-import { defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '../util/defaultNameTransforms'
 import getObjectTypeFromList from '../util/getObjectTypeFromList'
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
@@ -49,13 +49,6 @@ export type ScalarMap = (
   scalarType: GraphQLScalarType | null,
   annotations: any,
 ) => TableColumnTypeDescriptor | null
-
-export type NameTransformDirection = 'from-db' | 'to-db'
-
-export type NameTransform = (
-  name: string,
-  direction: NameTransformDirection,
-) => string
 
 export interface GenerateAbstractDatabaseOptions {
   scalarMap?: ScalarMap | null

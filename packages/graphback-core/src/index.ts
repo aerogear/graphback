@@ -10,4 +10,4 @@ export * from './plugin/GraphbackGlobalConfig'
 export * from './plugin/GraphbackCRUDGeneratorConfig';
 export * from './plugin/ModelDefinition'
 export * from './plugin/GraphbackCoreMetadata'
-export { getDatabaseTypeMappings } from './db/databaseMappings';
+export * from './db';
