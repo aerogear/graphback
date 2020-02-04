@@ -7,13 +7,13 @@ import { GraphQLSchema } from 'graphql';
  * Global configuration for Graphback ecosystem that represents each plugin 
  */
 export interface GraphbackGeneratorConfig {
-  global?: GraphbackGlobalConfig
+  crud?: GraphbackGlobalConfig
   // Plugins configuration
   plugins?: {
     ResolversCRUD?: ResolverGeneratorPluginOptions
     SchemaCRUD?: SchemaCRUDPluginConfig
     ClientCRUD?: ClientGeneratorPluginConfig
-  }
+  } | any
 }
 
 /**
@@ -36,8 +36,15 @@ export class GraphbackGenerator {
    */
   // FIXME generator options should be moved to plugin config
   public buildServer() {
-    const pluginEngine = new GraphbackPluginEngine(this.schema, this.config.global);
-    // TODO declarative plugin definition
+    const pluginEngine = new GraphbackPluginEngine(this.schema, this.config.crud);
+
+    for(const plugin of Object.keys(this.config.plugins)){
+      if(plugin.startsWith('graphback-')){
+        const pluginName = plugin.replace('graphback-','@graphback/codegen-');
+        // TODO require
+      }
+    }
+
     const schemaConfig = this.config.plugins?.SchemaCRUD
     const schemaCRUDPlugin = new SchemaCRUDPlugin(schemaConfig);
     const resolverPlugin = new ResolverGeneratorPlugin(this.config.plugins?.ResolversCRUD);

@@ -55,12 +55,16 @@
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
+    "@graphql-toolkit/code-file-loader": "^0.9.7",
     "chalk": "2.4.2",
+    "chokidar": "^3.3.1",
+    "debounce": "^1.2.0",
     "execa": "4.0.0",
     "figlet": "1.2.4",
     "glob": "7.1.6",
     "graphback": "0.10.2",
     "graphql": "14.5.8",
+    "graphql-config": "3.0.0-alpha.17",
     "graphql-migrations": "0.10.2",
     "inquirer": "7.0.3",
     "js-yaml": "3.13.1",

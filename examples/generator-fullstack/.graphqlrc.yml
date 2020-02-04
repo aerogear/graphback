@@ -4,7 +4,7 @@ schema:
 documents: "./client/src/graphql/**/*.ts"
 extensions:
   # Graphback configuration
-  generate:
+  graphback:
     ##  Input schema
     model: ./model
     ## Global configuration for CRUD generator
@@ -20,20 +20,19 @@ extensions:
       disableGen: false
     ## Codegen plugins
     plugins:
-      - graphback-codegen-schema
-        format: 'gql',
-        outputPath: ./server/src/schema,
-        outputFileName: 'generated'
-      - graphback-codegen-client
-        format: 'ts',
-        outputPath: ./client/src/graphql,
-      - graphback-codegen-resolvers
+        graphback-codegen-schema:
+          format: 'gql'
+          outputPath: ./server/src/schema
+          outputFileName: 'generated'
+        graphback-codegen-client:
+          format: 'ts'
+          outputPath: ./client/src/graphql
+        graphback-codegen-resolvers:
           format: ts
-          outputPath: ./server/src/resolvers,
+          outputPath: ./server/src/resolvers
           types:
             resolverRootLocation: ../../generated-types
             resolverRootType: Resolvers
-   
     ## Knex DB Migration config
     knexdb:
       ## See knex.js config format
@@ -43,7 +42,7 @@ extensions:
         database: users
         host: localhost
         port: 55432
-    database: pg
+      database: pg
   codegen:
     ./server/src/generated-types.ts:
       plugins:
