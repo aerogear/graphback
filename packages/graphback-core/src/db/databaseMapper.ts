@@ -1,10 +1,18 @@
-import { GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLSchema } from "graphql";
+import { GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLSchema, isObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
 import { getUserModels } from '../crud';
 import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
-import { defaultTableNameTransform } from './defaultNameTransforms';
+import { DatabaseNameTransformDirection, defaultColumnNameTransform, defaultTableNameTransform } from './defaultNameTransforms';
 import { getPrimaryKey } from './getPrimaryKey';
 
+/**
+ * Contains mapping information between GraphQL Model type and database table
+ * 
+ * - typeName: Original GraphQLObjectType name
+ * - tableName: Name of datase table
+ * - id: Indicates the primary key field
+ * - fieldMap: Object of key-value mapping between GraphQL fields and database columns.
+ */
 export interface ModelTableMapping {
   typeName: string
   tableName: string
@@ -24,27 +32,37 @@ function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
     return {
       id: getPrimaryKey(model),
       typeName: model.name,
-      tableName: getTableName(model),
+      tableName: getTableOrColumnName(model),
       fieldMap: mapFieldsToColumns(model.getFields())
     }
   });
 }
 
+// TODO: Indentify and map nested query data
 function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>) {
   return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
-    obj[field.name] = getTableName(field);
+    obj[field.name] = getTableOrColumnName(field);
 
     return obj;
   }, {});
 }
 
-export function getTableName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
-  let tableName = defaultTableNameTransform(modelOrField.name, 'to-db');
-  const dbAnnotations = parseDbAnnotations(modelOrField) || {};
+export function getTableOrColumnName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
+  let transformedName = transformTableOrColumnName(modelOrField);
+
+  const dbAnnotations = parseDbAnnotations(modelOrField);
 
   if (dbAnnotations.name) {
-    tableName = dbAnnotations.name;
+    transformedName = dbAnnotations.name;
   }
 
-  return tableName;
+  return transformedName;
+}
+
+function transformTableOrColumnName(modelOrField: GraphQLObjectType | GraphQLField<any, any>, direction: DatabaseNameTransformDirection = 'to-db'): string {
+  if (modelOrField instanceof GraphQLObjectType) {
+    return defaultTableNameTransform(modelOrField.name, direction);
+  }
+
+  return defaultColumnNameTransform(modelOrField.name, direction);
 }

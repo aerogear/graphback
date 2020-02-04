@@ -1,11 +1,20 @@
-export type NameTransformDirection = 'from-db' | 'to-db'
+export type DatabaseNameTransformDirection = 'from-db' | 'to-db'
 
-export type NameTransform = (
+/**
+ * Transform to/from database table or column name
+ */
+export type DatabaseNameTransform = (
   name: string,
-  direction: NameTransformDirection,
+  direction: DatabaseNameTransformDirection,
 ) => string
 
-export function defaultColumnNameTransform(name: string, direction: NameTransformDirection) {
+/**
+ * Transform to/from database column name
+ * 
+ * @param name - model name
+ * @param direction - transform to or from database
+ */
+export function defaultColumnNameTransform(name: string, direction: DatabaseNameTransformDirection) {
   if (direction === 'to-db') {
     return lowerCaseFirstChar(name);
   }
@@ -13,7 +22,13 @@ export function defaultColumnNameTransform(name: string, direction: NameTransfor
   return name
 }
 
-export function defaultTableNameTransform(name: string, direction: NameTransformDirection) {
+/**
+ * Transform to/from database table name
+ * 
+ * @param name - model name
+ * @param direction - transform to or from database
+ */
+export function defaultTableNameTransform(name: string, direction: DatabaseNameTransformDirection) {
   if (direction === 'to-db') {
     return name.toLowerCase();
   }
