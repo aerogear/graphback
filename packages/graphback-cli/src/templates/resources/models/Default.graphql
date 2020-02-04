@@ -1,12 +1,14 @@
+
+# """ @model """
 # type Note {
 #   id: ID!
 #   title: String!
 #   description: String!
 #   ## Relationship
 #   comment: [Comment]!
-
 # }
 
+# """ @model """
 # type Comment {
 #   id: ID!
 #   title: String!

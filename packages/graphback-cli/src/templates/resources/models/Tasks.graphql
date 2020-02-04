@@ -1,3 +1,4 @@
+""" @model """
 type Task {
   id: ID!
   version: Int
@@ -8,11 +9,12 @@ type Task {
   assignedTo: User
 }
 
-type CreationMetadata @disableGen {
+type CreationMetadata {
    createdDate: String
    createdBy: User
  }
 
+""" @model """
 type User {
   id: ID!
   firstName: String!

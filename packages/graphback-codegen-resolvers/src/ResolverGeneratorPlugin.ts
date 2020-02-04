@@ -5,9 +5,7 @@ import { generateCRUDResolvers, generateCustomCRUDResolvers } from './output/cre
 import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './output/outputResolvers';
 import { writeResolvers } from './writer/writeResolvers';
 
-// TODO We are mixing apollo/non appollo stuff. WE should go generic.
-export interface ResolverGeneratorPluginOptions {
-    // TODO format is not used!
+export interface ResolverGeneratorPluginConfig {
     format: 'ts' | 'js'
 
     /**
@@ -47,12 +45,14 @@ const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
  */
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
-    private options: ResolverGeneratorPluginOptions;
+    private pluginConfig: ResolverGeneratorPluginConfig;
 
-    constructor(options: ResolverGeneratorPluginOptions) {
+    constructor(pluginConfig: ResolverGeneratorPluginConfig) {
         super();
-        // TODO: default options
-        this.options = { ...options };
+        this.pluginConfig = Object.assign({ format: 'graphql' }, pluginConfig);
+        if (!pluginConfig.outputPath) {
+            throw new Error("resolver plugin requires outputPath parameter")
+        }
     }
 
     public getPluginName() {
@@ -61,12 +61,12 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
     public createResources(metadata: GraphbackCoreMetadata): void {
         const outputResolves = this.generateResolvers(metadata);
-        if (outputResolves){
-            writeResolvers(outputResolves, this.options);
+        if (outputResolves) {
+            writeResolvers(outputResolves, this.pluginConfig);
         }
     }
 
-    public generateResolvers(metadata: GraphbackCoreMetadata) {
+    public generateResolvers(metadata: GraphbackCoreMetadata): OutputResolvers {
         const schema = metadata.getSchema()
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
@@ -77,17 +77,14 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const generatedResolvers = generateCRUDResolvers(models);
         const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
 
-        const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.options);
-        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.options.format);
-        const rootResolverIndex = createRootResolversIndex(this.options.format);
+        const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.pluginConfig);
+        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig.format);
+        const rootResolverIndex = createRootResolversIndex(this.pluginConfig.format);
 
-        // tslint:disable-next-line: no-unnecessary-local-variable
-        const outputResolvers: OutputResolvers = {
+        return {
             generated: generatedResolverGroup,
             custom: customResolverGroup,
             index: rootResolverIndex
-        }
-
-        return outputResolvers;
+        };
     }
 }

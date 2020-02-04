@@ -1,19 +1,19 @@
-import { ClientCRUDPlugin, ClientGeneratorPluginConfig } from '@graphback/codegen-client';
-import { ResolverGeneratorPlugin, ResolverGeneratorPluginOptions } from "@graphback/codegen-resolvers"
-import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
-import { GraphbackGlobalConfig, GraphbackPluginEngine } from '@graphback/core';
+import { ClientGeneratorPluginConfig } from '@graphback/codegen-client';
+import { ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
+import { SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
+import { GraphbackCRUDGeneratorConfig, GraphbackPluginEngine } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 
  */
 export interface GraphbackGeneratorConfig {
-  global?: GraphbackGlobalConfig
+  crud?: GraphbackCRUDGeneratorConfig
   // Plugins configuration
   plugins?: {
-    ResolversCRUD?: ResolverGeneratorPluginOptions
+    ResolversCRUD?: ResolverGeneratorPluginConfig
     SchemaCRUD?: SchemaCRUDPluginConfig
     ClientCRUD?: ClientGeneratorPluginConfig
-  }
+  } | any
 }
 
 /**
@@ -34,15 +34,33 @@ export class GraphbackGenerator {
   /**
    * Create backend with all related resources
    */
-  // FIXME generator options should be moved to plugin config
   public buildServer() {
-    const pluginEngine = new GraphbackPluginEngine(this.schema, this.config.global);
-    // TODO declarative plugin definition
-    const schemaConfig = this.config.plugins?.SchemaCRUD
-    const schemaCRUDPlugin = new SchemaCRUDPlugin(schemaConfig);
-    const resolverPlugin = new ResolverGeneratorPlugin(this.config.plugins?.ResolversCRUD);
-    const clientCRUDPlugin = new ClientCRUDPlugin(this.config.plugins.ClientCRUD)
-    pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin, clientCRUDPlugin);
+    const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
+
+    for (const pluginLabel of Object.keys(this.config.plugins)) {
+      let pluginName;
+      if (pluginLabel.startsWith('graphback-')) {
+        // Internal graphback plugins needs rename
+        pluginName = pluginLabel.replace('graphback-', '@graphback/codegen-')
+      } else {
+        pluginName = pluginLabel;
+      }
+      try {
+        // tslint:disable-next-line: non-literal-require
+        const plugin = require(pluginName)
+        if (plugin.Plugin) {
+          const config = this.config.plugins[pluginLabel]
+          pluginEngine.registerPlugin(new plugin.Plugin(config))
+        } else {
+          // tslint:disable-next-line: no-console
+          console.log(`${pluginName} plugin is not exporting 'Plugin' class`)
+        }
+      } catch (e) {
+        // tslint:disable-next-line: no-console
+        console.log(`${pluginName} plugin missing in package.json`, e)
+      }
+    }
+
     pluginEngine.execute();
   }
 }

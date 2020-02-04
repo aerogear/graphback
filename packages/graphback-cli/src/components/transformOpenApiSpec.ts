@@ -2,13 +2,12 @@ import chalk from 'chalk';
 import { readFileSync, renameSync, writeFileSync } from 'fs';
 import { GlobSync } from 'glob';
 import { printSchema } from 'graphql';
+import { loadConfig } from 'graphql-config';
 import { safeLoad } from 'js-yaml'
 import { createGraphQlSchema } from "openapi-to-graphql"
-import { ConfigBuilder } from '../config/ConfigBuilder';
-import { OpenApiConfig } from '../config/OpenApiConfig';
+import { extensionName, graphbackConfigExtension } from '../config/extension';
 import { logError, logInfo } from '../utils';
 import { removeCommentsFromSchema, removeOperationsFromSchema } from "../utils/openApiHelpers"
-import { checkDirectory } from './common';
 
 /**
  * OpenAPI command line tool
@@ -17,18 +16,22 @@ import { checkDirectory } from './common';
  * 3. Renames original OpenAPI definitions so they will not be processed anymore
  */
 export const transformOpenApiSpec = async () => {
-    const configInstance = new ConfigBuilder();
-    checkDirectory(configInstance);
+    const config = await loadConfig({
+        extensions: [graphbackConfigExtension]
+    });
+    const project = config.getProject('default')
+    const graphbackConfig = project.extension(extensionName);
 
-    const { folders } = configInstance.config;
-    const openApi = configInstance.config.openApi || {
-        includeComments : false,
-        reuseOpenAPIModel: false,
-        includeQueriesAndMutations: false
+    if (!graphbackConfig) {
+        throw new Error(`You should provide a valid '${extensionName}' config to generate schema from data model`);
     }
 
-    const models = new GlobSync(`${folders.model}/*.yaml`)
-    const jsonModels = new GlobSync(`${folders.model}/*.json`)
+    if (!graphbackConfig.model) {
+        throw new Error(`' ${extensionName}' config missing 'model' value that is required`);
+    }
+
+    const models = new GlobSync(`${graphbackConfig.model}/*.yaml`)
+    const jsonModels = new GlobSync(`${graphbackConfig.model}/*.json`)
 
     if (models.found.length === 0 && jsonModels.found.length === 0) {
         logError(`No OpenAPI file found inside model folder.`)
@@ -36,21 +39,21 @@ export const transformOpenApiSpec = async () => {
     }
 
     for (const model of jsonModels.found) {
-        await processSingleDefinition(model, false, openApi);
+        await processSingleDefinition(model, false);
     }
 
     for (const model of models.found) {
-        await processSingleDefinition(model, true, openApi);
+        await processSingleDefinition(model, true);
     }
 
     logInfo(`
    Successfully generated GraphQL schema from OpenAPI definition.
-   You can review your schema in model folder and modify it for your own needs.
+   You can review your schema in model folder and modify it for your own needs. 
    You can then generate your backend using ${chalk.cyan(`generate`)} command that will create resolvers.
    OpenAPI files will not longer be processed by generator.`)
 }
 
-async function processSingleDefinition(model: string, isYaml: boolean, openApiConfig: OpenApiConfig) {
+async function processSingleDefinition(model: string, isYaml: boolean) {
     logInfo(`   Processing OpenAPI definition: ${model}`);
     const schemaText: string = readFileSync(`${model}`, 'utf8');
     let parsedObject;
@@ -66,19 +69,12 @@ async function processSingleDefinition(model: string, isYaml: boolean, openApiCo
             equivalentToMessages: false,
 
         });
-        if (!openApiConfig.includeComments) {
-            schema = removeCommentsFromSchema(schema)
-        }
-        if (!openApiConfig.includeQueriesAndMutations) {
-            schema = removeOperationsFromSchema(schema);
-        }
-
+        schema = removeCommentsFromSchema(schema)
+        schema = removeOperationsFromSchema(schema);
         const schemaString = printSchema(schema);
 
         writeFileSync(`${model}.graphql`, schemaString);
-        if (!openApiConfig.reuseOpenAPIModel) {
-            renameSync(`${model}`, `${model}_processed`)
-        }
+        renameSync(`${model}`, `${model}_processed`)
         logInfo(`   Finished transforming OpenAPI definition: ${model}`);
     }
     catch (err) {

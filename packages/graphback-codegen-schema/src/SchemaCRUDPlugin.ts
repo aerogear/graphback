@@ -10,8 +10,10 @@ import { printSortedSchema } from './writer/schemaPrinter';
  * Configuration for Schema generator CRUD plugin
  */
 export interface SchemaCRUDPluginConfig {
-    // output format for schema string
-    format: 'ts' | 'js' | 'gql',
+    /**
+     * Output format for schema string
+     */
+    format: 'ts' | 'js' | 'graphql',
 
     /**
      * RelativePath for the output files created by generator
@@ -46,7 +48,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     constructor(pluginConfig?: SchemaCRUDPluginConfig) {
         super()
-        this.pluginConfig = Object.assign({ format: 'gql', outputFileName: 'schema' }, pluginConfig);
+        this.pluginConfig = Object.assign({ format: 'graphql', outputFileName: 'schema' }, pluginConfig);
+        if (!pluginConfig.outputPath) {
+            throw new Error("schema plugin requires outputPath parameter")
+        }
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -68,7 +73,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         if (!existsSync(this.pluginConfig.outputPath)) {
             mkdirSync(this.pluginConfig.outputPath, { recursive: true });
         }
-        
+
         const location = resolve(this.pluginConfig.outputPath, `${this.pluginConfig.outputFileName}.${this.pluginConfig.format}`);
         writeFileSync(location, schemaString);
     }
@@ -88,11 +93,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             if (this.pluginConfig.format === 'js') {
                 return jsSchemaFormatter.format(schemaString)
             }
-            if (this.pluginConfig.format === 'gql') {
+            if (this.pluginConfig.format === 'graphql') {
                 return gqlSchemaFormatter.format(schemaString)
             }
         }
-        throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `gql` flags");
+        throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `graphql` flags");
     }
 
     public getPluginName() {

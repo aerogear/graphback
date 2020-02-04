@@ -13,10 +13,11 @@ export interface ClientGeneratorPluginConfig {
      * Our plugin supports multiple languages for simplicity
      *
      * - ts - typescript file output (backwards compatibility)
-     * - gql - .graphql file
-     * - gqlwithfragment - complete gql queries containing fragments for redundancy
+     * - graphql - .graphql file
+     * - gqlwithfragment - complete graphql queries containing fragments for redundancy
      */
-    format: 'ts' | 'gql' | 'gqlwithfragment'
+    // TODO change format from gql to graphql
+    format: 'ts' | 'graphql' | 'gqlwithfragment'
 
     /**
      * RelativePath for the output files created by generator
@@ -41,16 +42,18 @@ export const CLIENT_CRUD_PLUGIN = "ClientCRUDPlugin";
  */
 export class ClientCRUDPlugin extends GraphbackPlugin {
     private pluginConfig: ClientGeneratorPluginConfig;
-     
+
     constructor(pluginConfig?: ClientGeneratorPluginConfig) {
         super()
-        this.pluginConfig = Object.assign({ outputFormat: 'ts' }, pluginConfig);
-
+        this.pluginConfig = Object.assign({ format: 'graphql' }, pluginConfig);
+        if (!pluginConfig.outputPath) {
+            throw new Error("client plugin requires outputPath parameter")
+        }
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
         const documents = this.getDocuments(metadata)
-        const outputFormat = this.pluginConfig.format === 'gqlwithfragment' ? 'gql' : this.pluginConfig.format;
+        const outputFormat = this.pluginConfig.format === 'gqlwithfragment' ? 'graphql' : this.pluginConfig.format;
 
         writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
     }
@@ -70,7 +73,7 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         if (this.pluginConfig.format === 'ts') {
             documents = createClientDocumentsTS(models);
         }
-        else if (this.pluginConfig.format === 'gql') {
+        else if (this.pluginConfig.format === 'graphql') {
             documents = createClientDocumentsGQL(models);
         }
         else if (this.pluginConfig.format === 'gqlwithfragment') {
