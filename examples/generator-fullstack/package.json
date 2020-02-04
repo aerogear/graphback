@@ -2,10 +2,6 @@
   "name": "graphql-cli-fullstack-template",
   "version": "0.10.2",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
     "start:server": "cd server/ && yarn start",
     "start:client": "cd client/ && yarn start",

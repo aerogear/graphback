@@ -6,7 +6,7 @@ import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } f
 import { writeResolvers } from './writer/writeResolvers';
 
 // TODO We are mixing apollo/non appollo stuff. WE should go generic.
-export interface ResolverGeneratorPluginOptions {
+export interface ResolverGeneratorPluginConfig {
     // TODO format is not used!
     format: 'ts' | 'js'
 
@@ -47,9 +47,9 @@ const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
  */
 export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
-    private options: ResolverGeneratorPluginOptions;
+    private options: ResolverGeneratorPluginConfig;
 
-    constructor(options: ResolverGeneratorPluginOptions) {
+    constructor(options: ResolverGeneratorPluginConfig) {
         super();
         // TODO: default options
         this.options = { ...options };

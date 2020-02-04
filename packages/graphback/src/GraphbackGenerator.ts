@@ -1,16 +1,16 @@
 import { ClientCRUDPlugin, ClientGeneratorPluginConfig } from '@graphback/codegen-client';
-import { ResolverGeneratorPlugin, ResolverGeneratorPluginOptions } from "@graphback/codegen-resolvers"
+import { ResolverGeneratorPlugin, ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
 import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
-import { GraphbackGlobalConfig, GraphbackPluginEngine } from '@graphback/core';
+import { GraphbackPluginEngine, GraphbackCRUDGeneratorConfig } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 
  */
 export interface GraphbackGeneratorConfig {
-  crud?: GraphbackGlobalConfig
+  crud?: GraphbackCRUDGeneratorConfig
   // Plugins configuration
   plugins?: {
-    ResolversCRUD?: ResolverGeneratorPluginOptions
+    ResolversCRUD?: ResolverGeneratorPluginConfig
     SchemaCRUD?: SchemaCRUDPluginConfig
     ClientCRUD?: ClientGeneratorPluginConfig
   } | any
@@ -36,20 +36,33 @@ export class GraphbackGenerator {
    */
   // FIXME generator options should be moved to plugin config
   public buildServer() {
-    const pluginEngine = new GraphbackPluginEngine(this.schema, this.config.crud);
+    const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
 
-    for(const plugin of Object.keys(this.config.plugins)){
-      if(plugin.startsWith('graphback-')){
-        const pluginName = plugin.replace('graphback-','@graphback/codegen-');
-        // TODO require
+    for (const pluginLabel of Object.keys(this.config.plugins)) {
+      let pluginName;
+      if (pluginLabel.startsWith('graphback-')) {
+        // Internal graphback plugins needs rename
+        pluginName = pluginLabel.replace('graphback-', '@graphback/codegen-')
+      } else {
+        pluginName = pluginLabel;
+      }
+      try {
+        // tslint:disable-next-line: non-literal-require
+        const plugin = require(pluginName)
+        if (plugin.Plugin) {
+          const config = this.config.plugins[pluginLabel]
+          // FIXME - plugins missing basic validation
+          pluginEngine.registerPlugin(new plugin.Plugin(config))
+        } else {
+          // tslint:disable-next-line: no-console
+          console.log(`${pluginName} plugin is not exporting 'Plugin' class`)
+        }
+      } catch (e) {
+        // tslint:disable-next-line: no-console
+        console.log(`${pluginName} plugin missing in package.json`, e)
       }
     }
 
-    const schemaConfig = this.config.plugins?.SchemaCRUD
-    const schemaCRUDPlugin = new SchemaCRUDPlugin(schemaConfig);
-    const resolverPlugin = new ResolverGeneratorPlugin(this.config.plugins?.ResolversCRUD);
-    const clientCRUDPlugin = new ClientCRUDPlugin(this.config.plugins.ClientCRUD)
-    pluginEngine.registerPlugin(schemaCRUDPlugin, resolverPlugin, clientCRUDPlugin);
     pluginEngine.execute();
   }
 }

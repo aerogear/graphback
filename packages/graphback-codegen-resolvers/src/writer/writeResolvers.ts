@@ -2,14 +2,14 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import * as prettier from 'prettier';
 import { OutputResolvers, ResolverOutputDefinition } from '../output/outputResolvers';
-import { ResolverGeneratorPluginOptions } from '../ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
 
 // TODO: Move code formatting to core
 function formatDocument(contents: string) {
     return prettier.format(contents, { semi: false, parser: 'babel' });
 }
 
-export function writeResolvers(outputResolvers: OutputResolvers, options: ResolverGeneratorPluginOptions) {
+export function writeResolvers(outputResolvers: OutputResolvers, options: ResolverGeneratorPluginConfig) {
     // TODO (this should be configurable
     const customResolversPath: string = join(options.outputPath, "/custom")
     const generatedResolversPath: string = join(options.outputPath, "/generated")

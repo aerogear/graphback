@@ -37,7 +37,7 @@ export const generateUsingEngine = async (cliFlags: CliFlags) => {
     const config = await loadConfig({
       extensions: [GenerateConfigExtension]
     });
-
+    // TODO support namespace
     const project = config.getDefault();
 
     const graphbackConfig: GenerateConfig = project.extension(extensionName);
@@ -53,13 +53,14 @@ export const generateUsingEngine = async (cliFlags: CliFlags) => {
     if (graphbackConfig.plugins && graphbackConfig.plugins.length === 0) {
       throw new Error(`'${extensionName}' config 'plugins' section is empty. No code will be generated`);
     }
-
-    console.log(graphbackConfig.plugins)
+    // TODO default plugin config
+    console.log(JSON.stringify(graphbackConfig))
 
     const runGeneration = async () => {
       try {
         const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
-        const engine = new GraphbackGenerator(schemaDocument, graphbackConfig)
+        // TODO validation
+        const engine = new GraphbackGenerator(schemaDocument, graphbackConfig as any)
         engine.buildServer();
       } catch (e) {
         // tslint:disable-next-line: no-console
@@ -77,8 +78,8 @@ export const generateUsingEngine = async (cliFlags: CliFlags) => {
       }).on('all', debouncedExec);
     } else {
       const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
-      const engine = new GraphbackGenerator(schemaDocument, graphbackConfig)
-      engine.buildServer();
+      const generator = new GraphbackGenerator(schemaDocument, graphbackConfig)
+      generator.buildServer();
       process.exit(0);
     }
 

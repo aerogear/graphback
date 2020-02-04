@@ -1,4 +1,4 @@
-import { ResolverGeneratorPluginOptions } from '../../ResolverGeneratorPlugin';
+import { ResolverGeneratorPluginConfig } from '../../ResolverGeneratorPlugin';
 import { createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
 import { createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
 
@@ -20,7 +20,7 @@ export const createBlankResolverTemplate = (resolverType: string, name: string, 
     }`;
 }
 
-function createResolverFileTemplate(name: string, outputResolvers: string[], options: ResolverGeneratorPluginOptions) {
+function createResolverFileTemplate(name: string, outputResolvers: string[], options: ResolverGeneratorPluginConfig) {
     switch (options.format) {
         case 'js':
             return resolverJSFileTemplate(name, outputResolvers);
@@ -31,7 +31,7 @@ function createResolverFileTemplate(name: string, outputResolvers: string[], opt
     }
 }
 
-export const createResolverTemplate = (name: string, typeResolvers: { Query: any, Mutation: any, Subscription: any }, options: ResolverGeneratorPluginOptions) => {
+export const createResolverTemplate = (name: string, typeResolvers: { Query: any, Mutation: any, Subscription: any }, options: ResolverGeneratorPluginConfig) => {
     const mutations = mapResolverKeyValueTemplates(typeResolvers.Mutation)
     const queries = mapResolverKeyValueTemplates(typeResolvers.Query);
     const subscriptions = mapResolverKeyValueTemplates(typeResolvers.Subscription);

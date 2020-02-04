@@ -8,7 +8,7 @@ extensions:
     ##  Input schema
     model: ./model
     ## Global configuration for CRUD generator
-    crudSpec:
+    crud:
       create: true
       update: true
       findAll: true
@@ -20,14 +20,14 @@ extensions:
       disableGen: false
     ## Codegen plugins
     plugins:
-        graphback-codegen-schema:
+        graphback-schema:
           format: 'gql'
           outputPath: ./server/src/schema
           outputFileName: 'generated'
-        graphback-codegen-client:
+        graphback-client:
           format: 'ts'
           outputPath: ./client/src/graphql
-        graphback-codegen-resolvers:
+        graphback-resolvers:
           format: ts
           outputPath: ./server/src/resolvers
           types:
