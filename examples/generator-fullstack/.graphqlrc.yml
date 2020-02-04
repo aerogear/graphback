@@ -3,16 +3,12 @@ schema:
     require: ts-node/register
 documents: "./client/src/graphql/**/*.ts"
 extensions:
+  # Graphback configuration
   generate:
-    db:
-      dbConfig:
-        user: postgresql
-        password: postgres
-        database: users
-        host: localhost
-        port: 55432
-      database: pg
-    graphqlCRUD:
+    ##  Input schema
+    model: ./model
+    ## Global configuration for CRUD generator
+    crudSpec:
       create: true
       update: true
       findAll: true
@@ -22,11 +18,32 @@ extensions:
       subUpdate: false
       subDelete: false
       disableGen: false
-    folders:
-      model: ./model
-      resolvers: ./server/src/resolvers
-      schema: ./server/src/schema
-      client: ./client/src/graphql
+    ## Codegen plugins
+    plugins:
+      - graphback-codegen-schema
+        format: 'gql',
+        outputPath: ./server/src/schema,
+        outputFileName: 'generated'
+      - graphback-codegen-client
+        format: 'ts',
+        outputPath: ./client/src/graphql,
+      - graphback-codegen-resolvers
+          format: ts
+          outputPath: ./server/src/resolvers,
+          types:
+            resolverRootLocation: ../../generated-types
+            resolverRootType: Resolvers
+   
+    ## Knex DB Migration config
+    knexdb:
+      ## See knex.js config format
+      dbConfig:
+        user: postgresql
+        password: postgres
+        database: users
+        host: localhost
+        port: 55432
+    database: pg
   codegen:
     ./server/src/generated-types.ts:
       plugins:
