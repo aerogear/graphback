@@ -18,17 +18,24 @@ yarn install
 docker-compose up -d
 ```
 
-Generate resources (schema and resolvers) and create database
+- Generate resources(schema and resolvers) and create database
 
 ```sh
 yarn graphql generate --backend
 yarn graphql generate --db
 ```
 
+- Generate typings for Database Schema and Resolvers
+
+```sh
+yarn schemats generate
+yarn graphql codegen
+```
+
 - Start the server
 
 ```sh
-cd server/ && yarn start
+yarn start:server
 ```
 
 - Generate queries, mutations and subscriptions for client-side project
@@ -46,5 +53,5 @@ yarn graphql codegen
 - Start React App
 
 ```sh
-cd client/ && yarn start
+yarn start:client
 ```
