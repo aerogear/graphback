@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
-import { lowerCaseFirstChar, upperCaseFirstChar } from '../db';
+import { lowerCaseFirstChar, upperCaseFirstChar, defaultColumnNameTransform } from '../db';
 import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
@@ -85,7 +85,7 @@ export function getRelationFieldName(field: any, type: any) {
     fieldName = field.annotations.OneToMany.field;
   }
   else {
-    fieldName = lowerCaseFirstChar(type.name);
+    fieldName = defaultColumnNameTransform(type.name, 'to-db');
   }
 
   return fieldName;
