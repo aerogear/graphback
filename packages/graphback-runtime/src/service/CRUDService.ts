@@ -1,4 +1,4 @@
-import { GraphbackOperationType, ModelTableMapping } from "@graphback/core"
+import { GraphbackOperationType, mapDataFromTable, mapDataToTable, ModelTableMapping } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackRuntimeContext } from '../api/GraphbackRuntimeContext';
@@ -32,15 +32,20 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
     public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Creating object ${name}`)
-        const result = await this.db.create(name, data, context);
+        
+        const mappedData = mapDataToTable(name, data, this.modelTableMapping);
+        const dbResult = await this.db.create(mappedData.table, mappedData.data, context);
+        const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
+
         if (this.pubSub && options && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
             const payload = this.buildEventPayload('new', name, result);
             await this.pubSub.publish(topic, payload);
         }
 
-        return result;
+        return result as T;
     }
+
     public async update(name: string, id: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 

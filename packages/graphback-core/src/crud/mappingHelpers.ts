@@ -65,10 +65,13 @@ export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
 }
 
-export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
-  return modelTypes.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
+export function isModelType(graphqlType: GraphQLObjectType): boolean {
+  return !!parseMarker('model', graphqlType.description);
 }
 
+export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
+  return modelTypes.filter(isModelType);
+}
 
 // tslint:disable-next-line: no-reserved-keywords
 export function getRelationFieldName(field: any, type: any) {
