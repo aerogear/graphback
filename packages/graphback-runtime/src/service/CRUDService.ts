@@ -32,7 +32,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
     public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Creating object ${name}`)
-        
+
         const mappedData = mapDataToTable(name, data, this.modelTableMapping);
         const dbResult = await this.db.create(mappedData.table, mappedData.data, context);
         const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
@@ -49,7 +49,10 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async update(name: string, id: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 
-        const result = await this.db.update(name, id, data, context);
+        const mappedData = mapDataToTable(name, data, this.modelTableMapping);
+        const dbResult = await this.db.update(mappedData.table, id, mappedData.data, context);
+        const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
+        
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
             const payload = this.buildEventPayload('updated', name, result);
