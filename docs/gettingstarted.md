@@ -22,19 +22,19 @@ Graphback currently supports:
 
 ## Multiple ways of getting started
 
-Graphback offers many ways of starting
+Graphback offers many ways of starting:
 
-- Using Graphback with most popular GraphQL boilerplates with GraphQL CLI
+- Using Graphback with most popular GraphQL boilerplates, with GraphQL CLI
 - Adding Graphback to your existing project
 - Initializing Graphback in your code without code generation
-- Migrating your existing RESTfull api to GraphQL 
+- Migrating your existing RESTful API to GraphQL 
 
 ### Start new project using Graphback and GraphQL CLI
 
 The best way to start with Graphback is to choose one of the available project boilerplates 
 available as part of official GraphQL CLI. 
-GraphQL CLI integrates Graphback with other community libraries offering acomprehensive way to work with GraphQL APIs.
-You can use any of the available GraphQL-CLI templates to bootstrap Graphback enabled project. 
+GraphQL CLI integrates Graphback with other community libraries offering a comprehensive way to work with GraphQL APIs.
+You can use any of the available GraphQL CLI templates to bootstrap Graphback enabled project. 
 
 With yarn:
 ```
@@ -57,17 +57,17 @@ After project is created please follow project README file that might differ dep
 the template that was chosen on startup.
 
 GraphQL CLI offers various commands to interact with your project that work with the Graphback package.
-Graphback specific commands are available by executing `graphql generate` 
+Graphback specific commands are available by executing `graphql generate`.
  
 ## Adding Graphback to existing project using Graphback CLI
 
-Graphback CLI can be used to add code generation capabilities to your existing applications
+Graphback CLI can be used to add code generation capabilities to your existing applications.
 
 ```bash
 npm i -g graphback-cli
 graphback config <project-name>
 ```
-Follow the onscreen instructions.
+Follow the on-screen instructions.
 
 You can use Graphback with either a SQLite (for prototyping) or PostgreSQL (for production) databases.
 
@@ -77,7 +77,7 @@ If you use SQLite, you don't need to use Docker.
 
 Graphback offers runtime layer that will create an in-memory implementation of the graphql services without code generation.
 Developers can still customize the way that data is queried and cached thanks to runtime architecture.
-For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation
+For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation.
 
 ## Creating and updating your database from your data model
 
