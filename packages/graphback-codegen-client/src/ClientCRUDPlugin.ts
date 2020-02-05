@@ -16,6 +16,7 @@ export interface ClientGeneratorPluginConfig {
      * - gql - .graphql file
      * - gqlwithfragment - complete gql queries containing fragments for redundancy
      */
+    // TODO change format from gql to graphql
     format: 'ts' | 'gql' | 'gqlwithfragment'
 
     /**

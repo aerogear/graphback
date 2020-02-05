@@ -1,7 +1,5 @@
-schema:
-  ./server/src/schema/index.ts:
-    require: ts-node/register
-documents: "./client/src/graphql/**/*.ts"
+schema: ./server/src/schema/*.gql
+documents: ./client/src/graphql/**/*.gql
 extensions:
   # Graphback configuration
   graphback:
@@ -22,9 +20,8 @@ extensions:
         graphback-schema:
           format: 'gql'
           outputPath: ./server/src/schema
-          outputFileName: 'generated'
         graphback-client:
-          format: 'ts'
+          format: 'gql'
           outputPath: ./client/src/graphql
         graphback-resolvers:
           format: ts
@@ -43,16 +40,26 @@ extensions:
         port: 55432
       database: pg
   codegen:
-    ./server/src/generated-types.ts:
-      plugins:
-        - typescript
-        - typescript-resolvers
-    ./client/src/generated-types.tsx:
-      plugins:
-        - typescript
-        - typescript-operations
-        - typescript-react-apollo
-      config:
-        withComponent: false
-        withHOC: false
-        withHooks: true
+    generates:
+      ./client/src/generated-types.tsx:
+        config:
+          withComponent: false
+          withHOC: false
+          withHooks: true
+          skipDocumentsValidation: true
+        plugins:
+          - add: '/* tslint:disable */'
+          - typescript
+          - typescript-operations
+          - typescript-react-apollo
+      ./server/src/generated-types.ts:
+        config:
+          mappers:
+            Comment: './generated-db-types#comment'
+            Note: './generated-db-types#note'
+          useIndexSignature: true
+          skipDocumentsValidation: true
+        plugins:
+          - add: '/* tslint:disable */'
+          - typescript
+          - typescript-resolvers

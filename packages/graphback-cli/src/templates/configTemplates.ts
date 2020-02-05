@@ -67,8 +67,8 @@ export const createConfig = async (database: string, client: boolean) => {
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const [dbConfig, dockerCompose] = getConfig(database)
   const graphqlConfig: IGraphQLConfig = {
-    schema: '',
-    documents: '',
+    schema: './src/schema/*.gql',
+    documents: './client/src/graphql/*.gql',
     extensions: {
       graphback: {
         "model": "./model",
@@ -85,12 +85,11 @@ export const createConfig = async (database: string, client: boolean) => {
         "plugins": {
           "graphback-schema": {
             "format": "gql",
-            "outputPath": "./src/schema",
-            "outputFileName": "generated"
+            "outputPath": "./src/schema"
           },
           "graphback-resolvers": {
             "format": "ts",
-            "outputPath": "./src/resolvers",
+            "outputPath": "./src/resolvers"
           }
         },
         "dbmigrations": {
@@ -104,8 +103,8 @@ export const createConfig = async (database: string, client: boolean) => {
   if (client) {
     // Add client extension
     graphqlConfig.extensions.graphback.plugins["graphback-client"] = {
-      "format": "ts",
-      "outputPath": "./client/src/graphql"
+      "format": "gql",
+      "outputPath": "./client/src/graphql/**/*.gql"
     }
   }
 
