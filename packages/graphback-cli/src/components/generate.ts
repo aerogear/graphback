@@ -2,9 +2,9 @@ import { GraphbackCRUDGeneratorConfig } from "@graphback/core"
 import { CodeFileLoader } from '@graphql-toolkit/code-file-loader';
 import chokidar from 'chokidar';
 import { debounce } from 'debounce';
-import { join } from 'path';
 import { GraphbackGenerator } from 'graphback';
 import { GraphQLExtensionDeclaration, loadConfig } from 'graphql-config';
+import { join } from 'path';
 
 export interface GenerateConfig {
   model: string

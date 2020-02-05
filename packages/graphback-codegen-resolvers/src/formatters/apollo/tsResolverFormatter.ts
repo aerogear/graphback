@@ -12,8 +12,8 @@ export const resolverFileTemplateTS = (outputResolvers: string[], options: Resol
     let resolverType = '';
     let typedImports = '';
     if (options.types) {
-        resolverType = ` as ${options.types.resolverRootType}`;
-        typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}"\n`;
+        resolverType = ` as ${options.types.resolverRootType};\n`;
+        typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}";\n`;
     }
 
     return `

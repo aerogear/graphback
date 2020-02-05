@@ -4,9 +4,17 @@ import * as prettier from 'prettier';
 import { OutputResolvers, ResolverOutputDefinition } from '../output/outputResolvers';
 import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
 
-// TODO: Move code formatting to core
+// TODO: Move code formatting 
+// TODO BROKEN for JS. THis should be part of the resolver formatter.
 function formatDocument(contents: string) {
-    return prettier.format(contents, { semi: false, parser: 'babel' });
+    try {
+        return prettier.format(contents, { semi: false, parser: 'typescript' });
+    } catch (e) {
+        // tslint:disable-next-line: no-console
+        console.log("Cannot format resolvers implementation", e)
+
+        return contents;
+    }
 }
 
 export function writeResolvers(outputResolvers: OutputResolvers, options: ResolverGeneratorPluginConfig) {

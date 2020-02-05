@@ -1,6 +1,6 @@
-import { ClientCRUDPlugin, ClientGeneratorPluginConfig } from '@graphback/codegen-client';
-import { ResolverGeneratorPlugin, ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
-import { SchemaCRUDPlugin, SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
+import { ClientGeneratorPluginConfig } from '@graphback/codegen-client';
+import { ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
+import { SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
 import { GraphbackPluginEngine, GraphbackCRUDGeneratorConfig } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
 /**
