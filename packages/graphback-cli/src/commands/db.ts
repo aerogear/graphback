@@ -1,5 +1,5 @@
-import chalk from 'chalk';
-import { createDB, postCommandMessage } from '../helpers'
+import { createDB } from '../components'
+import { logInfo } from '../utils';
 
 export const command = 'db'
 
@@ -10,11 +10,7 @@ export const builder = {}
 export async function handler() {
   await createDB();
 
-  postCommandMessage(`
-Database resources created.
-
-Run ${chalk.cyan(`npm run develop`)} to start the server.
-  `)
+  logInfo(`Database resources created.`)
 
   process.exit(0);
 }

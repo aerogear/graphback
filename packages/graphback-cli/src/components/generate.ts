@@ -1,46 +1,28 @@
-import { GraphbackCRUDGeneratorConfig } from "@graphback/core"
-import { CodeFileLoader } from '@graphql-toolkit/code-file-loader';
 import chokidar from 'chokidar';
 import { debounce } from 'debounce';
-import { GraphbackGenerator } from 'graphback';
-import { GraphQLExtensionDeclaration, loadConfig } from 'graphql-config';
+import { GraphbackCRUDGeneratorConfig, GraphbackGenerator} from "graphback"
+import { loadConfig } from 'graphql-config';
 import { join } from 'path';
+import { extensionName, graphbackConfigExtension } from '../config/extension';
 
-export interface GenerateConfig {
+export interface GraphbackCLIConfig {
   model: string
   crud: GraphbackCRUDGeneratorConfig;
   plugins: any[],
-  knexdb: { database: string; dbConfig: any; };
+  dbmigrate: { database: string; dbConfig: any; };
 }
 
 export interface CliFlags {
-  silent: boolean, watch: boolean
+  silent?: boolean, watch?: boolean, project?: 'default' | string
 }
 
-const extensionName = 'graphback';
-
-/**
- * Config extension that register graphback plugin
- * @param api 
- */
-export const GenerateConfigExtension: GraphQLExtensionDeclaration = api => {
-  // Schema
-  api.loaders.schema.register(new CodeFileLoader());
-
-  return {
-    name: extensionName
-  };
-};
-
-export const generateUsingEngine = async (cliFlags: CliFlags) => {
+export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   try {
     const config = await loadConfig({
-      extensions: [GenerateConfigExtension]
+      extensions: [graphbackConfigExtension]
     });
-    // TODO support namespace
-    const project = config.getDefault();
-
-    const graphbackConfig: GenerateConfig = project.extension(extensionName);
+    const project = config.getProject(cliFlags.project || 'default')
+    const graphbackConfig = project.extension(extensionName);
 
     if (!graphbackConfig) {
       throw new Error(`You should provide a valid '${extensionName}' config to generate schema from data model`);
@@ -53,14 +35,11 @@ export const generateUsingEngine = async (cliFlags: CliFlags) => {
     if (graphbackConfig.plugins && graphbackConfig.plugins.length === 0) {
       throw new Error(`'${extensionName}' config 'plugins' section is empty. No code will be generated`);
     }
-    // TODO default plugin config
-    console.log(JSON.stringify(graphbackConfig))
 
     const runGeneration = async () => {
       try {
         const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
-        // TODO validation
-        const engine = new GraphbackGenerator(schemaDocument, graphbackConfig as any)
+        const engine = new GraphbackGenerator(schemaDocument, graphbackConfig)
         engine.buildServer();
       } catch (e) {
         // tslint:disable-next-line: no-console

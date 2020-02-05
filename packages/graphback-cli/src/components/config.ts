@@ -16,16 +16,18 @@ export async function installDependencies(database: string): Promise<void> {
   } else if (database === 'sqlite3') {
     await execa('npm', ['i', '-S', 'sqlite3'])
   }
+  // Using opiniated layer
+  await execa('npm', ['i', '-S', '@graphback/runtime'])
 }
 
-function postSetupMessage(commandRoot: string): string {
+function postSetupMessage(): string {
   return `
 Graphback configuration successfully bootstrapped :rocket:
 
 Next Steps:
-1. Review your configuration in "graphback.json" file
-2. Edit the .graphql file inside your model folder.
-3. Run ${chalk.cyan(`${commandRoot}generate`)} to generate schema and resolvers
+1. Review your configuration in "graphqlrc.yaml" file
+2. Edit the *.graphql files inside your model folder.
+3. Run  generate command to generate your schema and resolvers
 `
 }
 
@@ -40,12 +42,11 @@ export interface InitOptions {
   model?: ModelTemplate
 }
 
-
 /**
  * config command handler
  * @param options used for initializting config without asking user for input
  */
-export async function initConfig(commandRoot?: string, options: InitOptions = {}, skipInstall: boolean = false) {
+export async function initConfig(options: InitOptions = {}, skipInstall: boolean = false) {
   logInfo(chalk.yellow(
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
   ))
@@ -58,5 +59,5 @@ export async function initConfig(commandRoot?: string, options: InitOptions = {}
     await installDependencies(database)
   }
   await createConfig(database, client)
-  logInfo(postSetupMessage(commandRoot))
+  logInfo(postSetupMessage())
 }

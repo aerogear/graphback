@@ -26,8 +26,8 @@ async function start() {
   // connect to db
   // TODO Embed knex as part of the runtime codegeneration
   const db = knex({
-    client: generateConfig.db.database,
-    connection: generateConfig.db.dbConfig,
+    client: generateConfig.dbmigrate.database,
+    connection: generateConfig.dbmigrate.dbConfig,
   })
 
   const pubSub = new PubSub();

@@ -1,7 +1,7 @@
 import { ClientGeneratorPluginConfig } from '@graphback/codegen-client';
 import { ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
 import { SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
-import { GraphbackPluginEngine, GraphbackCRUDGeneratorConfig } from '@graphback/core';
+import { GraphbackCRUDGeneratorConfig, GraphbackPluginEngine } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
 /**
  * Global configuration for Graphback ecosystem that represents each plugin 

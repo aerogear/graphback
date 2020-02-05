@@ -2,7 +2,7 @@
 import ava, { ExecutionContext } from 'ava';
 import { existsSync } from 'fs';
 import { join, resolve } from 'path';
-import { createDB, generate, initConfig } from '../src';
+import { createDB, generateUsingPlugins, initConfig } from '../src';
 
 const model = {
   modelName: "testSchema",
@@ -17,8 +17,8 @@ const model = {
 ava('Test cli workflow', async (t: ExecutionContext) => {
   const basePath = resolve(`${__dirname}/../../../examples/generator-fullstack`);
   process.chdir(basePath)
-  await initConfig("testback ", { model, database: "sqlite3", client: true }, true);
-  await generate();
+  await initConfig({ model, database: "sqlite3", client: true }, true);
+  await generateUsingPlugins({});
 
   await createDB();
 

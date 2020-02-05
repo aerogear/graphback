@@ -1,3 +1,4 @@
+""" @model """
 type Shop {
   id: ID!
   name: String!
@@ -7,11 +8,13 @@ type Shop {
   owner: Person!
 }
 
+""" @model """
 type Person {
   id: ID!
   name: String!
 }
 
+""" @model """
 type Product {
   id: ID!
   name: String!

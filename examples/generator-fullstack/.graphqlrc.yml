@@ -17,7 +17,6 @@ extensions:
       subCreate: false
       subUpdate: false
       subDelete: false
-      disableGen: false
     ## Codegen plugins
     plugins:
         graphback-schema:
@@ -34,7 +33,7 @@ extensions:
             resolverRootLocation: ../../generated-types
             resolverRootType: Resolvers
     ## Knex DB Migration config
-    knexdb:
+    dbmigrate:
       ## See knex.js config format
       dbConfig:
         user: postgresql
