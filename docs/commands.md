@@ -16,7 +16,7 @@ graphback config
 
 Create configuration in existing project to support Graphback resolver and schema generation.
 
-> **Note** When creating configuration please review if locations created for `folders` integration match your project folder structure
+> **Note** When creating configuration please review if locations created for `folders` integration match your project folder structure.
 
 ### Generate
 
@@ -31,7 +31,7 @@ Create configuration in existing project to support Graphback resolver and schem
   graphback db
   ```
 
-  This command creates a database or update an existing one based on your data model. Currently supports PostgreSQL and sqlite3.
+  This command creates a database or updates an existing one, based on your data model. Currently supports PostgreSQL and sqlite3.
 
 
 ## OpenAPI
@@ -39,4 +39,4 @@ Create configuration in existing project to support Graphback resolver and schem
  ```bash
  graphback openapi 
  ```    
- Generate GraphQL schema and resolvers based on OpenAPI spec
+ Generate GraphQL schema and resolvers based on OpenAPI spec.

@@ -4,11 +4,11 @@ title: Client-side Queries
 ---
 
 Graphback allows users to generate client-side queries based on the data model. All the queries/mutations/subscriptions
-which are generated through `graphback generate` for the user can also be generated as client-side queries. Users may follow up with using `create-react-app` or `apollo-client` to create client.
+which are generated through `graphback generate` for the user, can also be generated as client-side queries. Users may follow up with using `create-react-app` or `apollo-client` to create a client.
 
 ## How it works
 
-Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering it yes will set `client` in `graphback.json` to `true`.
+Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will set `client` in `graphback.json` to `true`.
 
 For a data model having
 ```
@@ -86,5 +86,5 @@ export const newComment = gql`
 
 ## Autogenerating forms based on server-side schema
 
-For react based applications developers can use [uniform.tools](https://uniforms.tools).
+For react-based applications developers can use [uniform.tools](https://uniforms.tools).
 Uniforms can be used along with generated client queries to automatically build dynamic forms with labels and validation.

@@ -5,7 +5,7 @@ title: Releases
 
 ## What's new in Graphback
 
-This file contains changes and migration steps for Graphback project. 
+This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
 # 0.11.0
