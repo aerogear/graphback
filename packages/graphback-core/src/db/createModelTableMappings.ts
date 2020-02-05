@@ -17,7 +17,7 @@ export interface ModelTableMapping {
   typeName: string
   tableName: string
   id: string
-  fieldMap: any
+  fieldMap?: any
 }
 
 export const getModelTableMappings = (schema: GraphQLSchema): ModelTableMapping[] => {
@@ -41,7 +41,11 @@ function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
 function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>) {
   return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
 
-    obj[field.name] = getTableOrColumnName(field);
+    const columnName = getTableOrColumnName(field);
+
+    if (field.name !== columnName) {
+      obj[field.name] = columnName;
+    }
 
     return obj;
   }, {});
