@@ -13,8 +13,6 @@ export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine, schema: 
   const crudDb = new PgKnexDBDataProvider(db);
   const crudService = new CRUDService(crudDb, modelTableMappings, pubSub);
 
-  console.log(JSON.stringify(modelTableMappings));
-
   return {
     crudService,
     crudDb,

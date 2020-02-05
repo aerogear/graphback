@@ -1,5 +1,5 @@
 import { getFieldName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
-import { GraphQLObjectType as string, GraphQLSchema, GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLObjectType as string, GraphQLSchema } from 'graphql';
 import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 

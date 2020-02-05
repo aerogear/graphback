@@ -1,4 +1,4 @@
-import { defaultTableNameTransform, defaultColumnNameTransform, DatabaseNameTransform, lowerCaseFirstChar } from '@graphback/core';
+import { DatabaseNameTransform, defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,

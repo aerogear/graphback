@@ -1,4 +1,4 @@
-import { defaultColumnNameTransform, defaultTableNameTransform, DatabaseNameTransform } from '@graphback/core';
+import { DatabaseNameTransform, defaultColumnNameTransform, defaultTableNameTransform } from '@graphback/core';
 import { buildSchema, GraphQLSchema } from 'graphql'
 import * as Knex from 'knex';
 import { generateAbstractDatabase, ScalarMap } from './abstract/generateAbstractDatabase'
