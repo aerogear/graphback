@@ -46,7 +46,7 @@ type Mutation {
   likePost(id: ID!): Post!
 }
 ```
-and will generated a resolver file in custom folder
+and will generate a resolver file in custom folder
 ```
 export const likePost = {
   Mutation: {

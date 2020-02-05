@@ -5,8 +5,8 @@ title: Data Sources
 
 ## Data Sources
 
-Graphback allows you to work with different database systems and other data sources your database according to your needs. 
-Graphback provides support to multiple databases
+Graphback allows you to work with different database systems and other data sources, according to your needs. 
+Graphback provides support to multiple databases.
 
 ### Supported Databases
 
