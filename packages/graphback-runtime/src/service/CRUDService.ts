@@ -1,4 +1,4 @@
-import { getModelMappingByName, GraphbackOperationType, mapDataFromTable, mapDataToTable, ModelTableMapping } from "@graphback/core"
+import { GraphbackOperationType } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackRuntimeContext } from '../api/GraphbackRuntimeContext';
@@ -19,14 +19,12 @@ import { subscriptionTopicMapping } from './subscriptionTopicMapping';
 export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRuntimeContext | any>  {
     private db: GraphbackDataProvider;
     private logger: GraphbackMessageLogger;
-    private modelTableMapping: ModelTableMapping[];
     private pubSub: PubSubEngine;
 
-    constructor(db: GraphbackDataProvider, modelTableMapping: ModelTableMapping[], pubSub?: PubSubEngine,
+    constructor(db: GraphbackDataProvider, pubSub?: PubSubEngine,
         logger?: GraphbackMessageLogger) {
         this.db = db;
         this.pubSub = pubSub;
-        this.modelTableMapping = modelTableMapping;
         this.logger = logger || defaultLogger;
     }
 
