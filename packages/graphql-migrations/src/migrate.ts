@@ -1,13 +1,13 @@
+import { DatabaseNameTransform, defaultColumnNameTransform, defaultTableNameTransform } from '@graphback/core';
 import { buildSchema, GraphQLSchema } from 'graphql'
 import * as Knex from 'knex';
-import { generateAbstractDatabase, NameTransform, ScalarMap } from './abstract/generateAbstractDatabase'
+import { generateAbstractDatabase, ScalarMap } from './abstract/generateAbstractDatabase'
 import { read } from './connector/read'
 import { write } from './connector/write'
 import { computeDiff } from './diff/computeDiff'
 import { MigrationResults } from './diff/Operation'
 import { MigrateOperationFilter } from './plugin/MigrateOperationFilter';
 import { MigratePlugin } from './plugin/MigratePlugin'
-import { defaultColumnNameTransform, defaultTableNameTransform } from './util/defaultNameTransforms'
 import { removeDirectivesFromSchema } from './util/removeDirectivesFromSchema';
 
 export interface MigrateOptions {
@@ -30,11 +30,11 @@ export interface MigrateOptions {
   /**
    * Transform the table names.
    */
-  transformTableName?: NameTransform | null
+  transformTableName?: DatabaseNameTransform | null
   /**
    * Transform the column names.
    */
-  transformColumnName?: NameTransform | null
+  transformColumnName?: DatabaseNameTransform | null
   /**
    * Custom Scalar mapping
    */
