@@ -27,6 +27,10 @@ export const getModelTableMappings = (schema: GraphQLSchema): ModelTableMapping[
   return mapModelsToTables(models);
 }
 
+export function getModelTableMapping(modelName: string, mappings: ModelTableMapping[]) {
+  return mappings.find((m: ModelTableMapping) => m.typeName === modelName);
+}
+
 function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
   return models.map((model: GraphQLObjectType) => {
     return {
@@ -39,16 +43,25 @@ function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
 }
 
 function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>) {
-  return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
+  let hasCustomMappings = false;
+  const mappedFields = Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
 
     const columnName = getTableOrColumnName(field);
 
     if (field.name !== columnName) {
-      obj[field.name] = columnName;
+      hasCustomMappings = true;
     }
+
+    obj[field.name] = columnName;
 
     return obj;
   }, {});
+
+  if (!hasCustomMappings || !Object.keys(mappedFields).length) {
+    return undefined;
+  }
+
+  return mappedFields;
 }
 
 export function getTableOrColumnName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {

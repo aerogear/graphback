@@ -4,6 +4,7 @@ export interface DataMapping {
     id?: TableID
     table?: string
     data?: any
+    fieldMap?: any
 }
 
 export interface TableID {
@@ -11,32 +12,27 @@ export interface TableID {
     value: any
 }
 
-export const mapDataToTable = (modelName: string, data: any, modelsMap: ModelTableMapping[]): DataMapping => {
-    const modelMap = getModelMappingByName(modelName, modelsMap);
+export const mapDataToTable = (data: any, modelMap: ModelTableMapping): DataMapping => {
     const fieldMap = modelMap.fieldMap;
 
-    const mappedData = {};
-    let mappedIdField: string;
-    for (const key of Object.keys(data)) {
-        const newKey = fieldMap[key];
-        if (data[key]) {
-            mappedData[newKey] = data[key];
+    const dataMap: DataMapping = {
+        table: modelMap.tableName,
+        fieldMap
+    }
 
-            if (key === modelMap.id) {
-                mappedIdField = newKey;
-            }
+    if (!fieldMap) {
+        return dataMap;
+    }
+
+    dataMap.data = {};
+    for (const key of Object.keys(data)) {
+        const newKey = fieldMap[key] ? fieldMap[key] : key;
+        if (data[key]) {
+            dataMap.data[newKey] = data[key];
         }
     }
 
-    return {
-        // TODO: Include ID in input object
-        // id: {
-        //     name: mappedIdField,
-        //     value: data[modelMap.id]
-        // },
-        table: modelMap.tableName,
-        data: mappedData
-    };
+    return dataMap;
 }
 
 export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelTableMapping[]): any => {
@@ -54,6 +50,6 @@ export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelT
     return mappedData;
 }
 
-function getModelMappingByName(name: string, mappings: ModelTableMapping[]) {
+export function getModelMappingByName(name: string, mappings: ModelTableMapping[]) {
     return mappings.find((m: ModelTableMapping) => m.typeName === name);
 }

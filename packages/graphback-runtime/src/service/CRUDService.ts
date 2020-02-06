@@ -1,4 +1,4 @@
-import { GraphbackOperationType, mapDataFromTable, mapDataToTable, ModelTableMapping } from "@graphback/core"
+import { getModelMappingByName, GraphbackOperationType, mapDataFromTable, mapDataToTable, ModelTableMapping } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackRuntimeContext } from '../api/GraphbackRuntimeContext';
@@ -31,11 +31,17 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     }
 
     public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
-        this.logger.log(`Creating object ${name}`)
+        this.logger.log(`Creating object ${name}`);
 
-        const mappedData = mapDataToTable(name, data, this.modelTableMapping);
-        const dbResult = await this.db.create(mappedData.table, mappedData.data, context);
-        const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
+        const modelMap = getModelMappingByName(name, this.modelTableMapping);
+
+        let result: any;
+        if (modelMap.fieldMap) {
+            const dataMap = mapDataToTable(data, modelMap);
+            result = await this.db.create(modelMap.tableName, dataMap.data, dataMap.fieldMap, context);
+        } else {
+            result = await this.db.create(modelMap.tableName, data, {}, context);
+        }
 
         if (this.pubSub && options && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
@@ -43,23 +49,23 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
             await this.pubSub.publish(topic, payload);
         }
 
-        return result as T;
+        return result;
     }
 
     public async update(name: string, id: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 
-        const mappedData = mapDataToTable(name, data, this.modelTableMapping);
-        const dbResult = await this.db.update(mappedData.table, id, mappedData.data, context);
-        const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
-        
-        if (this.pubSub && options && options.publishEvent) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
-            const payload = this.buildEventPayload('updated', name, result);
-            await this.pubSub.publish(topic, payload);
-        }
+        // // const mappedData = mapDataToTable(name, data, this.modelTableMapping);
+        // const dbResult = await this.db.update(mappedData.table, id, mappedData.data, context);
+        // const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
 
-        return result;
+        // if (this.pubSub && options && options.publishEvent) {
+        //     const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
+        //     const payload = this.buildEventPayload('updated', name, result);
+        //     await this.pubSub.publish(topic, payload);
+        // }
+
+        return {} as unknown as T;
     }
 
     // tslint:disable-next-line: no-reserved-keywords
