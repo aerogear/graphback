@@ -9,7 +9,6 @@ import { upperCaseFirstChar } from '../utils/upperCaseFirstChar';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
 
-
 /**
  * Default implementation of the CRUD service offering following capabilities:
  *
@@ -24,14 +23,16 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
     constructor(db: GraphbackDataProvider, pubSub?: PubSubEngine,
         logger?: GraphbackMessageLogger) {
-        this.db = db
+        this.db = db;
         this.pubSub = pubSub;
         this.logger = logger || defaultLogger;
     }
 
     public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
-        this.logger.log(`Creating object ${name}`)
+        this.logger.log(`Creating object ${name}`);
+
         const result = await this.db.create(name, data, context);
+
         if (this.pubSub && options && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
             const payload = this.buildEventPayload('new', name, result);
@@ -40,10 +41,12 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
         return result;
     }
+
     public async update(name: string, id: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 
         const result = await this.db.update(name, id, data, context);
+
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
             const payload = this.buildEventPayload('updated', name, result);
@@ -58,6 +61,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         this.logger.log(`deleting object ${name}`)
 
         const result = await this.db.delete(name, id, data, context);
+
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
             const payload = this.buildEventPayload('deleted', name, result);

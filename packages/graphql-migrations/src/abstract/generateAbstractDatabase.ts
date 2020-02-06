@@ -1,3 +1,4 @@
+import { DatabaseNameTransform, defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -13,7 +14,6 @@ import {
 import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
-import { defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '../util/defaultNameTransforms'
 import getObjectTypeFromList from '../util/getObjectTypeFromList'
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
@@ -50,18 +50,11 @@ export type ScalarMap = (
   annotations: any,
 ) => TableColumnTypeDescriptor | null
 
-export type NameTransformDirection = 'from-db' | 'to-db'
-
-export type NameTransform = (
-  name: string,
-  direction: NameTransformDirection,
-) => string
-
 export interface GenerateAbstractDatabaseOptions {
   scalarMap?: ScalarMap | null
   mapListToJson?: boolean
-  transformTableName?: NameTransform | null
-  transformColumnName?: NameTransform | null
+  transformTableName?: DatabaseNameTransform | null
+  transformColumnName?: DatabaseNameTransform | null
 }
 
 export const defaultOptions: GenerateAbstractDatabaseOptions = {
@@ -82,8 +75,8 @@ class AbstractDatabaseBuilder {
   private schema: GraphQLSchema
   private scalarMap: ScalarMap | null
   private mapListToJson: boolean
-  private transformTableName: NameTransform | null
-  private transformColumnName: NameTransform | null
+  private transformTableName: DatabaseNameTransform | null
+  private transformColumnName: DatabaseNameTransform | null
   private typeMap: TypeMap
   private database: AbstractDatabase
   /** Used to push new intermediary tables after current table */
@@ -441,6 +434,7 @@ class AbstractDatabaseBuilder {
     const annotations: any = parseAnnotations('db', oneToManyRelationship.description || null);
 
     const field: GraphQLField<any, any> = {
+      // TODO: Use defaultColumnNameTransform
       name: annotations.oneToMany || lowerCaseFirstChar(oneToManyRelationship.relation.name),
       type: oneToManyRelationship.relation,
       description: oneToManyRelationship.description,

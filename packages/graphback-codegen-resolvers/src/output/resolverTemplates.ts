@@ -1,69 +1,69 @@
 const defaultResolverArgs = `parent, args, context`;
 
-export const createTemplate = (tableName: string, subscription: boolean): string => {
+export const createTemplate = (modelName: string, subscription: boolean): string => {
     return `(${defaultResolverArgs}) => {
         validateRuntimeContext(context);
-        return context.crudService.create("${tableName}", args.input, {
+        return context.crudService.create("${modelName}", args.input, {
             publishEvent: ${subscription}
         }, context);
     }`;
 }
 
-export const updateTemplate = (tableName: string, subscription: boolean): string => {
+export const updateTemplate = (modelName: string, subscription: boolean): string => {
     return `(${defaultResolverArgs}) => {
       validateRuntimeContext(context);
-        return context.crudService.update("${tableName}", args.id, args.input, {
+        return context.crudService.update("${modelName}", args.id, args.input, {
             publishEvent: ${subscription}
         }, context);
     }`
 }
 
-export const deleteTemplate = (tableName: string, subscription: boolean): string => {
+export const deleteTemplate = (modelName: string, subscription: boolean): string => {
     return `(${defaultResolverArgs}) => {
       validateRuntimeContext(context)
-      return context.crudService.delete("${tableName}", args.id, args.input, {
+      return context.crudService.delete("${modelName}", args.id, args.input, {
         publishEvent: ${subscription}
       }, context);
     }`
 }
 
-export const findAllTemplate = (tableName: string): string => {
+export const findAllTemplate = (modelName: string): string => {
     return `(${defaultResolverArgs}) => {
       validateRuntimeContext(context)
-      return context.crudService.findAll("${tableName}");
+      return context.crudService.findAll("${modelName}");
     }`
 }
 
-export const findTemplate = (tableName: string): string => {
+export const findTemplate = (modelName: string): string => {
     return `(${defaultResolverArgs}) => {
       validateRuntimeContext(context)
-      return context.crudService.findBy("${tableName}", args.fields);
+      return context.crudService.findBy("${modelName}", args.fields);
     }`
 }
 
-export const newSubscriptionTemplate = (tableName: string): string => {
+export const newSubscriptionTemplate = (modelName: string): string => {
     return `{
       subscribe: (${defaultResolverArgs}) => {
         validateRuntimeContext(context)
-        return context.crudService.subscribeToCreate("${tableName}", context);
+        return context.crudService.subscribeToCreate("${modelName}", context);
       }
     }`
 }
 
-export const updatedSubscriptionTemplate = (tableName: string): string => {
+export const updatedSubscriptionTemplate = (modelName: string): string => {
     return `{
       subscribe: (${defaultResolverArgs}) => {
         validateRuntimeContext(context)
-        return context.crudService.subscribeToUpdate("${tableName}", context);
+        return context.crudService.subscribeToUpdate("${modelName}", context);
       }
     }`
 }
 
-export const deletedSubscriptionTemplate = (tableName: string): string => {
+export const deletedSubscriptionTemplate = (modelName: string): string => {
     return `{
       subscribe: (${defaultResolverArgs}) => {
         validateRuntimeContext(context)
-        return context.crudService.subscribeToDelete("${tableName}", context);
+        return context.crudService.subscribeToDelete("${modelName}", context);
       }
     }`
 }
