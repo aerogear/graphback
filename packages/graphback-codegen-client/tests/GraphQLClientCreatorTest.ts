@@ -32,7 +32,7 @@ ava('Test plugin engine gql', async (t: ExecutionContext) => {
   }
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
-  const plugin = new ClientCRUDPlugin({ format: 'gql', outputPath: './tmp' });
+  const plugin = new ClientCRUDPlugin({ format: 'graphql', outputPath: './tmp' });
   t.snapshot(plugin.getDocuments(metadata));
 });
 

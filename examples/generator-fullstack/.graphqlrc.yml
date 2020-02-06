@@ -1,5 +1,5 @@
-schema: ./server/src/schema/*.gql
-documents: ./client/src/graphql/**/*.gql
+schema: ./server/src/schema/*.graphql
+documents: ./client/src/graphql/**/*.graphql
 extensions:
   # Graphback configuration
   graphback:
@@ -18,10 +18,10 @@ extensions:
     ## Codegen plugins
     plugins:
         graphback-schema:
-          format: 'gql'
+          format: 'graphql'
           outputPath: ./server/src/schema
         graphback-client:
-          format: 'gql'
+          format: 'graphql'
           outputPath: ./client/src/graphql
         graphback-resolvers:
           format: ts
@@ -30,7 +30,7 @@ extensions:
             resolverRootLocation: ../../generated-types
             resolverRootType: Resolvers
     ## Knex DB Migration config
-    dbmigrate:
+    dbmigrations:
       ## See knex.js config format
       dbConfig:
         user: postgresql

@@ -34,7 +34,6 @@ export class GraphbackGenerator {
   /**
    * Create backend with all related resources
    */
-  // FIXME generator options should be moved to plugin config
   public buildServer() {
     const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
 
@@ -51,7 +50,6 @@ export class GraphbackGenerator {
         const plugin = require(pluginName)
         if (plugin.Plugin) {
           const config = this.config.plugins[pluginLabel]
-          // FIXME - plugins missing basic validation
           pluginEngine.registerPlugin(new plugin.Plugin(config))
         } else {
           // tslint:disable-next-line: no-console

@@ -9,7 +9,7 @@ export interface GraphbackCLIConfig {
   model: string
   crud: GraphbackCRUDGeneratorConfig;
   plugins: any[],
-  dbmigrate: { database: string; dbConfig: any; };
+  dbmigrations: { database: string; dbConfig: any; };
 }
 
 export interface CliFlags {
