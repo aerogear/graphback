@@ -25,11 +25,6 @@ const databases = [
   'sqlite3'
 ]
 
-const generationConfig = {
-
-  "disableGen": false
-}
-
 export const chooseDatabase = async (): Promise<string> => {
   const { database } = await ask({
     type: 'list',

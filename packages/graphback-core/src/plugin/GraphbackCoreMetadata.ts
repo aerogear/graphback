@@ -14,7 +14,6 @@ const defaultCRUDGeneratorConfig = {
     "subCreate": true,
     "subUpdate": true,
     "subDelete": true,
-    "disableGen": false
 }
 
 /**
