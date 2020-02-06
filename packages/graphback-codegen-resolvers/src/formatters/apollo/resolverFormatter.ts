@@ -1,3 +1,4 @@
+import * as prettier from 'prettier';
 import { ResolverGeneratorPluginConfig } from '../../ResolverGeneratorPlugin';
 import { blankResolverJS, createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
 import { blankResolverTS, createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
@@ -23,16 +24,7 @@ export const createBlankResolverTemplate = (resolverType: string, name: string, 
     }
 }
 
-function createResolverFileTemplate(name: string, outputResolvers: string[], options: ResolverGeneratorPluginConfig) {
-    switch (options.format) {
-        case 'js':
-            return resolverJSFileTemplate(name, outputResolvers);
-        case 'ts':
-            return resolverTSFileTemplate(outputResolvers, options);
-        default:
-            throw new Error(`"${options.format}" resolvers are not supported`);
-    }
-}
+
 
 export const createResolverTemplate = (name: string, typeResolvers: { Query: any, Mutation: any, Subscription: any }, options: ResolverGeneratorPluginConfig) => {
     const mutations = mapResolverKeyValueTemplates(typeResolvers.Mutation)
@@ -63,12 +55,23 @@ export const createResolverTemplate = (name: string, typeResolvers: { Query: any
     return createResolverFileTemplate(name, outputResolvers, options);
 }
 
+function createResolverFileTemplate(name: string, outputResolvers: string[], options: ResolverGeneratorPluginConfig) {
+    switch (options.format) {
+        case 'js':
+            return formatDocumentJS(resolverJSFileTemplate(name, outputResolvers));
+        case 'ts':
+            return formatDocumentTs(resolverTSFileTemplate(outputResolvers, options));
+        default:
+            throw new Error(`"${options.format}" resolvers are not supported`);
+    }
+}
+
 export const createResolversIndex = (resolverNames: string[], exportName: string = 'resolvers', format: string): string => {
     switch (format) {
         case 'js':
-            return createResolversIndexJS(resolverNames, exportName);
+            return formatDocumentJS(createResolversIndexJS(resolverNames, exportName));
         case 'ts':
-            return createResolversIndexTS(resolverNames, exportName);
+            return formatDocumentTs(createResolversIndexTS(resolverNames, exportName));
         default:
             throw new Error(`"${format}" resolver format not supported.`)
     }
@@ -77,9 +80,9 @@ export const createResolversIndex = (resolverNames: string[], exportName: string
 export const createCustomResolversIndex = (resolverNames: string[], exportName: string = 'resolvers', format: string): string => {
     switch (format) {
         case 'js':
-            return createCustomResolversIndexJS(resolverNames, exportName);
+            return formatDocumentJS(createCustomResolversIndexJS(resolverNames, exportName));
         case 'ts':
-            return createResolversIndexTS(resolverNames, exportName);
+            return formatDocumentTs(createResolversIndexTS(resolverNames, exportName));
         default:
             throw new Error(`"${format}" resolver format not supported.`)
     }
@@ -88,10 +91,32 @@ export const createCustomResolversIndex = (resolverNames: string[], exportName: 
 export const createRootResolversIndex = (format: string, groups: string[] = ['generated', 'custom']) => {
     switch (format) {
         case 'js':
-            return rootResolversIndexJS(groups);
+            return formatDocumentJS(rootResolversIndexJS(groups));
         case 'ts':
-            return rootResolversIndexTS(groups);
+            return formatDocumentTs(rootResolversIndexTS(groups));
         default:
             throw new Error(`"${format}" resolver format not supported.`)
+    }
+}
+
+function formatDocumentJS(contents: string) {
+    try {
+        return prettier.format(contents, { semi: false, parser: 'babel' });
+    } catch (e) {
+        // tslint:disable-next-line: no-console
+        console.log("Cannot format resolvers implementation", e)
+
+        return contents;
+    }
+}
+
+function formatDocumentTs(contents: string) {
+    try {
+        return prettier.format(contents, { semi: false, parser: 'typescript' });
+    } catch (e) {
+        // tslint:disable-next-line: no-console
+        console.log("Cannot format resolvers implementation", e)
+
+        return contents;
     }
 }
