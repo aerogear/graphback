@@ -1,5 +1,5 @@
-import { getFieldName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { getFieldName, getTableOrColumnName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
+import { GraphQLObjectType, GraphQLObjectType as string, GraphQLSchema } from 'graphql';
 import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 
@@ -29,7 +29,7 @@ export function generateCRUDResolvers(models: ModelDefinition[]) {
  * @param models 
  */
 export function generateCustomCRUDResolvers(schema: GraphQLSchema, models: ModelDefinition[], generatedResolvers: any) {
-    const queryType = schema.getQueryType();
+    const queryType = schema.getQueryType()
     const mutationType = schema.getMutationType();
     const subscriptionType = schema.getSubscriptionType();
 
@@ -53,81 +53,84 @@ export function generateCustomCRUDResolvers(schema: GraphQLSchema, models: Model
     return outputResolvers;
 }
 
-export function createMutations(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
-    const objectName = graphqlType.name.toLowerCase();
-
+export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
     if (crudOptions.disableGen) {
         return mutations;
     }
 
+    const tableName = getTableOrColumnName(modelType);
+    const modelName = modelType.name;
+
     if (crudOptions.create) {
-        const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.CREATE);
+        const fieldName = getFieldName(modelName, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
-        mutations[fieldName] = createTemplate(objectName, crudOptions.subCreate)
+        mutations[fieldName] = createTemplate(tableName, crudOptions.subCreate)
     }
     if (crudOptions.update) {
-        const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.UPDATE);
-        mutations[fieldName] = updateTemplate(objectName, crudOptions.update);
+        const fieldName = getFieldName(modelName, GraphbackOperationType.UPDATE);
+        mutations[fieldName] = updateTemplate(tableName, crudOptions.update);
     }
     if (crudOptions.delete) {
-        const fieldName = getFieldName(graphqlType.name, GraphbackOperationType.DELETE);
-        mutations[fieldName] = deleteTemplate(objectName, crudOptions.delete);
+        const fieldName = getFieldName(modelName, GraphbackOperationType.DELETE);
+        mutations[fieldName] = deleteTemplate(tableName, crudOptions.delete);
     }
 
     return mutations;
 }
 
-export function createQueries(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
-    const objectName = graphqlType.name.toLowerCase();
-
+export function createQueries(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const queries = {};
     if (crudOptions.disableGen) {
         return queries;
     }
 
+    const tableName = getTableOrColumnName(modelType);
+    const modelName = modelType.name;
+
     if (crudOptions.find) {
-        const fieldName = getFieldName(objectName, GraphbackOperationType.FIND);
-        queries[fieldName] = findTemplate(objectName);
+        const fieldName = getFieldName(modelName, GraphbackOperationType.FIND);
+        queries[fieldName] = findTemplate(tableName);
     }
     if (crudOptions.findAll) {
-        const fieldName = getFieldName(objectName, GraphbackOperationType.FIND_ALL);
-        queries[fieldName] = findAllTemplate(objectName);
+        const fieldName = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
+        queries[fieldName] = findAllTemplate(tableName);
     }
 
     return queries;
 }
 
-export function createSubscriptions(graphqlType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
-    const objectName = graphqlType.name.toLowerCase();
-
+export function createSubscriptions(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const subscriptions = {};
     if (crudOptions.disableGen) {
         return subscriptions;
     }
 
+    const tableName = getTableOrColumnName(modelType);
+    const modelName = modelType.name;
+
     if (crudOptions.create && crudOptions.subCreate) {
         // TOOO: Use core helper to get method name
-        const fieldName = `new${graphqlType.name}`;
-        subscriptions[fieldName] = newSubscriptionTemplate(objectName);
+        const fieldName = `new${modelName}`;
+        subscriptions[fieldName] = newSubscriptionTemplate(tableName);
     }
     if (crudOptions.update && crudOptions.subUpdate) {
         // TOOO: Use core helper to get method name
-        const fieldName = `updated${graphqlType.name}`;
-        subscriptions[fieldName] = updatedSubscriptionTemplate(objectName);
+        const fieldName = `updated${modelName}`;
+        subscriptions[fieldName] = updatedSubscriptionTemplate(tableName);
     }
     if (crudOptions.delete && crudOptions.subDelete) {
         // TOOO: Use core helper to get method name
-        const fieldName = `deleted${graphqlType.name}`;
-        subscriptions[fieldName] = deletedSubscriptionTemplate(objectName);
+        const fieldName = `deleted${modelName}`;
+        subscriptions[fieldName] = deletedSubscriptionTemplate(tableName);
     }
 
     return subscriptions;
 }
 
 // TODO: Check for custom resolvers using default resolver names
-export function createCustomResolvers(graphqlTypeName: string, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
-    const customKeys = getCustomTypeResolverFieldNames(graphqlTypeName, resolverType, generatedResolverKeys);
+export function createCustomResolvers(modelName: string, resolverType: GraphQLObjectType, generatedResolverKeys: string[]) {
+    const customKeys = getCustomTypeResolverFieldNames(modelName, resolverType, generatedResolverKeys);
 
     const resolvers = {};
     for (const key of customKeys) {
@@ -137,8 +140,8 @@ export function createCustomResolvers(graphqlTypeName: string, resolverType: Gra
     return resolvers;
 }
 
-export function createCustomSubscriptionResolvers(graphqlTypeName: string, subscriptionType: GraphQLObjectType, generatedResolverKeys: string[]) {
-    const customKeys = getCustomTypeResolverFieldNames(graphqlTypeName, subscriptionType, generatedResolverKeys);
+export function createCustomSubscriptionResolvers(modelName: string, subscriptionType: GraphQLObjectType, generatedResolverKeys: string[]) {
+    const customKeys = getCustomTypeResolverFieldNames(modelName, subscriptionType, generatedResolverKeys);
 
     const resolvers = {};
     for (const key of customKeys) {
