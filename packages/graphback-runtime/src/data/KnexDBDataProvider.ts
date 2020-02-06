@@ -21,9 +21,9 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     this.db = db;
   }
 
-  public async create(name: string, data: Type, fieldMap: any): Promise<Type> {
+  public async create(name: string, data: Type): Promise<Type> {
     const [id] = await this.db(name).insert(data);
-    const dbResult = await this.db.select(fieldMap).from(name).where('id', '=', id)
+    const dbResult = await this.db.select().from(name).where('id', '=', id)
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

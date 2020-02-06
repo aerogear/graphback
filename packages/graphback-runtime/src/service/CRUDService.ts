@@ -33,15 +33,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Creating object ${name}`);
 
-        const modelMap = getModelMappingByName(name, this.modelTableMapping);
-
-        let result: any;
-        if (modelMap.fieldMap) {
-            const dataMap = mapDataToTable(data, modelMap);
-            result = await this.db.create(modelMap.tableName, dataMap.data, dataMap.fieldMap, context);
-        } else {
-            result = await this.db.create(modelMap.tableName, data, {}, context);
-        }
+        const result = await this.db.create(name, data, context);
 
         if (this.pubSub && options && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
@@ -55,17 +47,15 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async update(name: string, id: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 
-        // // const mappedData = mapDataToTable(name, data, this.modelTableMapping);
-        // const dbResult = await this.db.update(mappedData.table, id, mappedData.data, context);
-        // const result = mapDataFromTable(name, dbResult, this.modelTableMapping);
+        const result = await this.db.update(name, id, data, context);
 
-        // if (this.pubSub && options && options.publishEvent) {
-        //     const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
-        //     const payload = this.buildEventPayload('updated', name, result);
-        //     await this.pubSub.publish(topic, payload);
-        // }
+        if (this.pubSub && options && options.publishEvent) {
+            const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
+            const payload = this.buildEventPayload('updated', name, result);
+            await this.pubSub.publish(topic, payload);
+        }
 
-        return {} as unknown as T;
+        return result;
     }
 
     // tslint:disable-next-line: no-reserved-keywords
@@ -73,6 +63,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         this.logger.log(`deleting object ${name}`)
 
         const result = await this.db.delete(name, id, data, context);
+
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
             const payload = this.buildEventPayload('deleted', name, result);

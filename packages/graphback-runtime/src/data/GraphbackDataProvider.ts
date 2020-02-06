@@ -26,7 +26,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    create(name: string, data: Type, keyMap?: any, context?: GraphbackContext): Promise<Type>;
+    create(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object updates
