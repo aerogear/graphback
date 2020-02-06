@@ -7,9 +7,6 @@ export function generateCRUDResolvers(models: ModelDefinition[]) {
     const outputResolvers = {};
 
     for (const { graphqlType, crudOptions } of models) {
-        if (crudOptions.disableGen) {
-            continue;
-        }
 
         const typeResolvers = {
             Query: createQueries(graphqlType, crudOptions),
@@ -55,9 +52,6 @@ export function generateCustomCRUDResolvers(schema: GraphQLSchema, models: Model
 
 export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
-    if (crudOptions.disableGen) {
-        return mutations;
-    }
 
     const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
@@ -81,9 +75,6 @@ export function createMutations(modelType: GraphQLObjectType, crudOptions: Graph
 
 export function createQueries(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const queries = {};
-    if (crudOptions.disableGen) {
-        return queries;
-    }
 
     const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
@@ -102,9 +93,6 @@ export function createQueries(modelType: GraphQLObjectType, crudOptions: Graphba
 
 export function createSubscriptions(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const subscriptions = {};
-    if (crudOptions.disableGen) {
-        return subscriptions;
-    }
 
     const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
