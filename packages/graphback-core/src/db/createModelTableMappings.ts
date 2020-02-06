@@ -16,7 +16,7 @@ import { getPrimaryKey } from './getPrimaryKey';
 export interface ModelTableMapping {
   typeName: string
   tableName: string
-  id: string
+  idField: string
   fieldMap?: any
 }
 
@@ -34,7 +34,7 @@ export function getModelTableMapping(modelName: string, mappings: ModelTableMapp
 function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
   return models.map((model: GraphQLObjectType) => {
     return {
-      id: getPrimaryKey(model),
+      idField: getPrimaryKey(model),
       typeName: model.name,
       tableName: getTableOrColumnName(model),
       fieldMap: mapFieldsToColumns(model.getFields())
