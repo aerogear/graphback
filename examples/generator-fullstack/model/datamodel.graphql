@@ -1,28 +1,31 @@
-""" @model """
+"""
+@model
+"""
 type Note {
   id: ID!
-  """
-  @db.type: 'string'
-  @db.length: 100
-  """
   title: String!
-  """
-  @db.type: 'text'
-  """
+
   description: String
   """
   @db.oneToMany: 'commentNote'
   """
   comments: [Comment]!
+  likes: Number
 }
 
 """
-@crud.disableGen
+@model
 """
 type Comment {
   id: ID!
-  """
-  @db.type: 'text'
-  """
-  description: String
+  text: String
+  author: String
+}
+
+type Query {
+  mostLikedNote: Note!
+}
+
+type Mutation {
+  likeNote: Note!
 }
