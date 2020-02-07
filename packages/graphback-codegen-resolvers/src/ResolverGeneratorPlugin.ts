@@ -102,7 +102,10 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
             return undefined;
         }
         const generatedResolvers = generateCRUDResolvers(models);
-      
+        const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
+        const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.pluginConfig);
+        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig);
+        const rootResolverIndex = createRootResolversIndex(this.pluginConfig.format);
 
         const entities = this.generateEntities(models, this.pluginConfig);
         const custom = this.generateCustomResolvers(models, this.pluginConfig);

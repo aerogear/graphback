@@ -1,20 +1,18 @@
 import { getFieldName, getTableOrColumnName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
-import { GraphQLObjectType, GraphQLObjectType as string, GraphQLSchema } from 'graphql';
-import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from '../resolverTemplates';
+import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
 
 export function generateCRUDResolvers(models: ModelDefinition[]) {
-    const outputResolvers = {};
+    const outputResolvers = { Query: {}, Mutation: {}, Subscription: {} };
 
     for (const { graphqlType, crudOptions } of models) {
-
-        const typeResolvers = {
-            Query: createQueries(graphqlType, crudOptions),
-            Mutation: createMutations(graphqlType, crudOptions),
-            Subscription: createSubscriptions(graphqlType, crudOptions)
-        };
-
-        outputResolvers[graphqlType.name] = typeResolvers;
+        const newQueries = createQueries(graphqlType, crudOptions);
+        outputResolvers.Query = { ...outputResolvers.Query, ...newQueries };
+        const newMutations = createMutations(graphqlType, crudOptions);
+        outputResolvers.Mutation = { ...outputResolvers.Mutation, ...newMutations };
+        const newSubs = createSubscriptions(graphqlType, crudOptions);
+        outputResolvers.Subscription = { ...outputResolvers.Subscription, ...newSubs };
     }
 
     return outputResolvers;
@@ -58,15 +56,15 @@ export function createMutations(modelType: GraphQLObjectType, crudOptions: Graph
 
     if (crudOptions.create) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.CREATE);
-        mutations[fieldName] = createTemplate(tableName, crudOptions.subCreate)
+        mutations[fieldName] = createTemplate(tableName)
     }
     if (crudOptions.update) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.UPDATE);
-        mutations[fieldName] = updateTemplate(tableName, crudOptions.update);
+        mutations[fieldName] = updateTemplate(tableName);
     }
     if (crudOptions.delete) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.DELETE);
-        mutations[fieldName] = deleteTemplate(tableName, crudOptions.delete);
+        mutations[fieldName] = deleteTemplate(tableName);
     }
 
     return mutations;

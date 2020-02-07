@@ -28,14 +28,14 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         this.logger = logger || defaultLogger;
     }
 
-    public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
+    public async create(data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Creating object ${name}`);
 
-        const result = await this.db.create(name, data, context);
+        const result = await this.db.create(data, context);
 
         if (this.pubSub && options && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
-            const payload = this.buildEventPayload('new', name, result);
+            const payload = this.buildEventPayload('new', result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -45,11 +45,11 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async update(name: string, id: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`)
 
-        const result = await this.db.update(name, id, data, context);
+        const result = await this.db.update(data, context);
 
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
-            const payload = this.buildEventPayload('updated', name, result);
+            const payload = this.buildEventPayload('updated', result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -60,11 +60,11 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async delete(name: string, id: string, data?: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<string> {
         this.logger.log(`deleting object ${name}`)
 
-        const result = await this.db.delete(name, id, data, context);
+        const result = await this.db.delete(data, context);
 
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
-            const payload = this.buildEventPayload('deleted', name, result);
+            const payload = this.buildEventPayload('deleted', result);
             await this.pubSub.publish(topic, payload);
         }
 
@@ -74,20 +74,20 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public read(name: string, id: string, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`reading object ${name}`)
 
-        return this.db.read(name, id, context);
+        return this.db.read(id, context);
     }
 
     public findAll(name: string, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T[]> {
         this.logger.log(`querying object ${name}`)
 
-        return this.db.findAll(name, context);
+        return this.db.findAll(context);
     }
 
     // tslint:disable-next-line: no-any
     public findBy(name: string, filter: any, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T[]> {
         this.logger.log(`querying object ${name} with filter ${JSON.stringify(filter)}`)
 
-        return this.db.findBy(name, filter, context);
+        return this.db.findBy(filter, context);
     }
 
     public subscribeToCreate(name: string, context?: GraphbackRuntimeContext): AsyncIterator<T> | undefined {
@@ -128,7 +128,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         const keyName = `${name}${upperCaseFirstChar(relationField)}DataLoader`;
         if (!context[keyName]) {
             context[keyName] = new DataLoader<string, any>((keys: string[]) => {
-                return this.db.batchRead(name, relationField, keys);
+                return this.db.batchRead(relationField, keys);
             });
         }
 
