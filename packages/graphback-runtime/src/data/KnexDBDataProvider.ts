@@ -1,6 +1,7 @@
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
+import { TableID } from '@graphback/core';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
@@ -30,10 +31,10 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot create ${name}`);
   }
 
-  public async update(name: string, id: string, data: Type): Promise<Type> {
-    const updateResult = await this.db(name).update(data).where('id', '=', id);
+  public async update(name: string, id: TableID, data: Type): Promise<Type> {
+    const updateResult = await this.db(name).update(data).where(id.field, '=', id.value);
     if (updateResult === 1) {
-      const dbResult = await this.db.select().from(name).where('id', '=', id);
+      const dbResult = await this.db.select().from(name).where(id.field, '=', id.value);
       if (dbResult && dbResult[0]) {
         return dbResult[0]
       }

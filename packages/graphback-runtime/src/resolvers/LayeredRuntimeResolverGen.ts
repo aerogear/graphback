@@ -48,7 +48,7 @@ export class LayeredRuntimeResolverGenerator {
         const updateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
-          return this.service.update(objectName, args.id, args.input, {
+          return this.service.update(objectName, args.input, {
             publishEvent: resolverElement.crudOptions.subUpdate
           }, context)
         }

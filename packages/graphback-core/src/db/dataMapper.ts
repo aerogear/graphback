@@ -8,7 +8,7 @@ export interface DataMapping {
 }
 
 export interface TableID {
-    name: string
+    field: string
     value: any
 }
 
@@ -52,4 +52,22 @@ export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelT
 
 export function getModelMappingByName(name: string, mappings: ModelTableMapping[]) {
     return mappings.find((m: ModelTableMapping) => m.typeName === name);
+}
+
+// TODO: Define interface for data
+export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): DataMapping => {
+    const mappedData: DataMapping = {
+        data
+    }
+
+    if (data[idField]) {
+        mappedData.id = {
+            field: idField,
+            value: data[idField]
+        }
+
+        delete mappedData.data[idField];
+    }
+
+    return mappedData;
 }

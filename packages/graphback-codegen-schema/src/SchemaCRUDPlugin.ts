@@ -131,10 +131,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
                 return !isObjectType(fieldBaseType);
             }).reduce((fieldObj: any, current: any) => {
-                // FIXME read id annotation instead of hardcoding id!
-                if (current.name !== 'id') {
-                    fieldObj[current.name] = { type: current.type, description: '' };
-                }
+                fieldObj[current.name] = { type: current.type, description: '' };
 
                 return fieldObj;
             }, {}))
@@ -219,9 +216,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
-                    id: {
-                        type: GraphQLNonNull(GraphQLID),
-                    },
                     input: {
                         type: modelInputType,
                     },

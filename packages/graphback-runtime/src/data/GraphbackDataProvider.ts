@@ -1,3 +1,5 @@
+import { TableID } from '@graphback/core';
+
  
 // If we come with Union on client we might use some complex JSON for describing rules
 // and single key for type for simple use cases
@@ -36,7 +38,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    update(name: string, id: string, data: Type, context?: GraphbackContext): Promise<Type>;
+    update(name: string, id: TableID, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes

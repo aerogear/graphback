@@ -36,7 +36,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    update(name: string, id: string, data: Type, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type>;
+    update(name: string, data: Type, options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes
