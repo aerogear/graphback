@@ -1,6 +1,6 @@
 import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { existsSync, fstat, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
 import { resolve } from 'path';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -257,7 +257,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
                 args: {
-                    filter: {
+                    fields: {
                         type: modelInputType,
                     },
                 }
