@@ -103,9 +103,6 @@ export const createQueries = (types: ModelDefinition[]) => {
   const queries = []
 
   types.forEach((t: ModelDefinition) => {
-    if (t.crudOptions.disableGen) {
-      return;
-    }
 
     if (t.crudOptions.find) {
       queries.push({
@@ -129,9 +126,6 @@ const createMutations = (types: ModelDefinition[]) => {
   const mutations = []
 
   types.forEach((t: ModelDefinition) => {
-    if (t.crudOptions.disableGen) {
-      return;
-    }
     if (t.crudOptions.create) {
       mutations.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.CREATE),
@@ -162,9 +156,6 @@ const createSubscriptions = (types: ModelDefinition[]) => {
 
   
   types.forEach((t: ModelDefinition) => {
-    if (t.crudOptions.disableGen) {
-      return;
-    }
     const name = t.graphqlType.name;
     if (t.crudOptions.create && t.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);

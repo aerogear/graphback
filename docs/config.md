@@ -24,8 +24,7 @@ in the root of your project folder under the `generation` key. The default confi
     "delete": false,
     "subCreate": false,
     "subUpdate": false,
-    "subDelete": false,
-    "disableGen": false,
+    "subDelete": false
   }
 }
 ```
@@ -70,7 +69,6 @@ All config options can be replicated by specifying the `@crud.` prefix
 @crud.subCreate: true
 @crud.subUpdate: true
 @crud.subDelete: true
-@crud.disableGen: true
 ```
 
 You can use these annotations to have more control over individual elements. For example:
@@ -85,8 +83,3 @@ type Note {
 will create the `delete` mutation for `Note` type.
 
 > **Note**: Annotations override the configuration flags to `true`
-
-#### `@crud.disableGen`
-
-User can use this directive to disable CRUD operation generation for that type. Applying this directive will not create any 
-`Query`/`Mutation`/`Subscription` for that type.

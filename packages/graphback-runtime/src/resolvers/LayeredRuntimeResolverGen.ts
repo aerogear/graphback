@@ -33,9 +33,6 @@ export class LayeredRuntimeResolverGenerator {
       Subscription: {}
     };
     for (const resolverElement of this.models) {
-      if (resolverElement.crudOptions.disableGen) {
-        continue;
-      }
       // TODO this should use mapping
       const objectName = resolverElement.graphqlType.name.toLowerCase();
       if (resolverElement.crudOptions.create) {
