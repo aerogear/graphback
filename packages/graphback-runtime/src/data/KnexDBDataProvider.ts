@@ -3,6 +3,7 @@ import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
+import { TableID } from '@graphback/core';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.

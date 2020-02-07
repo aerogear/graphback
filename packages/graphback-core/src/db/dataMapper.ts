@@ -1,6 +1,4 @@
-import { ModelTableMapping } from './createModelTableMappings';
-
-export interface DataMapping {
+export interface ModelDataMap {
     id?: TableID
     table?: string
     data?: any
@@ -8,48 +6,21 @@ export interface DataMapping {
 }
 
 export interface TableID {
-    name: string
+    field: string
     value: any
 }
 
-export const mapDataToTable = (data: any, modelMap: ModelTableMapping): DataMapping => {
-    const fieldMap = modelMap.fieldMap;
-
-    const dataMap: DataMapping = {
-        table: modelMap.tableName,
-        fieldMap
+export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): ModelDataMap => {
+    const mappedData: ModelDataMap = {
+        id: {
+            field: idField,
+            value: data[idField]
+        },
+        data
     }
 
-    if (!fieldMap) {
-        return dataMap;
-    }
-
-    dataMap.data = {};
-    for (const key of Object.keys(data)) {
-        const newKey = fieldMap[key] ? fieldMap[key] : key;
-        if (data[key]) {
-            dataMap.data[newKey] = data[key];
-        }
-    }
-
-    return dataMap;
-}
-
-export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelTableMapping[]): any => {
-    const modelMap = getModelMappingByName(modelName, modelsMap);
-    const fieldMap = modelMap.fieldMap;
-
-    const mappedData = {};
-    for (const key of Object.keys(fieldMap)) {
-        if (fieldMap[key] && data[fieldMap[key]]) {
-            const newKey = fieldMap[key];
-            mappedData[key] = data[newKey];
-        }
-    }
+    // tslint:disable-next-line: no-dynamic-delete
+    delete mappedData.data[idField];
 
     return mappedData;
-}
-
-export function getModelMappingByName(name: string, mappings: ModelTableMapping[]) {
-    return mappings.find((m: ModelTableMapping) => m.typeName === name);
 }
