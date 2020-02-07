@@ -18,6 +18,4 @@ export interface GraphbackCRUDGeneratorConfig {
     subUpdate?: boolean;
     // Generate subscription for delete operation
     subDelete?: boolean;
-    // Disable codegen
-    disableGen?: boolean;
 }

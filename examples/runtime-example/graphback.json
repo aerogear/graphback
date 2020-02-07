@@ -18,8 +18,7 @@
     "delete": true,
     "subCreate": true,
     "subUpdate": true,
-    "subDelete": true,
-    "disableGen": false
+    "subDelete": true
   },
   "folders": {
     "model": "./model",
