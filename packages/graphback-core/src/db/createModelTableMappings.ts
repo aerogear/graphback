@@ -35,7 +35,7 @@ export function getModelTableMapping(mappedType: GraphQLObjectType) {
 function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMapping[] {
   return models.map((model: GraphQLObjectType) => {
     return {
-      idField: getPrimaryKey(model),
+      idField: getPrimaryKey(model).name,
       typeName: model.name,
       tableName: getTableOrColumnName(model),
       fieldMap: mapFieldsToColumns(model.getFields())
