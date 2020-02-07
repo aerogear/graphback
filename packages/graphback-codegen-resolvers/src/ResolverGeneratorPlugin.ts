@@ -1,5 +1,4 @@
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
-import { GraphQLSchema } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core';
 import { createRootResolversIndex } from './formatters/apollo';
 import { generateCRUDResolvers, generateCustomCRUDResolvers } from './output/createResolvers';
 import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './output/outputResolvers';
@@ -78,7 +77,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
 
         const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.pluginConfig);
-        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig.format);
+        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig);
         const rootResolverIndex = createRootResolversIndex(this.pluginConfig.format);
 
         return {
