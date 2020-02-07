@@ -56,7 +56,7 @@ const groupResolversByResolverType = (resolversByType: any): { Query: any; Mutat
 }
 
 // TODO: Enable custom resolvers using default CRUD names
-export const createCustomOutputResolvers = (resolverTypes: any, format: string): OutputResolverGroup => {
+export const createCustomOutputResolvers = (resolverTypes: any, options: ResolverGeneratorPluginConfig): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
     const resolvers = groupResolversByResolverType(resolverTypes);
@@ -66,7 +66,7 @@ export const createCustomOutputResolvers = (resolverTypes: any, format: string):
 
         for (const fieldName of Object.keys(resolverFields)) {
             const resolverValue = resolverFields[fieldName];
-            const resolverOutput = createBlankResolverTemplate(resolverType, fieldName, resolverValue);
+            const resolverOutput = createBlankResolverTemplate(resolverType, fieldName, resolverValue, options);
 
             const outputResolver = {
                 name: fieldName,
@@ -77,7 +77,7 @@ export const createCustomOutputResolvers = (resolverTypes: any, format: string):
         }
     }
 
-    resolverGroup.index = createCustomResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'customResolvers', format);
+    resolverGroup.index = createCustomResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'customResolvers', options.format);
 
     return resolverGroup;
 }
