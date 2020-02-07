@@ -10,7 +10,7 @@ type Note {
   @db.oneToMany: 'commentNote'
   """
   comments: [Comment]!
-  likes: Number
+  likes: Int
 }
 
 """
