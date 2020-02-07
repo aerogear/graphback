@@ -6,6 +6,14 @@ export const resolverFileTemplateJS = (name: string, outputResolvers: string[]) 
     }`
 }
 
+export const blankResolverJS = (resolverType: string, name: string, output: string) => {
+    return `export default {
+        ${resolverType}: {
+            ${name}: ${output}
+        }
+    }`;
+}
+
 export const createResolversIndexJS = (resolverNames: string[], exportName: string = 'resolvers'): string => {
     const imports = resolverNames.map((name: string) => {
         return `const { ${name}Resolvers } = require('./${name}')`;

@@ -1,6 +1,6 @@
 import { ResolverGeneratorPluginConfig } from '../../ResolverGeneratorPlugin';
-import { createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
-import { createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
+import { blankResolverJS, createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
+import { blankResolverTS, createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
 
 const mapResolverKeyValueTemplates = (resolvers: any) => {
     const resolverNames = Object.keys(resolvers);
@@ -12,12 +12,15 @@ const mapResolverKeyValueTemplates = (resolvers: any) => {
     });
 }
 
-export const createBlankResolverTemplate = (resolverType: string, name: string, output: string) => {
-    return `export default {
-        ${resolverType}: {
-            ${name}: ${output}
-        }
-    }`;
+export const createBlankResolverTemplate = (resolverType: string, name: string, output: string, options: ResolverGeneratorPluginConfig) => {
+    switch (options.format) {
+        case 'js':
+            return blankResolverJS(resolverType, name, output);
+        case 'ts':
+            return blankResolverTS(resolverType, name, output, options);
+        default:
+            throw new Error(`"${options.format}" resolvers are not supported`);
+    }
 }
 
 function createResolverFileTemplate(name: string, outputResolvers: string[], options: ResolverGeneratorPluginConfig) {
