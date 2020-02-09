@@ -1,4 +1,4 @@
-import { getModelMappingByName, getUpdateArgs, GraphbackOperationType, ModelTableMapping } from "@graphback/core"
+import { getModelTableMap, getUpdateArgs, GraphbackOperationType, ModelTableMap } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackRuntimeContext } from '../api/GraphbackRuntimeContext';
@@ -20,9 +20,9 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     private db: GraphbackDataProvider;
     private logger: GraphbackMessageLogger;
     private pubSub: PubSubEngine;
-    private modelsMap: ModelTableMapping[];
+    private modelsMap: ModelTableMap[];
 
-    constructor(db: GraphbackDataProvider, modelsMap: ModelTableMapping[], pubSub?: PubSubEngine,
+    constructor(db: GraphbackDataProvider, modelsMap: ModelTableMap[], pubSub?: PubSubEngine,
         logger?: GraphbackMessageLogger) {
         this.db = db;
         this.modelsMap = modelsMap;
@@ -47,7 +47,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async update(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`);
 
-        const modelMap = getModelMappingByName(name, this.modelsMap);
+        const modelMap = getModelTableMap(name, this.modelsMap);
         const args = getUpdateArgs(modelMap.idField, data);
         const result = await this.db.update(modelMap.tableName, args.id, args.data, context);
 
