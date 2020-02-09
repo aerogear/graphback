@@ -1,6 +1,6 @@
-import { ModelTableMapping } from './createModelTableMappings';
+import { getModelTableMap, ModelTableMap } from './modelTableMapper';
 
-export interface DataMapping {
+export interface ModelDataMap {
     id?: TableID
     table?: string
     data?: any
@@ -12,10 +12,10 @@ export interface TableID {
     value: any
 }
 
-export const mapDataToTable = (data: any, modelMap: ModelTableMapping): DataMapping => {
+export const mapDataToTable = (data: any, modelMap: ModelTableMap): ModelDataMap => {
     const fieldMap = modelMap.fieldMap;
 
-    const dataMap: DataMapping = {
+    const dataMap: ModelDataMap = {
         table: modelMap.tableName,
         fieldMap
     }
@@ -35,8 +35,8 @@ export const mapDataToTable = (data: any, modelMap: ModelTableMapping): DataMapp
     return dataMap;
 }
 
-export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelTableMapping[]): any => {
-    const modelMap = getModelMappingByName(modelName, modelsMap);
+export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelTableMap[]): any => {
+    const modelMap = getModelTableMap(modelName, modelsMap);
     const fieldMap = modelMap.fieldMap;
 
     const mappedData = {};
@@ -50,24 +50,18 @@ export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelT
     return mappedData;
 }
 
-export function getModelMappingByName(name: string, mappings: ModelTableMapping[]) {
-    return mappings.find((m: ModelTableMapping) => m.typeName === name);
-}
-
 // TODO: Define interface for data
-export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): DataMapping => {
-    const mappedData: DataMapping = {
+export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): ModelDataMap => {
+    const mappedData: ModelDataMap = {
+        id: {
+            field: idField,
+            value: data[idField]
+        },
         data
     }
 
-    if (data[idField]) {
-        mappedData.id = {
-            field: idField,
-            value: data[idField]
-        }
-
-        delete mappedData.data[idField];
-    }
+    // tslint:disable-next-line: no-dynamic-delete
+    delete mappedData.data[idField];
 
     return mappedData;
 }
