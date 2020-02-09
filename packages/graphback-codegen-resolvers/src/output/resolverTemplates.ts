@@ -12,7 +12,7 @@ export const createTemplate = (modelName: string, subscription: boolean): string
 export const updateTemplate = (modelName: string, subscription: boolean): string => {
     return `(${defaultResolverArgs}) => {
       validateRuntimeContext(context);
-        return context.crudService.update("${modelName}", args.id, args.input, {
+        return context.crudService.update("${modelName}", args.input, {
             publishEvent: ${subscription}
         }, context);
     }`
