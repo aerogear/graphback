@@ -74,7 +74,7 @@ test('create Todo', async t => {
 });
 
 test('update Todo', async t => {
-  const todo: Todo = await t.context.crudService.update(typeContext.name, '1', {
+  const todo: Todo = await t.context.crudService.update(typeContext.name, {
     text: 'my updated first todo',
   });
 
