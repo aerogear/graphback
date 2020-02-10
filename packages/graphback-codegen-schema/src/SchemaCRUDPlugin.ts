@@ -1,4 +1,4 @@
-import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
+import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getPrimaryKey } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
@@ -111,6 +111,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
         for (const model of Object.values(models)) {
             const modelInputType = this.createInputTypes(model);
+            console.log(modelInputType.getFields())
             queryTypes = this.createQueries(model, queryTypes, modelInputType);
             mutationTypes = this.createMutations(model, mutationTypes, modelInputType);
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
@@ -122,6 +123,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
+        const primaryKey = getPrimaryKey(model.graphqlType);
 
         return new GraphQLInputObjectType({
             // TODO
@@ -131,7 +133,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
                 return !isObjectType(fieldBaseType);
             }).reduce((fieldObj: any, current: any) => {
-                fieldObj[current.name] = { type: current.type, description: '' };
+
+                if (current.name === primaryKey.name) {
+                    fieldObj[current.name] = { type: getBaseType(current.type), description: '' };
+                } else {
+                    fieldObj[current.name] = { type: current.type, description: '' };
+                }
 
                 return fieldObj;
             }, {}))
