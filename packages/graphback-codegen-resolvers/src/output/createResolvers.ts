@@ -53,21 +53,20 @@ export function generateCustomCRUDResolvers(schema: GraphQLSchema, models: Model
 export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
 
-    const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
 
     if (crudOptions.create) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
-        mutations[fieldName] = createTemplate(tableName, crudOptions.subCreate)
+        mutations[fieldName] = createTemplate(modelName, crudOptions.subCreate)
     }
     if (crudOptions.update) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.UPDATE);
-        mutations[fieldName] = updateTemplate(tableName, crudOptions.update);
+        mutations[fieldName] = updateTemplate(modelName, crudOptions.update);
     }
     if (crudOptions.delete) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.DELETE);
-        mutations[fieldName] = deleteTemplate(tableName, crudOptions.delete);
+        mutations[fieldName] = deleteTemplate(modelName, crudOptions.delete);
     }
 
     return mutations;
@@ -76,16 +75,15 @@ export function createMutations(modelType: GraphQLObjectType, crudOptions: Graph
 export function createQueries(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const queries = {};
 
-    const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
 
     if (crudOptions.find) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.FIND);
-        queries[fieldName] = findTemplate(tableName);
+        queries[fieldName] = findTemplate(modelName);
     }
     if (crudOptions.findAll) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
-        queries[fieldName] = findAllTemplate(tableName);
+        queries[fieldName] = findAllTemplate(modelName);
     }
 
     return queries;
@@ -94,23 +92,22 @@ export function createQueries(modelType: GraphQLObjectType, crudOptions: Graphba
 export function createSubscriptions(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const subscriptions = {};
 
-    const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
 
     if (crudOptions.create && crudOptions.subCreate) {
         // TOOO: Use core helper to get method name
         const fieldName = `new${modelName}`;
-        subscriptions[fieldName] = newSubscriptionTemplate(tableName);
+        subscriptions[fieldName] = newSubscriptionTemplate(modelName);
     }
     if (crudOptions.update && crudOptions.subUpdate) {
         // TOOO: Use core helper to get method name
         const fieldName = `updated${modelName}`;
-        subscriptions[fieldName] = updatedSubscriptionTemplate(tableName);
+        subscriptions[fieldName] = updatedSubscriptionTemplate(modelName);
     }
     if (crudOptions.delete && crudOptions.subDelete) {
         // TOOO: Use core helper to get method name
         const fieldName = `deleted${modelName}`;
-        subscriptions[fieldName] = deletedSubscriptionTemplate(tableName);
+        subscriptions[fieldName] = deletedSubscriptionTemplate(modelName);
     }
 
     return subscriptions;
