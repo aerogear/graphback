@@ -27,7 +27,6 @@ export function writeResolvers(outputResolvers: OutputResolvers, options: Resolv
     outputResolvers.generated.resolvers.forEach((resolverDefinition: ResolverOutputDefinition) => {
         writeFileSync(`${generatedResolversPath}/${resolverDefinition.name}.${options.format}`, formatDocument(resolverDefinition.output));
     });
-    writeFileSync(`${generatedResolversPath}/index.${options.format}`, formatDocument(outputResolvers.generated.index));
 
     outputResolvers.custom.resolvers.forEach((resolverDefinition: ResolverOutputDefinition) => {
         const fileName = `${customResolversPath}/${resolverDefinition.name}.${options.format}`;
@@ -35,8 +34,6 @@ export function writeResolvers(outputResolvers: OutputResolvers, options: Resolv
             writeFileSync(fileName, formatDocument(resolverDefinition.output));
         }
     });
-    writeFileSync(`${customResolversPath}/index.${options.format}`, formatDocument(outputResolvers.custom.index));
-    writeFileSync(`${options.outputPath}/index.${options.format}`, formatDocument(outputResolvers.index));
 }
 
 function createFolders(generatedResolversPath: string, customResolversPath: string) {

@@ -5,7 +5,7 @@ import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
 export interface OutputResolvers {
     generated: OutputResolverGroup
     custom: OutputResolverGroup
-    index: string
+    index?: string
 }
 
 export interface OutputResolverGroup {
@@ -32,8 +32,6 @@ export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverG
 
         resolverGroup.resolvers.push(outputResolver);
     }
-
-    resolverGroup.index = createResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'generatedResolvers', options.format);
 
     return resolverGroup;
 }
@@ -76,8 +74,6 @@ export const createCustomOutputResolvers = (resolverTypes: any, options: Resolve
             resolverGroup.resolvers.push(outputResolver);
         }
     }
-
-    resolverGroup.index = createCustomResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'customResolvers', options.format);
 
     return resolverGroup;
 }

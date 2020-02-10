@@ -78,12 +78,10 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
         const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.pluginConfig);
         const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig);
-        const rootResolverIndex = createRootResolversIndex(this.pluginConfig.format);
 
         return {
             generated: generatedResolverGroup,
-            custom: customResolverGroup,
-            index: rootResolverIndex
+            custom: customResolverGroup
         };
     }
 }
