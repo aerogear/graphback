@@ -11,7 +11,8 @@ export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any,
     const baseType = getBaseType(field.type);
 
     if (dbConfig.primary) {
-      return field;
+      primaryKey = field;
+      break;
     } else if (isScalarType(baseType) && baseType.name === 'ID') {
       primaryKey = field;
     }
