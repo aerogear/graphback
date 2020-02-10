@@ -1,5 +1,3 @@
-import { getModelTableMap, ModelTableMap } from './modelTableMapper';
-
 export interface ModelDataMap {
     id?: TableID
     table?: string
