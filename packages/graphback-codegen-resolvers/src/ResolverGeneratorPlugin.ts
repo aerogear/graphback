@@ -3,6 +3,7 @@ import { OutputFileSystem } from './GeneratorModel';
 import { GeneratorResolversFormat } from './GeneratorResolversFormat';
 import { generateCRUDResolversFunctions } from './templates/createResolvers';
 import { createResolverTemplate } from './templates/resolverWrapper';
+import { createIndexFile } from './templates/runtimeTemplate';
 import { writeResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginConfig {
@@ -14,10 +15,9 @@ export interface ResolverGeneratorPluginConfig {
     outputPath: string
 
     /**
-     *  Name of the folder that will be used to save generated services (default: services)
+     * Name of the generated resolvers file
      */
-    generatedServicesFolderName: string
-
+    resolversFileName: string
 
     /**
      * Layout of the of the resolvers object. 
@@ -49,8 +49,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         this.pluginConfig = Object.assign({
             format: 'graphql',
             layout: "apollo",
-            customResolversFolderName: 'custom',
-            generatedServicesFolderName: 'services'
+            resolversFileName: 'resolvers',
         }, pluginConfig);
         if (!pluginConfig.outputPath) {
             throw new Error("resolver plugin requires outputPath parameter")
@@ -77,11 +76,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         }
         const generatedResolversFunctions = generateCRUDResolversFunctions(models);
         const generatedResolverFile = this.createGeneratedResolversFile(generatedResolversFunctions, this.pluginConfig);
+        const index = createIndexFile(models, this.pluginConfig);
 
         return {
             resolvers: generatedResolverFile,
-            index: {} as any,
-            services: []
+            index
         };
     }
 

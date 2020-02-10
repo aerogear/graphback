@@ -27,7 +27,7 @@ export const getModelTableMappings = (schema: GraphQLSchema): ModelTableMapping[
   return mapModelsToTables(models);
 }
 
-export function getModelTableMapping(modelName: string, mappings: ModelTableMapping[]) {
+export function getModelTableMapping(modelName: string) {
   return mappings.find((m: ModelTableMapping) => m.typeName === modelName);
 }
 

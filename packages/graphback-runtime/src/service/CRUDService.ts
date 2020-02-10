@@ -8,6 +8,7 @@ import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { upperCaseFirstChar } from '../utils/upperCaseFirstChar';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
+import { GraphQLType } from 'graphql';
 
 /**
  * Default implementation of the CRUD service offering following capabilities:
@@ -21,7 +22,10 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     private logger: GraphbackMessageLogger;
     private pubSub: PubSubEngine;
 
-    constructor(db: GraphbackDataProvider, pubSub?: PubSubEngine,
+    constructor(
+        name: GraphQLType,
+        db: GraphbackDataProvider,
+        pubSub?: PubSubEngine,
         logger?: GraphbackMessageLogger) {
         this.db = db;
         this.pubSub = pubSub;
