@@ -1,5 +1,4 @@
 export interface OutputResolvers {
-    entities: FileDefinition[]
     generated: FileDefinition[]
     custom: FileDefinition[]
 }

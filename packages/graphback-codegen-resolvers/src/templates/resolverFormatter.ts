@@ -1,7 +1,7 @@
 import * as prettier from 'prettier';
-import { ResolverGeneratorPluginConfig } from '../../ResolverGeneratorPlugin';
-import { blankResolverJS, createCustomResolversIndexJS, createResolversIndexJS as createResolversIndexJS, resolverFileTemplateJS as resolverJSFileTemplate, rootResolversIndexJS } from './jsResolverFormatter';
-import { blankResolverTS, createResolversIndexTS, resolverFileTemplateTS as resolverTSFileTemplate, rootResolversIndexTS } from './tsResolverFormatter';
+import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
+import { blankResolverJS, resolverFileTemplateJS, } from './jsResolverTemplate';
+import { blankResolverTS, resolverFileTemplateTS, } from './tsResolverTemplate';
 
 const mapResolverKeyValueTemplates = (resolvers: any) => {
     const resolverNames = Object.keys(resolvers);
@@ -23,8 +23,6 @@ export const createBlankResolverTemplate = (resolverType: string, name: string, 
             throw new Error(`"${options.format}" resolvers are not supported`);
     }
 }
-
-
 
 export const createResolverTemplate = (name: string, typeResolvers: { Query: any, Mutation: any, Subscription: any }, options: ResolverGeneratorPluginConfig) => {
     const mutations = mapResolverKeyValueTemplates(typeResolvers.Mutation)
@@ -58,44 +56,11 @@ export const createResolverTemplate = (name: string, typeResolvers: { Query: any
 function createResolverFileTemplate(name: string, outputResolvers: string[], options: ResolverGeneratorPluginConfig) {
     switch (options.format) {
         case 'js':
-            return formatDocumentJS(resolverJSFileTemplate(name, outputResolvers));
+            return formatDocumentJS(resolverFileTemplateJS(name, outputResolvers));
         case 'ts':
-            return formatDocumentTs(resolverTSFileTemplate(outputResolvers, options));
+            return formatDocumentTs(resolverFileTemplateTS(outputResolvers, options));
         default:
             throw new Error(`"${options.format}" resolvers are not supported`);
-    }
-}
-
-export const createResolversIndex = (resolverNames: string[], exportName: string = 'resolvers', format: string): string => {
-    switch (format) {
-        case 'js':
-            return formatDocumentJS(createResolversIndexJS(resolverNames, exportName));
-        case 'ts':
-            return formatDocumentTs(createResolversIndexTS(resolverNames, exportName));
-        default:
-            throw new Error(`"${format}" resolver format not supported.`)
-    }
-}
-
-export const createCustomResolversIndex = (resolverNames: string[], exportName: string = 'resolvers', format: string): string => {
-    switch (format) {
-        case 'js':
-            return formatDocumentJS(createCustomResolversIndexJS(resolverNames, exportName));
-        case 'ts':
-            return formatDocumentTs(createResolversIndexTS(resolverNames, exportName));
-        default:
-            throw new Error(`"${format}" resolver format not supported.`)
-    }
-}
-
-export const createRootResolversIndex = (format: string, groups: string[] = ['generated', 'custom']) => {
-    switch (format) {
-        case 'js':
-            return formatDocumentJS(rootResolversIndexJS(groups));
-        case 'ts':
-            return formatDocumentTs(rootResolversIndexTS(groups));
-        default:
-            throw new Error(`"${format}" resolver format not supported.`)
     }
 }
 

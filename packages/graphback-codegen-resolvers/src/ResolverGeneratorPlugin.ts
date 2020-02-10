@@ -1,7 +1,9 @@
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
-import { writeResolvers } from './writeResolvers';
-import { OutputResolvers, FileDefinition } from './GeneratorModel';
-import { generateCRUDResolvers, generateCustomCRUDResolvers } from './output/createResolvers';
+import { writeResolvers } from './fileMapping/writeResolvers';
+import { OutputResolvers, FileDefinition } from './fileMapping/GeneratorModel';
+import { createOutputResolvers, createCustomOutputResolvers } from './fileMapping/outputResolvers';
+import { generateCRUDResolversFunctions, generateCustomResolversFunctions } from './generators/createResolvers';
+
 
 export interface ResolverGeneratorPluginConfig {
     format: 'ts' | 'js'
@@ -21,10 +23,6 @@ export interface ResolverGeneratorPluginConfig {
      */
     generatedResolversFolderName: string
 
-    /**
-     *  Name of the folder that will be used to save generated entities (default: models)
-     */
-    entitiesFolderName: string
 
     /**
      * Layout of the of the resolvers object. 
@@ -74,8 +72,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
             format: 'graphql',
             layout: "apollo",
             customResolversFolderName: 'custom',
-            generatedResolversFolderName: 'generated',
-            entitiesFolderName: 'models'
+            generatedResolversFolderName: 'generated'
         }, pluginConfig);
         if (!pluginConfig.outputPath) {
             throw new Error("resolver plugin requires outputPath parameter")
@@ -101,18 +98,19 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
             return undefined;
         }
-        const generatedResolvers = generateCRUDResolvers(models);
-        const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
-        const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.pluginConfig);
-        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig);
-        const rootResolverIndex = createRootResolversIndex(this.pluginConfig.format);
+        const generatedResolversFunctions = generateCRUDResolversFunctions(models);
+        const customResolversFunctions = generateCustomResolversFunctions(schema, generatedResolversFunctions);
+
+    ]
+    
+        const generatedResolverGroup = createOutputResolvers(generatedResolversFunctions, this.pluginConfig);
+        const customResolverGroup = createCustomOutputResolvers(customResolversFunctions, this.pluginConfig);
 
         const entities = this.generateEntities(models, this.pluginConfig);
         const custom = this.generateCustomResolvers(models, this.pluginConfig);
         const generated = this.generateCRUDResolvers(models, this.pluginConfig);
 
         return {
-            entities,
             custom,
             generated
         };

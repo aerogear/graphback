@@ -1,16 +1,11 @@
-import { createBlankResolverTemplate, createCustomResolversIndex, createResolversIndex, createResolverTemplate } from '../formatters/apollo';
+import { GeneratorResolversFormat } from '../generators/createResolvers';
 import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
-import { lowerCaseFirstChar } from '../util/lowerCaseFirstChar';
+import { createBlankResolverTemplate, createResolverTemplate } from '../templates/resolverFormatter';
+
 
 export interface OutputResolvers {
-    generated: OutputResolverGroup
-    custom: OutputResolverGroup
-    index: string
-}
-
-export interface OutputResolverGroup {
-    resolvers?: ResolverOutputDefinition[]
-    index?: string
+    generated: ResolverOutputDefinition[]
+    custom: ResolverOutputDefinition[]
 }
 
 export interface ResolverOutputDefinition {
@@ -18,7 +13,7 @@ export interface ResolverOutputDefinition {
     output: string
 }
 
-export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverGeneratorPluginConfig): OutputResolverGroup => {
+export const createOutputResolvers = (baseTypeResolvers: GeneratorResolversFormat, options: ResolverGeneratorPluginConfig) => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
     for (const baseTypeName of Object.keys(baseTypeResolvers)) {
@@ -32,8 +27,6 @@ export const createOutputResolvers = (baseTypeResolvers: any, options: ResolverG
 
         resolverGroup.resolvers.push(outputResolver);
     }
-
-    resolverGroup.index = createResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'generatedResolvers', options.format);
 
     return resolverGroup;
 }
@@ -55,7 +48,6 @@ const groupResolversByResolverType = (resolversByType: any): { Query: any; Mutat
     return resolvers;
 }
 
-// TODO: Enable custom resolvers using default CRUD names
 export const createCustomOutputResolvers = (resolverTypes: any, options: ResolverGeneratorPluginConfig): OutputResolverGroup => {
     const resolverGroup: OutputResolverGroup = { resolvers: [] };
 
@@ -76,8 +68,10 @@ export const createCustomOutputResolvers = (resolverTypes: any, options: Resolve
             resolverGroup.resolvers.push(outputResolver);
         }
     }
-
-    resolverGroup.index = createCustomResolversIndex(resolverGroup.resolvers.map((r: ResolverOutputDefinition) => r.name), 'customResolvers', options.format);
-
+    
     return resolverGroup;
+}
+
+function lowerCaseFirstChar(text: string) {
+    return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
