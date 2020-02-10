@@ -1,11 +1,15 @@
 // tslint:disable-next-line: match-default-export-name
+import { findModelTableMappings } from '@graphback/core';
 import _test, { TestInterface } from 'ava';
+import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { buildSchema } from 'graphql';
-import { findModelTableMappings } from '@graphback/core';
 
-const schema = buildSchema(`type Todo {
+const schema = buildSchema(`
+"""
+@model
+"""
+type Todos {
  id: ID!
  text: String 
 }
@@ -24,7 +28,7 @@ interface Todo {
 
 const test = _test as TestInterface<Context>;
 // tslint:disable-next-line: no-any
-const typeContext = { name: 'todos' } as any
+const typeContext = { name: 'Todos' } as any
 
 // Create a new database before each tests so that
 // all tests can run parallel
