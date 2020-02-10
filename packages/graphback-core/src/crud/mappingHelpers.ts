@@ -69,11 +69,6 @@ export function isModelType(graphqlType: GraphQLObjectType): boolean {
   return !!parseMarker('model', graphqlType.description);
 }
 
-// TODO this is db level mapping. To be moved
-export const getIdFieldName = (graphqlType: any): string => {
-  return 'id'
-}
-
 export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
   return modelTypes.filter(isModelType);
 }
