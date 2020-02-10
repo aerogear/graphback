@@ -1,17 +1,15 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
-import { FileDefinition, OutputResolvers } from './GeneratorModel';
+import { FileDefinition, OutputFileSystem } from './GeneratorModel';
 
-export function writeResolvers(outputResolvers: OutputResolvers, config: ResolverGeneratorPluginConfig) {
+export function writeResolvers(outputResolvers: OutputFileSystem, config: ResolverGeneratorPluginConfig) {
     const customResolversPath: string = join(config.outputPath, '/', config.customResolversFolderName)
-    const generatedResolversPath: string = join(config.outputPath, '/', config.generatedResolversFolderName)
+    const generatedResolversPath: string = join(config.outputPath, '/', config.generatedServicesFolderName)
 
     createFolders(customResolversPath, generatedResolversPath);
 
-    outputResolvers.generated.forEach((resolverDefinition: FileDefinition) => {
-        writeFileSync(`${generatedResolversPath}/${resolverDefinition.fileName}`, resolverDefinition.output);
-    });
+    writeFileSync(`${generatedResolversPath}/${outputResolvers.generated.fileName}`, outputResolvers.generated.output);
 
     outputResolvers.custom.forEach((resolverDefinition: FileDefinition) => {
         const fileName = `${customResolversPath}/${resolverDefinition.fileName}`;

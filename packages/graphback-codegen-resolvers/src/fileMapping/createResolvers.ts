@@ -1,8 +1,8 @@
 import { getFieldName, getSubscriptionName, getTableOrColumnName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from '../templates/resolverTemplates';
+import { GeneratorResolversFormat } from '../generators/createResolvers';
 
-export interface GeneratorResolversFormat { Query: {}, Mutation: {}, Subscription: {} };
 
 export function generateCRUDResolvers(models: ModelDefinition[]): GeneratorResolversFormat {
     const outputResolvers = { Query: {}, Mutation: {}, Subscription: {} };

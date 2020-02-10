@@ -1,8 +1,9 @@
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core';
 import { writeResolvers } from './fileMapping/writeResolvers';
-import { OutputResolvers, FileDefinition } from './fileMapping/GeneratorModel';
-import { createOutputResolvers, createCustomOutputResolvers } from './fileMapping/outputResolvers';
+import { OutputFileSystem } from './fileMapping/GeneratorModel';
 import { generateCRUDResolversFunctions, generateCustomResolversFunctions } from './generators/createResolvers';
+import { createResolverTemplate } from './templates/resolverWrapper';
+import { createGeneratedResolversFile, createCustomResolversFile } from './fileMapping/createFileDefitions';
 
 
 export interface ResolverGeneratorPluginConfig {
@@ -19,9 +20,9 @@ export interface ResolverGeneratorPluginConfig {
     customResolversFolderName: string
 
     /**
-     *  Name of the folder that will be used to save generated resolvers (default: generated)
+     *  Name of the folder that will be used to save generated servies (default: services)
      */
-    generatedResolversFolderName: string
+    generatedServicesFolderName: string
 
 
     /**
@@ -72,7 +73,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
             format: 'graphql',
             layout: "apollo",
             customResolversFolderName: 'custom',
-            generatedResolversFolderName: 'generated'
+            generatedServicesFolderName: 'services'
         }, pluginConfig);
         if (!pluginConfig.outputPath) {
             throw new Error("resolver plugin requires outputPath parameter")
@@ -90,7 +91,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         }
     }
 
-    public generateResolvers(metadata: GraphbackCoreMetadata): OutputResolvers {
+    public generateResolvers(metadata: GraphbackCoreMetadata): OutputFileSystem {
         const schema = metadata.getSchema()
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
@@ -101,39 +102,15 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const generatedResolversFunctions = generateCRUDResolversFunctions(models);
         const customResolversFunctions = generateCustomResolversFunctions(schema, generatedResolversFunctions);
 
-    ]
-    
-        const generatedResolverGroup = createOutputResolvers(generatedResolversFunctions, this.pluginConfig);
-        const customResolverGroup = createCustomOutputResolvers(customResolversFunctions, this.pluginConfig);
+        const generatedResolverFile = createGeneratedResolversFile(generatedResolversFunctions, this.pluginConfig);
+        const customFiles = createCustomResolversFile(customResolversFunctions, this.pluginConfig);
 
-        const entities = this.generateEntities(models, this.pluginConfig);
-        const custom = this.generateCustomResolvers(models, this.pluginConfig);
-        const generated = this.generateCRUDResolvers(models, this.pluginConfig);
 
         return {
-            custom,
-            generated
+            custom: customFiles,
+            generated: generatedResolverFile,
+            index: {} as any,
+            services: []
         };
-    }
-
-    protected generateCRUDResolvers(models: ModelDefinition[], pluginConfig: ResolverGeneratorPluginConfig) {
-        const crudResolvers: FileDefinition[] = [];
-
-
-        return crudResolvers;
-    }
-
-
-    protected generateEntities(models: ModelDefinition[], pluginConfig: ResolverGeneratorPluginConfig) {
-        const entities: FileDefinition[] = [];
-
-        return entities
-    }
-
-    protected generateCustomResolvers(models: ModelDefinition[], pluginConfig: ResolverGeneratorPluginConfig) {
-        const custom: FileDefinition[] = [];
-
-
-        return custom;
     }
 }

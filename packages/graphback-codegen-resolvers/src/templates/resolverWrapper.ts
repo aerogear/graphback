@@ -1,4 +1,5 @@
 import * as prettier from 'prettier';
+import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
 import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
 import { blankResolverJS, resolverFileTemplateJS, } from './jsResolverTemplate';
 import { blankResolverTS, resolverFileTemplateTS, } from './tsResolverTemplate';
@@ -16,38 +17,43 @@ const mapResolverKeyValueTemplates = (resolvers: any) => {
 export const createBlankResolverTemplate = (resolverType: string, name: string, output: string, options: ResolverGeneratorPluginConfig) => {
     switch (options.format) {
         case 'js':
-            return blankResolverJS(resolverType, name, output);
+            return formatDocumentJS(blankResolverJS(resolverType, name, output));
         case 'ts':
-            return blankResolverTS(resolverType, name, output, options);
+            return formatDocumentTs(blankResolverTS(resolverType, name, output, options));
         default:
             throw new Error(`"${options.format}" resolvers are not supported`);
     }
 }
 
-export const createResolverTemplate = (name: string, typeResolvers: { Query: any, Mutation: any, Subscription: any }, options: ResolverGeneratorPluginConfig) => {
+export const createResolverTemplate = (typeResolvers: GeneratorResolversFormat, options: ResolverGeneratorPluginConfig) => {
     const mutations = mapResolverKeyValueTemplates(typeResolvers.Mutation)
     const queries = mapResolverKeyValueTemplates(typeResolvers.Query);
     const subscriptions = mapResolverKeyValueTemplates(typeResolvers.Subscription);
 
     const outputResolvers: string[] = [];
 
-    // TODO: Relationships
-    // if (relations.length) {}
-
-    if (queries.length) {
-        outputResolvers.push(`Query: {
+    if (options.layout === "apollo") {
+        if (queries.length) {
+            outputResolvers.push(`Query: {
             ${queries.join(',\n')}
-        }`)
-    }
-    if (mutations.length) {
-        outputResolvers.push(`Mutation: {
+        },`)
+        }
+        if (mutations.length) {
+            outputResolvers.push(`Mutation: {
             ${mutations.join(',\n')}
-        }`)
-    }
-    if (subscriptions.length) {
-        outputResolvers.push(`Subscription: {
+        },`)
+        }
+        if (subscriptions.length) {
+            outputResolvers.push(`Subscription: {
             ${subscriptions.join(',\n')}
         }`)
+        }
+    } else if (options.layout === "graphql") {
+        outputResolvers.push(`${queries.join(',\n')}`)
+        outputResolvers.push(`${mutations.join(',\n')}`)
+        outputResolvers.push(`${subscriptions.join(',\n')}`)
+    } else {
+        throw new Error("Wrong layout specified in resolver generator plugin")
     }
 
     return createResolverFileTemplate(name, outputResolvers, options);
@@ -69,7 +75,7 @@ function formatDocumentJS(contents: string) {
         return prettier.format(contents, { semi: false, parser: 'babel' });
     } catch (e) {
         // tslint:disable-next-line: no-console
-        console.log("Cannot format resolvers implementation", e)
+        console.log("Cannot format resolvers document", e)
 
         return contents;
     }

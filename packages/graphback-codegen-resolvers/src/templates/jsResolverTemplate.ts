@@ -2,7 +2,7 @@ const runtimeImportTemplate = `const { validateRuntimeContext } = require("@grap
 
 export const resolverFileTemplateJS = (name: string, outputResolvers: string[]) => {
     return `${runtimeImportTemplate}\n\n exports.${name.toLowerCase()}Resolvers = {
-      ${outputResolvers.join(',\n\n\t')}  
+      ${outputResolvers.join('\n\n')}  
     }`
 }
 
