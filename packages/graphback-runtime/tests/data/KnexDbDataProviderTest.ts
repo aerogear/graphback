@@ -1,11 +1,15 @@
 // tslint:disable-next-line: match-default-export-name
+import { findModelTableMappings } from '@graphback/core';
 import _test, { TestInterface } from 'ava';
+import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { buildSchema } from 'graphql';
-import { findModelTableMappings } from '@graphback/core';
 
-const schema = buildSchema(`type Todo {
+const schema = buildSchema(`
+"""
+@model
+"""
+type Todos {
  id: ID!
  text: String 
 }
@@ -24,7 +28,7 @@ interface Todo {
 
 const test = _test as TestInterface<Context>;
 // tslint:disable-next-line: no-any
-const typeContext = { name: 'todos' } as any
+const typeContext = { name: 'Todos' } as any
 
 // Create a new database before each tests so that
 // all tests can run parallel
@@ -48,6 +52,7 @@ test.beforeEach(async t => {
   await db('todos').insert({ text: 'just another todo' });
 
   const modelTableMappings = findModelTableMappings(schema);
+
   const provider = new KnexDBDataProvider(db, modelTableMappings);
 
   t.context = { db, provider };
@@ -78,6 +83,7 @@ test('create Todo', async t => {
 
 test('update Todo', async t => {
   const todo: Todo = await t.context.provider.update(typeContext.name, {
+    id: 1,
     text: 'my updated first todo',
   });
 
@@ -92,7 +98,7 @@ test('delete Todo', async t => {
 });
 
 test('find all Todos', async t => {
-  const todos = await t.context.provider.findAll(typeContext);
+  const todos = await t.context.provider.findAll(typeContext.name);
 
   t.assert(todos.length === 3);
 });

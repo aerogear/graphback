@@ -1,10 +1,21 @@
 // tslint:disable-next-line: match-default-export-name
+import { findModelTableMappings } from '@graphback/core';
 import _test, { TestInterface } from 'ava';
+import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 import { CRUDService } from  '../../src/service/CRUDService'
 
+const schema = buildSchema(`
+"""
+@model
+"""
+type Todos {
+ id: ID!
+ text: String 
+}
+`);
 // tslint:disable: typedef
 
 interface Context {
@@ -21,7 +32,7 @@ interface Todo {
 const test = _test as TestInterface<Context>;
 // tslint:disable-next-line: no-any
 const typeContext = {
-  name: 'todos', config: {
+  name: 'Todos', config: {
     subCreate: true,
     subDelete: true,
     subUpdate: true
@@ -39,17 +50,22 @@ test.beforeEach(async t => {
     useNullAsDefault: true,
   });
 
+  // tslint:disable-next-line: await-promise
   await db.schema.createTable('todos', table => {
     table.increments(); // id
     table.string('text');
   });
 
   // insert a couple of default data
+  // tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'my first default todo' });
+  // tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'the second todo' });
+  // tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'just another todo' });
 
-  const provider = new KnexDBDataProvider(db);
+  const modelTableMappings = findModelTableMappings(schema)
+  const provider = new KnexDBDataProvider(db, modelTableMappings);
   const pubSub = new PubSub();
   const crudService = new CRUDService(provider, pubSub)
   t.context = { db, provider, crudService };
@@ -75,6 +91,7 @@ test('create Todo', async t => {
 
 test('update Todo', async t => {
   const todo: Todo = await t.context.crudService.update(typeContext.name, {
+    id: 1,
     text: 'my updated first todo',
   });
 
