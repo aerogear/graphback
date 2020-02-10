@@ -1,13 +1,11 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join } from 'path';
 import { OutputFileSystem } from './GeneratorModel';
 import { ResolverGeneratorPluginConfig } from './ResolverGeneratorPlugin';
 
-export function writeResolvers(outputResolvers: OutputFileSystem, config: ResolverGeneratorPluginConfig) {
-    const generatedServicesFolderName: string = join(config.outputPath, '/', config.generatedServicesFolderName)
-
-    createFolders(generatedServicesFolderName);
-    writeFileSync(`${config.outputPath}/${outputResolvers.resolvers.fileName}`, outputResolvers.resolvers.output);
+export function writeResolvers(outputFiles: OutputFileSystem, config: ResolverGeneratorPluginConfig) {
+    createFolders(config.outputPath);
+    writeFileSync(`${config.outputPath}/${outputFiles.resolvers.fileName}`, outputFiles.resolvers.output);
+    writeFileSync(`${config.outputPath}/${outputFiles.index.fileName}`, outputFiles.index.output);
 }
 
 function createFolders(path: string) {
