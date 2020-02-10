@@ -1,4 +1,4 @@
-import { getModelTableMap, getUpdateArgs, ModelTableMap } from '@graphback/core';
+import { findModelTableMap, getUpdateArgs, ModelTableMap } from '@graphback/core';
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
@@ -24,7 +24,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async create(name: string, data: Type): Promise<Type> {
-    const { tableName } = getModelTableMap(name, this.modelMappings);
+    const { tableName } = findModelTableMap(name, this.modelMappings);
 
     // tslint:disable-next-line: await-promise
     const [id] = await this.db(tableName).insert(data);
@@ -38,7 +38,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   public async update(name: string, data: Type): Promise<Type> {
     
-    const { idField, tableName } = getModelTableMap(name, this.modelMappings);
+    const { idField, tableName } = findModelTableMap(name, this.modelMappings);
     const { id, data: updateData } = getUpdateArgs(idField, data);
 
     // tslint:disable-next-line: await-promise
@@ -56,7 +56,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   // tslint:disable-next-line: no-reserved-keywords
   public async delete(name: string, id: string, data?: Type): Promise<string> {
-    const { tableName } = getModelTableMap(name, this.modelMappings);
+    const { tableName } = findModelTableMap(name, this.modelMappings);
 
     // tslint:disable-next-line: await-promise
     const dbResult = await this.db(tableName).where('id', '=', id).del()
@@ -68,7 +68,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async read(name: string, id: string): Promise<Type> {
-    const { tableName } = getModelTableMap(name, this.modelMappings);
+    const { tableName } = findModelTableMap(name, this.modelMappings);
 
     // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(tableName).where('id', '=', id);
@@ -79,7 +79,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async findAll(name: string): Promise<Type[]> {
-    const { tableName } = getModelTableMap(name, this.modelMappings);
+    const { tableName } = findModelTableMap(name, this.modelMappings);
 
     // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(tableName);
@@ -90,7 +90,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async findBy(name: string, filter: Type | AdvancedFilter): Promise<Type[]> {
-    const { tableName } = getModelTableMap(name, this.modelMappings);
+    const { tableName } = findModelTableMap(name, this.modelMappings);
 
     // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(tableName).where(filter);
@@ -101,7 +101,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async batchRead(name: string, relationField: string, ids: string[]): Promise<Type[][]> {
-    const { tableName } = getModelTableMap(name, this.modelMappings);
+    const { tableName } = findModelTableMap(name, this.modelMappings);
 
     // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(tableName).whereIn(relationField, ids);

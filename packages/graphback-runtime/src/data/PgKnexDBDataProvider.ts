@@ -1,4 +1,4 @@
-import { getModelTableMap, ModelTableMap } from '@graphback/core';
+import { findModelTableMap, ModelTableMap } from '@graphback/core';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 import { NoDataError } from './NoDataError';
@@ -17,7 +17,7 @@ export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends Kn
     }
 
     public async create(name: string, data: Type): Promise<Type> {
-        const { tableName } = getModelTableMap(name, this.modelMappings);
+        const { tableName } = findModelTableMap(name, this.modelMappings);
 
         // tslint:disable-next-line: await-promise
         const dbResult = await this.db(tableName).insert(data).returning('*');
