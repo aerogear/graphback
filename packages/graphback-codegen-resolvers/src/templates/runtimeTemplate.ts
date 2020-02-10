@@ -9,7 +9,7 @@ export const createIndexFile = (models: ModelDefinition[], config: ResolverGener
 
         // tslint:disable-next-line: no-parameter-reassignment
         return resultString += `
-        const ${lowercasedName}Type = schema.getType(${objName});
+        const ${lowercasedName}Type = schema.getType("${objName}");
         const ${lowercasedName}DB = new PgKnexDBDataProvider(${lowercasedName}Type, db);
         const ${lowercasedName} = new CRUDService(${lowercasedName}Type, ${lowercasedName}DB, pubSub)
         `
@@ -18,7 +18,7 @@ export const createIndexFile = (models: ModelDefinition[], config: ResolverGener
 
     const objList = models.reduce((resultString: string, model: ModelDefinition) => {
         // tslint:disable-next-line: no-parameter-reassignment
-        return resultString += `${model.graphqlType.name},`
+        return resultString += `${lowerCaseFirstChar(model.graphqlType.name)},`
     }, '')
 
     return {
