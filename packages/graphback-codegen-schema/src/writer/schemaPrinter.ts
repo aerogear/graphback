@@ -42,15 +42,15 @@ export function printSortedSchema(schema: GraphQLSchema) {
     }).join('\n\n');
 
     schemaString += '\n\n';
-    if (schema.getQueryType() && Object.keys(schema.getQueryType().getFields()).length) {
+    if (schema.getQueryType()) {
         schemaString += `${print(schema.getQueryType().astNode)} \n\n`
     }
 
-    if (schema.getMutationType() && Object.keys(schema.getMutationType().getFields()).length) {
+    if (schema.getMutationType()) {
         schemaString += `${print(schema.getMutationType().astNode)} \n\n`
     }
 
-    if (schema.getSubscriptionType() && Object.keys(schema.getSubscriptionType().getFields()).length) {
+    if (schema.getSubscriptionType()) {
         schemaString += `${print(schema.getSubscriptionType().astNode)} \n\n`
     }
 

@@ -20,7 +20,7 @@ export interface ModelTableMap {
   fieldMap?: any
 }
 
-export const getModelTableMappings = (schema: GraphQLSchema): ModelTableMap[] => {
+export const findModelTableMappings = (schema: GraphQLSchema): ModelTableMap[] => {
   const modelTypes = getModelTypesFromSchema(schema);
   const models = getUserModels(modelTypes);
 
@@ -76,6 +76,6 @@ function getMappedDatabaseName(modelOrField: GraphQLObjectType | GraphQLField<an
   return defaultColumnNameTransform(modelOrField.name, direction);
 }
 
-export function getModelTableMap(name: string, mappings: ModelTableMap[]) {
+export function findModelTableMap(name: string, mappings: ModelTableMap[]) {
   return mappings.find((m: ModelTableMap) => m.typeName === name);
 }
