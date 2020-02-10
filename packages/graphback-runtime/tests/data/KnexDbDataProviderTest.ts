@@ -2,9 +2,16 @@
 import _test, { TestInterface } from 'ava';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
+import { buildSchema } from 'graphql';
+import { getModelTableMappings } from '@graphback/core';
+
+const schema = buildSchema(`type Todo {
+ id: ID!
+ text: String 
+}
+`);
 
 // tslint:disable: typedef
-
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;
