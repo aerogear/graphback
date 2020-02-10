@@ -1,3 +1,5 @@
+// Templates for individual CRUD methods
+
 export const createTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
         return context.${modelName}.create(args, context);

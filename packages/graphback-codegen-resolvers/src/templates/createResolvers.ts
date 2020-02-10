@@ -1,10 +1,9 @@
 import { getFieldName, getSubscriptionName, getTableOrColumnName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from '../templates/resolverTemplates';
-import { GeneratorResolversFormat } from '../generators/createResolvers';
+import { GraphQLObjectType } from 'graphql';
+import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
+import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
 
-
-export function generateCRUDResolvers(models: ModelDefinition[]): GeneratorResolversFormat {
+export function generateCRUDResolversFunctions(models: ModelDefinition[]): GeneratorResolversFormat {
     const outputResolvers = { Query: {}, Mutation: {}, Subscription: {} };
 
     for (const { graphqlType, crudOptions } of models) {
@@ -15,54 +14,11 @@ export function generateCRUDResolvers(models: ModelDefinition[]): GeneratorResol
         const newSubs = createSubscriptions(graphqlType, crudOptions);
         outputResolvers.Subscription = { ...outputResolvers.Subscription, ...newSubs };
     }
-
+    
     return outputResolvers;
 }
 
-/**
- * Creates custom resolvers for each model in the schema.
- * 
- * @param models 
- */
-export function generateCustomCRUDResolvers(schema: GraphQLSchema, generatedResolvers: any) {
-    const queryType = schema.getQueryType()
-    const mutationType = schema.getMutationType();
-    const subscriptionType = schema.getSubscriptionType();
-
-    const outputResolvers: GeneratorResolversFormat = { Query: {}, Mutation: {}, Subscription: {} };
-    if (queryType) {
-        const schemaFields = Object.values(queryType.getFields());
-        for (const schemaField of schemaFields) {
-            const fieldName = schemaField.name;
-            if (!generatedResolvers.Query[fieldName]) {
-                outputResolvers.Query[fieldName] = blankResolver;
-            }
-        }
-    }
-
-    if (mutationType) {
-        const schemaFields = Object.values(mutationType.getFields());
-        for (const schemaField of schemaFields) {
-            const fieldName = schemaField.name;
-            if (!generatedResolvers.Mutation[fieldName]) {
-                outputResolvers.Mutation[fieldName] = blankResolver;
-            }
-        }
-    }
-
-    if (subscriptionType) {
-        const schemaFields = Object.values(subscriptionType.getFields());
-        for (const schemaField of schemaFields) {
-            const fieldName = schemaField.name;
-            if (!generatedResolvers.Subscription[fieldName]) {
-                outputResolvers.Subscription[fieldName] = blankSubscription;
-            }
-        }
-    }
-
-    return outputResolvers;
-}
-
+ 
 export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
 
