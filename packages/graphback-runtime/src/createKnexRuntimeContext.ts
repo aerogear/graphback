@@ -9,11 +9,8 @@ import { GraphbackRuntimeContext } from './api/GraphbackRuntimeContext';
  */
 export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine, schema: GraphQLSchema): GraphbackRuntimeContext => {
   const modelTableMappings = getModelTableMappings(schema);
-  // tslint:disable-next-line: no-console
-  // console.log(modelTableMappings)
-  // TODO use mappings
-  const crudDb = new PgKnexDBDataProvider(db);
-  const crudService = new CRUDService(crudDb, modelTableMappings, pubSub);
+  const crudDb = new PgKnexDBDataProvider(db, modelTableMappings);
+  const crudService = new CRUDService(crudDb, pubSub);
 
   return {
     crudService,

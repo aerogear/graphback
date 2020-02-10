@@ -1,4 +1,4 @@
-import { getModelTableMap, getUpdateArgs, GraphbackOperationType, ModelTableMap } from "@graphback/core"
+import { GraphbackOperationType, ModelTableMap } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackRuntimeContext } from '../api/GraphbackRuntimeContext';
@@ -20,12 +20,10 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     private db: GraphbackDataProvider;
     private logger: GraphbackMessageLogger;
     private pubSub: PubSubEngine;
-    private modelsMap: ModelTableMap[];
 
-    constructor(db: GraphbackDataProvider, modelsMap: ModelTableMap[], pubSub?: PubSubEngine,
+    constructor(db: GraphbackDataProvider, pubSub?: PubSubEngine,
         logger?: GraphbackMessageLogger) {
         this.db = db;
-        this.modelsMap = modelsMap;
         this.pubSub = pubSub;
         this.logger = logger || defaultLogger;
     }
@@ -33,9 +31,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async create(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Creating object ${name}`);
 
-        const { tableName } = getModelTableMap(name, this.modelsMap);
-
-        const result = await this.db.create(tableName, data, context);
+        const result = await this.db.create(name, data, context);
 
         if (this.pubSub && options && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, name);
@@ -49,10 +45,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async update(name: string, data: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`Updating object ${name}`);
 
-        const { tableName, idField } = getModelTableMap(name, this.modelsMap);
-
-        const args = getUpdateArgs(idField, data);
-        const result = await this.db.update(tableName, args.id, args.data, context);
+        const result = await this.db.update(name, data, context);
 
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, name);
@@ -67,9 +60,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
     public async delete(name: string, id: string, data?: T, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<string> {
         this.logger.log(`deleting object ${name}`)
 
-        const { tableName } = getModelTableMap(name, this.modelsMap);
-
-        const result = await this.db.delete(tableName, id, data, context);
+        const result = await this.db.delete(name, id, data, context);
 
         if (this.pubSub && options && options.publishEvent) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, name);
@@ -82,27 +73,21 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
 
     public read(name: string, id: string, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T> {
         this.logger.log(`reading object ${name}`)
-
-        const { tableName } = getModelTableMap(name, this.modelsMap);
         
-        return this.db.read(tableName, id, context);
+        return this.db.read(name, id, context);
     }
 
     public findAll(name: string, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T[]> {
         this.logger.log(`querying object ${name}`)
 
-        const { tableName } = getModelTableMap(name, this.modelsMap);
-
-        return this.db.findAll(tableName, context);
+        return this.db.findAll(name, context);
     }
 
     // tslint:disable-next-line: no-any
     public findBy(name: string, filter: any, options?: GraphbackRuntimeOptions, context?: GraphbackRuntimeContext): Promise<T[]> {
         this.logger.log(`querying object ${name} with filter ${JSON.stringify(filter)}`)
 
-        const { tableName } = getModelTableMap(name, this.modelsMap);
-
-        return this.db.findBy(tableName, filter, context);
+        return this.db.findBy(name, filter, context);
     }
 
     public subscribeToCreate(name: string, context?: GraphbackRuntimeContext): AsyncIterator<T> | undefined {
@@ -143,10 +128,8 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T, GraphbackRu
         const keyName = `${name}${upperCaseFirstChar(relationField)}DataLoader`;
         if (!context[keyName]) {
 
-            const { tableName } = getModelTableMap(name, this.modelsMap);
-
             context[keyName] = new DataLoader<string, any>((keys: string[]) => {
-                return this.db.batchRead(tableName, relationField, keys);
+                return this.db.batchRead(name, relationField, keys);
             });
         }
 

@@ -34,11 +34,10 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * Implementation for object updates
      *
      * @param name name of the object to create
-     * @param id of the object to update
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
-    update(name: string, id: TableID, data: Type, context?: GraphbackContext): Promise<Type>;
+    update(name: string, data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes

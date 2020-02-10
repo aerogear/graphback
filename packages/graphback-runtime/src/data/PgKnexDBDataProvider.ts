@@ -1,3 +1,4 @@
+import { getModelTableMap, ModelTableMap } from '@graphback/core';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 import { NoDataError } from './NoDataError';
@@ -11,12 +12,15 @@ import { NoDataError } from './NoDataError';
 // tslint:disable-next-line: no-any
 export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends KnexDBDataProvider<Type, GraphbackContext>{
 
-    constructor(db: Knex) {
-        super(db);
+    constructor(db: Knex, modelTablesMap: ModelTableMap[]) {
+        super(db, modelTablesMap);
     }
 
-    public async create(name: string,  data: Type): Promise<Type> {
-        const dbResult = await this.db(name).insert(data).returning('*');
+    public async create(name: string, data: Type): Promise<Type> {
+        const { tableName } = getModelTableMap(name, this.modelMappings);
+
+        // tslint:disable-next-line: await-promise
+        const dbResult = await this.db(tableName).insert(data).returning('*');
         if (dbResult && dbResult[0]) {
             return dbResult[0]
         }
