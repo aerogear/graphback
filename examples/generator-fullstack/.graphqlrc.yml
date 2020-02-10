@@ -26,9 +26,6 @@ extensions:
         graphback-resolvers:
           format: ts
           outputPath: ./server/src/resolvers
-          types:
-            resolverRootLocation: ../../generated-types
-            resolverRootType: Resolvers
     ## Knex DB Migration config
     dbmigrations:
       ## See knex.js config format

@@ -12,23 +12,11 @@ const topNote = `/**
 */`
 
 export const resolverFileTemplateTS = (outputResolvers: string[], options: ResolverGeneratorPluginConfig) => {
-    const { typedImports, resolverType } = getTypedImports(options);
 
-    return `${topNote}\n
-    ${typedImports}\n\nexport default {
+
+    return `${topNote}\n\nexport default {
       ${outputResolvers.join('\n\n\t')}  
-    }${resolverType}`
-}
-
-function getTypedImports(options: ResolverGeneratorPluginConfig) {
-    let resolverType = '';
-    let typedImports = '';
-    if (options.types) {
-        resolverType = ` as ${options.types.resolverRootType};\n`;
-        typedImports = `import { ${options.types.resolverRootType} } from "${options.types.resolverRootLocation}";\n`;
-    }
-
-    return { typedImports, resolverType };
+    }`
 }
 
 export const resolverFileTemplateJS = (outputResolvers: string[], options: ResolverGeneratorPluginConfig) => {
