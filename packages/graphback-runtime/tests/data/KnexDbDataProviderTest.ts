@@ -3,7 +3,7 @@ import _test, { TestInterface } from 'ava';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 import { buildSchema } from 'graphql';
-import { getModelTableMappings } from '@graphback/core';
+import { findModelTableMappings } from '@graphback/core';
 
 const schema = buildSchema(`type Todo {
  id: ID!
@@ -47,7 +47,7 @@ test.beforeEach(async t => {
   await db('todos').insert({ text: 'the second todo' });
   await db('todos').insert({ text: 'just another todo' });
 
-  const modelTableMappings = getModelTableMappings(schema);
+  const modelTableMappings = findModelTableMappings(schema);
   const provider = new KnexDBDataProvider(db, modelTableMappings);
 
   t.context = { db, provider };
