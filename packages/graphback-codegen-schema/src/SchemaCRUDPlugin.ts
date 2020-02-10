@@ -1,7 +1,7 @@
-import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getPrimaryKey } from '@graphback/core'
+import { getBaseType, getFieldName, getPrimaryKey, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
+import { getNullableType, GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
 import { resolve } from 'path';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { printSortedSchema } from './writer/schemaPrinter';
@@ -134,7 +134,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             }).reduce((fieldObj: any, current: any) => {
 
                 if (current.name === primaryKey.name) {
-                    fieldObj[current.name] = { type: getBaseType(current.type), description: '' };
+                    fieldObj[current.name] = { type: getNullableType(current.type), description: '' };
                 } else {
                     fieldObj[current.name] = { type: current.type, description: '' };
                 }
