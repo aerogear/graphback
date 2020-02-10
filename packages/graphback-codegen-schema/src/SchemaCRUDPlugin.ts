@@ -111,7 +111,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
         for (const model of Object.values(models)) {
             const modelInputType = this.createInputTypes(model);
-            console.log(modelInputType.getFields())
             queryTypes = this.createQueries(model, queryTypes, modelInputType);
             mutationTypes = this.createMutations(model, mutationTypes, modelInputType);
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
