@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 
-import { ApolloServer, PubSub } from "apollo-server-express"
+import { createApolloServer } from './graphql';
 
 async function start() {
   const app = express();
@@ -10,10 +10,8 @@ async function start() {
   app.use(cors());
 
   app.get('/health', (req, res) => res.sendStatus(200));
-
   
-  const apolloServer = createApolloServer();
-
+  const apolloServer = await createApolloServer();
   apolloServer.applyMiddleware({ app })
 
   const httpServer = http.createServer(app)
