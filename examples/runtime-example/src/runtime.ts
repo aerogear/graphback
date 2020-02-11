@@ -1,7 +1,3 @@
-import { gql } from 'apollo-server-core';
-import {
-  PgKnexDBDataProvider,
-} from 'graphback';
 import { migrateDB } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
@@ -19,28 +15,28 @@ export const createRuntime = async (client: any) => {
   // const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
   // const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  const dbConfig: any = {
-    client: jsonConfig.db.database,
-    connection: jsonConfig.db.dbConfig
-  };
+  // const dbConfig: any = {
+  //   client: jsonConfig.db.database,
+  //   connection: jsonConfig.db.dbConfig
+  // };
 
-  migrateDB(dbConfig, schemaText).then((ops) => {
-    console.log(ops);
-  });
+  // migrateDB(dbConfig, schemaText).then((ops) => {
+  //   console.log(ops);
+  // });
 
   const pubSub = new PubSub();
   // TODO migrate runtime layer
   // const runtime = await backend.createRuntime(dbClientProvider, pubSub);
   // const generatedSchema = runtime.schema;
 
-  const executableSchema = makeExecutableSchema({
-    typeDefs: ``,
-    resolvers: {},
-    // typeDefs: gql`${generatedSchema}`,
-    // resolvers: runtime.resolvers,
-    resolverValidationOptions: {
-      requireResolversForResolveType: false
-    }
-  });
-  return executableSchema;
+  // const executableSchema = makeExecutableSchema({
+  //   typeDefs: ``,
+  //   resolvers: {},
+  //   // typeDefs: gql`${generatedSchema}`,
+  //   // resolvers: runtime.resolvers,
+  //   resolverValidationOptions: {
+  //     requireResolversForResolveType: false
+  //   }
+  // });
+  return undefined;
 }

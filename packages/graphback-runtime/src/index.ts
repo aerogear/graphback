@@ -9,10 +9,10 @@ export * from "./data/KnexDBDataProvider"
 export * from "./service/CRUDService"
 export * from "./service/GraphbackCRUDService"
 
+// Runtime
 export * from "./resolvers/LayeredRuntimeResolverGen"
 export * from "./resolvers/RuntimeResolversDefinition"
 
-// Helpers 
-export * from "./api/GraphbackRuntimeContext"
-export * from "./createKnexRuntimeContext"
-export * from "./api/validateRuntimeContext"
+// Helpers
+export * from "./runtimeContext"
+

@@ -3,7 +3,7 @@ import _test, { TestInterface } from 'ava';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { CRUDService } from  '../../src/service/CRUDService'
+import { CRUDService, PubSubConfig } from  '../../src/service/CRUDService'
 
 // tslint:disable: typedef
 
@@ -21,12 +21,9 @@ interface Todo {
 const test = _test as TestInterface<Context>;
 // tslint:disable-next-line: no-any
 const typeContext = {
-  name: 'todos', config: {
-    subCreate: true,
-    subDelete: true,
-    subUpdate: true
-  }
+  name: 'todos'
 } as any
+
 
 // Create a new database before each tests so that
 // all tests can run parallel
@@ -49,23 +46,28 @@ test.beforeEach(async t => {
   await db('todos').insert({ text: 'the second todo' });
   await db('todos').insert({ text: 'just another todo' });
 
-  const provider = new KnexDBDataProvider(db);
+  const provider = new KnexDBDataProvider(typeContext, db);
   const pubSub = new PubSub();
-  const crudService = new CRUDService(provider, pubSub)
+
+  const publishConfig: PubSubConfig = {
+    pubSub,
+    publishCreate: true,
+    publishDelete: true,
+    publishUpdate: true
+  }
+  const crudService = new CRUDService(typeContext, provider, publishConfig)
   t.context = { db, provider, crudService };
 });
 
 test('read Todo', async t => {
-  const todo: Todo = await t.context.crudService.read(typeContext.name, '3');
+  const todo: Todo = await t.context.crudService.read('3');
 
   t.assert(todo.id === 3);
   t.assert(todo.text === 'just another todo');
 });
 
-
-
 test('create Todo', async t => {
-  const todo: Todo = await t.context.crudService.create(typeContext.name, {
+  const todo: Todo = await t.context.crudService.create({
     text: 'create a todo',
   });
 
@@ -74,7 +76,8 @@ test('create Todo', async t => {
 });
 
 test('update Todo', async t => {
-  const todo: Todo = await t.context.crudService.update(typeContext.name, '1', {
+  const todo: Todo = await t.context.crudService.update({
+    id: '1',
     text: 'my updated first todo',
   });
 
@@ -83,9 +86,12 @@ test('update Todo', async t => {
 });
 
 test('delete Todo', async t => {
-  const id = await t.context.crudService.delete(typeContext.name, '3');
+  const data = await t.context.crudService.delete({
+    id: '3',
+    text: 'my updated first todo',
+  });
 
-  t.assert(id === '3');
+  t.deepEqual(data.id, 3);
 });
 
 test('find all Todos', async t => {
@@ -95,7 +101,7 @@ test('find all Todos', async t => {
 });
 
 test('find Todo by text', async t => {
-  const todos: Todo[] = await t.context.crudService.findBy(typeContext.name, {
+  const todos: Todo[] = await t.context.crudService.findBy({
     text: 'the second todo',
   });
 
