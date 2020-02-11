@@ -3,7 +3,7 @@ import { OutputFileSystem } from './GeneratorModel';
 import { GeneratorResolversFormat } from './GeneratorResolversFormat';
 import { generateCRUDResolversFunctions } from './templates/createResolvers';
 import { createResolverTemplate } from './templates/resolverWrapper';
-import { createIndexFile } from './templates/runtimeTemplate';
+import { createRuntimeFile } from './templates/runtimeTemplate';
 import { writeResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginConfig {
@@ -74,13 +74,14 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
             return undefined;
         }
+
         const generatedResolversFunctions = generateCRUDResolversFunctions(models);
         const generatedResolverFile = this.createGeneratedResolversFile(generatedResolversFunctions, this.pluginConfig);
-        const index = createIndexFile(models, this.pluginConfig);
+        const contextFile = createRuntimeFile(models, this.pluginConfig);
 
         return {
             resolvers: generatedResolverFile,
-            index
+            context: contextFile
         };
     }
 

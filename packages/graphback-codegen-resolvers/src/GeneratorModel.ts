@@ -4,7 +4,7 @@
  */
 export interface OutputFileSystem {
     resolvers: FileDefinition
-    index: FileDefinition
+    context: FileDefinition
 }
 
 /**

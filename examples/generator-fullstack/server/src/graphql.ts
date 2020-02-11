@@ -4,7 +4,7 @@ import { ApolloServer, PubSub } from 'apollo-server-express';
 import { buildSchema } from 'graphql';
 import { join } from 'path';
 import { createDB } from './db'
-import { createCRUDResolversRuntimeContext } from './resolvers/crudContext';
+import { createCRUDResolversRuntimeContext } from './resolvers/createContext';
 import resolvers from './resolvers/resolvers'
 
 /**
@@ -16,7 +16,7 @@ export const createApolloServer = async () => {
 
     const typeDefs = loadSchemaFiles(join(__dirname, '/schema/')).join('\n')
     const schema = buildSchema(typeDefs);
-    const context = createCRUDResolversRuntimeContext(schema, db as any, pubSub);
+    const context = createCRUDResolversRuntimeContext({ schema, db, pubSub });
     const apolloServer = new ApolloServer({
         typeDefs: typeDefs,
         resolvers,
