@@ -1,4 +1,4 @@
-import { GraphbackOperationType, upperCaseFirstChar } from "@graphback/core"
+import { GraphbackOperationType, ModelTableMap, upperCaseFirstChar } from "@graphback/core"
 import DataLoader from "dataloader";
 import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';

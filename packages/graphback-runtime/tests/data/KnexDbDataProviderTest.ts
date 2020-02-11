@@ -1,5 +1,4 @@
 // tslint:disable-next-line: match-default-export-name
-import { findModelTableMappings } from '@graphback/core';
 import _test, { TestInterface } from 'ava';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
