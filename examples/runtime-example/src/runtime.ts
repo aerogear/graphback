@@ -1,42 +1,37 @@
+import { makeExecutableSchema } from 'apollo-server-express';
+import { GraphbackRuntime } from 'graphback'
 import { migrateDB } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
-import { makeExecutableSchema } from 'graphql-tools';
 import * as Knex from 'knex';
-import * as jsonConfig from '../graphback.json'
+import { createDB, getConfig } from './db'
 import { loadSchema } from './loadSchema';
-
+import { printSchema } from 'graphql';
 /**
  * Method used to create runtime schema
  * It will be part of of the integration tests
  */
-export const createRuntime = async (client: any) => {
-  const schemaText = loadSchema(jsonConfig.folders.model);
+export const createRuntime = async () => {
+  const db = await createDB();
+  const graphbackConfig = await getConfig();
+  const schemaText = loadSchema(graphbackConfig.model);
 
-  // const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
-  // const dbClientProvider = new PgKnexDBDataProvider(client);
 
-  // const dbConfig: any = {
-  //   client: jsonConfig.db.database,
-  //   connection: jsonConfig.db.dbConfig
-  // };
 
-  // migrateDB(dbConfig, schemaText).then((ops) => {
-  //   console.log(ops);
-  // });
+  migrateDB(graphbackConfig.dbmigrations, schemaText).then((ops) => {
+    console.log(ops);
+  });
 
   const pubSub = new PubSub();
-  // TODO migrate runtime layer
-  // const runtime = await backend.createRuntime(dbClientProvider, pubSub);
-  // const generatedSchema = runtime.schema;
+  const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
+  const runtime = runtimeEngine.buildRuntime(db, pubSub, {});
 
-  // const executableSchema = makeExecutableSchema({
-  //   typeDefs: ``,
-  //   resolvers: {},
-  //   // typeDefs: gql`${generatedSchema}`,
-  //   // resolvers: runtime.resolvers,
-  //   resolverValidationOptions: {
-  //     requireResolversForResolveType: false
-  //   }
-  // });
-  return undefined;
+  const executableSchema = makeExecutableSchema({
+    typeDefs: printSchema(runtime.schema),
+    resolvers: runtime.resolvers,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
+  });
+  
+  return executableSchema;
 }

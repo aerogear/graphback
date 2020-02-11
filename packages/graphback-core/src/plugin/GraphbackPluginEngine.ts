@@ -12,7 +12,7 @@ import { GraphbackPlugin } from './GraphbackPlugin';
  * ```js
  * const engine = GraphbackPluginEngine(schema);
  * engine.registerPlugin(plugin);
- * printSchema(engine.execute());
+ * printSchema(engine.createResources());
  * ```
  */
 export class GraphbackPluginEngine {
@@ -38,21 +38,25 @@ export class GraphbackPluginEngine {
         this.plugins.push(...plugins);
     }
 
-    public execute(): GraphbackCoreMetadata {
+    public createResources(): GraphbackCoreMetadata {
+        this.createSchema();
+        // Save schema and all files
+        for (const plugin of this.plugins) {
+            plugin.createResources(this.metadata);
+        }
+
+        return this.metadata;
+    }
+
+    public createSchema(): GraphbackCoreMetadata {
         if (this.plugins.length === 0) {
             throw new Error("GraphbackEngine: No Graphback plugins registered")
         }
-        
-        // First we need to apply all required changes to the schema we need 
+        // We need to apply all required changes to the schema we need 
         // This is to ensure that every plugin can add changes to the schema
         for (const plugin of this.plugins) {
             const newSchema = plugin.transformSchema(this.metadata);
             this.metadata.setSchema(newSchema);
-        }
-
-        // Now we can save schema and all resouces that are related to it
-        for (const plugin of this.plugins) {
-            plugin.createResources(this.metadata);
         }
 
         return this.metadata;
