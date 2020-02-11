@@ -434,8 +434,7 @@ class AbstractDatabaseBuilder {
     const annotations: any = parseAnnotations('db', oneToManyRelationship.description || null);
 
     const field: GraphQLField<any, any> = {
-      // TODO: Use defaultColumnNameTransform
-      name: annotations.oneToMany || lowerCaseFirstChar(oneToManyRelationship.relation.name),
+      name: annotations.oneToMany || this.transformColumnName(oneToManyRelationship.relation.name, 'to-db'),
       type: oneToManyRelationship.relation,
       description: oneToManyRelationship.description,
       args: [],
