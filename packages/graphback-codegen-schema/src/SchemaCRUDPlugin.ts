@@ -1,7 +1,7 @@
 import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
+import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
 import { resolve } from 'path';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { printSortedSchema } from './writer/schemaPrinter';
@@ -123,18 +123,16 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
 
+        // TODO relationships?
         return new GraphQLInputObjectType({
-            // TODO
             name: `${model.graphqlType.name}Input`,
             fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
                 const fieldBaseType = getBaseType(field.type);
 
                 return !isObjectType(fieldBaseType);
             }).reduce((fieldObj: any, current: any) => {
-                // FIXME read id annotation instead of hardcoding id!
-                if (current.name !== 'id') {
-                    fieldObj[current.name] = { type: current.type, description: '' };
-                }
+                const fieldType = current.type;
+                fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
 
                 return fieldObj;
             }, {}))
@@ -181,18 +179,27 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     protected createSchema(queryTypes: any, mutationTypes: any, subscriptionTypes: any) {
+
         const queryType = new GraphQLObjectType({
             name: 'Query',
             fields: () => (queryTypes)
         });
-        const mutationType = new GraphQLObjectType({
-            name: 'Mutation',
-            fields: () => (mutationTypes)
-        });
-        const subscriptionType = new GraphQLObjectType({
-            name: 'Subscription',
-            fields: () => (subscriptionTypes)
-        });
+
+        let mutationType;
+        if (Object.keys(mutationTypes).length !== 0) {
+            mutationType = new GraphQLObjectType({
+                name: 'Mutation',
+                fields: () => (mutationTypes)
+            });
+        }
+
+        let subscriptionType;
+        if (Object.keys(subscriptionTypes).length !== 0) {
+            subscriptionType = new GraphQLObjectType({
+                name: 'Subscription',
+                fields: () => (subscriptionTypes)
+            });
+        }
 
         return new GraphQLSchema({
             query: queryType,
@@ -209,7 +216,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
                     input: {
-                        type: modelInputType,
+                        type: modelInputType
                     },
                 }
             };
@@ -219,11 +226,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
-                    id: {
-                        type: GraphQLNonNull(GraphQLID),
-                    },
                     input: {
-                        type: modelInputType,
+                        type: modelInputType
                     },
                 }
             };
@@ -233,8 +237,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             mutationTypes[operation] = {
                 type: GraphQLNonNull(model.graphqlType),
                 args: {
-                    id: {
-                        type: GraphQLNonNull(GraphQLID),
+                    input: {
+                        type: modelInputType
                     }
                 }
             };

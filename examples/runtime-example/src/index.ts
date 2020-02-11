@@ -4,8 +4,6 @@ import express from "express"
 import http from "http"
 import knex from 'knex'
 import * as config from '../graphback.json'
-import { createRuntime } from './runtime'
-
 
 export async function connect() {
   return knex({
@@ -21,18 +19,18 @@ async function start() {
 
   // connect to db
   const client = await connect();
-  const schema  = await createRuntime(client);
+  // const schema  = await createRuntime(client);
 
-  const apolloConfig = {
-    schema
-  }
+  // const apolloConfig = {
+  //   schema
+  // }
 
-  const apolloServer = new ApolloServer(apolloConfig)
+  // const apolloServer = new ApolloServer(apolloConfig)
 
-  apolloServer.applyMiddleware({ app })
+  // apolloServer.applyMiddleware({ app })
 
   const httpServer = http.createServer(app)
-  apolloServer.installSubscriptionHandlers(httpServer)
+  // apolloServer.installSubscriptionHandlers(httpServer)
 
   httpServer.listen({ port: 4000 }, () => {
     // tslint:disable-next-line: no-console

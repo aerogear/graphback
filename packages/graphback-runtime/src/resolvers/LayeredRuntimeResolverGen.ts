@@ -16,7 +16,6 @@ import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
  * }
  * ```
  */
-// TODO
 export class LayeredRuntimeResolverGenerator {
   private service: GraphbackCRUDService
   private models: ModelDefinition[];
@@ -39,27 +38,21 @@ export class LayeredRuntimeResolverGenerator {
         const resolverCreateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
-          return this.service.create(objectName, args.input, {
-            publishEvent: resolverElement.crudOptions.subCreate
-          }, context)
+          return this.service.create(args.input, context)
         }
       }
       if (resolverElement.crudOptions.update) {
         const updateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
-          return this.service.update(objectName, args.id, args.input, {
-            publishEvent: resolverElement.crudOptions.subUpdate
-          }, context)
+          return this.service.update(args.input, context)
         }
       }
       if (resolverElement.crudOptions.delete) {
         const deleteField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
-          return this.service.delete(objectName, args.id, args.input, {
-            publishEvent: resolverElement.crudOptions.subDelete
-          }, context)
+          return this.service.delete(args.input, context)
         }
       }
 
@@ -67,14 +60,14 @@ export class LayeredRuntimeResolverGenerator {
         const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND_ALL);
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
-          return this.service.findAll(objectName, context)
+          return this.service.findAll(context)
         }
       }
       if (resolverElement.crudOptions.find) {
         const findField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND);
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          return this.service.findBy(objectName, args.fields, context)
+          return this.service.findBy(args.fields, context)
         }
       }
 

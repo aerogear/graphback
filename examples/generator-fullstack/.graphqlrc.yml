@@ -11,10 +11,10 @@ extensions:
       update: true
       findAll: true
       find: true
-      delete: false
-      subCreate: false
-      subUpdate: false
-      subDelete: false
+      delete: true
+      subCreate: true
+      subUpdate: true
+      subDelete: true
     ## Codegen plugins
     plugins:
         graphback-schema:
@@ -26,9 +26,6 @@ extensions:
         graphback-resolvers:
           format: ts
           outputPath: ./server/src/resolvers
-          types:
-            resolverRootLocation: ../../generated-types
-            resolverRootType: Resolvers
     ## Knex DB Migration config
     dbmigrations:
       ## See knex.js config format

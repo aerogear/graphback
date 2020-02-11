@@ -48,13 +48,19 @@ export class GraphbackCoreMetadata {
         // Get actual user types 
         const modelTypes = this.getGraphQLTypesWithModel();
         for (const modelType of modelTypes) {
-            let crudOptions = parseAnnotations('crud', modelType.description)
-            // Merge CRUD options from type with global ones
-            crudOptions = Object.assign(this.supportedCrudMethods, crudOptions);
-            this.models.push({ graphqlType: modelType, crudOptions })
+            const model = this.buildModel(modelType)
+            this.models.push(model)
         }
 
         return this.models;
+    }
+
+    private buildModel(modelType: GraphQLObjectType) {
+        let crudOptions = parseAnnotations('crud', modelType.description)
+        // Merge CRUD options from type with global ones
+        crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
+        
+        return { graphqlType: modelType, crudOptions };
     }
 
     /**

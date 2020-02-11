@@ -1,8 +1,10 @@
 import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core';
-import { createRootResolversIndex } from './formatters/apollo';
-import { generateCRUDResolvers, generateCustomCRUDResolvers } from './output/createResolvers';
-import { createCustomOutputResolvers, createOutputResolvers, OutputResolvers } from './output/outputResolvers';
-import { writeResolvers } from './writer/writeResolvers';
+import { OutputFileSystem } from './GeneratorModel';
+import { GeneratorResolversFormat } from './GeneratorResolversFormat';
+import { generateCRUDResolversFunctions } from './templates/createResolvers';
+import { createResolverTemplate } from './templates/resolverWrapper';
+import { createIndexFile } from './templates/runtimeTemplate';
+import { writeResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginConfig {
     format: 'ts' | 'js'
@@ -12,21 +14,16 @@ export interface ResolverGeneratorPluginConfig {
      */
     outputPath: string
 
-    // Provides extension for graphql-code-generator types
-    // generated for resolvers
-    types?: {
-        /**
-         * Name of the resolver import
-         * For example `Resolvers`
-         */
-        resolverRootType: string
+    /**
+     * Name of the generated resolvers file (default: resolvers.(format))
+     */
+    resolversFileName?: string
 
-        /**
-         * Relative location for root resolver typings.
-         * For example: '../../types'
-         */
-        resolverRootLocation: string
-    }
+    /**
+     * Layout of the of the resolvers object. 
+     * Supports Apollo (GraphQL-Tools) or GraphQL reference spec format
+     */
+    layout?: 'apollo' | 'graphql'
 }
 
 const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
@@ -38,6 +35,7 @@ const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
  * 
  * - default CRUD resolvers for all model types.
  * - blank resolver files to implements custom resolvers
+ * - CRUD Services for each type for controling the data sources
  * 
  * And then writes to content to resolver files in the server.
  * 
@@ -48,7 +46,11 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
     constructor(pluginConfig: ResolverGeneratorPluginConfig) {
         super();
-        this.pluginConfig = Object.assign({ format: 'graphql' }, pluginConfig);
+        this.pluginConfig = Object.assign({
+            format: 'ts',
+            layout: "apollo",
+            resolversFileName: 'resolvers',
+        }, pluginConfig);
         if (!pluginConfig.outputPath) {
             throw new Error("resolver plugin requires outputPath parameter")
         }
@@ -65,25 +67,29 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         }
     }
 
-    public generateResolvers(metadata: GraphbackCoreMetadata): OutputResolvers {
-        const schema = metadata.getSchema()
+    public generateResolvers(metadata: GraphbackCoreMetadata): OutputFileSystem {
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Cannot generate resolvers")
 
             return undefined;
         }
-        const generatedResolvers = generateCRUDResolvers(models);
-        const customResolvers = generateCustomCRUDResolvers(schema, models, generatedResolvers);
-
-        const generatedResolverGroup = createOutputResolvers(generatedResolvers, this.pluginConfig);
-        const customResolverGroup = createCustomOutputResolvers(customResolvers, this.pluginConfig);
-        const rootResolverIndex = createRootResolversIndex(this.pluginConfig.format);
+        const generatedResolversFunctions = generateCRUDResolversFunctions(models);
+        const generatedResolverFile = this.createGeneratedResolversFile(generatedResolversFunctions, this.pluginConfig);
+        const index = createIndexFile(models, this.pluginConfig);
 
         return {
-            generated: generatedResolverGroup,
-            custom: customResolverGroup,
-            index: rootResolverIndex
+            resolvers: generatedResolverFile,
+            index
+        };
+    }
+
+    protected createGeneratedResolversFile(resolvers: GeneratorResolversFormat, pluginConfig: ResolverGeneratorPluginConfig) {
+        const generatedResolvers = createResolverTemplate(resolvers, pluginConfig);
+
+        return {
+            fileName: `resolvers.${pluginConfig.format}`,
+            output: generatedResolvers
         };
     }
 }
