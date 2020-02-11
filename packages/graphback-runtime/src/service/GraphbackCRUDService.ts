@@ -20,7 +20,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Implementation for object creation
      *
-     * @param name name of the object to create
      * @param data input data
      * @param context context object passed from graphql or rest layer
      */
@@ -29,26 +28,23 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Implementation for object updates
      *
-     * @param name name of the object to create
      * @param data input data including id
      * @param context context object passed from graphql or rest layer
      */
-    update(data: Type,  context?: GraphbackContext): Promise<Type>;
+    update(data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for object deletes
      *
-     * @param name name of the object to create
      * @param id of the object to delete
      * @param data data used for consistency reasons
      * @param context context object passed from graphql or rest layer
      */
-    delete(data: Type, context?: GraphbackContext): Promise<string>;
+    delete(data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for reading object
      *
-     * @param name name of the object to create
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
@@ -57,16 +53,16 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Implementation for finding all objects
      *
-     * @param name name of the object to create
+  
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    findAll(options?: GraphbackRuntimeOptions, context?: GraphbackContext): Promise<Type[]>;
+    findAll(context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Implementation for reading objects with filtering capabilities
      *
-     * @param name name of the object to create
+  
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
@@ -76,25 +72,28 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * Subscription for all creation events
      *
      * @param name name of the component to subscribe
+     * @param filter filter used in subscription
      * @param context additional context
      */
-    subscribeToCreate(context?: GraphbackContext): AsyncIterator<Type> | undefined
+    subscribeToCreate(filter?: any, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
      * Subscription for all update events
      *
      * @param name name of the component to subscribe
+     * @param filter filter used in subscription
      * @param context additional context
      */
-    subscribeToUpdate(context?: GraphbackContext): AsyncIterator<Type> | undefined
+    subscribeToUpdate(filter?: any, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
      * Subscription for all deletion events
      *
      * @param name name of the component to subscribe
+     * @param filter filter used in subscription
      * @param context additional context
      */
-    subscribeToDelete(context?: GraphbackContext): AsyncIterator<Type> | undefined
+    subscribeToDelete(filter?: any, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
      * Speciallized function that can utilize batching the data basing on 

@@ -1,6 +1,8 @@
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
+import { GraphQLObjectType } from 'graphql';
+import { lowerCaseFirstChar } from '@graphback/core';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
@@ -16,24 +18,31 @@ import { NoDataError } from './NoDataError';
 export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
 
   protected db: Knex;
+  protected baseType: GraphQLObjectType;
+  protected tableName: string;
 
-  constructor(db: Knex) {
+  constructor(baseType: GraphQLObjectType, db: Knex) {
     this.db = db;
+    this.baseType = baseType;
+    // TODO build and use mapping here
+    this.tableName = lowerCaseFirstChar(baseType.name);
   }
 
-  public async create(name: string, data: Type): Promise<Type> {
-    const [id] = await this.db(name).insert(data);
-    const dbResult = await this.db.select().from(name).where('id', '=', id)
+  public async create(data: Type): Promise<Type> {
+    // TODO refactor to use new knex api
+    const [id] = await this.db(this.baseType.name).insert(data);
+    const dbResult = await this.db.select().from(this.baseType.name).where('id', '=', id)
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }
     throw new NoDataError(`Cannot create ${name}`);
   }
 
-  public async update(name: string, id: string, data: Type): Promise<Type> {
-    const updateResult = await this.db(name).update(data).where('id', '=', id);
+  public async update(data: Type): Promise<Type> {
+    // TODO refactor to use id mapping
+    const updateResult = await this.db(this.baseType.name).update(data).where('id', '=', id);
     if (updateResult === 1) {
-      const dbResult = await this.db.select().from(name).where('id', '=', id);
+      const dbResult = await this.db.select().from(this.baseType.name).where('id', '=', id);
       if (dbResult && dbResult[0]) {
         return dbResult[0]
       }
@@ -42,17 +51,18 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   // tslint:disable-next-line: no-reserved-keywords
-  public async delete(name: string, id: string, data?: Type): Promise<string> {
-    const dbResult = await this.db(name).where('id', '=', id).del()
+  public async delete(data: Type): Promise<Type> {
+    // TODO refactor to use id mapping
+    const dbResult = await this.db(this.baseType.name).where('id', '=', data.id).del()
     if (dbResult) {
-      return id;
+      return {} as unknown as Type;
     }
     throw new NoDataError(`Cannot delete ${name}`);
 
   }
 
-  public async read(name: string, id: string): Promise<Type> {
-    const dbResult = await this.db.select().from(name).where('id', '=', id);
+  public async read(id: string): Promise<Type> {
+    const dbResult = await this.db.select().from(this.baseType.name).where('id', '=', id);
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }
@@ -60,14 +70,14 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async findAll(name: string): Promise<Type[]> {
-    const dbResult = await this.db.select().from(name);
+    const dbResult = await this.db.select().from(this.baseType.name);
     if (dbResult) {
       return dbResult;
     }
     throw new NoDataError(`Cannot find all results for ${name}`);
   }
 
-  public async findBy(name: string, filter: Type | AdvancedFilter): Promise<Type[]> {
+  public async findBy(filter: Type | AdvancedFilter): Promise<Type[]> {
     const dbResult = await this.db.select().from(name).where(filter);
     if (dbResult) {
       return dbResult;
@@ -75,7 +85,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`No results for ${name} query and filter: ${JSON.stringify(filter)}`);
   }
 
-  public async batchRead(name: string, relationField: string, ids: string[]): Promise<Type[][]> {
+  public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
     const dbResult = await this.db.select().from(name).whereIn(relationField, ids);
 
     if (dbResult) {
