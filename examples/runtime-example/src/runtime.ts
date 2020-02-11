@@ -15,8 +15,6 @@ export const createRuntime = async () => {
   const graphbackConfig = await getConfig();
   const schemaText = loadSchema(graphbackConfig.model);
 
-
-
   migrateDB(graphbackConfig.dbmigrations, schemaText).then((ops) => {
     console.log(ops);
   });
@@ -32,6 +30,6 @@ export const createRuntime = async () => {
       requireResolversForResolveType: false
     }
   });
-  
+
   return executableSchema;
 }
