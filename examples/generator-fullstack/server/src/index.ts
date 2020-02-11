@@ -5,10 +5,11 @@ import http from 'http';
 import { ApolloServer, PubSub } from "apollo-server-express"
 import { loadConfig } from 'graphql-config';
 import { join } from 'path';
-
-import { createKnexRuntimeContext } from '@graphback/runtime'
-import { loadResolversFiles, loadSchemaFiles } from '@graphql-toolkit/file-loading';
+import { loadSchemaFiles } from '@graphql-toolkit/file-loading';
+import resolvers from './resolvers/resolvers'
 import knex from 'knex'
+import { createCRUDResolversRuntimeContext } from './resolvers/crudContext';
+import { buildSchema } from 'graphql';
 
 async function start() {
   const app = express();
@@ -32,10 +33,13 @@ async function start() {
 
   const pubSub = new PubSub();
 
+  // TODO - yes
+  const schema = buildSchema(loadSchemaFiles(join(__dirname, '/schema/')).join('\n'));
+  const context = createCRUDResolversRuntimeContext(schema, db as any, pubSub);
   const apolloServer = new ApolloServer({
     typeDefs: loadSchemaFiles(join(__dirname, '/schema/')),
-    resolvers: loadResolversFiles(join(__dirname, '/resolvers/')),
-    context: createKnexRuntimeContext(db as any, pubSub),
+    resolvers,
+    context,
     playground: true,
   } as any)
 

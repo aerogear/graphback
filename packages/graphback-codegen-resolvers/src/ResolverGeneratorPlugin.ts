@@ -15,15 +15,15 @@ export interface ResolverGeneratorPluginConfig {
     outputPath: string
 
     /**
-     * Name of the generated resolvers file
+     * Name of the generated resolvers file (default: resolvers.(format))
      */
-    resolversFileName: string
+    resolversFileName?: string
 
     /**
      * Layout of the of the resolvers object. 
      * Supports Apollo (GraphQL-Tools) or GraphQL reference spec format
      */
-    layout: 'apollo' | 'graphql'
+    layout?: 'apollo' | 'graphql'
 }
 
 const PLUGIN_NAME = 'CRUD_RESOLVER_GENERATOR';
@@ -47,7 +47,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
     constructor(pluginConfig: ResolverGeneratorPluginConfig) {
         super();
         this.pluginConfig = Object.assign({
-            format: 'graphql',
+            format: 'ts',
             layout: "apollo",
             resolversFileName: 'resolvers',
         }, pluginConfig);

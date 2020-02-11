@@ -1,5 +1,4 @@
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition } from '@graphback/core'
-import { GraphQLSchema } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core'
 import { writeDocumentsToFilesystem } from './helpers/writeDocuments';
 import { createClientDocumentsGQL, createClientDocumentsGqlComplete, createClientDocumentsTS } from './templates'
 import { ClientTemplates } from './templates/ClientTemplates'

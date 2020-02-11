@@ -99,7 +99,7 @@ export const createConfig = async (database: string, client: boolean) => {
     // Add client extension
     graphqlConfig.extensions.graphback.plugins["graphback-client"] = {
       "format": "graphql",
-      "outputPath": "./client/src/graphql/**/*.graphql"
+      "outputPath": "./client/src/graphql"
     }
   }
 

@@ -22,20 +22,19 @@ export function generateCRUDResolversFunctions(models: ModelDefinition[]): Gener
 export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
 
-    const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
 
     if (crudOptions.create) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.CREATE);
-        mutations[fieldName] = createTemplate(tableName)
+        mutations[fieldName] = createTemplate(modelName)
     }
     if (crudOptions.update) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.UPDATE);
-        mutations[fieldName] = updateTemplate(tableName);
+        mutations[fieldName] = updateTemplate(modelName);
     }
     if (crudOptions.delete) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.DELETE);
-        mutations[fieldName] = deleteTemplate(tableName);
+        mutations[fieldName] = deleteTemplate(modelName);
     }
 
     return mutations;
@@ -44,16 +43,15 @@ export function createMutations(modelType: GraphQLObjectType, crudOptions: Graph
 export function createQueries(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const queries = {};
 
-    const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
 
     if (crudOptions.find) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.FIND);
-        queries[fieldName] = findTemplate(tableName);
+        queries[fieldName] = findTemplate(modelName);
     }
     if (crudOptions.findAll) {
         const fieldName = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
-        queries[fieldName] = findAllTemplate(tableName);
+        queries[fieldName] = findAllTemplate(modelName);
     }
 
     return queries;
@@ -62,20 +60,19 @@ export function createQueries(modelType: GraphQLObjectType, crudOptions: Graphba
 export function createSubscriptions(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const subscriptions = {};
 
-    const tableName = getTableOrColumnName(modelType);
     const modelName = modelType.name;
 
     if (crudOptions.create && crudOptions.subCreate) {
         const fieldName = getSubscriptionName(modelName, GraphbackOperationType.CREATE);
-        subscriptions[fieldName] = newSubscriptionTemplate(tableName);
+        subscriptions[fieldName] = newSubscriptionTemplate(modelName);
     }
     if (crudOptions.update && crudOptions.subUpdate) {
         const fieldName = getSubscriptionName(modelName, GraphbackOperationType.UPDATE);
-        subscriptions[fieldName] = updatedSubscriptionTemplate(tableName);
+        subscriptions[fieldName] = updatedSubscriptionTemplate(modelName);
     }
     if (crudOptions.delete && crudOptions.subDelete) {
         const fieldName = getSubscriptionName(modelName, GraphbackOperationType.DELETE);
-        subscriptions[fieldName] = deletedSubscriptionTemplate(tableName);
+        subscriptions[fieldName] = deletedSubscriptionTemplate(modelName);
     }
 
     return subscriptions;

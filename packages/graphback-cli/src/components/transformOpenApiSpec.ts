@@ -17,6 +17,7 @@ import { removeCommentsFromSchema, removeOperationsFromSchema } from "../utils/o
  */
 export const transformOpenApiSpec = async () => {
     const config = await loadConfig({
+        rootDir: process.cwd(),
         extensions: [graphbackConfigExtension]
     });
     const project = config.getProject('default')

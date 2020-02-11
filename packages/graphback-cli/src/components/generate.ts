@@ -18,6 +18,7 @@ export interface CliFlags {
 
 export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   const config = await loadConfig({
+    rootDir: process.cwd(),
     extensions: [graphbackConfigExtension]
   });
   const project = config.getProject(cliFlags.project || 'default')

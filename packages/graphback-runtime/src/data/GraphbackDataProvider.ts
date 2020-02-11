@@ -44,7 +44,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param data data used for checking consistency
      * @param context context object passed from graphql or rest layer
      */
-    delete(data: Type, context?: GraphbackContext): Promise<string>;
+    delete(data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for reading object

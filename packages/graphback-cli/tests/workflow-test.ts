@@ -17,15 +17,17 @@ const model = {
 ava('Test cli workflow', async (t: ExecutionContext) => {
   const basePath = resolve(`${__dirname}/../../../examples/generator-fullstack`);
   process.chdir(basePath)
-  await initConfig({ model, database: "sqlite3", client: true }, true);
+  await initConfig({ model, database: "sqlite3", client: true, skipInstall: true });
   await generateUsingPlugins({});
 
   await createDB();
 
-  t.true(existsSync(join(basePath, "graphback.json")))
   t.true(existsSync(join(basePath, "db.sqlite")))
-  t.true(existsSync(join(basePath, "client/src/graphql/fragments/Note.ts")))
-  t.true(existsSync(join(basePath, "src/schema/generated.ts")))
-  t.true(existsSync(join(basePath, "src/resolvers/generated/note.ts")))
+  t.true(existsSync(join(basePath, "client/src/graphql/fragments/Note.graphql")))
+  t.true(existsSync(join(basePath, "client/src/graphql/queries/findAllNotes.graphql")))
+  t.true(existsSync(join(basePath, "client/src/graphql/mutations/createNote.graphql")))
+  t.true(existsSync(join(basePath, "src/schema/schema.graphql")))
+  t.true(existsSync(join(basePath, "src/resolvers/resolvers.ts")))
+  t.true(existsSync(join(basePath, "src/resolvers/index.ts")))
 });
 

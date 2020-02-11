@@ -19,6 +19,7 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
   let databaseOperations: any;
   try {
     const config = await loadConfig({
+      rootDir: process.cwd(),
       extensions: [graphbackConfigExtension]
     });
     const project = config.getProject(cliFlags.project || 'default')

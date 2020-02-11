@@ -2,19 +2,19 @@
 
 export const createTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-        return context.${modelName}.create(args, context);
+        return context.${modelName}.create(args.input, context);
     }`;
 }
 
 export const updateTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.update(args, context);
+      return context.${modelName}.update(args.input, context);
     }`
 }
 
 export const deleteTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.delete(args, context);
+      return context.${modelName}.delete(args.input, context);
     }`
 }
 
@@ -26,7 +26,7 @@ export const findAllTemplate = (modelName: string): string => {
 
 export const findTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.findBy(args);
+      return context.${modelName}.findBy(args.fields);
     }`
 }
 

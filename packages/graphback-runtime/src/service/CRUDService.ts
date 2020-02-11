@@ -1,11 +1,11 @@
 import { GraphbackOperationType, upperCaseFirstChar } from "@graphback/core"
 import * as DataLoader from "dataloader";
+import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
-import { GraphQLObjectType } from 'graphql';
 
 
 /**
@@ -40,7 +40,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         this.modelName = modelType.name;
     }
 
-    public async create(data: T, context: any): Promise<T> {
+    public async create(data: T, context?: any): Promise<T> {
         this.logger.log(`Creating object ${this.modelName}`);
 
         const result = await this.db.create(data, context);
@@ -55,7 +55,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return result;
     }
 
-    public async update(data: T, context: any): Promise<T> {
+    public async update(data: T, context?: any): Promise<T> {
         this.logger.log(`Updating object ${this.modelName}`)
 
         const result = await this.db.update(data, context);
@@ -71,7 +71,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     }
 
     // tslint:disable-next-line: no-reserved-keywords
-    public async delete(data: T, context: any): Promise<T> {
+    public async delete(data: T, context?: any): Promise<T> {
         this.logger.log(`deleting object ${this.modelName}`)
 
         const result = await this.db.delete(data, context);
@@ -82,30 +82,30 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
             await this.pubSub.publish(topic, payload);
         }
 
-        // return only ID to disable cache
-        return { id: result } as unknown as any;
+        return result;
     }
 
-    public read(id: string, context: any): Promise<T> {
-        this.logger.log(`reading object ${name}`)
+    public read(id: string, context?: any): Promise<T> {
+        this.logger.log(`reading object ${this.modelName}`)
+
         // TODO use mapping
         return this.db.read(id, context);
     }
 
-    public findAll(context: any): Promise<T[]> {
+    public findAll(context?: any): Promise<T[]> {
         this.logger.log(`querying object ${this.modelName}`)
 
         return this.db.findAll(context);
     }
 
     // tslint:disable-next-line: no-any
-    public findBy(filter: any, context: any): Promise<T[]> {
+    public findBy(filter: any, context?: any): Promise<T[]> {
         this.logger.log(`querying object ${this.modelName} with filter ${JSON.stringify(filter)}`)
 
         return this.db.findBy(filter, context);
     }
 
-    public subscribeToCreate(filter: any, context: any): AsyncIterator<T> | undefined {
+    public subscribeToCreate(filter: any, context?: any): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
             this.logger.log(`Cannot subscribe to events for ${this.modelName}`)
 
@@ -116,7 +116,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return this.pubSub.asyncIterator(createSubKey)
     }
 
-    public subscribeToUpdate(filter: any, context: any): AsyncIterator<T> | undefined {
+    public subscribeToUpdate(filter: any, context?: any): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
             this.logger.log(`Cannot subscribe to events for ${this.modelName}`)
 
@@ -127,7 +127,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return this.pubSub.asyncIterator(updateSubKey)
     }
 
-    public subscribeToDelete(filter: any, context: any): AsyncIterator<T> | undefined {
+    public subscribeToDelete(filter: any, context?: any): AsyncIterator<T> | undefined {
         if (!this.pubSub) {
             this.logger.log(`Cannot subscribe to events for ${this.modelName}`)
 
@@ -139,7 +139,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     }
 
 
-    public batchLoadData(relationField: string, id: string | number, context: any) {
+    public batchLoadData(relationField: string, id: string | number, context?: any) {
         // TODO use relationfield mapping
         const keyName = `${this.modelName}${upperCaseFirstChar(relationField)}DataLoader`;
         if (!context[keyName]) {

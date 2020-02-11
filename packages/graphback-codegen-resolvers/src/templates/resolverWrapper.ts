@@ -1,7 +1,6 @@
-import * as prettier from 'prettier';
 import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
 import { ResolverGeneratorPluginConfig } from '../ResolverGeneratorPlugin';
-
+import { formatDocumentJS, formatDocumentTs } from './formatter'
 // Wraps resolver method strings into fully featured files
 
 const topNote = `/**
@@ -80,24 +79,3 @@ function createResolverFileTemplate(outputResolvers: string[], options: Resolver
     }
 }
 
-function formatDocumentJS(contents: string) {
-    try {
-        return prettier.format(contents, { semi: false, parser: 'babel' });
-    } catch (e) {
-        // tslint:disable-next-line: no-console
-        console.log("Cannot format resolvers document", e)
-
-        return contents;
-    }
-}
-
-function formatDocumentTs(contents: string) {
-    try {
-        return prettier.format(contents, { semi: false, parser: 'typescript' });
-    } catch (e) {
-        // tslint:disable-next-line: no-console
-        console.log("Cannot format resolvers implementation", e)
-
-        return contents;
-    }
-}

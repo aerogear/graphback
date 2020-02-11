@@ -53,7 +53,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Implementation for finding all objects
      *
-  
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
@@ -62,7 +61,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Implementation for reading objects with filtering capabilities
      *
-  
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
@@ -71,7 +69,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Subscription for all creation events
      *
-     * @param name name of the component to subscribe
      * @param filter filter used in subscription
      * @param context additional context
      */
@@ -80,7 +77,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Subscription for all update events
      *
-     * @param name name of the component to subscribe
      * @param filter filter used in subscription
      * @param context additional context
      */
@@ -89,7 +85,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     /**
      * Subscription for all deletion events
      *
-     * @param name name of the component to subscribe
      * @param filter filter used in subscription
      * @param context additional context
      */
