@@ -15,7 +15,7 @@ export interface ModelTableMap {
   typeName: string
   tableName: string
   idField: string
-  fieldMap?: any
+  fieldMap?: { [key: string]: string }
 }
 
 export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
