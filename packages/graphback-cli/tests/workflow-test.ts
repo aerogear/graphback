@@ -28,6 +28,5 @@ ava('Test cli workflow', async (t: ExecutionContext) => {
   t.true(existsSync(join(basePath, "client/src/graphql/mutations/createNote.graphql")))
   t.true(existsSync(join(basePath, "src/schema/schema.graphql")))
   t.true(existsSync(join(basePath, "src/resolvers/resolvers.ts")))
-  t.true(existsSync(join(basePath, "src/resolvers/index.ts")))
 });
 
