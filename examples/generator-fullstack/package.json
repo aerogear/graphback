@@ -29,7 +29,7 @@
     "typescript": "3.7.5"
   },
   "dependencies": {
-    "@graphql-codegen/add": "^1.12.1",
+    "@graphql-codegen/add": "1.12.2",
     "pg": "7.17.1",
     "sqlite3": "4.1.1"
   }
