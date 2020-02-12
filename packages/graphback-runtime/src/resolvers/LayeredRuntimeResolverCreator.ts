@@ -1,6 +1,6 @@
 import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core';
 import { PubSubEngine } from 'graphql-subscriptions';
-import Knex from 'knex'
+import knex from 'knex'
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**

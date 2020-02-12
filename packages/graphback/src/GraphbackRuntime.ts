@@ -2,7 +2,7 @@ import { GraphbackPluginEngine, ModelDefinition } from '@graphback/core';
 import { CRUDService, GraphbackCRUDService, KnexDBDataProvider, LayeredRuntimeResolverCreator, PgKnexDBDataProvider } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
-import Knex from 'knex';
+import * as Knex from 'knex';
 import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerator';
 
 /**

@@ -3,7 +3,8 @@ import _test, { TestInterface } from 'ava';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { CRUDService, PubSubConfig } from  '../../src/service/CRUDService'
+import { CRUDService } from '../../src/service/CRUDService'
+import { PubSubConfig } from '../../src/service/PubSubConfig';
 
 // tslint:disable: typedef
 
@@ -110,4 +111,3 @@ test('find Todo by text', async t => {
 });
 
 
- 
