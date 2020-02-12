@@ -24,7 +24,7 @@ export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
   const fieldMap = mapFieldsToColumns(model.getFields());
 
   return {
-    idField: primaryKeyField ? primaryKeyField.name : undefined,
+    idField: primaryKeyField.name,
     typeName: model.name,
     tableName,
     fieldMap

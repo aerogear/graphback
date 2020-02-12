@@ -1,8 +1,8 @@
-import { GraphQLField, GraphQLObjectType, isScalarType } from "graphql";
+import { GraphQLField, GraphQLObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
 import { getBaseType } from '../utils/getBaseType';
 
-export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any, any> | undefined {
+export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any, any> {
   const fields = Object.values(graphqlType.getFields());
 
   let primaryKey: GraphQLField<any, any>;
@@ -13,9 +13,14 @@ export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any,
     if (dbConfig.primary) {
       primaryKey = field;
       break;
-    } else if (isScalarType(baseType) && baseType.name === 'ID') {
+    } else if (field.name === 'id' && baseType.name === 'ID') {
       primaryKey = field;
     }
+  }
+  
+  // TODO: Move primary key validation to Schema generation
+  if (!primaryKey) {
+    throw new Error(`Primary key field not found on ${graphqlType.name} type.`)
   }
 
   return primaryKey;
