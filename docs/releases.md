@@ -10,8 +10,6 @@ Please follow individual releases for more information.
 
 # 0.11.0
 
-
-
 ### Graphback
 
 - BREAKING: Removed GraphbackBackend and related interfaces.
