@@ -1,5 +1,5 @@
 import { GraphbackPluginEngine, ModelDefinition } from '@graphback/core';
-import { CRUDService, GraphbackCRUDService, KnexDBDataProvider, LayeredRuntimeResolverCreator } from '@graphback/runtime';
+import { CRUDService, GraphbackCRUDService, KnexDBDataProvider, LayeredRuntimeResolverCreator, PgKnexDBDataProvider } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import Knex from 'knex';
@@ -35,16 +35,16 @@ export class GraphbackRuntime extends GraphbackGenerator {
     return { schema: metadata.getSchema(), resolvers: runtimeResolversCreator.generate() }
   }
 
-  public createDefaultRuntimeServices(models: ModelDefinition[], db: Knex, pubSub: PubSubEngine, ) {
+  protected createDefaultRuntimeServices(models: ModelDefinition[], db: Knex, pubSub: PubSubEngine, ) {
     return models.reduce((services: any, model: ModelDefinition) => {
-      const dbLayer = new KnexDBDataProvider(model.graphqlType, db);
-      services[model.graphqlType.name] = this.createService(services, model, dbLayer, pubSub);
+      const dbLayer = this.createDBProvider(model, db);
+      services[model.graphqlType.name] = this.createService(model, dbLayer, pubSub);
 
       return services;
     }, {})
   }
 
-  private createService(services: any, model: ModelDefinition, dbLayer: KnexDBDataProvider, pubSub: PubSubEngine) {
+  protected createService(model: ModelDefinition, dbLayer: KnexDBDataProvider, pubSub: PubSubEngine) {
     return new CRUDService(model.graphqlType, dbLayer, {
       pubSub,
       publishCreate: model.crudOptions.subCreate,
@@ -52,6 +52,8 @@ export class GraphbackRuntime extends GraphbackGenerator {
       publishUpdate: model.crudOptions.subDelete,
     });
   }
+
+  protected createDBProvider(model: ModelDefinition, db: Knex) {
+    return new KnexDBDataProvider(model.graphqlType, db);
+  }
 }
-
-
