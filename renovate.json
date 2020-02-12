@@ -5,7 +5,8 @@
   ],
   "groupName": "all",
   "ignoreDeps": [
-    "chalk"
+    "chalk",
+    "ava"
   ],
   "ignorePaths": [
     "**/node_modules/**",
