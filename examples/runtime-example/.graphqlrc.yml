@@ -28,14 +28,14 @@ extensions:
           outputPath: ./server/src/resolvers
     ## Knex DB Migration config
     dbmigrations:
-      ## See knex.js config format
-      dbConfig:
+      ## See knex.js for db specific config format
+      client: pg
+      connection:
         user: postgresql
         password: postgres
         database: users
         host: localhost
         port: 55432
-      database: pg
   codegen:
     generates:
       ./client/src/generated-types.tsx:

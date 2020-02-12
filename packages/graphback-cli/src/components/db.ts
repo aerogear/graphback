@@ -43,16 +43,10 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
     if (!graphbackConfig.dbmigrations) {
       throw new Error(`'${extensionName}' config missing 'dbmigrations' section that that is required. Please check example application for more information`);
     }
-    const database = graphbackConfig.dbmigrations.database;
 
-    if (database === 'sqlite3') {
+    if (graphbackConfig.dbmigrations.client === 'sqlite3') {
       logInfo(`SQLLite database will need to be recreated from scratch with every migration. Please manually remove/backup existing SQLLite database file before migration`)
-      await execa('touch', [graphbackConfig.dbmigrations.dbConfig.filename])
-    }
-
-    const dbConfig = {
-      client: database,
-      connection: graphbackConfig.dbmigrations.dbConfig,
+      await execa('touch', [graphbackConfig.dbmigrations.connection.filename])
     }
 
     const migrateOptions: MigrateOptions = {
@@ -61,7 +55,7 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
     }
 
     const schemaText = loadSchema(graphbackConfig.model);
-    databaseOperations = await migrateDB(dbConfig, schemaText, migrateOptions);
+    databaseOperations = await migrateDB(graphbackConfig.dbmigrations, schemaText, migrateOptions);
   } catch (err) {
     handleError(err)
   }

@@ -4,6 +4,7 @@ import knex from 'knex'
 
 /**
  * Creates knex based database using migration configuration
+ * For production use please use different source of the configuration
  */
 export const createDB = async () => {
     const config = await loadConfig({
@@ -13,9 +14,6 @@ export const createDB = async () => {
     const generateConfig = await config!.getDefault().extension('graphback');
 
     // connect to db
-    const db = knex({
-        client: generateConfig.dbmigrations.database,
-        connection: generateConfig.dbmigrations.dbConfig,
-    })
+    const db = knex(generateConfig.dbmigrations)
     return db
 }

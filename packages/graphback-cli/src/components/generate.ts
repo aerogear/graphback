@@ -8,8 +8,8 @@ import { extensionName, graphbackConfigExtension } from '../config/extension';
 export interface GraphbackCLIConfig {
   model: string
   crud: GraphbackCRUDGeneratorConfig;
-  plugins: any[],
-  dbmigrations: { database: string; dbConfig: any; };
+  plugins: any,
+  dbmigrations: { client: string; connection: any; };
 }
 
 export interface CliFlags {

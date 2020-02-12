@@ -88,8 +88,8 @@ export const createConfig = async (database: string, client: boolean) => {
           }
         },
         "dbmigrations": {
-          "dbConfig": JSON.parse(dbConfig),
-          "database": database
+          "connection": JSON.parse(dbConfig),
+          "client": database
         }
       }
     }
