@@ -46,15 +46,6 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
     delete(data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
-     * Implementation for reading object
-     *
-     * @param name name of the object to create
-     * @param id id of the object
-     * @param context context object passed from graphql or rest layer
-     */
-    read(id: string, context?: GraphbackContext): Promise<Type>;
-
-    /**
      * Implementation for finding all objects
      *
      * @param name name of the object to create

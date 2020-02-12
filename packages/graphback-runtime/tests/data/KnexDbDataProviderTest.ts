@@ -55,13 +55,6 @@ test.beforeEach(async t => {
   t.context = { db, provider };
 });
 
-test('read Todo', async t => {
-  const todo: Todo = await t.context.provider.read('3');
-
-  t.assert(todo.id === 3);
-  t.assert(todo.text === 'just another todo');
-});
-
 test('batch read Todos', async t => {
   const todos = await t.context.provider.batchRead('id', ['1', '2']);
 

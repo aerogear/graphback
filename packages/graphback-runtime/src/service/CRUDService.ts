@@ -75,14 +75,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return result;
     }
 
-    // TODO: Kill this
-    public read(id: string, context?: any): Promise<T> {
-        this.logger.log(`reading object ${this.modelName}`)
-
-        // TODO use mapping
-        return this.db.read(id, context);
-    }
-
     public findAll(context?: any): Promise<T[]> {
         this.logger.log(`querying object ${this.modelName}`)
 

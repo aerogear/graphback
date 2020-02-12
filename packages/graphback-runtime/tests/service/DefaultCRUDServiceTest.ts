@@ -74,13 +74,6 @@ test.beforeEach(async t => {
   t.context = { db, provider, crudService };
 });
 
-test('read Todo', async t => {
-  const todo: Todo = await t.context.crudService.read('3');
-
-  t.assert(todo.id === 3);
-  t.assert(todo.text === 'just another todo');
-});
-
 test('create Todo', async t => {
   const todo: Todo = await t.context.crudService.create({
     text: 'create a todo',

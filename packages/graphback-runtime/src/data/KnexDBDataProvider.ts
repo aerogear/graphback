@@ -73,16 +73,6 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   }
 
-  // TODO: Kill
-  public async read(id: string): Promise<Type> {
-    // tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).where('id', '=', id);
-    if (dbResult && dbResult[0]) {
-      return dbResult[0]
-    }
-    throw new NoDataError(`Cannot read ${this.tableName}`);
-  }
-
   public async findAll(): Promise<Type[]> {
     // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(this.tableName);
