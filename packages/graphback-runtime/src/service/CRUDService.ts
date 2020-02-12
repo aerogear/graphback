@@ -5,18 +5,8 @@ import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
+import { PubSubConfig } from "./PubSubConfig"
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
-
-
-/**
- * Configuration for the publish subscribe model
- */
-export interface PubSubConfig {
-    pubSub?: PubSubEngine
-    publishCreate: boolean
-    publishUpdate: boolean
-    publishDelete: boolean
-}
 
 /**
  * Default implementation of the CRUD service offering following capabilities:

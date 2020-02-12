@@ -36,7 +36,6 @@ extensions:
         database: users
         host: localhost
         port: 55432
-
   codegen:
     generates:
       ./client/src/generated-types.tsx:

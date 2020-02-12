@@ -7,13 +7,16 @@ import knex from 'knex'
  * For production use please use different source of the configuration
  */
 export const createDB = async () => {
+    const generateConfig = await getConfig();
+    // connect to db
+    const db = knex(generateConfig.dbmigrations)
+    return db
+}
+
+export const getConfig = async () => {
     const config = await loadConfig({
         extensions: [() => ({ name: 'graphback' })]
     });
 
-    const generateConfig = await config!.getDefault().extension('graphback');
-
-    // connect to db
-    const db = knex(generateConfig.dbmigrations)
-    return db
+    return await config!.getDefault().extension('graphback');
 }

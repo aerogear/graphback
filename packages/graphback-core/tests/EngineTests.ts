@@ -51,7 +51,7 @@ ava('Test plugin engine', async (t: ExecutionContext) => {
   let engine = new GraphbackPluginEngine(schemaText, { crudMethods: {} });
   engine = new GraphbackPluginEngine(buildSchema(schemaText), { crudMethods: crudMethods });
   t.plan(6);
-  t.throws(engine.execute)
+  t.throws(engine.createResources)
   const plugin = new TestPlugin((callbackModel: any) => {
     // tslint:disable-next-line: no-string-literal
     t.context['model'] = callbackModel;
@@ -59,7 +59,7 @@ ava('Test plugin engine', async (t: ExecutionContext) => {
   })
 
   engine.registerPlugin(plugin, plugin, plugin)
-  const model = engine.execute();
+  const model = engine.createResources();
   
   const printedModels = model.getModelDefinitions().map(element => print(element.graphqlType.astNode))
   t.snapshot(printedModels);

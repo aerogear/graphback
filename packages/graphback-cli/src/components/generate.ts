@@ -8,8 +8,8 @@ import { extensionName, graphbackConfigExtension } from '../config/extension';
 export interface GraphbackCLIConfig {
   model: string
   crud: GraphbackCRUDGeneratorConfig;
-  plugins: any[],
-  dbmigrations: { database: string; dbConfig: any; };
+  plugins: any,
+  dbmigrations: { client: string; connection: any; };
 }
 
 export interface CliFlags {
@@ -39,8 +39,8 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   const runGeneration = async () => {
     try {
       const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
-      const engine = new GraphbackGenerator(schemaDocument, graphbackConfig)
-      engine.buildServer();
+      const generator = new GraphbackGenerator(schemaDocument, graphbackConfig)
+      generator.generateSourceCode();
     } catch (e) {
       // tslint:disable-next-line: no-console
       console.log("error when executing generate", e);
@@ -58,7 +58,7 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   } else {
     const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
     const generator = new GraphbackGenerator(schemaDocument, graphbackConfig)
-    generator.buildServer();
+    generator.generateSourceCode();
   }
 }
 

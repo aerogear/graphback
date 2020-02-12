@@ -5,6 +5,8 @@ resolver layer generated in memory.
 
 ### Example 
 
+TODO Content is outdated and no longer valid
+
 To use runtime capabilities developers will need to create data provider.
 Currently 2 data providers are supported:
 
