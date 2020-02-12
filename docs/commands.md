@@ -14,16 +14,20 @@ Execute `graphback` in your shell for more information
 graphback config
 ```
 
-Create configuration in existing project to support Graphback resolver and schema generation.
+Create sample configuration in existing project to support Graphback resolver and schema generation.
+Config will allow you to generate existing configuration that uses default Graphback plugins and one of the 
+databases we support out of the box. Additionally data migrations configuration will be initialized that will
+help you to manage data migrations by specifying GraphQL queries.
 
-> **Note** When creating configuration please review if locations created for `folders` integration match your project folder structure.
+> **Note** When creating configuration please review all paths as they might not reflect your project stucture
 
 ### Generate
 
   ```bash
   graphback generate
   ```
-  Generate command will generate schema and resolvers for your GraphQL server based on your data model.
+
+  Generate command will execute generation process that will gener GraphQL server based on your data model.
 
 ### Database
 

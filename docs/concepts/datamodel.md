@@ -10,14 +10,15 @@ The Data model file is written in GraphQL syntax where you define your data type
 ## Example
 
 ```graphql
+""" @model """
 type Note {
   id: ID!
   title: String!
   description: String!
-  ## Relationship
   comment: [Comment!]!
 }
 
+""" @model """
 type Comment {
   id: ID!
   title: String!
