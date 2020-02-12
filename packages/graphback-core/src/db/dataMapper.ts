@@ -1,26 +1,36 @@
-export interface ModelDataMap {
-    id?: TableID
+import { ModelTableMap } from './buildModelTableMap';
+
+export interface TableDataMap {
+    idField?: TableID
     table?: string
     data?: any
     fieldMap?: any
 }
 
 export interface TableID {
-    field: string
-    value: any
+    name: string
+    value?: any
 }
 
-export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): ModelDataMap => {
-    const mappedData: ModelDataMap = {
-        id: {
-            field: idField,
-            value: data[idField]
-        },
+export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
+    const idField = modelMap.idField;
+
+    // TODO: Map fields to custom db names
+
+    return {
+        idField: getTableId(idField, data),
         data
     }
+}
 
-    // tslint:disable-next-line: no-dynamic-delete
-    delete mappedData.data[idField];
+function getTableId(idField: string, data: any = {}): TableID {
+    let value: any;
+    if (data[idField]) {
+        value = data[idField];
+    }
 
-    return mappedData;
+    return {
+        name: idField,
+        value
+    }
 }

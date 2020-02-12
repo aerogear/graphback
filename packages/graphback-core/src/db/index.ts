@@ -1,4 +1,4 @@
 export * from './defaultNameTransforms';
-export * from './modelTableMapper';
+export * from './buildModelTableMap';
 export * from './dataMapper';
 export * from './getPrimaryKey';

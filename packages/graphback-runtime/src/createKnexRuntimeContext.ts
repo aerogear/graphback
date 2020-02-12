@@ -4,6 +4,6 @@ import { PubSubEngine } from 'graphql-subscriptions';
 /**
  * Create context object required for the graphback runtime layer 
  */
-export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine, schema: GraphQLSchema): GraphbackRuntimeContext => {
+export const createKnexRuntimeContext = (db: any, pubSub: PubSubEngine, schema: GraphQLSchema) => {
   return {}
 }

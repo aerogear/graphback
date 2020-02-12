@@ -1,22 +1,12 @@
 // tslint:disable-next-line: match-default-export-name
-import { findModelTableMappings } from '@graphback/core';
 import _test, { TestInterface } from 'ava';
-import { buildSchema } from 'graphql';
+import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 import { CRUDService } from '../../src/service/CRUDService'
 import { PubSubConfig } from '../../src/service/PubSubConfig';
 
-const schema = buildSchema(`
-"""
-@model
-"""
-type Todos {
- id: ID!
- text: String 
-}
-`);
 // tslint:disable: typedef
 
 interface Context {
@@ -31,11 +21,19 @@ interface Todo {
 }
 
 const test = _test as TestInterface<Context>;
-// tslint:disable-next-line: no-any
-const typeContext = {
-  name: 'todos'
-} as any
 
+const schema = buildSchema(`
+"""
+@model
+"""
+type Todos {
+ id: ID!
+ text: String 
+}
+`);
+
+// tslint:disable-next-line: no-any
+const modelType = schema.getType('Todos') as GraphQLObjectType
 
 // Create a new database before each tests so that
 // all tests can run parallel
@@ -62,7 +60,7 @@ test.beforeEach(async t => {
   // tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'just another todo' });
 
-  const provider = new KnexDBDataProvider(typeContext, db);
+  const provider = new KnexDBDataProvider(modelType, db);
   const pubSub = new PubSub();
 
   const publishConfig: PubSubConfig = {
@@ -71,7 +69,8 @@ test.beforeEach(async t => {
     publishDelete: true,
     publishUpdate: true
   }
-  const crudService = new CRUDService(typeContext, provider, publishConfig)
+
+  const crudService = new CRUDService(modelType, provider, publishConfig)
   t.context = { db, provider, crudService };
 });
 
@@ -111,7 +110,7 @@ test('delete Todo', async t => {
 });
 
 test('find all Todos', async t => {
-  const todos = await t.context.crudService.findAll(typeContext.name);
+  const todos = await t.context.crudService.findAll(modelType.name);
 
   t.assert(todos.length === 3);
 });
