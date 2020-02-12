@@ -39,6 +39,10 @@ export class LayeredRuntimeResolverCreator {
         const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].create(args.input, context)
         }
       }
@@ -46,6 +50,10 @@ export class LayeredRuntimeResolverCreator {
         const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].update(args.input, context)
         }
       }
@@ -53,6 +61,10 @@ export class LayeredRuntimeResolverCreator {
         const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].delete(args.input, context)
         }
       }
@@ -61,6 +73,10 @@ export class LayeredRuntimeResolverCreator {
         const findAllField = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].findAll(context)
         }
       }
@@ -98,6 +114,10 @@ export class LayeredRuntimeResolverCreator {
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].subscribeToCreate({}, context);
         }
       }
@@ -108,6 +128,10 @@ export class LayeredRuntimeResolverCreator {
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].subscribeToUpdate({}, context);
         }
       }
@@ -118,6 +142,10 @@ export class LayeredRuntimeResolverCreator {
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
           return this.services[modelName].subscribeToDelete({}, context);
         }
       }
