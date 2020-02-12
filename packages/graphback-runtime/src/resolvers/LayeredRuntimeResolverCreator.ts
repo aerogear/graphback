@@ -94,7 +94,7 @@ export class LayeredRuntimeResolverCreator {
   private createSubscriptions(resolverElement: ModelDefinition, resolvers: any) {
     const modelName = resolverElement.graphqlType.name;
     if (resolverElement.crudOptions.create && resolverElement.crudOptions.subCreate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
+      const operation = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
@@ -104,7 +104,7 @@ export class LayeredRuntimeResolverCreator {
     }
 
     if (resolverElement.crudOptions.update && resolverElement.crudOptions.subUpdate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
+      const operation = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
@@ -114,7 +114,7 @@ export class LayeredRuntimeResolverCreator {
     }
 
     if (resolverElement.crudOptions.delete && resolverElement.crudOptions.subDelete) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
+      const operation = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {

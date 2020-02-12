@@ -39,6 +39,8 @@ export class GraphbackRuntime extends GraphbackGenerator {
     return models.reduce((services: any, model: ModelDefinition) => {
       const dbLayer = new KnexDBDataProvider(model.graphqlType, db);
       services[model.graphqlType.name] = this.createService(services, model, dbLayer, pubSub);
+
+      return services;
     }, {})
   }
 
