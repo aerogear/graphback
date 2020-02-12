@@ -7,14 +7,17 @@
   GraphQL Resolvers and Queries from GraphQL types 🚀
 </p>
 
-> NOTE: Graphback CLI is going to be replaced with graphql-cli in near future. Please consider installing https://github.com/Urigo/graphql-cli
-
 ## Motivation 
 
-GraphQL can be hard and intimidating initially.
 Graphback helps you to kickstart your experience with any existing GraphQL implementation
-by generating backend layer using your data model.
+by generating backend and client side CRUD layer using your GraphQL data model.
 
 **Documentation**: https://graphback.dev
 
 **Repository**: https://github.com/aerogear/graphback/
+
+## CLI commands reference
+
+See: https://graphback.dev/docs/commands
+
+> NOTE: Graphback CLI is now part of the graphql-cli command line tool. Please consider installing https://github.com/Urigo/graphql-cli for wider set of features
