@@ -17,7 +17,7 @@
     "graphback": "0.10.2",
     "graphql": "^14.0.0",
     "graphql-testx": "0.3.0",
-    "knex": "0.20.8",
+    "knex": "0.20.9",
     "node-fetch": "2.6.0"
   },
   "ava": {
@@ -38,7 +38,7 @@
   "devDependencies": {
     "ava": "2.4.0",
     "graphql": "14.6.0",
-    "rimraf": "3.0.0",
+    "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tslint": "5.20.1",
     "tsutils": "3.17.1",

@@ -32,11 +32,11 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/node": "12.12.25",
+    "@types/node": "12.12.27",
     "@types/pino": "5.20.0",
     "ava": "2.4.0",
     "graphql": "14.6.0",
-    "rimraf": "3.0.0",
+    "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tslint": "5.20.1",
     "typescript": "3.7.5"
