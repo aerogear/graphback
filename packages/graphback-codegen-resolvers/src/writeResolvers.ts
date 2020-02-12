@@ -5,7 +5,7 @@ import { ResolverGeneratorPluginConfig } from './ResolverGeneratorPlugin';
 export function writeResolvers(outputFiles: OutputFileSystem, config: ResolverGeneratorPluginConfig) {
     createFolders(config.outputPath);
     writeFileSync(`${config.outputPath}/${outputFiles.resolvers.fileName}`, outputFiles.resolvers.output);
-    writeFileSync(`${config.outputPath}/${outputFiles.index.fileName}`, outputFiles.index.output);
+    writeFileSync(`${config.outputPath}/${outputFiles.context.fileName}`, outputFiles.context.output);
 }
 
 function createFolders(path: string) {

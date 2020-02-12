@@ -1,7 +1,26 @@
-import { PgKnexDBDataProvider, CRUDService } from "@graphback/runtime"
-import { GraphQLSchema, GraphQLObjectType } from "graphql"
-import Knex from "knex"
-import { PubSubConfig } from './service/CRUDService';
+import { GraphQLObjectType, GraphQLSchema } from "graphql"
+import { PubSubEngine } from 'graphql-subscriptions';
+import * as Knex from 'knex';
+import { CRUDService, PgKnexDBDataProvider } from "./index"
+import { PubSubConfig } from './service/PubSubConfig';
+
+/**
+ * Config used to initialize crud context file
+ */
+export type KnexRuntimeContextConfig = {
+  /**
+   * GraphQL Schema containing model types
+   */
+  schema: GraphQLSchema,
+  /**
+   * Knex based instance connected to one of the supported databases
+   */
+  db: Knex,
+  /**
+   * One of the supported publish subscribe engines
+   */
+  pubSub: PubSubEngine
+}
 
 /**
  * Helper function for creating default runtime context used in Graphback
@@ -10,7 +29,7 @@ import { PubSubConfig } from './service/CRUDService';
  * @param db 
  * @param pubSub 
  */
-export const createCRUDRuntimeContext = (
+export const createKnexCRUDRuntimeContext = (
   modelName: string, schema: GraphQLSchema,
   db: Knex, pubSubConfig: PubSubConfig
 ) => {

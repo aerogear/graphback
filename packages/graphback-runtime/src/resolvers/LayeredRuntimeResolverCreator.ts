@@ -1,4 +1,6 @@
 import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core';
+import { PubSubEngine } from 'graphql-subscriptions';
+import knex from 'knex'
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -16,13 +18,13 @@ import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
  * }
  * ```
  */
-export class LayeredRuntimeResolverGenerator {
-  private service: GraphbackCRUDService
+export class LayeredRuntimeResolverCreator {
+  private services: { [key: string]: GraphbackCRUDService }
   private models: ModelDefinition[];
 
-  constructor(models: ModelDefinition[], service: GraphbackCRUDService) {
-    this.models = models
-    this.service = service;
+  constructor(models: ModelDefinition[], services: { [key: string]: GraphbackCRUDService }) {
+    this.models = models;
+    this.services = services;
   }
 
   public generate() {
@@ -32,48 +34,62 @@ export class LayeredRuntimeResolverGenerator {
       Subscription: {}
     };
     for (const resolverElement of this.models) {
-      // TODO this should use mapping
-      const objectName = resolverElement.graphqlType.name.toLowerCase();
+      const modelName = resolverElement.graphqlType.name;
       if (resolverElement.crudOptions.create) {
-        const resolverCreateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.CREATE);
+        const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
-          return this.service.create(args.input, context)
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].create(args.input, context)
         }
       }
       if (resolverElement.crudOptions.update) {
-        const updateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.UPDATE);
+        const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
-          return this.service.update(args.input, context)
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].update(args.input, context)
         }
       }
       if (resolverElement.crudOptions.delete) {
-        const deleteField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.DELETE);
+        const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
-          return this.service.delete(args.input, context)
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].delete(args.input, context)
         }
       }
 
       if (resolverElement.crudOptions.findAll) {
-        const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND_ALL);
+        const findAllField = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
-          return this.service.findAll(context)
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].findAll(context)
         }
       }
       if (resolverElement.crudOptions.find) {
-        const findField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND);
+        const findField = getFieldName(modelName, GraphbackOperationType.FIND);
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          return this.service.findBy(args.fields, context)
+          return this.services[modelName].findBy(args.fields, context)
         }
       }
 
       this.createRelations(resolverElement, resolvers)
-
-      this.createSubscriptions(resolverElement, resolvers, objectName)
+      this.createSubscriptions(resolverElement, resolvers)
     }
 
     // Delete Mutations key if not needed.
@@ -85,40 +101,52 @@ export class LayeredRuntimeResolverGenerator {
     if (Object.keys(resolvers.Subscription).length === 0) {
       delete resolvers.Subscription;
     }
-    // TODO relationships
 
     return resolvers;
   }
 
+
   // tslint:disable-next-line: no-any
-  private createSubscriptions(resolverElement: ModelDefinition, resolvers: any, objectName: string) {
-    const name = resolverElement.graphqlType.name;
+  private createSubscriptions(resolverElement: ModelDefinition, resolvers: any) {
+    const modelName = resolverElement.graphqlType.name;
     if (resolverElement.crudOptions.create && resolverElement.crudOptions.subCreate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
+      const operation = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
-          return this.service.subscribeToCreate(objectName, context);
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].subscribeToCreate({}, context);
         }
       }
     }
 
     if (resolverElement.crudOptions.update && resolverElement.crudOptions.subUpdate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
+      const operation = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
-          return this.service.subscribeToUpdate(objectName, context);
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].subscribeToUpdate({}, context);
         }
       }
     }
 
     if (resolverElement.crudOptions.delete && resolverElement.crudOptions.subDelete) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
+      const operation = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
-          return this.service.subscribeToDelete(objectName, context);
+          if (!this.services[modelName]) {
+            throw new Error(`Missing service for ${modelName}`);
+          }
+
+          return this.services[modelName].subscribeToDelete({}, context);
         }
       }
     }
@@ -134,25 +162,25 @@ export class LayeredRuntimeResolverGenerator {
       // if (field.isType) {
       //   if (field.annotations.OneToOne || !field.isArray) {
       //     // TODO - this is very wrong
-      //     let foreignIdName = `${resolverElement.graphqlType.name.toLowerCase()}Id`;
+      //     let foreignIdName = `${modelName.toLowerCase()}Id`;
       //     if (field.annotations.OneToOne) {
       //       foreignIdName = field.annotations.OneToOne.field;
       //     }
       //   }
       //   else if (field.annotations.OneToMany || field.isArray) {
       //     // TODO - this is very wrong
-      //     let foreignId = `${resolverElement.graphqlType.name.toLowerCase()}Id`;
+      //     let foreignId = `${modelName.toLowerCase()}Id`;
       //     if (field.annotations.OneToMany) {
       //       foreignId = field.annotations.OneToMany.field;
       //     }
 
-      //     if (resolvers[resolverElement.graphqlType.name] === undefined) {
-      //       resolvers[resolverElement.graphqlType.name] = {};
+      //     if (resolvers[modelName] === undefined) {
+      //       resolvers[modelName] = {};
       //     }
 
       //     // tslint:disable-next-line: no-any
       //     // TODO - this is very wrong
-      //     resolvers[resolverElement.graphqlType.name][field.name] = (parent: any, args: any, context: any) => {
+      //     resolvers[modelName][field.name] = (parent: any, args: any, context: any) => {
       //       return this.service.findBy(field.type.toLowerCase(), { [foreignId]: parent.id }, context);
       //     };
       //  }

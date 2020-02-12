@@ -55,14 +55,6 @@ export class GraphbackCoreMetadata {
         return this.models;
     }
 
-    private buildModel(modelType: GraphQLObjectType) {
-        let crudOptions = parseAnnotations('crud', modelType.description)
-        // Merge CRUD options from type with global ones
-        crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
-        
-        return { graphqlType: modelType, crudOptions };
-    }
-
     /**
      * Helper for plugins to fetch all types that should be processed by Graphback plugins.
      * To mark type as enabled for graphback generators we need to add `model` annotations over the type. 
@@ -74,5 +66,13 @@ export class GraphbackCoreMetadata {
         const types = getModelTypesFromSchema(this.schema)
 
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
+    }
+
+    private buildModel(modelType: GraphQLObjectType) {
+        let crudOptions = parseAnnotations('crud', modelType.description)
+        // Merge CRUD options from type with global ones
+        crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
+        
+        return { graphqlType: modelType, crudOptions };
     }
 }

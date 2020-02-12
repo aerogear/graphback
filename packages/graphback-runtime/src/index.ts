@@ -10,7 +10,7 @@ export * from "./service/CRUDService"
 export * from "./service/GraphbackCRUDService"
 
 // Runtime
-export * from "./resolvers/LayeredRuntimeResolverGen"
+export * from "./resolvers/LayeredRuntimeResolverCreator"
 export * from "./resolvers/RuntimeResolversDefinition"
 
 // Helpers
