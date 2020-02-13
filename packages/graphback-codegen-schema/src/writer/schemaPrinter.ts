@@ -45,9 +45,11 @@ export function printSortedSchema(schema: GraphQLSchema) {
     if (schema.getQueryType()) {
         schemaString += `${print(schema.getQueryType().astNode)} \n\n`
     }
+
     if (schema.getMutationType()) {
         schemaString += `${print(schema.getMutationType().astNode)} \n\n`
     }
+
     if (schema.getSubscriptionType()) {
         schemaString += `${print(schema.getSubscriptionType().astNode)} \n\n`
     }

@@ -1,20 +1,37 @@
-import { GraphQLObjectType, isScalarType } from "graphql";
+import { GraphQLField, GraphQLObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
 import { getBaseType } from '../utils/getBaseType';
 
-export function getPrimaryKey(graphqlType: GraphQLObjectType): string | undefined {
+/**
+ * Returns the primary key field of a GraphQL object.
+ * First looks for the existence of a `@db.primary` field annotation,
+ * otherwise tries to find an `id: ID` field.
+ * 
+ * @param graphqlType 
+ */
+export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any, any> {
   const fields = Object.values(graphqlType.getFields());
 
-  let primaryKey: string;
+  let primaryKey: GraphQLField<any, any>;
+  let primariesCount = 0;
   for (const field of fields) {
     const dbConfig: any = parseDbAnnotations(field);
     const baseType = getBaseType(field.type);
 
     if (dbConfig.primary) {
-      return field.name;
-    } else if (isScalarType(baseType) && baseType.name === 'ID') {
-      primaryKey = field.name;
+      primaryKey = field;
+      primariesCount += 1;
+    } else if (field.name === 'id' && baseType.name === 'ID') {
+      primaryKey = field;
     }
+  }
+  
+  if (primariesCount > 1) {
+    throw new Error(`${graphqlType.name} type should not have multiple '@db.primary' annotations.`)
+  }
+
+  if (!primaryKey) {
+    throw new Error(`${graphqlType.name} type has no primary field.`)
   }
 
   return primaryKey;

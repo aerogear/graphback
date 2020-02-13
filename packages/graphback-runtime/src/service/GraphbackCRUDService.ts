@@ -43,14 +43,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     delete(data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
-     * Implementation for reading object
-     *
-     * @param id id of the object
-     * @param context context object passed from graphql or rest layer
-     */
-    read(id: string, context?: GraphbackContext): Promise<Type>;
-
-    /**
      * Implementation for finding all objects
      *
      * @param id id of the object

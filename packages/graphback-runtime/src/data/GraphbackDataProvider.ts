@@ -1,4 +1,3 @@
-
 // If we come with Union on client we might use some complex JSON for describing rules
 // and single key for type for simple use cases
 // tslint:disable-next-line: no-any
@@ -45,15 +44,6 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param context context object passed from graphql or rest layer
      */
     delete(data: Type, context?: GraphbackContext): Promise<Type>;
-
-    /**
-     * Implementation for reading object
-     *
-     * @param name name of the object to create
-     * @param id id of the object
-     * @param context context object passed from graphql or rest layer
-     */
-    read(id: string, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for finding all objects

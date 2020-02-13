@@ -1,4 +1,4 @@
-import { DatabaseNameTransform, defaultColumnNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '@graphback/core';
+import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -54,13 +54,10 @@ export interface GenerateAbstractDatabaseOptions {
   scalarMap?: ScalarMap | null
   mapListToJson?: boolean
   transformTableName?: DatabaseNameTransform | null
-  transformColumnName?: DatabaseNameTransform | null
 }
 
 export const defaultOptions: GenerateAbstractDatabaseOptions = {
-  scalarMap: null,
-  transformTableName: defaultTableNameTransform,
-  transformColumnName: defaultColumnNameTransform,
+  scalarMap: null
 }
 
 export async function generateAbstractDatabase(
@@ -75,8 +72,6 @@ class AbstractDatabaseBuilder {
   private schema: GraphQLSchema
   private scalarMap: ScalarMap | null
   private mapListToJson: boolean
-  private transformTableName: DatabaseNameTransform | null
-  private transformColumnName: DatabaseNameTransform | null
   private typeMap: TypeMap
   private database: AbstractDatabase
   /** Used to push new intermediary tables after current table */
@@ -87,8 +82,6 @@ class AbstractDatabaseBuilder {
 
   constructor(schema: GraphQLSchema, options: GenerateAbstractDatabaseOptions) {
     this.schema = schema
-    this.transformTableName = options.transformTableName
-    this.transformColumnName = options.transformColumnName
     this.scalarMap = options.scalarMap as ScalarMap | null
     this.mapListToJson = options.mapListToJson || defaultOptions.mapListToJson as boolean
     this.typeMap = this.schema.getTypeMap()
@@ -121,17 +114,7 @@ class AbstractDatabaseBuilder {
   }
 
   private getTableName(name: string) {
-    if (this.transformTableName) {
-      return this.transformTableName(name, 'to-db')
-    }
-    return name
-  }
-
-  private getColumnName(name: string) {
-    if (this.transformColumnName) {
-      return this.transformColumnName(name, 'to-db')
-    }
-    return name
+    return defaultTableNameTransform(name, 'to-db')
   }
 
   private buildTable(type: GraphQLObjectType) {
@@ -211,7 +194,7 @@ class AbstractDatabaseBuilder {
     }
 
     const notNull = isNonNullType(field.type)
-    let columnName: string = annotations.name || this.getColumnName(field.name)
+    let columnName: string = annotations.name || field.name
     let type: string
     let args: any[]
     let foreign: ForeignKey | null = null
@@ -243,7 +226,7 @@ class AbstractDatabaseBuilder {
 
       // Object
     } else if (isObjectType(fieldType)) {
-      columnName = annotations.name || this.getColumnName(`${field.name}Id`)
+      columnName = annotations.name || `${field.name}Id`
       const foreignType = this.typeMap[fieldType.name]
       if (!foreignType) {
         console.warn(`Foreign type ${fieldType.name} not found on field ${this.currentType}.${field.name}.`)
@@ -434,7 +417,6 @@ class AbstractDatabaseBuilder {
     const annotations: any = parseAnnotations('db', oneToManyRelationship.description || null);
 
     const field: GraphQLField<any, any> = {
-      // TODO: Use defaultColumnNameTransform
       name: annotations.oneToMany || lowerCaseFirstChar(oneToManyRelationship.relation.name),
       type: oneToManyRelationship.relation,
       description: oneToManyRelationship.description,

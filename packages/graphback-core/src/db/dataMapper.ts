@@ -1,7 +1,7 @@
-import { ModelTableMapping } from './createModelTableMappings';
+import { ModelTableMap } from './buildModelTableMap';
 
-export interface DataMapping {
-    id?: TableID
+export interface TableDataMap {
+    idField?: TableID
     table?: string
     data?: any
     fieldMap?: any
@@ -9,47 +9,30 @@ export interface DataMapping {
 
 export interface TableID {
     name: string
-    value: any
+    value?: any
 }
 
-export const mapDataToTable = (data: any, modelMap: ModelTableMapping): DataMapping => {
-    const fieldMap = modelMap.fieldMap;
+export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
+    const idField = modelMap.idField;
 
-    const dataMap: DataMapping = {
-        table: modelMap.tableName,
-        fieldMap
+    // TODO: Map fields to custom db names
+
+    return {
+        idField: getTableId(idField, data),
+        data
     }
-
-    if (!fieldMap) {
-        return dataMap;
-    }
-
-    dataMap.data = {};
-    for (const key of Object.keys(data)) {
-        const newKey = fieldMap[key] ? fieldMap[key] : key;
-        if (data[key]) {
-            dataMap.data[newKey] = data[key];
-        }
-    }
-
-    return dataMap;
 }
 
-export const mapDataFromTable = (modelName: string, data: any, modelsMap: ModelTableMapping[]): any => {
-    const modelMap = getModelMappingByName(modelName, modelsMap);
-    const fieldMap = modelMap.fieldMap;
+function getTableId(idField: string, data: any): TableID {
+    if (!idField) { return undefined };
 
-    const mappedData = {};
-    for (const key of Object.keys(fieldMap)) {
-        if (fieldMap[key] && data[fieldMap[key]]) {
-            const newKey = fieldMap[key];
-            mappedData[key] = data[newKey];
-        }
+    let value: any;
+    if (data && data[idField]) {
+        value = data[idField];
     }
 
-    return mappedData;
-}
-
-export function getModelMappingByName(name: string, mappings: ModelTableMapping[]) {
-    return mappings.find((m: ModelTableMapping) => m.typeName === name);
+    return {
+        name: idField,
+        value
+    }
 }

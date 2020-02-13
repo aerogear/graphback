@@ -1,10 +1,20 @@
 // tslint:disable-next-line: match-default-export-name
 import _test, { TestInterface } from 'ava';
+import { buildSchema, GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 
-// tslint:disable: typedef
+const schema = buildSchema(`
+"""
+@model
+"""
+type Todos {
+ id: ID!
+ text: String 
+}
+`);
 
+// tslint:disable: typedef
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;
@@ -17,7 +27,7 @@ interface Todo {
 
 const test = _test as TestInterface<Context>;
 // tslint:disable-next-line: no-any
-const typeContext = { name: 'todos' } as any
+const modelType = schema.getType('Todos') as GraphQLObjectType
 
 // Create a new database before each tests so that
 // all tests can run parallel
@@ -40,16 +50,9 @@ test.beforeEach(async t => {
   await db('todos').insert({ text: 'the second todo' });
   await db('todos').insert({ text: 'just another todo' });
 
-  const provider = new KnexDBDataProvider(typeContext, db);
+  const provider = new KnexDBDataProvider(modelType, db);
 
   t.context = { db, provider };
-});
-
-test('read Todo', async t => {
-  const todo: Todo = await t.context.provider.read('3');
-
-  t.assert(todo.id === 3);
-  t.assert(todo.text === 'just another todo');
 });
 
 test('batch read Todos', async t => {

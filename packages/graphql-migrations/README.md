@@ -64,34 +64,10 @@ migrateDB(dbConfig, schema, {
   - `dbTablePrefix` (default: ''): table name prefix: `<prefix><tableName>`.
   - `dbColumnPrefix` (default: `''`): column name prefix: `<prefix><columnName>`.
   - `updateComments`: overwrite comments on table and columns.
-  - `transformTableName` (default: transform to `lowercase`): transform function for table names.
-  - `transformColumnName` (default: transform to `lowerCaseFirstCharacter`): transform function for column names.
   - `scalarMap` (default: `null`): Custom scalar mapping..
   - `mapListToJson` (default: `true`): Map scalar lists to JSON column type by default.
   - `plugins` (default: `[]`): List of graphql-migrations plugins.
   - `debug` (default: `false`): display debugging information and SQL queries.
-
-### Name transforms
-
-You can customise how table and coumn names are transformed before applying to the database with `transformTableName` and `transformColumnName`.
-
-```ts
-migrateDB(dbConfig, schema, {
-  transformTableName: (name, direction) => {
-    if (direction === 'to-db') {
-      return name.toLowerCase();
-    }
-    return name
-  },
-  transformColumnName: (name, direction) => {
-    if (direction === 'to-db') {
-      // set first character in name to lowercase
-      return `${name.charAt(0).toLowerCase()}${name.slice(1)}`
-    }
-    return name
-  }
-});
-```
 
 ### Model Definition
 

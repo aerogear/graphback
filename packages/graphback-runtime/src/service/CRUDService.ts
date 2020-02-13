@@ -1,4 +1,4 @@
-import { GraphbackOperationType, upperCaseFirstChar } from "@graphback/core"
+import { GraphbackOperationType, ModelTableMap, upperCaseFirstChar } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
@@ -73,13 +73,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         }
 
         return result;
-    }
-
-    public read(id: string, context?: any): Promise<T> {
-        this.logger.log(`reading object ${this.modelName}`)
-
-        // TODO use mapping
-        return this.db.read(id, context);
     }
 
     public findAll(context?: any): Promise<T[]> {

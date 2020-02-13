@@ -1,3 +1,4 @@
+import { getDatabaseArguments } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
@@ -17,7 +18,10 @@ export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends Kn
     }
 
     public async create(data: Type): Promise<Type> {
-        const dbResult = await this.db(this.tableName).insert(data).returning('*');
+        const { data: createData } = getDatabaseArguments(this.tableMap, data);
+
+        // tslint:disable-next-line: await-promise
+        const dbResult = await this.db(this.tableName).insert(createData).returning('*');
         if (dbResult && dbResult[0]) {
             return dbResult[0]
         }

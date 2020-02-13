@@ -1,4 +1,4 @@
-import { lowerCaseFirstChar } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
@@ -20,18 +20,23 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   protected db: Knex;
   protected baseType: GraphQLObjectType;
   protected tableName: string;
+  protected tableMap: ModelTableMap;
 
   constructor(baseType: GraphQLObjectType, db: Knex) {
     this.db = db;
     this.baseType = baseType;
     // TODO build and use mapping here
-    this.tableName = lowerCaseFirstChar(baseType.name);
+    this.tableMap = buildModelTableMap(baseType);
+    this.tableName = this.tableMap.tableName;
   }
 
   public async create(data: Type): Promise<Type> {
-    // TODO refactor to use new knex api
-    const [id] = await this.db(this.tableName).insert(data);
-    const dbResult = await this.db.select().from(this.tableName).where('id', '=', id)
+    const { data: createData } = getDatabaseArguments(this.tableMap, data);
+
+    // tslint:disable-next-line: await-promise
+    const [id] = await this.db(this.tableName).insert(createData);
+    // tslint:disable-next-line: await-promise
+    const dbResult = await this.db.select().from(this.tableName).where(this.tableMap.idField, '=', id)
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }
@@ -39,10 +44,13 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async update(data: Type): Promise<Type> {
-    // TODO refactor to use id mapping
-    const updateResult = await this.db(this.tableName).update(data).where('id', '=', (data as any).id);
+    const { idField, data: updateData } = getDatabaseArguments(this.tableMap, data);
+
+    // tslint:disable-next-line: await-promise
+    const updateResult = await this.db(this.tableName).update(updateData).where(idField.name, '=', idField.value);
     if (updateResult === 1) {
-      const dbResult = await this.db.select().from(this.tableName).where('id', '=', (data as any).id);
+      // tslint:disable-next-line: await-promise
+      const dbResult = await this.db.select().from(this.tableName).where(idField.name, '=', idField.value);
       if (dbResult && dbResult[0]) {
         return dbResult[0]
       }
@@ -52,11 +60,12 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   // tslint:disable-next-line: no-reserved-keywords
   public async delete(data: Type): Promise<Type> {
-    // TODO refactor to use id mapping
-    const beforeDelete = await this.db.select().from(this.tableName).where('id', '=', (data as any).id);
-    // TODO refactor to use id mapping
+    const { idField } = getDatabaseArguments(this.tableMap, data);
+
     // tslint:disable-next-line: await-promise
-    const dbResult = await this.db(this.tableName).where('id', '=', (data as any).id).del()
+    const beforeDelete = await this.db.select().from(this.tableName).where(idField.name, '=', idField.value);
+    // tslint:disable-next-line: await-promise
+    const dbResult = await this.db(this.tableName).where(idField.name, '=', idField.value).del()
     if (dbResult && beforeDelete[0]) {
       return beforeDelete[0];
     }
@@ -64,15 +73,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   }
 
-  public async read(id: string): Promise<Type> {
-    const dbResult = await this.db.select().from(this.tableName).where('id', '=', id);
-    if (dbResult && dbResult[0]) {
-      return dbResult[0]
-    }
-    throw new NoDataError(`Cannot read ${this.tableName}`);
-  }
-
   public async findAll(): Promise<Type[]> {
+    // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(this.tableName);
     if (dbResult) {
       return dbResult;
@@ -81,7 +83,9 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async findBy(filter: Type | AdvancedFilter): Promise<Type[]> {
-    const dbResult = await this.db.select().from(this.tableName).where(filter);
+    const { data } = getDatabaseArguments(this.tableMap, filter);
+    // tslint:disable-next-line: await-promise
+    const dbResult = await this.db.select().from(this.tableName).where(data);
     if (dbResult) {
       return dbResult;
     }
@@ -89,6 +93,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
+    // TODO: Use mapping when relationships are done
+    // tslint:disable-next-line: await-promise
     const dbResult = await this.db.select().from(this.tableName).whereIn(relationField, ids);
 
     if (dbResult) {
