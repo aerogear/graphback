@@ -8,7 +8,7 @@
       "intro/datamodel",
       "intro/config"
     ],
-    "CRUD": [
+    "Graphback CRUD": [
       "crud/crudspec",
       "crud/crudruntime",
       "crud/relationships",

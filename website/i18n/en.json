@@ -5,52 +5,80 @@
     "previous": "Previous",
     "tagline": "Generate production ready GraphQL backend by providing your business objects",
     "docs": {
-      "clientqueries": {
-        "title": "Client-side Queries"
-      },
       "commands": {
         "title": "CLI commands"
       },
-      "concepts": {
-        "title": "Introduction"
+      "crud/crudruntime": {
+        "title": "CRUD runtime abstraction",
+        "sidebar_label": "CRUD Abstraction"
       },
-      "config": {
-        "title": "Graphback CRUD Config"
+      "crud/crud-spec": {
+        "title": "Graphback CRUD Specification",
+        "sidebar_label": "CRUD Specification"
       },
-      "custom": {
-        "title": "Custom Methods"
+      "crud/mapping": {
+        "title": "Type to Database mapping",
+        "sidebar_label": "Mapping your data"
       },
-      "database-schema-migrations": {
-        "title": "Database Schema Migrations"
+      "crud/relationships": {
+        "title": "Model Relationships",
+        "sidebar_label": "Model Relationships"
       },
-      "datasources": {
+      "db/datasources": {
         "title": "Data Sources"
       },
-      "datamodel": {
-        "title": "Defining your Data Model"
+      "db/db-introduction": {
+        "title": "Introduction Database Schema Migrations",
+        "sidebar_label": "DB Migrations"
+      },
+      "db/migrations": {
+        "title": "Database Schema Migrations",
+        "sidebar_label": "Database Schema Migrations"
       },
       "gettingstarted": {
-        "title": "What is Graphback and how do I get started?",
+        "title": "Introduction to Graphback",
         "sidebar_label": "What is Graphback"
       },
-      "migrations": {
-        "title": "Migrating to GraphQL"
+      "intro/concepts": {
+        "title": "Introduction"
       },
-      "openapi": {
+      "intro/config": {
+        "title": "Graphback Config"
+      },
+      "intro/datamodel": {
+        "title": "Defining your Data Model"
+      },
+      "intro/existingproject": {
+        "title": "Adding Graphback to your project",
+        "sidebar_label": "Add Graphback to your Project"
+      },
+      "intro/template": {
+        "title": "Creating your client and server application from template",
+        "sidebar_label": "Create app from template"
+      },
+      "migrations/migrations": {
+        "title": "Migrating to Graphback from other technologies"
+      },
+      "migrations/openapi": {
         "title": "OpenAPI migrations"
       },
-      "relationships": {
-        "title": "Relationships"
+      "plugins/codegenplugin": {
+        "title": "Creating your own plugin"
+      },
+      "plugins/clientqueries": {
+        "title": "Graphback client"
+      },
+      "plugins/graphback-resolvers": {
+        "title": "plugins/graphback-resolvers"
+      },
+      "plugins/graphback-schema": {
+        "title": "plugins/graphback-schema"
+      },
+      "plugins/introduction": {
+        "title": "plugins/introduction"
       },
       "releases": {
         "title": "Releases"
-      },
-      "runtime": {
-        "title": "Graphback runtime",
-        "sidebar_label": "Runtimes"
-      },
-      "templates": {
-        "title": "Templates"
       },
       "version-0.10.x/version-0.10.x-clientqueries": {
         "title": "Client-side Queries"
@@ -143,10 +171,14 @@
     },
     "categories": {
       "Getting Started": "Getting Started",
-      "Concepts": "Concepts",
-      "Migrations": "Migrations",
+      "Graphback CRUD": "Graphback CRUD",
+      "Generator Plugins": "Generator Plugins",
+      "Database": "Database",
+      "Migrating to Graphback": "Migrating to Graphback",
       "Reference": "Reference",
-      "Releases": "Releases"
+      "Releases": "Releases",
+      "Concepts": "Concepts",
+      "Migrations": "Migrations"
     }
   },
   "pages-strings": {
