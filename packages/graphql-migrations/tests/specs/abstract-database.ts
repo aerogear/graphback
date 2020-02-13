@@ -439,7 +439,7 @@ ava('default name transforms', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type UserTeam {
         id: ID!
-        name: String!
+        TeamName: String!
         yearlyBilling: Boolean!
       }
     `)
@@ -450,40 +450,8 @@ ava('default name transforms', async (t: ExecutionContext) => {
   t.assert(UserTeam.columns.length === 3)
   const [colId, colName, colYearlyBilling] = UserTeam.columns
   t.assert(colId.name === 'id')
-  t.assert(colName.name === 'name')
+  t.assert(colName.name === 'TeamName')
   t.assert(colYearlyBilling.name === 'yearlyBilling')
-})
-
-ava('custom name transforms', async (t: ExecutionContext) => {
-  const schema = buildSchema(`
-      type UserTeam {
-        id: ID!
-        name: String!
-        yearlyBilling: Boolean!
-      }
-    `)
-  const adb = await generateAbstractDatabase(schema, {
-    transformTableName: (name, direction) => {
-      if (direction === 'to-db') {
-        return `Foo${name}`
-      }
-      return name
-    },
-    transformColumnName: (name, direction) => {
-      if (direction === 'to-db') {
-        return `bar_${name}`
-      }
-      return name
-    },
-  })
-  t.assert(adb.tables.length === 1)
-  const [UserTeam] = adb.tables
-  t.assert(UserTeam.name === 'FooUserTeam')
-  t.assert(UserTeam.columns.length === 3)
-  const [colId, colName, colYearlyBilling] = UserTeam.columns
-  t.assert(colId.name === 'bar_id')
-  t.assert(colName.name === 'bar_name')
-  t.assert(colYearlyBilling.name === 'bar_yearlyBilling')
 })
 
 ava('sandbox', async (t: ExecutionContext) => {

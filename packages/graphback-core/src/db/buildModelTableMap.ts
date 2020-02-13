@@ -1,7 +1,7 @@
 import { GraphQLField, GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
-import { defaultColumnNameTransform, defaultTableNameTransform } from './defaultNameTransforms';
 import { getPrimaryKey } from './getPrimaryKey';
+import { defaultTableNameTransform } from './defaultNameTransforms';
 
 /**
  * Contains mapping information between GraphQL Model type and database table
@@ -46,23 +46,23 @@ function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>): any {
 }
 
 export function getTableName(model: GraphQLObjectType): string {
-  let mappedTableName = defaultTableNameTransform(model.name, 'to-db');
+  let tableName = defaultTableNameTransform(model.name, 'to-db');
 
   const dbAnnotations = parseDbAnnotations(model);
   if (dbAnnotations.name) {
-    mappedTableName = dbAnnotations.name;
+    tableName = dbAnnotations.name;
   }
 
-  return mappedTableName;
+  return tableName;
 }
 
 export function getColumnName(field: GraphQLField<any, any>): string {
-  let mappedColumnName = defaultColumnNameTransform(field.name, 'to-db');
+  let columnName = field.name;
 
   const dbAnnotations = parseDbAnnotations(field);
   if (dbAnnotations.name) {
-    mappedColumnName = dbAnnotations.name;
+    columnName = dbAnnotations.name;
   }
 
-  return mappedColumnName;
+  return columnName;
 }

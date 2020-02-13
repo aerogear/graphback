@@ -1,8 +1,6 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { GraphQLObjectType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
-import { defaultColumnNameTransform, lowerCaseFirstChar, upperCaseFirstChar } from '../db';
-import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 // TODO is is esential to document this element
@@ -73,6 +71,14 @@ export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectTyp
   return modelTypes.filter(isModelType);
 }
 
+export function lowerCaseFirstChar(text: string) {
+  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
+}
+
+export function upperCaseFirstChar(text: string) {
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+}
+
 // tslint:disable-next-line: no-reserved-keywords
 export function getRelationFieldName(field: any, type: any) {
   let fieldName: string;
@@ -86,7 +92,7 @@ export function getRelationFieldName(field: any, type: any) {
     fieldName = field.annotations.OneToMany.field;
   }
   else {
-    fieldName = defaultColumnNameTransform(type.name, 'to-db');
+    fieldName = type.name;
   }
 
   return fieldName;

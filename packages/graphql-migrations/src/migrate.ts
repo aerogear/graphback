@@ -1,4 +1,3 @@
-import { DatabaseNameTransform, defaultColumnNameTransform, defaultTableNameTransform } from '@graphback/core';
 import { buildSchema, GraphQLSchema } from 'graphql'
 import * as Knex from 'knex';
 import { generateAbstractDatabase, ScalarMap } from './abstract/generateAbstractDatabase'
@@ -27,14 +26,6 @@ export interface MigrateOptions {
    * Overwrite table and column comments (not supported in some databases).
    */
   updateComments?: boolean
-  /**
-   * Transform the table names.
-   */
-  transformTableName?: DatabaseNameTransform | null
-  /**
-   * Transform the column names.
-   */
-  transformColumnName?: DatabaseNameTransform | null
   /**
    * Custom Scalar mapping
    */
@@ -69,8 +60,6 @@ export const defaultOptions: MigrateOptions = {
   dbTablePrefix: '',
   dbColumnPrefix: '',
   updateComments: false,
-  transformTableName: defaultTableNameTransform,
-  transformColumnName: defaultColumnNameTransform,
   scalarMap: null,
   mapListToJson: true,
   plugins: [],
@@ -117,8 +106,6 @@ export async function migrateDB(
 
   // Generate new
   const newAdb = await generateAbstractDatabase(schema, {
-    transformTableName: finalOptions.transformTableName,
-    transformColumnName: finalOptions.transformColumnName,
     scalarMap: finalOptions.scalarMap,
   })
   if (finalOptions.debug) {
