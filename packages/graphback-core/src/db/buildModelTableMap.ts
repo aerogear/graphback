@@ -1,7 +1,7 @@
 import { GraphQLField, GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
-import { getPrimaryKey } from './getPrimaryKey';
 import { defaultTableNameTransform } from './defaultNameTransforms';
+import { getPrimaryKey } from './getPrimaryKey';
 
 /**
  * Contains mapping information between GraphQL Model type and database table
@@ -24,7 +24,7 @@ export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
   const fieldMap = mapFieldsToColumns(model.getFields());
 
   return {
-    idField: primaryKeyField.name,
+    idField: getColumnName(primaryKeyField),
     typeName: model.name,
     tableName,
     fieldMap
