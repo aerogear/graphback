@@ -2,7 +2,7 @@
 title: Graphback - the evolution of the GraphQL ecosystem
 tags: graphql, nodejs
 author: Wojciech Trocki
-authorURL: http://twitter.com/wojtroken
+authorURL: http://twitter.com/typeapi
 authorFBID: 2026021350761623
 
 ---
