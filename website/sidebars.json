@@ -2,18 +2,30 @@
   "docs": {
     "Getting Started": [
       "gettingstarted",
-      "datamodel",
-      "config",
-      "custom"
+      "intro/template",
+      "intro/existingproject",
+      "intro/inmemory",
+      "intro/datamodel",
+      "intro/config"
     ],
-    "Concepts": [
-      "concepts",
-      "runtime",
-      "datasources",
-      "relationships",
-      "clientqueries"
+    "CRUD": [
+      "crud/crudspec",
+      "crud/crudruntime",
+      "crud/relationships",
+      "crud/mapping"
     ],
-    "Migrations": [
+    "Generator Plugins": [
+      "plugins/introduction",
+      "plugins/crud-schema",
+      "plugins/crud-resolvers",
+      "plugins/crud-client"
+    ],
+    "Database": [
+      "db/introduction",
+      "db/migrations",
+      "db/datasources"
+    ],
+    "Migrating to Graphback": [
       "migrations",
       "openapi"
     ],
