@@ -1,5 +1,5 @@
 ---
-id: migrations
+id: intromigrations
 title: Migrating to Graphback from other technologies
 ---
 

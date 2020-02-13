@@ -1,14 +1,15 @@
 ---
-id: runtime
-title: Graphback runtime
-sidebar_label: Runtimes
+id: serve
+title: Serve GraphQL API without code
+sidebar_label: GraphQL API without code
 ---
 
 Graphback allows you to query any data using reusable concept called runtime. 
 
-`@graphback/runtime` package offers way to initialize fully functional server without code generation,
-just by supplying schema string. Runtime layer can be used for prototyping, mocking and in situation when 
+`graphql-serve` package offers way to initialize fully functional server without code generation by supplying schema annotated with model. 
+Runtime layer can be used for prototyping, mocking and in situation when 
 developers want to avoid commiting generated codebase to their repository.
+
 
 ## Adding runtime layer to your application
 

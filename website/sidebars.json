@@ -4,7 +4,7 @@
       "gettingstarted",
       "intro/template",
       "intro/existingproject",
-      "intro/inmemory",
+      "intro/serve",
       "intro/datamodel",
       "intro/config"
     ],
@@ -12,22 +12,23 @@
       "crud/crudspec",
       "crud/crudruntime",
       "crud/relationships",
-      "crud/mapping"
+      "crud/crudmapping"
     ],
     "Generator Plugins": [
-      "plugins/introduction",
+      "plugins/plugin-intro",
       "plugins/crud-schema",
       "plugins/crud-resolvers",
-      "plugins/crud-client"
+      "plugins/crud-client",
+      "plugins/customplugin"
     ],
     "Database": [
-      "db/introduction",
+      "db/dbintroduction",
       "db/migrations",
       "db/datasources"
     ],
     "Migrating to Graphback": [
-      "migrations",
-      "openapi"
+      "migrations/intromigrations",
+      "migrations/openapi"
     ],
     "Reference": [
       "commands"

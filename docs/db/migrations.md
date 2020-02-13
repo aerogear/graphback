@@ -1,6 +1,7 @@
 ---
-id: database-schema-migrations
+id: migrations
 title: Database Schema Migrations
+sidebar_label:  Database Schema Migrations
 ---
 
 ## Database Schema Migrations
