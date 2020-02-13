@@ -1,4 +1,4 @@
-// tslint:disable-next-line: match-default-export-name
+// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
@@ -12,7 +12,8 @@ import { PubSubConfig } from '../../src/service/PubSubConfig';
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;
-  crudService: CRUDService
+  todoService: CRUDService
+  userService: CRUDService;
 }
 
 interface Todo {
@@ -30,10 +31,24 @@ type Todos {
  id: ID!
  text: String 
 }
+
+"""
+@model
+"""
+type User {
+  name: String
+  """
+  @db.primary
+  """
+  username: String
+}
 `);
 
 // tslint:disable-next-line: no-any
-const modelType = schema.getType('Todos') as GraphQLObjectType
+const userModel = schema.getType('User') as GraphQLObjectType
+
+// tslint:disable-next-line: no-any
+const todoModel = schema.getType('Todos') as GraphQLObjectType
 
 // Create a new database before each tests so that
 // all tests can run parallel
@@ -52,6 +67,12 @@ test.beforeEach(async t => {
     table.string('text');
   });
 
+  // tslint:disable-next-line: await-promise
+  await db.schema.createTable('user', table => {
+    table.string('name');
+    table.string('username').primary();
+  });
+
   // insert a couple of default data
   // tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'my first default todo' });
@@ -60,7 +81,16 @@ test.beforeEach(async t => {
   // tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'just another todo' });
 
-  const provider = new KnexDBDataProvider(modelType, db);
+  // insert a user
+  // tslint:disable-next-line: await-promise
+  await db('user').insert({ name: 'John Doe', username: 'johndoe123' });
+  // tslint:disable-next-line: await-promise
+  await db('user').insert({ name: 'Sam Wicks', username: 'samwicks' });
+
+
+  const todoProvider = new KnexDBDataProvider(todoModel, db);
+  const userProvider = new KnexDBDataProvider(userModel, db);
+
   const pubSub = new PubSub();
 
   const publishConfig: PubSubConfig = {
@@ -70,12 +100,14 @@ test.beforeEach(async t => {
     publishUpdate: true
   }
 
-  const crudService = new CRUDService(modelType, provider, publishConfig)
-  t.context = { db, provider, crudService };
+  const todoService = new CRUDService(todoModel, todoProvider, publishConfig)
+  const userService = new CRUDService(userModel, userProvider, publishConfig);
+
+  t.context = { db, provider: todoProvider, todoService, userService };
 });
 
 test('create Todo', async t => {
-  const todo: Todo = await t.context.crudService.create({
+  const todo: Todo = await t.context.todoService.create({
     text: 'create a todo',
   });
 
@@ -84,7 +116,7 @@ test('create Todo', async t => {
 });
 
 test('update Todo', async t => {
-  const todo: Todo = await t.context.crudService.update({
+  const todo: Todo = await t.context.todoService.update({
     id: '1',
     text: 'my updated first todo',
   });
@@ -94,7 +126,7 @@ test('update Todo', async t => {
 });
 
 test('delete Todo', async t => {
-  const data = await t.context.crudService.delete({
+  const data = await t.context.todoService.delete({
     id: '3',
     text: 'my updated first todo',
   });
@@ -103,13 +135,13 @@ test('delete Todo', async t => {
 });
 
 test('find all Todos', async t => {
-  const todos = await t.context.crudService.findAll(modelType.name);
+  const todos = await t.context.todoService.findAll(todoModel.name);
 
   t.assert(todos.length === 3);
 });
 
 test('find Todo by text', async t => {
-  const todos: Todo[] = await t.context.crudService.findBy({
+  const todos: Todo[] = await t.context.todoService.findBy({
     text: 'the second todo',
   });
 
@@ -117,4 +149,19 @@ test('find Todo by text', async t => {
   t.assert(todos[0].id === 2);
 });
 
+test('delete User by custom ID field', async t => {
+  const result = await t.context.userService.delete({
+    username: 'johndoe123'
+  });
 
+  t.assert(result.username === 'johndoe123')
+});
+
+test('update User by custom ID field', async t => {
+  const user = await t.context.userService.update({
+    username: 'johndoe123',
+    name: 'Johnny Doe'
+  });
+
+  t.assert(user.name === 'Johnny Doe')
+});
