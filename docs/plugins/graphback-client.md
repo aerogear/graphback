@@ -1,6 +1,7 @@
 ---
-id: clientqueries
-title: Graphback client
+id: crud-client
+title: Graphback CRUD Client Queries Plugin
+sidebar_label: CRUD Client Queries
 ---
 
 Graphback client plugin allows users to generate client-side queries based on the model. A

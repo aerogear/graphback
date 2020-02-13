@@ -1,7 +1,10 @@
 ---
 id: relationships
-title: Relationships
+title: Model Relationships
+sidebar_label: Model Relationships
 ---
+
+> NOTE: This document is still in progress
 
 ## Database Relationships
 

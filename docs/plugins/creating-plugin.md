@@ -1,6 +1,7 @@
 ---
-id: codegenplugin
+id: customplugin
 title: Creating your own plugin
+sidebar_label: Custom plugin
 ---
 
 Graphback allows to create your own plugins that can affect generated schema 

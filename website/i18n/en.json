@@ -9,14 +9,14 @@
         "title": "CLI commands"
       },
       "crud/crudruntime": {
-        "title": "CRUD runtime abstraction",
+        "title": "CRUD Runtime abstraction",
         "sidebar_label": "CRUD Abstraction"
       },
-      "crud/crud-spec": {
+      "crud/crudspec": {
         "title": "Graphback CRUD Specification",
         "sidebar_label": "CRUD Specification"
       },
-      "crud/mapping": {
+      "crud/crudmapping": {
         "title": "Type to Database mapping",
         "sidebar_label": "Mapping your data"
       },
@@ -27,9 +27,9 @@
       "db/datasources": {
         "title": "Data Sources"
       },
-      "db/db-introduction": {
+      "db/dbintroduction": {
         "title": "Introduction Database Schema Migrations",
-        "sidebar_label": "DB Migrations"
+        "sidebar_label": "Introduction"
       },
       "db/migrations": {
         "title": "Database Schema Migrations",
@@ -52,30 +52,39 @@
         "title": "Adding Graphback to your project",
         "sidebar_label": "Add Graphback to your Project"
       },
+      "intro/serve": {
+        "title": "Serve GraphQL API without code",
+        "sidebar_label": "GraphQL API without code"
+      },
       "intro/template": {
         "title": "Creating your client and server application from template",
         "sidebar_label": "Create app from template"
       },
-      "migrations/migrations": {
+      "migrations/intromigrations": {
         "title": "Migrating to Graphback from other technologies"
       },
       "migrations/openapi": {
         "title": "OpenAPI migrations"
       },
-      "plugins/codegenplugin": {
-        "title": "Creating your own plugin"
+      "plugins/customplugin": {
+        "title": "Creating your own plugin",
+        "sidebar_label": "Custom plugin"
       },
-      "plugins/clientqueries": {
-        "title": "Graphback client"
+      "plugins/crud-client": {
+        "title": "Graphback CRUD Client Queries Plugin",
+        "sidebar_label": "CRUD Client Queries"
       },
-      "plugins/graphback-resolvers": {
-        "title": "plugins/graphback-resolvers"
+      "plugins/crud-resolvers": {
+        "title": "Graphback CRUD Resolvers Plugin",
+        "sidebar_label": "CRUD Resolvers"
       },
-      "plugins/graphback-schema": {
-        "title": "plugins/graphback-schema"
+      "plugins/crud-schema": {
+        "title": "Graphback CRUD Schema Plugin",
+        "sidebar_label": "CRUD Schema"
       },
-      "plugins/introduction": {
-        "title": "plugins/introduction"
+      "plugins/plugin-intro": {
+        "title": "Graphback Plugins introduction",
+        "sidebar_label": "Introduction"
       },
       "releases": {
         "title": "Releases"
