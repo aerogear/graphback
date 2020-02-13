@@ -5,7 +5,7 @@ import { getModelTypesFromSchema } from '../src/plugin/getModelTypesFromSchema';
 
 ava('should get primary from id: ID field', (t: ExecutionContext) => {
     const schema = buildSchema(`
-    """ @db.model """
+    """ @model """
     type User {
         id: ID!
         email: String!
@@ -22,7 +22,7 @@ ava('should get primary from id: ID field', (t: ExecutionContext) => {
 
 ava('should get primary key from @db.primary annotation', (t: ExecutionContext) => {
     const schema = buildSchema(`
-    """ @db.model """
+    """ @model """
     type User {
         id: ID!
         """
@@ -53,7 +53,7 @@ ava('should throw an error if no primary key in model', (t: ExecutionContext) =>
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
-    t.throws(() => getPrimaryKey(userModel))
+    t.throws(() => getPrimaryKey(userModel), 'User type has no primary field.')
 });
 
 ava('should throw an error if multiple @db.primary annotations', (t: ExecutionContext) => {
