@@ -23,9 +23,11 @@ export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldM
     }
 }
 
-function getTableId(idField: string, data: any = {}): TableID {
+function getTableId(idField: string, data: any): TableID {
+    if (!idField) { return undefined };
+
     let value: any;
-    if (data[idField]) {
+    if (data && data[idField]) {
         value = data[idField];
     }
 
