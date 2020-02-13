@@ -18,6 +18,12 @@ export interface ModelTableMap {
   fieldMap?: { [key: string]: string }
 }
 
+/**
+ * Builds a database mapping model of a GraphQLObject type.
+ * @param model - The GraphQL object data model representation
+ * 
+ * @returns {ModelTableMap} A model containing the table name, any field customisations and a mapping of the primary key field.
+ */
 export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
   const primaryKeyField = getPrimaryKey(model);
   const tableName = getTableName(model);
@@ -45,6 +51,12 @@ function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>): any {
   }, {});
 }
 
+/**
+ * Gets the datase column name for a GraphQL type.
+ * Checks for the `@db.name` annotation for a customised name
+ * 
+ * @param field 
+ */
 export function getTableName(model: GraphQLObjectType): string {
   let tableName = defaultTableNameTransform(model.name, 'to-db');
 
@@ -56,6 +68,12 @@ export function getTableName(model: GraphQLObjectType): string {
   return tableName;
 }
 
+/**
+ * Gets the datase column name for a GraphQL field.
+ * Checks for the `@db.name` annotation for a customised name
+ * 
+ * @param field 
+ */
 export function getColumnName(field: GraphQLField<any, any>): string {
   let columnName = field.name;
 

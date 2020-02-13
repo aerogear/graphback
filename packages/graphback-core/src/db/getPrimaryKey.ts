@@ -2,6 +2,13 @@ import { GraphQLField, GraphQLObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
 import { getBaseType } from '../utils/getBaseType';
 
+/**
+ * Returns the primary key field of a GraphQL object.
+ * First looks for the existence of a `@db.primary` field annotation,
+ * otherwise tries to find an `id: ID` field.
+ * 
+ * @param graphqlType 
+ */
 export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any, any> {
   const fields = Object.values(graphqlType.getFields());
 
