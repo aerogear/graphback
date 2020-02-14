@@ -1,13 +1,13 @@
 ---
 id: template
-title: Creating your client and server application from template
-sidebar_label: Create app from template
+title: Create client and server application from template
+sidebar_label: Init from Boilerplate
 ---
 
 ### Start new project using Graphback and GraphQL CLI
 
 The best way to start with Graphback is to choose one of the project boilerplates 
-available as part of GraphQL CLI. 
+available as part of official GraphQL CLI. 
 GraphQL CLI is an very poular command line tool that integrates Graphback and 
 other community libraries offering a comprehensive way to work with GraphQL APIs.
 You can use any of the available GraphQL CLI templates to bootstrap Graphback enabled project. 
