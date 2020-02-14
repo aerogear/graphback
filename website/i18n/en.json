@@ -39,9 +39,6 @@
         "title": "Introduction to Graphback",
         "sidebar_label": "What is Graphback"
       },
-      "intro/concepts": {
-        "title": "Introduction"
-      },
       "intro/config": {
         "title": "Graphback Config"
       },
@@ -49,16 +46,16 @@
         "title": "Defining your Data Model"
       },
       "intro/existingproject": {
-        "title": "Adding Graphback to your project",
-        "sidebar_label": "Add Graphback to your Project"
+        "title": "Adding Graphback to your Node.js project",
+        "sidebar_label": "Add to Project"
       },
       "intro/serve": {
         "title": "Serve GraphQL API without code",
-        "sidebar_label": "GraphQL API without code"
+        "sidebar_label": "Serverless"
       },
       "intro/template": {
-        "title": "Creating your client and server application from template",
-        "sidebar_label": "Create app from template"
+        "title": "Create client and server application from template",
+        "sidebar_label": "Init from Boilerplate"
       },
       "migrations/intromigrations": {
         "title": "Migrating to Graphback from other technologies"
