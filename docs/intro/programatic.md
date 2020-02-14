@@ -1,7 +1,7 @@
 ---
-id: serve
+id: programatic
 title: Serve GraphQL API without code
-sidebar_label: Serverless
+sidebar_label: Programatic Usage
 ---
 
 Graphback allows you to add GraphQL API without code generation. 

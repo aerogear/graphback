@@ -1,6 +1,7 @@
 ---
 id: intromigrations
 title: Migrating to Graphback from other technologies
+sidebar_label: Migrate To Graphback
 ---
 
 Graphback helps with building a GraphQL server from scratch including the database and API,
