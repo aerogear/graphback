@@ -16,7 +16,7 @@ export const getModelTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectTyp
 
     return types.filter((graphqlType: GraphQLType) => {
         if (graphqlType instanceof GraphQLObjectType) {
-            // Filter out private types
+            //Filter out private types
             if (graphqlType.name.startsWith('__')) {
                 return false;
             }

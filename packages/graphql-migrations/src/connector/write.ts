@@ -1,7 +1,8 @@
+/*eslint-disable max-lines */
 import * as Knex from 'knex'
-// eslint-disable-next-line import/no-duplicates
+//eslint-disable-next-line import/no-duplicates
 import * as Operations from '../diff/Operation'
-// eslint-disable-next-line import/no-duplicates
+//eslint-disable-next-line no-duplicate-imports
 import { Operation, OperationType } from '../diff/Operation'
 import { MigratePlugin, WriteCallback } from '../plugin/MigratePlugin'
 import { sortOps } from '../util/sortOps'
@@ -40,6 +41,7 @@ export async function write(
   plugins: MigratePlugin[] = [],
 ) {
 
+  //eslint-disable-next-line @typescript-eslint/no-use-before-define
   const writer = new Writer(
     operations,
     config,
@@ -52,6 +54,7 @@ export async function write(
   return writer.write()
 }
 
+//eslint-disable-next-line @typescript-eslint/tslint/config
 class Writer {
   private operations: Operation[]
   private schemaName: string
@@ -60,15 +63,16 @@ class Writer {
   private plugins: MigratePlugin[]
   private knex: Knex
   private hooks: { [key: string]: WriteCallback[] } = {}
-  // @ts-ignore
+  //@ts-ignore
   private trx: knex.Transaction
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   constructor(
     operations: Operation[],
     config: Knex.Config,
-    schemaName = 'public',
-    tablePrefix = '',
-    columnPrefix = '',
+    schemaName: string = 'public',
+    tablePrefix: string = '',
+    columnPrefix: string = '',
     plugins: MigratePlugin[],
   ) {
     this.operations = operations.slice().sort(sortOps)
@@ -82,7 +86,7 @@ class Writer {
   public async write() {
     await this.applyPlugins()
 
-    await this.knex.transaction(async (trx) => {
+    await this.knex.transaction(async (trx: Knex.Transaction) => {
       this.trx = trx
       let op: Operation | undefined
       while ((op = this.operations.shift())) {
@@ -104,7 +108,7 @@ class Writer {
             break
           case 'table.foreign.create':
             const tfop = (op as Operations.TableForeignCreateOperation)
-            await this.trx.schema.withSchema(this.schemaName).alterTable(tfop.table, (table) => {
+            await this.trx.schema.withSchema(this.schemaName).alterTable(tfop.table, (table: Knex.TableBuilder) => {
               table.foreign(this.getColumnName(tfop.column))
                 .references(this.getColumnName(tfop.referenceColumn))
                 .inTable(this.getTableName(tfop.referenceTable))
@@ -129,7 +133,7 @@ class Writer {
   }
 
   private getColumnNames(names: string[]) {
-    return names.map((name) => this.getColumnName(name))
+    return names.map((name: string) => this.getColumnName(name))
   }
 
   private removeOperation(op: Operation) {
@@ -141,6 +145,7 @@ class Writer {
     this.hooks = {}
     for (const plugin of this.plugins) {
       plugin.write({
+        //eslint-disable-next-line @typescript-eslint/tslint/config
         tap: (type, event, callback) => {
           const key = `${type}.${event}`
           const list = this.hooks[key] = this.hooks[key] || []
@@ -162,7 +167,7 @@ class Writer {
   private async createTable(op: Operations.TableCreateOperation) {
     await this.callHook(op, 'before')
     const childOps: Operation[] = this.operations.filter(
-      (child) => CREATE_TABLE_CHILD_OPS.includes(child.type) &&
+      (child: Operation) => CREATE_TABLE_CHILD_OPS.includes(child.type) &&
         (child as any).table === op.table,
     )
     for (const childOp of childOps) {
@@ -171,6 +176,7 @@ class Writer {
     await this.trx.schema.withSchema(this.schemaName)
       .createTable(this.getTableName(op.table), async (table: Knex.CreateTableBuilder) => {
         for (const childOp of childOps) {
+          // eslint-disable-next-line default-case
           switch (childOp.type) {
             case 'column.create':
               this.createColumn(childOp as Operations.ColumnCreateOperation, table)
@@ -189,7 +195,6 @@ class Writer {
             case 'table.primary.set':
               const tpop = (childOp as Operations.TablePrimarySetOperation)
               table[tpop.columnType](tpop.column).primary();
-              break
           }
           this.removeOperation(childOp)
         }
@@ -202,7 +207,7 @@ class Writer {
 
   private createColumn(op: Operations.ColumnCreateOperation, table: Knex.CreateTableBuilder) {
     if (op.columnType in table) {
-      // @ts-ignore
+      //@ts-ignore
       let col: knex.ColumnBuilder = table[op.columnType](
         this.getColumnName(op.column),
         ...this.getColumnTypeArgs(op),
@@ -218,6 +223,7 @@ class Writer {
       if (typeof op.defaultValue !== 'undefined') {
         col = col.defaultTo(op.defaultValue)
       }
+
       return col
     } else {
       throw new Error(`Table ${op.table} column ${op.column}: Unsupported column type ${op.columnType}`)
@@ -226,7 +232,7 @@ class Writer {
 
   private async alterTable(tableName: string) {
     const allChildOps = this.operations.filter(
-      (child) => ALTER_TABLE_CHILD_OPS.includes(child.type) &&
+      (child: Operation) => ALTER_TABLE_CHILD_OPS.includes(child.type) &&
         (child as any).table === tableName,
     )
     const childOps: Operations.Operation[] = []
@@ -238,7 +244,7 @@ class Writer {
       if (childOp.type === 'column.alter') {
         const aop = childOp as Operations.ColumnAlterOperation
         if (aop.columnType === 'enum' && (aop.args.length < 2 || !aop.args[1].useNative)) {
-          // Prepared statement no supported here
+          //Prepared statement no supported here
           const constraintName = this.knex.raw(`${tableName}_${aop.column}_check`)
           await this.trx.raw(`ALTER TABLE "?"."?" DROP CONSTRAINT "?", ADD CONSTRAINT "?" CHECK (? IN (?)) `, [
             this.knex.raw(this.schemaName),
@@ -260,6 +266,7 @@ class Writer {
     await this.trx.schema.withSchema(this.schemaName)
       .alterTable(this.getTableName(tableName), async (table: Knex.CreateTableBuilder) => {
         for (const childOp of childOps) {
+          // eslint-disable-next-line default-case
           switch (childOp.type) {
             case 'table.comment.set':
               table.comment((childOp as Operations.TableCommentSetOperation).comment || '')
@@ -300,7 +307,6 @@ class Writer {
               break
             case 'column.drop':
               table.dropColumn(this.getColumnName((childOp as Operations.ColumnDropOperation).column))
-              break
           }
           this.removeOperation(childOp)
         }
@@ -328,6 +334,7 @@ class Writer {
       col = col.defaultTo(op.defaultValue)
     }
     col = col.alter()
+
     return col
   }
 
@@ -351,6 +358,7 @@ class Writer {
         args = []
       }
     }
+
     return args
   }
 }

@@ -24,13 +24,15 @@ export default async function(
   knex: Knex,
   tableName: string,
   schemaName: string,
-): Promise<Array<{ column: string, foreignTable: string, foreignColumn: string }>> {
+): Promise<{ column: string, foreignTable: string, foreignColumn: string }[]> {
   const query = queries[knex.client.config.client]
   if (!query) {
     console.warn(`${knex.client.config.client} foreign keys not supported`)
+
     return []
   }
   const { sql, bindings, output } = query(knex, tableName, schemaName)
   const resp = await knex.raw(sql, bindings)
+
   return output(resp)
 }

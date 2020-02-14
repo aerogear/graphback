@@ -14,7 +14,7 @@ export function buildReturnFields(t: GraphQLObjectType, level?: number) {
       throw new Error("Function supports only 1 nested level")
     }
   
-    // tslint:disable-next-line: typedef
+    //tslint:disable-next-line: typedef
     return Object.keys(fieldsMap).reduce((data, key) => {
       const field = fieldsMap[key];
       if (isWrappingType(field.type)) {
@@ -26,7 +26,7 @@ export function buildReturnFields(t: GraphQLObjectType, level?: number) {
             });
           }
 
-          // Nested relation that should not be included
+          //Nested relation that should not be included
           return data;
         }
       }

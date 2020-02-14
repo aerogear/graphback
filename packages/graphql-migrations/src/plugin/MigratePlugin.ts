@@ -4,11 +4,7 @@ import { OperationType } from '../diff/Operation'
 export type WriteCallback = (op: any, transaction: Transaction) => any
 
 export interface WriteParams {
-  tap: (
-    type: OperationType,
-    event: 'before' | 'after',
-    callback: WriteCallback,
-  ) => void
+  tap(type: OperationType, event: 'before' | 'after', callback: WriteCallback): void;
 }
 
 /**

@@ -47,5 +47,6 @@ export default async function(knex: Knex, schemaName: string) {
   }
   const { sql, bindings, output } = query(knex, schemaName)
   const resp = await knex.raw(sql, bindings)
+
   return output(resp)
 }

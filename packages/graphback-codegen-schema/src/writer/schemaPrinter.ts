@@ -1,12 +1,55 @@
 import { GraphQLObjectType, GraphQLSchema, print } from 'graphql';
 
 /**
+ * Checks if type is query
+ *
+ * @internal
+ */
+export function isQueryType(schema: GraphQLSchema, providedType: any) {
+    const schemaType = schema.getQueryType();
+    if (schemaType) {
+        return schemaType.name === providedType.name;
+    }
+
+    return false;
+}
+
+/**
+ * Checks if type is mutation
+ *
+ * @internal
+ */
+export function isMutationType(schema: GraphQLSchema, providedType: any) {
+    const schemaType = schema.getMutationType();
+    if (providedType.name && schemaType) {
+        return schemaType.name === providedType.name;
+    }
+
+    return false;
+}
+
+/**
+ * Checks if type is subscription
+ *
+ * @internal
+ */
+export function isSubscriptionType(
+    schema: GraphQLSchema, providedType: any) {
+    const schemaType = schema.getSubscriptionType();
+    if (schemaType) {
+        return schemaType.name === providedType.name;
+    }
+
+    return false;
+}
+
+/**
  * Allows to transform schema into string by perserving original order
  * and including directives
  * 
  * @param schema 
  */
-// TODO remove this method and use `printSchema(lexicographicSortSchema(schema))`
+//TODO remove this method and use `printSchema(lexicographicSortSchema(schema))`
 export function printSortedSchema(schema: GraphQLSchema) {
     const schemaTypes = Object.values(schema.getTypeMap());
 
@@ -55,47 +98,4 @@ export function printSortedSchema(schema: GraphQLSchema) {
     }
 
     return schemaString;
-}
-
-/**
- * Checks if type is query
- *
- * @internal
- */
-export function isQueryType(schema: GraphQLSchema, providedType: any) {
-    const schemaType = schema.getQueryType();
-    if (schemaType) {
-        return schemaType.name === providedType.name;
-    }
-
-    return false;
-}
-
-/**
- * Checks if type is mutation
- *
- * @internal
- */
-export function isMutationType(schema: GraphQLSchema, providedType: any) {
-    const schemaType = schema.getMutationType();
-    if (providedType.name && schemaType) {
-        return schemaType.name === providedType.name;
-    }
-
-    return false;
-}
-
-/**
- * Checks if type is subscription
- *
- * @internal
- */
-export function isSubscriptionType(
-    schema: GraphQLSchema, providedType: any) {
-    const schemaType = schema.getSubscriptionType();
-    if (schemaType) {
-        return schemaType.name === providedType.name;
-    }
-
-    return false;
 }

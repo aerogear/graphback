@@ -1,6 +1,6 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { readFileSync } from 'fs';
+import test, { ExecutionContext } from 'ava';
 import { buildSchema, print } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, GraphbackPluginEngine } from '../src'
 
@@ -12,6 +12,7 @@ const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 class TestPlugin extends GraphbackPlugin {
   private generateCallback: any;
 
+  //eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   constructor(generateCallback: any) {
     super();
     this.generateCallback = generateCallback;
@@ -39,7 +40,7 @@ class TestPlugin extends GraphbackPlugin {
   }
 }
 
-ava('Test plugin engine', async (t: ExecutionContext) => {
+test('Test plugin engine', async (t: ExecutionContext) => {
   const crudMethods = {
     "create": true,
     "update": true,
@@ -53,7 +54,7 @@ ava('Test plugin engine', async (t: ExecutionContext) => {
   t.plan(6);
   t.throws(engine.createResources)
   const plugin = new TestPlugin((callbackModel: any) => {
-    // tslint:disable-next-line: no-string-literal
+    //eslint-disable-next-line dot-notation
     t.context['model'] = callbackModel;
     t.pass();
   })
@@ -61,7 +62,7 @@ ava('Test plugin engine', async (t: ExecutionContext) => {
   engine.registerPlugin(plugin, plugin, plugin)
   const model = engine.createResources();
   
-  const printedModels = model.getModelDefinitions().map(element => print(element.graphqlType.astNode))
+  const printedModels = model.getModelDefinitions().map((element: any) => print(element.graphqlType.astNode))
   t.snapshot(printedModels);
   t.true(model.getSchema().getQueryType().description === 'test');
 });

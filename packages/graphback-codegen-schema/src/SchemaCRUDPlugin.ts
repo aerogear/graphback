@@ -1,8 +1,8 @@
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { resolve } from 'path';
 import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
-import { resolve } from 'path';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { printSortedSchema } from './writer/schemaPrinter';
 
@@ -46,7 +46,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     private pluginConfig: SchemaCRUDPluginConfig;
 
-    constructor(pluginConfig?: SchemaCRUDPluginConfig) {
+    public constructor(pluginConfig?: SchemaCRUDPluginConfig) {
         super()
         this.pluginConfig = Object.assign({ format: 'graphql', outputFileName: 'schema' }, pluginConfig);
         if (!pluginConfig.outputPath) {
@@ -123,7 +123,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
 
-        // TODO relationships?
+        //TODO relationships?
         return new GraphQLInputObjectType({
             name: `${model.graphqlType.name}Input`,
             fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {

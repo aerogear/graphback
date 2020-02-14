@@ -20,14 +20,17 @@ import transformDefaultValue from '../util/transformDefaultValue'
  */
 export function read(
   config: Knex.Config,
-  schemaName = 'public',
-  tablePrefix = '',
-  columnPrefix = '',
+  schemaName: string = 'public',
+  tablePrefix: string = '',
+  columnPrefix: string = '',
 ): Promise<AbstractDatabase> {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const reader = new Reader(config, schemaName, tablePrefix, columnPrefix)
+
   return reader.read()
 }
 
+// eslint-disable-next-line @typescript-eslint/tslint/config
 class Reader {
   public config: Knex.Config
   public schemaName: string
@@ -36,7 +39,7 @@ class Reader {
   public knex: Knex
   public database: AbstractDatabase
 
-  constructor(
+  public constructor(
     config: Knex.Config,
     schemaName: string,
     tablePrefix: string,
@@ -54,7 +57,7 @@ class Reader {
   }
 
   public async read() {
-    const tables: Array<{ name: string, comment: string }> = await listTables(this.knex, this.schemaName)
+    const tables: { name: string, comment: string }[] = await listTables(this.knex, this.schemaName)
     for (const { name: tableName, comment } of tables) {
       const name = this.getTableName(tableName)
       if (!name) { continue }
@@ -81,12 +84,13 @@ class Reader {
       const columnInfo: { [key: string]: Knex.ColumnInfo } = await this.knex(tableName)
         .withSchema(this.schemaName)
         .columnInfo() as any
+      // eslint-disable-next-line no-restricted-syntax
       for (const key in columnInfo) {
         if (columnInfo[key]) {
           const columnName = this.getColumnName(key)
           if (!columnName) { continue }
           const info = columnInfo[key]
-          const foreign = foreignKeys.find((k) => k.column === key)
+          const foreign = foreignKeys.find((k: any) => k.column === key)
           const column: TableColumn = {
             name: columnName,
             comment: this.getComment(columnComments, key),
@@ -95,11 +99,11 @@ class Reader {
             nullable: info.nullable,
             defaultValue: transformDefaultValue(info.defaultValue),
             foreign: foreign ? {
-              type: null,
-              field: null,
+              type: undefined,
+              field: undefined,
               tableName: this.getTableName(foreign.foreignTable),
               columnName: this.getColumnName(foreign.foreignColumn),
-            } : null,
+            } : undefined,
           }
 
           const checkContraint = checkContraints.find((c: any) => c.columnNames.includes(columnName))
@@ -115,7 +119,7 @@ class Reader {
 
       // Primary key
       const primaries = await getPrimaryKey(this.knex, tableName, this.schemaName)
-      table.primaries = primaries.map((p) => ({
+      table.primaries = primaries.map((p: any) => ({
         columns: this.getColumnNames([p.column]),
         name: p.indexName,
       }))
@@ -123,10 +127,10 @@ class Reader {
       // Index
       const indexes = await getIndexes(this.knex, tableName, this.schemaName)
       table.indexes = indexes.filter(
-        (i) => i.columnNames.length > 1 ||
+        (i: any) => i.columnNames.length > 1 ||
           // Not already the primary key
-          !primaries.find((p) => p.column === i.columnNames[0]),
-      ).map((i) => ({
+          !primaries.find((p: any) => p.column === i.columnNames[0]),
+      ).map((i: any) => ({
         name: i.indexName,
         columns: this.getColumnNames(i.columnNames),
         type: i.type,
@@ -134,7 +138,7 @@ class Reader {
 
       // Unique constraints
       const uniques = await getUniques(this.knex, tableName, this.schemaName)
-      table.uniques = uniques.map((u) => ({
+      table.uniques = uniques.map((u: any) => ({
         columns: this.getColumnNames(u.columnNames),
         name: u.indexName,
       }))
@@ -159,26 +163,30 @@ class Reader {
     if (name.startsWith(this.tablePrefix)) {
       return name.substr(this.tablePrefix.length)
     }
-    return null
+
+    return undefined
   }
 
   private getColumnName(name: string) {
     if (name.startsWith(this.columnPrefix)) {
       return name.substr(this.columnPrefix.length)
     }
-    return null
+
+    return undefined
   }
 
   private getColumnNames(names: string[]): string [] {
     // @ts-ignore
-    return names.map((name) => this.getColumnName(name)).filter((n) => !!n)
+    return names.map((name: string) => this.getColumnName(name)).filter((n: string) => !!n)
   }
 
-  private getComment(comments: Array<{ column: string, comment: string }>, column: string) {
-    const row = comments.find((c) => c.column === column)
-    if (row && row.comment != null) {
+  // tslint:disable-next-line: array-type
+  private getComment(comments: { column: string, comment: string }[], column: string) {
+    const row = comments.find((c: any) => c.column === column)
+    if (row && !!row.comment) {
       return row.comment.replace(/'/g, `''`)
     }
-    return null
+
+    return undefined
   }
 }

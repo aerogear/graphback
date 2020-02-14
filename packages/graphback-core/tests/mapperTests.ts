@@ -1,6 +1,5 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+//eslint-disable-next-line @typescript-eslint/tslint/config
 import ava, { ExecutionContext } from 'ava';
-import { readFileSync } from 'fs';
 import { getFieldName, getSubscriptionName, GraphbackOperationType } from '../src'
 
 

@@ -101,7 +101,7 @@
         "guard-for-in": "error",
         "id-blacklist": "error",
         "id-match": "error",
-        "import/no-default-export": "error",
+        "import/no-default-export": "warn",
         "import/no-deprecated": "off",
         "import/no-extraneous-dependencies": "error",
         "import/no-internal-modules": "error",
@@ -121,7 +121,7 @@
         "no-caller": "error",
         "no-cond-assign": "error",
         "no-console": [
-            "error",
+            "warn",
             {
                 "allow": [
                     "dirxml",
@@ -212,11 +212,6 @@
         "quote-props": "off",
         "radix": "error",
         "space-before-function-paren": "off",
-        "spaced-comment": [
-            "error",
-            "never"
-        ],
-        "unicorn/filename-case": "error",
         "use-isnan": "error",
         "valid-typeof": "off",
         "yoda": "error",

@@ -14,7 +14,7 @@ import { AdvancedFilter } from '../data/GraphbackDataProvider';
  *
  * @see GraphbackDataProvider
  */
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
 
     /**

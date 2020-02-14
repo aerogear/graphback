@@ -1,7 +1,8 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { GraphbackCoreMetadata } from '@graphback/core';
-import ava, { ExecutionContext } from 'ava';
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { readFileSync } from 'fs';
+import { GraphbackCoreMetadata } from '@graphback/core';
+//eslint-disable-next-line @typescript-eslint/tslint/config
+import ava, { ExecutionContext } from 'ava';
 import { buildSchema } from 'graphql';
 import { ClientCRUDPlugin } from '../src'
 

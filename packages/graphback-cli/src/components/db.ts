@@ -50,7 +50,7 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
     }
 
     const migrateOptions: MigrateOptions = {
-      // Do not perform delete operations on tables
+      //Do not perform delete operations on tables
       operationFilter: removeNonSafeOperationsFilter
     }
 

@@ -12,17 +12,6 @@ export interface TableID {
     value?: any
 }
 
-export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
-    const idField = modelMap.idField;
-
-    // TODO: Map fields to custom db names
-
-    return {
-        idField: getTableId(idField, data),
-        data
-    }
-}
-
 function getTableId(idField: string, data: any): TableID {
     if (!idField) { return undefined };
 
@@ -34,5 +23,16 @@ function getTableId(idField: string, data: any): TableID {
     return {
         name: idField,
         value
+    }
+}
+
+export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
+    const idField = modelMap.idField;
+
+    //TODO: Map fields to custom db names
+
+    return {
+        idField: getTableId(idField, data),
+        data
     }
 }

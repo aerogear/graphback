@@ -1,7 +1,6 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
 import { existsSync } from 'fs';
 import { join, resolve } from 'path';
+import test, { ExecutionContext } from 'ava';
 import { createDB, generateUsingPlugins, initConfig } from '../src';
 
 const model = {
@@ -14,7 +13,7 @@ const model = {
 `
 }
 
-ava('Test cli workflow', async (t: ExecutionContext) => {
+test('Test cli workflow', async (t: ExecutionContext) => {
   const basePath = resolve(`${__dirname}/../../../examples/generator-fullstack`);
   process.chdir(basePath)
   await initConfig({ model, database: "sqlite3", client: true, skipInstall: true });

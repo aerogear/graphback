@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
-import { GlobSync } from 'glob';
 import { join } from 'path';
+import { GlobSync } from 'glob';
 
 /**
  * Loads the schema text from the model directory

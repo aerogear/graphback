@@ -1,3 +1,4 @@
+/*eslint-disable max-lines */
 import { isEqual } from 'lodash'
 import { AbstractDatabase } from '../abstract/AbstractDatabase'
 import { Table, TableIndex, TableUnique } from '../abstract/Table'
@@ -7,30 +8,36 @@ import * as Operations from './Operation'
 
 export async function computeDiff(from: AbstractDatabase, to: AbstractDatabase, {
   updateComments = false,
-} = {}): Promise<Operations.Operation[]> {
+}: any = {}): Promise<Operations.Operation[]> {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const differ = new Differ(from, to, {
     updateComments,
   })
+
   return differ.diff()
 }
 
+// eslint-disable-next-line @typescript-eslint/tslint/config
 class Differ {
   private from: AbstractDatabase
   private to: AbstractDatabase
   private updateComments: boolean
   private operations: Operations.Operation[] = []
-  private tableCount = 0
+  private tableCount: number = 0
 
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   constructor(from: AbstractDatabase, to: AbstractDatabase, options: any) {
     this.from = from
     this.to = to
     this.updateComments = options.updateComments
   }
 
+  // eslint-disable-next-line complexity
   public diff(): Operations.Operation[] {
     this.operations.length = 0
 
-    const sameTableQueue: Array<{ fromTable: Table, toTable: Table }> = []
+    // tslint:disable-next-line: array-type
+    const sameTableQueue: { fromTable: Table, toTable: Table }[] = []
     const addTableQueue = this.to.tables.slice()
     for (const fromTable of this.from.tables) {
       let removed = true
@@ -75,7 +82,7 @@ class Differ {
         this.setTableComment(toTable)
       }
 
-      const sameColumnQueue: Array<{ fromCol: TableColumn, toCol: TableColumn }> = []
+      const sameColumnQueue: { fromCol: TableColumn, toCol: TableColumn }[] = []
       const addColumnQueue = toTable.columns.slice()
       for (const fromCol of fromTable.columns) {
         let removed = true
@@ -375,8 +382,8 @@ class Differ {
   }
 
   private compareIndex(
-    fromList: Array<TableIndex | TableUnique>,
-    toList: Array<TableIndex | TableUnique>,
+    fromList: (TableIndex | TableUnique)[],
+    toList: (TableIndex | TableUnique)[],
     create: (index: TableIndex | TableUnique) => void,
     drop: (index: TableIndex | TableUnique) => void,
   ) {
