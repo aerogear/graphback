@@ -53,6 +53,10 @@
         "title": "Serve GraphQL API without code",
         "sidebar_label": "Programatic Usage"
       },
+      "intro/quickstart": {
+        "title": "Create client and server application from template",
+        "sidebar_label": "Create App in 2 minutes"
+      },
       "intro/template": {
         "title": "Create client and server application from template",
         "sidebar_label": "Create App in 2 minutes"
@@ -183,11 +187,10 @@
       "Generator Plugins": "Generator Plugins",
       "Database": "Database",
       "Migrating to Graphback": "Migrating to Graphback",
-      "CLI": "CLI",
+      "Reference": "Reference",
       "Releases": "Releases",
       "Concepts": "Concepts",
-      "Migrations": "Migrations",
-      "Reference": "Reference"
+      "Migrations": "Migrations"
     }
   },
   "pages-strings": {

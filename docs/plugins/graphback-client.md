@@ -10,6 +10,24 @@ Generated queries are compatible with all major graphql plugins like Apollo and 
 
 ## Config
 
+```ts
+export interface ClientGeneratorPluginConfig {
+    /**
+     * Output language that will be supported
+     * Our plugin supports multiple languages for simplicity
+     *
+     * - ts - typescript file output (backwards compatibility)
+     * - graphql - .graphql file
+     * - gqlwithfragment - complete graphql queries containing fragments for redundancy
+     */
+    format: 'ts' | 'graphql' | 'gqlwithfragment'
+
+    /**
+     * RelativePath for the output files created by generator
+     */
+    outputPath: string
+}
+```
 
 ## How it works
 
@@ -23,68 +41,4 @@ type Note {
   description: String!
 }
 ```
-running `graphback generate` will generate all operations which are enabled in `graphback.json` or using `annotations`.
-
-## Examples
-### Fragment
-```
-import gql from "graphql-tag"
-
-export const NoteFragment = gql`
-  fragment NoteFields on Note {
-    id
-    title
-    description
-    published
-  }
-`
-```
-
-### Query
-```
-import gql from "graphql-tag"
-import { NoteFragment } from "../fragments/Note"
-
-export const findAllNotes = gql`
-  query findAllNotes {
-    findAllNotes {
-      ...NoteFields
-    }
-  }
-
-  ${NoteFragment}
-`
-```
-
-### Mutation
-```
-import gql from "graphql-tag"
-import { NoteFragment } from "../fragments/Note"
-
-export const updateNote = gql`
-  mutation updateNote($id: ID!, title: String!, description: String!, published: Boolean!) {
-    updateNote(id: $id, input: {title: $title, description: $description, published: $published}) {
-      ...NoteFields
-    }
-  }
-
-  ${NoteFragment}
-`
-```
-
-### Subscription
-```
-import gql from "graphql-tag"
-import { CommentFragment } from "../fragments/Comment"
-
-export const newComment = gql`
-  subscription newComment {
-    newComment {
-      ...CommentFields
-    }
-  }
-
-  ${CommentFragment}
-`
-
-```
+running `graphback generate` will generate queries and mutations that are enabled in crud config section

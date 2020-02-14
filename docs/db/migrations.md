@@ -1,5 +1,5 @@
 ---
-id: migrations
+id: dbmigrations
 title: Database Schema Migrations
 sidebar_label:  Database Schema Migrations
 ---
