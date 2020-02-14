@@ -28,7 +28,7 @@ That is why we provide only basic filtering on the GraphQL level as we believe t
 needs to be implemented and hidden behind resolvers. 
 
 That is why every Query or Mutation included in the schema will be ignored by Graphback, but also supplied in the result schema giving developers 
-flexibility to provide their own implementations on the server. 
+flexibility to provide their own implementations on the server. Graphback tries to minimize amount of the extra types 
 
 ## Example
 

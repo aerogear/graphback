@@ -8,6 +8,20 @@ title: Releases
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+
+# 0.12.0
+
+New features and changes documented in blog post: 
+https://medium.com/@wtr/graphback-plugin-based-realtime-database-generator-78f4f608b81e
+
+Breaking changes:
+
+- BREAKING: Configuration format changed from graphback.json to graphqlrc.yml
+- BREAKING: CRUDService api was changed to support per entity model
+- BREAKING: CRUDService api was changed to support per entity model
+- BREAKING: Runtime API was changed. Graphback package exports now GraphbackRuntime class to create runtime layer.
+- BREAKING: @model annotation is required for type to use generation
+
 # 0.11.0
 
 ### Graphback
