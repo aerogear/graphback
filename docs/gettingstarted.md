@@ -13,14 +13,14 @@ Developers have freedom of creating their own Queries and Mutations that are com
 
 All you need to do with Graphback is to specify your data as GraphQL Types:
 
-![](https://graphback.dev/img/d1.png)
+<img src="/img/d1.png" width="30%" height="30%"></img>
 
 
 GraphQL Types annotated with `@model` will be processed by Graphback to give you fully functional backend and client side 
 queries that support our CRUD specification. 
 Graphback will work with your current GraphQL enabled Node.js application or can help you to create new one.
 
-![](https://graphback.dev/img/diagramsmall.png)
+![](/img/diagramsmall.png)
 
 ## What Graphback can do for you?
 
@@ -28,6 +28,8 @@ Graphback will work with your current GraphQL enabled Node.js application or can
 - Support additional use cases by variety of community plugins
 - Migrate your database to work with your data model and changes in schema
 - Create your backend with CRUD API without code thanks to graphql-serve
+
+![](/img/sourcecode.png)
 
 ## Graphback Code generation
 

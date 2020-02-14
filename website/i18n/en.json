@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Generate production ready GraphQL backend by providing your business objects",
+    "tagline": "Production ready GraphQL API for your client and server applications",
     "docs": {
       "commands": {
         "title": "CLI commands"
