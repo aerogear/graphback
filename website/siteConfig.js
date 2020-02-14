@@ -5,7 +5,7 @@
 
 const siteConfig = {
   title: 'Graphback', // Title for your website.
-  tagline: 'Generate production ready GraphQL backend by providing your business objects',
+  tagline: 'Production ready GraphQL API for your client and server applications',
   url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
   cname: 'graphback.dev',
@@ -17,7 +17,6 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     {doc: 'gettingstarted', label: 'Documentation'},
-    // {page: 'help', label: 'Help'},
     {blog: true, label: 'Blog'},
   ],
 
