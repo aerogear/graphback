@@ -9,27 +9,43 @@ Schema and resolvers can be created when your application code is executed and u
 
 ## Adding runtime layer to your application
 
-To use runtime capabilities developers will need to create data provider. 
+To create GraphQL Layer at runtime developers need to initialize `GraphbackRuntime` instance as follows:
+
+```ts
+
+    import { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } from 'graphback'
+    import { PubSub } from 'graphql-subscriptions';
+
+    const client = new Knex(...);
+    const graphbackOptions = {...}
+    const schemaText = `type Test ...`
+
+    const pubSub = new PubSub();
+    const serviceOverrides = {}
+    const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
+    const runtime = runtimeEngine.buildRuntime(db, pubSub, {});
+
+  const executableSchema = makeExecutableSchema({
+    typeDefs: printSchema(runtime.schema),
+    resolvers: runtime.resolvers,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
+  });
+```
+
+See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/examples/runtime-example/src/runtime.ts#L32) for a fully functional example.
+
+## Using different DataSource
+
+Runtime is created using default CRUDService instance and KnexDBDataProvider db layer to retrieve the data. 
+Developers can override implementations for those when different datasource is used. 
 
 Currently 2 data providers are supported:
 
 - KnexDBDataProvider
 - PgKnexDBDataProvider
 
-Then developers can create runtime instance:
-
-```ts
-    const client = new Knex(...);
-    const graphbackOptions = {...}
-    const modelString = `type Test ...`
-    // TODO change this to reflect actual interface
-    // Create backend
-    const backend = new GraphQLBackendCreator(modelString, graphbackOptions);
-    const dbClientProvider = new PgKnexDBDataProvider(client);
-    const runtime = await backend.createRuntime(dbClientProvider);
-    console.log(runtime.schema,  runtime.resolvers)
-
-```
 
 See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/examples/runtime-example)
 for more information.
