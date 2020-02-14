@@ -2,11 +2,14 @@
   "docs": {
     "Getting Started": [
       "gettingstarted",
-      "intro/template",
-      "intro/existingproject",
-      "intro/serve",
+      "intro/quickstart",
       "intro/datamodel",
       "intro/config"
+    ],
+    "Use Cases": [
+      "intro/template",
+      "intro/existingproject",
+      "intro/programatic"
     ],
     "Graphback CRUD": [
       "crud/crudspec",

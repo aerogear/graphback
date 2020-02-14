@@ -28,7 +28,6 @@ yarn graphql generate --db
 - Generate typings for Database Schema and Resolvers
 
 ```sh
-yarn schemats generate
 yarn graphql codegen
 ```
 
@@ -36,12 +35,6 @@ yarn graphql codegen
 
 ```sh
 yarn start:server
-```
-
-- Generate queries, mutations and subscriptions for client-side project
-
-```sh
-yarn graphql generate --client
 ```
 
 - Generate React components

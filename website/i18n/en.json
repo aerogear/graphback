@@ -49,16 +49,17 @@
         "title": "Adding Graphback to your Node.js project",
         "sidebar_label": "Add to Project"
       },
-      "intro/serve": {
+      "intro/programatic": {
         "title": "Serve GraphQL API without code",
-        "sidebar_label": "Serverless"
+        "sidebar_label": "Programatic Usage"
       },
       "intro/template": {
         "title": "Create client and server application from template",
-        "sidebar_label": "Init from Boilerplate"
+        "sidebar_label": "Create App in 2 minutes"
       },
       "migrations/intromigrations": {
-        "title": "Migrating to Graphback from other technologies"
+        "title": "Migrating to Graphback from other technologies",
+        "sidebar_label": "Migrate To Graphback"
       },
       "migrations/openapi": {
         "title": "OpenAPI migrations"
@@ -177,14 +178,16 @@
     },
     "categories": {
       "Getting Started": "Getting Started",
+      "Use Cases": "Use Cases",
       "Graphback CRUD": "Graphback CRUD",
       "Generator Plugins": "Generator Plugins",
       "Database": "Database",
       "Migrating to Graphback": "Migrating to Graphback",
-      "Reference": "Reference",
+      "CLI": "CLI",
       "Releases": "Releases",
       "Concepts": "Concepts",
-      "Migrations": "Migrations"
+      "Migrations": "Migrations",
+      "Reference": "Reference"
     }
   },
   "pages-strings": {
