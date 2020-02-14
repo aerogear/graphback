@@ -41,7 +41,7 @@ export const CLIENT_CRUD_PLUGIN = "ClientCRUDPlugin";
 export class ClientCRUDPlugin extends GraphbackPlugin {
     private pluginConfig: ClientGeneratorPluginConfig;
 
-    constructor(pluginConfig?: ClientGeneratorPluginConfig) {
+    public constructor(pluginConfig?: ClientGeneratorPluginConfig) {
         super()
         this.pluginConfig = Object.assign({ format: 'graphql' }, pluginConfig);
         if (!pluginConfig.outputPath) {

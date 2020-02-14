@@ -1,4 +1,4 @@
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
+//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
@@ -7,7 +7,7 @@ import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
 import { CRUDService } from '../../src/service/CRUDService'
 import { PubSubConfig } from '../../src/service/PubSubConfig';
 
-// tslint:disable: typedef
+//tslint:disable: typedef
 
 interface Context {
   db: Knex;
@@ -44,14 +44,14 @@ type User {
 }
 `);
 
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 const userModel = schema.getType('User') as GraphQLObjectType
 
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 const todoModel = schema.getType('Todos') as GraphQLObjectType
 
-// Create a new database before each tests so that
-// all tests can run parallel
+//Create a new database before each tests so that
+//all tests can run parallel
 test.beforeEach(async t => {
   const db = Knex({
     client: 'sqlite3',
@@ -61,30 +61,30 @@ test.beforeEach(async t => {
     useNullAsDefault: true,
   });
 
-  // tslint:disable-next-line: await-promise
+  //tslint:disable-next-line: await-promise
   await db.schema.createTable('todos', table => {
-    table.increments(); // id
+    table.increments(); //id
     table.string('text');
   });
 
-  // tslint:disable-next-line: await-promise
+  //tslint:disable-next-line: await-promise
   await db.schema.createTable('user', table => {
     table.string('name');
     table.string('username').primary();
   });
 
-  // insert a couple of default data
-  // tslint:disable-next-line: await-promise
+  //insert a couple of default data
+  //tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'my first default todo' });
-  // tslint:disable-next-line: await-promise
+  //tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'the second todo' });
-  // tslint:disable-next-line: await-promise
+  //tslint:disable-next-line: await-promise
   await db('todos').insert({ text: 'just another todo' });
 
-  // insert a user
-  // tslint:disable-next-line: await-promise
+  //insert a user
+  //tslint:disable-next-line: await-promise
   await db('user').insert({ name: 'John Doe', username: 'johndoe123' });
-  // tslint:disable-next-line: await-promise
+  //tslint:disable-next-line: await-promise
   await db('user').insert({ name: 'Sam Wicks', username: 'samwicks' });
 
 

@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { prompt as ask } from 'inquirer'
 import { resolve } from 'path';
+import { prompt as ask } from 'inquirer'
 import { logInfo } from '../utils'
 
 export interface GraphQLModel {

@@ -25,7 +25,7 @@ export class GraphbackCoreMetadata {
     private schema: GraphQLSchema;
     private models: ModelDefinition[]
 
-    constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
+    public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
         this.supportedCrudMethods = Object.assign(defaultCRUDGeneratorConfig, globalConfig.crudMethods)
     }
@@ -43,9 +43,9 @@ export class GraphbackCoreMetadata {
      */
     public getModelDefinitions() {
 
-        // Contains map of the models with their underlying CRUD configuration
+        //Contains map of the models with their underlying CRUD configuration
         this.models = [];
-        // Get actual user types 
+        //Get actual user types 
         const modelTypes = this.getGraphQLTypesWithModel();
         for (const modelType of modelTypes) {
             const model = this.buildModel(modelType)
@@ -70,7 +70,7 @@ export class GraphbackCoreMetadata {
 
     private buildModel(modelType: GraphQLObjectType) {
         let crudOptions = parseAnnotations('crud', modelType.description)
-        // Merge CRUD options from type with global ones
+        //Merge CRUD options from type with global ones
         crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
         
         return { graphqlType: modelType, crudOptions };

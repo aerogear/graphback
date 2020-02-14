@@ -1,8 +1,8 @@
+import { join } from 'path';
 import chokidar from 'chokidar';
 import { debounce } from 'debounce';
 import { GraphbackCRUDGeneratorConfig, GraphbackGenerator } from "graphback"
 import { loadConfig } from 'graphql-config';
-import { join } from 'path';
 import { extensionName, graphbackConfigExtension } from '../config/extension';
 
 export interface GraphbackCLIConfig {
@@ -42,10 +42,10 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
       const generator = new GraphbackGenerator(schemaDocument, graphbackConfig)
       generator.generateSourceCode();
     } catch (e) {
-      // tslint:disable-next-line: no-console
+      //tslint:disable-next-line: no-console
       console.log("error when executing generate", e);
     }
-    // tslint:disable-next-line: no-console
+    //tslint:disable-next-line: no-console
     console.info('Watching for changes...');
   }
   const debouncedExec = debounce(runGeneration, 100);

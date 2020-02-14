@@ -1,6 +1,6 @@
-// If we come with Union on client we might use some complex JSON for describing rules
-// and single key for type for simple use cases
-// tslint:disable-next-line: no-any
+//If we come with Union on client we might use some complex JSON for describing rules
+//and single key for type for simple use cases
+//tslint:disable-next-line: no-any
 export type AdvancedFilter = any;
 
 /**
@@ -15,7 +15,7 @@ export type AdvancedFilter = any;
  *
  * @see GraphbackCRUDService
  */
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
 
     /**

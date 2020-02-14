@@ -1,4 +1,4 @@
-// Templates for individual CRUD methods
+//Templates for individual CRUD methods
 
 export const createTemplate = (modelName: string): string => {
   return `(parent, args, context) => {

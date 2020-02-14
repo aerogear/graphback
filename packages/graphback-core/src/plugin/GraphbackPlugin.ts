@@ -23,7 +23,17 @@ export abstract class GraphbackPlugin {
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
         return metadata.getSchema();
     }
-    
+
+    protected logWarning(message: string): void {
+        // eslint-disable-next-line no-console
+        console.log(`Warning - ${this.getPluginName()}: ${message}`)
+    }
+
+    protected logError(message: string): void {
+        // eslint-disable-next-line no-console
+        console.error(`Error - ${this.getPluginName()}: ${message}`)
+    }
+
     /**
      * Create resources like files etc. for this plugin.
      * This method should write resouces to filesystem
@@ -34,16 +44,4 @@ export abstract class GraphbackPlugin {
      * @returns Unique name of the plugin
      */
     public abstract getPluginName(): string;
-
-    protected logWarning(message: string): void {
-        // tslint:disable-next-line: no-console
-        console.log(`Warning - ${this.getPluginName()}: ${message}`)
-    }
-
-    protected logError(message: string): void {
-        // tslint:disable-next-line: no-console
-        console.error(`Error - ${this.getPluginName()}: ${message}`)
-    }
-
-
 };

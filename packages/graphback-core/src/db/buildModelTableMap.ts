@@ -19,39 +19,6 @@ export interface ModelTableMap {
 }
 
 /**
- * Builds a database mapping model of a GraphQLObject type.
- * @param model - The GraphQL object data model representation
- * 
- * @returns {ModelTableMap} A model containing the table name, any field customisations and a mapping of the primary key field.
- */
-export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
-  const primaryKeyField = getPrimaryKey(model);
-  const tableName = getTableName(model);
-  const fieldMap = mapFieldsToColumns(model.getFields());
-
-  return {
-    idField: getColumnName(primaryKeyField),
-    typeName: model.name,
-    tableName,
-    fieldMap
-  }
-}
-
-function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>): any {
-  return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
-    const columnName = getColumnName(field);
-
-    if (field.name !== columnName) {
-      obj[field.name] = columnName;
-    }
-
-    // TODO: Map relationship fields
-
-    return obj;
-  }, {});
-}
-
-/**
  * Gets the datase column name for a GraphQL type.
  * Checks for the `@db.name` annotation for a customised name
  * 
@@ -83,4 +50,37 @@ export function getColumnName(field: GraphQLField<any, any>): string {
   }
 
   return columnName;
+}
+
+function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>): any {
+  return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
+    const columnName = getColumnName(field);
+
+    if (field.name !== columnName) {
+      obj[field.name] = columnName;
+    }
+
+    //TODO: Map relationship fields
+
+    return obj;
+  }, {});
+}
+
+/**
+ * Builds a database mapping model of a GraphQLObject type.
+ * @param model - The GraphQL object data model representation
+ * 
+ * @returns {ModelTableMap} A model containing the table name, any field customisations and a mapping of the primary key field.
+ */
+export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
+  const primaryKeyField = getPrimaryKey(model);
+  const tableName = getTableName(model);
+  const fieldMap = mapFieldsToColumns(model.getFields());
+
+  return {
+    idField: getColumnName(primaryKeyField),
+    typeName: model.name,
+    tableName,
+    fieldMap
+  }
 }

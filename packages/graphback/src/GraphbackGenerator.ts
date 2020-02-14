@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { ClientGeneratorPluginConfig } from '@graphback/codegen-client';
 import { ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
 import { SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
@@ -8,7 +9,7 @@ import { GraphQLSchema } from 'graphql';
  */
 export interface GraphbackGeneratorConfig {
   crud?: GraphbackCRUDGeneratorConfig
-  // Plugins configuration
+  //Plugins configuration
   plugins?: {
     ResolversCRUD?: ResolverGeneratorPluginConfig
     SchemaCRUD?: SchemaCRUDPluginConfig
@@ -26,7 +27,7 @@ export class GraphbackGenerator {
   protected config: GraphbackGeneratorConfig;
   protected schema: string | GraphQLSchema;
 
-  constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
+  public constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
     this.schema = schema;
     this.config = config;
   }
@@ -45,26 +46,26 @@ export class GraphbackGenerator {
     for (const pluginLabel of Object.keys(this.config.plugins)) {
       let pluginName;
       if (pluginLabel.startsWith('graphback-')) {
-        // Internal graphback plugins needs rename
+        //Internal graphback plugins needs rename
         pluginName = pluginLabel.replace('graphback-', '@graphback/codegen-');
       }
       else {
         pluginName = pluginLabel;
       }
       try {
-        // tslint:disable-next-line: non-literal-require
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const plugin = require(pluginName);
         if (plugin.Plugin) {
           const config = this.config.plugins[pluginLabel];
           pluginEngine.registerPlugin(new plugin.Plugin(config));
         }
         else {
-          // tslint:disable-next-line: no-console
+          //tslint:disable-next-line: no-console
           console.log(`${pluginName} plugin is not exporting 'Plugin' class`);
         }
       }
       catch (e) {
-        // tslint:disable-next-line: no-console
+        //tslint:disable-next-line: no-console
         console.log(`${pluginName} plugin missing in package.json`, e);
       }
     }

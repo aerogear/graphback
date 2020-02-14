@@ -2,22 +2,6 @@ import { getFieldName, getSubscriptionName, GraphbackCRUDGeneratorConfig, Graphb
 import { GraphQLObjectType } from 'graphql';
 import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
 import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
-
-export function generateCRUDResolversFunctions(models: ModelDefinition[]): GeneratorResolversFormat {
-    const outputResolvers = { Query: {}, Mutation: {}, Subscription: {} };
-
-    for (const { graphqlType, crudOptions } of models) {
-        const newQueries = createQueries(graphqlType, crudOptions);
-        outputResolvers.Query = { ...outputResolvers.Query, ...newQueries };
-        const newMutations = createMutations(graphqlType, crudOptions);
-        outputResolvers.Mutation = { ...outputResolvers.Mutation, ...newMutations };
-        const newSubs = createSubscriptions(graphqlType, crudOptions);
-        outputResolvers.Subscription = { ...outputResolvers.Subscription, ...newSubs };
-    }
-    
-    return outputResolvers;
-}
-
  
 export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
@@ -76,4 +60,19 @@ export function createSubscriptions(modelType: GraphQLObjectType, crudOptions: G
     }
 
     return subscriptions;
+}
+
+export function generateCRUDResolversFunctions(models: ModelDefinition[]): GeneratorResolversFormat {
+    const outputResolvers = { Query: {}, Mutation: {}, Subscription: {} };
+
+    for (const { graphqlType, crudOptions } of models) {
+        const newQueries = createQueries(graphqlType, crudOptions);
+        outputResolvers.Query = { ...outputResolvers.Query, ...newQueries };
+        const newMutations = createMutations(graphqlType, crudOptions);
+        outputResolvers.Mutation = { ...outputResolvers.Mutation, ...newMutations };
+        const newSubs = createSubscriptions(graphqlType, crudOptions);
+        outputResolvers.Subscription = { ...outputResolvers.Subscription, ...newSubs };
+    }
+    
+    return outputResolvers;
 }

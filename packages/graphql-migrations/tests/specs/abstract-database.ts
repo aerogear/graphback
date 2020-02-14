@@ -1,8 +1,9 @@
-import ava, { ExecutionContext } from 'ava';
+/*eslint-disable max-lines*/
+import test, { ExecutionContext } from 'ava';
 import { buildSchema } from 'graphql'
 import { generateAbstractDatabase } from '../../src'
 
-ava('skip root types', async (t: ExecutionContext) => {
+test('skip root types', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type Query {
         hello: String
@@ -20,7 +21,7 @@ ava('skip root types', async (t: ExecutionContext) => {
   t.assert(adb.tables.length === 0)
 })
 
-ava('simple type', async (t: ExecutionContext) => {
+test('simple type', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       """
       A user.
@@ -47,7 +48,7 @@ ava('simple type', async (t: ExecutionContext) => {
   t.assert(colName.comment === 'Display name.')
 })
 
-ava('skip table', async (t: ExecutionContext) => {
+test('skip table', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       """
       @db.skip
@@ -61,7 +62,7 @@ ava('skip table', async (t: ExecutionContext) => {
   t.assert(adb.tables.length === 0)
 })
 
-ava('skip field', async (t: ExecutionContext) => {
+test('skip field', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -80,7 +81,7 @@ ava('skip field', async (t: ExecutionContext) => {
   t.assert(colId.name === 'id')
 })
 
-ava('not null', async (t: ExecutionContext) => {
+test('not null', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -97,7 +98,7 @@ ava('not null', async (t: ExecutionContext) => {
   t.assert(colNickname.nullable === true)
 })
 
-ava('default value', async (t: ExecutionContext) => {
+test('default value', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -123,7 +124,7 @@ ava('default value', async (t: ExecutionContext) => {
   t.assert(colThisOption.defaultValue === '')
 })
 
-ava('default primary index', async (t: ExecutionContext) => {
+test('default primary index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         """
@@ -141,7 +142,7 @@ ava('default primary index', async (t: ExecutionContext) => {
   t.deepEqual(id.columns, ['id'])
 })
 
-ava('simple index', async (t: ExecutionContext) => {
+test('simple index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -159,7 +160,7 @@ ava('simple index', async (t: ExecutionContext) => {
   t.deepEqual(email.columns, ['email'])
 })
 
-ava('multiple indexes', async (t: ExecutionContext) => {
+test('multiple indexes', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         """
@@ -181,7 +182,7 @@ ava('multiple indexes', async (t: ExecutionContext) => {
   t.deepEqual(email.columns, ['email'])
 })
 
-ava('named index', async (t: ExecutionContext) => {
+test('named index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -204,7 +205,7 @@ ava('named index', async (t: ExecutionContext) => {
   t.deepEqual(myIndex.columns, ['email', 'name'])
 })
 
-ava('object index', async (t: ExecutionContext) => {
+test('object index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -228,7 +229,7 @@ ava('object index', async (t: ExecutionContext) => {
   t.deepEqual(myIndex.columns, ['email', 'name'])
 })
 
-ava('unique index', async (t: ExecutionContext) => {
+test('unique index', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -246,7 +247,7 @@ ava('unique index', async (t: ExecutionContext) => {
   t.deepEqual(email.columns, ['email'])
 })
 
-ava('custom name', async (t: ExecutionContext) => {
+test('custom name', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       """
       @db.name: 'people'
@@ -262,7 +263,7 @@ ava('custom name', async (t: ExecutionContext) => {
   t.assert(User.name === 'people')
 })
 
-ava('custom type', async (t: ExecutionContext) => {
+test('custom type', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -284,7 +285,7 @@ ava('custom type', async (t: ExecutionContext) => {
   t.deepEqual(colName.args, [36])
 })
 
-ava('foreign key', async (t: ExecutionContext) => {
+test('foreign key', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -311,7 +312,7 @@ ava('foreign key', async (t: ExecutionContext) => {
   t.assert(colUserForeign.foreign && colUserForeign.foreign.columnName === 'id')
 })
 
-ava('many to many', async (t: ExecutionContext) => {
+test('many to many', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -344,7 +345,7 @@ ava('many to many', async (t: ExecutionContext) => {
   t.assert(colUserMessages.foreign && colUserMessages.foreign.columnName === 'id')
 })
 
-ava('many to many on self', async (t: ExecutionContext) => {
+test('many to many on self', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -368,7 +369,7 @@ ava('many to many on self', async (t: ExecutionContext) => {
   t.assert(col2.foreign && col2.foreign.columnName === 'id')
 })
 
-ava('simple list', async (t: ExecutionContext) => {
+test('simple list', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -390,7 +391,7 @@ ava('simple list', async (t: ExecutionContext) => {
   t.assert(colNames.type === 'json')
 })
 
-ava('custom scalar map', async (t: ExecutionContext) => {
+test('custom scalar map', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID
@@ -399,14 +400,15 @@ ava('custom scalar map', async (t: ExecutionContext) => {
       }
     `)
   const adb = await generateAbstractDatabase(schema, {
-    scalarMap: (field) => {
+    scalarMap: (field: any) => {
       if (field.name === 'name') {
         return {
           type: 'text',
           args: [],
         }
       }
-      return null
+
+      return undefined
     },
   })
   t.assert(adb.tables.length === 1)
@@ -418,7 +420,7 @@ ava('custom scalar map', async (t: ExecutionContext) => {
   t.assert(colNickname.type === 'string')
 })
 
-ava('map lists to json', async (t: ExecutionContext) => {
+test('map lists to json', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type User {
         id: ID!
@@ -435,7 +437,7 @@ ava('map lists to json', async (t: ExecutionContext) => {
   t.assert(colNames.type === 'json')
 })
 
-ava('default name transforms', async (t: ExecutionContext) => {
+test('default name transforms', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       type UserTeam {
         id: ID!
@@ -454,7 +456,7 @@ ava('default name transforms', async (t: ExecutionContext) => {
   t.assert(colYearlyBilling.name === 'yearlyBilling')
 })
 
-ava('sandbox', async (t: ExecutionContext) => {
+test('sandbox', async (t: ExecutionContext) => {
   const schema = buildSchema(`
       scalar Date
 

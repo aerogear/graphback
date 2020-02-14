@@ -3,9 +3,9 @@ import { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } from 'graphba
 import { printSchema } from 'graphql';
 import { migrateDB } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
+import * as Knex from 'knex';
 import { createDB, getConfig } from './db'
 import { loadSchema } from './loadSchema';
-import Knex = require('knex');
 
 
 /**
@@ -26,10 +26,10 @@ export const createRuntime = async () => {
   const graphbackConfig = await getConfig();
   const schemaText = loadSchema(graphbackConfig.model);
 
-  // NOTE: For SQLLite db should be always recreated
-  migrateDB(graphbackConfig.dbmigrations, schemaText).then((ops) => {
-    console.log("Migrated database", ops);
-  });
+  // NOTE: For SQLite db should be always recreated
+  const ops = await migrateDB(graphbackConfig.dbmigrations, schemaText);
+
+  console.log("Migrated database", ops);
 
   const pubSub = new PubSub();
   const runtimeEngine = new PGRuntime(schemaText, graphbackConfig);

@@ -1,4 +1,5 @@
-import ava, { ExecutionContext } from 'ava';
+/*eslint-disable max-lines*/
+import test, { ExecutionContext } from 'ava';
 import { computeDiff } from '../../src'
 import { AbstractDatabase } from '../../src/abstract/AbstractDatabase'
 import { Table } from '../../src/abstract/Table'
@@ -30,13 +31,13 @@ function columnFactory(options: any): TableColumn {
     nullable: true,
     annotations: {},
     defaultValue: undefined,
-    comment: null,
-    foreign: null,
+    comment: undefined,
+    foreign: undefined,
     ...options,
   }
 }
 
-ava('create simple table', async (t: ExecutionContext) => {
+test('create simple table', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory(), dbFactory([
     tableFactory({
       name: 'User',
@@ -83,14 +84,14 @@ ava('create simple table', async (t: ExecutionContext) => {
     args: [150],
     nullable: true,
     defaultValue: undefined,
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 
   t.snapshot(result);
 })
 
-ava('rename table', async (t: ExecutionContext) => {
+test('rename table', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -112,7 +113,7 @@ ava('rename table', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('update table comment', async (t: ExecutionContext) => {
+test('update table comment', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -135,7 +136,7 @@ ava('update table comment', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('set primary key', async (t: ExecutionContext) => {
+test('set primary key', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User'
@@ -161,7 +162,7 @@ ava('set primary key', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('add column', async (t: ExecutionContext) => {
+test('add column', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -196,12 +197,12 @@ ava('add column', async (t: ExecutionContext) => {
     args: [],
     nullable: true,
     defaultValue: undefined,
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 })
 
-ava('add and remove column', async (t: ExecutionContext) => {
+test('add and remove column', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -238,12 +239,12 @@ ava('add and remove column', async (t: ExecutionContext) => {
     args: [],
     nullable: true,
     defaultValue: undefined,
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 })
 
-ava('rename column', async (t: ExecutionContext) => {
+test('rename column', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -278,7 +279,7 @@ ava('rename column', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('change column comment', async (t: ExecutionContext) => {
+test('change column comment', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -318,7 +319,7 @@ ava('change column comment', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('change column type', async (t: ExecutionContext) => {
+test('change column type', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -349,12 +350,12 @@ ava('change column type', async (t: ExecutionContext) => {
     args: [],
     nullable: true,
     defaultValue: undefined,
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 })
 
-ava('change column type args', async (t: ExecutionContext) => {
+test('change column type args', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -387,12 +388,12 @@ ava('change column type args', async (t: ExecutionContext) => {
     args: [200],
     nullable: true,
     defaultValue: undefined,
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 })
 
-ava('change column nullable', async (t: ExecutionContext) => {
+test('change column nullable', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -425,12 +426,12 @@ ava('change column nullable', async (t: ExecutionContext) => {
     args: [],
     nullable: true,
     defaultValue: undefined,
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 })
 
-ava('change column default value', async (t: ExecutionContext) => {
+test('change column default value', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -463,12 +464,12 @@ ava('change column default value', async (t: ExecutionContext) => {
     args: [],
     nullable: true,
     defaultValue: 'bar',
-    comment: null,
+    comment: undefined,
     priority: 0,
   } as Operation)
 })
 
-ava('change anonymous index', async (t: ExecutionContext) => {
+test('change anonymous index', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -518,7 +519,7 @@ ava('change anonymous index', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('change named index', async (t: ExecutionContext) => {
+test('change named index', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -568,7 +569,7 @@ ava('change named index', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('untouched named index', async (t: ExecutionContext) => {
+test('untouched named index', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory([
     tableFactory({
       name: 'User',
@@ -610,7 +611,7 @@ ava('untouched named index', async (t: ExecutionContext) => {
   } as Operation)
 })
 
-ava('create table & join table', async (t: ExecutionContext) => {
+test('create table & join table', async (t: ExecutionContext) => {
   const result = await computeDiff(dbFactory(), dbFactory([
     tableFactory({
       name: 'user',

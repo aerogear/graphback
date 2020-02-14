@@ -12,7 +12,7 @@ ${returnFieldsString}
 } `
 }
 
-// TODO describe fragments in doc CRUD spec
+//TODO describe fragments in doc CRUD spec
 export const expandedFragment = (t: GraphQLObjectType) => {
   const queryReturnFields = buildReturnFields(t, 1);
   const returnFieldsString = printReturnFields(queryReturnFields);

@@ -44,7 +44,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
     private pluginConfig: ResolverGeneratorPluginConfig;
 
-    constructor(pluginConfig: ResolverGeneratorPluginConfig) {
+    public constructor(pluginConfig: ResolverGeneratorPluginConfig) {
         super();
         this.pluginConfig = Object.assign({
             format: 'ts',

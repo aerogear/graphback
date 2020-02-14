@@ -14,7 +14,7 @@ import { subscriptionTopicMapping } from './subscriptionTopicMapping';
  * - Subscriptions: using default publish subscribe method
  * - Logging: using logging abstraction
  */
-// tslint:disable-next-line: no-any
+//tslint:disable-next-line: no-any
 export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     private db: GraphbackDataProvider;
     private logger: GraphbackMessageLogger;
@@ -22,7 +22,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     private publishConfig: PubSubConfig;
     private modelName: string;
 
-    constructor(modelType: GraphQLObjectType, db: GraphbackDataProvider, subscriptionConfig: PubSubConfig, logger?: GraphbackMessageLogger) {
+    public constructor(modelType: GraphQLObjectType, db: GraphbackDataProvider, subscriptionConfig: PubSubConfig, logger?: GraphbackMessageLogger) {
         this.db = db;
         this.pubSub = subscriptionConfig.pubSub;
         this.logger = logger || defaultLogger;
@@ -37,7 +37,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
         if (this.pubSub && this.publishConfig.publishCreate) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
-            // TODO use subscription name mapping 
+            //TODO use subscription name mapping 
             const payload = this.buildEventPayload('new', result);
             await this.pubSub.publish(topic, payload);
         }
@@ -52,7 +52,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
         if (this.pubSub && this.publishConfig.publishUpdate) {
             const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
-            // TODO use subscription name mapping 
+            //TODO use subscription name mapping 
             const payload = this.buildEventPayload('updated', result);
             await this.pubSub.publish(topic, payload);
         }
@@ -60,7 +60,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return result;
     }
 
-    // tslint:disable-next-line: no-reserved-keywords
+    //tslint:disable-next-line: no-reserved-keywords
     public async delete(data: T, context?: any): Promise<T> {
         this.logger.log(`deleting object ${this.modelName}`)
 
@@ -81,7 +81,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return this.db.findAll(context);
     }
 
-    // tslint:disable-next-line: no-any
+    //tslint:disable-next-line: no-any
     public findBy(filter: any, context?: any): Promise<T[]> {
         this.logger.log(`querying object ${this.modelName} with filter ${JSON.stringify(filter)}`)
 
@@ -123,7 +123,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
 
     public batchLoadData(relationField: string, id: string | number, context?: any) {
-        // TODO use relationfield mapping
+        //TODO use relationfield mapping
         const keyName = `${this.modelName}${upperCaseFirstChar(relationField)}DataLoader`;
         if (!context[keyName]) {
             context[keyName] = new DataLoader<string, any>((keys: string[]) => {

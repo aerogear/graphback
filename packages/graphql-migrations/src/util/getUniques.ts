@@ -33,13 +33,15 @@ export default async function(
   knex: Knex,
   tableName: string,
   schemaName: string,
-): Promise<Array<{ indexName: string, columnNames: string[] }>> {
+): Promise<{ indexName: string, columnNames: string[] }[]> {
   const query = queries[knex.client.config.client]
   if (!query) {
     console.warn(`${knex.client.config.client} column unique constraints not supported`)
+
     return []
   }
   const { sql, bindings, output } = query(knex, tableName, schemaName)
   const resp = await knex.raw(sql, bindings)
+
   return output(resp)
 }

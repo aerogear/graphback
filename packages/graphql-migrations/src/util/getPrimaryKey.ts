@@ -19,13 +19,15 @@ export default async function(
   knex: Knex,
   tableName: string,
   schemaName: string,
-): Promise<Array<{ column: string, indexName: string }>> {
+): Promise<{ column: string, indexName: string }[]> {
   const query = queries[knex.client.config.client]
   if (!query) {
     console.warn(`${knex.client.config.client} primary keys not supported`)
+
     return []
   }
   const { sql, bindings, output } = query(knex, tableName, schemaName)
   const resp = await knex.raw(sql, bindings)
+
   return output(resp)
 }

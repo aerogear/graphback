@@ -1,8 +1,8 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, PgKnexDBDataProvider } from "./index"
 import { PubSubConfig } from './service/PubSubConfig';
+import { CRUDService, PgKnexDBDataProvider } from "./index"
 
 /**
  * Config used to initialize crud context file

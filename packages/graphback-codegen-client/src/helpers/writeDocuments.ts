@@ -10,7 +10,7 @@ export const writeDocumentsToFilesystem = (clientPath: string, generatedClient: 
         if (!existsSync(currentFolder)) {
             mkdirSync(currentFolder)
         }
-        // tslint:disable-next-line: no-any
+        //tslint:disable-next-line: no-any
         generatedClient[folder].forEach((c: any) => writeFileSync(`${currentFolder}/${c.name}.${extension}`, c.implementation))
     })
 

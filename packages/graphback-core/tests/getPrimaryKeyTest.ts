@@ -1,3 +1,4 @@
+//eslint-disable-next-line @typescript-eslint/tslint/config
 import ava, { ExecutionContext } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { getPrimaryKey } from '../src/db/getPrimaryKey'

@@ -1,14 +1,12 @@
-import { gqlSchemaFormatter } from '../src/writer/schemaFormatters';
-// tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
 import { readFileSync } from 'fs';
-import { parse, buildSchema, printSchema } from 'graphql';
-import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
+import test, { ExecutionContext } from 'ava';
+import { buildSchema, printSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
+import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
-ava('Test snapshot config gql', async (t: ExecutionContext) => {
+test('Test snapshot config gql', async (t: ExecutionContext) => {
   const defautConfig = {
     "create": true,
     "update": true,
@@ -30,7 +28,7 @@ ava('Test snapshot config gql', async (t: ExecutionContext) => {
 });
 
 
-ava('Test snapshot config ts', async (t: ExecutionContext) => {
+test('Test snapshot config ts', async (t: ExecutionContext) => {
   const defautConfig = {
     "create": true,
     "update": true,
@@ -52,7 +50,7 @@ ava('Test snapshot config ts', async (t: ExecutionContext) => {
 });
 
 
-ava('Test snapshot config js', async (t: ExecutionContext) => {
+test('Test snapshot config js', async (t: ExecutionContext) => {
   const defautConfig = {
     "create": true,
     "update": true,

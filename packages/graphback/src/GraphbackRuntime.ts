@@ -12,8 +12,7 @@ import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerat
  * See README for examples
  */
 export class GraphbackRuntime extends GraphbackGenerator {
-
-  constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
+  public constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
     super(schema, config);
   }
 

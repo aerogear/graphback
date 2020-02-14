@@ -16,7 +16,7 @@ export async function installDependencies(database: string): Promise<void> {
   } else if (database === 'sqlite3') {
     await execa('npm', ['i', '-S', 'sqlite3'])
   }
-  // Using opiniated layer
+  //Using opiniated layer
   await execa('npm', ['i', '-S', '@graphback/runtime'])
 }
 
@@ -36,11 +36,11 @@ Next Steps:
  */
 export interface InitOptions {
   client?: boolean,
-  // Type of database
+  //Type of database
   database?: string
-  // example model
+  //example model
   model?: ModelTemplate
-  // skip install
+  //skip install
   skipInstall?: boolean
 }
 

@@ -20,7 +20,7 @@ export class GraphbackPluginEngine {
     private plugins: GraphbackPlugin[]
     private metadata: GraphbackCoreMetadata;
 
-    constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
+    public constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
         this.plugins = [];
         if (!schema) {
             throw new Error("Plugin engine requires schema");
@@ -40,7 +40,7 @@ export class GraphbackPluginEngine {
 
     public createResources(): GraphbackCoreMetadata {
         this.createSchema();
-        // Save schema and all files
+        //Save schema and all files
         for (const plugin of this.plugins) {
             plugin.createResources(this.metadata);
         }
@@ -52,8 +52,8 @@ export class GraphbackPluginEngine {
         if (this.plugins.length === 0) {
             throw new Error("GraphbackEngine: No Graphback plugins registered")
         }
-        // We need to apply all required changes to the schema we need 
-        // This is to ensure that every plugin can add changes to the schema
+        //We need to apply all required changes to the schema we need 
+        //This is to ensure that every plugin can add changes to the schema
         for (const plugin of this.plugins) {
             const newSchema = plugin.transformSchema(this.metadata);
             this.metadata.setSchema(newSchema);

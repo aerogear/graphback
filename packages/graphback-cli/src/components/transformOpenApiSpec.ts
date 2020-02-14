@@ -1,5 +1,5 @@
-import chalk from 'chalk';
 import { readFileSync, renameSync, writeFileSync } from 'fs';
+import chalk from 'chalk';
 import { GlobSync } from 'glob';
 import { printSchema } from 'graphql';
 import { loadConfig } from 'graphql-config';
@@ -8,6 +8,35 @@ import { createGraphQlSchema } from "openapi-to-graphql"
 import { extensionName, graphbackConfigExtension } from '../config/extension';
 import { logError, logInfo } from '../utils';
 import { removeCommentsFromSchema, removeOperationsFromSchema } from "../utils/openApiHelpers"
+
+async function processSingleDefinition(model: string, isYaml: boolean) {
+    logInfo(`   Processing OpenAPI definition: ${model}`);
+    const schemaText: string = readFileSync(`${model}`, 'utf8');
+    let parsedObject;
+    if (isYaml) {
+        parsedObject = safeLoad(schemaText);
+    } else {
+        parsedObject = JSON.parse(schemaText);
+    }
+    try {
+        let { schema } = await createGraphQlSchema(parsedObject, {
+            strict: true,
+            fillEmptyResponses: true,
+            equivalentToMessages: false,
+
+        });
+        schema = removeCommentsFromSchema(schema)
+        schema = removeOperationsFromSchema(schema);
+        const schemaString = printSchema(schema);
+
+        writeFileSync(`${model}.graphql`, schemaString);
+        renameSync(`${model}`, `${model}_processed`)
+        logInfo(`   Finished transforming OpenAPI definition: ${model}`);
+    }
+    catch (err) {
+        logInfo(`   Failed to process OpenAPI definition: ${model}. Error: ${err}`);
+    }
+}
 
 /**
  * OpenAPI command line tool
@@ -52,33 +81,4 @@ export const transformOpenApiSpec = async () => {
    You can review your schema in model folder and modify it for your own needs. 
    You can then generate your backend using ${chalk.cyan(`generate`)} command that will create resolvers.
    OpenAPI files will not longer be processed by generator.`)
-}
-
-async function processSingleDefinition(model: string, isYaml: boolean) {
-    logInfo(`   Processing OpenAPI definition: ${model}`);
-    const schemaText: string = readFileSync(`${model}`, 'utf8');
-    let parsedObject;
-    if (isYaml) {
-        parsedObject = safeLoad(schemaText);
-    } else {
-        parsedObject = JSON.parse(schemaText);
-    }
-    try {
-        let { schema } = await createGraphQlSchema(parsedObject, {
-            strict: true,
-            fillEmptyResponses: true,
-            equivalentToMessages: false,
-
-        });
-        schema = removeCommentsFromSchema(schema)
-        schema = removeOperationsFromSchema(schema);
-        const schemaString = printSchema(schema);
-
-        writeFileSync(`${model}.graphql`, schemaString);
-        renameSync(`${model}`, `${model}_processed`)
-        logInfo(`   Finished transforming OpenAPI definition: ${model}`);
-    }
-    catch (err) {
-        logInfo(`   Failed to process OpenAPI definition: ${model}. Error: ${err}`);
-    }
 }

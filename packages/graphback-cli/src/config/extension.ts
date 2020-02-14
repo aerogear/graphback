@@ -8,9 +8,9 @@ export const extensionName = 'graphback';
  * Config extension that register graphback plugin
  * @param api 
  */
-// tslint:disable-next-line: typedef
+//tslint:disable-next-line: typedef
 export const graphbackConfigExtension: GraphQLExtensionDeclaration = api => {
-    // Schema
+    //Schema
     api.loaders.schema.register(new CodeFileLoader());
 
     return {

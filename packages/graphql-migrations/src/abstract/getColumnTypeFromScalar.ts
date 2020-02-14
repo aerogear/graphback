@@ -13,13 +13,15 @@ export interface TableColumnTypeDescriptor {
   args: any[]
 }
 
+// eslint-disable-next-line complexity
+// eslint-disable-next-line
 export default function(
   field: GraphQLField<any, any>,
-  scalarType: GraphQLScalarType | null = null,
-  annotations: any = null,
+  scalarType: GraphQLScalarType,
+  annotations: any,
 ): TableColumnTypeDescriptor | null {
   if (!annotations) {
-    annotations = parseAnnotations('db', field.description || null)
+    annotations = parseAnnotations('db', field.description || undefined)
   }
 
   // increments
@@ -123,5 +125,5 @@ export default function(
     }
   }
 
-  return null
+  return undefined
 }

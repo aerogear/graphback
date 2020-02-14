@@ -1,4 +1,4 @@
-// tslint:disable: no-string-literal
+//tslint:disable: no-string-literal
 import { readFileSync, writeFileSync } from 'fs';
 import { IGraphQLConfig } from 'graphql-config';
 import { prompt as ask } from 'inquirer'
@@ -96,7 +96,7 @@ export const createConfig = async (database: string, client: boolean) => {
   }
 
   if (client) {
-    // Add client extension
+    //Add client extension
     graphqlConfig.extensions.graphback.plugins["graphback-client"] = {
       "format": "graphql",
       "outputPath": "./client/src/graphql"
