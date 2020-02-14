@@ -1,39 +1,53 @@
 ## Graphback Runtime Example
 
-Template that showcases Graphback runtime generation capabilities using 
-resolver layer generated in memory. 
+Template that showcases Graphback runtime generation capabilities using
+resolver layer generated in memory.
 
-### Example 
+### Example
 
-TODO Content is outdated and no longer valid
-
-To use runtime capabilities developers will need to create data provider.
-Currently 2 data providers are supported:
-
- - KnexDBDataProvider
- - PgKnexDBDataProvider
-
-Then developers can create runtime instance:
+To create GraphQL Layer at runtime developers need to initialize `GraphbackRuntime` instance as follows:
 
 ```ts
+
+    import { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } from 'graphback'
+    import { PubSub } from 'graphql-subscriptions';
+
     const client = new Knex(...);
     const graphbackOptions = {...}
-    const modelString = `type Test ...`
-    
-    // Create backend
-    // TODO change that to reflect actual interface
-    const backend = new GraphQLBackendCreator(modelString, graphbackOptions);
-    const dbClientProvider = new PgKnexDBDataProvider(client);
-    const runtime = await backend.createRuntime(dbClientProvider);
-    console.log(runtime.schema,  runtime.resolvers)
-```    
+    const schemaText = `type Test ...`
+
+    const pubSub = new PubSub();
+    const serviceOverrides = {}
+    const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
+    const runtime = runtimeEngine.buildRuntime(db, pubSub, {});
+
+  const executableSchema = makeExecutableSchema({
+    typeDefs: printSchema(runtime.schema),
+    resolvers: runtime.resolvers,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
+  });
+```
 
 See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/examples/runtime-example/src/runtime.ts#L32) for a fully functional example.
 
+## Using different DataSource
+
+Runtime is created using default CRUDService instance and KnexDBDataProvider db layer to retrieve the data. 
+Developers can override implementations for those when different datasource is used. 
+
+Currently 2 data providers are supported:
+
+- KnexDBDataProvider
+- PgKnexDBDataProvider
+
 ### Running example using Postgres database
 
-The project has been created using `graphback`. Run the project using the following steps. 
+The project has been created using `graphback`. Run the project using the following steps.
+
 - Start the database
+
 ```
 docker-compose up -d
 ```
@@ -48,6 +62,7 @@ type User {
 ```
 
 - Start the server
+
 ```
 npm run develop
 ```
@@ -60,8 +75,10 @@ yarn develop
 
 ### Running example using SQLite database
 
-The project has been created using `graphback`. Run the project using the following steps. 
+The project has been created using `graphback`. Run the project using the following steps.
+
 - Modify the db json object in the `graphback.json` config file. For an in-memory database, use the below config as-is, alternatively replace `:in-memory:` with the desired filename.
+
 ```
 "db": {
   "dbConfig": {
@@ -72,6 +89,7 @@ The project has been created using `graphback`. Run the project using the follow
 ```
 
 - Next modify the `runtime.ts` file and change the `PGKnexDataProvider` to `KnexDBDataProvider`.
+
 ```
 ...
 
@@ -97,15 +115,17 @@ type User {
 ```
 
 - Start the server (for the first time)
+
 ```
 npm run develop
 ```
+
 Or, if using yarn
+
 ```
 yarn develop
 ```
 
 If the server is being re-run, modify the `src/runtime.ts` and comment out the `migrateDb` function, since it will not be possible to re-migrate the database with SQLite3.
-
 
 Enjoy the runtime app
