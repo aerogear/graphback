@@ -13,20 +13,14 @@ Developers have freedom of creating their own Queries and Mutations that are com
 
 All you need to do with Graphback is to specify your data as GraphQL Types:
 
-```graphql
-""" @model """
-type Note {
-  id: ID!
-  title: String!
-  description: String!
-}
-```
+![](https://graphback.dev/img/d1.png)
+
 
 GraphQL Types annotated with `@model` will be processed by Graphback to give you fully functional backend and client side 
 queries that support our CRUD specification. 
 Graphback will work with your current GraphQL enabled Node.js application or can help you to create new one.
 
-![](https://graphback.dev/img/diagram.png)
+![](https://graphback.dev/img/diagramsmall.png)
 
 ## What Graphback can do for you?
 
