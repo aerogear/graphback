@@ -2,49 +2,68 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://graphback.dev/blog</id>
     <title>Graphback Blog</title>
-    <updated>2019-08-27T06:00:00.000Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
+    <updated>2020-02-06T06:00:00Z</updated>
+    <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://graphback.dev/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Graphback news and events.</subtitle>
     <logo>https://graphback.dev/img/favicon.ico</logo>
     <rights>Copyright © 2020 Graphback Contributors</rights>
     <entry>
+        <title type="html"><![CDATA[Graphback - Low Code, GraphQL based API suited for your needs]]></title>
+        <id>https://graphback.dev/blog/2020/02/06/graphback-plugins.html</id>
+        <link href="https://graphback.dev/blog/2020/02/06/graphback-plugins.html">
+        </link>
+        <updated>2020-02-06T06:00:00Z</updated>
+        <summary type="html"><![CDATA[<blockquote>
+<p>NOTE: This blog post can be also viewed on medium:
+<a href="https://medium.com/@wtr/graphback-plugin-based-realtime-database-generator-78f4f608b81e">https://medium.com/@wtr/graphback-plugin-based-realtime-database-generator-78f4f608b81e</a></p>
+</blockquote>
+<h1><a class="anchor" aria-hidden="true" id="graphback--plugin-based-realtime-database-generator"></a><a href="#graphback--plugin-based-realtime-database-generator" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Graphback- Plugin based Realtime Database Generator</h1>
+<p>TL:DR -We have done extensive changes in Graphback over the last 3 weeks focused on refactoring to support custom plugins
+You can try it now at github.com/aerogear/graphback</p>
+]]></summary>
+        <author>
+            <name>Wojciech Trocki</name>
+            <uri>http://twitter.com/typeapi</uri>
+        </author>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Crash course on Graphback]]></title>
         <id>https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html</id>
-        <link href="https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html"/>
-        <updated>2019-08-27T06:00:00.000Z</updated>
+        <link href="https://graphback.dev/blog/2019/08/27/crash-course-on-graphback.html">
+        </link>
+        <updated>2019-08-27T06:00:00Z</updated>
         <summary type="html"><![CDATA[<p>Building software can be sometimes overwhelming. As junior developers, we are often looking for a sample application that can guide us thru complex server and client architectures. However, as a junior dev, we are often facing problems of templates being too complex or too simple, making the learning process more convoluted.</p>
 ]]></summary>
         <author>
             <name>Michal Stokluska</name>
-            <email/>
             <uri>https://www.linkedin.com/in/michal-stokluska-350a72123</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Graphback - the evolution of the GraphQL ecosystem]]></title>
         <id>https://graphback.dev/blog/2019/08/21/introduction.html</id>
-        <link href="https://graphback.dev/blog/2019/08/21/introduction.html"/>
-        <updated>2019-08-21T06:00:00.000Z</updated>
+        <link href="https://graphback.dev/blog/2019/08/21/introduction.html">
+        </link>
+        <updated>2019-08-21T06:00:00Z</updated>
         <summary type="html"><![CDATA[<p>GraphQL was created almost 7 years ago at Facebook to resolve specific problems for the Facebook mobile platform. As Query Language, GraphQL offers transport and data exchange layer between server and client, leaving many implementation details to developers.
 When comparing with REST, GraphQL technology has a steep learning curve and many pitfalls waiting for beginner developers looking to embrace it.</p>
 ]]></summary>
         <author>
             <name>Wojciech Trocki</name>
-            <email/>
-            <uri>http://twitter.com/wojtroken</uri>
+            <uri>http://twitter.com/typeapi</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Using Visitor Pattern to parse GraphQL AST]]></title>
         <id>https://graphback.dev/blog/2019/07/10/using-visitor.html</id>
-        <link href="https://graphback.dev/blog/2019/07/10/using-visitor.html"/>
-        <updated>2019-07-10T06:00:00.000Z</updated>
+        <link href="https://graphback.dev/blog/2019/07/10/using-visitor.html">
+        </link>
+        <updated>2019-07-10T06:00:00Z</updated>
         <summary type="html"><![CDATA[<p>GraphQL is a amazing technology which is being adapted more and more. As part of my work for JBoss community in GSoC'19 I have been working on <a href="https://aerogear.github.io/graphback">Graphback</a>. For the needs of the project we had to extract information from a schema (SDL syntax) into a nice object we can use. For example, convert this</p>
 ]]></summary>
         <author>
             <name>Ankit Jena</name>
-            <email/>
             <uri>http://twitter.com/ankitjey</uri>
         </author>
     </entry>
