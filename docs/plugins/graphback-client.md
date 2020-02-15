@@ -4,30 +4,40 @@ title: Graphback CRUD Client Queries Plugin
 sidebar_label: CRUD Client Queries
 ---
 
-Graphback client plugin allows users to generate client-side queries based on the model. A
+Graphback client plugin allows users to generate client-side queries based on the model and CRUD settings. A
 Developers can embeed generated queries into their client side applications.
 Generated queries are compatible with all major graphql plugins like Apollo and URQL
 
 ## Config
 
-```ts
-export interface ClientGeneratorPluginConfig {
-    /**
-     * Output language that will be supported
-     * Our plugin supports multiple languages for simplicity
-     *
-     * - ts - typescript file output (backwards compatibility)
-     * - graphql - .graphql file
-     * - gqlwithfragment - complete graphql queries containing fragments for redundancy
-     */
-    format: 'ts' | 'graphql' | 'gqlwithfragment'
 
-    /**
-     * RelativePath for the output files created by generator
-     */
-    outputPath: string
-}
+```ts
+  /**
+   * Output language that will be supported
+   * Our plugin supports multiple languages for simplicity
+   *
+   * - ts - typescript file output (backwards compatibility)
+   * - graphql - .graphql file
+   * - gqlwithfragment - complete graphql queries containing fragments for redundancy
+   */
+  format: 'ts' | 'graphql' | 'gqlwithfragment'
+
+  /**
+   * RelativePath for the output files created by generator
+   */
+  outputPath: string
 ```
+
+Example plugin configuration in YAML: 
+```yml
+ plugins:
+  graphback-client:
+    format: 'graphql'
+    outputPath: ./client/src/graphql
+```
+
+> Note: Plugin require `crud` configuration specified as part of the `graphback` extension 
+
 
 ## How it works
 
