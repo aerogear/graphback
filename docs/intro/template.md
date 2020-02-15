@@ -1,7 +1,7 @@
 ---
 id: template
 title: Create client and server application from template
-sidebar_label: Create App in 2 minutes
+sidebar_label: Create App from scratch
 ---
 
 ### Start new project using Graphback and GraphQL CLI

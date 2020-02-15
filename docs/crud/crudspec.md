@@ -4,8 +4,6 @@ title: Graphback CRUD Specification
 sidebar_label: CRUD Specification
 ---
 
-## Graphback CRUD specification
-
 GraphQL is a flexible query language supporting many different data access patterns. 
 In practice, simple CRUD operations turn out to be a very common pattern. 
 Standardising this very common pattern enables the community to build tooling specific to the common CRUD style API.
@@ -28,7 +26,8 @@ That is why we provide only basic filtering on the GraphQL level as we believe t
 needs to be implemented and hidden behind resolvers. 
 
 That is why every Query or Mutation included in the schema will be ignored by Graphback, but also supplied in the result schema giving developers 
-flexibility to provide their own implementations on the server. Graphback tries to minimize amount of the extra types 
+flexibility to provide their own implementations on the server. Graphback tries to avoid adding extra types to your schema
+that you might not use in your application.
 
 ## Example
 

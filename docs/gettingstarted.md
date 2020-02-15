@@ -31,7 +31,7 @@ Graphback will work with your current GraphQL enabled Node.js application or can
 
 ![](/img/sourcecode.png)
 
-## Graphback Code generation
+## Graphback Code Generation
 
 Graphback plugins can be used to modify schema and generate various resources that can be included into your existing project or one of the maintained Graphback templates.
 Currently we support multiple formats of data including:

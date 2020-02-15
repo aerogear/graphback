@@ -10,19 +10,21 @@ Graphback CRUD abstraction available as part of the @graphback/runtime package p
 
 Runtime is abstracted into two interfaces:
 
-- GraphbackCRUDService - should be used to implement custom behaviour like subscriptions or live queries
-- GraphbackDataProvider - should be used
-
-Graphback provides default implementation for this interfaces
+- `GraphbackCRUDService` - layer that wraps data provider, can implement custom behaviour like subscriptions or live queries
+- `GraphbackDataProvider` - data access layer 
 
 ### GraphbackCRUDService
 
-- CRUDService - implements subscriptions and logging. Used by default in resolver generator.
+Graphback provides following implementations of GraphbackCRUDService
+
+- `CRUDService` - implements subscriptions and logging. Used by default in resolver generator.
 
 ### GraphbackDataProvider
 
-- KnexDBDataProvider - Knex.js wrapper that connets to many relationnal databases
-- DBKnexDBDataProvider - Flavour of Knex.JS wrapper that is optimized to work with PostgreSQL Database
+Graphback provides following implementations of GraphbackDataProvider
+
+- `KnexDBDataProvider` - Knex.js wrapper that connets to many relationnal databases
+- `DBKnexDBDataProvider` - Flavour of Knex.JS wrapper that is optimized to work with PostgreSQL Database
 
 ## How Runtime relates to the resolvers
 
@@ -39,7 +41,6 @@ findAllComments: (parent, args, context) => {
   return context.Comment.findAll();
 };
 ```
-
 
 ## Modifying implementation
 
@@ -58,7 +59,7 @@ To use runtime developers need to call `createCRUDResolversRuntimeContext` from 
     })
 ```
 
-## Motivation behind CRUD abstraction
+## Why we need CRUD Abstraction
 
 Code generators produce a large amount of the code that needs to be maintained later.
 Having generator code diverging from original form will prevent developers to utilize generators.
