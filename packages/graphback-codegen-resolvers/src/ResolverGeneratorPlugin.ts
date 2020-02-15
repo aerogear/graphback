@@ -7,6 +7,9 @@ import { createRuntimeFile } from './templates/runtimeTemplate';
 import { writeResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginConfig {
+    /**
+     * Extension of the generated files 
+     */
     format: 'ts' | 'js'
 
     /**
