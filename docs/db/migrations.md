@@ -4,6 +4,8 @@ title: Database Schema Migrations
 sidebar_label:  Database Schema Migrations
 ---
 
+> NOTE: This document is still in progress some of the content here might be oudated
+
 ## Database Schema Migrations
 
 Graphback uses [graphql-migrations](../packages/graphql-migrations) to automatically create and update tables from a GraphQL schema.

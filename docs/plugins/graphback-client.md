@@ -16,6 +16,20 @@ Generated queries are compatible with all major graphql plugins like Apollo and 
 npm install @graphback/codegen-client
 ```
 
+## Usage
+
+Client side queries can be consumed inside any application. 
+When using any GraphQL Clients queries can be compiled and passed to the client methods. 
+For example:
+
+```ts
+apolloClient.mutate(createUserQuery)
+```
+
+Plugin allows to create files in many formats to suit needs of your application.
+
+Please reffer to generator-fullstack app for fully functional example:
+https://github.com/aerogear/graphback/tree/master/examples/generator-fullstack
 
 ## Plugin Config
 
