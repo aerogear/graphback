@@ -4,12 +4,20 @@ title: Graphback CRUD Client Queries Plugin
 sidebar_label: CRUD Client Queries
 ---
 
+## Graphback CRUD Client plugin
+
 Graphback client plugin allows users to generate client-side queries based on the model and CRUD settings. A
 Developers can embeed generated queries into their client side applications.
 Generated queries are compatible with all major graphql plugins like Apollo and URQL
 
-## Config
+## Installation
 
+```
+npm install @graphback/codegen-client
+```
+
+
+## Plugin Config
 
 ```ts
   /**
