@@ -7,9 +7,7 @@ sidebar_label: What is Graphback
 Graphback is a package and CLI tool that can help you bootstrap a GraphQL server and client.
 Graphback can help you to focus on your data and remove all boilerplate related with the wider adoption of GraphQL.
 
-The target of Graphback is to provide tooling for generating fully functional backend and client side code on top of your existing application and widely available starter applications. Graphback makes prototyping applications very easy by generating source code and reducing the number of GraphQL related boilerplate on the server and the client. With Graphback developers can focus more on delivering business value and business model that will be represented as a GraphQL schema. Developers can use their existing projects or choose one of production ready templates we provide. 
-Graphback enables developersto build their production ready backend in a very short amount of time with out of the box CRUD support.
-Developers have freedom of creating their own Queries and Mutations that are compatibile with GraphQL spec. 
+The target of Graphback is to provide tooling for generating fully functional backend and client side code on top of your existing application or widely available starter applications. Graphback makes prototyping applications very easy by generating source code and reducing the number of GraphQL related boilerplate on the server and the client. With Graphback developers can focus more on delivering business value and business model that will be represented as a GraphQL schema. 
 
 All you need to do with Graphback is to specify your data as GraphQL Types:
 
@@ -17,7 +15,7 @@ All you need to do with Graphback is to specify your data as GraphQL Types:
 
 
 GraphQL Types annotated with `@model` will be processed by Graphback to give you fully functional backend and client side 
-queries that support our CRUD specification. 
+queries that follow CRUD specification. 
 Graphback will work with your current GraphQL enabled Node.js application or can help you to create new one.
 
 ![](/img/diagramsmall.png)
