@@ -1,8 +1,8 @@
 
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, getFieldName, GraphbackOperationType } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { GraphQLSchema, GraphQLObjectType, GraphQLInt, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLField, isObjectType, getNullableType, GraphQLNonNull, GraphQLList } from 'graphql';
-
+import { GraphQLSchema, GraphQLObjectType, GraphQLInt, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLField, print, getNullableType, GraphQLNonNull, GraphQLList, printSchema } from 'graphql';
+import { SchemaComposer } from 'graphql-compose';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -50,6 +50,7 @@ export class OffixPlugin extends GraphbackPlugin {
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
         const schema = metadata.getSchema()
+        const schemaComposer = new SchemaComposer();
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
@@ -60,28 +61,22 @@ export class OffixPlugin extends GraphbackPlugin {
         const versionedTypes = [];
         models.forEach((model: ModelDefinition) => {
             // TODO use `versioned` marker to check if we should add version
-            const config = model.graphqlType.toConfig();
-            const modifiedType = new GraphQLObjectType({
-                ...config,
-                fields: {
-                    ...config.fields,
-                    version: { type: GraphQLInt },
-                },
+            const modifiedType = schemaComposer.createObjectTC(model.graphqlType);
+            modifiedType.addFields({
+                version: 'Int'
             });
+
             versionedTypes.push(modifiedType);
 
             const inputType = schema.getType(getInputTypeName(model.graphqlType.name)) as GraphQLInputObjectType
             if (inputType) {
-                const inputConfig: GraphQLInputObjectTypeConfig = inputType.toConfig();
-                const modifiedInputType = new GraphQLInputObjectType({
-                    ...inputConfig,
-                    fields: {
-                        ...config.fields,
-                        version: { type: GraphQLInt },
-                    }
+                const modifiedInputType = schemaComposer.createInputTC(inputType);
+                modifiedInputType.addFields({
+                    version: 'Int'
                 });
                 versionedTypes.push(modifiedInputType);
             }
+
 
             // Diff queries
             if (this.pluginConfig.generateDeltaQueries) {
@@ -92,17 +87,19 @@ export class OffixPlugin extends GraphbackPlugin {
             }
         })
 
-        
         const newVersionedSchema = new GraphQLSchema({
-            query: undefined,
+            query: new GraphQLObjectType({
+                name: 'Query',
+                fields: () => (undefined)
+            }),
             types: versionedTypes
         });
-
+    
         return mergeSchemas({ schemas: [newVersionedSchema, schema] });
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
-        // Schema plugin is going to create schem
+        // Schema plugin is going to create schema for us
         // No work to be done
     }
 
