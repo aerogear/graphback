@@ -27,6 +27,7 @@ const databases = [
 ]
 
 export const chooseDatabase = async (): Promise<string> => {
+  // TODO print more info about templates
   const { database } = await ask({
     type: 'list',
     name: 'database',
