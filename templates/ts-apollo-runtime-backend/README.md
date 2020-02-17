@@ -48,7 +48,7 @@ Please change your graphqlrc.yml `dbmigrations` config
   dbmigrations:
       client: sqlite3
       connection:
-        filename: ":in-memory:"
+        filename: ":memory:"
 ```
 
 - Next modify the `runtime.ts` file and use the `GraphbackRuntime` instead of `PGRuntime` class.
