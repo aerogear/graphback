@@ -3,15 +3,17 @@
     "Getting Started": [
       "gettingstarted",
       "intro/quickstart",
+      "intro/concepts",
       "intro/datamodel",
       "intro/config"
     ],
     "Use Cases": [
+      "intro/usecases",
       "intro/template",
       "intro/existingproject",
-      "intro/programatic"
+      "intro/serverless"
     ],
-    "Graphback CRUD": [
+    "CRUD": [
       "crud/crudspec",
       "crud/crudruntime",
       "crud/relationships",
