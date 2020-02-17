@@ -21,6 +21,8 @@ export class OffixDataProvider extends PgKnexDBDataProvider {
             const updateResult = await this.db(this.tableName).update(updateData).where(idField.name, '=', idField.value);
             if (updateResult === 1) {
                 return dbResult[0]
+            } else {
+                throw new Error(`Update failed${this.tableName}`)
             }
         }
         throw new NoDataError(`Cannot update ${this.tableName}`);

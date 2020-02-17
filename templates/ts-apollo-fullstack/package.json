@@ -12,12 +12,13 @@
   "license": "MIT",
   "devDependencies": {
     "graphback-cli": "0.11.0-alpha1",
-    "@graphback/codegen-offix": "0.11.0-alpha1",
+
     "graphql": "14.6.0",
     "tslint": "5.20.1",
     "typescript": "3.7.5"
   },
   "dependencies": {
+    "@graphback/codegen-offix": "0.11.0-alpha1",
     "pg": "7.18.1"
   }
 }
