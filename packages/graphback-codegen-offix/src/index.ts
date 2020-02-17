@@ -1,4 +1,4 @@
 export * from './OffixPlugin'
 
 //Required for plugins
-export { SchemaCRUDPlugin as Plugin } from './OffixPlugin'
+export { OffixPlugin as Plugin } from './OffixPlugin'

@@ -57,8 +57,6 @@ export class OffixPlugin extends GraphbackPlugin {
             return schema;
         }
 
-
-
         const versionedTypes = [];
         models.forEach((model: ModelDefinition) => {
             // TODO use `versioned` marker to check if we should add version
