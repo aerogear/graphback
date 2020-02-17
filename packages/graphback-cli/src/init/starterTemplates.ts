@@ -13,7 +13,7 @@ import { Template } from './templateMetadata'
 export const allTemplates: Template[] = [
   {
     name: 'apollo-fullstack-ts',
-    description: 'Apollo GraphQL Server and React Client using typescript',
+    description: 'Apollo GraphQL Server and React Client using TypeScript',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
       // TODO dynamic branching
