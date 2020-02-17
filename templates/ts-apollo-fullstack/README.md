@@ -4,7 +4,7 @@ Starter Full Stack template using Graphback
 
 ## Usage
 
-This project has been created using Graphback Run the project using the following steps:
+This project has been created using Graphback. Run the project using the following steps:
 
 - Install
 
