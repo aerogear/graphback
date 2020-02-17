@@ -97,8 +97,7 @@ function buildTemplateFromGithub(templateUrl: string) {
     repo: {
       uri: url[0],
       branch: url[1] || "master",
-      // TODO use separate parameter for path
-      path: "/template"
+      path: "/"
     }
   };
 }
