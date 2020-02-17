@@ -4,7 +4,7 @@ title: Create client and server application from template
 sidebar_label: Create App from scratch
 ---
 
-### Start new project using Graphback and GraphQL CLI
+### Start new project using Graphback
 
 The best way to start with Graphback is to choose one of the project boilerplates.
 You can use any of the available templates to bootstrap Graphback enabled project or create your own
