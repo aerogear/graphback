@@ -46,7 +46,7 @@ export class GraphbackGenerator {
     for (const pluginLabel of Object.keys(this.config.plugins)) {
       let pluginName;
       if (pluginLabel.startsWith('graphback-')) {
-        //Internal graphback plugins needs rename
+        // Internal graphback plugins needs rename
         pluginName = pluginLabel.replace('graphback-', '@graphback/codegen-');
       }
       else {

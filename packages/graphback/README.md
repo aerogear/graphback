@@ -47,10 +47,10 @@ Graphback Generator will utilize GraphQL-Config with underlying plugins
 For full usage please check: 
 https://github.com/aerogear/graphback/blob/master/packages/graphback-cli/src/components/generate.ts#L42-L43
 
-## GraphbackRuntime
+## Graphback Runtime
 
 Runtime class allows to initialize Graphback CRUD layer without code generation. 
 All resolvers and schema are created in-memory
 
 For full usage and examples please check runtime example application
-https://github.com/aerogear/graphback/tree/master/examples/runtime-example
+https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend

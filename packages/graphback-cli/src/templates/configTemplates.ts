@@ -1,8 +1,9 @@
 //tslint:disable: no-string-literal
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { IGraphQLConfig } from 'graphql-config';
 import { prompt as ask } from 'inquirer'
 import { safeDump } from 'js-yaml'
+import { logInfo } from '../utils';
 
 const configFilesPath = `${__dirname}/resources/config`
 
@@ -58,6 +59,10 @@ export const askForClient = async (): Promise<boolean> => {
  */
 export const createConfig = async (database: string, client: boolean) => {
   const configPath = `${process.cwd()}/.graphqlrc.yml`
+
+  if (existsSync(configPath)) {
+    logInfo("Graphback config already exist in following location and it cannot be overriden")
+  }
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`
   const [dbConfig, dockerCompose] = getConfig(database)

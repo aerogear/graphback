@@ -52,8 +52,7 @@ Then developers can create runtime instance:
 ```    
 
 
-Check our example application: https://github.com/aerogear/graphback/tree/master/examples/runtime-example 
-
+Check our example application: https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend
 
 ## Usage with Generated resolvers
 
@@ -62,7 +61,7 @@ By default resolver layer will based on the `crudService` field attached to cont
 Developers can use the helper function `createKnexRuntimeContext` that will build default context for resolver layer.
 
 See example app:
-https://github.com/aerogear/graphback/tree/master/examples/generator-fullstack
+https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
 
 ### Running example
 

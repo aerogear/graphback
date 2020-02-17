@@ -1,7 +1,7 @@
 {
   "packages": [
     "examples/*",
-    "examples/generator-fullstack/*",
+    "templates/**/*",
     "integration",
     "packages/*"
   ],

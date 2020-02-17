@@ -14,7 +14,7 @@ const model = {
 }
 
 test('Test cli workflow', async (t: ExecutionContext) => {
-  const basePath = resolve(`${__dirname}/../../../examples/generator-fullstack`);
+  const basePath = resolve(`${__dirname}/../../../templates/ts-apollo-fullstack`);
   process.chdir(basePath)
   await initConfig({ model, database: "sqlite3", client: true, skipInstall: true });
   await generateUsingPlugins({});
