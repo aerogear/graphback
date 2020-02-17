@@ -63,11 +63,6 @@ BREAKING changes for CLI/ and runtime.
 
 ### Graphback-CLI
 
-- Removed `init` method 
-
-Init method is no longer available. To start new boilerplate project
-please use graphql-cli `init` command instead that now incorporates Graphback.
-
 ### Graphback
 
 - Added runtime layer

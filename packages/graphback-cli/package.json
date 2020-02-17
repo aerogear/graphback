@@ -14,7 +14,7 @@
   "scripts": {
     "clean": "rimraf coverage dist types",
     "build": "tsc && cp -Rf ./src/templates/resources ./dist/templates/resources",
-    "cmd": "node ./dist/index.js",
+    "cmdinit": "ts-node ./dist/index.js init test",
     "watch": "tsc -w",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
     "test": "ava",
