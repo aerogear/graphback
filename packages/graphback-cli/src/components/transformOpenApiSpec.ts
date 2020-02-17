@@ -4,7 +4,7 @@ import { GlobSync } from 'glob';
 import { printSchema } from 'graphql';
 import { loadConfig } from 'graphql-config';
 import { safeLoad } from 'js-yaml'
-import { createGraphQlSchema } from "openapi-to-graphql"
+import { createGraphQLSchema } from "openapi-to-graphql"
 import { extensionName, graphbackConfigExtension } from '../config/extension';
 import { logError, logInfo } from '../utils';
 import { removeCommentsFromSchema, removeOperationsFromSchema } from "../utils/openApiHelpers"
@@ -19,7 +19,7 @@ async function processSingleDefinition(model: string, isYaml: boolean) {
         parsedObject = JSON.parse(schemaText);
     }
     try {
-        let { schema } = await createGraphQlSchema(parsedObject, {
+        let { schema } = await createGraphQLSchema(parsedObject, {
             strict: true,
             fillEmptyResponses: true,
             equivalentToMessages: false,
