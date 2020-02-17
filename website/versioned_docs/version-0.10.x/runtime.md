@@ -35,7 +35,7 @@ Then developers can create runtime instance:
 
 ```
 
-See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/examples/runtime-example)
+See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend)
 for more information
 
 ## Adding custom resolvers to runtime

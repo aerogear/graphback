@@ -30,7 +30,7 @@ To create GraphQL Layer at runtime developers need to initialize `GraphbackRunti
   });
 ```
 
-See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/examples/runtime-example/src/runtime.ts#L32) for a fully functional example.
+See [`./runtime.ts`](./src/runtime.ts#L32) for a fully functional example.
 
 ## Using different DataSource
 
