@@ -34,7 +34,7 @@
     "chalk": "3.0.0",
     "glob": "7.1.6",
     "graphql-annotations": "0.0.3",
-    "knex": "0.20.9",
+    "knex": "0.20.10",
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
