@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
+import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getTableName, getInputTypeName } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -122,10 +122,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
+        const inputName = getInputTypeName(model.graphqlType.name);
         
         //TODO relationships?
         return new GraphQLInputObjectType({
-            name: `${model.graphqlType.name}Input`,
+            name: inputName,
             fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
                 const fieldBaseType = getBaseType(field.type);
 
