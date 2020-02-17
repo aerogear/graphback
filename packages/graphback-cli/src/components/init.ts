@@ -26,6 +26,11 @@ function checkDirectory(path: string, name: string): void {
  * choose a template from available templates
  */
 async function chooseTemplate(): Promise<Template> {
+  logInfo(`Graphback init can create your app from following templates:
+  ${allTemplates.map(template => {
+    return `\n${chalk.green(template.name)}: \n${template.description}`
+  }).join("\n")}
+  `)
   const { templateName } = await ask([
     {
       type: 'list',

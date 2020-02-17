@@ -23,7 +23,7 @@ export const allTemplates: Template[] = [
   },
   {
     name: 'apollo-runtime-ts',
-    description: 'Apollo GraphQL template in typescript',
+    description: 'Apollo GraphQL Serverless (InMemory) template',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
       // TODO dynamic branching
