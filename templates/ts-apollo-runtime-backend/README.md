@@ -1,46 +1,13 @@
-## Graphback Runtime Example
+## Graphback Runtime Template
 
-Template that showcases Graphback runtime generation capabilities using
-resolver layer generated in memory.
+Template showcases Graphback Runtime (ServerLess) capabilities using
+resolver layer created in-memory as opposed to codegeneration.
 
-### Example
+Serverless example can be build as docker image with configurable volume for models. 
+This models will be processed at application at startup giving fully featured GraphQL Server 
+following Graphback CRUD specification.
 
-To create GraphQL Layer at runtime developers need to initialize `GraphbackRuntime` instance as follows:
-
-```ts
-
-    import { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } from 'graphback'
-    import { PubSub } from 'graphql-subscriptions';
-
-    const client = new Knex(...);
-    const graphbackOptions = {...}
-    const schemaText = `type Test ...`
-
-    const pubSub = new PubSub();
-    const serviceOverrides = {}
-    const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
-    const runtime = runtimeEngine.buildRuntime(db, pubSub, {});
-
-  const executableSchema = makeExecutableSchema({
-    typeDefs: printSchema(runtime.schema),
-    resolvers: runtime.resolvers,
-    resolverValidationOptions: {
-      requireResolversForResolveType: false
-    }
-  });
-```
-
-See [`./runtime.ts`](./src/runtime.ts#L32) for a fully functional example.
-
-## Using different DataSource
-
-Runtime is created using default CRUDService instance and KnexDBDataProvider db layer to retrieve the data. 
-Developers can override implementations for those when different datasource is used. 
-
-Currently 2 data providers are supported:
-
-- KnexDBDataProvider
-- PgKnexDBDataProvider
+For more information please refer to: 
 
 ### Running example using Postgres database
 
@@ -75,35 +42,16 @@ yarn develop
 
 ### Running example using SQLite database
 
-The project has been created using `graphback`. Run the project using the following steps.
-
-- Modify the db json object in the `graphback.json` config file. For an in-memory database, use the below config as-is, alternatively replace `:in-memory:` with the desired filename.
+Please change your graphqlrc.yml `dbmigrations` config
 
 ```
-"db": {
-  "dbConfig": {
-    "filename": ":in-memory:"
-  },
-  "database": "sqlite3"
-},
+  dbmigrations:
+      client: sqlite3
+      connection:
+        filename: ":in-memory:"
 ```
 
-- Next modify the `runtime.ts` file and change the `PGKnexDataProvider` to `KnexDBDataProvider`.
-
-```
-...
-
-import {
-  ...
-  KnexDBDataProvider
-} from 'graphback'
-
-...
-
-const dbClientProvider = new KnexDBDataProvider(client);
-
-...
-```
+- Next modify the `runtime.ts` file and use the `GraphbackRuntime` instead of `PGRuntime` class.
 
 - Define your schema in the `model/runtime.graphql` file. Or use the default:
 
