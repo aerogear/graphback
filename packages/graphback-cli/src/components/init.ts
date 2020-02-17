@@ -27,7 +27,7 @@ function checkDirectory(path: string, name: string): void {
  */
 async function chooseTemplate(): Promise<Template> {
   logInfo(`Graphback init can create your app from following templates:
-  ${allTemplates.map(template => {
+  ${allTemplates.map((template: Template) => {
     return `\n${chalk.green(template.name)}: \n${template.description}`
   }).join("\n")}
   `)
