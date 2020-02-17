@@ -1,10 +1,11 @@
 ---
-id: programatic
+id: serverless
 title: Serve GraphQL API without code
-sidebar_label: Programatic Usage
+sidebar_label: Serverless
 ---
 
-Graphback allows you to add GraphQL API without code generation. 
+Graphback allows you to add GraphQL API without code generation.
+Graphback package can be imported and used directly from your code or serverless handlers. 
 Schema and resolvers can be created when your application code is executed and used to create instance of Apollo or GraphQL-js server
 
 ## Adding runtime layer to your application
