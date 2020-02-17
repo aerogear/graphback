@@ -1,6 +1,6 @@
 {
   "name": "generator-client-example",
-  "version": "4.0.1-beta.1",
+  "version": "0.11.0-alpha1",
   "private": true,
   "dependencies": {
     "@apollo/react-common": "3.1.3",
