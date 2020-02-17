@@ -35,7 +35,7 @@ To create GraphQL Layer at runtime developers need to initialize `GraphbackRunti
   });
 ```
 
-See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/examples/runtime-example/src/runtime.ts#L32) for a fully functional example.
+See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts) for a fully functional example.
 
 ## Using different DataSource
 
@@ -51,7 +51,7 @@ Your resolvers can use different data providers thanks to swapping implementatio
 
 ![](/img/runtime.png)
 
-See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/examples/runtime-example)
+See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend)
 for more information.
 
 ## Adding custom resolvers to runtime
