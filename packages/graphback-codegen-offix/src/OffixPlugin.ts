@@ -1,8 +1,7 @@
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
-import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName } from '@graphback/core'
-import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType, GraphQLInt } from 'graphql';
+ 
+import { getBaseType, GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, getFieldName, GraphbackOperationType } from '@graphback/core'
+import { GraphQLSchema, GraphQLObjectType, GraphQLInt, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLField, isObjectType, getNullableType, GraphQLNonNull, GraphQLList } from 'graphql';
+
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -62,39 +61,45 @@ export class OffixPlugin extends GraphbackPlugin {
             // TODO generate delta resolvers (maybe separate plugin for delta?)
         }
 
-        const modelsSchema = {};
+        const versionedTypes = [];
         models.forEach((model: ModelDefinition) => {
-            // TODO use marker to check if we should add version
-            const fields = model.graphqlType.astNode.fields;
-            // TODO add version field
+            // TODO use `versioned` marker to check if we should add version
+            const config = model.graphqlType.toConfig();
+            const modifiedType = new GraphQLObjectType({
+                ...config,
+                fields: {
+                    ...config.fields,
+                    version: { type: GraphQLInt },
+                },
+            });
+            versionedTypes.push(modifiedType);
+
+            const inputType = schema.getType(getInputTypeName(model.graphqlType.name)) as GraphQLInputObjectType
+            if (inputType) {
+                const inputConfig: GraphQLInputObjectTypeConfig = inputType.toConfig();
+                const modifiedInputType = new GraphQLInputObjectType({
+                    ...inputConfig,
+                    fields: {
+                        ...config.fields,
+                        version: { type: GraphQLInt },
+                    }
+                });
+                versionedTypes.push(modifiedInputType);
+            }
         })
 
-        return mergeSchemas({ schemas: [modelsSchema, schema] });
+        const newVersionedSchema = new GraphQLSchema({
+            query: undefined,
+            types: versionedTypes
+        });
+
+        return mergeSchemas({ schemas: [newVersionedSchema, schema] });
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
-        // Schema plugin is going to create schema
+        // Schema plugin is going to create schem
+        // No work to be done
     }
-
-    protected createInputTypes(model: ModelDefinition) {
-        const modelFields = Object.values(model.graphqlType.getFields());
-        const inputName = getInputTypeName(model.graphqlType.name);
-       
-        //TODO relationships?
-        return new GraphQLInputObjectType({
-            name: inputName,
-            fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
-                const fieldBaseType = getBaseType(field.type);
-
-                return !isObjectType(fieldBaseType);
-            }).reduce((fieldObj: any, current: any) => {
-                const fieldType = current.type;
-                fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
-                return fieldObj;
-            }, {}))
-        });
-    }
-
 
     public getPluginName() {
         return SCHEMA_CRUD_PLUGIN_NAME;
