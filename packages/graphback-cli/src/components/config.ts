@@ -42,6 +42,8 @@ export interface InitOptions {
   model?: ModelTemplate
   //skip install
   skipInstall?: boolean
+  // Skip config generation
+  skipConfig?: boolean
 }
 
 /**
@@ -60,6 +62,8 @@ export async function initConfig(options: InitOptions = {}) {
   if (!options.skipInstall) {
     await installDependencies(database)
   }
-  await createConfig(database, client)
+  if (!options.skipConfig) {
+    await createConfig(database, client)
+  }
   logInfo(postSetupMessage())
 }
