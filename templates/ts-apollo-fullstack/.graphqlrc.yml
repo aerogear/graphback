@@ -26,6 +26,8 @@ extensions:
         graphback-resolvers:
           format: ts
           outputPath: ./server/src/resolvers
+        graphback-offix:
+          outputPath: ./server/src/resolvers
     ## Knex DB Migration config
     dbmigrations:
       ## See knex.js for db specific config format
