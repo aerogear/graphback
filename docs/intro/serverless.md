@@ -47,6 +47,9 @@ Currently 2 data providers are supported:
 - KnexDBDataProvider
 - PgKnexDBDataProvider
 
+Your resolvers can use different data providers thanks to swapping implementation in resolver context
+
+![](/img/runtime.png)
 
 See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/examples/runtime-example)
 for more information.

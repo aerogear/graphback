@@ -1,6 +1,6 @@
 ---
 id: config
-title: Graphback Config
+title: Config
 ---
 
 Graphback can generate source code, migrate your database or start fully functional server basing just on your GraphQL Model.

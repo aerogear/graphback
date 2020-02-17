@@ -11,7 +11,7 @@ The target of Graphback is to provide tooling for generating fully functional ba
 
 All you need to do with Graphback is to specify your data as GraphQL Types:
 
-<img src="/img/d1.png" width="30%" height="30%"></img>
+<img src="/img/d1.png" width="50%" height="50%"></img>
 
 
 GraphQL Types annotated with `@model` will be processed by Graphback to give you fully functional backend and client side 
@@ -29,38 +29,3 @@ Graphback will work with your current GraphQL enabled Node.js application or can
 
 ![](/img/sourcecode.png)
 
-## Graphback Code Generation
-
-Graphback plugins can be used to modify schema and generate various resources that can be included into your existing project or one of the maintained Graphback templates.
-Currently we support multiple formats of data including:
-    - Typescript
-    - JavaScript
-    - GQL (for Schema and client side documents)
-
-## Graphback CRUD Runtime
-
-Runtime layer allows you to dynamically swap datasource for different models without code generation. 
-By default Graphback will assume that all your data comes from underlying database layer and even create tables for you,
-but you can also point out any individual method or model to different data source. 
-Abstraction for Services and DB layer gives developers flexibility to support many sources of the data.
-
-## Database migrations
-
-To give you full experience of the out of the box backend graphback provides option for automatic database migrations.
-Database migrations are based on your model with various options for table mapping. 
-Currently we support many relational databases by utilizing Knex.js library for performing migrations.
-
-## Integration with existing GraphQL Ecosystem
-
-Graphback integrates with various libraries like:
-
-- GraphbQL-Codegen
-- GraphQL-Config
-
-## How can I start using Graphback
-
-Graphback can be used in 3 different flavours depending on your use cases.
-
-1. Using Graphback with Node.js GraphQL boilerplates by utilizing `graphql init`
-2. Adding Graphback to your existing project using `graphback config`
-3. Initializing Graphback in your code without code generation
