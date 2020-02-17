@@ -34,6 +34,7 @@
     "bootstrap": "lerna bootstrap --no-ci",
     "lint": "eslint 'packages/*/src/**/*.ts' 'packages/*/tests/**/*.ts'",
     "lint-fix": "eslint 'packages/*/src/**/*.ts' 'packages/*/tests/**/*.ts' --fix",
+    "unlock": "lerna exec -- del package-lock.json && del yarn.lock",
     "build": "lerna run build",
     "watch": "lerna run watch",
     "release:prep": "./scripts/prepareRelease.sh",
