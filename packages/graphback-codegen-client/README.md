@@ -15,3 +15,7 @@ by generating backend and client side CRUD layer using your GraphQL data model.
 **Documentation**: https://graphback.dev
 
 **Repository**: https://github.com/aerogear/graphback/
+
+## Usage
+
+See: https://graphback.dev/docs/next/plugins/plugin-intro

@@ -122,7 +122,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
-
+        
         //TODO relationships?
         return new GraphQLInputObjectType({
             name: `${model.graphqlType.name}Input`,
