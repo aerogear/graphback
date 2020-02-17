@@ -39,13 +39,13 @@
       "request": "launch",
       "env": {},
       "args": [
-        "${workspaceRoot}/examples/generator-fullstack/server/src/index.ts"
+        "${workspaceRoot}/templates/ts-apollo-fullstack/server/src/index.ts"
       ],
       "runtimeArgs": [
         "-r",
         "ts-node/register"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-fullstack/server",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack/server",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
@@ -55,13 +55,13 @@
       "request": "launch",
       "env": {},
       "args": [
-        "${workspaceRoot}/examples/runtime-example/src/index.ts"
+        "${workspaceRoot}/templates/ts-apollo-runtime-backend/src/index.ts"
       ],
       "runtimeArgs": [
         "-r",
         "ts-node/register"
       ],
-      "cwd": "${workspaceRoot}/examples/runtime-example",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-runtime-backend",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
@@ -77,7 +77,7 @@
       "args": [
         "config"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
     },
     {
       "type": "node",
@@ -94,7 +94,7 @@
       "args": [
         "generate"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
     },
     {
       "type": "node",
@@ -111,7 +111,7 @@
       "args": [
         "openapi"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
     },
     {
       "type": "node",
@@ -128,7 +128,7 @@
       "args": [
         "db"
       ],
-      "cwd": "${workspaceRoot}/examples/generator-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
     }
   ]
 }
