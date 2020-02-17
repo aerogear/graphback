@@ -12,7 +12,6 @@
   "license": "MIT",
   "devDependencies": {
     "graphback-cli": "0.11.0-alpha1",
-    "@test-graphql-cli/init": "canary",
     "@graphback/codegen-offix": "0.11.0-alpha1",
     "graphql": "14.6.0",
     "tslint": "5.20.1",
