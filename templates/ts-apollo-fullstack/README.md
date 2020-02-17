@@ -1,10 +1,10 @@
-# GraphQL CLI Basic Full Stack Template
+# Graphback Full Stack Template
 
-Starter Full Stack template using GraphQL CLI.
+Starter Full Stack template using Graphback
 
 ## Usage
 
-This project has been created using GraphQL CLI. Run the project using the following steps:
+This project has been created using Graphback Run the project using the following steps:
 
 - Install
 
@@ -21,14 +21,8 @@ docker-compose up -d
 - Generate resources(schema and resolvers) and create database
 
 ```sh
-yarn graphql generate --backend
-yarn graphql generate --db
-```
-
-- Generate typings for Database Schema and Resolvers
-
-```sh
-yarn graphql codegen
+yarn graphback generate
+yarn graphback db
 ```
 
 - Start the server
@@ -38,10 +32,6 @@ yarn start:server
 ```
 
 - Generate React components
-
-```sh
-yarn graphql codegen
-```
 
 - Start React App
 
