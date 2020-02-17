@@ -1,5 +1,6 @@
- 
-import { getBaseType, GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, getFieldName, GraphbackOperationType } from '@graphback/core'
+
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, getFieldName, GraphbackOperationType } from '@graphback/core'
+import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLSchema, GraphQLObjectType, GraphQLInt, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLField, isObjectType, getNullableType, GraphQLNonNull, GraphQLList } from 'graphql';
 
 
@@ -56,10 +57,7 @@ export class OffixPlugin extends GraphbackPlugin {
             return schema;
         }
 
-        if (this.pluginConfig.generateDeltaQueries) {
-            // TODO generate delta queries
-            // TODO generate delta resolvers (maybe separate plugin for delta?)
-        }
+
 
         const versionedTypes = [];
         models.forEach((model: ModelDefinition) => {
@@ -86,8 +84,17 @@ export class OffixPlugin extends GraphbackPlugin {
                 });
                 versionedTypes.push(modifiedInputType);
             }
+
+            // Diff queries
+            if (this.pluginConfig.generateDeltaQueries) {
+                // TODO generate delta queries
+                // TODO generate delta resolvers (maybe separate plugin for delta?)
+                // this.createDiffQuery(metadata)
+                // TODO - this.createDiffResolvers
+            }
         })
 
+        
         const newVersionedSchema = new GraphQLSchema({
             query: undefined,
             types: versionedTypes
@@ -99,6 +106,26 @@ export class OffixPlugin extends GraphbackPlugin {
     public createResources(metadata: GraphbackCoreMetadata): void {
         // Schema plugin is going to create schem
         // No work to be done
+    }
+
+    protected createDiffQuery(model: ModelDefinition) {
+        const queryTypes = {};
+        const name = model.graphqlType.name;
+        if (model.crudOptions.findAll) {
+            const operation = getFieldName(name, GraphbackOperationType.FIND_ALL) + 'Diff'
+            queryTypes[operation] = {
+                // TODO create new wrapper type
+                type: GraphQLNonNull(GraphQLList(model.graphqlType)),
+                args: {}
+            };
+        }
+
+        const queryType = new GraphQLObjectType({
+            name: 'Query',
+            fields: () => (queryTypes)
+        });
+
+        return queryType;
     }
 
     public getPluginName() {
