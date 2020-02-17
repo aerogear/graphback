@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@graphback/core": "^0.11.0-alpha1",
-    "knex": "0.20.9",
+    "knex": "0.20.10",
     "pg": "7.18.1",
     "pluralize": "8.0.0",
     "prettier": "1.19.1",
