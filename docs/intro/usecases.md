@@ -6,8 +6,8 @@ sidebar_label: Introduction
 
 ## How can I start using Graphback
 
-Graphback can be used in many different flavours depending on your use cases:
+Graphback can be used in many different ways, depending on your use case:
 
-1. Using Graphback with Node.js GraphQL boilerplates by utilizing `graphql init`
-2. Adding Graphback to your existing project using `graphback config`
-3. Initializing Graphback in your code without code generation
+1. Use Graphback with Node.js GraphQL boilerplates by using graphql `graphback init`
+2. Add Graphback to your existing project using `graphback config`
+3. Initialize Graphback in your code without code generation
