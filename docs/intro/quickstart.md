@@ -7,7 +7,7 @@ sidebar_label: Create app
 Create Node.js Server and React.js client application by defining your data model
 
 ```
-npx graphback-cli init
+npx graphback-cli init <project-name>
 ```
 
 Init command will create new project depending on template your have choosen.
