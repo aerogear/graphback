@@ -1,9 +1,12 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql'
+import { GraphQLObjectType, GraphQLSchema, GraphQLField } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
+import { parseDbAnnotations } from '../annotations/parser'
+import { getBaseType } from '../utils/getBaseType'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
+import { RelationshipMetadata } from './ModelRelationshipMetadata'
 
 const defaultCRUDGeneratorConfig = {
     "create": true,
@@ -45,11 +48,17 @@ export class GraphbackCoreMetadata {
 
         //Contains map of the models with their underlying CRUD configuration
         this.models = [];
+        const relationships = [];
         //Get actual user types 
         const modelTypes = this.getGraphQLTypesWithModel();
         for (const modelType of modelTypes) {
-            const model = this.buildModel(modelType)
-            this.models.push(model)
+            const relationshipMetadata = this.buildRelationships(modelType);
+            relationships.push(...relationshipMetadata);
+        }
+
+        for (const modelType of modelTypes) {
+            const model = this.buildModel(modelType, relationships)
+            this.models.push(model);
         }
 
         return this.models;
@@ -68,11 +77,55 @@ export class GraphbackCoreMetadata {
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
     }
 
-    private buildModel(modelType: GraphQLObjectType) {
+    private buildModel(modelType: GraphQLObjectType, relationships: RelationshipMetadata[]) {
         let crudOptions = parseAnnotations('crud', modelType.description)
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
-        
-        return { graphqlType: modelType, crudOptions };
+
+        const modelRelations = this.findModelRelationships(modelType.name, relationships);
+
+        return { graphqlType: modelType, relationships: modelRelations, crudOptions };
+    }
+
+    private buildRelationships(modelType: GraphQLObjectType): RelationshipMetadata[] {
+        const relationships = [];
+
+        // TODO: Move to helper
+        Object.values(modelType.getFields()).filter((f: GraphQLField<any, any>) => {
+            const dbAnnotations: any = parseDbAnnotations(f);
+
+            // TODO: validate case of multiple relationships on a field
+            return dbAnnotations.oneToMany || dbAnnotations.oneToOne;
+        }).forEach((f: GraphQLField<any, any>) => {
+            const dbAnnotations: any = parseDbAnnotations(f);
+
+            if (dbAnnotations.oneToMany) {
+                relationships.push({
+                    parent: modelType,
+                    parentField: f.name,
+                    relationshipKind: 'oneToMany',
+                    relationType: getBaseType(f.type),
+                    relationField: dbAnnotations.oneToMany
+                });
+            }
+
+            if (dbAnnotations.oneToOne) {
+                relationships.push({
+                    parent: modelType,
+                    parentField: f.name,
+                    relationshipKind: 'oneToOne',
+                    relationType: getBaseType(f.type),
+                    relationField: dbAnnotations.oneToOne
+                });
+            }
+        });
+
+        return relationships;
+    }
+
+    private findModelRelationships(modelName: string, relationships: RelationshipMetadata[]) {
+        return relationships.filter((relationship: RelationshipMetadata) => {
+            return relationship.parent.name === modelName;
+        });
     }
 }
