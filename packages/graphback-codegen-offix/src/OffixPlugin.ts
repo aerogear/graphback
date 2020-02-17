@@ -50,7 +50,7 @@ export class OffixPlugin extends GraphbackPlugin {
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
         const schema = metadata.getSchema()
-        const schemaComposer = new SchemaComposer();
+        const schemaComposer = new SchemaComposer(schema);
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
@@ -58,69 +58,39 @@ export class OffixPlugin extends GraphbackPlugin {
             return schema;
         }
 
-        const versionedTypes = [];
         models.forEach((model: ModelDefinition) => {
             // TODO use `versioned` marker to check if we should add version
-            const modifiedType = schemaComposer.createObjectTC(model.graphqlType);
+            const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
             modifiedType.addFields({
                 version: 'Int'
             });
 
-            versionedTypes.push(modifiedType);
-
-            const inputType = schema.getType(getInputTypeName(model.graphqlType.name)) as GraphQLInputObjectType
+            const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name))
             if (inputType) {
-                const modifiedInputType = schemaComposer.createInputTC(inputType);
-                modifiedInputType.addFields({
+                inputType.addFields({
                     version: 'Int'
                 });
-                versionedTypes.push(modifiedInputType);
             }
-
 
             // Diff queries
             if (this.pluginConfig.generateDeltaQueries) {
-                // TODO generate delta queries
-                // TODO generate delta resolvers (maybe separate plugin for delta?)
-                // this.createDiffQuery(metadata)
-                // TODO - this.createDiffResolvers
+                const diffQuery = model.graphqlType.name + 'Delta'
+                schemaComposer.Query.addFields({
+                    [diffQuery]: `[${model.graphqlType.name}]!`
+                })
+                schemaComposer.Query.addFieldArgs(diffQuery, {
+                    lastSync: 'String!'
+                })
+                // TODO generate delta resolvers
             }
         })
 
-        const newVersionedSchema = new GraphQLSchema({
-            query: new GraphQLObjectType({
-                name: 'Query',
-                fields: () => (undefined)
-            }),
-            types: versionedTypes
-        });
-    
-        return mergeSchemas({ schemas: [newVersionedSchema, schema] });
+        return schemaComposer.buildSchema()
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
         // Schema plugin is going to create schema for us
         // No work to be done
-    }
-
-    protected createDiffQuery(model: ModelDefinition) {
-        const queryTypes = {};
-        const name = model.graphqlType.name;
-        if (model.crudOptions.findAll) {
-            const operation = getFieldName(name, GraphbackOperationType.FIND_ALL) + 'Diff'
-            queryTypes[operation] = {
-                // TODO create new wrapper type
-                type: GraphQLNonNull(GraphQLList(model.graphqlType)),
-                args: {}
-            };
-        }
-
-        const queryType = new GraphQLObjectType({
-            name: 'Query',
-            fields: () => (queryTypes)
-        });
-
-        return queryType;
     }
 
     public getPluginName() {

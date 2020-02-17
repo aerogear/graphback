@@ -12,9 +12,4 @@
 
 ## Graphback-Codegen-Offix
 
-Generator for full GraphQL Schema. 
-Generator accepts Graphback model as input and uses it to generate fully functional schema
-
-## Usage
-
-See: https://graphback.dev/docs/next/plugins/plugin-intro
+Offix codegenerator prototype
