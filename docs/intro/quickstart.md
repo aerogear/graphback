@@ -1,7 +1,7 @@
 ---
 id: quickstart
 title: Create client and server application from template
-sidebar_label: Create App in 2 minutes
+sidebar_label: Create app
 ---
 
 Create Node.js Server and React.js client application by defining your data model

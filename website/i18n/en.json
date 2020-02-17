@@ -39,27 +39,35 @@
         "title": "Introduction to Graphback",
         "sidebar_label": "What is Graphback"
       },
+      "intro/concepts": {
+        "title": "Graphback Concepts",
+        "sidebar_label": "Concepts"
+      },
       "intro/config": {
-        "title": "Graphback Config"
+        "title": "Config"
       },
       "intro/datamodel": {
-        "title": "Defining your Data Model"
+        "title": "Data Model"
       },
       "intro/existingproject": {
         "title": "Adding Graphback to your Node.js project",
         "sidebar_label": "Add to Project"
       },
-      "intro/programatic": {
-        "title": "Serve GraphQL API without code",
-        "sidebar_label": "Programatic Usage"
-      },
       "intro/quickstart": {
         "title": "Create client and server application from template",
-        "sidebar_label": "Create App in 2 minutes"
+        "sidebar_label": "Create app"
+      },
+      "intro/serverless": {
+        "title": "Serve GraphQL API without code",
+        "sidebar_label": "Serverless"
       },
       "intro/template": {
         "title": "Create client and server application from template",
-        "sidebar_label": "Create App in 2 minutes"
+        "sidebar_label": "Create App from scratch"
+      },
+      "intro/usecases": {
+        "title": "How to use Graphback",
+        "sidebar_label": "Introduction"
       },
       "migrations/intromigrations": {
         "title": "Migrating to Graphback from other technologies",
@@ -183,7 +191,7 @@
     "categories": {
       "Getting Started": "Getting Started",
       "Use Cases": "Use Cases",
-      "Graphback CRUD": "Graphback CRUD",
+      "CRUD": "CRUD",
       "Generator Plugins": "Generator Plugins",
       "Database": "Database",
       "Migrating to Graphback": "Migrating to Graphback",

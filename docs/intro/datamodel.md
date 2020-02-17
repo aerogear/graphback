@@ -1,6 +1,6 @@
 ---
 id: datamodel
-title: Defining your Data Model
+title: Data Model
 ---
 
 ## Model
