@@ -1,6 +1,6 @@
 {
   "name": "runtime-example",
-  "version": "0.10.2",
+  "version": "0.11.0-alpha1",
   "description": "",
   "private": true,
   "main": "dist/src/index.js",
@@ -15,13 +15,13 @@
     "apollo-server-express": "2.10.1",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "graphback": "0.10.2",
+    "glob": "7.1.6",
+    "graphback": "^0.11.0-alpha1",
     "graphql": "14.6.0",
-    "graphql-migrations": "0.10.2",
+    "graphql-migrations": "^0.11.0-alpha1",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
     "knex": "0.20.9",
-    "glob": "7.1.6",
     "pg": "7.18.1"
   },
   "devDependencies": {
