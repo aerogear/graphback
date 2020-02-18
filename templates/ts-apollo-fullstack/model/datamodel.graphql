@@ -3,6 +3,9 @@ type Note {
   id: ID!
   title: String!
   description: String
+  """
+  @db.oneToMany: 'note'
+  """
   comments: [Comment]!
   likes: Int
 }
@@ -12,6 +15,10 @@ type Comment {
   id: ID!
   description: String
   author: String
+  """
+  @db.oneToOne: 'comments'
+  """
+  note: Note
 }
 
 type Query {
