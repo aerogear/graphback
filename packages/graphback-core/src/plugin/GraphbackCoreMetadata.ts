@@ -92,24 +92,27 @@ export class GraphbackCoreMetadata {
         const relationships = [];
 
         // TODO: Move to helper
+        // TODO: What if relation type is not a model?
         Object.values(modelType.getFields()).filter((f: GraphQLField<any, any>) => {
             const dbAnnotations: any = parseDbAnnotations(f);
 
             // TODO: validate case of multiple relationships on a field
-            return dbAnnotations.oneToMany || dbAnnotations.oneToOne;
+            return dbAnnotations.oneToMany || dbAnnotations.oneToOne || dbAnnotations.manyToOne;
         }).forEach((f: GraphQLField<any, any>) => {
             const dbAnnotations: any = parseDbAnnotations(f);
 
             if (dbAnnotations.oneToMany) {
                 const relationType = getBaseType(f.type) as GraphQLObjectType;
 
-                relationships.push({
+                const oneToMany: RelationshipMetadata = {
                     parent: modelType,
                     parentField: f.name,
                     relationshipKind: 'oneToMany',
                     relationType,
                     relationField: dbAnnotations.oneToMany
-                });
+                };
+
+                relationships.push(oneToMany);
             }
 
             if (dbAnnotations.oneToOne) {
@@ -131,6 +134,27 @@ export class GraphbackCoreMetadata {
                 };
 
                 relationships.push(oneToOne);
+            }
+
+            if (dbAnnotations.manyToOne) {
+                const relationType = getBaseType(f.type) as GraphQLObjectType;
+
+                const primaryKeyField = getPrimaryKey(relationType);
+                const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
+
+                 const manyToOne: RelationshipMetadata = {
+                    parent: modelType,
+                    parentField: f.name,
+                    relationshipKind: 'manyToOne',
+                    relationType,
+                    relationField: dbAnnotations.manyToOne,
+                    foreignKey: {
+                        name: foreignKeyFieldName,
+                        type: primaryKeyField.type
+                    }
+                };
+
+                relationships.push(manyToOne);
             }
         });
 
