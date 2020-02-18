@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Database Schema Migrations · Graphback</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Database Schema Migrations"/><meta name="docsearch:version" content="0.10.x"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Database Schema Migrations · Graphback"/><meta property="og:type" content="website"/><meta property="og:url" content="https://graphback.dev/"/><meta property="og:description" content="## Database Schema Migrations"/><meta property="og:image" content="https://graphback.dev/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://graphback.dev/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://graphback.dev/blog/atom.xml" title="Graphback Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://graphback.dev/blog/feed.xml" title="Graphback Blog RSS Feed"/><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/favicon.ico" alt="Graphback"/><h2 class="headerTitleWithLogo">Graphback</h2></a><a href="/versions"><h3>0.10.x</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/0.10.x/gettingstarted" target="_self">Documentation</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Database Schema Migrations</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="database-schema-migrations"></a><a href="#database-schema-migrations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Database Schema Migrations</h2>
+<p>Graphback uses <a href="../packages/graphql-migrations">graphql-migrations</a> to automatically create and update tables from a GraphQL schema.</p>
+<h3><a class="anchor" aria-hidden="true" id="cli"></a><a href="#cli" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CLI</h3>
+<p>To create or update your database from the CLI, run:</p>
+<pre><code class="hljs css language-sh">graphback db
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="usage"></a><a href="#usage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usage</h3>
+<p>The <code>migrateDB</code> method creates and updates your tables and columns to match your GraphQL schema.</p>
+<p>All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> jsonConfig <span class="hljs-keyword">from</span> <span class="hljs-string">'../graphback.json'</span>
+<span class="hljs-keyword">import</span> { schemaText } <span class="hljs-keyword">from</span> <span class="hljs-string">'./schema'</span>;
+<span class="hljs-keyword">import</span> { migrateDB } <span class="hljs-keyword">from</span> <span class="hljs-string">'graphql-migrations'</span>;
+<span class="hljs-keyword">import</span> { GraphQLBackendCreator, PgKnexDBDataProvider } <span class="hljs-keyword">from</span> <span class="hljs-string">'graphback'</span>;
+
+<span class="hljs-keyword">const</span> backend = <span class="hljs-keyword">new</span> GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
+<span class="hljs-keyword">const</span> dbClientProvider = <span class="hljs-keyword">new</span> PgKnexDBDataProvider(client);
+
+<span class="hljs-keyword">const</span> dbConfig = {
+  client: jsonConfig.db.database,
+  connection: jsonConfig.db.dbConfig
+};
+
+migrateDB(dbConfig, schemaText, {
+  <span class="hljs-comment">// Additional options</span>
+}).then(<span class="hljs-function">(<span class="hljs-params">ops</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(ops);
+});
+
+<span class="hljs-keyword">const</span> pubSub = <span class="hljs-keyword">new</span> PubSub();
+
+<span class="hljs-keyword">const</span> runtime = <span class="hljs-keyword">await</span> backend.createRuntime(dbClientProvider, pubSub);
+...
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="migration-options"></a><a href="#migration-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Migration Options</h3>
+<ul>
+<li><code>config</code>: database configuration options.</li>
+<li><code>schemaText</code>: GraphQL schema text.</li>
+<li><code>options</code>:
+<ul>
+<li><code>updateComments</code>: overwrite comments on table and columns.</li>
+<li><code>scalarMap</code>: Custom scalar mapping. Default: <code>null</code>.</li>
+<li><code>mapListToJson</code>: Map scalar lists to JSON column type by default.</li>
+<li><code>debug</code>: display debugging information and SQL queries.</li>
+<li><code>removeDirectivesFromSchema</code>: removes all directives from the GraphQL schema.</li>
+<li>All other options are not currently supported by Graphback.</li>
+</ul></li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="defining-your-data-model"></a><a href="#defining-your-data-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Defining your data model</h3>
+<h4><a class="anchor" aria-hidden="true" id="primary-key"></a><a href="#primary-key" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Primary key</h4>
+<p>Each type must have a primary key. The primary key field must be <code>id</code> and the type must be <code>ID</code>.</p>
+<pre><code class="hljs css language-gql">type<span class="hljs-built_in"> Note </span>{
+  id: ID!
+  title: String!
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="foreign-key"></a><a href="#foreign-key" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Foreign key</h4>
+<p>To set a foreign key, set a field reference to the related type.</p>
+<pre><code class="hljs css language-gql"><span class="hljs-keyword">type</span> <span class="hljs-type">Comment</span> {
+  id: <span class="hljs-type">ID</span>!
+  note: <span class="hljs-type">Note</span>! # this creates a `noteId` column in the `comment` table.
+}
+
+<span class="hljs-keyword">type</span> <span class="hljs-type">Note</span> {
+  id: <span class="hljs-type">ID</span>!
+  title: <span class="hljs-type">String</span>!
+}
+</code></pre>
+<blockquote>
+<p>NOTE: See <a href="./relationships">relationships</a> for how to customise foreign key field names.</p>
+</blockquote>
+<h4><a class="anchor" aria-hidden="true" id="default-field-value"></a><a href="#default-field-value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Default field value</h4>
+<pre><code class="hljs css language-gql"><span class="hljs-selector-tag">type</span> <span class="hljs-selector-tag">Note</span> {
+  <span class="hljs-attribute">id</span>: ID!
+  <span class="hljs-attribute">title</span>: String!
+  <span class="hljs-string">""</span>"
+  <span class="hljs-variable">@db</span>.<span class="hljs-attribute">default</span>: false
+  <span class="hljs-string">""</span>"
+  <span class="hljs-attribute">complete</span>: Boolean
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="custom-column-type"></a><a href="#custom-column-type" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom column type</h4>
+<pre><code class="hljs css language-gql"><span class="hljs-selector-tag">type</span> <span class="hljs-selector-tag">Note</span> {
+  <span class="hljs-attribute">id</span>: ID!
+  <span class="hljs-string">""</span>"
+  <span class="hljs-variable">@db</span>.<span class="hljs-attribute">type</span>: <span class="hljs-string">'string'</span>
+  <span class="hljs-variable">@db</span>.<span class="hljs-attribute">length</span>: <span class="hljs-number">100</span>
+  <span class="hljs-string">""</span>"
+  <span class="hljs-attribute">title</span>: String!
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="changing-column-names-in-graphback"></a><a href="#changing-column-names-in-graphback" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Changing column names in graphback</h4>
+<p>When working with database migration library it is possible to change individual database columns.
+Using custom column will require manual mapping in resolver or database layer.</p>
+<pre><code class="hljs css language-gql"><span class="hljs-selector-tag">type</span> <span class="hljs-selector-tag">Note</span> {
+  <span class="hljs-attribute">id</span>: ID!
+  <span class="hljs-string">""</span>"
+  <span class="hljs-variable">@db</span>.<span class="hljs-attribute">name</span>: <span class="hljs-string">'note_title'</span>
+  <span class="hljs-string">""</span>"
+  <span class="hljs-attribute">title</span>: String!
+}
+</code></pre>
+<p>When using custom name in database we need to map it directly inside resolver or db layer.</p>
+<pre><code class="hljs css language-ts">      <span class="hljs-comment">// In your data provider</span>
+      data.title = data[<span class="hljs-string">'note_title'</span>]
+      <span class="hljs-keyword">return</span> data;
+    }
+</code></pre>
+<blockquote>
+<p>NOTE: database migration logic require objects to have <code>id: ID!</code> field defined.
+Renaming <code>id</code> field to anything else will break Graphback data resolution logic</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="compatibility"></a><a href="#compatibility" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Compatibility</h3>
+<p>The following database providers support full database schema migrations.</p>
+<ul>
+<li>PostgreSQL</li>
+<li>SQLLite</li>
+</ul>
+<h1><a class="anchor" aria-hidden="true" id="migrations-engine-for-production-use-cases"></a><a href="#migrations-engine-for-production-use-cases" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Migrations Engine for Production use cases</h1>
+<p>As supplement to development database migrations Graphback offers additional method called
+<code>migrateDBUsingSchema</code>.
+<code>migrateDBUsingSchema</code> can be used to perform migrations in a controlled/production environment.</p>
+<p>Options:</p>
+<ul>
+<li><code>schemaText</code>: GraphQL schema text.</li>
+<li><code>strategy</code>: Database initialization strategy. Options: <code>UpdateDatabaseIfChanges</code>, <code>DropCreateDatabaseAlways</code>.</li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="strategies"></a><a href="#strategies" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Strategies</h4>
+<p><strong>UpdateDatabaseIfChanges</strong> - Only update the database when your input schema has been changed.</p>
+<p>Options:</p>
+<ul>
+<li><code>client</code>: <a href="http://knexjs.org/">knex</a> configuration object.</li>
+<li><code>migrationsDir</code>: Folder to save/read local migration data.</li>
+</ul>
+<p><strong>DropCreateDatabaseAlways</strong> - Wipe and recreate a new database every time.</p>
+<p>Options:</p>
+<ul>
+<li><code>client</code>: Database provider type (e.g: <code>pg</code>, <code>sqlite3</code>)</li>
+<li><code>db</code>: <a href="http://knexjs.org/">knex</a> configuration object.</li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="configuration"></a><a href="#configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuration</h4>
+<p>Here is an example of how to configure database initialization strategies.</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> jsonConfig <span class="hljs-keyword">from</span> <span class="hljs-string">'../graphback.json'</span>
+<span class="hljs-keyword">import</span> { schemaText } <span class="hljs-keyword">from</span> <span class="hljs-string">'./schema'</span>;
+<span class="hljs-keyword">import</span> { migrateDBUsingSchema, UpdateDatabaseIfChanges } <span class="hljs-keyword">from</span> <span class="hljs-string">'graphql-migrations'</span>;
+
+<span class="hljs-keyword">const</span> db = <span class="hljs-keyword">new</span> Knex(...);
+
+<span class="hljs-keyword">const</span> backend = <span class="hljs-keyword">new</span> GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
+<span class="hljs-keyword">const</span> dbClientProvider = <span class="hljs-keyword">new</span> PgKnexDBDataProvider(client);
+
+<span class="hljs-keyword">const</span> dbInitialization = <span class="hljs-keyword">new</span> UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
+
+<span class="hljs-keyword">await</span> migrateDBUsingSchema(schemaText, dbInitialization)
+
+<span class="hljs-keyword">const</span> pubSub = <span class="hljs-keyword">new</span> PubSub();
+<span class="hljs-keyword">const</span> runtime = <span class="hljs-keyword">await</span> backend.createRuntime(dbClientProvider, pubSub);
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="limitations"></a><a href="#limitations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Limitations</h4>
+<p>Schema migrations are in a very early phase. At present the change types that are allowed is limited to the following:</p>
+<ul>
+<li><strong>TYPE_ADDED</strong> - Adding a new GraphQL type to your model will create an associated database table.</li>
+<li><strong>FIELD_ADDED</strong> - Adding a field to an existing model will create a new column in your database table.</li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#database-schema-migrations">Database Schema Migrations</a><ul class="toc-headings"><li><a href="#cli">CLI</a></li><li><a href="#usage">Usage</a></li><li><a href="#migration-options">Migration Options</a></li><li><a href="#defining-your-data-model">Defining your data model</a></li><li><a href="#compatibility">Compatibility</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2020 Graphback Contributors</section></footer></div></body></html>
