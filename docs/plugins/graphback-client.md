@@ -63,7 +63,7 @@ Example plugin configuration in YAML:
 
 ## How it works
 
-Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will set `client` in `graphback.json` to `true`.
+Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will setup client generator plugin in your config
 
 For a data model having
 ```

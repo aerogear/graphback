@@ -4,11 +4,9 @@ title: Database Schema Migrations
 sidebar_label:  Database Schema Migrations
 ---
 
-> NOTE: This document is still in progress some of the content here might be oudated
-
 ## Database Schema Migrations
 
-Graphback uses [graphql-migrations](../packages/graphql-migrations) to automatically create and update tables from a GraphQL schema.
+Graphback uses [graphql-migrations](https://www.npmjs.com/package/graphql-migrations) to automatically create and update tables from a GraphQL schema.
 
 ### CLI
 
@@ -25,18 +23,10 @@ The `migrateDB` method creates and updates your tables and columns to match your
 All the database operations are wrapped in a single transaction, so your database will be fully rolled back to its initial state if an error occurs.
 
 ```ts
-import * as jsonConfig from '../graphback.json'
-import { schemaText } from './schema';
 import { migrateDB } from 'graphql-migrations';
-import { GraphQLBackendCreator, PgKnexDBDataProvider } from 'graphback';
-
-// TODO change description here to use schema without CRUD interface
-const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
-const dbClientProvider = new PgKnexDBDataProvider(client);
 
 const dbConfig = {
-  client: jsonConfig.db.database,
-  connection: jsonConfig.db.dbConfig
+  // Knex.js based configuration
 };
 
 migrateDB(dbConfig, schemaText, {
@@ -44,10 +34,6 @@ migrateDB(dbConfig, schemaText, {
 }).then((ops) => {
     console.log(ops);
 });
-
-const pubSub = new PubSub();
-
-const runtime = await backend.createRuntime(dbClientProvider, pubSub);
 ...
 ```
 
@@ -153,59 +139,3 @@ The following database providers support full database schema migrations.
 
 - PostgreSQL
 - SQLLite
-
-# Migrations Engine for Production use cases
-
-As supplement to development database migrations Graphback offers additional method called
-`migrateDBUsingSchema`.
-`migrateDBUsingSchema` can be used to perform migrations in a controlled/production environment.
-
-Options:
-
-- `schemaText`: GraphQL schema text.
-- `strategy`: Database initialization strategy. Options: `UpdateDatabaseIfChanges`, `DropCreateDatabaseAlways`.
-  
-#### Strategies
-
-**UpdateDatabaseIfChanges** - Only update the database when your input schema has been changed.
-
-Options:
-
-- `client`: [knex](http://knexjs.org/) configuration object.
-- `migrationsDir`: Folder to save/read local migration data.
-
-**DropCreateDatabaseAlways** - Wipe and recreate a new database every time.
-
-Options:
-
-- `client`: Database provider type (e.g: `pg`, `sqlite3`)
-- `db`: [knex](http://knexjs.org/) configuration object.
-
-#### Configuration
-
-Here is an example of how to configure database initialization strategies.
-
-```ts
-import * as jsonConfig from '../graphback.json'
-import { schemaText } from './schema';
-import { migrateDBUsingSchema, UpdateDatabaseIfChanges } from 'graphql-migrations';
-
-const db = new Knex(...);
-
-const backend = new GraphQLBackendCreator(schemaText, jsonConfig.graphqlCRUD);
-const dbClientProvider = new PgKnexDBDataProvider(client);
-
-const dbInitialization = new UpdateDatabaseIfChanges(client, jsonConfig.folders.migrations);
-
-await migrateDBUsingSchema(schemaText, dbInitialization)
-
-const pubSub = new PubSub();
-const runtime = await backend.createRuntime(dbClientProvider, pubSub);
-```
-
-#### Limitations
-
-Schema migrations are in a very early phase. At present the change types that are allowed is limited to the following:
-
-- **TYPE_ADDED** - Adding a new GraphQL type to your model will create an associated database table.
-- **FIELD_ADDED** - Adding a field to an existing model will create a new column in your database table.

@@ -9,9 +9,7 @@ sidebar_label: Add to Project
 Graphback CLI can be used to add code generation capabilities to your existing Node.js Server that implements GraphQL API.
 
 ```bash
-npm i -g graphback-cli
-cd your-node-app
-graphback config
+npx graphback-cli config
 ```
 Follow the on-screen instructions.
 
@@ -21,7 +19,6 @@ Config command will:
 - Initialize example model file 
 - Add required packages to your package.json file
 - Provide database migration configuration for database running on local machine
-
 
 > NOTE: If you use SQLite, you don't need to use Docker 
 
@@ -33,7 +30,7 @@ For more information about runtime layer please follow [`runtime`](/docs/runtime
 
 ## Creating and updating your database from your data model
 
-Graphback will create or update the database configured in `graphback.json` file, using the types defined in your data model.
+Graphback will create or update the database configured in `graphqlrc.yml` file, using the types defined in your data model.
 
 ```gql
 type User {
