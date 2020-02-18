@@ -75,11 +75,10 @@ If your plugin relies on other plugins it should be placed on the bottom of the 
 
 ```
 
-> NOTE: Graphback cli includes graphback core plugings. When adding your own plugins you need to run graphback cli from your npm scripts
+> NOTE: Graphback CLI includes Graphback core pluging. When adding your own plugins you need to run Graphback CLI from your npm scripts
 for the graphback engine to be able to pick up the plugin package.
 
 ## Plugins helper
 
 '@graphback/core' offers helpers for building plugins. 
 Please refer to the package documentation for more details.
-
