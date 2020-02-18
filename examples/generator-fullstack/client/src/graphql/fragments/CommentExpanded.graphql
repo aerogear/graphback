@@ -1,0 +1,6 @@
+fragment CommentExpandedField on Comment {
+   id
+   description
+   author
+
+} 

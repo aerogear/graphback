@@ -1,0 +1,7 @@
+fragment NoteFields on Note {
+   id
+   title
+   description
+   likes
+
+} 
