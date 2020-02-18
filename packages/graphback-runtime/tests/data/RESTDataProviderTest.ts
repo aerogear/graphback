@@ -7,35 +7,56 @@ interface Context {
 }
 
 interface Unicorn {
-    id: string;
+    project_category_id: number;
     name: string;
-    age: number;
-    color:string;
 }
 
 const test = _test as TestInterface<Context>;
 
 test.beforeEach(async t => {
-    const provider = new RESTDataProvider('https://crudcrud.com/api/2e1c242b1f6943a9b2b16455b79e04ab');
+    const provider = new RESTDataProvider('http://64.225.124.94:7000/api');
   
     t.context = { provider };
 });
 
-// test('find all Unicorns', async t => {
-//     const unicorns = await t.context.provider.findAll('unicorns');
-  
-//     t.assert(unicorns.length === 3);
-// });
 
-// test('create unicorn',async t => {
-//     const unicorn = {id:12345666,name:"Lahiru",age:23,color:"brown"}
-//     const result = await t.context.provider.create(unicorn,'unicorns')
-//     t.assert(result.name === unicorn.name && result.age === unicorn.age && result.color === unicorn.color)
+
+/**
+ * 
+ * Currently I just have 3 endpoints in my hosted server. So I tested only 
+ * create, findAll and delete. However tests for other endpoints also can
+ * be implemented similarly.
+ */
+
+
+// test for findAll
+test('find all Project categories', async t => {
+    const projectCategories = await t.context.provider.findAll('category_manage/category');
+    console.log("findALL",projectCategories)
+    t.assert(projectCategories['data'].length > 0);
+});
+
+// test for create
+test('create Project category',async t => {
+    const project_category = {name:'JBoss'}
+    const result = await t.context.provider.create(project_category,'category_manage/category')
+    console.log("create",result)
+    t.assert(result['data']['affectedRows'] === 1)
+})
+
+
+// test for delete.
+test('delete a project category',async t => {
+    const data = {category_id:15};
+    const result = await t.context.provider.delete(data,'category_manage/category')
+    console.log('delete',result)
+    t.assert(result['data']['affectedRows'] ===1);
+})
+
+
+// test('update a project category',async t => {
+//     const updated = {id:"1",name:"updated"}
+//     const result = await t.context.provider.update(updated,'unicorns')
+//     t.assert(result['data']['affectedRows'] === 1);
 // })
 
-
-test('update the unicorn',async t => {
-    const unicorn = {id:"5e4b76ece6280703e8ec18b1",name:"XXXXXXXXXXX",age:56,color:"green"}
-    const result = await t.context.provider.update(unicorn,'unicorns')
-    t.assert(result.id === unicorn.id)
-})
