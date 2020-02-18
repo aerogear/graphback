@@ -6,8 +6,8 @@ interface Context {
     provider: RESTDataProvider;
 }
 
-interface Unicorn {
-    project_category_id: number;
+interface Project {
+    category_id: number;
     name: string;
 }
 
@@ -47,7 +47,7 @@ test('create Project category',async t => {
 
 // test for delete.
 test('delete a project category',async t => {
-    const data = {category_id:15};
+    const data = {category_id:16};
     const result = await t.context.provider.delete(data,'category_manage/category')
     console.log('delete',result)
     t.assert(result['data']['affectedRows'] ===1);
