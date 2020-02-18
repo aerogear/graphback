@@ -7,20 +7,39 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
 
     protected baseUrl : string;
 
-    create(data: Type, context?: GraphbackContext): Promise<Type> {
-
-        throw new Error("Method not implemented.");
+    public constructor(baseUrl:string) {
+      this.baseUrl = baseUrl;
     }
-    update(data: Type, context?: GraphbackContext): Promise<Type> {
+
+    create(data: Type, context?: GraphbackContext): Promise<Type> {
+        const url = this.baseUrl+`/${context!==undefined ? context : ""}`
+        return fetch(url, {
+        method: 'post',
+        body:    JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+        })
+        .then(res => res.json())
+        //throw new Error("Method not implemented.");
+    }
+    async update(data: Type, context?: GraphbackContext): Promise<Type> {
+        const url = this.baseUrl+`/${context!==undefined ? context : ""}`+`/${data['id']}`
+        const res = await fetch(url,{
+            method: 'PUT',
+            body:    JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' },
+            })
+        const json = await res.json()
+        return json;
+
         throw new Error("Method not implemented.");
     }
     delete(data: Type, context?: GraphbackContext): Promise<Type> {
         throw new Error("Method not implemented.");
     }
     async findAll(context?: GraphbackContext): Promise<Type[]> {
-        const res = await fetch('https://crudcrud.com/api/2e1c242b1f6943a9b2b16455b79e04ab/unicorns')
+        const url = this.baseUrl+`/${context}`
+        const res = await fetch(url)
         const json = await res.json()
-        console.log(json)
         return json
     }
     findBy(filter: any, context?: GraphbackContext): Promise<Type[]> {
@@ -32,6 +51,3 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
 
 
 }
-
-let source = new RESTDataProvider()
-source.findAll()
