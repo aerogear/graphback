@@ -67,9 +67,9 @@ export const createResolverTemplate = (typeResolvers: GeneratorResolversFormat, 
         }`)
         }
     } else if (options.layout === "graphql") {
-        outputResolvers.push(`${queries.join(',\n')}`)
-        outputResolvers.push(`${mutations.join(',\n')}`)
-        outputResolvers.push(`${subscriptions.join(',\n')}`)
+        outputResolvers.push(`${queries.join(',\n')},`)
+        outputResolvers.push(`${mutations.join(',\n')},`)
+        outputResolvers.push(`${subscriptions.join(',\n')},`)
     } else {
         throw new Error("Wrong layout specified in resolver generator plugin")
     }
