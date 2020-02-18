@@ -20,7 +20,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      */
     async create(data: Type, context?: GraphbackContext): Promise<Type> {
-        const url = this.baseUrl+`/${context!==undefined ? context : ""}`   
+        const url = `${this.baseUrl}/${this.type.name.toLowerCase()}`   
         const res = await fetch(url, {
             method: 'post',
             body:    JSON.stringify(data),
