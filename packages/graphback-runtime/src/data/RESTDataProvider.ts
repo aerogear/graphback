@@ -6,7 +6,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
     protected baseUrl : string;
 
     //constructor
-    public constructor(baseUrl:string) {
+    public constructor(type: GraphqlObjectType, baseUrl:string) {
       this.baseUrl = baseUrl;
     }
 
