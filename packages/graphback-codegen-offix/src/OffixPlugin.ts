@@ -28,7 +28,7 @@ export interface OffixPluginConfig {
 
 }
 
-export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
+export const SCHEMA_CRUD_PLUGIN_NAME = "OffixPlugin";
 
 /**
  * Ofix plugin
