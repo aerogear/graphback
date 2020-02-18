@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getTableName, getInputTypeName } from '@graphback/core'
+import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getTableName, getInputTypeName, RelationshipMetadata, findRelationship } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType, GraphQLInt } from 'graphql';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -114,7 +114,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             queryTypes = this.createQueries(model, queryTypes, modelInputType);
             mutationTypes = this.createMutations(model, mutationTypes, modelInputType);
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
-
         }
 
         return this.createSchema(queryTypes, mutationTypes, subscriptionTypes);
@@ -127,13 +126,24 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         //TODO relationships?
         return new GraphQLInputObjectType({
             name: inputName,
-            fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
-                const fieldBaseType = getBaseType(field.type);
-
-                return !isObjectType(fieldBaseType);
-            }).reduce((fieldObj: any, current: any) => {
+            fields: () => (modelFields.reduce((fieldObj: any, current: any) => {
                 const fieldType = current.type;
-                fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
+
+                const relationshipField = findRelationship(current.name, model.relationships);
+
+                if (!relationshipField) {
+                    fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
+
+                    return fieldObj;
+                }
+                
+                // add relationship field to input type
+                if (['oneToOne', 'manyToOne'].includes(relationshipField.relationshipKind)) {
+                    fieldObj[relationshipField.foreignKey.name] = {
+                        type: getNullableType(relationshipField.foreignKey.type),
+                        description: ''
+                    };
+                }
 
                 return fieldObj;
             }, {}))
