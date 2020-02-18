@@ -2,6 +2,7 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLField } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
 import { parseDbAnnotations } from '../annotations/parser'
 import { getBaseType } from '../utils/getBaseType'
+import { getPrimaryKey, transformForeignKeyName } from '../db'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
@@ -100,23 +101,36 @@ export class GraphbackCoreMetadata {
             const dbAnnotations: any = parseDbAnnotations(f);
 
             if (dbAnnotations.oneToMany) {
+                const relationType = getBaseType(f.type) as GraphQLObjectType;
+
                 relationships.push({
                     parent: modelType,
                     parentField: f.name,
                     relationshipKind: 'oneToMany',
-                    relationType: getBaseType(f.type),
+                    relationType,
                     relationField: dbAnnotations.oneToMany
                 });
             }
 
             if (dbAnnotations.oneToOne) {
-                relationships.push({
+                const relationType = getBaseType(f.type) as GraphQLObjectType;
+
+                const primaryKeyField = getPrimaryKey(relationType);
+                const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
+
+                const oneToOne: RelationshipMetadata = {
                     parent: modelType,
                     parentField: f.name,
                     relationshipKind: 'oneToOne',
-                    relationType: getBaseType(f.type),
-                    relationField: dbAnnotations.oneToOne
-                });
+                    relationType,
+                    relationField: dbAnnotations.oneToOne,
+                    foreignKey: {
+                        name: foreignKeyFieldName,
+                        type: primaryKeyField.type
+                    }
+                };
+
+                relationships.push(oneToOne);
             }
         });
 

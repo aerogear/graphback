@@ -21,3 +21,11 @@ export function defaultTableNameTransform(name: string, direction: DatabaseNameT
 
   return name
 }
+
+export function transformForeignKeyName(name: string, direction: DatabaseNameTransformDirection) {
+  if (direction === 'to-db') {
+    return `${name}Id`;
+  }
+
+  return name;
+}
