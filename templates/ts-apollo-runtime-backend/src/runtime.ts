@@ -35,13 +35,5 @@ export const createRuntime = async () => {
   const runtimeEngine = new PGRuntime(schemaText, graphbackConfig);
   const runtime = runtimeEngine.buildRuntime(db, pubSub, {});
 
-  const executableSchema = makeExecutableSchema({
-    typeDefs: printSchema(runtime.schema),
-    resolvers: runtime.resolvers,
-    resolverValidationOptions: {
-      requireResolversForResolveType: false
-    }
-  });
-
-  return executableSchema;
+  return runtime;
 }
