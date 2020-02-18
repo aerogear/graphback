@@ -51,6 +51,7 @@ export function isSubscriptionType(
  */
 //TODO remove this method and use `printSchema(lexicographicSortSchema(schema))`
 export function printSortedSchema(schema: GraphQLSchema) {
+
     const schemaTypes = Object.values(schema.getTypeMap());
 
     const orderedTypes = schemaTypes.filter((schemaType: GraphQLObjectType) => {
@@ -64,9 +65,9 @@ export function printSortedSchema(schema: GraphQLSchema) {
             return false;
         }
 
-        return schemaType.astNode?.loc !== undefined;
+        return schemaType.astNode !== undefined;
     }).sort((type1: GraphQLObjectType, type2: GraphQLObjectType) => {
-        return type1.astNode.loc.start - type2.astNode.loc.start
+        return type1.astNode?.loc?.start - type2.astNode?.loc?.start
     })
 
     let schemaString = '';

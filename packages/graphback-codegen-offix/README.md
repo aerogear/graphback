@@ -1,4 +1,4 @@
-## Graphback Codegen Schema
+## Graphback CodeGen offix
 
 <p align="center">
   <img width="400" src="https://github.com/aerogear/graphback/raw/master/website/static/img/graphback.png">
@@ -10,11 +10,6 @@
 **Documentation**: https://graphback.dev
 **Repository**: https://github.com/aerogear/graphback/
 
-## Graphback-Codegen-Schema 
+## Graphback-Codegen-Offix
 
-Generator for full GraphQL Schema. 
-Generator accepts Graphback model as input and uses it to generate fully functional schema
-
-## Usage
-
-See: https://graphback.dev/docs/next/plugins/plugin-intro
+Offix codegenerator prototype

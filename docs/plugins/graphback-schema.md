@@ -20,8 +20,8 @@ npm install @graphback/codegen-schema
 
 Generated graphql schema file can be used to create GraphQL Server.
 
-Please reffer to generator-fullstack example for fully functional example:
-https://github.com/aerogear/graphback/tree/master/examples/generator-fullstack
+Please reffer to ts-apollo-fullstack app for fully functional example:
+https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
 
 ## Plugin Config
 

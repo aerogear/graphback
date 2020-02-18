@@ -1,6 +1,6 @@
 {
-  "name": "graphql-cli-fullstack-template",
-  "version": "0.11.0-alpha1",
+  "name": "graphback-fullstack-template",
+  "version": "0.11.0-rc1",
   "private": true,
   "scripts": {
     "start:server": "cd server/ && yarn start",
@@ -11,26 +11,13 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@graphql-codegen/typescript": "canary",
-    "@graphql-codegen/typescript-operations": "canary",
-    "@graphql-codegen/typescript-react-apollo": "canary",
-    "@graphql-codegen/typescript-resolvers": "canary",
-    "@test-graphql-cli/codegen": "canary",
-    "@test-graphql-cli/coverage": "canary",
-    "@test-graphql-cli/diff": "canary",
-    "@test-graphql-cli/generate": "canary",
-    "@test-graphql-cli/init": "canary",
-    "@test-graphql-cli/serve": "canary",
-    "@test-graphql-cli/similar": "canary",
-    "@test-graphql-cli/validate": "canary",
+    "graphback-cli": "0.11.0-rc1",
+
     "graphql": "14.6.0",
-    "graphql-cli": "canary",
     "tslint": "5.20.1",
     "typescript": "3.7.5"
   },
   "dependencies": {
-    "@graphql-codegen/add": "1.12.2",
-    "pg": "7.18.1",
-    "sqlite3": "4.1.1"
+    "pg": "7.18.1"
   }
 }

@@ -15,4 +15,5 @@ the chance to adjust the schema and underlying data access layer.
 ## Graphback supported migrations
 
 - OpenAPI (RESTful server migrations)
-- Database migrations (WIP)
+- Various plugins available as part of GraphQL compose
+https://github.com/graphql-compose/graphql-compose

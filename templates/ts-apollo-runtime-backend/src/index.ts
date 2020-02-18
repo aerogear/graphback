@@ -1,8 +1,9 @@
-import { ApolloServer } from "apollo-server-express"
+import { ApolloServer, makeExecutableSchema } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
 import http from "http"
 import { createRuntime } from './runtime'
+import { printSchema } from 'graphql'
 
 async function start() {
   const app = express()
@@ -10,10 +11,15 @@ async function start() {
   app.use(cors())
 
   // connect to db
-  const schema = await createRuntime();
+  const runtime = await createRuntime();
 
   const apolloConfig = {
-    schema
+    typeDefs: printSchema(runtime.schema),
+    resolvers: runtime.resolvers,
+    playground: true,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
   }
 
   const apolloServer = new ApolloServer(apolloConfig)

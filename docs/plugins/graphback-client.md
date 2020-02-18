@@ -28,8 +28,8 @@ apolloClient.mutate(createUserQuery)
 
 Plugin allows to create files in many formats to suit needs of your application.
 
-Please reffer to generator-fullstack app for fully functional example:
-https://github.com/aerogear/graphback/tree/master/examples/generator-fullstack
+Please refer to ts-apollo-fullstack app for fully functional example:
+https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
 
 ## Plugin Config
 
@@ -63,7 +63,7 @@ Example plugin configuration in YAML:
 
 ## How it works
 
-Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will set `client` in `graphback.json` to `true`.
+Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will setup client generator plugin in your config
 
 For a data model having
 ```

@@ -42,8 +42,8 @@ const apolloServer = new ApolloServer({
 });
 ```
 
-Please reffer to generator-fullstack app for fully functional example:
-https://github.com/aerogear/graphback/tree/master/examples/generator-fullstack
+Please reffer to ts-apollo-fullstack app for fully functional example:
+https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
 
 ## Plugin Config
 
