@@ -17,3 +17,5 @@ Graphback runtime can provide out of the box resolver and database layer for you
 without writing any line of the code.
 
 Package provides MongoDB datasource for Graphback
+
+> NOTE: This package is an early alpha and not officially supported by Graphback
