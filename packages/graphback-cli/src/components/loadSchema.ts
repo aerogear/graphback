@@ -3,16 +3,14 @@ import { join } from 'path';
 import { GlobSync } from 'glob';
 
 /**
- * Loads the schema text from the model directory
+ * Loads the schema text from the schema files
  *
  * @export
- * @param {string} modelDir
+ * @param {string} schemaPath
  * @returns {string}
  */
-export function loadSchema(modelDir: string): string {
-  const modelPath = join(modelDir, '*.graphql');
-
-  const files = new GlobSync(modelPath);
+export function loadSchema(schemaPath: string): string {
+  const files = new GlobSync(schemaPath);
 
   if (files.found.length === 0) {
     throw new Error('Missing GraphQL schema');

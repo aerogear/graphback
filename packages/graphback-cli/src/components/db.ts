@@ -13,7 +13,7 @@ const handleError = (err: { code: string; message: string; }): void => {
     logError(err.message)
   }
   process.exit(0)
-}
+};
 
 export const createDBResources = async (cliFlags: { project?: string }): Promise<any> => {
   let databaseOperations: any;
@@ -22,7 +22,7 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
       rootDir: process.cwd(),
       extensions: [graphbackConfigExtension]
     });
-    const project = config.getProject(cliFlags.project || 'default')
+    const project = config.getProject(cliFlags.project || 'default');
     const graphbackConfig = project.extension(extensionName);
 
     if (!graphbackConfig) {
@@ -33,10 +33,10 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
       throw new Error(`'${extensionName}' config missing 'model' value that is required`);
     }
 
-    const models = new GlobSync(`${graphbackConfig.model}/*.graphql`)
+    const models = new GlobSync(`${graphbackConfig.model}/*.graphql`);
 
     if (models.found.length === 0) {
-      logError(`No graphql file found inside ${process.cwd()}/model folder.`)
+      logError(`No graphql file found inside ${process.cwd()}/model folder.`);
       process.exit(0)
     }
 
@@ -52,18 +52,18 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
     const migrateOptions: MigrateOptions = {
       //Do not perform delete operations on tables
       operationFilter: removeNonSafeOperationsFilter
-    }
+    };
 
-    const schemaText = loadSchema(graphbackConfig.model);
+    const schemaText = loadSchema(project.schema.toString());
     databaseOperations = await migrateDB(graphbackConfig.dbmigrations, schemaText, migrateOptions);
   } catch (err) {
     handleError(err)
   }
 
   return databaseOperations;
-}
+};
 
 
 export const createDB = async (): Promise<any> => {
   return createDBResources({})
-}
+};
