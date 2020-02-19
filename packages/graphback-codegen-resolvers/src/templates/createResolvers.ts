@@ -12,7 +12,7 @@ export function createRelationshipResolvers(relationships: RelationshipMetadata[
         const relationTypeName = relationship.relationType.name;
         const relationIdField = getPrimaryKey(relationship.relationType);
 
-        if (relationship.relationshipKind === 'oneToMany') {
+        if (relationship.kind === 'oneToMany') {
             resolverOutput = oneToManyTemplate(relationTypeName, relationship.foreignKey.name, relationIdField.name)
         } else {
             resolverOutput = oneToOneTemplate(relationTypeName, relationship.foreignKey.name, relationIdField.name)

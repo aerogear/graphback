@@ -115,7 +115,7 @@ export class GraphbackCoreMetadata {
                 const oneToMany: RelationshipMetadata = {
                     parent: modelType,
                     parentField: f.name,
-                    relationshipKind: 'oneToMany',
+                    kind: 'oneToMany',
                     relationType,
                     relationField: dbAnnotations.oneToMany,
                     foreignKey: {
@@ -128,7 +128,7 @@ export class GraphbackCoreMetadata {
                 const manyToOne: RelationshipMetadata = {
                     parent: relationType,
                     parentField: dbAnnotations.oneToMany,
-                    relationshipKind: 'manyToOne',
+                    kind: 'manyToOne',
                     relationType: modelType,
                     relationField: f.name,
                     foreignKey: {
@@ -156,7 +156,7 @@ export class GraphbackCoreMetadata {
                 const oneToOne: RelationshipMetadata = {
                     parent: modelType,
                     parentField: f.name,
-                    relationshipKind: 'oneToOne',
+                    kind: 'oneToOne',
                     relationType,
                     relationField: dbAnnotations.oneToOne,
                     foreignKey: {

@@ -168,7 +168,7 @@ export class LayeredRuntimeResolverCreator {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      if (relationship.relationshipKind === 'oneToMany') {
+      if (relationship.kind === 'oneToMany') {
         resolverFn = (parent: any, args: any, context: any) => {
           return this.services[modelName].batchLoadData(relationship.foreignKey.name, parent[relationIdField.name], context);
         }

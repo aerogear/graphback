@@ -139,7 +139,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 }
 
                 // add relationship field to input type
-                if (['oneToOne', 'manyToOne'].includes(relationshipField.relationshipKind)) {
+                if (['oneToOne', 'manyToOne'].includes(relationshipField.kind)) {
                     fieldObj[relationshipField.foreignKey.name] = {
                         type: getNullableType(relationshipField.foreignKey.type),
                         description: ''
