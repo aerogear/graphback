@@ -3,12 +3,12 @@ import { parseAnnotations, parseMarker } from 'graphql-metadata'
 import { parseDbAnnotations } from '../annotations/parser'
 import { getBaseType } from '../utils/getBaseType'
 import { getPrimaryKey, transformForeignKeyName } from '../db'
+import { isModelType } from '../crud'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
 import { RelationshipMetadata } from './ModelRelationshipMetadata'
-import { getRelationFieldName } from '../crud'
 
 const defaultCRUDGeneratorConfig = {
     "create": true,
@@ -105,6 +105,11 @@ export class GraphbackCoreMetadata {
             if (dbAnnotations.oneToMany) {
                 const relationType = getBaseType(f.type) as GraphQLObjectType;
 
+                // ignore types that are do not have `@model` marker
+                if (!isModelType(relationType)) {
+                    return;
+                }
+
                 const oneToMany: RelationshipMetadata = {
                     parent: modelType,
                     parentField: f.name,
@@ -121,6 +126,11 @@ export class GraphbackCoreMetadata {
 
             if (dbAnnotations.oneToOne) {
                 const relationType = getBaseType(f.type) as GraphQLObjectType;
+
+                // ignore types that are do not have `@model` marker
+                if (!isModelType(relationType)) {
+                    return;
+                }
 
                 const primaryKeyField = getPrimaryKey(relationType);
                 const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
