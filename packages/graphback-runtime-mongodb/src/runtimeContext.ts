@@ -1,21 +1,19 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
-import * as Knex from 'knex';
-import { PubSubConfig } from './service/PubSubConfig';
-import { CRUDService, PgKnexDBDataProvider } from "./index";
-
+import { MongoDBDataProvider } from "./MongoDBDataProvider";
+import { PubSubConfig, CRUDService } from "@graphback/runtime"
 /**
- * Config used to initialize crud context file
+ * Config used to initialize crud context file for mongodb
  */
-export type KnexRuntimeContextConfig = {
+export type MongoRuntimeContextConfig = {
   /**
    * GraphQL Schema containing model types
    */
   schema: GraphQLSchema,
   /**
-   * Knex based instance connected to one of the supported databases
+   * Mongodb based instance connected to one of the supported databases
    */
-  db: Knex,
+  db: any,
   /**
    * One of the supported publish subscribe engines
    */
@@ -23,15 +21,15 @@ export type KnexRuntimeContextConfig = {
 }
 
 /**
- * Helper function for creating default runtime context used in Graphback
+ * Helper function for creating mongodb runtime context used in Graphback
  * 
  * @param schema 
  * @param db 
  * @param pubSub 
  */
-export const createKnexCRUDRuntimeContext = (
+export const createMongoCRUDRuntimeContext = (
   modelName: string, schema: GraphQLSchema,
-  db: Knex, pubSubConfig: PubSubConfig
+  db: any, pubSubConfig: PubSubConfig
 ) => {
   const modelType = schema.getType(modelName) as GraphQLObjectType
   if (modelType === undefined) {
@@ -39,7 +37,7 @@ export const createKnexCRUDRuntimeContext = (
     Schema is missing provided type. 
     Please make sure that you pass the right schema to createCRUDRuntimeContext`)
   }
-  const objectDB = new PgKnexDBDataProvider(modelType, db)
+  const objectDB = new MongoDBDataProvider(modelType, db)
 
   return new CRUDService(modelType, objectDB, pubSubConfig)
 }
