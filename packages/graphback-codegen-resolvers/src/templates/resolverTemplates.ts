@@ -63,7 +63,8 @@ export const oneToManyTemplate = (modelName: string, relationField: string, idFi
 
 export const oneToOneTemplate = (modelName: string, relationField: string, idField: string) => {
   return `(parent, args, context) => {
-    return context.${modelName}.findBy({ ${idField}: parent.${relationField} });
+    return context.${modelName}.findBy({ ${idField}: parent.${relationField} })
+     .then((results) => results[0]);
   }
   `;
 }
