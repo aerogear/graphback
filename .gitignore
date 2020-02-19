@@ -12,6 +12,7 @@ types/
 # Dependencies
 node_modules/
 package-lock.json
+examples/
 
 # Coverage
 coverage
