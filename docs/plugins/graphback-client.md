@@ -6,9 +6,9 @@ sidebar_label: CRUD Client Queries
 
 ## Graphback CRUD Client plugin
 
-Graphback client plugin allows users to generate client-side queries based on the model and CRUD settings. A
-Developers can embeed generated queries into their client side applications.
-Generated queries are compatible with all major graphql plugins like Apollo and URQL
+Graphback client plugin allows users to generate client-side queries based on the model and CRUD settings.
+Developers can embed generated queries into their client-side applications.
+Generated queries are compatible with all major GraphQL plugins like Apollo and URQL.
 
 ## Installation
 
@@ -18,7 +18,7 @@ npm install @graphback/codegen-client
 
 ## Usage
 
-Client side queries can be consumed inside any application. 
+Client-side queries can be consumed inside any application. 
 When using any GraphQL Clients queries can be compiled and passed to the client methods. 
 For example:
 
@@ -26,7 +26,7 @@ For example:
 apolloClient.mutate(createUserQuery)
 ```
 
-Plugin allows to create files in many formats to suit needs of your application.
+Plugin allows to create files in many formats to suit the needs of your application.
 
 Please refer to ts-apollo-fullstack app for fully functional example:
 https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
@@ -63,7 +63,7 @@ Example plugin configuration in YAML:
 
 ## How it works
 
-Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will setup client generator plugin in your config
+Graphback asks whether you want to generate client-side queries in the `graphback config` command. Answering 'yes' will setup client generator plugin in your config.
 
 For a data model having
 ```
@@ -73,4 +73,4 @@ type Note {
   description: String!
 }
 ```
-running `graphback generate` will generate queries and mutations that are enabled in crud config section
+running `graphback generate` will generate queries and mutations that are enabled in crud config section.

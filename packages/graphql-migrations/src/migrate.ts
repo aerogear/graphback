@@ -7,7 +7,6 @@ import { computeDiff } from './diff/computeDiff'
 import { MigrationResults } from './diff/Operation'
 import { MigrateOperationFilter } from './plugin/MigrateOperationFilter';
 import { MigratePlugin } from './plugin/MigratePlugin'
-import { removeDirectivesFromSchema } from './util/removeDirectivesFromSchema';
 
 export interface MigrateOptions {
   /**
@@ -69,7 +68,7 @@ export const defaultOptions: MigrateOptions = {
 
 export async function migrateDB(
   config: Knex.Config,
-  schemaText: string,
+  schema: GraphQLSchema,
   options: MigrateOptions = {},
 ): Promise<MigrationResults> {
   //Default options
@@ -87,13 +86,6 @@ export async function migrateDB(
       ...config,
       debug: true,
     }
-  }
-
-  let schema: GraphQLSchema;
-  if (finalOptions.removeDirectivesFromSchema) {
-    schema = removeDirectivesFromSchema(schemaText);
-  } else {
-    schema = buildSchema(schemaText)
   }
 
   //Read current

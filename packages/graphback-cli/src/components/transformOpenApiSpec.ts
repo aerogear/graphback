@@ -5,7 +5,7 @@ import { printSchema } from 'graphql';
 import { loadConfig } from 'graphql-config';
 import { safeLoad } from 'js-yaml'
 import { createGraphQLSchema } from "openapi-to-graphql"
-import { extensionName, graphbackConfigExtension } from '../config/extension';
+import { graphbackExtension, graphbackConfigExtension } from '../config/graphbackExtension';
 import { logError, logInfo } from '../utils';
 import { removeCommentsFromSchema, removeOperationsFromSchema } from "../utils/openApiHelpers"
 
@@ -50,14 +50,14 @@ export const transformOpenApiSpec = async () => {
         extensions: [graphbackConfigExtension]
     });
     const project = config.getProject('default')
-    const graphbackConfig = project.extension(extensionName);
+    const graphbackConfig = project.extension(graphbackExtension);
 
     if (!graphbackConfig) {
-        throw new Error(`You should provide a valid '${extensionName}' config to generate schema from data model`);
+        throw new Error(`You should provide a valid '${graphbackExtension}' config to generate schema from data model`);
     }
 
     if (!graphbackConfig.model) {
-        throw new Error(`' ${extensionName}' config missing 'model' value that is required`);
+        throw new Error(`' ${graphbackExtension}' config missing 'model' value that is required`);
     }
 
     const models = new GlobSync(`${graphbackConfig.model}/*.yaml`)
@@ -78,7 +78,7 @@ export const transformOpenApiSpec = async () => {
 
     logInfo(`
    Successfully generated GraphQL schema from OpenAPI definition.
-   You can review your schema in model folder and modify it for your own needs. 
+   You can review your schema in model folder and modify it for your own needs.
    You can then generate your backend using ${chalk.cyan(`generate`)} command that will create resolvers.
    OpenAPI files will not longer be processed by generator.`)
 }

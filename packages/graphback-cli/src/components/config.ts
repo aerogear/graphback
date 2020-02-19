@@ -53,7 +53,7 @@ export interface InitOptions {
 export async function initConfig(options: InitOptions = {}) {
   logInfo(chalk.yellow(
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
-  ))
+  ));
 
   const { modelName, content } = options.model || await createModel()
   const database = options.database || await chooseDatabase()
