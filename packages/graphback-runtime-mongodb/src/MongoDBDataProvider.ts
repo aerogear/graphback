@@ -3,12 +3,15 @@ import { ObjectId, Db } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
 import { GraphbackDataProvider, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
+/**
+ * Graphback provider that connnects to the MongoDB database
+ */
 export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
   protected db: Db;
   protected collectionName: string;
   protected tableMap: ModelTableMap;
 
-  constructor(baseType: GraphQLObjectType, db: any) {
+  public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
     this.tableMap = buildModelTableMap(baseType);
     this.collectionName = this.tableMap.tableName;
@@ -19,6 +22,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
       result.ops[0][idField.name] = result.ops[0]._id;
+
       return result.ops[0];
     }
     throw new NoDataError(`Cannot create ${this.collectionName}`);
@@ -32,6 +36,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
         const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
         if (queryResult && queryResult[0]) {
           queryResult[0][idField.name] = queryResult[0]._id;
+
           return queryResult[0];
         } else {
           throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -41,7 +46,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  // tslint:disable-next-line: no-reserved-keywords
   public async delete(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
     if (idField) {
@@ -50,6 +54,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
         const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
         if (queryResult && queryResult[0]) {
           queryResult[0][idField.name] = queryResult[0]._id;
+
           return queryResult[0];
         } else {
           throw new NoDataError(`Cannot update ${this.collectionName}`);

@@ -1,9 +1,8 @@
 import { GraphQLObjectType } from 'graphql';
-import { GraphbackDataProvider, NoDataError, } from '@graphback/runtime';
-import { MongoDBDataProvider } from './MongoDBDataProvider';
+import { NoDataError } from '@graphback/runtime';
 import { getDatabaseArguments } from '@graphback/core';
 import { ObjectId } from 'mongodb';
-
+import { MongoDBDataProvider } from './MongoDBDataProvider';
 
 /**
  * Mongo provider that contains special handlers for offix conflict resolution format:
@@ -12,7 +11,7 @@ import { ObjectId } from 'mongodb';
  */
 export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> {
 
-  constructor(baseType: GraphQLObjectType, client: any) {
+  public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
   }
 
@@ -29,10 +28,8 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       }
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
       if (result) {
-
+        return queryResult[0];
       }
-
-      return queryResult[0];
     }
 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
