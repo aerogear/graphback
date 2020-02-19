@@ -20,26 +20,9 @@ by generating a Node.js server using your data model.
 
 ## What it does
 
-- Generates required queries and mutations automatically using proven GraphQL patterns
-- Generates an unopiniated resolver layer
+- Generates GraphQLCRUD queries and mutations automatically using proven GraphQL patterns
+- Generates an unopiniated GraphQL resolver layer (as code or in memory)
 - Generates database DDL statements that can be used to store data (optional)
-
-## Why use it
-
-- Plain and most canonical GraphQL implementation. Generated resolvers will work with plain GraphQL solutions.
-
-- Works out of the box with Apollo GraphQL and GraphQL JS
-
-- Full freedom - generated resources can be edited and reconfigured later
-
-- Custom directives out of the box. Provides a set of useful directives and input types that resolve standard use cases
-
-- Auto generated schema based on best GraphQL patterns
-
-- Pick your own server framework and clients (works with Apollo Express and Hapi)
-
-- Pick your own database. The solution abstracts from database storage and allows you to support any existing storage, by
-implementing available interfaces.
 
 ## Documentation
 
