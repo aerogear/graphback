@@ -1,9 +1,8 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, findRelationship, RelationshipMetadata } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, findRelationship } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { getNullableType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
-import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { printSortedSchema } from './writer/schemaPrinter';
 
@@ -57,30 +56,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        let schema = metadata.getSchema();
-        const schemaComposer = new SchemaComposer(schema);
+        const schema = metadata.getSchema();
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
 
             return schema;
         }
-
-        // dynamically add many-to-one fields
-        models.forEach((model: ModelDefinition) => {
-            const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
-
-            model.relationships.filter((relationship: RelationshipMetadata) => relationship.relationshipKind === 'manyToOne').forEach((relationship: RelationshipMetadata) => {
-
-                // TODO: Check if field exists already
-                modifiedType.addFields({
-                    [relationship.parentField]: `${relationship.relationType.name}!`
-                });
-            })
-        });
-
-        const customisedSchema = schemaComposer.buildSchema();
-        metadata.setSchema(customisedSchema);
 
         const modelsSchema = this.buildSchemaForModels(metadata.getModelDefinitions());
 
@@ -104,7 +86,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param options 
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSchema(schema);
+        const schemaString = printSortedSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
