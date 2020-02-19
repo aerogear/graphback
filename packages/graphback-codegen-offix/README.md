@@ -12,4 +12,6 @@
 
 ## Graphback-Codegen-Offix
 
-Offix codegenerator prototype
+Offix Code Generator. 
+
+> NOTE: This package is an early alpha and not officially supported by Graphback
