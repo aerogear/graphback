@@ -67,7 +67,9 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      */
     async delete(data: Type, context?: GraphbackContext): Promise<Type> {
-        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/${data['id']}` 
+        const resourceName = this.baseType.name.toLocaleLowerCase();
+        const id = data['id'] // Needs mapping
+        const url = this.baseUrl+`/${resourceName}/${id}` 
         const res = await fetch(url,{
             method:'DELETE',
             body:JSON.stringify(data),
