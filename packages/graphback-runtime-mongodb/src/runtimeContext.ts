@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
-import { MongoDBDataProvider } from "./MongoDBDataProvider";
 import { PubSubConfig, CRUDService } from "@graphback/runtime"
+import { MongoDBDataProvider } from "./MongoDBDataProvider";
 /**
  * Config used to initialize crud context file for mongodb
  */
