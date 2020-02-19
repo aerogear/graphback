@@ -124,7 +124,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         const modelFields = Object.values(model.graphqlType.getFields());
         const inputName = getInputTypeName(model.graphqlType.name);
 
-        //TODO relationships?
         return new GraphQLInputObjectType({
             name: inputName,
             fields: () => (modelFields.reduce((fieldObj: any, current: any) => {
