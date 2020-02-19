@@ -1,10 +1,9 @@
 //tslint:disable-next-line: match-default-export-name
 import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
-import * as Knex from 'knex';
-import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoClient, Db } from 'mongodb';
+import { MongoClient } from 'mongodb';
+import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 
 const schema = buildSchema(`
 """
@@ -31,7 +30,7 @@ const server = new MongoMemoryServer();
 
 //Create a new database before each tests so that
 //all tests can run parallel
-test.beforeEach(async t => {
+test.beforeEach(async (t: any) => {
   const client = new MongoClient(await server.getConnectionString())
   await client.connect();
   const db = client.db('test');
@@ -48,7 +47,7 @@ test.beforeEach(async t => {
   });
 });
 
-test('Test mongo crud', async t => {
+test('Test mongo crud', async (t: any)  => {
   let todo: Todo = await t.context.provider.create({
     text: 'create a todo',
   });
@@ -68,13 +67,13 @@ test('Test mongo crud', async t => {
 });
 
 
-test('find all Todos', async t => {
+test('find all Todos', async (t: any)  => {
   const todos = await t.context.provider.findAll();
 
   t.assert(todos.length > 0);
 });
 
-test('find Todo by text', async t => {
+test('find Todo by text', async (t: any)  => {
   const todos: Todo[] = await t.context.provider.findBy({
     text: 'todo',
   });
