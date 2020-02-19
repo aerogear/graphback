@@ -1,10 +1,12 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, findRelationship } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, findRelationship, RelationshipMetadata } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType, GraphQLInt } from 'graphql';
+import { getNullableType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
+import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { printSortedSchema } from './writer/schemaPrinter';
+
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -55,13 +57,33 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        const schema = metadata.getSchema()
+        const schema = metadata.getSchema();
+        const schemaComposer = new SchemaComposer(schema);
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
 
             return schema;
         }
+
+        // dynamically add many-to-one fields
+        models.forEach((model: ModelDefinition) => {
+            const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
+
+            modifiedType.addFields({
+                test: 'String'
+            })
+
+            model.relationships.filter((relationship: RelationshipMetadata) => relationship.relationshipKind === 'manyToOne').forEach((relationship: RelationshipMetadata) => {
+
+                // TODO: Check if field exists already
+                modifiedType.addFields({
+                    [relationship.parentField]: `${relationship.relationType.name}!`
+                });
+            })
+        });
+
+        const modifiedSchema = schemaComposer.buildSchema();
 
         const modelsSchema = this.buildSchemaForModels(models);
 
@@ -122,7 +144,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
         const inputName = getInputTypeName(model.graphqlType.name);
-        
+
         //TODO relationships?
         return new GraphQLInputObjectType({
             name: inputName,
@@ -136,7 +158,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
                     return fieldObj;
                 }
-                
+
                 // add relationship field to input type
                 if (['oneToOne', 'manyToOne'].includes(relationshipField.relationshipKind)) {
                     fieldObj[relationshipField.foreignKey.name] = {
