@@ -46,7 +46,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      */
     async update(data: Type, context?: GraphbackContext): Promise<Type> {
-        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase}`+`/${data['id']}`
+        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data['id']}`
         const res = await fetch(url,{
             method: 'PUT',
             body:    JSON.stringify(data),
