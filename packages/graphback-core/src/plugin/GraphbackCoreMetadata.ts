@@ -4,6 +4,8 @@ import { parseDbAnnotations } from '../annotations/parser'
 import { getBaseType } from '../utils/getBaseType'
 import { getPrimaryKey, transformForeignKeyName } from '../db'
 import { isModelType } from '../crud'
+import { hasListType } from '../utils/hasListType'
+import { findModelRelationships } from '../relationships/relationshipHelpers'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
@@ -84,7 +86,7 @@ export class GraphbackCoreMetadata {
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
 
-        const modelRelations = this.findModelRelationships(modelType.name, relationships);
+        const modelRelations = findModelRelationships(modelType.name, relationships);
 
         return { graphqlType: modelType, relationships: modelRelations, crudOptions };
     }
@@ -107,6 +109,8 @@ export class GraphbackCoreMetadata {
                 if (!isModelType(relationType)) {
                     return;
                 }
+
+                this.validateRelationModelField(modelType, relationType, dbAnnotations.oneToMany)
 
                 const oneToMany: RelationshipMetadata = {
                     parent: modelType,
@@ -144,7 +148,9 @@ export class GraphbackCoreMetadata {
                     return;
                 }
 
-                const primaryKeyField = getPrimaryKey(relationType);
+                this.validateRelationModelField(modelType, relationType, dbAnnotations.oneToOne);
+
+                const primaryKey = getPrimaryKey(relationType);
                 const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
 
                 const oneToOne: RelationshipMetadata = {
@@ -155,7 +161,7 @@ export class GraphbackCoreMetadata {
                     relationField: dbAnnotations.oneToOne,
                     foreignKey: {
                         name: foreignKeyFieldName,
-                        type: primaryKeyField.type
+                        type: primaryKey.type
                     }
                 };
 
@@ -166,9 +172,17 @@ export class GraphbackCoreMetadata {
         return relationships;
     }
 
-    private findModelRelationships(modelName: string, relationships: RelationshipMetadata[]) {
-        return relationships.filter((relationship: RelationshipMetadata) => {
-            return relationship.parent.name === modelName;
-        });
+    private validateRelationModelField(parentType: GraphQLObjectType, relationType: GraphQLObjectType, relationFieldName: string) {
+        const relationModelField = relationType.getFields()[relationFieldName];
+
+        if (!relationModelField) {
+            throw new Error(`${relationType.name} model requires a '${relationFieldName}' field.`)
+        }
+
+        const relationFieldBaseType = getBaseType(relationModelField.type);
+
+        if (relationFieldBaseType.name !== parentType.name || hasListType(relationModelField.type)) {
+            throw new Error(`${relationType.name}.${relationFieldName} field must be type ${parentType.name}`);
+        }
     }
 }
