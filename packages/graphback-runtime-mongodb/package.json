@@ -45,8 +45,9 @@
     "typescript": "3.7.5"
   },
   "dependencies": {
-    "@graphback/runtime": "0.11.0-rc1",
     "@graphback/core": "0.11.0-rc1",
+    "@graphback/runtime": "0.11.0-rc1",
+    "@types/mongodb": "^3.3.16",
     "dataloader": "2.0.0",
     "mongodb": "^3.5.3"
   },
