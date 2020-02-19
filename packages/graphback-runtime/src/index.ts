@@ -4,6 +4,8 @@ export * from "./data/GraphbackDataProvider"
 export * from "./data/NoDataError"
 export * from "./data/PgKnexDBDataProvider"
 export * from "./data/KnexDBDataProvider"
+export * from "./data/MongoDBDataProvider"
+
 
 //Service
 export * from "./service/CRUDService"
@@ -15,4 +17,5 @@ export * from "./resolvers/RuntimeResolversDefinition"
 
 //Helpers
 export * from "./runtimeContext"
+export * from "./createMongoDbRuntimeContext"
 
