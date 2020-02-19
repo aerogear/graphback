@@ -57,7 +57,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        const schema = metadata.getSchema();
+        let schema = metadata.getSchema();
         const schemaComposer = new SchemaComposer(schema);
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
@@ -70,10 +70,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         models.forEach((model: ModelDefinition) => {
             const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
 
-            modifiedType.addFields({
-                test: 'String'
-            })
-
             model.relationships.filter((relationship: RelationshipMetadata) => relationship.relationshipKind === 'manyToOne').forEach((relationship: RelationshipMetadata) => {
 
                 // TODO: Check if field exists already
@@ -83,9 +79,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             })
         });
 
-        const modifiedSchema = schemaComposer.buildSchema();
+        const customisedSchema = schemaComposer.buildSchema();
+        metadata.setSchema(customisedSchema);
 
-        const modelsSchema = this.buildSchemaForModels(models);
+        const modelsSchema = this.buildSchemaForModels(metadata.getModelDefinitions());
 
         return mergeSchemas({ schemas: [modelsSchema, schema] });
     }
@@ -107,7 +104,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param options 
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSortedSchema(schema);
+        const schemaString = printSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
