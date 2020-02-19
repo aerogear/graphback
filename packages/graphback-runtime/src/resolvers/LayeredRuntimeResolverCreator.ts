@@ -160,51 +160,27 @@ export class LayeredRuntimeResolverCreator {
 
     const resolvers = {};
     for (const relationship of relationships) {
-      let resolverOutput: any;
-      const relationTypeName = relationship.relationType.name;
+      let resolverFn: any;
+      const modelName = relationship.relationType.name;
       const relationIdField = getPrimaryKey(relationship.relationType);
 
+      if (!this.services[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
       if (relationship.relationshipKind === 'oneToMany') {
-        resolverOutput = (parent: any, args: any, context: any) => {
-          return this.services[relationTypeName].batchLoadData(relationship.foreignKey.name, parent[relationIdField.name], context);
+        resolverFn = (parent: any, args: any, context: any) => {
+          return this.services[modelName].batchLoadData(relationship.foreignKey.name, parent[relationIdField.name], context);
         }
       } else {
-        // resolverOutput = oneToOneTemplate(relationTypeName, relationship.foreignKey.name, relationIdField.name)
+        resolverFn = (parent: any, args: any, context: any) => {
+          return this.services[modelName].findBy({ id: parent[relationIdField.name] }).then((results: any) => results[0])
+        }
       }
 
-      if (resolverOutput) {
-        resolvers[relationship.parentField] = resolverOutput;
+      if (resolverFn) {
+        resolvers[relationship.parentField] = resolverFn;
       }
-      //This is very very broken. Commented out 
-      //FIXME
-      //TODO
-      //Warning!
-      //if (field.isType) {
-      //if (field.annotations.OneToOne || !field.isArray) {
-      //// TODO - this is very wrong
-      //let foreignIdName = `${modelName.toLowerCase()}Id`;
-      //if (field.annotations.OneToOne) {
-      //foreignIdName = field.annotations.OneToOne.field;
-      //}
-      //}
-      //else if (field.annotations.OneToMany || field.isArray) {
-      //// TODO - this is very wrong
-      //let foreignId = `${modelName.toLowerCase()}Id`;
-      //if (field.annotations.OneToMany) {
-      //foreignId = field.annotations.OneToMany.field;
-      //}
-
-      //if (resolvers[modelName] === undefined) {
-      //resolvers[modelName] = {};
-      //}
-
-      //// tslint:disable-next-line: no-any
-      //// TODO - this is very wrong
-      //resolvers[modelName][field.name] = (parent: any, args: any, context: any) => {
-      //return this.service.findBy(field.type.toLowerCase(), { [foreignId]: parent.id }, context);
-      //};
-      //}
-      //}
     }
 
     return resolvers;
