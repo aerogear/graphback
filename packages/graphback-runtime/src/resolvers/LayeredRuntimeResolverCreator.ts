@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core';
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, RelationshipMetadata, getPrimaryKey } from '@graphback/core';
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -86,7 +86,12 @@ export class LayeredRuntimeResolverCreator {
         }
       }
 
-      this.createRelations(resolverElement, resolvers)
+      const relationResolvers = this.createRelations(resolverElement.relationships);
+
+      if (relationResolvers) {
+        resolvers[modelName] = relationResolvers;
+      }
+
       this.createSubscriptions(resolverElement, resolvers)
     }
 
@@ -150,9 +155,26 @@ export class LayeredRuntimeResolverCreator {
     }
   }
 
-  private createRelations(resolverElement: ModelDefinition, resolvers: any) {
-    const fields = Object.values(resolverElement.graphqlType.getFields());
-    for (const field of fields) {
+  private createRelations(relationships: RelationshipMetadata[]) {
+    if (!relationships.length) { return undefined }
+
+    const resolvers = {};
+    for (const relationship of relationships) {
+      let resolverOutput: any;
+      const relationTypeName = relationship.relationType.name;
+      const relationIdField = getPrimaryKey(relationship.relationType);
+
+      if (relationship.relationshipKind === 'oneToMany') {
+        resolverOutput = (parent: any, args: any, context: any) => {
+          return this.services[relationTypeName].batchLoadData(relationship.foreignKey.name, parent[relationIdField.name], context);
+        }
+      } else {
+        // resolverOutput = oneToOneTemplate(relationTypeName, relationship.foreignKey.name, relationIdField.name)
+      }
+
+      if (resolverOutput) {
+        resolvers[relationship.parentField] = resolverOutput;
+      }
       //This is very very broken. Commented out 
       //FIXME
       //TODO
@@ -184,6 +206,8 @@ export class LayeredRuntimeResolverCreator {
       //}
       //}
     }
+
+    return resolvers;
   }
 }
 
