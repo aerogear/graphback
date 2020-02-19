@@ -54,12 +54,16 @@ export const deletedSubscriptionTemplate = (modelName: string): string => {
     }`
 }
 
-export const blankResolver = `(parent, args, context) => {
-    // Implementation here
-}`;
+export const oneToManyTemplate = (modelName: string, relationField: string, idField: string) => {
+  return `(parent, args, context) => {
+    return context.${modelName}.batchLoadData('${relationField}', parent.${idField}, context);
+  }
+  `;
+}
 
-export const blankSubscription = `{
-    subscribe: (parent, args, context) => {
-        // Implementation here
-    }
-}`
+export const oneToOneTemplate = (modelName: string, relationField: string, idField: string) => {
+  return `(parent, args, context) => {
+    return context.${modelName}.findBy({ ${idField}: parent.${relationField} });
+  }
+  `;
+}

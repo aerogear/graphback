@@ -8,6 +8,6 @@ export interface RelationshipMetadata {
     relationField: string
     foreignKey?: {
         name: string
-        type: GraphQLOutputType
+        type?: GraphQLOutputType
     }
 }

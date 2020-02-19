@@ -8,6 +8,7 @@ import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
 import { RelationshipMetadata } from './ModelRelationshipMetadata'
+import { getRelationFieldName } from '../crud'
 
 const defaultCRUDGeneratorConfig = {
     "create": true,
@@ -109,7 +110,10 @@ export class GraphbackCoreMetadata {
                     parentField: f.name,
                     relationshipKind: 'oneToMany',
                     relationType,
-                    relationField: dbAnnotations.oneToMany
+                    relationField: dbAnnotations.oneToMany,
+                    foreignKey: {
+                        name: transformForeignKeyName(dbAnnotations.oneToMany, 'to-db')
+                    }
                 };
 
                 relationships.push(oneToMany);

@@ -45,10 +45,22 @@ function createResolverFileTemplate(outputResolvers: string[], options: Resolver
 
 export const createResolverTemplate = (typeResolvers: GeneratorResolversFormat, options: ResolverGeneratorPluginConfig) => {
     const mutations = mapResolverKeyValueTemplates(typeResolvers.Mutation)
+    delete typeResolvers.Mutation;
+
     const queries = mapResolverKeyValueTemplates(typeResolvers.Query);
+    delete typeResolvers.Query;
+
     const subscriptions = mapResolverKeyValueTemplates(typeResolvers.Subscription);
+    delete typeResolvers.Subscription;
 
     const outputResolvers: string[] = [];
+
+    for (const [typeName, resolverObj] of Object.entries(typeResolvers)) {
+        const relationResolvers = mapResolverKeyValueTemplates(resolverObj);
+        outputResolvers.push(`${typeName}: {
+            ${relationResolvers.join(',\n')}
+        },`)
+    }
 
     if (options.layout === "apollo") {
         if (queries.length) {
