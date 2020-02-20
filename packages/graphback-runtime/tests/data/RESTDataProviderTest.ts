@@ -2,13 +2,16 @@ import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { RESTDataProvider } from '../../src/data/RESTDataProvider';
 
-
+// Primary field is renamed as key to test the mapping.
 const schema = buildSchema(`
 """
 @model
 """
 type Users {
- name: String!
+ """
+ @db.primary
+ """     
+ key: ID!
  job: String!
 
 }
@@ -26,18 +29,10 @@ test.beforeEach(async t => {
     t.context = { provider };
 });
 
-/**
- * 
- * Currently I just have 3 endpoints in my hosted server. So I tested only 
- * create, findAll and delete. However tests for other endpoints also can
- * be implemented similarly.
- */
-
 
 //test for findAll
 test('find all persons', async t => {
     const result = await t.context.provider.findAll();
-    console.log("findALL",result)
     t.assert(result['total'] > 0);
 });
 
@@ -45,32 +40,35 @@ test('find all persons', async t => {
 test('create a person',async t => {
     const person = {name:'JBossss',job:'Software engineer'}
     const result = await t.context.provider.create(person)
-    console.log("create",result)
+    // console.log("create",result)
     t.assert(result.name === person.name)
 })
 
 
-//test for delete.
-// test('delete a person with id',async t => {
-//     const person = {id:16};
-//     const result = await t.context.provider.delete(person)
-//     console.log('delete',result)
-//     t.assert(result.id === person.id);
-// })
+//test for delete. (This will fail for this instance, because the API doesnt provide a delete operation)
+test('delete a person with id',async t => {
+    const person = {key:16};
+    const result = await t.context.provider.delete(person)
+    console.log('delete',result)
+    t.assert(result.key === person.key);
+})
 
 //test for update
 test('update a person with id',async t => {
-    const updated = {id:"1",name:"updated",job:"updated"}
+    const updated = {key:"1"}
     const result = await t.context.provider.update(updated)
-    console.log(result)
-    t.assert(result['id'] === updated['id']);
+    // console.log(result)
+    t.assert(result.key === updated.key);
 })
 
-//test for findBy
+//test for findBy(This will fail because the API doesn't support)
 test('find a person by id',async t => {
-    const updated = {id:"1"}
-    const result = await t.context.provider.update(updated)
-    console.log(result)
-    t.assert(result['id'] === updated['id']);
+    const filter = {type:"age",value:"22"}
+    const result = await t.context.provider.findBy(filter)
+    // console.log(result)
+    result.forEach((person)=>{
+        t.assert(person['age'] === filter['age']);
+    })
+    
 })
 

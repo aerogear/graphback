@@ -1,5 +1,7 @@
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphbackDataProvider } from './GraphbackDataProvider';
 import { GraphQLObjectType } from 'graphql';
+import { NoDataError } from './NoDataError';
 const fetch = require('node-fetch');
 
 export class RESTDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
@@ -7,16 +9,18 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
     protected baseUrl : string;
     protected baseType : GraphQLObjectType;
     protected headers : any;
+    protected tableMap: ModelTableMap;
 
     //constructor
     public constructor(baseType: GraphQLObjectType, baseUrl:string, headers:any) {
       this.baseUrl = baseUrl;
       this.baseType = baseType;
       this.headers = headers;
+      this.tableMap = buildModelTableMap(baseType);
     }
 
     /** 
-      @param data - JSON object which carries the data needed for the update operation
+     * @param data - JSON object which carries the data needed for the update operation
      * @param context -passed by the resolvers
      * 
      * valid url => (baseUrl+path) 
@@ -24,8 +28,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      */
     async create(data: Type, context?: GraphbackContext): Promise<Type> {
-        console.log(this.baseType.name.toLocaleLowerCase())
-        const url = `${this.baseUrl}/${this.baseType.name.toLowerCase()}/`   
+        const url = `${this.baseUrl}/${this.baseType.name.toLowerCase()}/`
         const res = await fetch(url, {
             method: 'post',
             body:    JSON.stringify(data),
@@ -46,19 +49,25 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      */
     async update(data: Type, context?: GraphbackContext): Promise<Type> {
-        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data['id']}`
-        const res = await fetch(url,{
-            method: 'PUT',
-            body:    JSON.stringify(data),
-            headers: this.headers,
-            })
-        const json = await res.json()
-        return json;
+        const { idField } = getDatabaseArguments(this.tableMap, data);
+        if(idField.value === undefined){
+            throw new NoDataError(`Primary field value for type ${this.baseType} not provided`)
+        }else{
+            const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data[idField.name]}`
+            const res = await fetch(url,{
+                method: 'PUT',
+                body:    JSON.stringify(data),
+                headers: this.headers,
+                })
+            const json = await res.json()
+            return json;
+        }
+     
     }
 
     /**
      * 
- @param data - JSON object which carries the data needed for the update operation
+     * @param data - JSON object which carries the data needed for the update operation
      * @param context -passed by the resolvers
      * 
      * valid url => (baseUrl+path) 
@@ -67,16 +76,20 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      */
     async delete(data: Type, context?: GraphbackContext): Promise<Type> {
-        const resourceName = this.baseType.name.toLocaleLowerCase();
-        const id = data['id'] // Needs mapping
-        const url = this.baseUrl+`/${resourceName}/${id}` 
-        const res = await fetch(url,{
+        const { idField } = getDatabaseArguments(this.tableMap, data);
+        if(idField.value === undefined){
+            throw new NoDataError(`Primary field value for type ${this.baseType} not provided`)
+        }else{
+            const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data[idField.name]}`
+            const res = await fetch(url,{
             method:'DELETE',
             body:JSON.stringify(data),
             headers: this.headers,
-        })
-        const json = await res.json();
-        return json;
+            })
+            const json = await res.json();
+            return json;
+        }    
+        
     }
 
 
@@ -110,7 +123,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      *      url = www.jboss.com/api/v2/users/id/se006575
      */
     async findBy(filter: any, context?: GraphbackContext): Promise<Type[]> {
-        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${filter['id']}`
+        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${filter['type']}`+`/${filter['value']}`
         const res = await fetch(url)
         const json = await res.json()
         return json
@@ -118,7 +131,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
 
     /**
      * 
-     * Will implement this later. Need further clarification about the implementation
+     * TODO : Need further clarification about the implementation
      * 
      * @param relationField 
      * @param ids 
