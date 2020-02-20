@@ -68,7 +68,7 @@ export const defaultOptions: MigrateOptions = {
 
 export async function migrateDB(
   config: Knex.Config,
-  schema: GraphQLSchema | string,
+  schema: GraphQLSchema,
   options: MigrateOptions = {},
 ): Promise<MigrationResults> {
   //Default options
@@ -97,7 +97,7 @@ export async function migrateDB(
   )
 
   //Generate new
-  const newAdb = await generateAbstractDatabase(schema as GraphQLSchema, {
+  const newAdb = await generateAbstractDatabase(schema, {
     scalarMap: finalOptions.scalarMap,
   })
   if (finalOptions.debug) {

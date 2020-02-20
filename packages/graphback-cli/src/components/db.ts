@@ -4,7 +4,6 @@ import { loadConfig } from 'graphql-config';
 import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { dbmigrationsExtension, dbMigrationConfigExtension } from '../config/dbmigrationsExtension';
 import { logError, logInfo } from '../utils'
-import { loadSchema } from './loadSchema';
 
 const handleError = (err: { code: string; message: string; }): void => {
   if (err.code === 'ECONNREFUSED') {
@@ -29,7 +28,7 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
       throw new Error(`You should provide a valid '${dbmigrationsExtension}' config to migrate schema`);
     }
 
-    const models = new GlobSync(project.schema.toString());
+    const models = new GlobSync(project.schema as string);
 
     if (models.found.length === 0) {
       logError(`No graphql file found inside ${process.cwd()}/model folder.`);
@@ -46,7 +45,7 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
       operationFilter: removeNonSafeOperationsFilter
     };
 
-    const schema = loadSchema(project.schema.toString());
+    const schema = await project.getSchema("string");
     databaseOperations = await migrateDB(dbMigrationConfig, schema, migrateOptions);
   } catch (err) {
     handleError(err)
