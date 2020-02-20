@@ -1,7 +1,7 @@
 {
-  "name": "@graphback/runtime",
+  "name": "@graphback/runtime-knex",
   "version": "0.11.0-rc1",
-  "description": "Graphback Runtime Core",
+  "description": "Graphback Runtime Knex.js integration",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "typescript": {
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/node": "12.12.28",
+    "@types/node": "12.12.27",
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
@@ -48,7 +48,9 @@
   "dependencies": {
     "@graphback/core": "^0.11.0-rc1",
     "dataloader": "2.0.0",
-    "graphql-subscriptions": "1.1.0"
+    "graphql-subscriptions": "1.1.0",
+    "knex": "0.20.10",
+    "@graphback/runtime": "0.11.0-rc1"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

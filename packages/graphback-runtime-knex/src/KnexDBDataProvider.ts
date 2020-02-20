@@ -1,8 +1,7 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
-import { NoDataError } from './NoDataError';
+import { GraphbackDataProvider, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
