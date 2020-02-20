@@ -24,7 +24,7 @@ Please see the **CRUD** section for more details.
 ## Database migrations
 
 Graphback provides the option for automatic database migrations, to give you a full backend experience out of the box.
-Database migrations are based on your model with various options for table mapping. 
+Database migrations are based on your schema with various options for table mapping. 
 Currently, Graphback supports many relational databases by using the Knex.js library to perform migrations.
 
 Please follow the **Database** section for more details.
