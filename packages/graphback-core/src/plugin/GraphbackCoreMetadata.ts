@@ -106,6 +106,7 @@ export class GraphbackCoreMetadata {
                 const relationType = getBaseType(f.type) as GraphQLObjectType;
 
                 // ignore types that are do not have `@model` marker
+                // TODO document this
                 if (!isModelType(relationType)) {
                     return;
                 }
@@ -175,9 +176,9 @@ export class GraphbackCoreMetadata {
     private validateOneToManyRelationshipMetadata(parentType: GraphQLObjectType, relationType: GraphQLObjectType, parentFieldName: string, relationFieldName: string) {
         // TODO: Return undefined if no explicit value is set in annotation
         // Maybe change `@db.oneToMany` to just `@oneToMany`
-        if (!relationFieldName !== true) {
-            throw new Error(`${parentType.name}.${parentFieldName} '@oneToMany' annotation requires a relation field name.`)
-        }
+        // if (!relationFieldName !== true) {
+        //     throw new Error(`${parentType.name}.${parentFieldName} '@oneToMany' annotation requires a relation field name.`)
+        // }
 
         const relationModelField = relationType.getFields()[relationFieldName];
 
@@ -195,9 +196,9 @@ export class GraphbackCoreMetadata {
      private validateOneToOneRelationshipMetadata(parentType: GraphQLObjectType, relationType: GraphQLObjectType, parentFieldName: string, relationFieldName: string) {
         // TODO: Return undefined if no explicit value is set in annotation
         // Maybe change `@db.oneToMany` to just `@oneToMany`
-        if (!relationFieldName !== true) {
-            throw new Error(`${parentType.name}.${parentFieldName} '@oneToOne' annotation requires a relation field name.`)
-        }
+        // if (!relationFieldName !== true) {
+        //     throw new Error(`${parentType.name}.${parentFieldName} '@oneToOne' annotation requires a relation field name.`)
+        // }
 
         const relationModelField = relationType.getFields()[relationFieldName];
 
