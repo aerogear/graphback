@@ -1,9 +1,14 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
-import { GraphbackDataProvider } from './GraphbackDataProvider';
 import { GraphQLObjectType } from 'graphql';
+import fetch from 'node-fetch';
+import { GraphbackDataProvider } from './GraphbackDataProvider';
 import { NoDataError } from './NoDataError';
-const fetch = require('node-fetch');
 
+/**
+ * RESTDataProvider is providing the required functionality to connect with a RESTful Datasource.
+ * It supports all the standard CRUD operations.
+ * 
+ */
 export class RESTDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
     // Base url of the endpoint. When creating an RESTDataProvider instance, a string is passed into the constructor.
     protected baseUrl : string;
@@ -27,7 +32,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
      * 
      */
-    async create(data: Type, context?: GraphbackContext): Promise<Type> {
+    public async create(data: Type, context?: GraphbackContext): Promise<Type> {
         const url = `${this.baseUrl}/${this.baseType.name.toLowerCase()}/`
         const res = await fetch(url, {
             method: 'post',
@@ -35,6 +40,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
             headers: this.headers,
         })
         const json = await res.json();
+
         return json;
     }
 
@@ -48,11 +54,12 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
      * 
      */
-    async update(data: Type, context?: GraphbackContext): Promise<Type> {
+    public async update(data: Type, context?: GraphbackContext): Promise<Type> {
         const { idField } = getDatabaseArguments(this.tableMap, data);
         if(idField.value === undefined){
             throw new NoDataError(`Primary field value for type ${this.baseType} not provided`)
         }else{
+            // eslint-disable-next-line prefer-template
             const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data[idField.name]}`
             const res = await fetch(url,{
                 method: 'PUT',
@@ -60,6 +67,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
                 headers: this.headers,
                 })
             const json = await res.json()
+
             return json;
         }
      
@@ -75,11 +83,12 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * 
      * 
      */
-    async delete(data: Type, context?: GraphbackContext): Promise<Type> {
+    public async delete(data: Type, context?: GraphbackContext): Promise<Type> {
         const { idField } = getDatabaseArguments(this.tableMap, data);
         if(idField.value === undefined){
             throw new NoDataError(`Primary field value for type ${this.baseType} not provided`)
         }else{
+            // eslint-disable-next-line prefer-template
             const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data[idField.name]}`
             const res = await fetch(url,{
             method:'DELETE',
@@ -87,6 +96,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
             headers: this.headers,
             })
             const json = await res.json();
+
             return json;
         }    
         
@@ -101,10 +111,12 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
      * 
      */
-    async findAll(context?: GraphbackContext): Promise<Type[]> {
+    public async findAll(context?: GraphbackContext): Promise<Type[]> {
+        // eslint-disable-next-line prefer-template
         const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
         const res = await fetch(url)
         const json = await res.json()
+
         return json
     }
 
@@ -122,10 +134,12 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      *      
      *      url = www.jboss.com/api/v2/users/id/se006575
      */
-    async findBy(filter: any, context?: GraphbackContext): Promise<Type[]> {
-        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${filter['type']}`+`/${filter['value']}`
+    public async findBy(filter: any, context?: GraphbackContext): Promise<Type[]> {
+        // eslint-disable-next-line prefer-template
+        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${filter.type}`+`/${filter.value}`
         const res = await fetch(url)
         const json = await res.json()
+
         return json
     }
 
@@ -136,7 +150,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * @param relationField 
      * @param ids 
      */
-    batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
+    public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
         throw new Error("Method not implemented.");
     }
 
