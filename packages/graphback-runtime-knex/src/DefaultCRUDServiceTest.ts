@@ -3,11 +3,8 @@ import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { CRUDService } from '../../src/service/CRUDService'
-import { PubSubConfig } from '../../src/service/PubSubConfig';
+import { KnexDBDataProvider, CRUDService, PubSubConfig } from './index';
 
-//tslint:disable: typedef
 
 interface Context {
   db: Knex;
