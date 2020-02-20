@@ -68,7 +68,7 @@ export const createConfig = async (database: string, client: boolean) => {
   const [dbConfig, dockerCompose] = getConfig(database);
   const graphqlConfig: IGraphQLConfig = {
     schema: './src/schema/*.graphql',
-    documents: './client/src/graphql/*.graphql',
+    documents: './client/src/graphql/**/*.graphql',
     extensions: {
       graphback: {
         "model": "./model",
