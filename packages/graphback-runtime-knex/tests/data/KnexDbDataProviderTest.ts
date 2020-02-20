@@ -2,7 +2,7 @@
 import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
+import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
 
 const schema = buildSchema(`
 """
