@@ -25,6 +25,7 @@ extensions:
         format: graphql
         outputPath: ./client/src/graphql
   dbmigrations:
+     ## See knex.js for db specific config format
     connection:
       user: postgresql
       password: postgres
@@ -32,4 +33,3 @@ extensions:
       host: 127.0.0.1
       port: 55432
     client: pg
-
