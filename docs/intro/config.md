@@ -31,7 +31,7 @@ Typical configuration looks as follows
 schema: ./server/src/schema/*.graphql
 ## Documents are not used by graphback but it is required by graphql-config and can be used by other extensions
 ## Usually it should match the Graphback client generator plugin
-documents: ./client/src/graphql/*.graphql
+documents: ./client/src/graphql/**/*.graphql
 extensions:
   # Graphback configuration
   graphback:
