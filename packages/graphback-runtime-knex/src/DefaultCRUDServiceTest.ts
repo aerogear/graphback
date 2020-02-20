@@ -5,7 +5,6 @@ import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { KnexDBDataProvider, CRUDService, PubSubConfig } from './index';
 
-
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;

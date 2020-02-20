@@ -30,17 +30,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async update(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    if (idField) {
-      const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
-      if (result) {
-        const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
-        if (queryResult && queryResult[0]) {
-          queryResult[0][idField.name] = queryResult[0]._id;
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
+    if (result) {
+      const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
+      if (queryResult && queryResult[0]) {
+        queryResult[0][idField.name] = queryResult[0]._id;
 
-          return queryResult[0];
-        } else {
-          throw new NoDataError(`Cannot update ${this.collectionName}`);
-        }
+        return queryResult[0];
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -48,17 +44,14 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async delete(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    if (idField) {
-      const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
-      if (queryResult) {
-        const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
-        if (queryResult && queryResult[0]) {
-          queryResult[0][idField.name] = queryResult[0]._id;
 
-          return queryResult[0];
-        } else {
-          throw new NoDataError(`Cannot update ${this.collectionName}`);
-        }
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) });
+    if (queryResult) {
+      const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
+      if (result.result.ok) {
+        console.log(idField)
+        queryResult[idField.name] = queryResult._id;
+        return queryResult;
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -84,7 +77,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (filter[idField.name]) {
       dbResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(filter[idField.name]) }).toArray();
     } else {
-      dbResult = await this.db.collection(this.collectionName).find({ title: filter.title }).toArray();
+      dbResult = await this.db.collection(this.collectionName).find(filter).toArray();
     }
     if (dbResult) {
       return dbResult.map((one: any) => {

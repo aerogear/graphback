@@ -39,7 +39,7 @@ test.beforeEach(async (t: any) => {
   t.context = { provider }
 
   await provider.create({
-    text: ' todo',
+    text: 'todo',
   });
 
   await provider.create({
@@ -47,7 +47,7 @@ test.beforeEach(async (t: any) => {
   });
 });
 
-test('Test mongo crud', async (t: any)  => {
+test('Test mongo crud', async (t: any) => {
   let todo: Todo = await t.context.provider.create({
     text: 'create a todo',
   });
@@ -67,16 +67,17 @@ test('Test mongo crud', async (t: any)  => {
 });
 
 
-test('find all Todos', async (t: any)  => {
+test('find all Todos', async (t: any) => {
   const todos = await t.context.provider.findAll();
 
   t.assert(todos.length > 0);
 });
 
-test('find Todo by text', async (t: any)  => {
+test('find Todo by text', async (t: any) => {
+  const all = await t.context.provider.findAll();
   const todos: Todo[] = await t.context.provider.findBy({
-    text: 'todo',
+    text: all[0].text,
   });
-
-  t.assert(todos.length > 0);
+  console.info(todos)
+  t.assert(todos.length > 1);
 });
