@@ -30,19 +30,11 @@ extensions:
         outputPath: ./client/src/graphql
   ## Knex DB Migration config
   dbmigrations:
-<<<<<<< HEAD
     ## See knex.js for db specific config format
     client: pg
-=======
-     ## See knex.js for db specific config format
->>>>>>> 0bd15ed... Update templates/ts-apollo-fullstack/.graphqlrc.yml
     connection:
       user: postgresql
       password: postgres
       database: users
       host: localhost
       port: 55432
-<<<<<<< HEAD
-=======
-    client: pg
->>>>>>> 0bd15ed... Update templates/ts-apollo-fullstack/.graphqlrc.yml
