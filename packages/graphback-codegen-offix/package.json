@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@graphback/core": "^0.11.0-rc1",
-    "@graphback/runtime": "^0.11.0-rc1",
+    "@graphback/runtime-knex": "^0.11.0-rc1",
     "@graphql-toolkit/common": "0.9.7",
     "@graphql-toolkit/core": "0.9.7",
     "@graphql-toolkit/schema-merging": "0.9.7",

@@ -1,4 +1,4 @@
-import { PgKnexDBDataProvider, NoDataError } from "@graphback/runtime"
+import { PgKnexDBDataProvider, NoDataError } from "@graphback/runtime-knex"
 import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments } from '@graphback/core';
 
