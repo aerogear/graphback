@@ -2,7 +2,6 @@ import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphb
 import { GraphQLObjectType } from 'graphql';
 import fetch from 'node-fetch';
 import { GraphbackDataProvider } from './GraphbackDataProvider';
-import { NoDataError } from './NoDataError';
 
 /**
  * RESTDataProvider is providing the required functionality to connect with a RESTful Datasource.
@@ -57,7 +56,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
     public async update(data: Type, context?: GraphbackContext): Promise<Type> {
         const { idField } = getDatabaseArguments(this.tableMap, data);
         if(idField.value === undefined){
-            throw new NoDataError(`Primary field value for type ${this.baseType} not provided`)
+            throw new Error(`Primary field value for type ${this.baseType} not provided`)
         }else{
             // eslint-disable-next-line prefer-template
             const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data[idField.name]}`
@@ -86,7 +85,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
     public async delete(data: Type, context?: GraphbackContext): Promise<Type> {
         const { idField } = getDatabaseArguments(this.tableMap, data);
         if(idField.value === undefined){
-            throw new NoDataError(`Primary field value for type ${this.baseType} not provided`)
+            throw new Error(`Primary field value for type ${this.baseType} not provided`)
         }else{
             // eslint-disable-next-line prefer-template
             const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}`+`/${data[idField.name]}`
