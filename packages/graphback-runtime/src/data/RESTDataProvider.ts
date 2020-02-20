@@ -69,7 +69,6 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
 
             return json;
         }
-     
     }
 
     /**
