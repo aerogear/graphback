@@ -1,8 +1,10 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { PubSubConfig } from './service/PubSubConfig';
-import { CRUDService, PgKnexDBDataProvider } from "./index";
+import { CRUDService } from "@graphback/runtime";
+import { PubSubConfig } from '@graphback/runtime/types/service/PubSubConfig';
+import { PgKnexDBDataProvider } from './PgKnexDBDataProvider';
+import { KnexDBDataProvider } from './KnexDBDataProvider';
 
 /**
  * Config used to initialize crud context file
@@ -29,7 +31,7 @@ export type KnexRuntimeContextConfig = {
  * @param db 
  * @param pubSub 
  */
-export const createKnexCRUDRuntimeContext = (
+export const createKnexPGCRUDRuntimeContext = (
   modelName: string, schema: GraphQLSchema,
   db: Knex, pubSubConfig: PubSubConfig
 ) => {
@@ -40,6 +42,29 @@ export const createKnexCRUDRuntimeContext = (
     Please make sure that you pass the right schema to createCRUDRuntimeContext`)
   }
   const objectDB = new PgKnexDBDataProvider(modelType, db)
+
+  return new CRUDService(modelType, objectDB, pubSubConfig)
+}
+
+
+/**
+ * Helper function for creating MySQL runtime to be used in Graphback
+ * 
+ * @param schema 
+ * @param db 
+ * @param pubSub 
+ */
+export const createKnexCRUDRuntimeContext = (
+  modelName: string, schema: GraphQLSchema,
+  db: Knex, pubSubConfig: PubSubConfig
+) => {
+  const modelType = schema.getType(modelName) as GraphQLObjectType
+  if (modelType === undefined) {
+    throw new Error(`
+    Schema is missing provided type. 
+    Please make sure that you pass the right schema to createCRUDRuntimeContext`)
+  }
+  const objectDB = new KnexDBDataProvider(modelType, db)
 
   return new CRUDService(modelType, objectDB, pubSubConfig)
 }
