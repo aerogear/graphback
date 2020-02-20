@@ -40,6 +40,6 @@ type Query {
 
 ```
 
-Graphback requires your datatamodels to have at least one field with `ID` type that will be used to uniquely represent every object in the database. 
+Graphback requires your data models to have at least one field with `ID` type that will be used to uniquely represent every object in the database. 
 When your type has multiple `ID` scalars defined you can use `db.primary` annotation to define which one should be used as primary key.
 Objects can also reference each other using relationships.

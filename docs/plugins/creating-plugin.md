@@ -7,7 +7,7 @@ sidebar_label: Custom plugin
 Graphback allows to create your own plugins that can affect generated schema 
 and create files in filesystem.
 
-Each plugin needs to be an new npm package that will implement GraphbackPlugin.
+Each plugin needs to be a new npm package that will implement GraphbackPlugin.
 
 ## Building your plugin
 
@@ -54,10 +54,10 @@ export { ClientCRUDPlugin as Plugin } from './ClientCRUDPlugin'
 
 ## Plugin configuration
 
-Plugins are loaded using commonjs require method based on the graphback plugin section.
-Each plugin should have his own configuration embeeded as folows.
+Plugins are loaded using CommonJS 'require' method based on the Graphback plugin section.
 Order of the plugins matter especially when transforming schema.
-If your plugin relies on other plugins it should be placed on the bottom of the list.
+If your plugin relies on other plugins, it should be placed on the bottom of the list.
+Each plugin should have its own configuration embedded as follows:
 
 ```yaml
   graphback:
@@ -75,8 +75,8 @@ If your plugin relies on other plugins it should be placed on the bottom of the 
 
 ```
 
-> NOTE: Graphback CLI includes Graphback core pluging. When adding your own plugins you need to run Graphback CLI from your npm scripts
-for the graphback engine to be able to pick up the plugin package.
+> NOTE: Graphback CLI includes Graphback core plugin. When adding your own plugins, you need to run Graphback CLI from your npm scripts
+for the Graphback engine to be able to pick up the plugin package.
 
 ## Plugins helper
 
