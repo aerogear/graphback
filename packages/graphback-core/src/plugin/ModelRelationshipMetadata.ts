@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLOutputType } from 'graphql';
+import { GraphQLObjectType, GraphQLOutputType, GraphQLType } from 'graphql';
 
 export interface RelationshipMetadata {
     parent: GraphQLObjectType
@@ -8,6 +8,6 @@ export interface RelationshipMetadata {
     relationField: string
     foreignKey?: {
         name: string
-        type?: GraphQLOutputType
+        type?: GraphQLType
     }
 }
