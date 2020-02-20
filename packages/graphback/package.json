@@ -51,7 +51,6 @@
     "@graphql-inspector/core": "1.27.0",
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
-    "knex": "0.20.10",
     "pg": "7.18.1",
     "pino": "5.16.0",
     "sqlite3": "4.1.1",
