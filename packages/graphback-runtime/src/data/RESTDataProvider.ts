@@ -149,7 +149,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * @param ids 
      */
     public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
-        throw new Error("Method not implemented.");
+       return undefined;
     }
 
 
