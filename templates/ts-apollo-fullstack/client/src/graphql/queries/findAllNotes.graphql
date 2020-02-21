@@ -1,0 +1,20 @@
+
+
+query findAllNotes {
+    findAllNotes {
+      ...NoteExpandedFields
+    }
+  }
+
+fragment NoteExpandedField on Note {
+   id
+   title
+   description
+   comments {
+      id
+      description
+      author
+   }   likes
+
+} 
+

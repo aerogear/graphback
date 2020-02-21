@@ -4,10 +4,7 @@
   "private": true,
   "scripts": {
     "start:server": "cd server/ && yarn start",
-    "start:client": "cd client/ && yarn start",
-    "build": "echo disabled",
-    "test": "echo disabled",
-    "lint": "echo disabled"
+    "start:client": "cd client/ && yarn start"
   },
   "license": "MIT",
   "devDependencies": {

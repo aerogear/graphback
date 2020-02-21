@@ -1,13 +1,10 @@
 {
-  "private": true,
   "name": "graphback-templates-fullstack-server",
   "version": "0.11.0-dev3",
   "private": true,
   "scripts": {
-    "build": "echo disabled",
-    "test": "echo disabled",
-    "lint": "echo disabled",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "@graphback/runtime-knex": "0.11.0-dev3",

@@ -1,12 +1,12 @@
 
+import { join } from 'path';
 import { loadSchemaFiles } from '@graphql-toolkit/file-loading';
 import { ApolloServer, PubSub } from 'apollo-server-express';
 import { buildSchema } from 'graphql';
-import { join } from 'path';
+import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 import { createDB } from './db'
 import { models } from './resolvers/models';
 import resolvers from './resolvers/resolvers'
-import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 
 /**
  * Creates Apollo server
