@@ -1,7 +1,8 @@
 {
   "private": true,
-  "name": "graphback-generator-server-template",
+  "name": "graphback-templates-fullstack-server",
   "version": "0.11.0-dev3",
+  "private": true,
   "scripts": {
     "build": "echo disabled",
     "test": "echo disabled",
