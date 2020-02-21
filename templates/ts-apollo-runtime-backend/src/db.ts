@@ -1,13 +1,21 @@
 import { loadConfig } from 'graphql-config';
 import Knex from 'knex'
 
-export const getConfig = async () => {
+export const getGraphbackConfig = async () => {
     const config = await loadConfig({
-        extensions: [() => ({ name: 'dbmigrations' })]
+        extensions: [() => ({ name: 'graphback' })]
     });
 
-    const conf = await config.getDefault().extension('dbmigrations');
+    const conf = await config.getDefault().extension('graphback');
+    return conf;
+}
 
+export const getMigrateConfig = async () => {
+    const config = await loadConfig({
+        extensions: [() => ({ name: 'graphback' })]
+    });
+
+    const conf = await config.getDefault().extension('graphback');
     return conf;
 }
 
@@ -16,7 +24,9 @@ export const getConfig = async () => {
  * For production use please use different source of the configuration
  */
 export const createDB = async () => {
-    const dbmigrations = await getConfig();
+
+    const dbmigrations = await getMigrateConfig()
+
     // connect to db
     const db = Knex(dbmigrations)
 
