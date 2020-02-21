@@ -17,7 +17,7 @@ export async function installDependencies(database: string): Promise<void> {
     await execa('npm', ['i', '-S', 'sqlite3'])
   }
   //Using opiniated layer
-  await execa('npm', ['i', '-S', '@graphback/runtime'])
+  await execa('npm', ['i', '-S', '@graphback/runtime-knex'])
 }
 
 function postSetupMessage(): string {

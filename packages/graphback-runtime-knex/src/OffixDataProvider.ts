@@ -1,10 +1,11 @@
-import { PgKnexDBDataProvider, NoDataError } from "@graphback/runtime"
 import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments } from '@graphback/core';
+import { PgKnexDBDataProvider, NoDataError } from './index';
 
 
 /**
  * Data provider for offix that can throw conflict for edits
+ * Note: this provider is still experimental not fully functional
  */
 export class OffixDataProvider extends PgKnexDBDataProvider {
     public constructor(baseType: GraphQLObjectType, db: any) {

@@ -1,6 +1,6 @@
-import { makeExecutableSchema } from 'apollo-server-express';
-import { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } from 'graphback'
-import { printSchema } from 'graphql';
+
+import { GraphbackRuntime, ModelDefinition, GraphbackGeneratorConfig } from 'graphback'
+import { PgKnexDBDataProvider } from '@graphback/runtime-knex'
 import { migrateDB } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
@@ -12,8 +12,15 @@ import { loadSchema } from './loadSchema';
  * Override default runtime db to use Postgress
  */
 class PGRuntime extends GraphbackRuntime {
-  protected createDBProvider(model: ModelDefinition, db: Knex) {
-    return new PgKnexDBDataProvider(model.graphqlType, db);
+  db: Knex<any, any[]>;
+
+  constructor(schema: string, config: GraphbackGeneratorConfig, db: Knex) {
+    super(schema, config);
+    this.db = db;
+  }
+
+  protected createDBProvider(model: ModelDefinition) {
+    return new PgKnexDBDataProvider(model.graphqlType, this.db);
   }
 }
 
@@ -32,8 +39,10 @@ export const createRuntime = async () => {
   console.log("Migrated database", ops);
 
   const pubSub = new PubSub();
-  const runtimeEngine = new PGRuntime(schemaText, graphbackConfig);
-  const runtime = runtimeEngine.buildRuntime(db, pubSub, {});
+  const runtimeEngine = new PGRuntime(schemaText, graphbackConfig, db);
+  // We use default datasource for everything
+  const serviceOverrides = {};
+  const runtime = runtimeEngine.buildRuntime(pubSub, serviceOverrides);
 
   return runtime;
 }

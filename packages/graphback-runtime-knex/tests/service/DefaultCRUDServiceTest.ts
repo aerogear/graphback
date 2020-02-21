@@ -3,9 +3,8 @@ import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { KnexDBDataProvider } from '../../src/data/KnexDBDataProvider';
-import { CRUDService } from '../../src/service/CRUDService'
-import { PubSubConfig } from '../../src/service/PubSubConfig';
+import { CRUDService, GraphbackPubSub } from '@graphback/runtime';
+import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
 
 //tslint:disable: typedef
 
@@ -93,7 +92,7 @@ test.beforeEach(async t => {
 
   const pubSub = new PubSub();
 
-  const publishConfig: PubSubConfig = {
+  const publishConfig: GraphbackPubSub = {
     pubSub,
     publishCreate: true,
     publishDelete: true,

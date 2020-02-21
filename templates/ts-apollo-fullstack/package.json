@@ -1,6 +1,6 @@
 {
   "name": "graphback-fullstack-template",
-  "version": "0.11.0-rc1",
+  "version": "0.11.0-dev3",
   "private": true,
   "scripts": {
     "start:server": "cd server/ && yarn start",
@@ -11,13 +11,9 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "graphback-cli": "0.11.0-rc1",
+    "graphback-cli": "0.11.0-dev3",
     "graphql": "14.6.0",
     "tslint": "5.20.1",
-    "typescript": "3.7.5"
-  },
-  "dependencies": {
-    "@graphback/runtime": "^0.10.2",
-    "pg": "^7.18.1"
+    "typescript": "3.8.2"
   }
 }

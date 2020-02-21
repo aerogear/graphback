@@ -1,8 +1,7 @@
 import { GraphbackPluginEngine, ModelDefinition } from '@graphback/core';
-import { CRUDService, GraphbackCRUDService, KnexDBDataProvider, LayeredRuntimeResolverCreator, PgKnexDBDataProvider } from '@graphback/runtime';
+import { CRUDService, GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackDataProvider } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
-import * as Knex from 'knex';
 import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerator';
 
 /**
@@ -11,7 +10,7 @@ import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerat
  * Automatically generate your database structure resolvers and queries from graphql types.
  * See README for examples
  */
-export class GraphbackRuntime extends GraphbackGenerator {
+export abstract class GraphbackRuntime extends GraphbackGenerator {
   public constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
     super(schema, config);
   }
@@ -21,29 +20,29 @@ export class GraphbackRuntime extends GraphbackGenerator {
    * 
    * @param serviceOverrides - contains object that provides custom CRUD services that will overide default ones
    */
-  public buildRuntime(db: Knex, pubSub: PubSubEngine, serviceOverrides: { [key: string]: GraphbackCRUDService } = {}) {
+  public buildRuntime(pubSub: PubSubEngine, serviceOverrides: { [key: string]: GraphbackCRUDService } = {}) {
     const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
 
     this.initializePlugins(pluginEngine)
     const metadata = pluginEngine.createSchema();
     const models = metadata.getModelDefinitions();
-    const defaultServices = this.createDefaultRuntimeServices(models, db, pubSub)
+    const defaultServices = this.createDefaultRuntimeServices(models, pubSub)
     const services = Object.assign(defaultServices, serviceOverrides)
     const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models, services);
 
     return { schema: metadata.getSchema(), resolvers: runtimeResolversCreator.generate() }
   }
 
-  protected createDefaultRuntimeServices(models: ModelDefinition[], db: Knex, pubSub: PubSubEngine, ) {
+  protected createDefaultRuntimeServices(models: ModelDefinition[], pubSub: PubSubEngine, ) {
     return models.reduce((services: any, model: ModelDefinition) => {
-      const dbLayer = this.createDBProvider(model, db);
+      const dbLayer = this.createDBProvider(model);
       services[model.graphqlType.name] = this.createService(model, dbLayer, pubSub);
 
       return services;
     }, {})
   }
 
-  protected createService(model: ModelDefinition, dbLayer: KnexDBDataProvider, pubSub: PubSubEngine) {
+  protected createService(model: ModelDefinition, dbLayer: GraphbackDataProvider, pubSub: PubSubEngine) {
     return new CRUDService(model.graphqlType, dbLayer, {
       pubSub,
       publishCreate: model.crudOptions.subCreate,
@@ -52,7 +51,12 @@ export class GraphbackRuntime extends GraphbackGenerator {
     });
   }
 
-  protected createDBProvider(model: ModelDefinition, db: Knex) {
-    return new KnexDBDataProvider(model.graphqlType, db);
-  }
+  /**
+   * Create db provider can connect with various providers.
+   * Choose from @graphback/runtime-knex and @graphback/runtime-mongodb providers
+   * 
+   * @param model 
+   * @param db 
+   */
+  protected abstract createDBProvider(model: ModelDefinition);
 }

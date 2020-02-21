@@ -1,6 +1,6 @@
 {
   "name": "@graphback/codegen-offix",
-  "version": "0.11.0-rc1",
+  "version": "0.11.0-dev3",
   "description": "GraphQL-Code-Generator offix plugin",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -36,21 +36,20 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/node": "12.12.27",
+    "@types/node": "12.12.28",
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
-    "typescript": "3.7.5"
+    "typescript": "3.8.2"
   },
   "dependencies": {
-    "@graphback/core": "^0.11.0-rc1",
-    "@graphback/runtime": "^0.11.0-rc1",
+    "@graphback/core": "0.11.0-dev3",
     "@graphql-toolkit/common": "0.9.7",
     "@graphql-toolkit/core": "0.9.7",
     "@graphql-toolkit/schema-merging": "0.9.7",
-    "graphql-compose": "7.12.0",
+    "graphql-compose": "7.12.1",
     "graphql-metadata": "0.5.0",
     "pluralize": "8.0.0"
   },

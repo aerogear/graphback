@@ -1,0 +1,26 @@
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+  ## Relationship
+  """
+  @db.oneToMany: 'noteComment'
+  """
+  comment: [Comment]!
+
+}
+
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+  noteComment: Note!
+}
+
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+}
+
+type Mutation {
+  likeNote(id: ID!): Note!
+}

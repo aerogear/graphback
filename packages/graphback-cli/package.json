@@ -1,6 +1,6 @@
 {
   "name": "graphback-cli",
-  "version": "0.11.0-rc1",
+  "version": "0.11.0-dev3",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "bin": {
@@ -39,7 +39,7 @@
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/js-yaml": "3.12.2",
-    "@types/node": "12.12.27",
+    "@types/node": "12.12.28",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.30",
     "@types/yargs": "15.0.3",
@@ -48,7 +48,7 @@
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
-    "typescript": "3.7.5",
+    "typescript": "3.8.2",
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
@@ -59,10 +59,10 @@
     "execa": "4.0.0",
     "figlet": "1.2.4",
     "glob": "7.1.6",
-    "graphback": "^0.11.0-rc1",
+    "graphback": "0.11.0-dev3",
     "graphql": "14.6.0",
     "graphql-config": "3.0.0-alpha.18",
-    "graphql-migrations": "^0.11.0-rc1",
+    "graphql-migrations": "0.11.0-dev3",
     "inquirer": "7.0.4",
     "js-yaml": "3.13.1",
     "node-emoji": "1.10.0",
