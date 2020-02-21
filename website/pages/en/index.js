@@ -49,7 +49,7 @@ class HomeSplash extends React.Component {
 
     return (
       <SplashContainer>
-        <image src={`${baseUrl}img/graphback.png`} />
+        <image style={{width: "30%"}} src={`${baseUrl}img/graphback.png`} />
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
           <PromoSection>
@@ -89,7 +89,7 @@ class Index extends React.Component {
               src="https://www.youtube.com/embed/wmpEiffqxy8" 
               frameborder="0" allowfullscreen align="middle"></iframe>
             </div>`,
-            title: 'Graphback in 5 minutes',
+            title: 'Graphback in 10 minutes',
           },
         ]}
       </Block>
@@ -99,15 +99,13 @@ class Index extends React.Component {
       <Block background="light" align="left">
         {[
           {
-            content: `Graphback provides command line client for generating fully functional GraphQL enabled Node.js servers.
-            Developers can base on rich ecosystem of templates that integrate various open source technologies.
-            Graphback will generate production ready application based on your GraphQL types in seconds.
-            Templates can be automatically packaged into containers and deployed to any cloud provider.`,
-            image: `${baseUrl}img/diagram.png`,
+            content: `Graphback provides command line client for generating fully functional GraphQL enabled Node.js server and client side applications.
+            Graphback will generate production-ready application based on your GraphQL types in seconds. `,
+            image: `${baseUrl}img/diagramsmall.png`,
             contentAlign: 'right',
             imageAlign: 'right',
             title: 'Graphback Workflow',
-          },
+          }
         ]}
       </Block>
     );

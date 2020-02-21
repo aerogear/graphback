@@ -1,4 +1,4 @@
-## Graphback
+## Graphback Codegen Resolvers
 
 <p align="center">
   <img width="400" src="https://github.com/aerogear/graphback/raw/master/website/static/img/graphback.png">
@@ -10,6 +10,6 @@
 **Documentation**: https://graphback.dev
 **Repository**: https://github.com/aerogear/graphback/
 
-## Graphback-Codegen-Resolvers 
-// TODO update README
+## Usage
 
+See: https://graphback.dev/docs/next/plugins/plugin-intro

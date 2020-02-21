@@ -2,20 +2,38 @@
   "docs": {
     "Getting Started": [
       "gettingstarted",
-      "datamodel",
-      "config",
-      "custom"
+      "intro/quickstart",
+      "intro/concepts",
+      "intro/datamodel",
+      "intro/config"
     ],
-    "Concepts": [
-      "concepts",
-      "runtime",
-      "datasources",
-      "relationships",
-      "clientqueries"
+    "Use Cases": [
+      "intro/usecases",
+      "intro/template",
+      "intro/existingproject",
+      "intro/serverless"
     ],
-    "Migrations": [
-      "migrations",
-      "openapi"
+    "CRUD": [
+      "crud/crudspec",
+      "crud/crudruntime",
+      "crud/relationships",
+      "crud/crudmapping"
+    ],
+    "Generator Plugins": [
+      "plugins/plugin-intro",
+      "plugins/crud-schema",
+      "plugins/crud-resolvers",
+      "plugins/crud-client",
+      "plugins/customplugin"
+    ],
+    "Database": [
+      "db/dbintroduction",
+      "db/dbmigrations",
+      "db/datasources"
+    ],
+    "Migrating to Graphback": [
+      "migrations/intromigrations",
+      "migrations/openapi"
     ],
     "Reference": [
       "commands"

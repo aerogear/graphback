@@ -1,4 +1,4 @@
-## Graphback
+## Graphback Codegen Schema
 
 <p align="center">
   <img width="400" src="https://github.com/aerogear/graphback/raw/master/website/static/img/graphback.png">
@@ -17,4 +17,4 @@ Generator accepts Graphback model as input and uses it to generate fully functio
 
 ## Usage
 
-// TODO
+See: https://graphback.dev/docs/next/plugins/plugin-intro

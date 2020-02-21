@@ -3,10 +3,13 @@ import { OutputFileSystem } from './GeneratorModel';
 import { GeneratorResolversFormat } from './GeneratorResolversFormat';
 import { generateCRUDResolversFunctions } from './templates/createResolvers';
 import { createResolverTemplate } from './templates/resolverWrapper';
-import { createRuntimeFile } from './templates/runtimeTemplate';
+import { createModelsFile } from './templates/modelTemplate';
 import { writeResolvers } from './writeResolvers';
 
 export interface ResolverGeneratorPluginConfig {
+    /**
+     * Extension of the generated files 
+     */
     format: 'ts' | 'js'
 
     /**
@@ -77,7 +80,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
 
         const generatedResolversFunctions = generateCRUDResolversFunctions(models);
         const generatedResolverFile = this.createGeneratedResolversFile(generatedResolversFunctions, this.pluginConfig);
-        const contextFile = createRuntimeFile(models, this.pluginConfig);
+        const contextFile = createModelsFile(models, this.pluginConfig);
 
         return {
             resolvers: generatedResolverFile,

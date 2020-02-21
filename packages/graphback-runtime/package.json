@@ -1,7 +1,7 @@
 {
   "name": "@graphback/runtime",
-  "version": "0.10.2",
-  "description": "GraphQL-Code-Generator compatibile schema generator",
+  "version": "0.11.0-dev3",
+  "description": "Graphback Runtime Core",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "typescript": {
@@ -36,22 +36,20 @@
     "access": "public"
   },
   "devDependencies": {
-
-    "@types/node": "12.12.27",
+    "@types/node": "12.12.28",
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
     "sqlite3": "4.1.1",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
-    "typescript": "3.7.5"
+    "typescript": "3.8.2"
   },
   "dependencies": {
-    "@graphback/core": "0.10.2",
+    "@graphback/core": "0.11.0-dev3",
     "dataloader": "2.0.0",
-    "graphql-subscriptions": "1.1.0",
-    "knex": "0.20.9",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

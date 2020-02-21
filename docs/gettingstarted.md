@@ -1,120 +1,32 @@
 ---
 id: gettingstarted
-title: What is Graphback and how do I get started?
+title: Introduction to Graphback
 sidebar_label: What is Graphback
 ---
 
-Graphback is a package and CLI tool that can help you bootstrap a GraphQL server and client for you including GraphQL schema, resolvers and generating database structure. Graphback addresses the difficulty in configuring a GraphQL server from scratch by giving developers:
+Graphback is a package and CLI tool that can help you bootstrap a GraphQL server and client.
+Graphback can help you to focus on your data and remove all boilerplate related with the wider adoption of GraphQL.
 
-- Generated GraphQL Schema containing Queries and Mutations for general data access
-- Underlying resolvers to fetch data in performant way
-- Support for subscriptions and live updates on the data
-- Relational support
-- Database migrations for relational database of your choice using Knex.js framework
-- Extensible runtime layer for composing data services used in generated resolvers
-- Generated client side queries 
-- Integration with other community libraries like graphql-config and graphql-code-generator
-- Component based approach allows to support different programimng languages.
-Graphback currently supports:
-    - Typescript
-    - JavaScript
-    - GQL (for Schema)
+Graphback provides tooling for generating fully functional backend and client-side code, on top of your existing application. It helps developers prototype applications by generating source code and reducing the GraphQL boilerplate on the server and the client.
 
-## Multiple ways of getting started
+Focus more on delivering business value by using the GraphQL schema to describe the shape of your data graph.
+All you need to do with Graphback is to specify your data as GraphQL Types:
 
-Graphback offers many ways of starting:
+<img src="/img/d1.png" width="50%" height="50%"></img>
 
-- Using Graphback with most popular GraphQL boilerplates, with GraphQL CLI
-- Adding Graphback to your existing project
-- Initializing Graphback in your code without code generation
-- Migrating your existing RESTful API to GraphQL 
 
-### Start new project using Graphback and GraphQL CLI
+GraphQL Types annotated with `@model` will be processed by Graphback to give you fully functional backend and client side 
+queries that follow Graphback CRUD specification. 
+Graphback will work with your current GraphQL enabled Node.js application or can help you to create new one.
 
-The best way to start with Graphback is to choose one of the available project boilerplates 
-available as part of official GraphQL CLI. 
-GraphQL CLI integrates Graphback with other community libraries offering a comprehensive way to work with GraphQL APIs.
-You can use any of the available GraphQL CLI templates to bootstrap Graphback enabled project. 
+![](/img/diagramsmall.png)
 
-With yarn:
-```
-yarn global add graphql-cli@canary
-```
+## What Graphback can do for you?
 
-With npm:
-```
-npm install -g graphql-cli@canary
-```
+- Generate CRUD based client side queries, schema and Node.JS resolvers for your input model
+- Support additional use cases by variety of community plugins
+- Migrate your database to work with your data model and changes in schema
+- Create your backend with CRUD API without code thanks to graphql-serve
 
-Execute init command to create project from scratch
+![](/img/sourcecode.png)
 
-```
-graphql init
-```
-
-Please answer all questions based on your preference.
-After project is created please follow project README file that might differ depending on
-the template that was chosen on startup.
-
-GraphQL CLI offers various commands to interact with your project that work with the Graphback package.
-Graphback specific commands are available by executing `graphql generate`.
- 
-## Adding Graphback to existing project using Graphback CLI
-
-Graphback CLI can be used to add code generation capabilities to your existing applications.
-
-```bash
-npm i -g graphback-cli
-graphback config <project-name>
-```
-Follow the on-screen instructions.
-
-You can use Graphback with either a SQLite (for prototyping) or PostgreSQL (for production) databases.
-
-If you use SQLite, you don't need to use Docker.
-
-## Running Graphback in existing application without code generation
-
-Graphback offers runtime layer that will create an in-memory implementation of the graphql services without code generation.
-Developers can still customize the way that data is queried and cached thanks to runtime architecture.
-For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation.
-
-## Creating and updating your database from your data model
-
-Graphback will create or update the database configured in `graphback.json` file, using the types defined in your data model.
-
-```gql
-type User {
-  id: ID!
-  name: String
-}
-```
-
-When ready, run `graphback db` in your terminal to create or update your database structure.
-
-This creates a `user` table with `id` and `name` columns. Each type must have an `id: ID!` field which creates a primary key in the database table.
-
-If you want to customise your database structure, check out [Database Schema Migrations](./database-schema-migrations#defining-your-data-model).
-
-You can create relationships between tables directly in your model:
-
-```gql
-type User {
-  id: ID!
-  name: String
-  messages: [Message]
-}
-
-type Message {
-  id: ID!
-  title: String
-  body: String
-  user: User!
-}
-```
-
-Run `graphback db` again to update your existing database structure with the new table.
-
-This creates a `message` table with the `id`, `title`, `body` columns and the `userId` foreign key column that references `user.id`.
-
-See [Database Relationships](./relationships) on the different relationships kinds and how you can customise them further.
