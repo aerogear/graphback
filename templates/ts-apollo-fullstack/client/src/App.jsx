@@ -28,8 +28,7 @@ const App = () => {
       <div className="hero hero-sm bg-gradient">
         <div className="hero-body">
           <div className="contain">
-            <h1 className="mb-0">OFFIX TODO</h1>
-            <p>A simple todo app using offix & graphback</p>
+            <h1 className="mb-0">EXAMPLE TODO</h1>
             <span type="text" className="btn btn-outline">
               {(isOnline) ? 'Online' : 'Offline'}
             </span>
