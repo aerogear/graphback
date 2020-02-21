@@ -4,9 +4,9 @@ title: Config
 ---
 
 Graphback can generate source code, migrate your database or start fully functional server basing just on your GraphQL Model.
-Graphback Config allows you to control configure all those use cases for your own needs. 
+Graphback Config allows you to control and configure all those use cases for your own needs. 
 
-Core of the Graphback will take your GraphQL Schema types annotated by `model` and perform various operations on them like:
+The Core of Graphback will take your GraphQL Schema types annotated by `model` and perform various operations on them like:
 
 - Code generation
 - DB migrations
@@ -15,13 +15,13 @@ Core of the Graphback will take your GraphQL Schema types annotated by `model` a
 All those operations could be controlled by `crud` flags that enable or disable various data access methods in plugins and runtime. 
  These include `create`, `update`, `delete`, `find` and `findAll`.
 
-Graphback allows the user to customize all process by using open configuration stardard `graphql-config`:
+Graphback allows the user to customize all process by using open configuration standard `graphql-config`:
 https://graphql-config.com/docs/introduction
 
 ## Configuration
 
-Each project needs to have graphqlrc.yml file available in the root folder. 
-This file is also automatically generated when using `graphback config` command
+Each project needs to have .graphqlrc.yml file available in the root folder. 
+This file is also automatically generated when using `graphback config` command.
 
 Typical configuration looks as follows
 
@@ -50,7 +50,7 @@ extensions:
     ## List of the codegen plugins 
     plugins:
         graphback-schema:
-          format: 'graphql'
+          format: graphql
           outputPath: ./server/src/schema
         graphback-client:
           format: 'graphql'

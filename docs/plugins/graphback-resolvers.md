@@ -6,11 +6,11 @@ sidebar_label: CRUD Resolvers
 
 ## Graphback CRUD Resolvers plugin
 
-Graphback resolvers plugin gives developers opiniated way to generate Node.js server compatible set of the GraphQL resolvels
+Graphback resolvers plugin gives developers opinionated way to generate Node.js server compatible set of the GraphQL resolvels
 that will work with the Graphback Schema and Client side generated queries.
 
-Resolvers plugin using Graphback Runtme Abstraction that gives developers ability to dynamically connect them to many datasources.
-Please refer to [`Runtime Abstraction`](/docs/crudruntime) documentation for more information
+Resolvers plugin using Graphback Runtime Abstraction that gives developers ability to dynamically connect them to many datasources.
+Please refer to [`Runtime Abstraction`](/docs/crudruntime) documentation for more information.
 
 ## Installation
 
@@ -42,7 +42,7 @@ const apolloServer = new ApolloServer({
 });
 ```
 
-Please reffer to ts-apollo-fullstack app for fully functional example:
+Please refer to ts-apollo-fullstack app for fully functional example:
 https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
 
 ## Plugin Config

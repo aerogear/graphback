@@ -66,4 +66,4 @@ Run `graphback db` again to update your existing database structure with the new
 
 This creates a `message` table with the `id`, `title`, `body` columns and the `userId` foreign key column that references `user.id`.
 
-See [Database Relationships](./relationships) on the different relationships kinds and how you can customise them further.
+See [Database Relationships](../crud/relationships.md) on the different relationships kinds and how you can customise them further.
