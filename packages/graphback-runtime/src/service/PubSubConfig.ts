@@ -1,11 +1,9 @@
 import { PubSubEngine } from "graphql-subscriptions";
+import { PubSubConfig } from '../GraphbackModel';
 
 /**
- * Configuration for the publish subscribe model
+ * PubSub configuration that is passed to the 
  */
-export interface PubSubConfig {
+export interface GraphbackPubSub extends PubSubConfig {
     pubSub?: PubSubEngine;
-    publishCreate?: boolean;
-    publishUpdate?: boolean;
-    publishDelete?: boolean;
 }

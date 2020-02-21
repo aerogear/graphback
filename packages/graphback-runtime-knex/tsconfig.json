@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts", "tests/DefaultCRUDServiceTest.ts"
   ],
   "compilerOptions": {
     "outDir": "./dist/",
