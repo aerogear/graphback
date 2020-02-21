@@ -78,6 +78,5 @@ test('find Todo by text', async (t: any) => {
   const todos: Todo[] = await t.context.provider.findBy({
     text: all[0].text,
   });
-  console.info(todos)
   t.assert(todos.length > 1);
 });
