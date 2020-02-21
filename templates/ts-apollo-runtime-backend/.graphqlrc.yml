@@ -27,36 +27,12 @@ extensions:
           format: ts
           outputPath: ./server/src/resolvers
     ## Knex DB Migration config
-    dbmigrations:
-      ## See knex.js for db specific config format
-      client: pg
-      connection:
-        user: postgresql
-        password: postgres
-        database: users
-        host: localhost
-        port: 55432
-  codegen:
-    generates:
-      ./client/src/generated-types.tsx:
-        config:
-          withComponent: false
-          withHOC: false
-          withHooks: true
-          skipDocumentsValidation: true
-        plugins:
-          - add: '/* tslint:disable */'
-          - typescript
-          - typescript-operations
-          - typescript-react-apollo
-      ./server/src/generated-types.ts:
-        config:
-          mappers:
-            Comment: './generated-db-types#comment'
-            Note: './generated-db-types#note'
-          useIndexSignature: true
-          skipDocumentsValidation: true
-        plugins:
-          - add: '/* tslint:disable */'
-          - typescript
-          - typescript-resolvers
+  dbmigrations:
+    ## See knex.js for db specific config format
+    client: pg
+    connection:
+      user: postgresql
+      password: postgres
+      database: users
+      host: localhost
+      port: 55432
