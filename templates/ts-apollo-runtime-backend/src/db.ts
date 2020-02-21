@@ -3,10 +3,10 @@ import Knex from 'knex'
 
 export const getConfig = async () => {
     const config = await loadConfig({
-        extensions: [() => ({ name: 'graphback' })]
+        extensions: [() => ({ name: 'dbmigrations' })]
     });
 
-    const conf = await config.getDefault().extension('graphback');
+    const conf = await config.getDefault().extension('dbmigrations');
 
     return conf;
 }
@@ -16,9 +16,9 @@ export const getConfig = async () => {
  * For production use please use different source of the configuration
  */
 export const createDB = async () => {
-    const generateConfig = await getConfig();
+    const dbmigrations = await getConfig();
     // connect to db
-    const db = Knex(generateConfig.dbmigrations)
+    const db = Knex(dbmigrations)
 
     return db
 }
