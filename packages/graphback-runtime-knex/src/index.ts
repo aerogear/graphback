@@ -3,6 +3,7 @@ export * from "./PgKnexDBDataProvider"
 export * from "./KnexDBDataProvider"
 
 // Helpers
-export * from "./runtimeContext"
+export * from "./createKnexServices"
 
 export * from "@graphback/runtime";
+
