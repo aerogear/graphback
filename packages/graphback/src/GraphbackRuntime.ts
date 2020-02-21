@@ -1,7 +1,6 @@
 import { GraphbackPluginEngine, ModelDefinition } from '@graphback/core';
-import { CRUDService, GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackDataProvider } from '@graphback/runtime';
+import { GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackPubSubModel } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
-import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerator';
 
 /**
@@ -10,7 +9,7 @@ import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerat
  * Automatically generate your database structure resolvers and queries from graphql types.
  * See README for examples
  */
-export abstract class GraphbackRuntime extends GraphbackGenerator {
+export class GraphbackRuntime extends GraphbackGenerator {
   public constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
     super(schema, config);
   }
@@ -18,45 +17,46 @@ export abstract class GraphbackRuntime extends GraphbackGenerator {
   /**
    * Create backend with all related resources
    * 
-   * @param serviceOverrides - contains object that provides custom CRUD services that will overide default ones
+   * @param services - contains object that provides custom CRUD services that will overide default ones
+   * You can use one of the datasource helpers to create services
    */
-  public buildRuntime(pubSub: PubSubEngine, serviceOverrides: { [key: string]: GraphbackCRUDService } = {}) {
-    const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
-
-    this.initializePlugins(pluginEngine)
-    const metadata = pluginEngine.createSchema();
+  public buildRuntime(services: { [key: string]: GraphbackCRUDService } = {}) {
+    const metadata = this.getMetadata();
     const models = metadata.getModelDefinitions();
-    const defaultServices = this.createDefaultRuntimeServices(models, pubSub)
-    const services = Object.assign(defaultServices, serviceOverrides)
     const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models, services);
 
     return { schema: metadata.getSchema(), resolvers: runtimeResolversCreator.generate() }
   }
 
-  protected createDefaultRuntimeServices(models: ModelDefinition[], pubSub: PubSubEngine, ) {
-    return models.reduce((services: any, model: ModelDefinition) => {
-      const dbLayer = this.createDBProvider(model);
-      services[model.graphqlType.name] = this.createService(model, dbLayer, pubSub);
-
-      return services;
-    }, {})
-  }
-
-  protected createService(model: ModelDefinition, dbLayer: GraphbackDataProvider, pubSub: PubSubEngine) {
-    return new CRUDService(model.graphqlType, dbLayer, {
-      pubSub,
-      publishCreate: model.crudOptions.subCreate,
-      publishDelete: model.crudOptions.subUpdate,
-      publishUpdate: model.crudOptions.subDelete,
-    });
-  }
-
   /**
-   * Create db provider can connect with various providers.
-   * Choose from @graphback/runtime-knex and @graphback/runtime-mongodb providers
-   * 
-   * @param model 
-   * @param db 
+   * Get models for creation of the datasource
    */
-  protected abstract createDBProvider(model: ModelDefinition);
+  public getDataSourceModels() {
+    const metadata = this.getMetadata();
+    const models = metadata.getModelDefinitions();
+
+    return models.reduce((pubSubModels: any, model: ModelDefinition) => {
+      const pubSubModel: GraphbackPubSubModel = {
+        name: model.graphqlType.name,
+        pubSub: {
+          publishCreate: model.crudOptions.subCreate,
+          publishUpdate: model.crudOptions.subDelete,
+          publishDelete: model.crudOptions.subUpdate
+        }
+      }
+      pubSubModels.push(pubSubModel)
+      
+      return pubSubModels;
+    }, []);
+  }
+
+
+  public getMetadata() {
+    const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
+
+    this.initializePlugins(pluginEngine)
+    const metadata = pluginEngine.createSchema();
+
+    return metadata
+  }
 }
