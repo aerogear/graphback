@@ -6,15 +6,16 @@ import { formatDocumentJS, formatDocumentTs } from './formatter';
 function generateModels(models: ModelDefinition[]) {
     const arrayContents = models.reduce((template: string, model: ModelDefinition) => {
         const objName = model.graphqlType.name;
-        const chunk = `,{
+        const chunk = `{
     name: "${objName}",
     pubSub: {
         publishCreate: ${model.crudOptions.subCreate},
         publishUpdate: ${model.crudOptions.subUpdate},
         publishDelete: ${model.crudOptions.subDelete}
     }
-}
+},
         `
+
         return template + chunk;
     }, '');
 
@@ -30,8 +31,7 @@ function generateModels(models: ModelDefinition[]) {
 
 function tsTemplate(models: ModelDefinition[]) {
     return `
-    ${generateModels(models)}
-    export models;
+    export ${generateModels(models)};
     `;
 }
 
