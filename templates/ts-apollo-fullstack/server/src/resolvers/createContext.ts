@@ -1,6 +1,21 @@
-import { GraphQLSchema } from "graphql"
+import {
+  createKnexCRUDRuntimeContext,
+  KnexRuntimeContextConfig
+} from "@graphback/runtime"
 
-export const createCRUDResolversRuntimeContext = (input: { schema: GraphQLSchema, db: any, pubSub: any }) => {
+export const createCRUDResolversRuntimeContext = (
+  options: KnexRuntimeContextConfig
+) => {
+  const { schema, db, pubSub } = options
 
-  return {}
+  const todoPubSubContext = {
+    pubSub,
+    publishCreate: true,
+    publishUpdate: true,
+    publishDelete: true
+  }
+
+  return {
+    Todo: createKnexCRUDRuntimeContext("Todo", schema, db, todoPubSubContext)
+  }
 }

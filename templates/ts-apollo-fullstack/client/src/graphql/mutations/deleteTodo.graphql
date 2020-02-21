@@ -1,0 +1,18 @@
+
+
+mutation deleteTodo($input: TodoInput!) {
+  deleteTodo(input: $input) {
+      ...TodoFields
+  }
+}
+
+
+fragment TodoFields on Todo {
+   id
+   title
+   description
+   version
+   completed
+
+} 
+

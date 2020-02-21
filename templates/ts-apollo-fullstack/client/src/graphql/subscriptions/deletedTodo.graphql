@@ -1,0 +1,17 @@
+
+
+subscription deletedTodo {
+  deletedTodo {
+      ...TodoFields
+  }
+} 
+
+fragment TodoFields on Todo {
+   id
+   title
+   description
+   version
+   completed
+
+} 
+

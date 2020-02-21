@@ -21,7 +21,7 @@ extensions:
           format: 'graphql'
           outputPath: ./server/src/schema
         graphback-client:
-          format: 'graphql'
+          format: 'gqlwithfragment'
           outputPath: ./client/src/graphql
         graphback-resolvers:
           format: ts

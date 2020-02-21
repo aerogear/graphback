@@ -1,23 +1,8 @@
 """ @model """
-type Note {
+type Todo {
   id: ID!
-  title: String!
+  title: String
   description: String
-  comments: [Comment]!
-  likes: Int
-}
-
-""" @model """
-type Comment {
-  id: ID!
-  description: String
-  author: String
-}
-
-type Query {
-  mostLikedNote: Note!
-}
-
-type Mutation {
-  likeNote: Note!
+  version: Int!
+  completed: Boolean
 }

@@ -1,0 +1,17 @@
+
+
+query findAllTodos {
+    findAllTodos {
+      ...TodoExpandedField
+    }
+  }
+
+fragment TodoExpandedField on Todo {
+   id
+   title
+   description
+   version
+   completed
+
+} 
+

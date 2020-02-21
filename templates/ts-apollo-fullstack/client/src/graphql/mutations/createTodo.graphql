@@ -1,0 +1,18 @@
+
+
+mutation createTodo($input: TodoInput!) {
+  createTodo(input: $input) {
+      ...TodoFields
+  }
+}
+
+
+fragment TodoFields on Todo {
+   id
+   title
+   description
+   version
+   completed
+
+} 
+

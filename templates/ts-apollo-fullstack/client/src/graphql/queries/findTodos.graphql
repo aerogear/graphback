@@ -1,0 +1,17 @@
+
+
+query findTodos($fields: TodoFields!) {
+    findTodos(fields: $fields) {
+      ...TodoExpandedFields
+    }
+  }
+
+fragment TodoExpandedField on Todo {
+   id
+   title
+   description
+   version
+   completed
+
+} 
+

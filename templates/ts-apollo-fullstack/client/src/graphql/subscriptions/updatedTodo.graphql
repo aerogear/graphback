@@ -1,0 +1,17 @@
+
+
+subscription updatedTodo {
+  updatedTodo {
+      ...TodoFields
+  }
+} 
+
+fragment TodoFields on Todo {
+   id
+   title
+   description
+   version
+   completed
+
+} 
+
