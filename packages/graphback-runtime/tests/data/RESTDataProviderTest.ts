@@ -50,15 +50,6 @@ test('create a person',async t => {
 })
 
 
-//test for delete. (This will fail for this instance, because the API doesnt provide a delete operation)
-// eslint-disable-next-line @typescript-eslint/tslint/config
-test('delete a person with id',async t => {
-    const person = {key:16};
-    const result = await t.context.provider.delete(person)
-    t.assert(result.key === person.key);
-})
-
-//test for update
 // eslint-disable-next-line @typescript-eslint/tslint/config
 test('update a person with id',async t => {
     const updated = {key:"1"}
@@ -66,18 +57,3 @@ test('update a person with id',async t => {
     // console.log(result)
     t.assert(result.key === updated.key);
 })
-
-//test for findBy(This will fail because the API doesn't support)
-// eslint-disable-next-line @typescript-eslint/tslint/config
-test('find a person by id',async t => {
-    const filter = {type:"age",value:"22"}
-    const result = await t.context.provider.findBy(filter)
-    // console.log(result)
-    // eslint-disable-next-line @typescript-eslint/tslint/config
-    result.forEach((person)=>{
-        // eslint-disable-next-line dot-notation
-        t.assert(person['age'] === filter['age']);
-    })
-    
-})
-//test for findBy(This will fail because the API doesn't support)
