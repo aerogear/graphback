@@ -1,40 +1,39 @@
 mutation createNote {
-  createNote(input: {title: "test", description: "test"}) {
-    id
-    title
-  } 
-}
-
-mutation updateNote{
-  updateNote(id: 1, input: {title: "test2", description: "test"}) {
+  createNote(input: { title: "test", description: "test" }) {
     id
     title
   }
 }
 
-mutation createComment{
-  createComment(input:{title:"test", description: "test", noteId: 15}){
-    id
-  }
-}
-
-query findALl{
-  findAllNotes{
+mutation updateNote {
+  updateNote(input: { id: 1, title: "test2", description: "test" }) {
     id
     title
   }
 }
 
-query find{
-  findNotes(fields:{id:1 , description:"test1"}){
+mutation createComment {
+  createComment(input: { title: "test", description: "test", noteId: 15 }) {
     id
-		description
   }
 }
 
+query findALl {
+  findAllNotes {
+    id
+    title
+  }
+}
+
+query find {
+  findNotes(fields: { id: 1, description: "test1" }) {
+    id
+    description
+  }
+}
 
 subscription subCreate {
-  newNote{
+  newNote {
     id
     title
     description

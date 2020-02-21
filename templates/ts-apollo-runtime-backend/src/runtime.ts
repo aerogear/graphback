@@ -1,28 +1,12 @@
 
 import { GraphbackRuntime, ModelDefinition, GraphbackGeneratorConfig } from 'graphback'
-import { PgKnexDBDataProvider } from '@graphback/runtime-knex'
+import { createKnexPGCRUDRuntimeServices } from '@graphback/runtime-knex'
 import { migrateDB } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { createDB, getGraphbackConfig, getMigrateConfig } from './db'
 import { loadSchema } from './loadSchema';
-
-
-/**
- * Override default runtime db to use Postgress
- */
-class PGRuntime extends GraphbackRuntime {
-  db: Knex<any, any[]>;
-
-  constructor(schema: string, config: GraphbackGeneratorConfig, db: Knex) {
-    super(schema, config);
-    this.db = db;
-  }
-
-  protected createDBProvider(model: ModelDefinition) {
-    return new PgKnexDBDataProvider(model.graphqlType, this.db);
-  }
-}
+import { buildSchema } from 'graphql';
 
 /**
  * Method used to create runtime schema
@@ -40,10 +24,10 @@ export const createRuntime = async () => {
   console.log("Migrated database", ops);
 
   const pubSub = new PubSub();
-  const runtimeEngine = new PGRuntime(schemaText, graphbackConfig, db);
-  // We use default datasource for everything
-  const serviceOverrides = {};
-  const runtime = runtimeEngine.buildRuntime(pubSub, serviceOverrides);
+  const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
+  const models = runtimeEngine.getDataSourceModels();
+  const services = createKnexPGCRUDRuntimeServices(models, buildSchema(schemaText), db, pubSub);
+  const runtime = runtimeEngine.buildRuntime(services);
 
   return runtime;
 }

@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
-import { CRUDService, GraphbackModel } from "@graphback/runtime"
+import { CRUDService, GraphbackPubSubModel } from "@graphback/runtime"
 import { Db } from "mongodb"
 import { MongoDBDataProvider } from "./MongoDBDataProvider";
 import { OffixMongoDBDataProvider } from './OffixMongoDBDataProvider';
@@ -13,14 +13,14 @@ import { OffixMongoDBDataProvider } from './OffixMongoDBDataProvider';
  * @param pubSub 
  */
 export const createMongoCRUDRuntimeContext = (
-  models: GraphbackModel[], schema: GraphQLSchema,
+  models: GraphbackPubSubModel[], schema: GraphQLSchema,
   db: Db, pubSub: PubSubEngine
 ) => {
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
 
-  return models.reduce((services: any, model: GraphbackModel) => {
+  return models.reduce((services: any, model: GraphbackPubSubModel) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
       throw new Error(`
@@ -49,14 +49,14 @@ export const createMongoCRUDRuntimeContext = (
  * @param pubSub 
  */
 export const createOffixMongoCRUDRuntimeContext = (
-  models: GraphbackModel[], schema: GraphQLSchema,
+  models: GraphbackPubSubModel[], schema: GraphQLSchema,
   db: Db, pubSub: PubSubEngine
 ) => {
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
 
-  return models.reduce((services: any, model: GraphbackModel) => {
+  return models.reduce((services: any, model: GraphbackPubSubModel) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
       throw new Error(`
