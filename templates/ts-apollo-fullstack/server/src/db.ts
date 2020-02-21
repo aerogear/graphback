@@ -17,11 +17,3 @@ export const createDB = async () => {
     const db = knex(generateConfig.dbmigrations)
     return db
 }
-
-export const createMongoDB = async () => {
-    const MongoClient = require('mongodb').MongoClient;
-    const url = "mongodb url";
-    const client = new MongoClient(url, { useNewUrlParser: true });
-    
-    return client;
-}
