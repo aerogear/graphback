@@ -6,7 +6,8 @@ export * from "./data/NoDataError"
 // Service
 export * from "./service/CRUDService"
 export * from "./service/GraphbackCRUDService"
-export * from "./service/PubSubConfig"
+export * from "./service/GraphbackPubSub"
+
 
 // Runtime
 export * from "./resolvers/LayeredRuntimeResolverCreator"
