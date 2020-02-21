@@ -5,7 +5,7 @@ import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
-import { GraphbackPubSub } from "./PubSubConfig"
+import { GraphbackPubSub } from "./GraphbackPubSub"
 import { subscriptionTopicMapping } from './subscriptionTopicMapping';
 
 /**

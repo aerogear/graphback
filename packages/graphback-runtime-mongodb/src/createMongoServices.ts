@@ -1,8 +1,8 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
 import { CRUDService, GraphbackModel } from "@graphback/runtime"
-import { MongoDBDataProvider } from "./MongoDBDataProvider";
 import { Db } from "mongodb"
+import { MongoDBDataProvider } from "./MongoDBDataProvider";
 
 /**
  * Helper function for creating mongodb runtime context used in Graphback
@@ -18,6 +18,7 @@ export const createMongoCRUDRuntimeContext = (
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
+
   return models.reduce((services: any, model: GraphbackModel) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
@@ -32,6 +33,7 @@ export const createMongoCRUDRuntimeContext = (
       pubSub,
       ...model.pubSub
     })
+
     return services;
   }, {})
 

@@ -1,10 +1,9 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService } from "@graphback/runtime";
+import { CRUDService, GraphbackModel } from "@graphback/runtime";
 import { PgKnexDBDataProvider } from './PgKnexDBDataProvider';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
-import { GraphbackModel } from "@graphback/runtime"
 
 /**
  * Helper function for creating array of datasources based on the model files that will 
@@ -21,6 +20,7 @@ export const createKnexPGCRUDRuntimeServices = (
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
+
   return models.reduce((services: any, model: GraphbackModel) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
@@ -35,6 +35,7 @@ export const createKnexPGCRUDRuntimeServices = (
       pubSub,
       ...model.pubSub
     })
+
     return services;
   }, {})
 }
@@ -55,6 +56,7 @@ export const createKnexCRUDRuntimeServices = (
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
+
   return models.reduce((services: any, model: GraphbackModel) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
@@ -69,6 +71,7 @@ export const createKnexCRUDRuntimeServices = (
       pubSub,
       ...model.pubSub
     })
+
     return services;
   }, {})
 }
