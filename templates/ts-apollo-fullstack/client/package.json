@@ -19,6 +19,7 @@
     "apollo-link-ws": "^1.0.19",
     "graphql": "^14.3.1",
     "graphql-tag": "^2.10.1",
+    "spectre.css": "^0.5.8",
     "offix-cache": "0.13.2",
     "offix-client": "0.13.2",
     "parcel-bundler": "^1.12.4",
