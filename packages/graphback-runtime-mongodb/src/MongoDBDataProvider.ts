@@ -51,6 +51,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       if (result.result.ok) {
         console.log(idField)
         queryResult[idField.name] = queryResult._id;
+
         return queryResult;
       }
     }
