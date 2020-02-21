@@ -35,7 +35,7 @@
     "lint": "eslint 'packages/*/src/**/*.ts'",
     "lint-fix": "eslint 'packages/*/src/**/*.ts' --fix",
     "unlock": "lerna exec -- del package-lock.json && del yarn.lock",
-    "build": "lerna run build",
+    "build": "lerna run --no-private build",
     "watch": "lerna run watch",
     "release:prep": "./scripts/prepareRelease.sh",
     "release:validate": "./scripts/validateRelease.sh",
