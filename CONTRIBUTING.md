@@ -45,7 +45,7 @@ npm uninstall -g graphback-cli
 
 We do not commit generated code to templates.
 Templates should not contain any generated source code.
-
+z
 ## Debugging command line tool
 
 When using Visual Studio Code developers can use debugger configurations for command line tool.
