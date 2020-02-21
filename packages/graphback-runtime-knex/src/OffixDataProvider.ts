@@ -5,6 +5,7 @@ import { getDatabaseArguments } from '@graphback/core';
 
 /**
  * Data provider for offix that can throw conflict for edits
+ * Note: this provider is still experimental not fully functional
  */
 export class OffixDataProvider extends PgKnexDBDataProvider {
     public constructor(baseType: GraphQLObjectType, db: any) {
