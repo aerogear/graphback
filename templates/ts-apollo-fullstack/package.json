@@ -2,6 +2,7 @@
   "name": "graphback-templates-fullstack",
   "version": "0.11.0-dev3",
   "private": true,
+  "workspaces":["client","server"],
   "scripts": {
     "start:server": "cd server/ && yarn start",
     "start:client": "cd client/ && yarn start"
