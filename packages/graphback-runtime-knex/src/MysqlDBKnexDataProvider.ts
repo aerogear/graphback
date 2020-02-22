@@ -35,7 +35,7 @@ export class MysqlDBKnexDBDataProvider<Type = any, GraphbackContext = any> exten
               }).then();
 
             if(!tableRes){
-            throw new NoDataError(`Cannot create ${this.tableName}`);
+               throw new NoDataError(`Cannot create ${this.tableName}`);
             }
         }
     
@@ -43,7 +43,7 @@ export class MysqlDBKnexDBDataProvider<Type = any, GraphbackContext = any> exten
         const [id] = await this.db.insert(data).into(this.tableName)
         const dbResult = await this.db.select().from(this.tableName).where(this.tableMap.idField, '=', id)
         if (dbResult && dbResult[0]) {
-        return dbResult[0]
+           return dbResult[0]
         }
         throw new NoDataError(`Cannot create ${this.tableName}`);
     }
