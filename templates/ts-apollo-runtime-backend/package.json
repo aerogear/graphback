@@ -23,9 +23,10 @@
     "graphql-tag": "2.10.3",
     "knex": "0.20.10",
     "pg": "7.18.2"
+    "graphql-config": "3.0.0-alpha.18",
   },
   "devDependencies": {
-    "graphql-config": "3.0.0-alpha.18",
+
     "@types/glob": "7.1.1",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.4",
