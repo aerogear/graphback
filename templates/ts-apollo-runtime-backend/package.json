@@ -22,8 +22,8 @@
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
     "knex": "0.20.10",
-    "pg": "7.18.2"
-    "graphql-config": "3.0.0-alpha.18",
+    "pg": "7.18.2",
+    "graphql-config": "3.0.0-alpha.18"
   },
   "devDependencies": {
 
