@@ -35,7 +35,7 @@ export const findAllQuery = (t: GraphQLObjectType) => {
 export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
 
-  return `query ${fieldName}($fields: ${t.name}Fields!) {
+  return `query ${fieldName}($fields: ${t.name}Input!) {
     ${fieldName}(fields: $fields) {
       ...${ t.name}ExpandedFields
     }
