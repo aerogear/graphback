@@ -15,6 +15,15 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
     super(baseType, client);
   }
 
+  public async create(data: any): Promise<Type> {
+    if (!data.version) {
+      data.version = 1;
+    }
+
+    return super.create(data);
+  }
+
+
   public async update(data: any): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
     // TODO Can be improved by conditional updates
