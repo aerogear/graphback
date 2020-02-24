@@ -125,7 +125,5 @@ export async function init(name: string, templateName?: string, templateUrl?: st
 Bootstraping graphql server :dizzy: :sparkles:`)
   await extractTemplate(template, name)
   process.chdir(name)
-  // Skip config as our templates have already defined config
-  await initConfig({ skipConfig: true });
   logInfo(postSetupMessage(name))
 }
