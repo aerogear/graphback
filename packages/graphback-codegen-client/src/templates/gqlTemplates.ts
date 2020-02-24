@@ -17,7 +17,7 @@ export const expandedFragment = (t: GraphQLObjectType) => {
   const queryReturnFields = buildReturnFields(t, 1);
   const returnFieldsString = printReturnFields(queryReturnFields);
 
-  return `fragment ${t.name}ExpandedField on ${t.name} {
+  return `fragment ${t.name}ExpandedFields on ${t.name} {
 ${returnFieldsString}
 } `
 }
