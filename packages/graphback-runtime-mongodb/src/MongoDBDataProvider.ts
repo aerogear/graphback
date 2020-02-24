@@ -92,8 +92,31 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
-    // TODO
-    return [];
+
+    let result:any;
+   
+    if(relationField=="id"){
+      const convertedIds = ids.map((value:String)=>{
+         return ObjectId(value);
+       });
+      result = await this.db.collection(this.collectionName).find({_id:{$in:convertedIds}}).toArray();
+    }else{
+      let filter:any = {};
+      filter[relationField] = {$in:ids};
+      result = await this.db.collection(this.collectionName).find(filter).toArray();
+    }
+
+    if (result) {
+      return result.map((one: any) => {
+        return {
+          ...one,
+          id: one._id
+        }
+      });
+    }
+    
+    throw new NoDataError(`No results for ${this.collectionName} query and batch read`);
+
 
 
   }
