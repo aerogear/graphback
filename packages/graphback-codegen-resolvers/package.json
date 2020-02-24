@@ -1,6 +1,6 @@
 {
   "name": "@graphback/codegen-resolvers",
-  "version": "0.11.0-dev3",
+  "version": "0.11.0-rc2",
   "description": "GraphQL-Code-Generator compatibile schema generator",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -46,7 +46,7 @@
     "typescript": "3.8.2"
   },
   "dependencies": {
-    "@graphback/core": "0.11.0-dev3",
+    "@graphback/core": "0.11.0-rc2",
     "pg": "7.18.2",
     "pluralize": "8.0.0",
     "prettier": "1.19.1",

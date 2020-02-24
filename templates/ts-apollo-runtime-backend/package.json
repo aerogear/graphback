@@ -1,6 +1,6 @@
 {
   "name": "graphback-templates-runtime",
-  "version": "0.11.0-dev3",
+  "version": "0.11.0-rc2",
   "description": "",
   "main": "dist/src/index.js",
   "scripts": {
@@ -15,17 +15,16 @@
     "cors": "2.8.5",
     "express": "4.17.1",
     "glob": "7.1.6",
-    "graphback": "0.11.0-dev3",
+    "graphback": "0.11.0-rc2",
     "graphql": "14.6.0",
-    "graphql-migrations": "0.11.0-dev3",
+    "graphql-config": "3.0.0-alpha.18",
+    "graphql-migrations": "0.11.0-rc2",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
     "knex": "0.20.10",
-    "pg": "7.18.2",
-    "graphql-config": "3.0.0-alpha.18"
+    "pg": "7.18.2"
   },
   "devDependencies": {
-
     "@types/glob": "7.1.1",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.4",
