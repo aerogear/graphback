@@ -2,7 +2,7 @@ import { getDatabaseArguments } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
-import { NoDataError } from './NoDataError';
+import { NoDataError } from '@graphback/runtime';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations.
