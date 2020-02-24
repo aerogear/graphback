@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "graphback-cli": "0.11.0-rc2",
+    "graphback-cli": "0.11.0-rc1",
     "graphql": "14.6.0",
     "tslint": "5.20.1",
     "typescript": "3.8.2"
