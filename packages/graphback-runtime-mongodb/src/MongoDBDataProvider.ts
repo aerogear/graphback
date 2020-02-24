@@ -17,8 +17,14 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     this.collectionName = this.tableMap.tableName;
   }
 
-  public async create(data: Type): Promise<Type> {
+  public async create(data: any): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
+    if (data && data[idField.name]) {
+      // Ignore id passed from client side. In case id is passed it should not be saved
+      // eslint-disable-next-line @typescript-eslint/tslint/config
+      delete data[idField.name];
+    }
+
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
       result.ops[0][idField.name] = result.ops[0]._id;
