@@ -110,23 +110,27 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     let result:any;
    
     if(relationField=="id"){
-      const convertedIds = ids.map((value:String)=>{
+      relationField = "_id";
+      const array = ids.map((value:String)=>{
          return ObjectId(value);
        });
-      result = await this.db.collection(this.collectionName).find({_id:{$in:convertedIds}}).toArray();
+      result = await this.db.collection(this.collectionName).find({_id:{$in:array}}).toArray();
     }else{
-      let filter:any = {};
-      filter[relationField] = {$in:ids};
-      result = await this.db.collection(this.collectionName).find(filter).toArray();
+      let query:any = {};
+      query[relationField] = {$in:ids};
+      result = await this.db.collection(this.collectionName).find(query).toArray();
     }
 
-    if (result) {
-      return result.map((one: any) => {
-        return {
-          ...one,
-          id: one._id
+     if (result) {
+      const resultsById = ids.map((id: string) => result.filter((data: any) => {
+        if(data[relationField].toString() == id.toString()){
+          return {
+            ...data,
+            id:data._id
+          }
         }
-      });
+      }));
+      return resultsById  as [Type[]];
     }
     
     throw new NoDataError(`No results for ${this.collectionName} query and batch read`);
