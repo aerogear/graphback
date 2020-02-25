@@ -4,7 +4,7 @@ type Note {
   title: String!
   description: String
   """
-  @db.oneToMany: 'note'
+  @oneToMany field: 'note', key: 'note_id'
   """
   comments: [Comment]!
   likes: Int
@@ -15,7 +15,6 @@ type Comment {
   id: ID!
   description: String
   author: String
-  note: Note
 }
 
 type Query {
