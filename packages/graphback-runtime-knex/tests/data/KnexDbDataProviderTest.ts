@@ -93,6 +93,30 @@ test('find all Todos', async t => {
   t.assert(todos.length === 3);
 });
 
+test('find first 2 todos', async t => {
+  const todos = await t.context.provider.findMore(0, 2);
+
+  t.assert(todos.length === 2);
+
+  t.assert(todos[0].id == 0);
+  t.assert(todos[0].text == "my first default todo");
+
+  t.assert(todos[1].id == 1);
+  t.assert(todos[1].text == "the second todo");
+});
+
+test('find first 2 todos excluding first todo', async t => {
+  const todos = await t.context.provider.findMore(1, 2);
+
+  t.assert(todos.length === 2);
+  
+  t.assert(todos[0].id == 1);
+  t.assert(todos[0].text == "the second todo");
+
+  t.assert(todos[1].id == 2);
+  t.assert(todos[1].text == "just another todo");
+});
+
 test('find Todo by text', async t => {
   const todos: Todo[] = await t.context.provider.findBy({
     text: 'the second todo',
