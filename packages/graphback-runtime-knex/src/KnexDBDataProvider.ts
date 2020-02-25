@@ -1,7 +1,7 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, NoDataError, AdvancedFilter } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
@@ -72,18 +72,10 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   }
 
-  public async findAll(): Promise<Type[]> {
+  public async findAll(page?: GraphbackPage): Promise<Type[]> {
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName);
-    if (dbResult) {
-      return dbResult;
-    }
-    throw new NoDataError(`Cannot find all results for ${this.tableName}`);
-  }
-
-  public async findMore(offset: number, limit: number): Promise<Type[]> {
-    //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).limit(limit).offset(offset);
+    const dbResult = page ? (await this.db.select().from(this.tableName).limit(page.limit).offset(page.offset)):
+                            (await this.db.select().from(this.tableName));
     if (dbResult) {
       return dbResult;
     }
