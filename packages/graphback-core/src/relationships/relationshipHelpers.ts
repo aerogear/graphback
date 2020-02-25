@@ -1,7 +1,6 @@
 import { GraphQLField } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
-import { transformForeignKeyName } from '../db';
-import { RelationshipAnnotation } from './RelationshipMetadata';
+import { RelationshipAnnotation, FieldRelationshipMetadata } from './RelationshipMetadata';
 
 export function parseRelationshipAnnotation(field: GraphQLField<any, any>): RelationshipAnnotation | undefined {
     const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
@@ -28,6 +27,23 @@ export function parseRelationshipAnnotation(field: GraphQLField<any, any>): Rela
     return undefined;
 }
 
+export function buildRelationshipsFieldObject(fieldRelationships: FieldRelationshipMetadata[] = []): any {
+    return fieldRelationships.reduce((fieldsObj: any, current: FieldRelationshipMetadata) => {
+        fieldsObj[current.ownerField.name] = {
+            type: current.ownerField.type,
+            description: current.ownerField.description
+        };
+
+        return fieldsObj;
+    }, {});
+}
+
 export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
     return `@${relationshipKind} field: '${fieldName}', name: '${columnKey}'`;
+}
+
+export const isRelationshipField = (field: GraphQLField<any, any>): boolean => {
+    const relationshipAnnotation = parseRelationshipAnnotation(field);
+
+    return !!relationshipAnnotation;
 }

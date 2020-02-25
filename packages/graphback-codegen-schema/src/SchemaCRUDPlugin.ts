@@ -1,11 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildRelationshipsFieldObject, getInputFieldName, canInputField } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { getNullableType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
+import { getNullableType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, buildSchema, GraphQLField, GraphQLInt } from 'graphql';
+import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { printSortedSchema } from './writer/schemaPrinter';
-
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -56,15 +55,33 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        const schema = metadata.getSchema();
-        const models = metadata.getModelDefinitions();
+        let schema = metadata.getSchema();
+        const schemaComposer = new SchemaComposer(schema);
+        let models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
 
             return schema;
         }
 
-        const modelsSchema = this.buildSchemaForModels(metadata.getModelDefinitions());
+        models.forEach((model: ModelDefinition) => {
+            const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
+
+            const relationshipFields = buildRelationshipsFieldObject(model.relationships);
+
+            modifiedType.addFields(relationshipFields);
+        });
+
+        const modifiedSchema = schemaComposer.buildSchema();
+        metadata.setSchema(modifiedSchema);
+        models = metadata.getModelDefinitions();
+
+        // print schema as string and rebuild. this prevents schema from losing descriptions
+        // TODO fix this? Has to be a better way.
+        const printedSchema = printSchema(metadata.getSchema());
+        schema = buildSchema(printedSchema);
+
+        const modelsSchema = this.buildSchemaForModels(models);
 
         return mergeSchemas({ schemas: [modelsSchema, schema] });
     }
@@ -86,7 +103,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param options 
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSortedSchema(schema);
+        const schemaString = printSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
@@ -126,10 +143,19 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
         return new GraphQLInputObjectType({
             name: inputName,
-            fields: () => (modelFields.reduce((fieldObj: any, current: any) => {
-                const fieldType = current.type;
+            fields: () => (modelFields.filter(canInputField).map((field: GraphQLField<any, any>) => {
 
-                fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
+                return {
+                    name: getInputFieldName(field),
+                    type: getNullableType(field.type),
+                    description: ''
+                }
+
+            }).reduce((fieldObj: any, { name, type, description }: any) => {
+                fieldObj[name] = {
+                    type,
+                    description
+                }
 
                 return fieldObj;
             }, {}))
