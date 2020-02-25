@@ -94,7 +94,7 @@ test('find all Todos', async t => {
 });
 
 test('find first 2 todos', async t => {
-  const todos = await t.context.provider.findMore(0, 2);
+  const todos = await t.context.provider.findAll({ limit: 2, offset: 0});
 
   t.assert(todos.length === 2);
 
@@ -106,7 +106,7 @@ test('find first 2 todos', async t => {
 });
 
 test('find first 2 todos excluding first todo', async t => {
-  const todos = await t.context.provider.findMore(1, 2);
+  const todos = await t.context.provider.findAll({ limit: 2, offset: 1});
 
   t.assert(todos.length === 2);
 
