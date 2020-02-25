@@ -26,7 +26,7 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
 
   public async update(data: any): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    // TODO Can be improved by conditional updates
+    // TODO Can be improved by conditional updates 
     const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
     if (queryResult && queryResult[0]) {
       queryResult[0][idField.name] = queryResult[0]._id;
@@ -35,6 +35,9 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
         conflictError.conflictInfo = { serverState: queryResult[0], clientState: data };
         throw conflictError
       }
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      data.version = data.version + 1;
+      // TODO use findOneAndUpdate to check consistency afterwards
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
       if (result) {
         return queryResult[0];
