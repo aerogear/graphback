@@ -1,7 +1,7 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import fetch from 'node-fetch';
-import { GraphbackDataProvider } from './GraphbackDataProvider';
+import { GraphbackDataProvider, GraphbackPage } from './GraphbackDataProvider';
 
 /**
  * RESTDataProvider is providing the required functionality to connect with a RESTful Datasource.
@@ -109,31 +109,15 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
      * 
      */
-    public async findAll(context?: GraphbackContext): Promise<Type[]> {
+    public async findAll(page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]> {
         // eslint-disable-next-line prefer-template
         const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
         const res = await fetch(url)
         const json = await res.json()
 
-        return json
+        return page ? json.slice(page.offset, page.offset + page.limit) : json;
     }
 
-    /**
-     * 
-     * @param context -passed by the resolvers
-     * 
-     * valid url => (baseUrl+path) 
-     * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
-     * 
-     */
-    public async findMore(offset?: number, limit?: number, context?: GraphbackContext): Promise<Type[]> {
-        // eslint-disable-next-line prefer-template
-        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
-        const res = await fetch(url)
-        const json = await res.json()
-
-        return json.slice(offset, offset+limit);
-    }
 
     /**
      * 
