@@ -20,11 +20,7 @@ export const deleteTemplate = (modelName: string): string => {
 
 export const findAllTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      if (args.offset && args.limit){
-        return context.${modelName}.findMore(args.offset, args.limit);
-      } else {
-        return context.${modelName}.findAll();
-      }
+      return context.${modelName}.findAll(args);
     }`
 }
 
