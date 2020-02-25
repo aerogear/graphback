@@ -81,6 +81,15 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot find all results for ${this.tableName}`);
   }
 
+  public async findMore(offset: number, limit: number): Promise<Type[]> {
+    //tslint:disable-next-line: await-promise
+    const dbResult = await this.db.select().from(this.tableName).limit(limit).offset(offset);
+    if (dbResult) {
+      return dbResult;
+    }
+    throw new NoDataError(`Cannot find all results for ${this.tableName}`);
+  }
+
   public async findBy(filter: Type | AdvancedFilter): Promise<Type[]> {
     const { data } = getDatabaseArguments(this.tableMap, filter);
     //tslint:disable-next-line: await-promise

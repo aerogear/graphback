@@ -55,6 +55,15 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
     findAll(context?: GraphbackContext): Promise<Type[]>;
 
     /**
+     * Implementation for finding all objects with support for pagination
+     * 
+     * @param limit Limit on number of objects to return 
+     * @param offset Number of objects to exclude starting from the first
+     * @param context context object passed from graphql or rest layer 
+     */
+    findMore(offset: number, limit: number, context?: GraphbackContext): Promise<Type[]>
+
+    /**
      * Implementation for reading objects with filtering capabilities
      *
      * @param name name of the object to create
