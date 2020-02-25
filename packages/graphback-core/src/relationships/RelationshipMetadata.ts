@@ -21,7 +21,7 @@ export interface RelationshipAnnotation {
 }
 
 // TODO document me
-export class RelationshipMetadata {
+export class RelationshipMetadataBuilder {
     private relationships: FieldRelationshipMetadata[];
 
     public constructor() {

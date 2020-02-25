@@ -2,7 +2,7 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLField } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
 import { getBaseType } from '../utils/getBaseType'
 import { hasListType } from '../utils/hasListType'
-import { RelationshipMetadata } from '../relationships/RelationshipMetadata'
+import { RelationshipMetadataBuilder } from '../relationships/RelationshipMetadata'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
@@ -27,12 +27,12 @@ export class GraphbackCoreMetadata {
     private supportedCrudMethods: GraphbackCRUDGeneratorConfig
     private schema: GraphQLSchema;
     private models: ModelDefinition[];
-    private relationshipMetadata: RelationshipMetadata;
+    private relationshipMetadata: RelationshipMetadataBuilder;
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
         this.supportedCrudMethods = Object.assign(defaultCRUDGeneratorConfig, globalConfig.crudMethods)
-        this.relationshipMetadata = new RelationshipMetadata();
+        this.relationshipMetadata = new RelationshipMetadataBuilder();
     }
 
     public getSchema() {
