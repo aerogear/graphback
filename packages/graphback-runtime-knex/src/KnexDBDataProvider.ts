@@ -78,8 +78,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     if(page){
     	query = query.limit(page.limit).offset(page.offset)
     }
-    const dbResult = await query:
-                            (await this.db.select().from(this.tableName));
+    const dbResult = await query;
     if (dbResult) {
       return dbResult;
     }
