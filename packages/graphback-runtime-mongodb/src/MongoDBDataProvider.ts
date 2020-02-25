@@ -77,7 +77,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find all results for ${this.collectionName}`);
   }
 
-  public async findMore(limit: number, offset: number): Promise<Type[]> {
+  public async findMore(offset: number, limit: number): Promise<Type[]> {
     const data = await this.db.collection(this.collectionName).find({}).skip(offset).limit(limit).toArray();
     if (data) {
       return data.map((one: any) => {
