@@ -126,7 +126,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
      * 
      */
-    public async findMore(limit?: number, offset?: number, context?: GraphbackContext): Promise<Type[]> {
+    public async findMore(offset?: number, limit?: number, context?: GraphbackContext): Promise<Type[]> {
         // eslint-disable-next-line prefer-template
         const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
         const res = await fetch(url)
