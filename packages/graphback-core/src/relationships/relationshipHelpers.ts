@@ -1,5 +1,6 @@
 import { GraphQLField } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
+import { transformForeignKeyName } from '../db';
 import { RelationshipAnnotation } from './RelationshipMetadata';
 
 export function parseRelationshipAnnotation(field: GraphQLField<any, any>): RelationshipAnnotation | undefined {
@@ -25,4 +26,8 @@ export function parseRelationshipAnnotation(field: GraphQLField<any, any>): Rela
     }
 
     return undefined;
+}
+
+export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
+    return `@${relationshipKind} field: '${fieldName}', name: '${columnKey}'`;
 }
