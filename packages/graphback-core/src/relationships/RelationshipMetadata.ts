@@ -17,7 +17,7 @@ export interface FieldRelationshipMetadata {
 export interface RelationshipAnnotation {
     kind: 'oneToMany' | 'oneToOne' | 'manyToOne'
     field: string
-    name?: string // TODO change from 'name' to 'key'
+    key?: string // TODO change from 'name' to 'key'
 }
 
 // TODO document me
@@ -44,7 +44,7 @@ export class RelationshipMetadataBuilder {
             if (relationshipAnnotation.kind === 'oneToMany') {
 
                 if (!relationField) {
-                    relationField = this.createManyToOneField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.name);
+                    relationField = this.createManyToOneField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.key);
                 }
 
                 this.addOneToMany(modelType, field);
@@ -52,14 +52,14 @@ export class RelationshipMetadataBuilder {
             } else if (relationshipAnnotation.kind === 'manyToOne') {
 
                 if (!relationField) {
-                    relationField = this.createOneToManyField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.name);
+                    relationField = this.createOneToManyField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.key);
                 }
 
                 this.addManyToOne(modelType, field);
                 this.addOneToMany(relationType, relationField);
             } else if (relationshipAnnotation.kind === 'oneToOne') {
                 if (!relationField) {
-                    relationField = this.createOneToOneField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.name)
+                    relationField = this.createOneToOneField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.key)
                 }
 
                 this.addOneToOne(modelType, field);
@@ -118,7 +118,7 @@ export class RelationshipMetadataBuilder {
         const metadata = parseRelationshipAnnotation(field);
         const relationType = getBaseType(field.type) as GraphQLObjectType;
 
-        const foreignKeyField = metadata.name || transformForeignKeyName(metadata.field);
+        const foreignKeyField = metadata.key || transformForeignKeyName(metadata.field);
 
         const oneToMany: FieldRelationshipMetadata = {
             kind: 'oneToMany',
@@ -138,7 +138,7 @@ export class RelationshipMetadataBuilder {
         const metadata = parseRelationshipAnnotation(field);
         const relationType = getBaseType(field.type) as GraphQLObjectType;
 
-        const columnField = metadata.name || transformForeignKeyName(field.name);
+        const columnField = metadata.key || transformForeignKeyName(field.name);
 
         const manyToOne: FieldRelationshipMetadata = {
             kind: 'manyToOne',
@@ -158,7 +158,7 @@ export class RelationshipMetadataBuilder {
         const metadata = parseRelationshipAnnotation(field);
         const relationType = getBaseType(field.type) as GraphQLObjectType;
 
-        const columnField = metadata.name || transformForeignKeyName(field.name);
+        const columnField = metadata.key || transformForeignKeyName(field.name);
 
         const oneToOne: FieldRelationshipMetadata = {
             kind: 'oneToOne',

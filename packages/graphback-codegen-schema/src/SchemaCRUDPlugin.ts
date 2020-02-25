@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildRelationshipsFieldObject, getInputFieldName, canInputField } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildRelationshipsFieldObject, getInputFieldName, canInputField, getInputFieldType } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { getNullableType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, buildSchema, GraphQLField, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
@@ -147,7 +147,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
                 return {
                     name: getInputFieldName(field),
-                    type: getNullableType(field.type),
+                    type: getInputFieldType(field),
                     description: ''
                 }
 

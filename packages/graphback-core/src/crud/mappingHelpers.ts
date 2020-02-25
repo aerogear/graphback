@@ -56,7 +56,7 @@ export function getInputFieldName(field: GraphQLField<any, any>): string {
     throw new Error('Not inputtable field!');
   }
 
-  return relationshipAnnotation.name || transformForeignKeyName(field.name);
+  return relationshipAnnotation.key || transformForeignKeyName(field.name);
 }
 
 /**

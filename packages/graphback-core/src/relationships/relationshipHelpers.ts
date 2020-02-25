@@ -39,7 +39,7 @@ export function buildRelationshipsFieldObject(fieldRelationships: FieldRelations
 }
 
 export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
-    return `@${relationshipKind} field: '${fieldName}', name: '${columnKey}'`;
+    return `@${relationshipKind} field: '${fieldName}', key: '${columnKey}'`;
 }
 
 export const isRelationshipField = (field: GraphQLField<any, any>): boolean => {
