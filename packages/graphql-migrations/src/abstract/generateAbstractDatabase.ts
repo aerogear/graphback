@@ -13,7 +13,7 @@ import {
   isScalarType,
   GraphQLEnumValue,
 } from 'graphql'
-import { parseAnnotations, stripAnnotations } from 'graphql-annotations'
+import { parseAnnotations, stripAnnotations } from 'graphql-metadata';
 // eslint-disable-next-line import/no-internal-modules
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
