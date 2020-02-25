@@ -120,6 +120,23 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
 
     /**
      * 
+     * @param context -passed by the resolvers
+     * 
+     * valid url => (baseUrl+path) 
+     * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
+     * 
+     */
+    public async findMore(limit?: number, offset?: number, context?: GraphbackContext): Promise<Type[]> {
+        // eslint-disable-next-line prefer-template
+        const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
+        const res = await fetch(url)
+        const json = await res.json()
+
+        return json.slice(offset, offset+limit);
+    }
+
+    /**
+     * 
      * @param filter - filter sends the type of filter we want to apply for the query. filter is a json object which has
      *                 filterType and filter properties. Both these properties are aggregated to create a valid url 
      * @param context - Context carries the path needed to create a valid endpoint url
