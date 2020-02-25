@@ -1,12 +1,12 @@
 import { GraphQLObjectType } from "graphql";
+import { FieldRelationshipMetadata } from '../relationships/RelationshipMetadata';
 import { GraphbackCRUDGeneratorConfig } from "./GraphbackCRUDGeneratorConfig"
-import { RelationshipMetadata } from './ModelRelationshipMetadata';
 
 /**
  * Used to encapsulate configuration for the type
  */
 export type ModelDefinition = {
     graphqlType: GraphQLObjectType,
-    relationships: RelationshipMetadata[]
+    relationships: FieldRelationshipMetadata[]
     crudOptions: GraphbackCRUDGeneratorConfig
 };

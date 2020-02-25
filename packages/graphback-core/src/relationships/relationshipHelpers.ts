@@ -1,11 +1,28 @@
-import { RelationshipMetadata } from '../plugin/ModelRelationshipMetadata';
+import { GraphQLField } from 'graphql';
+import { parseMarker } from 'graphql-metadata';
+import { RelationshipAnnotation } from './RelationshipMetadata';
 
-export function findRelationship(name: string, relationships: RelationshipMetadata[]) {
-    return relationships.find((r: RelationshipMetadata) => r.parentField === name);
-}
+export function parseRelationshipAnnotation(field: GraphQLField<any, any>): RelationshipAnnotation | undefined {
+    const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
 
-export function findModelRelationships(modelName: string, relationships: RelationshipMetadata[]) {
-    return relationships.filter((relationship: RelationshipMetadata) => {
-        return relationship.parent.name === modelName;
-    });
+    for (const kind of relationshipKinds) {
+        const annotation: any = parseMarker(kind, field.description);
+
+        if (!annotation) {
+            continue;
+        }
+
+        if (!annotation.field) {
+            throw new Error("Field is required on annotation");
+        }
+
+        const relationshipAnnotation: RelationshipAnnotation = {
+            kind,
+            ...annotation
+        }
+
+        return relationshipAnnotation;
+    }
+
+    return undefined;
 }

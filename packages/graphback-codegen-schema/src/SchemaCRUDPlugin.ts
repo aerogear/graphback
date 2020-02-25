@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, findRelationship } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { getNullableType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -129,21 +129,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             fields: () => (modelFields.reduce((fieldObj: any, current: any) => {
                 const fieldType = current.type;
 
-                const relationshipField = findRelationship(current.name, model.relationships);
-
-                if (!relationshipField) {
-                    fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
-
-                    return fieldObj;
-                }
-
-                // add relationship field to input type
-                if (['oneToOne', 'manyToOne'].includes(relationshipField.kind)) {
-                    fieldObj[relationshipField.foreignKey.name] = {
-                        type: getNullableType(relationshipField.foreignKey.type),
-                        description: ''
-                    };
-                }
+                fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
 
                 return fieldObj;
             }, {}))

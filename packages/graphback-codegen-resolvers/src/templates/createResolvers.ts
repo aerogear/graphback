@@ -1,9 +1,9 @@
-import { getFieldName, getSubscriptionName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition, RelationshipMetadata, getPrimaryKey } from '@graphback/core';
+import { getFieldName, getSubscriptionName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition, FieldRelationshipMetadata, getPrimaryKey } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
 import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, oneToOneTemplate, updatedSubscriptionTemplate, updateTemplate, oneToManyTemplate } from './resolverTemplates';
 
-export function createRelationshipResolvers(relationships: RelationshipMetadata[]) {
+export function createRelationshipResolvers(relationships: FieldRelationshipMetadata[]) {
     if (!relationships.length) { return undefined; }
 
     const resolvers = {};
@@ -13,12 +13,12 @@ export function createRelationshipResolvers(relationships: RelationshipMetadata[
         const relationIdField = getPrimaryKey(relationship.relationType);
 
         if (relationship.kind === 'oneToMany') {
-            resolverOutput = oneToManyTemplate(relationTypeName, relationship.foreignKey.name, relationIdField.name)
+            resolverOutput = oneToManyTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
         } else {
-            resolverOutput = oneToOneTemplate(relationTypeName, relationship.foreignKey.name, relationIdField.name)
+            resolverOutput = oneToOneTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
         }
 
-        resolvers[relationship.parentField] = resolverOutput;
+        resolvers[relationship.ownerField.name] = resolverOutput;
     }
 
     return resolvers;

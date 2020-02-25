@@ -1,16 +1,12 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNullableType } from 'graphql'
+import { GraphQLObjectType, GraphQLSchema, GraphQLField } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
-import { parseDbAnnotations, parseRelationshipAnnotations } from '../annotations/parser'
 import { getBaseType } from '../utils/getBaseType'
-import { getPrimaryKey, transformForeignKeyName } from '../db'
-import { isModelType } from '../crud'
 import { hasListType } from '../utils/hasListType'
-import { findModelRelationships } from '../relationships/relationshipHelpers'
+import { RelationshipMetadata } from '../relationships/RelationshipMetadata'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
-import { RelationshipMetadata } from './ModelRelationshipMetadata'
 
 const defaultCRUDGeneratorConfig = {
     "create": true,
@@ -30,11 +26,13 @@ export class GraphbackCoreMetadata {
 
     private supportedCrudMethods: GraphbackCRUDGeneratorConfig
     private schema: GraphQLSchema;
-    private models: ModelDefinition[]
+    private models: ModelDefinition[];
+    private relationshipMetadata: RelationshipMetadata;
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
         this.supportedCrudMethods = Object.assign(defaultCRUDGeneratorConfig, globalConfig.crudMethods)
+        this.relationshipMetadata = new RelationshipMetadata();
     }
 
     public getSchema() {
@@ -52,16 +50,14 @@ export class GraphbackCoreMetadata {
 
         //Contains map of the models with their underlying CRUD configuration
         this.models = [];
-        const relationships = [];
         //Get actual user types 
         const modelTypes = this.getGraphQLTypesWithModel();
         for (const modelType of modelTypes) {
-            const relationshipMetadata = this.buildRelationships(modelType);
-            relationships.push(...relationshipMetadata);
+            this.relationshipMetadata.buildModelRelationships(modelType);
         }
 
         for (const modelType of modelTypes) {
-            const model = this.buildModel(modelType, relationships)
+            const model = this.buildModel(modelType)
             this.models.push(model);
         }
 
@@ -81,150 +77,150 @@ export class GraphbackCoreMetadata {
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
     }
 
-    private buildModel(modelType: GraphQLObjectType, relationships: RelationshipMetadata[]) {
+    private buildModel(modelType: GraphQLObjectType): ModelDefinition {
         let crudOptions = parseAnnotations('crud', modelType.description)
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
 
-        const modelRelations = findModelRelationships(modelType.name, relationships);
+        const modelRelationships = this.relationshipMetadata.getModelRelationships(modelType.name);
 
-        return { graphqlType: modelType, relationships: modelRelations, crudOptions };
+        return { graphqlType: modelType, relationships: modelRelationships, crudOptions };
     }
 
-    private buildRelationships(modelType: GraphQLObjectType): RelationshipMetadata[] {
-        const relationships = [];
+    // private buildRelationships(modelType: GraphQLObjectType): RelationshipMetadataDeprecated[] {
+    //     const relationships = [];
 
-        // TODO: Move to helper
-        Object.values(modelType.getFields()).filter((f: GraphQLField<any, any>) => {
-            const dbAnnotations: any = parseRelationshipAnnotations(f);
+    //     // TODO: Move to helper
+    //     Object.values(modelType.getFields()).filter((f: GraphQLField<any, any>) => {
+    //         const relationshipAnnotation = parseRelationshipAnnotation(f);
 
-            return dbAnnotations.oneToMany || dbAnnotations.oneToOne || dbAnnotations.manyToOne;
-        }).forEach((f: GraphQLField<any, any>) => {
-            const dbAnnotations: any = parseRelationshipAnnotations(f);
+    //         return !!relationshipAnnotation;
+    //     }).forEach((f: GraphQLField<any, any>) => {
+    //         const relationshipInfo = parseRelationshipAnnotation(f);
 
-            if (dbAnnotations.oneToMany) {
-                const relationType = getBaseType(f.type) as GraphQLObjectType;
+    //         if (relationshipInfo.kind === 'oneToMany') {
+    //             const relationType = getBaseType(f.type) as GraphQLObjectType;
 
-                // ignore types that do not have `@model` marker
-                // TODO document this
-                if (!isModelType(relationType)) {
-                    return;
-                }
+    //             // ignore types that do not have `@model` marker
+    //             // TODO document this
+    //             if (!isModelType(relationType)) {
+    //                 return;
+    //             }
 
-                this.validateOneToManyRelationshipMetadata(modelType, relationType, f.name, dbAnnotations.oneToMany)
+    //             this.validateOneToManyRelationshipMetadataDeprecated(modelType, relationType, f.name, relationshipInfo.field)
 
-                const oneToMany: RelationshipMetadata = {
-                    parent: modelType,
-                    parentField: f.name,
-                    kind: 'oneToMany',
-                    relationType,
-                    relationField: dbAnnotations.oneToMany,
-                    foreignKey: {
-                        name: transformForeignKeyName(dbAnnotations.oneToMany, 'to-db')
-                    }
-                };
+    //             const oneToMany: RelationshipMetadataDeprecated = {
+    //                 parent: modelType,
+    //                 parentField: f.name,
+    //                 kind: 'oneToMany',
+    //                 relationType,
+    //                 relationField: relationshipInfo.field,
+    //                 foreignKey: {
+    //                     name: transformForeignKeyName(relationshipInfo.field, 'to-db')
+    //                 }
+    //             };
 
-                const modelPrimaryKey = getPrimaryKey(modelType);
+    //             const modelPrimaryKey = getPrimaryKey(modelType);
 
-                const manyToOne: RelationshipMetadata = {
-                    parent: relationType,
-                    parentField: dbAnnotations.oneToMany,
-                    kind: 'manyToOne',
-                    relationType: modelType,
-                    relationField: f.name,
-                    foreignKey: {
-                        name: transformForeignKeyName(dbAnnotations.oneToMany, 'to-db'),
-                        type: getBaseType(modelPrimaryKey.type)
-                    }
-                };
+    //             const manyToOne: RelationshipMetadataDeprecated = {
+    //                 parent: relationType,
+    //                 parentField: relationshipInfo.field,
+    //                 kind: 'manyToOne',
+    //                 relationType: modelType,
+    //                 relationField: f.name,
+    //                 foreignKey: {
+    //                     name: transformForeignKeyName(relationshipInfo.field, 'to-db'),
+    //                     type: getBaseType(modelPrimaryKey.type)
+    //                 }
+    //             };
 
-                relationships.push(oneToMany, manyToOne);
-            }
+    //             relationships.push(oneToMany, manyToOne);
+    //         }
 
-            if (dbAnnotations.oneToOne) {
-                const relationType = getBaseType(f.type) as GraphQLObjectType;
+    //         if (relationshipInfo.kind === 'oneToOne') {
+    //             const relationType = getBaseType(f.type) as GraphQLObjectType;
 
-                // ignore types that are do not have `@model` marker
-                if (!isModelType(relationType)) {
-                    return;
-                }
+    //             // ignore types that are do not have `@model` marker
+    //             if (!isModelType(relationType)) {
+    //                 return;
+    //             }
 
-                this.validateOneToOneRelationshipMetadata(modelType, relationType, f.name, dbAnnotations.oneToOne);
+    //             this.validateOneToOneRelationshipMetadataDeprecated(modelType, relationType, f.name, relationshipInfo.field);
 
-                const relationPrimaryKey = getPrimaryKey(relationType);
-                const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
+    //             const relationPrimaryKey = getPrimaryKey(relationType);
+    //             const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
 
-                const oneToOne: RelationshipMetadata = {
-                    parent: modelType,
-                    parentField: f.name,
-                    kind: 'oneToOne',
-                    relationType,
-                    relationField: dbAnnotations.oneToOne,
-                    foreignKey: {
-                        name: foreignKeyFieldName,
-                        type: getBaseType(relationPrimaryKey.type)
-                    }
-                };
+    //             const oneToOne: RelationshipMetadataDeprecated = {
+    //                 parent: modelType,
+    //                 parentField: f.name,
+    //                 kind: 'oneToOne',
+    //                 relationType,
+    //                 relationField: relationshipInfo.field,
+    //                 foreignKey: {
+    //                     name: foreignKeyFieldName,
+    //                     type: getBaseType(relationPrimaryKey.type)
+    //                 }
+    //             };
 
-                const modelPrimaryKey = getPrimaryKey(modelType)
+    //             const modelPrimaryKey = getPrimaryKey(modelType)
 
-                const oppositeOneToOne: RelationshipMetadata = {
-                    parent: relationType,
-                    parentField: dbAnnotations.oneToOne,
-                    kind: 'oneToOne',
-                    relationType: modelType,
-                    relationField: f.name,
-                    foreignKey: {
-                        name: transformForeignKeyName(dbAnnotations.oneToOne, 'to-db'),
-                        type: getBaseType(modelPrimaryKey.type)
-                    }
-                };
+    //             const oppositeOneToOne: RelationshipMetadataDeprecated = {
+    //                 parent: relationType,
+    //                 parentField: relationshipInfo.field,
+    //                 kind: 'oneToOne',
+    //                 relationType: modelType,
+    //                 relationField: f.name,
+    //                 foreignKey: {
+    //                     name: transformForeignKeyName(relationshipInfo.field, 'to-db'),
+    //                     type: getBaseType(modelPrimaryKey.type)
+    //                 }
+    //             };
 
-                relationships.push(oneToOne, oppositeOneToOne);
-            }
+    //             relationships.push(oneToOne, oppositeOneToOne);
+    //         }
 
-            if (dbAnnotations.manyToOne) {
-                // TODO: Check if is object type
-                const relationType = getBaseType(f.type) as GraphQLObjectType;
+    //         if (relationshipInfo.kind === 'manyToOne') {
+    //             // TODO: Check if is object type
+    //             const relationType = getBaseType(f.type) as GraphQLObjectType;
 
-                // ignore types that do not have `@model` marker
-                // TODO document this
-                if (!isModelType(relationType)) {
-                    return;
-                }
+    //             // ignore types that do not have `@model` marker
+    //             // TODO document this
+    //             if (!isModelType(relationType)) {
+    //                 return;
+    //             }
 
-                const primaryKey = getPrimaryKey(relationType);
-                const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
+    //             const primaryKey = getPrimaryKey(relationType);
+    //             const foreignKeyFieldName = transformForeignKeyName(f.name, 'to-db');
 
-                const manyToOne: RelationshipMetadata = {
-                    parent: modelType,
-                    parentField: f.name,
-                    kind: 'manyToOne',
-                    relationType,
-                    relationField: dbAnnotations.manyToOne,
-                    foreignKey: {
-                        name: foreignKeyFieldName,
-                        type: getBaseType(primaryKey.type)
-                    }
-                };
+    //             const manyToOne: RelationshipMetadataDeprecated = {
+    //                 parent: modelType,
+    //                 parentField: f.name,
+    //                 kind: 'manyToOne',
+    //                 relationType,
+    //                 relationField: relationshipInfo.kind,
+    //                 foreignKey: {
+    //                     name: foreignKeyFieldName,
+    //                     type: getBaseType(primaryKey.type)
+    //                 }
+    //             };
 
-                const oneToMany: RelationshipMetadata = {
-                    parent: relationType,
-                    parentField: dbAnnotations.manyToOne,
-                    kind: 'oneToMany',
-                    relationType: modelType,
-                    relationField: f.name,
-                    foreignKey: {
-                        name: foreignKeyFieldName
-                    }
-                };
+    //             const oneToMany: RelationshipMetadataDeprecated = {
+    //                 parent: relationType,
+    //                 parentField: relationshipInfo.kind,
+    //                 kind: 'oneToMany',
+    //                 relationType: modelType,
+    //                 relationField: f.name,
+    //                 foreignKey: {
+    //                     name: foreignKeyFieldName
+    //                 }
+    //             };
 
-                relationships.push(manyToOne, oneToMany);
-            }
-        });
+    //             relationships.push(manyToOne, oneToMany);
+    //         }
+    //     });
 
-        return relationships;
-    }
+    //     return relationships;
+    // }
 
     private validateOneToManyRelationshipMetadata(parentType: GraphQLObjectType, relationType: GraphQLObjectType, parentFieldName: string, relationFieldName: string) {
         if (!relationFieldName) {
