@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
-import { GraphbackDataProvider, NoDataError, AdvancedFilter } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
 /**
  * Graphback provider that connnects to the MongoDB database
@@ -64,21 +64,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async findAll(): Promise<Type[]> {
-    const data = await this.db.collection(this.collectionName).find({}).toArray();
-    if (data) {
-      return data.map((one: any) => {
-        return {
-          ...one,
-          id: one._id
-        }
-      });
-    }
-    throw new NoDataError(`Cannot find all results for ${this.collectionName}`);
-  }
-
-  public async findMore(offset: number, limit: number): Promise<Type[]> {
-    const data = await this.db.collection(this.collectionName).find({}).skip(offset).limit(limit).toArray();
+  public async findAll(page: GraphbackPage): Promise<Type[]> {
+    const data =  page ? (await this.db.collection(this.collectionName).find({}).skip(page.offset).limit(page.limit).toArray()):
+                         (await this.db.collection(this.collectionName).find({}).toArray());
     if (data) {
       return data.map((one: any) => {
         return {
