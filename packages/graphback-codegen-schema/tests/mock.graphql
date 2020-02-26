@@ -1,3 +1,4 @@
+"""@model"""
 type Note {
   id: ID!
   title: String!
@@ -9,6 +10,7 @@ type Note {
   comment: [Comment]!
 }
 
+"""@model"""
 type Comment {
   id: ID!
   title: String!
