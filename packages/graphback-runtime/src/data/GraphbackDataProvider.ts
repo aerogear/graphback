@@ -7,8 +7,8 @@ export type AdvancedFilter = any;
  * Interface represents GraphbackPage type used for findAll queries
  */
 export interface GraphbackPage {
-    limit: number,
-    offset: number,
+    limit?: number,
+    offset?: number,
 };
 
 /**
@@ -60,7 +60,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    findAll(page: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+    findAll(page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Implementation for reading objects with filtering capabilities
