@@ -40,6 +40,14 @@ test('find all persons', async t => {
     t.assert(result['total'] > 0);
 });
 
+//test for findAll with limit
+// eslint-disable-next-line @typescript-eslint/tslint/config
+test('find max 4 persons', async t => {
+    const result = await t.context.provider.findAll({ limit: 4 });
+    // eslint-disable-next-line dot-notation
+    t.assert(result['data'].length <= 4);
+});
+
 //test for create
 // eslint-disable-next-line @typescript-eslint/tslint/config
 test('create a person',async t => {
