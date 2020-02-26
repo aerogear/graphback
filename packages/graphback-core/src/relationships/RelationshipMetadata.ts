@@ -50,6 +50,7 @@ export class RelationshipMetadataBuilder {
 
                 this.addOneToMany(modelType, field);
                 this.addManyToOne(relationType, relationField);
+
             } else if (relationshipAnnotation.kind === 'manyToOne') {
 
                 if (!relationField) {
@@ -58,12 +59,14 @@ export class RelationshipMetadataBuilder {
 
                 this.addManyToOne(modelType, field);
                 this.addOneToMany(relationType, relationField);
+
             } else if (relationshipAnnotation.kind === 'oneToOne') {
                 if (!relationField) {
                     relationField = this.createOneToOneField(relationshipAnnotation.field, modelType, field.name, relationshipAnnotation.key)
                 }
 
                 this.addOneToOne(modelType, field);
+                this.addOneToOne(relationType, relationField);
             }
         }
     }
