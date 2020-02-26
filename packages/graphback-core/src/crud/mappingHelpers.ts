@@ -1,10 +1,10 @@
-import { GraphQLObjectType, GraphQLField, GraphQLOutputType, GraphQLNamedType, isScalarType, isObjectType, getNullableType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
-import { GraphbackOperationType } from './GraphbackOperationType';
 import { parseRelationshipAnnotation } from '../relationships/relationshipHelpers';
 import { transformForeignKeyName, getPrimaryKey } from '../db';
 import { getBaseType } from '../utils/getBaseType';
+import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO is is esential to document this element
 
@@ -46,7 +46,7 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
 }
 
 export function getInputFieldName(field: GraphQLField<any, any>): string {
-  const relationshipAnnotation = parseRelationshipAnnotation(field);
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
   if (!relationshipAnnotation) {
     return field.name;
@@ -97,7 +97,7 @@ export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectTyp
 }
 
 export function canInputField(field: GraphQLField<any, any>): boolean {
-  const relationshipAnnotation = parseRelationshipAnnotation(field);
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
   return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
 }

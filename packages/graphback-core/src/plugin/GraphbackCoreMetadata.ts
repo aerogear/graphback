@@ -1,7 +1,5 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField } from 'graphql'
+import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
-import { getBaseType } from '../utils/getBaseType'
-import { hasListType } from '../utils/hasListType'
 import { RelationshipMetadataBuilder } from '../relationships/RelationshipMetadata'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
@@ -27,12 +25,12 @@ export class GraphbackCoreMetadata {
     private supportedCrudMethods: GraphbackCRUDGeneratorConfig
     private schema: GraphQLSchema;
     private models: ModelDefinition[];
-    private relationshipMetadata: RelationshipMetadataBuilder;
+    private relationshipBuilder: RelationshipMetadataBuilder;
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
         this.supportedCrudMethods = Object.assign(defaultCRUDGeneratorConfig, globalConfig.crudMethods)
-        this.relationshipMetadata = new RelationshipMetadataBuilder();
+        this.relationshipBuilder = new RelationshipMetadataBuilder();
     }
 
     public getSchema() {
@@ -53,7 +51,7 @@ export class GraphbackCoreMetadata {
         //Get actual user types 
         const modelTypes = this.getGraphQLTypesWithModel();
         for (const modelType of modelTypes) {
-            this.relationshipMetadata.buildModelRelationships(modelType);
+            this.relationshipBuilder.buildRelationshipContext(modelType);
         }
 
         for (const modelType of modelTypes) {
@@ -82,44 +80,8 @@ export class GraphbackCoreMetadata {
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
 
-        const modelRelationships = this.relationshipMetadata.getModelRelationships(modelType.name);
+        const modelRelationships = this.relationshipBuilder.getModelRelationships(modelType.name);
 
         return { graphqlType: modelType, relationships: modelRelationships, crudOptions };
-    }
-
-    private validateOneToManyRelationshipMetadata(parentType: GraphQLObjectType, relationType: GraphQLObjectType, parentFieldName: string, relationFieldName: string) {
-        if (!relationFieldName) {
-            throw new Error(`${parentType.name}.${parentFieldName} '@oneToMany' annotation requires a relation field name.`)
-        }
-
-        const relationModelField = relationType.getFields()[relationFieldName];
-
-        if (!relationModelField) {
-            throw new Error(`${relationType.name} model requires a '${relationFieldName}' field.`)
-        }
-
-        const relationFieldBaseType = getBaseType(relationModelField.type);
-
-        if (relationFieldBaseType.name !== parentType.name || hasListType(relationModelField.type)) {
-            throw new Error(`${relationType.name}.${relationFieldName} field must be type ${parentType.name}`);
-        }
-    }
-
-    private validateOneToOneRelationshipMetadata(parentType: GraphQLObjectType, relationType: GraphQLObjectType, parentFieldName: string, relationFieldName: string) {
-        if (!relationFieldName) {
-            throw new Error(`${parentType.name}.${parentFieldName} '@oneToOne' annotation requires a relation field name.`)
-        }
-
-        const relationModelField = relationType.getFields()[relationFieldName];
-
-        if (!relationModelField) {
-            throw new Error(`${relationType.name} model requires a '${relationFieldName}' field.`)
-        }
-
-        const relationFieldBaseType = getBaseType(relationModelField.type);
-
-        if (relationFieldBaseType.name !== parentType.name || hasListType(relationModelField.type)) {
-            throw new Error(`${relationType.name}.${relationFieldName} field must be type ${parentType.name}`);
-        }
     }
 }
