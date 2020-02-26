@@ -6,8 +6,8 @@ const App: React.FC = () => {
   const allNotes = useFindAllNotesQuery();
   allNotes.startPolling(2000);
   const [createNote] = useCreateNoteMutation();
-  const [newNoteTitle, setNewNoteTitle] = useState();
-  const [newNoteDescription, setNewNoteDescription] = useState();
+  const [newNoteTitle, setNewNoteTitle] = useState("");
+  const [newNoteDescription, setNewNoteDescription] = useState("");
   return (
     <div>
       <fieldset>
