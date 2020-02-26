@@ -76,6 +76,20 @@ test('find all Todos', async (t: any) => {
   t.assert(todos.length > 0);
 });
 
+test('find all limit defaults to 10', async (t: any) => {
+  for (let i = 0; i < 10; i++) {
+    await t.context.provider.create({
+      text: `todo`,
+    });
+  }
+  const todos = await t.context.provider.findAll({ offset: 1 });
+  t.assert(todos.length <= 10);
+});
+
+test('find all offset defaults to 0', async (t: any) => {
+  const todos = await t.context.provider.findAll({ limit: 1 });
+  t.assert(todos[0].text == "todo");
+});
 
 test('find first 1 todos', async t => {
   const todos = await t.context.provider.findAll({ limit: 1, offset: 0});
