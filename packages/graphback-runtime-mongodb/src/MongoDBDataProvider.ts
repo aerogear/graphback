@@ -64,8 +64,8 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async findAll(page: GraphbackPage): Promise<Type[]> {
-    const data =  page ? (await this.db.collection(this.collectionName).find({}).skip(page.offset).limit(page.limit).toArray()):
+  public async findAll(page?: GraphbackPage): Promise<Type[]> {
+    const data =  page ? (await this.db.collection(this.collectionName).find({}).skip(page.offset || 0).limit(page.limit || 10).toArray()):
                          (await this.db.collection(this.collectionName).find({}).toArray());
     if (data) {
       return data.map((one: any) => {
