@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getTableName, getInputTypeName } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
+import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType, GraphQLInt } from 'graphql';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { printSortedSchema } from './writer/schemaPrinter';
 
@@ -254,7 +254,14 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             const operation = getFieldName(name, GraphbackOperationType.FIND_ALL)
             queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
-                args: {}
+                args: {
+                    limit: {
+                        type: GraphQLInt,
+                    },
+                    offset: {
+                        type: GraphQLInt,
+                    },
+                },
             };
         }
         if (model.crudOptions.find) {
