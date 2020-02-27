@@ -57,7 +57,7 @@ export class RelationshipMetadataBuilder {
                 } else {
                     relationField = this.updateManyToOneField(relationField, field.name, annotation.key);
                 }
-                
+
                 this.addOneToMany(modelType, field);
                 this.addManyToOne(relationType, relationField);
 
@@ -204,6 +204,12 @@ export class RelationshipMetadataBuilder {
         this.validateOneToOneField(ownerType.name, field);
 
         const metadata = parseRelationshipAnnotation(field.description);
+
+        // skio - relationship with key mapping will be generated at a later stage
+        if (!metadata.key) {
+            return;
+        }
+
         const relationType = getBaseType(field.type) as GraphQLObjectType;
 
         const columnField = metadata.key || transformForeignKeyName(field.name);

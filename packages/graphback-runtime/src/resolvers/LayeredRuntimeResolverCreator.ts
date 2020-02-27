@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, RelationshipMetadata, getPrimaryKey } from '@graphback/core';
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey } from '@graphback/core';
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
