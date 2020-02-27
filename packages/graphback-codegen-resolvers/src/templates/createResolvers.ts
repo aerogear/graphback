@@ -4,7 +4,9 @@ import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
 import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, oneToOneTemplate, updatedSubscriptionTemplate, updateTemplate, oneToManyTemplate } from './resolverTemplates';
 
 export function createRelationshipResolvers(relationships: FieldRelationshipMetadata[]) {
-    if (!relationships.length) { return undefined; }
+    if (!relationships.length) {
+        return undefined;
+    }
 
     const resolvers = {};
     for (const relationship of relationships) {
@@ -14,7 +16,7 @@ export function createRelationshipResolvers(relationships: FieldRelationshipMeta
 
         if (relationship.kind === 'oneToMany') {
             resolverOutput = oneToManyTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
-        } else {
+        } else if (relationship.kind === 'oneToOne' || relationship.kind === 'manyToOne') {
             resolverOutput = oneToOneTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
         }
 
