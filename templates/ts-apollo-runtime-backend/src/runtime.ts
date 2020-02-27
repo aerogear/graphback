@@ -3,7 +3,6 @@ import { GraphbackRuntime, ModelDefinition, GraphbackGeneratorConfig } from 'gra
 import { createKnexPGCRUDRuntimeServices } from '@graphback/runtime-knex'
 import { migrateDB } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
-import * as Knex from 'knex';
 import { createDB, getGraphbackConfig, getMigrateConfig } from './db'
 import { loadSchema } from './loadSchema';
 import { buildSchema } from 'graphql';
