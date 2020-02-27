@@ -12,10 +12,10 @@ export const getGraphbackConfig = async () => {
 
 export const getMigrateConfig = async () => {
     const config = await loadConfig({
-        extensions: [() => ({ name: 'graphback' })]
+        extensions: [() => ({ name: 'dbmigrations' })]
     });
 
-    const conf = await config.getDefault().extension('graphback');
+    const conf = await config.getDefault().extension('dbmigrations');
     return conf;
 }
 
