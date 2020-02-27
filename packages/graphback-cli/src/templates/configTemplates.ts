@@ -14,16 +14,20 @@ const dockerFilesPath = `${__dirname}/resources/docker`
 const getConfig = (database: string) => {
   if (database === 'pg') {
     return [readFileSync(`${configFilesPath}/postgres.json`, 'utf8'), readFileSync(`${dockerFilesPath}/postgres.yml`, 'utf8')]
-  } else if (database === 'sqlite3') {
-    return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
+  } else if (database === 'MongoDB') {
+    return [readFileSync(`${configFilesPath}/mongodb.json`, 'utf8'), readFileSync(`${dockerFilesPath}/mongodb.yml`, 'utf8')]
   } else {
     return undefined
   }
+  // else if (database === 'sqlite3') {
+  //   return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
+  // } 
 }
 
 const databases = [
   'PostgreSQL',
-  'sqlite3'
+  'MongoDB'
+  // 'sqlite3'
 ]
 
 export const chooseDatabase = async (): Promise<string> => {

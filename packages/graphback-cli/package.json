@@ -13,7 +13,7 @@
   "author": "wtrocki@redhat.com",
   "scripts": {
     "clean": "rimraf coverage dist types",
-    "build": "tsc && cp -Rf ./src/templates/resources ./dist/templates/resources",
+    "build": "tsc && ncp ./src/templates/resources ./dist/templates/",
     "cmdinit": "ts-node ./dist/index.js init test",
     "watch": "tsc -w",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
@@ -45,6 +45,7 @@
     "@types/yargs": "15.0.3",
     "ava": "2.4.0",
     "lint-staged": "10.0.7",
+    "ncp": "^2.0.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
