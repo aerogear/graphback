@@ -1,4 +1,3 @@
-import { GraphQLField } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { RelationshipAnnotation } from './RelationshipMetadata';
@@ -60,12 +59,51 @@ export function buildGeneratedRelationshipsFieldObject(model: ModelDefinition) {
  */
 export const stripRelationshipAnnotation = (fieldDescription: string = '') => {
     if (!fieldDescription.includes('\n')) {
-        return fieldDescription;
+        return '';
     }
 
-    const filteredDescription = fieldDescription.split('\n').filter((line: string) => !parseRelationshipAnnotation(line));
+    const strippedDescription = fieldDescription.split('\n').filter((line: string) => !parseRelationshipAnnotation(line));
 
-    return filteredDescription.slice(0, -1).join('\n');
+    return strippedDescription.join('\n');
+}
+
+/**
+ * Strips all non-relationship annotations from a string 
+ * 
+ * @param fieldDescription 
+ */
+export const getRelationshipAnnotationString = (fieldDescription: string = '') => {
+    if (!fieldDescription.includes('\n') && !parseRelationshipAnnotation(fieldDescription)) {
+        return '';
+    }
+
+    const filteredDescription = fieldDescription.split('\n').filter(parseRelationshipAnnotation);
+
+    return filteredDescription.join('\n');
+}
+
+/**
+ * Helper to merge two description strings which may or may not have a relationship annotation.
+ * This helper keeps non-relationship annotations and merges them together.
+ * It chooses the relationship annotation with the `key` field when merging.
+ * 
+ * @param generatedDescription 
+ * @param customDescription 
+ */
+export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription: string, customDescription: string) => {
+    const descriptionLines = [stripRelationshipAnnotation(generatedDescription), stripRelationshipAnnotation(customDescription)];
+
+    for (const description of [customDescription, generatedDescription]) {
+        const relationshipDescription = getRelationshipAnnotationString(description);
+        const parsedAnnotation = parseRelationshipAnnotation(description);
+
+        if (parsedAnnotation.key) {
+            descriptionLines.push(relationshipDescription);
+            break;
+        }
+    }
+
+    return descriptionLines.join('\n')
 }
 
 /**

@@ -3,7 +3,7 @@ import { isModelType } from '../crud';
 import { getBaseType } from '../utils/getBaseType';
 import { transformForeignKeyName } from '../db';
 import { hasListType } from '../utils/hasListType';
-import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, stripRelationshipAnnotation } from './relationshipHelpers';
+import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, stripRelationshipAnnotation, mergeDescriptionWithRelationshipAnnotation } from './relationshipHelpers';
 
 export interface FieldRelationshipMetadata {
     kind: 'oneToMany' | 'oneToOne' | 'manyToOne'
@@ -120,10 +120,11 @@ export class RelationshipMetadataBuilder {
     private updateOneToManyField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(relationFieldName);
         const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', relationFieldName, columnField);
+        const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
         return {
             ...field,
-            description: `${fieldDescription}\n${stripRelationshipAnnotation(field.description)}`
+            description: finalDescription
         }
     }
 

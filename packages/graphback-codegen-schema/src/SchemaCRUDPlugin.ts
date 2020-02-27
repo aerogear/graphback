@@ -3,9 +3,10 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, canInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
+import { printSortedSchema } from './writer/schemaPrinter';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -64,11 +65,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             return schema;
         };
 
+        schema = this.buildSchemaModelRelationships(schema, models);
+
+        // Print and rebuild to keep field and type descriptions
+        // WORKAROUND!
+        schema = buildSchema(printSchema(schema));
+
         const modelsSchema = this.buildSchemaForModels(models);
 
         schema = mergeSchemas({ schemas: [modelsSchema, schema] });
-
-        schema = this.buildSchemaModelRelationships(schema, models);
 
         return schema;
     }
@@ -90,7 +95,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param options 
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSchema(schema);
+        const schemaString = printSortedSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
@@ -308,6 +313,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             modifiedType.addFields(newRelationshipFields);
         }
 
-        return schemaComposer.merge(schema).buildSchema()
+        if (!schemaComposer.has('Query')) {
+            schemaComposer.createObjectTC('Query');
+            schemaComposer.Query.addFields({})
+        }
+
+        return schemaComposer.buildSchema()
     }
 }
