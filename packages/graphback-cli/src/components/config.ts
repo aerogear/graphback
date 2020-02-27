@@ -13,11 +13,12 @@ export async function installDependencies(database: string): Promise<void> {
   await execa('npm', ['i'])
   if (database === 'pg') {
     await execa('npm', ['i', '-S', 'pg'])
-  } else if (database === 'sqlite3') {
-    await execa('npm', ['i', '-S', 'sqlite3'])
+    await execa('npm', ['i', '-S', '@graphback/runtime-knex'])
+  } else if (database === 'MongoDB') {
+    await execa('npm', ['i', '-S', 'mongodb'])
+    await execa('npm', ['i', '-S', '@graphback/runtime-mongo'])
   }
   //Using opiniated layer
-  await execa('npm', ['i', '-S', '@graphback/runtime-knex'])
 }
 
 function postSetupMessage(): string {
