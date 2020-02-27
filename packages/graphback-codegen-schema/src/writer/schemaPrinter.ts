@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema, print, GraphQLScalarType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, print, GraphQLScalarType, isScalarType } from 'graphql';
 
 const defaultScalarTypes = ['ID', 'String', 'Int', 'Boolean', 'Float']
 
@@ -53,6 +53,7 @@ export function isSubscriptionType(
 export function isDefaultScalarType(providedType: GraphQLScalarType | GraphQLObjectType) {
     return defaultScalarTypes.includes(providedType.name);
 }
+
 /**
  * Allows to transform schema into string by perserving original order
  * and including directives
@@ -65,7 +66,7 @@ export function printSortedSchema(schema: GraphQLSchema) {
     const schemaTypes = Object.values(schema.getTypeMap());
 
     const orderedTypes = schemaTypes.filter((schemaType: GraphQLObjectType | GraphQLScalarType) => {
-        if (isDefaultScalarType(schemaType)) {
+        if (isScalarType(schemaType) && isDefaultScalarType(schemaType)) {
             return false;
         }
         if (isQueryType(schema, schemaType)) {
