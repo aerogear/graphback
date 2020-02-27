@@ -3,10 +3,9 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, canInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, buildSchema, GraphQLField, GraphQLInt } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { printSortedSchema } from './writer/schemaPrinter';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -58,26 +57,20 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
         let schema = metadata.getSchema();
-        const schemaComposer = new SchemaComposer(schema);
-        let models = metadata.getModelDefinitions();
+        const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
 
             return schema;
         };
 
-        const modifiedSchema = this.addRelationshipModelFieldsToSchema(schema, models);
-        metadata.setSchema(modifiedSchema);
-        models = metadata.getModelDefinitions();
-
-        // print schema as string and rebuild. this prevents schema from losing descriptions
-        // TODO fix this? Has to be a better way.
-        const printedSchema = printSchema(metadata.getSchema());
-        schema = buildSchema(printedSchema);
-
         const modelsSchema = this.buildSchemaForModels(models);
 
-        return mergeSchemas({ schemas: [modelsSchema, schema] });
+        schema = mergeSchemas({ schemas: [modelsSchema, schema] });
+
+        schema = this.buildSchemaModelRelationships(schema, models);
+
+        return schema;
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
@@ -97,7 +90,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param options 
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSortedSchema(schema);
+        const schemaString = printSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
@@ -289,7 +282,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return queryTypes;
     }
 
-    private addRelationshipModelFieldsToSchema(schema: GraphQLSchema, models: ModelDefinition[]) {
+    /**
+     * Add relationship fields to GraphQL model types
+     * 
+     * @param schema 
+     * @param models 
+     */
+    private buildSchemaModelRelationships(schema: GraphQLSchema, models: ModelDefinition[]) {
         const schemaComposer = new SchemaComposer(schema)
 
         // create or update relationship fields to the model types.
@@ -309,8 +308,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             modifiedType.addFields(newRelationshipFields);
         }
 
-        const modifiedSchema = schemaComposer.buildSchema();
-
-        return modifiedSchema;
+        return schemaComposer.merge(schema).buildSchema()
     }
 }
