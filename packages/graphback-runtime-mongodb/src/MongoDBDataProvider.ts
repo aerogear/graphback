@@ -55,7 +55,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
       if (result.result.ok) {
-        console.log(idField)
         queryResult[idField.name] = queryResult._id;
 
         return queryResult;
@@ -65,8 +64,16 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    const data =  page ? (await this.db.collection(this.collectionName).find({}).skip(page.offset || 0).limit(page.limit || 10).toArray()):
-                         (await this.db.collection(this.collectionName).find({}).toArray());
+    let data;
+    if (page) {
+      page.limit = page.limit || 10
+      page.offset = page.offset || 0
+      data = await this.db.collection(this.collectionName).find({}).
+        skip(page.offset).limit(page.limit).toArray()
+    } else {
+      data = await this.db.collection(this.collectionName).find({}).toArray();
+    }
+
     if (data) {
       return data.map((one: any) => {
         return {
