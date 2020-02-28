@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey } from '@graphback/core';
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata } from '@graphback/core';
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -155,7 +155,7 @@ export class LayeredRuntimeResolverCreator {
     }
   }
 
-  private createRelations(relationships: RelationshipMetadata[]) {
+  private createRelations(relationships: FieldRelationshipMetadata[]) {
     if (!relationships.length) { return undefined }
 
     const resolvers = {};
@@ -170,16 +170,16 @@ export class LayeredRuntimeResolverCreator {
 
       if (relationship.kind === 'oneToMany') {
         resolverFn = (parent: any, args: any, context: any) => {
-          return this.services[modelName].batchLoadData(relationship.foreignKey.name, parent[relationIdField.name], context);
+          return this.services[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], context);
         }
       } else {
         resolverFn = (parent: any, args: any, context: any) => {
-          return this.services[modelName].findBy({ id: parent[relationIdField.name] }).then((results: any) => results[0])
+          return this.services[modelName].findBy({ [relationIdField.name]: parent[relationship.relationForeignKey] }).then((results: any) => results[0])
         }
       }
 
       if (resolverFn) {
-        resolvers[relationship.parentField] = resolverFn;
+        resolvers[relationship.ownerField.name] = resolverFn;
       }
     }
 
