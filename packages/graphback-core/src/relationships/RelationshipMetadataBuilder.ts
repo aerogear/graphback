@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList } from 'graphql';
 import { isModelType } from '../crud';
 import { getBaseType } from '../utils/getBaseType';
