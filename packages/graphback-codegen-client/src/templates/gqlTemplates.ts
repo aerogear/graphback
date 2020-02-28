@@ -25,8 +25,8 @@ ${returnFieldsString}
 export const findAllQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL)
 
-  return `query ${fieldName} {
-    ${fieldName} {
+  return `query ${fieldName}($limit: Int, $offset: Int) {
+    ${fieldName}(limit: $limit, offset: $offset) {
       ...${t.name}ExpandedFields
     }
   }`
@@ -154,7 +154,7 @@ const createMutations = (types: ModelDefinition[]) => {
 const createSubscriptions = (types: ModelDefinition[]) => {
   const subscriptions = []
 
-  
+
   types.forEach((t: ModelDefinition) => {
     const name = t.graphqlType.name;
     if (t.crudOptions.create && t.crudOptions.subCreate) {
