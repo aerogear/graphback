@@ -1,5 +1,5 @@
 import { GraphQLObjectType } from "graphql";
-import { FieldRelationshipMetadata } from '../relationships/RelationshipMetadata';
+import { FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
 import { GraphbackCRUDGeneratorConfig } from "./GraphbackCRUDGeneratorConfig"
 
 /**

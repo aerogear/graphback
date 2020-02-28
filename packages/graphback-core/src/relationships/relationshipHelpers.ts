@@ -1,6 +1,6 @@
 import { parseMarker } from 'graphql-metadata';
 import { ModelDefinition } from '../plugin/ModelDefinition';
-import { RelationshipAnnotation } from './RelationshipMetadata';
+import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
 
 /**
  * Parse relationship metadata string to strongly-typed interface
