@@ -3,7 +3,7 @@ import { GraphQLObjectType } from 'graphql';
 import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
 import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, oneToOneTemplate, updatedSubscriptionTemplate, updateTemplate, oneToManyTemplate } from './resolverTemplates';
 
-export function createRelationshipResolvers(relationships: FieldRelationshipMetadata[]) {
+function createRelationshipResolvers(relationships: FieldRelationshipMetadata[]) {
     if (!relationships.length) {
         return undefined;
     }
