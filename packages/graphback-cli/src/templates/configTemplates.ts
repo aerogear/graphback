@@ -16,12 +16,11 @@ const getConfig = (database: string) => {
     return [readFileSync(`${configFilesPath}/postgres.json`, 'utf8'), readFileSync(`${dockerFilesPath}/postgres.yml`, 'utf8')]
   } else if (database === 'MongoDB') {
     return [readFileSync(`${configFilesPath}/mongodb.json`, 'utf8'), readFileSync(`${dockerFilesPath}/mongodb.yml`, 'utf8')]
+  } else if (database === 'sqlite3') {
+    return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
   } else {
     return undefined
   }
-  // else if (database === 'sqlite3') {
-  //   return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
-  // } 
 }
 
 const databases = [
@@ -70,7 +69,7 @@ export const createConfig = async (database: string, client: boolean) => {
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`;
   const [dbConfig, dockerCompose] = getConfig(database);
-  const graphqlConfig: IGraphQLConfig = {
+  const graphqlConfigJSON = {
     schema: './src/schema/*.graphql',
     documents: './client/src/graphql/**/*.graphql',
     extensions: {
@@ -95,14 +94,19 @@ export const createConfig = async (database: string, client: boolean) => {
             "format": "ts",
             "outputPath": "./src/resolvers"
           }
-        },
-      },
-      dbmigrations: {
-        "connection": JSON.parse(dbConfig),
-        "client": database
+        }
       }
     }
   };
+
+  if(database === "pg") {
+    graphqlConfigJSON.extensions.graphback['dbMigrations'] = {
+      "connection": JSON.parse(dbConfig),
+      "client": database
+    };
+  }
+
+  const graphqlConfig: IGraphQLConfig = graphqlConfigJSON;
 
   if (client) {
     //Add client extension
