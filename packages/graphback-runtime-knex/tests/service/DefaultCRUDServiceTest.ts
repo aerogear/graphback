@@ -134,7 +134,7 @@ test('delete Todo', async t => {
 });
 
 test('find all Todos', async t => {
-  const todos = await t.context.todoService.findAll(todoModel.name);
+  const todos = await t.context.todoService.findAll();
 
   t.assert(todos.length === 3);
 });

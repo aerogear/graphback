@@ -98,11 +98,11 @@ test('find first 2 todos', async t => {
 
   t.assert(todos.length === 2);
 
-  t.assert(todos[0].id == 1);
-  t.assert(todos[0].text == "my first default todo");
+  t.assert(todos[0].id === 1);
+  t.assert(todos[0].text === "my first default todo");
 
-  t.assert(todos[1].id == 2);
-  t.assert(todos[1].text == "the second todo");
+  t.assert(todos[1].id === 2);
+  t.assert(todos[1].text === "the second todo");
 });
 
 test('find first 2 todos excluding first todo', async t => {
