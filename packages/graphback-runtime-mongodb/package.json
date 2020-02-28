@@ -50,10 +50,10 @@
     "@graphback/runtime": "0.11.0-rc3",
     "@types/mongodb": "3.3.16",
     "dataloader": "2.0.0",
-    "graphql-subscriptions": "1.1.0",
-    "mongodb": "3.5.3"
+    "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
+    "mongodb": "3.5.3"
   }
 }
