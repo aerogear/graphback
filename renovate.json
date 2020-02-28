@@ -5,6 +5,8 @@
   ],
   "groupName": "all",
   "ignoreDeps": [
+    "graphback-cli",
+    "ora",
     "chalk",
     "ava"
   ],
