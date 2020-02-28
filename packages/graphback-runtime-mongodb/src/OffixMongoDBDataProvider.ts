@@ -39,8 +39,8 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       data.version = data.version + 1;
       // TODO use findOneAndUpdate to check consistency afterwards
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
-      if (result) {
-        return queryResult[0];
+      if (result.result?.ok) {
+        return data;
       }
     }
 
