@@ -17,8 +17,8 @@ export function parseRelationshipAnnotation(description: string = ''): Relations
             continue;
         }
 
-        if (!annotation.field) {
-            throw new Error("'field' is required on relationship annotations");
+        if (!annotation.field && kind !== 'oneToOne') {
+            throw new Error(`'field' is required on "${kind}" relationship annotations`);
         }
 
         return {
@@ -97,7 +97,7 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
         const relationshipDescription = getRelationshipAnnotationString(description);
         const parsedAnnotation = parseRelationshipAnnotation(description);
 
-        if (parsedAnnotation.key) {
+        if (parsedAnnotation && parsedAnnotation.key) {
             descriptionLines.push(relationshipDescription);
             break;
         }
@@ -113,6 +113,7 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
  */
 export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
     const modelType = model.graphqlType;
+
     const modelFields = modelType.getFields();
 
     const fieldsObj = {};
