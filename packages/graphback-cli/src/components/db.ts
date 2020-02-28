@@ -35,10 +35,10 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
       process.exit(0)
     }
 
-    // if (dbMigrationConfig.client === 'sqlite3') {
-    //   logInfo(`SQLLite database will need to be recreated from scratch with every migration. Please manually remove/backup existing SQLLite database file before migration`);
-    //   await execa('touch', [dbMigrationConfig.connection.filename])
-    // }
+    if (dbMigrationConfig.client === 'sqlite3') {
+      logInfo(`SQLLite database will need to be recreated from scratch with every migration. Please manually remove/backup existing SQLLite database file before migration`);
+      await execa('touch', [dbMigrationConfig.connection.filename])
+    }
 
     const migrateOptions: MigrateOptions = {
       //Do not perform delete operations on tables

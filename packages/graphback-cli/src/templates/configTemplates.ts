@@ -15,7 +15,7 @@ const getConfig = (database: string) => {
   if (database === 'pg') {
     return [readFileSync(`${configFilesPath}/postgres.json`, 'utf8'), readFileSync(`${dockerFilesPath}/postgres.yml`, 'utf8')]
   } else if (database === 'MongoDB') {
-    return [readFileSync(`${configFilesPath}/mongodb.json`, 'utf8'), readFileSync(`${dockerFilesPath}/mongodb.yml`, 'utf8')]
+    return ["", readFileSync(`${dockerFilesPath}/mongodb.yml`, 'utf8')]
   } else if (database === 'sqlite3') {
     return [readFileSync(`${configFilesPath}/sqlite3.json`, 'utf8'), undefined]
   } else {
@@ -26,7 +26,6 @@ const getConfig = (database: string) => {
 const databases = [
   'PostgreSQL',
   'MongoDB'
-  // 'sqlite3'
 ]
 
 export const chooseDatabase = async (): Promise<string> => {
@@ -69,7 +68,8 @@ export const createConfig = async (database: string, client: boolean) => {
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`;
   const [dbConfig, dockerCompose] = getConfig(database);
-  const graphqlConfigJSON = {
+
+  const graphqlConfig: IGraphQLConfig = {
     schema: './src/schema/*.graphql',
     documents: './client/src/graphql/**/*.graphql',
     extensions: {
@@ -100,13 +100,11 @@ export const createConfig = async (database: string, client: boolean) => {
   };
 
   if(database === "pg") {
-    graphqlConfigJSON.extensions.graphback['dbMigrations'] = {
+    graphqlConfig.extensions.graphback.dbmigrations = {
       "connection": JSON.parse(dbConfig),
       "client": database
     };
   }
-
-  const graphqlConfig: IGraphQLConfig = graphqlConfigJSON;
 
   if (client) {
     //Add client extension

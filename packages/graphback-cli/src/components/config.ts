@@ -18,7 +18,6 @@ export async function installDependencies(database: string): Promise<void> {
     await execa('npm', ['i', '-S', 'mongodb'])
     await execa('npm', ['i', '-S', '@graphback/runtime-mongo'])
   }
-  //Using opiniated layer
 }
 
 function postSetupMessage(): string {
