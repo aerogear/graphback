@@ -114,9 +114,8 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
         const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
         const res = await fetch(url)
         const json = await res.json()
-        console.log((json));
 
-        return page ? {...json, data: json.data.slice((page.offset || 0), (page.offset || 0) + (page.limit || 10))} : json;
+        return json;
     }
 
 
