@@ -32,14 +32,14 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/node": "12.12.28",
+    "@types/node": "12.12.29",
     "@types/pino": "5.20.0",
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tslint": "5.20.1",
-    "typescript": "3.8.2"
+    "typescript": "3.8.3"
   },
   "license": "Apache-2.0",
   "publishConfig": {
@@ -48,7 +48,7 @@
   "dependencies": {
     "glob": "7.1.6",
     "graphql-metadata": "0.5.0",
-    "pino": "5.16.0",
+    "pino": "5.17.0",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
