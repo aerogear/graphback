@@ -1,6 +1,7 @@
 {
   "name": "graphql-serve",
   "version": "0.3.0",
+  "private": true,
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
@@ -33,7 +34,6 @@
     "@graphback/core": "0.10.2",
     "@graphback/runtime": "0.10.2",
     "apollo-server-express": "2.9.16",
-    "axios": "0.19.2",
     "express": "4.17.1",
     "get-port": "5.1.1",
     "graphql": "14.6.0",
