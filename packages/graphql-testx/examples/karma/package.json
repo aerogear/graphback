@@ -14,6 +14,6 @@
     "karma-mocha-reporter": "2.2.5",
     "karma-webpack": "4.0.2",
     "mocha": "6.2.2",
-    "webpack": "4.41.2"
+    "webpack": "4.42.0"
   }
 }
