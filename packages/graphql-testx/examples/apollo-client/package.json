@@ -1,0 +1,16 @@
+{
+  "name": "graphql-testx-apollo-client-example",
+  "scripts": {
+    "test": "mocha 'test/**/*.spec.ts'"
+  },
+  "dependencies": {
+    "@types/chai": "4.2.5",
+    "@types/mocha": "5.2.7",
+    "apollo-boost": "0.4.4",
+    "apollo-link-ws": "1.0.19",
+    "chai": "4.2.0",
+    "mocha": "6.2.0",
+    "node-fetch": "2.6.0",
+    "subscriptions-transport-ws": "0.9.16"
+  }
+}
