@@ -1,13 +1,13 @@
 {
   "name": "graphback-templates-fullstack-server",
-  "version": "0.11.0-rc4.0",
+  "version": "0.11.0-rc4",
   "private": true,
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc"
   },
   "dependencies": {
-    "@graphback/runtime-knex": "0.11.0-rc4.0",
+    "@graphback/runtime-knex": "0.11.0-rc4",
     "@graphql-toolkit/file-loading": "0.9.7",
     "@types/cors": "2.8.6",
     "@types/express": "4.17.2",
