@@ -273,8 +273,6 @@ export class RelationshipMetadataBuilder {
         if (manyToOneMetadata && oneToManyMetadata.key && manyToOneMetadata.key && oneToManyMetadata.key !== manyToOneMetadata.key) {
             throw new Error(`${modelName}.${field.name} and ${relationType.name}.${relationField.name} 'key' annotations are different. Ensure both are the same, or remove one so that it can be generated.`);
         }
-
-        // this.validateManyToOneField(relationType.name, relationField);
     }
 
     private validateManyToOneField(modelName: string, field: GraphQLField<any, any>) {
