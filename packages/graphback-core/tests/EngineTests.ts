@@ -27,7 +27,7 @@ class TestPlugin extends GraphbackPlugin {
 
   /**
    * Create resources like files etc. for this plugin.
-   * This method should write resouces to filesystem
+   * This method should write resources to filesystem
    */
   public createResources(metadata: GraphbackCoreMetadata) {
     this.logError("I love")
@@ -61,7 +61,7 @@ test('Test plugin engine', async (t: ExecutionContext) => {
 
   engine.registerPlugin(plugin, plugin, plugin)
   const model = engine.createResources();
-  
+
   const printedModels = model.getModelDefinitions().map((element: any) => print(element.graphqlType.astNode))
   t.snapshot(printedModels);
   t.true(model.getSchema().getQueryType().description === 'test');

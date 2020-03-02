@@ -1,13 +1,14 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
+import { schemaComposer } from 'graphql-compose';
 import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
 import { GraphbackPlugin } from './GraphbackPlugin';
 
 /**
- * Allows to execute chain of plugins that create resources. 
- * Common use case is to decorate GraphQL schema with additional 
+ * Allows to execute chain of plugins that create resources.
+ * Common use case is to decorate GraphQL schema with additional
  * actions and generate files like resolvers and database access logic
- * 
+ *
  * Usage:
  * ```js
  * const engine = GraphbackPluginEngine(schema);
@@ -17,7 +18,7 @@ import { GraphbackPlugin } from './GraphbackPlugin';
  */
 export class GraphbackPluginEngine {
 
-    private plugins: GraphbackPlugin[]
+    private plugins: GraphbackPlugin[];
     private metadata: GraphbackCoreMetadata;
 
     public constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
@@ -52,11 +53,11 @@ export class GraphbackPluginEngine {
         if (this.plugins.length === 0) {
             throw new Error("GraphbackEngine: No Graphback plugins registered")
         }
-        //We need to apply all required changes to the schema we need 
+        //We need to apply all required changes to the schema we need
         //This is to ensure that every plugin can add changes to the schema
         for (const plugin of this.plugins) {
-            const newSchema = plugin.transformSchema(this.metadata);
-            this.metadata.setSchema(newSchema);
+          const newSchema = schemaComposer.merge(this.metadata.getSchema());
+          this.metadata.setSchema(newSchema.buildSchema());
         }
 
         return this.metadata;
