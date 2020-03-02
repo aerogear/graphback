@@ -1,8 +1,8 @@
 import { serial as test } from "ava";
 import { request } from "graphql-request";
-import { TestxDirector } from "./TestxDirector";
-import { TestxController } from "./TestxController";
-import { TestxServer } from "./TestxServer";
+import { TestxDirector } from "../src/TestxDirector";
+import { TestxController } from "../src/TestxController";
+import { TestxServer } from "../src/TestxServer";
 
 const ITEM_MODEL = `
   type Item {

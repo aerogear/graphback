@@ -1,6 +1,6 @@
 import test, { ExecutionContext } from "ava";
-import { TestxServer } from "./TestxServer";
-import { TestxController } from "./TestxController";
+import { TestxServer } from "../src/TestxServer";
+import { TestxController } from "../src/TestxController";
 import axios from "axios";
 
 function newTestxController(): TestxController {

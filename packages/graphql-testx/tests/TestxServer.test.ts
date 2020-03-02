@@ -1,7 +1,7 @@
 import { serial as test } from "ava";
 import { request } from "graphql-request";
 import gql from "graphql-tag";
-import { TestxServer } from "./TestxServer";
+import { TestxServer } from "../src/TestxServer";
 import { CRUDService, GraphbackCRUDService } from "@graphback/runtime";
 
 const ITEM_MODEL = `

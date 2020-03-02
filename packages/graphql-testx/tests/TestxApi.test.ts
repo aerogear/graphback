@@ -1,6 +1,6 @@
 import test from "ava";
-import { isTestxApiMethod } from "./TestxApi";
-import { TestxServer } from "./TestxServer";
+import { isTestxApiMethod } from "../src/TestxApi";
+import { TestxServer } from "../src/TestxServer";
 
 test("is TestxApi method", t => {
   const testx = new TestxServer({ schema: "type Foo { id: Int! }" });
