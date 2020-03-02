@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist/ node_modules/",
     "build": "tsc",
-    "test": "ava && yarn build && cd examples/apollo-client && yarn test && cd ../karma && yarn test && cd ../offix && yarn test",
+    "test": "ava",
     "lint": "eslint --ext js,ts .",
     "pretty": "prettier --check '**/*'",
     "prettify": "prettier --write '**/*'",
