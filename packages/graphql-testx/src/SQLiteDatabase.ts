@@ -4,8 +4,10 @@ import {
   DropCreateDatabaseAlways,
   migrateDBUsingSchema
 } from "graphql-migrations";
+// @ts-ignore
 import knexCleaner from "knex-cleaner";
 import { DatabaseSchema, Database, DatabaseImportData } from "./Database";
+
 
 /**
  * The default implementation for the Database interface.
