@@ -4,7 +4,7 @@ import { isModelType } from '../crud';
 import { getBaseType } from '../utils/getBaseType';
 import { transformForeignKeyName } from '../db';
 import { hasListType } from '../utils/hasListType';
-import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, mergeDescriptionWithRelationshipAnnotation } from './relationshipHelpers';
+import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, relationshipOneToOneFieldDescriptionTemplate, mergeDescriptionWithRelationshipAnnotation } from './relationshipHelpers';
 
 export interface FieldRelationshipMetadata {
     kind: 'oneToMany' | 'oneToOne' | 'manyToOne'
@@ -91,13 +91,7 @@ export class RelationshipMetadataBuilder {
                 this.addOneToMany(relationType, relationField);
 
             } else if (annotation.kind === 'oneToOne') {
-                field = this.updateOneToOneField(field, field.name, annotation.key);
-
-                if (!relationField) {
-                    relationField = this.createOneToOneField(annotation.field, modelType, field.name, annotation.key)
-                } else {
-                    relationField = this.updateOneToOneField(relationField, field.name, annotation.key);
-                }
+                field = this.updateOneToOneField(field, annotation.key);
 
                 this.addOneToOne(modelType, field);
             }
@@ -154,27 +148,14 @@ export class RelationshipMetadataBuilder {
         }
     }
 
-    private updateOneToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+    private updateOneToOneField(field: GraphQLField<any, any>, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(field.name);
-        const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', relationFieldName, columnField);
+        const fieldDescription = relationshipOneToOneFieldDescriptionTemplate('oneToOne', columnField);
         const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
         return {
             ...field,
             description: finalDescription
-        }
-    }
-
-    private createOneToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
-        const columnField = columnName || transformForeignKeyName(fieldName);
-        const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', relationFieldName, columnField);
-
-        return {
-            name: fieldName,
-            description: fieldDescription,
-            type: baseType,
-            args: [],
-            extensions: []
         }
     }
 

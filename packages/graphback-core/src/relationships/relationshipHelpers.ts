@@ -142,3 +142,14 @@ export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
 export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
     return `@${relationshipKind} field: '${fieldName}', key: '${columnKey}'`;
 }
+
+/**
+ * Template for one-to-one relationship annotations
+ * 
+ * @param relationshipKind 
+ * @param fieldName 
+ * @param columnKey 
+ */
+export const relationshipOneToOneFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', columnKey: string): string => {
+    return `@${relationshipKind} key: '${columnKey}'`;
+}
