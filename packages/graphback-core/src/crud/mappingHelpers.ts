@@ -96,7 +96,7 @@ export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectTyp
   return modelTypes.filter(isModelType);
 }
 
-export function canInputField(field: GraphQLField<any, any>): boolean {
+export function isInputField(field: GraphQLField<any, any>): boolean {
   const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
   return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
