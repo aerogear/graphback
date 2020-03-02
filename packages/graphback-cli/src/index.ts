@@ -3,6 +3,8 @@
 import * as yargs from 'yargs';
 
 export * from './components'
+export * from './config/dbmigrationsExtension'
+export * from './config/graphbackExtension'
 
 if (require.main === module) {
   // eslint-disable-next-line no-unused-expressions
