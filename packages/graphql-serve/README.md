@@ -1,10 +1,12 @@
-# graphql-testx
+# graphql-serve
 
-graphql-testx is a full-featured GraphQL server, based on
+Fully functional GraphQL Server based on Graphback CRUD Specification
+
+graphql-serve is a full-featured GraphQL server, based on
 [Graphback](https://graphback.dev/) and
 [Apollo Server](https://www.apollographql.com/docs/apollo-server/). With the
 minimum configuration required, you have a server ready for testing GraphQL
-client applications or libraries. Unlike mocking alternatives, graphql-testx
+client applications or libraries. Unlike mocking alternatives, graphql-serve
 offers persistent data between queries and mutation using in-memory SQLite
 database.
 
@@ -17,13 +19,13 @@ database.
 Using npm:
 
 ```
-npm install graphql-testx
+npm install graphql-serve
 ```
 
 or yarn:
 
 ```
-yarn add graphql-testx
+yarn add graphql-serve
 ```
 
 ### Usage
@@ -56,35 +58,13 @@ Under to hood we use Graphback to parse the Type Definitions/Data Model and
 generate the GraphQL schema and resolvers. See the
 [Graphback Docs on Data Model Definition](https://graphback.dev/docs/datamodel)
 
-### Create the client
 
-graphql-testx doesn't provide any graphql client, which means that you can use
-the `server.httpUrl()` graphql endpoint with your preferred client or your own
-developed client.
+## Extension to GraphQL TestX
 
-### What's next?
+GraphQL serve is based on GraphQL-TestX:
+https://github.com/aerogear/graphql-testx
 
-Going throw the [Examples](#examples) is the best way to start, we have
-different examples that shows how to use **graphql-testx** using different
-graphql clients and javascript test frameworks.
 
-## Examples
-
-- Testing **Apollo Client** library with **mocha**
-
-  [graphql-testx-apollo-client-example](./examples/apollo-client)
-
-- Testing **Offix** library with **Jest**
-
-  [graphql-testx-offix-example](./examples/offix)
-
-- Testing generic application with **Karma**
-
-  [graphql-testx-karma-example](./examples/karma)
-
-## Contributing
-
-Read our [contributing guide](CONTRIBUTING.md) if you're looking to contribute.
 
 ## Documentation
 
@@ -212,9 +192,6 @@ Return the websocket url to the GraphQL server after starting the server.
 await server.start();
 console.log(`Running at ${await server.wsUrl()}`);
 ```
-
-The websocket url can be used to subscribe to the server like in this example:
-[./examples/apollo-client/test/subscriptions.spec.ts](./examples/apollo-client/test/subscriptions.spec.ts)
 
 #### `cleanDatabase(): Promise<string>`
 

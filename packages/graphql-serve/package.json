@@ -1,6 +1,7 @@
 {
   "name": "graphql-serve",
   "version": "0.3.0",
+  "private": true,
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
@@ -8,8 +9,6 @@
     "build": "tsc",
     "test": "ava",
     "lint": "eslint --ext js,ts .",
-    "pretty": "prettier --check '**/*'",
-    "prettify": "prettier --write '**/*'",
     "print-schema": "ts-node bin/printSchema.ts"
   },
   "devDependencies": {
@@ -23,7 +22,6 @@
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.9.0",
     "graphql-request": "1.8.2",
-    "prettier": "1.19.1",
     "ts-node": "8.6.2",
     "typescript": "3.7.5"
   },
@@ -33,7 +31,6 @@
     "@graphback/core": "0.10.2",
     "@graphback/runtime": "0.10.2",
     "apollo-server-express": "2.9.16",
-    "axios": "0.19.2",
     "express": "4.17.1",
     "get-port": "5.1.1",
     "graphql": "14.6.0",

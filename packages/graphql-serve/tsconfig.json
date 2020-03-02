@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src/**/*", "bin/*", "tests/*"],
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": false,
+    "declarationDir": "types",
+    "esModuleInterop": true,
+    "lib": [
+      "esnext.asynciterable",
+      "es2015",
+      "es2018.promise",
+      "dom",
+      "es2016"
+    ]
+  }
+}
