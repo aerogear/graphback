@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "strict": false
-  },
-  "extends": "../../tsconfig.json",
-  "include": ["test/**/*.ts"],
-  "exclude": []
-}

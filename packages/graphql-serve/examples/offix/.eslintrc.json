@@ -1,5 +1,0 @@
-{
-  "parserOptions": {
-    "project": "./examples/offix/tsconfig.json"
-  }
-}
