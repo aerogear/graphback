@@ -1,6 +1,6 @@
 {
   "name": "graphql-migrations",
-  "version": "0.11.0-rc3",
+  "version": "0.11.0-rc4.0",
   "description": "Create & migrate Databases from GraphQL Schema",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -28,7 +28,7 @@
     ]
   },
   "dependencies": {
-    "@graphback/core": "0.11.0-rc3",
+    "@graphback/core": "0.11.0-rc4.0",
     "@graphql-inspector/core": "1.27.0",
     "case": "1.6.2",
     "chalk": "3.0.0",
