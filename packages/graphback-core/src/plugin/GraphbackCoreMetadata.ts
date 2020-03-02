@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
+import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
 import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
@@ -23,7 +24,7 @@ export class GraphbackCoreMetadata {
 
     private supportedCrudMethods: GraphbackCRUDGeneratorConfig
     private schema: GraphQLSchema;
-    private models: ModelDefinition[]
+    private models: ModelDefinition[];
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
@@ -42,14 +43,17 @@ export class GraphbackCoreMetadata {
      * Get Graphback Models - GraphQL Types with additional CRUD configuration
      */
     public getModelDefinitions() {
-
         //Contains map of the models with their underlying CRUD configuration
         this.models = [];
         //Get actual user types 
         const modelTypes = this.getGraphQLTypesWithModel();
+
+        const relationshipBuilder = new RelationshipMetadataBuilder(modelTypes);
+        relationshipBuilder.build();
+
         for (const modelType of modelTypes) {
-            const model = this.buildModel(modelType)
-            this.models.push(model)
+            const model = this.buildModel(modelType, relationshipBuilder.getModelRelationships(modelType.name));
+            this.models.push(model);
         }
 
         return this.models;
@@ -68,11 +72,11 @@ export class GraphbackCoreMetadata {
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
     }
 
-    private buildModel(modelType: GraphQLObjectType) {
+    private buildModel(modelType: GraphQLObjectType, relationships: FieldRelationshipMetadata[]): ModelDefinition {
         let crudOptions = parseAnnotations('crud', modelType.description)
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
-        
-        return { graphqlType: modelType, crudOptions };
+
+        return { graphqlType: modelType, relationships, crudOptions };
     }
 }

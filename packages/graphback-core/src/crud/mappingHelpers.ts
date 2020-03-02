@@ -1,6 +1,9 @@
-import { GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
+import { parseRelationshipAnnotation } from '../relationships/relationshipHelpers';
+import { transformForeignKeyName, getPrimaryKey } from '../db';
+import { getBaseType } from '../utils/getBaseType';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO is is esential to document this element
@@ -42,6 +45,20 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
   return `${action}${finalName}`
 }
 
+export function getInputFieldName(field: GraphQLField<any, any>): string {
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
+
+  if (!relationshipAnnotation) {
+    return field.name;
+  }
+
+  if (relationshipAnnotation.kind === 'oneToMany') {
+    throw new Error('Not inputtable field!');
+  }
+
+  return relationshipAnnotation.key || transformForeignKeyName(field.name);
+}
+
 /**
  * Provides naming patterns for CRUD subscriptions 
  */
@@ -79,6 +96,12 @@ export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectTyp
   return modelTypes.filter(isModelType);
 }
 
+export function isInputField(field: GraphQLField<any, any>): boolean {
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
+
+  return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
+}
+
 //tslint:disable-next-line: no-reserved-keywords
 export function getRelationFieldName(field: any, type: any) {
   let fieldName: string;
@@ -96,4 +119,16 @@ export function getRelationFieldName(field: any, type: any) {
   }
 
   return fieldName;
+}
+
+
+export function getInputFieldType(field: GraphQLField<any, any>): GraphQLNamedType {
+  let fieldType = getBaseType(field.type);
+
+  if (isObjectType(fieldType) && isModelType(fieldType)) {
+    const idField = getPrimaryKey(fieldType);
+    fieldType = getBaseType(idField.type);
+  }
+
+  return getNullableType(fieldType);
 }

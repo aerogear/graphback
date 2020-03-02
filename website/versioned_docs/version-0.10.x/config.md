@@ -37,7 +37,7 @@ Changing these flags and performing `generate`, regenerates your `schema` and `r
 ## Changing configuration for the type
 
 Generator config applies the config to all the types in your schema. 
-Graphback allows you to change these for any single type using [`graphql-annotations`](https://github.com/Akryum/graphql-annotations).
+Graphback allows you to change these for any single type using [`graphql-metadata`](https://github.com/Akryum/graphql-metadata).
 
 
 

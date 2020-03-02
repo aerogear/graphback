@@ -74,7 +74,7 @@ export class OffixPlugin extends GraphbackPlugin {
 
             // Diff queries
             if (this.pluginConfig.generateDeltaQueries) {
-                const diffQuery = `${model.graphqlType.name  }Delta`
+                const diffQuery = `${model.graphqlType.name}Delta`
                 schemaComposer.Query.addFields({
                     [diffQuery]: `[${model.graphqlType.name}]!`
                 })

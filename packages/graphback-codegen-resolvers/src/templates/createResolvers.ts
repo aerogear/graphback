@@ -1,8 +1,31 @@
-import { getFieldName, getSubscriptionName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
+import { getFieldName, getSubscriptionName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition, FieldRelationshipMetadata, getPrimaryKey } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import { GeneratorResolversFormat } from '../GeneratorResolversFormat';
-import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
- 
+import { createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, oneToOneTemplate, updatedSubscriptionTemplate, updateTemplate, oneToManyTemplate } from './resolverTemplates';
+
+function createRelationshipResolvers(relationships: FieldRelationshipMetadata[]) {
+    if (!relationships.length) {
+        return undefined;
+    }
+
+    const resolvers = {};
+    for (const relationship of relationships) {
+        let resolverOutput: string;
+        const relationTypeName = relationship.relationType.name;
+        const relationIdField = getPrimaryKey(relationship.relationType);
+
+        if (relationship.kind === 'oneToMany') {
+            resolverOutput = oneToManyTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
+        } else if (relationship.kind === 'oneToOne' || relationship.kind === 'manyToOne') {
+            resolverOutput = oneToOneTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
+        }
+
+        resolvers[relationship.ownerField.name] = resolverOutput;
+    }
+
+    return resolvers;
+}
+
 export function createMutations(modelType: GraphQLObjectType, crudOptions: GraphbackCRUDGeneratorConfig) {
     const mutations = {};
 
@@ -65,7 +88,13 @@ export function createSubscriptions(modelType: GraphQLObjectType, crudOptions: G
 export function generateCRUDResolversFunctions(models: ModelDefinition[]): GeneratorResolversFormat {
     const outputResolvers = { Query: {}, Mutation: {}, Subscription: {} };
 
-    for (const { graphqlType, crudOptions } of models) {
+    for (const { graphqlType, crudOptions, relationships } of models) {
+        const relationResolvers = createRelationshipResolvers(relationships);
+
+        if (relationResolvers) {
+            outputResolvers[graphqlType.name] = relationResolvers;
+        }
+
         const newQueries = createQueries(graphqlType, crudOptions);
         outputResolvers.Query = { ...outputResolvers.Query, ...newQueries };
         const newMutations = createMutations(graphqlType, crudOptions);
@@ -73,6 +102,6 @@ export function generateCRUDResolversFunctions(models: ModelDefinition[]): Gener
         const newSubs = createSubscriptions(graphqlType, crudOptions);
         outputResolvers.Subscription = { ...outputResolvers.Subscription, ...newSubs };
     }
-    
+
     return outputResolvers;
 }
