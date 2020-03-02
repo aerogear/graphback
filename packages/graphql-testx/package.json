@@ -8,7 +8,7 @@
     "build": "tsc",
     "test": "ava",
     "postinstall": "cd examples/apollo-client && yarn install && cd ../karma && yarn install && cd ../offix && yarn install",
-    "posttest": "cd examples/apollo-client && yarn test && cd ../karma && yarn test && cd ../offix && yarn test",
+    "posttest": "yarn build && cd examples/apollo-client && yarn test && cd ../karma && yarn test && cd ../offix && yarn test",
     "lint": "eslint --ext js,ts .",
     "pretty": "prettier --check '**/*'",
     "prettify": "prettier --write '**/*'",

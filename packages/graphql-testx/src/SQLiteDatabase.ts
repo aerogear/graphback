@@ -4,6 +4,7 @@ import {
   DropCreateDatabaseAlways,
   migrateDBUsingSchema
 } from "graphql-migrations";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import knexCleaner from "knex-cleaner";
 import { DatabaseSchema, Database, DatabaseImportData } from "./Database";
