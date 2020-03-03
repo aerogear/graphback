@@ -12,7 +12,7 @@ import { buildSchema } from 'graphql';
  * It will be part of of the integration tests
  */
 export const createRuntime = async (graphbackConfigOpts: any) => {
-  const db = await createDB();
+  const db = createDB();
   const graphbackConfig = graphbackConfigOpts;
   const dbmigrationsConfig = migrateConfig;
   const schemaText = loadSchema(graphbackConfig.model);
