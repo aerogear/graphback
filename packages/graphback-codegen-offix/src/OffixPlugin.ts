@@ -29,7 +29,7 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "OffixPlugin";
 
 /**
  * Ofix plugin
- * 
+ *
  * Plugin is enabled by """ @datasync """ annotation
  * It will add version field to the schema and also generate diffQueries
  */

@@ -10,6 +10,7 @@ export * from './plugin/GraphbackGlobalConfig'
 export * from './plugin/GraphbackCRUDGeneratorConfig';
 export * from './plugin/ModelDefinition'
 export * from './plugin/GraphbackCoreMetadata'
+export * from './plugin/SchemaComposer';
 export * from './relationships/RelationshipMetadataBuilder';
 export * from './relationships/relationshipHelpers';
 export * from './db';

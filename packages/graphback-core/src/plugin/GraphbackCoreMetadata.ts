@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql'
+import { buildSchema, GraphQLObjectType, GraphQLSchema, print } from 'graphql';
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
 import { SchemaComposer } from 'graphql-compose';
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
@@ -6,6 +6,7 @@ import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
+import { SchemaCompType } from './SchemaComposer';
 
 const defaultCRUDGeneratorConfig = {
     "create": true,
@@ -23,11 +24,11 @@ const defaultCRUDGeneratorConfig = {
  */
 export class GraphbackCoreMetadata {
 
-    private supportedCrudMethods: GraphbackCRUDGeneratorConfig
-    private schemaComposer: SchemaComposer<any>;
+    private supportedCrudMethods: GraphbackCRUDGeneratorConfig;
+    private schemaComposer: SchemaCompType;
     private models: ModelDefinition[];
 
-    public constructor(globalConfig: GraphbackGlobalConfig, schemaComposer: SchemaComposer<any>) {
+    public constructor(globalConfig: GraphbackGlobalConfig, schemaComposer: SchemaCompType) {
         this.schemaComposer = schemaComposer;
         this.supportedCrudMethods = Object.assign(defaultCRUDGeneratorConfig, globalConfig.crudMethods)
     }
@@ -35,10 +36,6 @@ export class GraphbackCoreMetadata {
     public getSchemaComposer() {
         return this.schemaComposer;
     }
-
-    // public setSchema(newSchema: GraphQLSchema) {
-    //     this.schema = newSchema;
-    // }
 
     /**
      * Get Graphback Models - GraphQL Types with additional CRUD configuration
@@ -68,7 +65,8 @@ export class GraphbackCoreMetadata {
      * @param schema
      */
     public getGraphQLTypesWithModel(): GraphQLObjectType[] {
-        const types = getModelTypesFromSchema(this.schemaComposer.buildSchema())
+        const schema = this.schemaComposer.buildSchema();
+        const types = getModelTypesFromSchema(schema);
 
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
     }
