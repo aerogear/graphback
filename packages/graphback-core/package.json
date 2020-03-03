@@ -13,7 +13,7 @@
     "build": "tsc",
     "watch": "tsc -w ",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
-    "test": "ava",
+    "test": "nyc ava",
     "pretest": "yarn build"
   },
   "ava": {
