@@ -1,15 +1,17 @@
 import { ApolloServer, PubSub } from "apollo-server-express";
-import newExpress from "express";
 import {
   GraphbackDataProvider,
-  GraphbackCRUDService,
-  CRUDService,
-  LayeredRuntimeResolverGenerator
+  GraphbackCRUDService
 } from "@graphback/runtime";
-import { InputModelTypeContext } from "@graphback/core";
-import { SchemaGenerator } from "@graphback/codegen-schema";
-import { Server, createServer } from "http";
+import { Server } from "http";
 import getPort from "get-port";
+import cors from "cors"
+import express from "express"
+import http from "http"
+import { createRuntime } from './runtime'
+import { getGraphbackConfig } from "./db";
+import { printSchema } from 'graphql';
+import path from "path";
 
 const ENDPOINT = "/graphql";
 
@@ -45,7 +47,7 @@ export class GraphbackServer {
       }
     }
 
-    this.httpServer.listen({ port });
+    this.httpServer.listen({ port }, () => console.log(`Listening at: ${port}`));
     this.serverPort = port;
   }
 
@@ -92,37 +94,31 @@ export class GraphbackServer {
   }
 }
 
-export async function buildGraphbackServer(
-  context: InputModelTypeContext[],
-  data: GraphbackDataProvider,
-  serviceBuilder?: ServiceBuilder
-): Promise<GraphbackServer> {
-  const schemaGenerator = new SchemaGenerator(context);
-  const schema = schemaGenerator.generate();
+export async function buildGraphbackServer(graphbackConfigOpts?: any) {
+  const app = express();
 
-  const sub = new PubSub();
+  app.use(cors());
 
-  const service: GraphbackCRUDService = serviceBuilder
-    ? await serviceBuilder(data, sub)
-    : new CRUDService(data, sub);
+  if (!graphbackConfigOpts) graphbackConfigOpts = await getGraphbackConfig(path.join(__dirname, ".."));
 
-  const resolverGenerator = new LayeredRuntimeResolverGenerator(
-    context,
-    service
-  );
-  const resolvers = resolverGenerator.generate();
+  // connect to db
+  const runtime = await createRuntime(graphbackConfigOpts);
 
-  const express = newExpress();
+  const apolloConfig = {
+    typeDefs: printSchema(runtime.schema),
+    resolvers: runtime.resolvers,
+    playground: true,
+    resolverValidationOptions: {
+      requireResolversForResolveType: false
+    }
+  }
 
-  const apollo = new ApolloServer({
-    typeDefs: schema,
-    resolvers: resolvers
-  });
+  const apolloServer = new ApolloServer(apolloConfig);
 
-  apollo.applyMiddleware({ app: express, path: ENDPOINT });
+  apolloServer.applyMiddleware({ app });
 
-  const httpServer = createServer(express);
-  apollo.installSubscriptionHandlers(httpServer);
+  const httpServer = http.createServer(app);
+  apolloServer.installSubscriptionHandlers(httpServer);
 
-  return new GraphbackServer(httpServer, schema);
+  return new GraphbackServer(httpServer, printSchema(runtime.schema));
 }
