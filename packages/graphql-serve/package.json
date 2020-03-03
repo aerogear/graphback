@@ -26,10 +26,10 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@graphback/codegen-client": "0.10.2",
-    "@graphback/codegen-schema": "0.10.2",
-    "@graphback/core": "0.10.2",
-    "@graphback/runtime": "0.10.2",
+    "@graphback/codegen-client": "0.11.0-rc4",
+    "@graphback/codegen-schema": "0.11.0-rc4",
+    "@graphback/core": "0.11.0-rc4",
+    "@graphback/runtime": "0.11.0-rc4",
     "apollo-server-express": "2.10.1",
     "express": "4.17.1",
     "get-port": "5.1.1",
@@ -41,7 +41,7 @@
     "sqlite3": "4.1.1"
   },
   "bin": {
-    "print-schema": "./dist/bin/printSchema.js"
+    "gqlserve": "./dist/bin/serve.js"
   },
   "ava": {
     "files": [

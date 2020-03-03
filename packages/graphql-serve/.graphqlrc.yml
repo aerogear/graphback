@@ -1,0 +1,22 @@
+schema: ./server/src/schema/*.graphql
+documents: ./client/src/graphql/**/*.graphql
+extensions:
+  # Graphback configuration
+  graphback:
+    ##  Input schema
+    model: ./model
+    ## Global configuration for CRUD generator
+    crud:
+      create: true
+      update: true
+      findAll: true
+      find: true
+      delete: true
+      subCreate: true
+      subUpdate: true
+      subDelete: true
+    ## Knex DB Migration config
+  dbmigrations:
+    ## See knex.js for db specific config format
+    client: sqlite3
+    connection: ':memory:'
