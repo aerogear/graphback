@@ -1,10 +1,11 @@
-const typeMap = {
+const knexColumnTypeMap = {
   bigIncrements: 'bigInteger',
   increments: 'integer'
 };
 
+// eslint-disable-next-line import/no-default-export
 export default function(colType: string) {
-  const knexType = typeMap[colType];
+  const knexType = knexColumnTypeMap[colType];
 
   return knexType || colType;
 }
