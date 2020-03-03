@@ -1,13 +1,14 @@
 import { GraphQLSchema } from "graphql";
 import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
+import { SchemaComposer } from 'graphql-compose';
 
 /**
  * Graphback plugin interface
- * Plugins are base for every graphback generator and schema transformers. 
+ * Plugins are base for every graphback generator and schema transformers.
  * See documentation for the complete list of the plugins.
- * 
+ *
  * Plugins can:
- * 
+ *
  * - Modify the schema
  * - Create resources like files, db tables etc.
  * - Perform some in memory operations based on configuration
@@ -17,11 +18,11 @@ export abstract class GraphbackPlugin {
      * Performs transformation on the schema and returns target schema
      * Implementations should extend this method if they wish to apply some changes
      * to schema. Otherwise unchanged schema should be returned
-     * 
+     *
      * @param metadata - metadata object containing schema
      */
-    public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        return metadata.getSchema();
+    public transformSchema(metadata: GraphbackCoreMetadata): SchemaComposer<any> {
+        return metadata.getSchemaComposer()
     }
 
     protected logWarning(message: string): void {

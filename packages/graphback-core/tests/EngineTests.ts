@@ -1,7 +1,8 @@
-//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { readFileSync } from 'fs';
 import test, { ExecutionContext } from 'ava';
 import { buildSchema, print } from 'graphql';
+import { SchemaComposer } from 'graphql-compose';
+import { stripAnnotations } from 'graphql-metadata';
 import { GraphbackCoreMetadata, GraphbackPlugin, GraphbackPluginEngine } from '../src'
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -18,11 +19,11 @@ class TestPlugin extends GraphbackPlugin {
     this.generateCallback = generateCallback;
   }
 
-  public transformSchema(metadata: GraphbackCoreMetadata) {
-    const schema = metadata.getSchema();
-    schema.getQueryType().description = 'test';
+  public transformSchema(metadata: GraphbackCoreMetadata): SchemaComposer<any> {
+    const schemaComposer = metadata.getSchemaComposer();
+    schemaComposer.Query.setDescription('test');
 
-    return schema;
+    return schemaComposer;
   }
 
   /**
@@ -49,8 +50,7 @@ test('Test plugin engine', async (t: ExecutionContext) => {
     "delete": true,
   }
 
-  let engine = new GraphbackPluginEngine(schemaText, { crudMethods: {} });
-  engine = new GraphbackPluginEngine(buildSchema(schemaText), { crudMethods: crudMethods });
+  const engine = new GraphbackPluginEngine(new SchemaComposer(buildSchema(schemaText)), { crudMethods: crudMethods });
   t.plan(6);
   t.throws(engine.createResources)
   const plugin = new TestPlugin((callbackModel: any) => {
@@ -64,5 +64,5 @@ test('Test plugin engine', async (t: ExecutionContext) => {
 
   const printedModels = model.getModelDefinitions().map((element: any) => print(element.graphqlType.astNode))
   t.snapshot(printedModels);
-  t.true(model.getSchema().getQueryType().description === 'test');
+  t.true(model.getSchemaComposer().Query.getDescription() === 'test');
 });

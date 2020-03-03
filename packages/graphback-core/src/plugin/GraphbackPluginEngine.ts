@@ -1,5 +1,5 @@
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { schemaComposer } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose';
 import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
 import { GraphbackPlugin } from './GraphbackPlugin';
@@ -21,18 +21,12 @@ export class GraphbackPluginEngine {
     private plugins: GraphbackPlugin[];
     private metadata: GraphbackCoreMetadata;
 
-    public constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
+    public constructor(schemaComposer: SchemaComposer<any>, config: GraphbackGlobalConfig) {
         this.plugins = [];
-        if (!schema) {
+        if (!schemaComposer) {
             throw new Error("Plugin engine requires schema");
         }
-        let graphQLSchema;
-        if (typeof schema === "string") {
-            graphQLSchema = buildSchema(schema);
-        } else {
-            graphQLSchema = schema;
-        }
-        this.metadata = new GraphbackCoreMetadata(config, graphQLSchema);
+        this.metadata = new GraphbackCoreMetadata(config, schemaComposer);
     }
 
     public registerPlugin(...plugins: GraphbackPlugin[]): void {
@@ -40,7 +34,7 @@ export class GraphbackPluginEngine {
     }
 
     public createResources(): GraphbackCoreMetadata {
-        this.createSchema();
+        // this.createSchema();
         //Save schema and all files
         for (const plugin of this.plugins) {
             plugin.createResources(this.metadata);
@@ -49,17 +43,17 @@ export class GraphbackPluginEngine {
         return this.metadata;
     }
 
-    public createSchema(): GraphbackCoreMetadata {
-        if (this.plugins.length === 0) {
-            throw new Error("GraphbackEngine: No Graphback plugins registered")
-        }
-        //We need to apply all required changes to the schema we need
-        //This is to ensure that every plugin can add changes to the schema
-        for (const plugin of this.plugins) {
-          const newSchema = schemaComposer.merge(this.metadata.getSchema());
-          this.metadata.setSchema(newSchema.buildSchema());
-        }
-
-        return this.metadata;
-    }
+    // public createSchema(): GraphbackCoreMetadata {
+    //     if (this.plugins.length === 0) {
+    //         throw new Error("GraphbackEngine: No Graphback plugins registered")
+    //     }
+    //     //We need to apply all required changes to the schema we need
+    //     //This is to ensure that every plugin can add changes to the schema
+    //     for (const plugin of this.plugins) {
+    //       plugin.transformSchema(this.metadata);
+    //       this.metadata.setSchema(newSchema);
+    //     }
+    //
+    //     return this.metadata;
+    // }
 }
