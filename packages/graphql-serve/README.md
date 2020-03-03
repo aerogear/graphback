@@ -43,7 +43,7 @@ yarn add graphql-serve
 ### Usage
 
 
-#### gqlserve
+### gqlserve
 
 The gqlserve command needs at least a single `{putAnythingHere}.graphql` data model file in order to setup a working GraphQL server. Here is an example model file:
 
