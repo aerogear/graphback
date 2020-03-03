@@ -41,7 +41,8 @@
     "sqlite3": "4.1.1"
   },
   "bin": {
-    "gqlserve": "./dist/bin/serve.js"
+    "gqlserve": "./dist/bin/serve.js",
+    "printSchema": "./dist/bin/printSchema.js"
   },
   "ava": {
     "files": [
