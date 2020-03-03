@@ -1,4 +1,4 @@
-import test, { TestInterface } from 'ava';
+import test from 'ava';
 
 
 
