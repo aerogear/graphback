@@ -8,10 +8,9 @@ import getPort from "get-port";
 import cors from "cors"
 import express from "express"
 import http from "http"
-import { createRuntime } from './runtime'
-import { getGraphbackConfig } from "./db";
+import { createRuntime } from './runtime';
+import { GraphbackServerConfig } from "./GraphbackServerConfig";
 import { printSchema } from 'graphql';
-import path from "path";
 
 const ENDPOINT = "/graphql";
 
@@ -94,12 +93,10 @@ export class GraphbackServer {
   }
 }
 
-export async function buildGraphbackServer(graphbackConfigOpts?: any) {
+export async function buildGraphbackServer(graphbackConfigOpts: GraphbackServerConfig): Promise<GraphbackServer> {
   const app = express();
 
   app.use(cors());
-
-  if (!graphbackConfigOpts) graphbackConfigOpts = await getGraphbackConfig(path.join(__dirname, ".."));
 
   // connect to db
   const runtime = await createRuntime(graphbackConfigOpts);
