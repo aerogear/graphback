@@ -30,7 +30,7 @@
     "@graphback/codegen-schema": "0.11.0-rc5",
     "@graphback/core": "0.11.0-rc5",
     "@graphback/runtime": "0.11.0-rc5",
-    "apollo-server-express": "2.10.1",
+    "apollo-server-express": "2.11.0",
     "express": "4.17.1",
     "get-port": "5.1.1",
     "graphql": "14.6.0",
