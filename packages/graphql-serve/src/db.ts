@@ -25,7 +25,7 @@ export const migrateConfig = {
  * Creates knex based database using migration configuration
  * For production use please use different source of the configuration
  */
-export const createDB = async () => {
+export const createDB = () => {
 
     const dbmigrations = migrateConfig;
 
