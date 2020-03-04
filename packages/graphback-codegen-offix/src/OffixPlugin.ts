@@ -1,7 +1,6 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, getFieldName, GraphbackOperationType } from '@graphback/core'
-import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { GraphQLSchema, GraphQLObjectType, GraphQLInt, GraphQLInputObjectType, GraphQLInputObjectTypeConfig, GraphQLField, print, getNullableType, GraphQLNonNull, GraphQLList, printSchema } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName} from '@graphback/core'
+import { GraphQLSchema } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 
 /**
