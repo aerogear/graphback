@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList } from 'graphql';
+import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, isScalarType } from 'graphql';
 import { isModelType } from '../crud';
 import { getBaseType } from '../utils/getBaseType';
 import { transformForeignKeyName } from '../db';
@@ -71,6 +71,8 @@ export class RelationshipMetadataBuilder {
 
         for (let field of fields) {
             const annotation = parseRelationshipAnnotation(field.description);
+
+            this.validateRelationshipField(modelType.name, field);
 
             const relationType = getBaseType(field.type) as GraphQLObjectType;
 
@@ -249,7 +251,7 @@ export class RelationshipMetadataBuilder {
     }
 
     private validateOneToManyRelationship(modelName: string, field: GraphQLField<any, any>) {
-        this.validateField(modelName, field);
+        this.validateRelationshipField(modelName, field);
 
         const oneToManyMetadata = parseRelationshipAnnotation(field.description);
 
@@ -257,8 +259,8 @@ export class RelationshipMetadataBuilder {
             throw new Error(`${modelName}.${field.name} should be a @oneToMany field, but has a @${oneToManyMetadata.kind} annotation`);
         }
 
-        const relationType = getBaseType(field.type) as GraphQLObjectType;
-        const relationField = relationType.getFields()[oneToManyMetadata.field];
+        const relationModelType = getBaseType(field.type) as GraphQLObjectType;
+        const relationField = relationModelType.getFields()[oneToManyMetadata.field];
 
         // field will be generated, no need to validate
         if (!relationField) {
@@ -266,24 +268,24 @@ export class RelationshipMetadataBuilder {
         }
 
         if (hasListType(relationField.type)) {
-            throw new Error(`${relationType.name}.${relationField.name} is a list type, but should be '${relationField.name}: ${modelName}'.`)
+            throw new Error(`${relationModelType.name}.${relationField.name} is a list type, but should be '${relationField.name}: ${modelName}'.`)
         }
 
         const relationFieldBaseType = getBaseType(relationField.type);
 
         if (!isObjectType(relationFieldBaseType) || relationFieldBaseType.name !== modelName) {
-            throw new Error(`${modelName}.${field.name} relationship field maps to ${relationType.name}.${relationField.name} (${relationFieldBaseType.name} type) which should be ${modelName} type.`);
+            throw new Error(`${modelName}.${field.name} relationship field maps to ${relationModelType.name}.${relationField.name} (${relationFieldBaseType.name} type) which should be ${modelName} type.`);
         }
 
         const manyToOneMetadata = parseRelationshipAnnotation(relationField.description);
 
         if (manyToOneMetadata && oneToManyMetadata.key && manyToOneMetadata.key && oneToManyMetadata.key !== manyToOneMetadata.key) {
-            throw new Error(`${modelName}.${field.name} and ${relationType.name}.${relationField.name} 'key' annotations are different. Ensure both are the same, or remove one so that it can be generated.`);
+            throw new Error(`${modelName}.${field.name} and ${relationModelType.name}.${relationField.name} 'key' annotations are different. Ensure both are the same, or remove one so that it can be generated.`);
         }
     }
 
     private validateManyToOneField(modelName: string, field: GraphQLField<any, any>) {
-        this.validateField(modelName, field);
+        this.validateRelationshipField(modelName, field);
 
         const metadata = parseRelationshipAnnotation(field.description);
 
@@ -293,7 +295,7 @@ export class RelationshipMetadataBuilder {
     }
 
     private validateOneToOneRelationship(modelName: string, field: GraphQLField<any, any>) {
-        this.validateField(modelName, field);
+        this.validateRelationshipField(modelName, field);
 
         const metadata = parseRelationshipAnnotation(field.description);
 
@@ -320,7 +322,7 @@ export class RelationshipMetadataBuilder {
         }
     }
 
-    private validateField(modelName: string, field: GraphQLField<any, any>) {
+    private validateRelationshipField(modelName: string, field: GraphQLField<any, any>) {
         const relationshipAnnotation = parseRelationshipAnnotation(field.description);
         if (!relationshipAnnotation) {
             throw new Error(`${modelName}.${field.name}`)
