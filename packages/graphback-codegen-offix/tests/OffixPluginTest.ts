@@ -18,7 +18,7 @@ test('Test snapshot config gql', async (t: ExecutionContext) => {
     "subDelete": true
   }
 
-  const schemaGenerator = new OffixPlugin({ outputPath: './tmp' })
+  const schemaGenerator = new OffixPlugin({ outputPath: './tmp', generateDeltaQueries: true })
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))
