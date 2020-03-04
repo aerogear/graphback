@@ -14,6 +14,7 @@
     "watch": "tsc -w ",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
     "test": "nyc ava",
+    "test:watch": "ava --watch",
     "pretest": "yarn build"
   },
   "ava": {
