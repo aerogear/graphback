@@ -107,7 +107,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       result = await this.db.collection(this.collectionName).find(query).toArray();
     }
 
-     if (result) {
+    if (result) {
       const resultsById = ids.map((id: string) => result.filter((data: any) => {
         if(data[relationField].toString() == id.toString()){
           return {

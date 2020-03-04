@@ -14,22 +14,22 @@ export type Scalars = {
 export type Comment = {
    __typename?: 'Comment',
   id: Scalars['ID'],
-  title: Scalars['String'],
+  text: Scalars['String'],
   description: Scalars['String'],
-  note: Note,
+  noteId?:Scalars['String']
 };
 
 export type CommentFilter = {
   id?: Maybe<Scalars['ID']>,
-  title?: Maybe<Scalars['String']>,
+  text?: Maybe<Scalars['String']>,
   description?: Maybe<Scalars['String']>,
   noteId?: Maybe<Scalars['ID']>,
 };
 
 export type CommentInput = {
-  title: Scalars['String'],
+  text: Scalars['String'],
   description: Scalars['String'],
-  noteId: Scalars['ID'],
+  noteId: Scalars['String'],
 };
 
 export type Mutation = {
@@ -67,7 +67,7 @@ export type Note = {
   id: Scalars['ID'],
   title: Scalars['String'],
   description: Scalars['String'],
-  comment?: Maybe<Array<Comment>>,
+  comments?: Maybe<Array<Comment>>,
 };
 
 export type NoteFilter = {
@@ -100,8 +100,9 @@ export type QueryFindCommentsArgs = {
 };
 
 export type CreateCommentMutationVariables = {
-  title: Scalars['String'],
-  description: Scalars['String']
+  text: Scalars['String'],
+  description: Scalars['String'],
+  noteId:Scalars['String']
 };
 
 
@@ -129,7 +130,7 @@ export type CreateNoteMutation = (
 
 export type UpdateCommentMutationVariables = {
   id: Scalars['ID'],
-  title: Scalars['String'],
+  text: Scalars['String'],
   description: Scalars['String']
 };
 
@@ -181,7 +182,7 @@ export type FindAllNotesQuery = (
 
 export type FindCommentsQueryVariables = {
   id: Scalars['ID'],
-  title: Scalars['String'],
+  text: Scalars['String'],
   description: Scalars['String']
 };
 
@@ -211,18 +212,18 @@ export type FindNotesQuery = (
 
 export type CommentFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'title' | 'description'>
+  & Pick<Comment, 'id' | 'text' | 'description' | 'noteId'>
 );
 
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
-  & Pick<Note, 'id' | 'title' | 'description'>
+  & Pick<Note, 'id' | 'title' | 'description' | 'comments'>
 );
 
 export const CommentFieldsFragmentDoc = gql`
     fragment CommentFields on Comment {
   id
-  title
+  text
   description
 }
     `;
@@ -231,11 +232,16 @@ export const NoteFieldsFragmentDoc = gql`
   id
   title
   description
+  comments{
+    id
+    text
+    description
+  }
 }
     `;
 export const CreateCommentDocument = gql`
-    mutation createComment($title: String!, $description: String!) {
-  createComment(input: {title: $title, description: $description}) {
+    mutation createComment($text: String!, $description: String!,$noteId:ID!) {
+  createComment(input: {text: $text, description: $description,noteId:$noteId}) {
     ...CommentFields
   }
 }
@@ -255,8 +261,9 @@ export type CreateCommentMutationFn = ApolloReactCommon.MutationFunction<CreateC
  * @example
  * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
  *   variables: {
- *      title: // value for 'title'
+ *      text: // value for 'title'
  *      description: // value for 'description'
+ *      noteId://value for 'noteId'
  *   },
  * });
  */
@@ -300,8 +307,8 @@ export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutati
 export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
 export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
 export const UpdateCommentDocument = gql`
-    mutation updateComment($id: ID!, $title: String!, $description: String!) {
-  updateComment(id: $id, input: {title: $title, description: $description}) {
+    mutation updateComment($id: ID!, $text: String!, $description: String!) {
+  updateComment( input: {id:$id,text: $title, description: $description}) {
     ...CommentFields
   }
 }
@@ -322,7 +329,7 @@ export type UpdateCommentMutationFn = ApolloReactCommon.MutationFunction<UpdateC
  * const [updateCommentMutation, { data, loading, error }] = useUpdateCommentMutation({
  *   variables: {
  *      id: // value for 'id'
- *      title: // value for 'title'
+ *      text: // value for 'text'
  *      description: // value for 'description'
  *   },
  * });
@@ -335,7 +342,7 @@ export type UpdateCommentMutationResult = ApolloReactCommon.MutationResult<Updat
 export type UpdateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
 export const UpdateNoteDocument = gql`
     mutation updateNote($id: ID!, $title: String!, $description: String!) {
-  updateNote(id: $id, input: {title: $title, description: $description}) {
+  updateNote( input: {id: $id,title: $title, description: $description}) {
     ...NoteFields
   }
 }
@@ -501,3 +508,54 @@ export function useFindNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
 export type FindNotesLazyQueryHookResult = ReturnType<typeof useFindNotesLazyQuery>;
 export type FindNotesQueryResult = ApolloReactCommon.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
+
+
+
+//Delete comment
+
+export type DeleteCommentMutationVariables = {
+  id: Scalars['ID'],
+};
+
+
+export type DeleteCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteComment: (
+    { __typename?: 'Comment' }
+    & CommentFieldsFragment
+  ) }
+);
+
+
+export const DeleteCommentDocument = gql`
+    mutation deleteComment($id: ID!) {
+      deleteComment( input: {id: $id}) {
+        ...CommentFields
+      }
+}
+    ${CommentFieldsFragmentDoc}`;
+export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
