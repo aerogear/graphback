@@ -46,6 +46,13 @@ export class RelationshipMetadataBuilder {
     }
 
     /**
+     * Get all relationships
+     */
+    public getRelationships() {
+        return this.relationships;
+    }
+
+    /**
      * Get all relationships where the model is the parent.
      * @param modelName 
      */
