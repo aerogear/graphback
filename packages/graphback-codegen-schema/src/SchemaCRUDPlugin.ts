@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLNamedType } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt} from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 
@@ -141,7 +141,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                 return {
                     name: getInputFieldName(field),
                     type: getInputFieldType(field),
-                    description: ''
+                    description: undefined
                 }
             }).reduce((fieldObj: any, { name, type, description }: any) => {
                 fieldObj[name] = { type, description }
