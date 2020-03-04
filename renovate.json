@@ -5,11 +5,14 @@
   ],
   "groupName": "all",
   "ignoreDeps": [
-    "graphback-cli",
     "ora",
     "chalk",
     "ava"
   ],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  }
   "ignorePaths": [
     "**/node_modules/**",
     "**/__tests__/**",
