@@ -12,7 +12,7 @@
   "automerge": true,
   "major": {
     "automerge": false
-  }
+  },
   "ignorePaths": [
     "**/node_modules/**",
     "**/__tests__/**",
