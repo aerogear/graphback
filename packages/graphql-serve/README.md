@@ -43,9 +43,9 @@ yarn add graphql-serve
 ### Usage
 
 
-### gqlserve
+#### gqlserve
 
-The gqlserve command needs at least a single `{putAnythingHere}.graphql` data model file in order to setup a working GraphQL server. Here is an example model file:
+The gqlserve command only needs one or more `*.graphql` data model file(s) in order to setup a working GraphQL server. Here is an example model file:
 
 ```graphql
 """ @model """
@@ -60,14 +60,15 @@ type Note {
 
 Assuming you have created your various `*.graphql` data model files in the `models` directory, to automatically generate resolvers and start a GraphQL server listening on port 8080 do the following:
 
-For npm:
 ```
 $ gqlserve --model=models --port=8080
 ```
 
-For yarn:
+
+If you only need to see the generated GraphQL Schema, use the `--schemaOnly` option:
+
 ```
-$ yarn gqlserve --model=models --port=8080
+$ gqlserve --schemaOnly
 ```
 
 This information is also provided with the command itself:
@@ -76,44 +77,23 @@ $ gqlserve --help
 Usage: gqlserve [options]
 
 Options:
-  --version    Show version number                                     [boolean]
-  --model, -m  Specify the models directory                             [string]
-  --port, -p   Specify the port on which to listen on                   [number]
-  -h, --help   Show help                                               [boolean]
+  --version     Show version number                                    [boolean]
+  --model, -m   Specify the models directory                            [string]
+  --port, -p    Specify the port on which to listen on                  [number]
+  --schemaOnly  Only show GraphQL schema generated from data models    [boolean]
+  -h, --help    Show help                                              [boolean]
 
 Examples:
-  gqlserve --model=model  generate schema from models in the model directory
-  gqlserve --port=8000    server listens on port 8000
+  gqlserve --model=modeldir  generate schema from models in the "modeldir"
+                             directory
+  gqlserve --port=8000       server listens on port 8000
+  gqlserve --schemaOnly      prints schema and quits
 ```
 
 Under to hood we use Graphback to parse the Type Definitions/Data Model and
 generate the GraphQL schema and resolvers. See the
 [Graphback Docs on Data Model Definition](https://graphback.dev/docs/datamodel)
 
-
-### printSchema
-
-The printSchema command prints what the generated GraphQL Schema of the server would look like.
-
-The `--model` argument works the same way here:
-
-```
-$ printSchema --model=models
-```
-Also:
-
-```
-$ printSchema --help
-Usage: printSchema [options]
-
-Options:
-  --version    Show version number                                     [boolean]
-  --model, -m  Specify the models directory                             [string]
-  -h, --help   Show help                                               [boolean]
-
-Examples:
-  printSchema --model=model  generate schema from models in the model directory
-```
 
 ## Extension to GraphQL TestX
 
