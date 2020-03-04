@@ -48,7 +48,6 @@
     "@graphback/core": "0.11.0-rc5",
     "@graphql-toolkit/common": "0.9.7",
     "@graphql-toolkit/core": "0.9.7",
-    "@graphql-toolkit/schema-merging": "0.9.7",
     "graphql-compose": "7.12.5",
     "graphql-metadata": "0.5.0",
     "pluralize": "8.0.0"
