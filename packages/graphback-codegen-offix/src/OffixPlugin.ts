@@ -1,6 +1,6 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName} from '@graphback/core'
-import { GraphQLSchema } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName } from '@graphback/core'
+import { GraphQLSchema, buildSchema } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 
 /**
@@ -9,21 +9,19 @@ import { SchemaComposer } from 'graphql-compose';
 export interface OffixPluginConfig {
 
     /**
-     * RelativePath for the output files created by generator
+     * RelativePath for the output resolvers created by generator
      */
     outputPath: string
-
-
-    /*
-     * RelativePath for the output files created by generator
-     */
-    // TODO separate annotation for delta queries should be used for more granular support
-    generateDeltaQueries: boolean
 
     /**
      * Delta resolvers format
      */
-    deltaResolverFormat: 'ts' | 'js' | 'graphql',
+    deltaResolverFormat?: 'ts' | 'js' | 'graphql',
+
+    /*
+     * RelativePath for the output files created by generator
+     */
+    generateDeltaQueries?: boolean
 
 }
 
@@ -64,12 +62,17 @@ export class OffixPlugin extends GraphbackPlugin {
                 version: 'Int'
             });
 
-            const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name))
-            if (inputType) {
-                inputType.addFields({
-                    version: 'Int'
-                });
+            try {
+                const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name))
+                if (inputType) {
+                    inputType.addFields({
+                        version: 'Int'
+                    });
+                }
+            } catch (e) {
+                // ignore as we are not guaranteed to have this input type
             }
+
 
             // Diff queries
             if (this.pluginConfig.generateDeltaQueries) {
@@ -80,14 +83,15 @@ export class OffixPlugin extends GraphbackPlugin {
                 schemaComposer.Query.addFieldArgs(diffQuery, {
                     lastSync: 'String!'
                 })
-                // TODO generate delta resolvers
             }
         })
 
-        return schemaComposer.buildSchema()
+        return buildSchema(schemaComposer.toSDL())
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
+        // TODO generate delta resolvers
+        // TODO DataSource support for deltas
         // Schema plugin is going to create schema for us
         // No work to be done
     }
