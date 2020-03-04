@@ -52,7 +52,7 @@ This creates a `noteId` column in the `comment` table. You can also customise th
 ```gql
 type Note {
   """
-  @db.oneToMany: 'commentNote'
+  @oneToMany field: 'commentNote'
   """
   comments: [Comment]
 }

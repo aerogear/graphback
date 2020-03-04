@@ -4,7 +4,7 @@ type Note {
   description: String!
   ## Relationship
   """
-  @db.oneToMany: 'noteComment'
+  @oneToMany field: 'noteComment'
   """
   comment: [Comment]!
 }
