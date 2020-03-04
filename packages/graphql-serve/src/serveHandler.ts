@@ -11,7 +11,7 @@ export const serve = async (): Promise<void> => {
     if (!argv.schemaOnly){
         if (argv.port) {
             const portNumber = argv.port;
-            if (!isNaN(portNumber)) {
+            if (isNaN(portNumber)) {
                 console.log("\nSpecified port number is NaN, terminating...\n");
             } else {
                 console.log("\nStarting server...\n");
