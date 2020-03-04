@@ -79,7 +79,7 @@ export const getRelationshipAnnotationString = (fieldDescription: string = '') =
 
     const filteredDescription = fieldDescription.split('\n').filter(parseRelationshipAnnotation);
 
-    return filteredDescription.join('\n');
+    return filteredDescription.join('\n').trim();
 }
 
 /**
@@ -103,7 +103,7 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
         }
     }
 
-    return descriptionLines.join('\n')
+    return descriptionLines.join('\n').trim();
 }
 
 /**
