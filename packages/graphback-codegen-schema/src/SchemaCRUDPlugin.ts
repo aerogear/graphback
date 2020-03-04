@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt} from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 
@@ -65,8 +65,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
         schema = this.buildSchemaModelRelationships(schema, models);
 
-        
-
         const modelsSchema = this.buildSchemaForModels(models);
         const config = schema.toConfig();
         const modelsConfig = modelsSchema.toConfig();
@@ -75,7 +73,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             ...config,
             ...modelsConfig
         })
-        console.log(printSchema(newSchema))
 
         return newSchema;
     }
