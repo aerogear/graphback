@@ -125,7 +125,7 @@ export class RelationshipMetadataBuilder {
     private createManyToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(fieldName);
         const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', relationFieldName, columnField);
-
+        
         return {
             name: fieldName,
             description: fieldDescription,
@@ -303,29 +303,15 @@ export class RelationshipMetadataBuilder {
             throw new Error(`${modelName}.${field.name} should be a @oneToOne field, but has a ${metadata.kind} annotation`);
         }
 
-        const relationType = getBaseType(field.type) as GraphQLObjectType;
-        const relationField = relationType.getFields()[metadata.field];
-
-        // field will be generated
-        if (!relationField) {
-            return;
-        }
-
-        if (hasListType(relationField.type)) {
-            throw new Error(`${relationType.name}.${relationField.name} is a list type, but should be '${relationField.name}: ${modelName}'.`)
-        }
-
-        const relationFieldBaseType = getBaseType(relationField.type);
-
-        if (!isObjectType(relationFieldBaseType) || relationFieldBaseType.name !== modelName) {
-            throw new Error(`${modelName}.${field.name} relationship field maps to ${relationType.name}.${relationField.name} (${relationFieldBaseType.name} type) which should be ${modelName} object type.`);
+        if (hasListType(field.type)) {
+            throw new Error(`${modelName}.${field.name} is a list type, but should be an object.`)
         }
     }
 
     private validateRelationshipField(modelName: string, field: GraphQLField<any, any>) {
         const relationshipAnnotation = parseRelationshipAnnotation(field.description);
         if (!relationshipAnnotation) {
-            throw new Error(`${modelName}.${field.name}`)
+            throw new Error(`${modelName}.${field.name} is missing a relationship annotation.`)
         }
 
         const fieldBaseType = getBaseType(field.type);
