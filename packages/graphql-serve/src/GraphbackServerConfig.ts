@@ -1,5 +1,5 @@
 import { GraphbackCRUDGeneratorConfig } from "@graphback/core";
-import { getConfig } from "../src";
+import { getConfig } from "./runtime";
 
 export interface GraphbackServerConfig {
     model: string,
@@ -8,7 +8,7 @@ export interface GraphbackServerConfig {
 }
 
 export async function getGraphbackServerConfig(modeldir: string) {
-    const graphbackConfigOpts = {
+    const graphbackConfigOpts: GraphbackServerConfig = {
         //  Default schema
         model: null,
         // Global configuration for CRUD generator
