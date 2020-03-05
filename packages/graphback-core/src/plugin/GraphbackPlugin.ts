@@ -1,6 +1,5 @@
 import { GraphQLSchema } from "graphql";
 import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
-import { SchemaComposer } from 'graphql-compose';
 
 /**
  * Graphback plugin interface
@@ -14,35 +13,35 @@ import { SchemaComposer } from 'graphql-compose';
  * - Perform some in memory operations based on configuration
  */
 export abstract class GraphbackPlugin {
-    /**
-     * Performs transformation on the schema and returns target schema
-     * Implementations should extend this method if they wish to apply some changes
-     * to schema. Otherwise unchanged schema should be returned
-     *
-     * @param metadata - metadata object containing schema
-     */
-    public transformSchema(metadata: GraphbackCoreMetadata): SchemaComposer<any> {
-        return metadata.getSchemaComposer()
-    }
+  /**
+   * Performs transformation on the schema and returns target schema
+   * Implementations should extend this method if they wish to apply some changes
+   * to schema. Otherwise unchanged schema should be returned
+   *
+   * @param metadata - metadata object containing schema
+   */
+  public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
+    return metadata.getSchema();
+  }
 
-    protected logWarning(message: string): void {
-        // eslint-disable-next-line no-console
-        console.log(`Warning - ${this.getPluginName()}: ${message}`)
-    }
+  protected logWarning(message: string): void {
+    // eslint-disable-next-line no-console
+    console.log(`Warning - ${this.getPluginName()}: ${message}`)
+  }
 
-    protected logError(message: string): void {
-        // eslint-disable-next-line no-console
-        console.error(`Error - ${this.getPluginName()}: ${message}`)
-    }
+  protected logError(message: string): void {
+    // eslint-disable-next-line no-console
+    console.error(`Error - ${this.getPluginName()}: ${message}`)
+  }
 
-    /**
-     * Create resources like files etc. for this plugin.
-     * This method should write resouces to filesystem
-     */
-    public abstract createResources(metadata: GraphbackCoreMetadata): void
+  /**
+   * Create resources like files etc. for this plugin.
+   * This method should write resouces to filesystem
+   */
+  public abstract createResources(metadata: GraphbackCoreMetadata): void
 
-    /**
-     * @returns Unique name of the plugin
-     */
-    public abstract getPluginName(): string;
+  /**
+   * @returns Unique name of the plugin
+   */
+  public abstract getPluginName(): string;
 };
