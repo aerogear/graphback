@@ -1,16 +1,27 @@
-"""@model"""
+""" @model """
 type Note {
   id: ID!
   title: String!
   description: String!
-  ## Relationship
   """
-  @oneToMany field: 'noteComment'
+  @oneToMany field: 'noteComment', key: 'note_id'
   """
-  comment: [Comment]!
+  comments: [Comment]!
+  """
+  @oneToOne key: 'test_id'
+  """
+  test: Test
 }
 
-"""@model"""
+"""
+@model
+"""
+type Test {
+  id: ID!
+  name: String
+}
+
+""" @model """
 type Comment {
   id: ID!
   title: String!
