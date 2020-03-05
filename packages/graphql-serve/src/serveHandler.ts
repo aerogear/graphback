@@ -1,4 +1,3 @@
-#!/usr/bin/node
 import { buildGraphbackServer } from "./GraphbackServer";
 import { getGraphbackServerConfig } from "./GraphbackServerConfig";
 
