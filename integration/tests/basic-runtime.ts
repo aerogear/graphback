@@ -1,15 +1,17 @@
 // tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 // tslint:disable-next-line: match-default-export-name
+import { unlinkSync } from 'fs';
+// eslint-disable-next-line @typescript-eslint/tslint/config
 import ApolloClient, { gql } from 'apollo-boost';
 import test, { ExecutionContext } from 'ava';
-import { unlinkSync } from 'fs';
 import { TestxServer, SQLiteDatabase } from 'graphql-testx';
 
 import fetch from "node-fetch";
+// eslint-disable-next-line import/no-internal-modules
+import * as Knex from 'knex';
+// eslint-disable-next-line import/no-internal-modules
 import { migrateDB } from '../../packages/graphql-migrations';
 
-// tslint:disable-next-line: no-require-imports
-import * as Knex from 'knex';
 import { schema as basicSchema } from '../schemas/basic.graphql';
 import { schema as relationsSchema } from '../schemas/relations-schema.graphql';
 
@@ -28,7 +30,7 @@ test.beforeEach(() => {
   }
 
   const knex = Knex(dbOptions);
-  database = new SQLiteDatabase(knex);
+  database = new SQLiteDatabase(knex as any);
 })
 
 test.serial('Graphback runtime end to end', async (t: ExecutionContext) => {
