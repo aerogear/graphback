@@ -19,7 +19,6 @@ export const builder = (args: yargs.Argv):void => {
     type: 'number',
     alias: 'p'
   })
-  args.example('$0 -m . -p 8080', 'generate schema from data model files in current directory and start GraphQL server on port 8080')
 }
 
 export async function handler(args: Params): Promise<void> {

@@ -14,7 +14,6 @@ export const builder = (args: yargs.Argv): void => {
     type: 'string',
     alias: 'm'
   })
-  args.example('$0 print-schema --model=modelDir', 'only display generated schema from data model files in modelDir directory and quit')
 }
 
 export async function handler(args: Params): Promise<void> {
