@@ -1,4 +1,5 @@
 import { getNamedType, GraphQLObjectType, isCompositeType } from 'graphql';
+import { removeBlankLines } from '../helpers/removeBlankLines';
 
 /**
  * For given type - it returns list of the type fields that 
@@ -41,11 +42,11 @@ export const printReturnFields = (resultArray: any[], shift: string = '') => {
     if (element instanceof Object) {
       const key = Object.keys(element)[0];
       const nestedElements = printReturnFields(element[key], '   ')
-      resultString += `   ${key} {\n${nestedElements}   }`
+      resultString += `\n   ${key} {\n${nestedElements}   }`
     } else {
       resultString += `${shift}   ${element}\n`;
     }
   }
 
-  return resultString;
+  return removeBlankLines(resultString);
 }
