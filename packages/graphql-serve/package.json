@@ -48,7 +48,7 @@
     "yargs": "15.1.0"
   },
   "bin": {
-    "gqlserve": "./dist/bin/serve.js"
+    "gqlserve": "./dist/bin/gqlserve.js"
   },
   "ava": {
     "files": [
