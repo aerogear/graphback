@@ -7,14 +7,13 @@ type Note {
   @oneToMany field: 'note'
   """
   comments: [Comment]!
-  likes: Int
 }
 
 """ @model """
 type Comment {
   id: ID!
+  text: String
   description: String
-  author: String
 }
 
 type Query {
