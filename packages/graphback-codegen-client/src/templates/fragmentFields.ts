@@ -1,4 +1,4 @@
-import { getNamedType, GraphQLObjectType, isCompositeType, isWrappingType } from 'graphql';
+import { getNamedType, GraphQLObjectType, isCompositeType } from 'graphql';
 
 /**
  * For given type - it returns list of the type fields that 
@@ -9,45 +9,43 @@ import { getNamedType, GraphQLObjectType, isCompositeType, isWrappingType } from
  * @param level nested level (supports only 0, 1 nested level)
  */
 export function buildReturnFields(t: GraphQLObjectType, level?: number) {
-    const fieldsMap = t.getFields();
-    if (level > 1) {
-      throw new Error("Function supports only 1 nested level")
-    }
-  
-    //tslint:disable-next-line: typedef
-    return Object.keys(fieldsMap).reduce((data, key) => {
-      const field = fieldsMap[key];
-      if (isWrappingType(field.type)) {
-        const modelType = getNamedType(field.type);
-        if (isCompositeType(modelType)) {
-          if (level !== 0) {
-            data.push({
-              [field.name]: buildReturnFields(modelType as GraphQLObjectType, level - 1)
-            });
-          }
+  const fieldsMap = t.getFields();
+  if (level > 1) {
+    throw new Error("Function supports only 1 nested level")
+  }
 
-          //Nested relation that should not be included
-          return data;
-        }
+  //tslint:disable-next-line: typedef
+  return Object.keys(fieldsMap).reduce((data, key) => {
+    const field = fieldsMap[key];
+    const modelType = getNamedType(field.type);
+    if (isCompositeType(modelType)) {
+      if (level !== 0) {
+        data.push({
+          [field.name]: buildReturnFields(modelType as GraphQLObjectType, level - 1)
+        });
       }
-      data.push(field.name);
-  
+
+      //Nested relation that should not be included
       return data;
-    }, []);
-  }
-  
-  export const printReturnFields = (resultArray: any[], shift: string = '') => {
-    let resultString = '';
-  
-    for (const element of resultArray) {
-      if (element instanceof Object) {
-        const key = Object.keys(element)[0];
-        const nestedElements = printReturnFields(element[key], '   ')
-        resultString += `   ${key} {\n${nestedElements}   }`
-      } else {
-        resultString += `${shift}   ${element}\n`;
-      }
     }
-  
-    return resultString;
+    data.push(field.name);
+
+    return data;
+  }, []);
+}
+
+export const printReturnFields = (resultArray: any[], shift: string = '') => {
+  let resultString = '';
+
+  for (const element of resultArray) {
+    if (element instanceof Object) {
+      const key = Object.keys(element)[0];
+      const nestedElements = printReturnFields(element[key], '   ')
+      resultString += `   ${key} {\n${nestedElements}   }`
+    } else {
+      resultString += `${shift}   ${element}\n`;
+    }
   }
+
+  return resultString;
+}
