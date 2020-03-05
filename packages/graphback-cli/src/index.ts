@@ -11,8 +11,6 @@ if (require.main === module) {
   // eslint-disable-next-line no-unused-expressions
   yargs
     .commandDir('commands')
-    .command(serve)
-    .command(printSchema)
     .demandCommand(1)
     .strict()
     .recommendCommands()
