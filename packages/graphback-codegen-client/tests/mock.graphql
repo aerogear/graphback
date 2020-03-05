@@ -3,7 +3,9 @@ type Note {
   id: ID!
   title: String!
   description: String!
-
+  """
+  @oneToMany field: 'noteComment'
+  """
   comment: [Comment]!
 }
 
@@ -12,7 +14,6 @@ type Comment {
   id: ID!
   title: String!
   description: String!
-  noteComment: Note!
 }
 
 type Query {

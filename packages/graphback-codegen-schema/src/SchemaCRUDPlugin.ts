@@ -1,10 +1,10 @@
+/* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getTableName, getInputTypeName } from '@graphback/core'
-import { mergeSchemas } from "@graphql-toolkit/schema-merging"
-import { getNullableType, GraphQLField, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt } from 'graphql';
+import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { printSortedSchema } from './writer/schemaPrinter';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -55,17 +55,26 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        const schema = metadata.getSchema()
+        let schema = metadata.getSchema();
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
 
             return schema;
-        }
+        };
+
+        schema = this.buildSchemaModelRelationships(schema, models);
 
         const modelsSchema = this.buildSchemaForModels(models);
+        const config = schema.toConfig();
+        const modelsConfig = modelsSchema.toConfig();
 
-        return mergeSchemas({ schemas: [modelsSchema, schema] });
+        const newSchema = new GraphQLSchema({
+            ...config,
+            ...modelsConfig
+        })
+
+        return newSchema;
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
@@ -85,7 +94,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param options 
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSortedSchema(schema);
+        const schemaString = printSchema(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
@@ -114,7 +123,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             queryTypes = this.createQueries(model, queryTypes, modelInputType);
             mutationTypes = this.createMutations(model, mutationTypes, modelInputType);
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
-
         }
 
         return this.createSchema(queryTypes, mutationTypes, subscriptionTypes);
@@ -123,17 +131,17 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
         const inputName = getInputTypeName(model.graphqlType.name);
-        
-        //TODO relationships?
+
         return new GraphQLInputObjectType({
             name: inputName,
-            fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
-                const fieldBaseType = getBaseType(field.type);
-
-                return !isObjectType(fieldBaseType);
-            }).reduce((fieldObj: any, current: any) => {
-                const fieldType = current.type;
-                fieldObj[current.name] = { type: getNullableType(fieldType), description: '' };
+            fields: () => (modelFields.filter(isInputField).map((field: GraphQLField<any, any>) => {
+                return {
+                    name: getInputFieldName(field),
+                    type: getInputFieldType(field),
+                    description: undefined
+                }
+            }).reduce((fieldObj: any, { name, type, description }: any) => {
+                fieldObj[name] = { type, description }
 
                 return fieldObj;
             }, {}))
@@ -180,7 +188,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     protected createSchema(queryTypes: any, mutationTypes: any, subscriptionTypes: any) {
-
         const queryType = new GraphQLObjectType({
             name: 'Query',
             fields: () => (queryTypes)
@@ -254,7 +261,14 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             const operation = getFieldName(name, GraphbackOperationType.FIND_ALL)
             queryTypes[operation] = {
                 type: GraphQLNonNull(GraphQLList(model.graphqlType)),
-                args: {}
+                args: {
+                    limit: {
+                        type: GraphQLInt,
+                    },
+                    offset: {
+                        type: GraphQLInt,
+                    },
+                },
             };
         }
         if (model.crudOptions.find) {
@@ -270,5 +284,39 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
 
         return queryTypes;
+    }
+
+    /**
+     * Add relationship fields to GraphQL model types
+     * 
+     * @param schema 
+     * @param models 
+     */
+    private buildSchemaModelRelationships(schema: GraphQLSchema, models: ModelDefinition[]) {
+        const schemaComposer = new SchemaComposer(schema)
+
+        // create or update relationship fields to the model types.
+        for (const model of models) {
+            const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
+
+            const newRelationshipFields = buildGeneratedRelationshipsFieldObject(model);
+            const modifiedRelationshipFields = buildModifiedRelationshipsFieldObject(model);
+
+            // update existing model fields
+            for (const [fieldName, fieldConfig] of Object.entries(modifiedRelationshipFields)) {
+                modifiedType.removeField(fieldName);
+                // TODO: Remove as any here
+                modifiedType.addFields({ [fieldName]: fieldConfig as any });
+            }
+
+            modifiedType.addFields(newRelationshipFields);
+        }
+
+        if (!schemaComposer.has('Query')) {
+            schemaComposer.createObjectTC('Query');
+            schemaComposer.Query.addFields({})
+        }
+
+        return schemaComposer.buildSchema()
     }
 }

@@ -15,7 +15,6 @@
   "dependencies": {
     "apollo-boost": "0.4.7",
     "graphback": "0.10.2",
-    "graphql": "^14.0.0",
     "graphql-testx": "0.3.0",
     "knex": "0.20.10",
     "node-fetch": "2.6.0"
@@ -37,11 +36,11 @@
   },
   "devDependencies": {
     "ava": "2.4.0",
-    "graphql": "14.6.0",
+    "graphql": "15.0.0-rc.2" ,
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
-    "typescript": "3.8.2"
+    "typescript": "3.8.3"
   },
   "license": "Apache-2.0"
 }

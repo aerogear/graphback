@@ -92,7 +92,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         const generatedResolvers = createResolverTemplate(resolvers, pluginConfig);
 
         return {
-            fileName: `resolvers.${pluginConfig.format}`,
+            fileName: `${pluginConfig.resolversFileName}.${pluginConfig.format}`,
             output: generatedResolvers
         };
     }

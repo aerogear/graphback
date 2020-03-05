@@ -1,0 +1,26 @@
+# editors
+/.vscode
+
+# github
+/.github
+/.gitignore
+
+# ci
+/.circleci
+/renovate.json
+
+# logs
+/logo
+
+# examples
+/examples
+
+# tests
+/ava.config.js
+*.test.ts
+*.test.d.ts
+*.test.js
+
+# lint
+/.prettierrc.json
+/tslint.json

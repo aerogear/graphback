@@ -1,27 +1,27 @@
 {
   "name": "graphback-templates-fullstack-server",
-  "version": "0.11.0-dev3",
+  "version": "0.11.0-rc5",
   "private": true,
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc"
   },
   "dependencies": {
-    "@graphback/runtime-knex": "0.11.0-dev3",
-    "graphql-config": "3.0.0-alpha.18",
+    "@graphback/runtime-knex": "0.11.0-rc5",
     "@graphql-toolkit/file-loading": "0.9.7",
     "@types/cors": "2.8.6",
-    "@types/express": "4.17.2",
-    "@types/node": "13.7.4",
-    "apollo-server-express": "2.10.1",
+    "@types/express": "4.17.3",
+    "@types/node": "13.7.7",
+    "apollo-server-express": "2.11.0",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "graphql": "14.6.0",
+    "graphql": "15.0.0-rc.2" ,
+    "graphql-config": "3.0.0-alpha.18",
     "graphql-tag": "2.10.3",
     "knex": "0.20.10",
     "pg": "7.18.2",
     "ts-node": "8.6.2",
     "ts-node-dev": "1.0.0-pre.44",
-    "typescript": "3.8.2"
+    "typescript": "3.8.3"
   }
 }

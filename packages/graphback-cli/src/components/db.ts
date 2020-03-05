@@ -12,7 +12,7 @@ const handleError = (err: { code: string; message: string; }): void => {
     logError(err.message)
   }
   process.exit(0)
-};
+}; 
 
 export const createDBResources = async (cliFlags: { project?: string }): Promise<any> => {
   let databaseOperations: any;

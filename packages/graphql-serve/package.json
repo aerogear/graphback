@@ -1,0 +1,59 @@
+{
+  "name": "graphql-serve",
+  "version": "0.11.0-rc5",
+  "private": true,
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist/ node_modules/",
+    "build": "tsc",
+    "test": "ava",
+    "lint": "eslint --ext js,ts .",
+    "print-schema": "ts-node bin/printSchema.ts"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.3",
+    "@types/node": "12.12.29",
+    "@types/pino": "5.15.5",
+    "@typescript-eslint/eslint-plugin": "2.22.0",
+    "@typescript-eslint/parser": "2.22.0",
+    "ava": "2.4.0",
+    "babel-eslint": "10.0.3",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.10.0",
+    "graphql-request": "1.8.2",
+    "ts-node": "8.6.2",
+    "typescript": "3.8.3"
+  },
+  "dependencies": {
+    "@graphback/codegen-client": "0.11.0-rc5",
+    "@graphback/codegen-schema": "0.11.0-rc5",
+    "@graphback/core": "0.11.0-rc5",
+    "@graphback/runtime": "0.11.0-rc5",
+    "apollo-server-express": "2.11.0",
+    "express": "4.17.1",
+    "get-port": "5.1.1",
+    "graphql": "15.0.0-rc.2" ,
+    "graphql-migrations": "0.10.2",
+    "graphql-tag": "2.10.3",
+    "knex": "0.20.10",
+    "knex-cleaner": "1.3.0",
+    "sqlite3": "4.1.1"
+  },
+  "bin": {
+    "gqlserve": "./dist/bin/serve.js",
+    "printSchema": "./dist/bin/printSchema.js"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}

@@ -1,9 +1,7 @@
-
-import { GraphbackRuntime, ModelDefinition, GraphbackGeneratorConfig } from 'graphback'
+import { GraphbackRuntime } from 'graphback'
 import { createKnexPGCRUDRuntimeServices } from '@graphback/runtime-knex'
-import { migrateDB } from 'graphql-migrations';
+import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
-import * as Knex from 'knex';
 import { createDB, getGraphbackConfig, getMigrateConfig } from './db'
 import { loadSchema } from './loadSchema';
 import { buildSchema } from 'graphql';
@@ -18,8 +16,13 @@ export const createRuntime = async () => {
   const dbmigrationsConfig = await getMigrateConfig();
   const schemaText = loadSchema(graphbackConfig.model);
 
+  const migrateOptions: MigrateOptions = {
+    //Do not perform delete operations on tables
+    operationFilter: removeNonSafeOperationsFilter
+  };
+
   // NOTE: For SQLite db should be always recreated
-  const ops = await migrateDB(dbmigrationsConfig, schemaText);
+  const ops = await migrateDB(dbmigrationsConfig, schemaText, migrateOptions);
 
   console.log("Migrated database", ops);
 

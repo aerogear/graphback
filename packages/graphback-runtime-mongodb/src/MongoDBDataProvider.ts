@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
-import { GraphbackDataProvider, NoDataError, AdvancedFilter } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
 /**
  * Graphback provider that connnects to the MongoDB database
@@ -17,8 +17,14 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     this.collectionName = this.tableMap.tableName;
   }
 
-  public async create(data: Type): Promise<Type> {
+  public async create(data: any): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
+    if (data && data[idField.name]) {
+      // Ignore id passed from client side. In case id is passed it should not be saved
+      // eslint-disable-next-line @typescript-eslint/tslint/config
+      delete data[idField.name];
+    }
+
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
       result.ops[0][idField.name] = result.ops[0]._id;
@@ -49,7 +55,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
       if (result.result.ok) {
-        console.log(idField)
         queryResult[idField.name] = queryResult._id;
 
         return queryResult;
@@ -58,8 +63,17 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async findAll(): Promise<Type[]> {
-    const data = await this.db.collection(this.collectionName).find({}).toArray();
+  public async findAll(page?: GraphbackPage): Promise<Type[]> {
+    let data;
+    if (page) {
+      page.limit = page.limit || 10
+      page.offset = page.offset || 0
+      data = await this.db.collection(this.collectionName).find({}).
+        skip(page.offset).limit(page.limit).toArray()
+    } else {
+      data = await this.db.collection(this.collectionName).find({}).toArray();
+    }
+
     if (data) {
       return data.map((one: any) => {
         return {
@@ -92,33 +106,35 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
+    let result: any;
 
-    let result:any;
-   
-    if(relationField=="id"){
+    const { idField } = getDatabaseArguments(this.tableMap);
+
+    if (relationField === idField.name) {
       relationField = "_id";
-      const array = ids.map((value:String)=>{
-         return ObjectId(value);
-       });
-      result = await this.db.collection(this.collectionName).find({_id:{$in:array}}).toArray();
-    }else{
-      let query:any = {};
-      query[relationField] = {$in:ids};
+      const array = ids.map((value: string) => {
+        return new ObjectId(value);
+      });
+      result = await this.db.collection(this.collectionName).find({ _id: { $in: array } }).toArray();
+    } else {
+      const query: any = {};
+      query[relationField] = { $in: ids };
       result = await this.db.collection(this.collectionName).find(query).toArray();
     }
 
     if (result) {
       const resultsById = ids.map((id: string) => result.filter((data: any) => {
-        if(data[relationField].toString() == id.toString()){
+        if (data[relationField].toString() === id.toString()) {
           return {
             ...data,
-            id:data._id
+            id: data._id
           }
         }
       }));
-      return resultsById  as [Type[]];
+
+      return resultsById as [Type[]];
     }
-    
+
     throw new NoDataError(`No results for ${this.collectionName} query and batch read`);
 
 

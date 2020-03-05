@@ -1,6 +1,6 @@
 {
   "name": "graphback-cli",
-  "version": "0.11.0-dev3",
+  "version": "0.11.0-rc5",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "bin": {
@@ -13,7 +13,7 @@
   "author": "wtrocki@redhat.com",
   "scripts": {
     "clean": "rimraf coverage dist types",
-    "build": "tsc && cp -Rf ./src/templates/resources ./dist/templates/resources",
+    "build": "tsc && ncp ./src/templates/resources ./dist/templates/resources",
     "cmdinit": "ts-node ./dist/index.js init test",
     "watch": "tsc -w",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
@@ -39,16 +39,17 @@
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/js-yaml": "3.12.2",
-    "@types/node": "12.12.28",
+    "@types/node": "12.12.29",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.30",
-    "@types/yargs": "15.0.3",
+    "@types/yargs": "15.0.4",
     "ava": "2.4.0",
-    "lint-staged": "10.0.7",
+    "lint-staged": "10.0.8",
+    "ncp": "2.0.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
-    "typescript": "3.8.2",
+    "typescript": "3.8.3",
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
@@ -57,13 +58,13 @@
     "chokidar": "3.3.1",
     "debounce": "1.2.0",
     "execa": "4.0.0",
-    "figlet": "1.2.4",
+    "figlet": "1.3.0",
     "glob": "7.1.6",
-    "graphback": "0.11.0-dev3",
-    "graphql": "14.6.0",
+    "graphback": "0.11.0-rc5",
+    "graphql": "15.0.0-rc.2" ,
     "graphql-config": "3.0.0-alpha.18",
-    "graphql-migrations": "0.11.0-dev3",
-    "inquirer": "7.0.4",
+    "graphql-migrations": "0.11.0-rc5",
+    "inquirer": "7.0.6",
     "js-yaml": "3.13.1",
     "node-emoji": "1.10.0",
     "openapi-to-graphql": "2.0.0",
@@ -72,7 +73,7 @@
     "request": "2.88.2",
     "tar": "6.0.1",
     "tmp": "0.1.0",
-    "yargs": "15.1.0"
+    "yargs": "15.2.0"
   },
   "jest": {
     "transform": {

@@ -1,7 +1,7 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import fetch from 'node-fetch';
-import { GraphbackDataProvider } from './GraphbackDataProvider';
+import { GraphbackDataProvider, GraphbackPage } from './GraphbackDataProvider';
 
 /**
  * RESTDataProvider is providing the required functionality to connect with a RESTful Datasource.
@@ -109,14 +109,15 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
      * baseUrl is defined at instance creation via the constructor. path is created from baseType name and other passed values.
      * 
      */
-    public async findAll(context?: GraphbackContext): Promise<Type[]> {
+    public async findAll(page?: GraphbackPage): Promise<Type[]> {
         // eslint-disable-next-line prefer-template
         const url = this.baseUrl+`/${this.baseType.name.toLocaleLowerCase()}/`
         const res = await fetch(url)
         const json = await res.json()
 
-        return json
+        return json;
     }
+
 
     /**
      * 

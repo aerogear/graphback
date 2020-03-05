@@ -16,7 +16,18 @@ A small amount of preparation needs to take place before this process kicks off.
 
 === How to Prepare a Release
 
-Ensure the git repo is clean and there are no outstanding changes. Then check out a new branch.
+Ensure the Git repository is clean and there are no outstanding changes.
+
+Next, check to ensure that `templates-release` branch is up to date with `master`. In the following example `upstream` = `git@github.com:aerogear/graphback.git`.
+
+[source, sh]
+--
+git checkout templates-release
+git reset --hard upstream/master
+git push -f
+--
+
+Once this is complete you can check out a new branch.
 
 [source, bash]
 --
