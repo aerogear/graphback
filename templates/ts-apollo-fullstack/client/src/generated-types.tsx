@@ -12,11 +12,11 @@ export type Scalars = {
 };
 
 export type Comment = {
-   __typename?: 'Comment',
+  __typename?: 'Comment',
   id: Scalars['ID'],
   text: Scalars['String'],
   description: Scalars['String'],
-  noteId?:Scalars['String']
+  noteId?: Scalars['String']
 };
 
 export type CommentFilter = {
@@ -33,7 +33,7 @@ export type CommentInput = {
 };
 
 export type Mutation = {
-   __typename?: 'Mutation',
+  __typename?: 'Mutation',
   createNote: Note,
   createComment: Comment,
   updateNote: Note,
@@ -63,7 +63,7 @@ export type MutationUpdateCommentArgs = {
 };
 
 export type Note = {
-   __typename?: 'Note',
+  __typename?: 'Note',
   id: Scalars['ID'],
   title: Scalars['String'],
   description: Scalars['String'],
@@ -82,7 +82,7 @@ export type NoteInput = {
 };
 
 export type Query = {
-   __typename?: 'Query',
+  __typename?: 'Query',
   findNotes: Array<Note>,
   findComments: Array<Comment>,
   findAllNotes: Array<Note>,
@@ -102,16 +102,18 @@ export type QueryFindCommentsArgs = {
 export type CreateCommentMutationVariables = {
   text: Scalars['String'],
   description: Scalars['String'],
-  noteId:Scalars['String']
+  noteId: Scalars['String']
 };
 
 
 export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
-  & { createComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
+  & {
+    createComment: (
+      { __typename?: 'Comment' }
+      & CommentFieldsFragment
+    )
+  }
 );
 
 export type CreateNoteMutationVariables = {
@@ -122,10 +124,12 @@ export type CreateNoteMutationVariables = {
 
 export type CreateNoteMutation = (
   { __typename?: 'Mutation' }
-  & { createNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
+  & {
+    createNote: (
+      { __typename?: 'Note' }
+      & NoteFieldsFragment
+    )
+  }
 );
 
 export type UpdateCommentMutationVariables = {
@@ -137,10 +141,12 @@ export type UpdateCommentMutationVariables = {
 
 export type UpdateCommentMutation = (
   { __typename?: 'Mutation' }
-  & { updateComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
+  & {
+    updateComment: (
+      { __typename?: 'Comment' }
+      & CommentFieldsFragment
+    )
+  }
 );
 
 export type UpdateNoteMutationVariables = {
@@ -152,10 +158,12 @@ export type UpdateNoteMutationVariables = {
 
 export type UpdateNoteMutation = (
   { __typename?: 'Mutation' }
-  & { updateNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
+  & {
+    updateNote: (
+      { __typename?: 'Note' }
+      & NoteFieldsFragment
+    )
+  }
 );
 
 export type FindAllCommentsQueryVariables = {};
@@ -163,10 +171,12 @@ export type FindAllCommentsQueryVariables = {};
 
 export type FindAllCommentsQuery = (
   { __typename?: 'Query' }
-  & { findAllComments: Array<(
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  )> }
+  & {
+    findAllComments: Array<(
+      { __typename?: 'Comment' }
+      & CommentFieldsFragment
+    )>
+  }
 );
 
 export type FindAllNotesQueryVariables = {};
@@ -174,10 +184,12 @@ export type FindAllNotesQueryVariables = {};
 
 export type FindAllNotesQuery = (
   { __typename?: 'Query' }
-  & { findAllNotes: Array<(
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  )> }
+  & {
+    findAllNotes: Array<(
+      { __typename?: 'Note' }
+      & NoteFieldsFragment
+    )>
+  }
 );
 
 export type FindCommentsQueryVariables = {
@@ -189,10 +201,12 @@ export type FindCommentsQueryVariables = {
 
 export type FindCommentsQuery = (
   { __typename?: 'Query' }
-  & { findComments: Array<(
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  )> }
+  & {
+    findComments: Array<(
+      { __typename?: 'Comment' }
+      & CommentFieldsFragment
+    )>
+  }
 );
 
 export type FindNotesQueryVariables = {
@@ -204,10 +218,12 @@ export type FindNotesQueryVariables = {
 
 export type FindNotesQuery = (
   { __typename?: 'Query' }
-  & { findNotes: Array<(
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  )> }
+  & {
+    findNotes: Array<(
+      { __typename?: 'Note' }
+      & NoteFieldsFragment
+    )>
+  }
 );
 
 export type CommentFieldsFragment = (
@@ -268,8 +284,8 @@ export type CreateCommentMutationFn = ApolloReactCommon.MutationFunction<CreateC
  * });
  */
 export function useCreateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
-      }
+  return ApolloReactHooks.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
+}
 export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
 export type CreateCommentMutationResult = ApolloReactCommon.MutationResult<CreateCommentMutation>;
 export type CreateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
@@ -301,8 +317,8 @@ export type CreateNoteMutationFn = ApolloReactCommon.MutationFunction<CreateNote
  * });
  */
 export function useCreateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
-      }
+  return ApolloReactHooks.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
+}
 export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
 export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
 export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
@@ -335,8 +351,8 @@ export type UpdateCommentMutationFn = ApolloReactCommon.MutationFunction<UpdateC
  * });
  */
 export function useUpdateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCommentMutation, UpdateCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
-      }
+  return ApolloReactHooks.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
+}
 export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateCommentMutation>;
 export type UpdateCommentMutationResult = ApolloReactCommon.MutationResult<UpdateCommentMutation>;
 export type UpdateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
@@ -369,8 +385,8 @@ export type UpdateNoteMutationFn = ApolloReactCommon.MutationFunction<UpdateNote
  * });
  */
 export function useUpdateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateNoteMutation, UpdateNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
-      }
+  return ApolloReactHooks.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
+}
 export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutation>;
 export type UpdateNoteMutationResult = ApolloReactCommon.MutationResult<UpdateNoteMutation>;
 export type UpdateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
@@ -398,11 +414,11 @@ export const FindAllCommentsDocument = gql`
  * });
  */
 export function useFindAllCommentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindAllCommentsQuery, FindAllCommentsQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindAllCommentsQuery, FindAllCommentsQueryVariables>(FindAllCommentsDocument, baseOptions);
-      }
+  return ApolloReactHooks.useQuery<FindAllCommentsQuery, FindAllCommentsQueryVariables>(FindAllCommentsDocument, baseOptions);
+}
 export function useFindAllCommentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindAllCommentsQuery, FindAllCommentsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindAllCommentsQuery, FindAllCommentsQueryVariables>(FindAllCommentsDocument, baseOptions);
-        }
+  return ApolloReactHooks.useLazyQuery<FindAllCommentsQuery, FindAllCommentsQueryVariables>(FindAllCommentsDocument, baseOptions);
+}
 export type FindAllCommentsQueryHookResult = ReturnType<typeof useFindAllCommentsQuery>;
 export type FindAllCommentsLazyQueryHookResult = ReturnType<typeof useFindAllCommentsLazyQuery>;
 export type FindAllCommentsQueryResult = ApolloReactCommon.QueryResult<FindAllCommentsQuery, FindAllCommentsQueryVariables>;
@@ -430,11 +446,11 @@ export const FindAllNotesDocument = gql`
  * });
  */
 export function useFindAllNotesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindAllNotesQuery, FindAllNotesQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindAllNotesQuery, FindAllNotesQueryVariables>(FindAllNotesDocument, baseOptions);
-      }
+  return ApolloReactHooks.useQuery<FindAllNotesQuery, FindAllNotesQueryVariables>(FindAllNotesDocument, baseOptions);
+}
 export function useFindAllNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindAllNotesQuery, FindAllNotesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindAllNotesQuery, FindAllNotesQueryVariables>(FindAllNotesDocument, baseOptions);
-        }
+  return ApolloReactHooks.useLazyQuery<FindAllNotesQuery, FindAllNotesQueryVariables>(FindAllNotesDocument, baseOptions);
+}
 export type FindAllNotesQueryHookResult = ReturnType<typeof useFindAllNotesQuery>;
 export type FindAllNotesLazyQueryHookResult = ReturnType<typeof useFindAllNotesLazyQuery>;
 export type FindAllNotesQueryResult = ApolloReactCommon.QueryResult<FindAllNotesQuery, FindAllNotesQueryVariables>;
@@ -465,11 +481,11 @@ export const FindCommentsDocument = gql`
  * });
  */
 export function useFindCommentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
-      }
+  return ApolloReactHooks.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
+}
 export function useFindCommentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
-        }
+  return ApolloReactHooks.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
+}
 export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery>;
 export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
 export type FindCommentsQueryResult = ApolloReactCommon.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
@@ -500,11 +516,11 @@ export const FindNotesDocument = gql`
  * });
  */
 export function useFindNotesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
-      }
+  return ApolloReactHooks.useQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
+}
 export function useFindNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
-        }
+  return ApolloReactHooks.useLazyQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
+}
 export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
 export type FindNotesLazyQueryHookResult = ReturnType<typeof useFindNotesLazyQuery>;
 export type FindNotesQueryResult = ApolloReactCommon.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
@@ -520,10 +536,12 @@ export type DeleteCommentMutationVariables = {
 
 export type DeleteCommentMutation = (
   { __typename?: 'Mutation' }
-  & { deleteComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
+  & {
+    deleteComment: (
+      { __typename?: 'Comment' }
+      & CommentFieldsFragment
+    )
+  }
 );
 
 
@@ -554,8 +572,8 @@ export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteC
  * });
  */
 export function useDeleteCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
-      }
+  return ApolloReactHooks.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
+}
 export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
 export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
 export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
