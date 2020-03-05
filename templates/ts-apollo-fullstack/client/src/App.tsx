@@ -7,7 +7,6 @@ import OneNote from './components/notes/OneNote';
 const App: React.FC = () => {
   const allNotes = useFindAllNotesQuery();
   allNotes.startPolling(2000);
-  console.log(allNotes.data?.findAllNotes)
  
   return (
     <div>
