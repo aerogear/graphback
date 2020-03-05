@@ -7,7 +7,7 @@ export interface GraphbackServerConfig {
     plugins: any
 }
 
-export async function getGraphbackServerConfig(modeldir: string) {
+export async function getGraphbackServerConfig(modeldir: string): Promise<GraphbackServerConfig> {
     const graphbackConfigOpts: GraphbackServerConfig = {
         //  Default schema
         model: null,

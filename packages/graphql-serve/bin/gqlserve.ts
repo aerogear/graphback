@@ -1,4 +1,5 @@
 #!/usr/bin/node
+// eslint-disable-next-line no-unused-expressions
 const argv = require('yargs')
     .usage('Usage: $0 <command> [options]')
     .commandDir('../src/commands')
