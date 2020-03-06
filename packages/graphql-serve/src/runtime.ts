@@ -11,32 +11,27 @@ import { loadConfig } from 'graphql-config';
 
 const dbmigrationsConfig = {
   client: "sqlite3",
-  useNullAsDefault: true,
   connection: {
-      filename: ":memory:",
-      pool: {
-        min: 1,
-        max: 10,
-        disposeTimeout: 360000 * 1000,
-        idleTimeoutMillis: 360000 * 1000
-      }
-  }
+    filename: ":memory:"
+  },
+  debug: true,
+  useNullAsDefault: true
 };
 
 export interface Runtime {
   schema: GraphQLSchema;
   resolvers: {
-      Query: {};
-      Mutation: {};
-      Subscription: {};
+    Query: {};
+    Mutation: {};
+    Subscription: {};
   }
 };
 
 export const getConfig = async (extension: string): Promise<any> => {
   const configLoaderOpts = {
-      extensions: [() => ({ name: extension })],
-      throwOnMissing: true,
-      throwOnEmpty: true,
+    extensions: [() => ({ name: extension })],
+    throwOnMissing: true,
+    throwOnEmpty: true,
   }
   const config = await loadConfig(configLoaderOpts);
 
@@ -48,18 +43,20 @@ export const getConfig = async (extension: string): Promise<any> => {
  * Method used to create runtime schema
  * It will be part of the integration tests
  */
-export const createRuntime = async (graphbackConfigOpts: GraphbackServerConfig): Promise<Runtime> => {
-  const db = Knex(dbmigrationsConfig);
+export const createRuntime = async (graphbackConfigOpts: GraphbackServerConfig, db: Knex<any, any>): Promise<Runtime> => {
   const graphbackConfig = graphbackConfigOpts;
   const schemaText = loadSchema(graphbackConfig.model);
 
-  // NOTE: For SQLite db should be always recreated
-  await migrateDB(dbmigrationsConfig, schemaText);
-
   const pubSub = new PubSub();
   const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
+
+  const schema = runtimeEngine.getMetadata().getSchema();
+
+  // NOTE: For SQLite db should be always recreated
+  await migrateDB(dbmigrationsConfig, schema);
+
   const models = runtimeEngine.getDataSourceModels();
-  const services = createKnexPGCRUDRuntimeServices(models, buildSchema(schemaText), db, pubSub);
+  const services = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
   const runtime = runtimeEngine.buildRuntime(services);
 
   return runtime;
