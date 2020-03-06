@@ -64,15 +64,8 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    let data;
-    if (page) {
-      page.limit = page.limit || 10
-      page.offset = page.offset || 0
-      data = await this.db.collection(this.collectionName).find({}).
-        skip(page.offset).limit(page.limit).toArray()
-    } else {
-      data = await this.db.collection(this.collectionName).find({}).toArray();
-    }
+    let query = this.db.collection(this.collectionName).find({});
+    let data = await this.usePage(query, page);
 
     if (data) {
       return data.map((one: any) => {
@@ -85,14 +78,27 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find all results for ${this.collectionName}`);
   }
 
-  public async findBy(filter: Type | AdvancedFilter): Promise<Type[]> {
+  private usePage(query, page, defaultLimit = 10, defaultOffset = 0) {
+    if (page) {
+      page.limit = page.limit || defaultLimit
+      page.offset = page.offset || defaultOffset
+      return query.skip(page.offset).limit(page.limit).toArray();
+    } else {
+      return query.toArray();
+    }
+  }
+
+  public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
     let dbResult;
     const { idField } = getDatabaseArguments(this.tableMap, filter);
     // TODO MongoDB should use advanced filter with JSON scalar defined as InputType
     if (filter[idField.name]) {
-      dbResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(filter[idField.name]) }).toArray();
+      let query = this.db.collection(this.collectionName).
+        find({ _id: new ObjectId(filter[idField.name]) });
+      dbResult = await this.usePage(query, page);
     } else {
-      dbResult = await this.db.collection(this.collectionName).find(filter).toArray();
+      let query = this.db.collection(this.collectionName).find(filter);
+      dbResult = await this.usePage(query, page);
     }
     if (dbResult) {
       return dbResult.map((one: any) => {
