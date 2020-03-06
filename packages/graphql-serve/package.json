@@ -3,6 +3,9 @@
   "version": "0.11.0-rc5",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "bin": {
+    "gqlserve": "dist/index.js"
+  },
   "scripts": {
     "clean": "rm -rf dist/ node_modules/",
     "build": "tsc",
