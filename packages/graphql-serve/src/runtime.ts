@@ -56,7 +56,7 @@ export const createRuntime = async (graphbackConfigOpts: GraphbackServerConfig, 
   await migrateDB(dbmigrationsConfig, schema);
 
   const models = runtimeEngine.getDataSourceModels();
-  const services = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
+  const services = createKnexPGCRUDRuntimeServices(models, schema, db as any, pubSub);
   const runtime = runtimeEngine.buildRuntime(services);
 
   return runtime;
