@@ -1,5 +1,5 @@
 import { GraphQLObjectType } from 'graphql';
-import { ObjectId, Db } from "mongodb"
+import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
@@ -78,7 +78,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find all results for ${this.collectionName}`);
   }
 
-  private usePage(query, page, defaultLimit = 10, defaultOffset = 0) {
+  private usePage(query: Cursor<any>, page: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
     if (page) {
       page.limit = page.limit || defaultLimit
       page.offset = page.offset || defaultOffset
