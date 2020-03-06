@@ -11,6 +11,7 @@ import http from "http"
 import { createRuntime } from './runtime';
 import { GraphbackServerConfig } from "./GraphbackServerConfig";
 import { printSchema } from 'graphql';
+import Knex from 'knex';
 
 const ENDPOINT = "/graphql";
 
@@ -93,13 +94,13 @@ export class GraphbackServer {
   }
 }
 
-export async function buildGraphbackServer(graphbackConfigOpts: GraphbackServerConfig): Promise<GraphbackServer> {
+export async function buildGraphbackServer(graphbackConfigOpts: GraphbackServerConfig, db: Knex<any, any>): Promise<GraphbackServer> {
   const app = express();
 
   app.use(cors());
 
   // connect to db
-  const runtime = await createRuntime(graphbackConfigOpts);
+  const runtime = await createRuntime(graphbackConfigOpts, db);
 
   const apolloConfig = {
     typeDefs: printSchema(runtime.schema),

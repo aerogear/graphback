@@ -70,7 +70,11 @@
       "request": "launch",
       "name": "CLI config",
       "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
       "sourceMaps": true,
       "console": "integratedTerminal",
       "protocol": "inspector",
@@ -129,6 +133,24 @@
         "db"
       ],
       "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "CLI serve",
+      "program": "${workspaceRoot}/packages/graphql-serve/dist/index.js",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
+      "sourceMaps": true,
+      "protocol": "inspector",
+      "args": [
+        "serve",
+        "port=8080"
+      ],
+      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
+    },
   ]
 }

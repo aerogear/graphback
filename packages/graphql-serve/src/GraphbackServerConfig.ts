@@ -5,6 +5,7 @@ export interface GraphbackServerConfig {
     model: string,
     crud: GraphbackCRUDGeneratorConfig,
     plugins: any
+    dbmigrations
 }
 
 export async function getGraphbackServerConfig(modeldir: string): Promise<GraphbackServerConfig> {
@@ -27,16 +28,31 @@ export async function getGraphbackServerConfig(modeldir: string): Promise<Graphb
                 format: 'graphql',
                 outputPath: './server/src/schema'
             },
-            'graphback-client':{
+            'graphback-client': {
                 format: 'graphql',
                 outputPath: './client/src/graphql'
             },
-            'graphback-resolvers':{
+            'graphback-resolvers': {
                 format: 'ts',
                 outputPath: './server/src/resolvers'
             }
+        },
+        dbmigrations: {
+            client: "sqlite3",
+            connection: {
+                filename: ":memory:?cache=shared"
+            },
+            pool: {
+                min: 1,
+                max: 1,
+                disposeTimeout: 360000 * 1000,
+                idleTimeoutMillis: 360000 * 1000
+            },
+            debug: true,
+            useNullAsDefault: true
         }
     }
+
     try {
         // getConfig throws when config file is missing
         const localGraphbackConfig = await getConfig('graphback');
@@ -65,4 +81,3 @@ export async function getGraphbackServerConfig(modeldir: string): Promise<Graphb
     }
     return graphbackConfigOpts;
 }
-  

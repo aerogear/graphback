@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist/ node_modules/",
     "build": "tsc",
+    "watch": "tsc -w",
     "test": "ava",
     "lint": "eslint --ext js,ts .",
     "print-schema": "ts-node bin/printSchema.ts"
@@ -44,10 +45,7 @@
     "knex": "0.20.11",
     "knex-cleaner": "1.3.0",
     "sqlite3": "4.1.1",
-    "yargs": "15.1.0"
-  },
-  "bin": {
-    "gqlserve": "./dist/bin/gqlserve.js"
+    "yargs": "15.2.0"
   },
   "ava": {
     "files": [
