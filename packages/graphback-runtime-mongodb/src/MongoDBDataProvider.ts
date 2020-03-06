@@ -64,8 +64,8 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    let query = this.db.collection(this.collectionName).find({});
-    let data = await this.usePage(query, page);
+    const query = this.db.collection(this.collectionName).find({});
+    const data = await this.usePage(query, page);
 
     if (data) {
       return data.map((one: any) => {
@@ -93,11 +93,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     const { idField } = getDatabaseArguments(this.tableMap, filter);
     // TODO MongoDB should use advanced filter with JSON scalar defined as InputType
     if (filter[idField.name]) {
-      let query = this.db.collection(this.collectionName).
+      const query = this.db.collection(this.collectionName).
         find({ _id: new ObjectId(filter[idField.name]) });
       dbResult = await this.usePage(query, page);
     } else {
-      let query = this.db.collection(this.collectionName).find(filter);
+      const query = this.db.collection(this.collectionName).find(filter);
       dbResult = await this.usePage(query, page);
     }
     if (dbResult) {
