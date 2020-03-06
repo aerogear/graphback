@@ -114,3 +114,38 @@ test('find Todo by text', async (t: any) => {
   });
   t.assert(todos.length > 0);
 });
+
+test('find Todo by text limit defaults to 10', async (t: any) => {
+  const text = 'todo-test';
+  for (let i = 0; i < 11; i++) {
+    await t.context.provider.create({
+      text,
+    });
+  }
+  const todos: Todo[] = await t.context.provider.findBy({ text }, { offset: 0 });
+  t.assert(todos.length <= 10);
+});
+
+test('find by text offset defaults to 0', async (t: any) => {
+  const text = 'todo-test';
+  for (let i = 0; i < 2; i++) {
+    await t.context.provider.create({
+      text,
+    });
+  }
+  const todos = await t.context.provider.findBy({ text }, { limit: 1 });
+  t.assert(todos[0].text == text);
+});
+
+test('find first 1 todos by text', async t => {
+  const text = 'todo-test';
+  for (let i = 0; i < 2; i++) {
+    await t.context.provider.create({
+      text,
+    });
+  }
+
+  const todos = await t.context.provider.findBy({ text } , { limit: 1, offset: 0});
+  t.assert(todos.length === 1);
+  t.assert(todos[0].text == text);
+});
