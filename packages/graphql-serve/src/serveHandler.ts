@@ -1,20 +1,9 @@
 import { buildGraphbackServer } from "./GraphbackServer";
 import { getGraphbackServerConfig } from "./GraphbackServerConfig";
-import Knex = require('knex');
-
-const dbmigrationsConfig = {
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:"
-    },
-    debug: true,
-    useNullAsDefault: true
-};
 
 export const serve = async (argv: { model?: string, port?: number }, options: { schemaOnly: boolean } = { schemaOnly: false }): Promise<void> => {
-    const graphbackConfigOpts = await getGraphbackServerConfig(argv.model);
-    const db = Knex(dbmigrationsConfig);
-    const server = await buildGraphbackServer(graphbackConfigOpts, db);
+    const graphbackServerConfig = await getGraphbackServerConfig({ modeldir: argv.model });
+    const server = await buildGraphbackServer(graphbackServerConfig);
     console.log("Generated GraphQL Schema:\n")
     console.log(server.getSchema());
     if (!options.schemaOnly) {

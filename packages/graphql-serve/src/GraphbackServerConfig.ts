@@ -1,83 +1,96 @@
 import { GraphbackCRUDGeneratorConfig } from "@graphback/core";
-import { getConfig } from "./runtime";
+import { loadConfig } from 'graphql-config';
 
-export interface GraphbackServerConfig {
+export interface GraphbackConfig {
     model: string,
     crud: GraphbackCRUDGeneratorConfig,
     plugins: any
-    dbmigrations
+}
+export interface GraphbackServerConfig {
+    graphback: GraphbackConfig,
+    dbmigrations?: any
 }
 
-export async function getGraphbackServerConfig(modeldir: string): Promise<GraphbackServerConfig> {
-    const graphbackConfigOpts: GraphbackServerConfig = {
-        //  Default schema
-        model: null,
-        // Global configuration for CRUD generator
-        crud: {
-            create: true,
-            update: true,
-            findAll: true,
-            find: true,
-            delete: true,
-            subCreate: true,
-            subUpdate: true,
-            subDelete: true,
-        },
-        plugins: {
-            'graphback-schema': {
-                format: 'graphql',
-                outputPath: './server/src/schema'
+export interface ConfigOverrides {
+    modeldir: string
+}
+
+export async function getGraphbackServerConfig(overrideopts?: ConfigOverrides): Promise<GraphbackServerConfig> {
+    const graphbackServerConfig: GraphbackServerConfig = {
+        graphback: {
+            //  Default schema
+            model: null,
+            // Global configuration for CRUD generator
+            crud: {
+                create: true,
+                update: true,
+                findAll: true,
+                find: true,
+                delete: true,
+                subCreate: true,
+                subUpdate: true,
+                subDelete: true,
             },
-            'graphback-client': {
-                format: 'graphql',
-                outputPath: './client/src/graphql'
-            },
-            'graphback-resolvers': {
-                format: 'ts',
-                outputPath: './server/src/resolvers'
+            plugins: {
+                'graphback-schema': {
+                    format: 'graphql',
+                    outputPath: './server/src/schema'
+                },
+                'graphback-client': {
+                    format: 'graphql',
+                    outputPath: './client/src/graphql'
+                },
+                'graphback-resolvers': {
+                    format: 'ts',
+                    outputPath: './server/src/resolvers'
+                }
             }
         },
-        dbmigrations: {
-            client: "sqlite3",
-            connection: {
-                filename: ":memory:?cache=shared"
-            },
-            pool: {
-                min: 1,
-                max: 1,
-                disposeTimeout: 360000 * 1000,
-                idleTimeoutMillis: 360000 * 1000
-            },
-            debug: true,
-            useNullAsDefault: true
-        }
+        dbmigrations: null
     }
 
     try {
-        // getConfig throws when config file is missing
-        const localGraphbackConfig = await getConfig('graphback');
+        // Try to load the local config
 
-        // If config file exists and has crud options, use those
-        if (localGraphbackConfig.crud) {
-            graphbackConfigOpts.crud = localGraphbackConfig.crud;
+        const configLoaderOpts = {
+            extensions: [() => ({ name: 'graphback' }), () => ({ name: 'dbmigrations' })],
+            throwOnMissing: true,
+            throwOnEmpty: true,
         }
 
-        // Use model from config file if specified
+        // This statement throws if no config file is present
+        const localGraphQLConfig = await loadConfig(configLoaderOpts);
+
+        // Get the 'graphback' config
+        const localGraphbackConfig = localGraphQLConfig.getDefault().extension('graphback');
+
+        // If config has crud options, use those
+        if (localGraphbackConfig.crud) {
+            graphbackServerConfig.graphback.crud = localGraphbackConfig.crud;
+        }
+
+        // Use model from config if specified
         if (localGraphbackConfig.model) {
-            graphbackConfigOpts.model = localGraphbackConfig.model;
+            graphbackServerConfig.graphback.model = localGraphbackConfig.model;
+        }
+
+        // If config has db options, use those
+        const localdbmigrations = localGraphQLConfig.getDefault().extension('dbmigrations')
+        if (localdbmigrations) {
+            graphbackServerConfig.dbmigrations = localdbmigrations;
         }
     } catch (e) {
-        console.log('Could not read graphql config, trying default crud options.');
+        console.log('Could not read graphql config, trying default config options.');
     }
 
     // Model argument takes priority over config file
-    if (modeldir) {
-        graphbackConfigOpts.model = modeldir;
+    if (overrideopts && overrideopts.modeldir) {
+        graphbackServerConfig.graphback.model = overrideopts.modeldir;
     }
 
     // If this is still null, then no model specified
-    if (graphbackConfigOpts.model == null) {
+    if (graphbackServerConfig.graphback.model == null) {
         throw Error("No model folder specified. Please either specify the model folder in graphql config file or in the --model argument");
     }
-    return graphbackConfigOpts;
+    return graphbackServerConfig;
 }
