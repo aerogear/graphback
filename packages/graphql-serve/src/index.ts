@@ -12,7 +12,7 @@ export {
     serve,
     printSchema
 }
-export * from "./serveHandler";
+export * from "./components";
 
 if (require.main === module) {
   // eslint-disable-next-line no-unused-expressions
