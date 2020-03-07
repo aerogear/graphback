@@ -90,7 +90,7 @@ export async function getGraphbackServerConfig(overrideopts?: ConfigOverrides): 
 
     // If this is still null, then no model specified
     if (graphbackServerConfig.graphback.model == null) {
-        throw Error("No model folder specified. Please either specify the model folder in graphql config file or in the --model argument");
+        throw Error("No model folder specified. Please either specify the model folder in graphql config file or in the command arguments");
     }
     return graphbackServerConfig;
 }
