@@ -61,53 +61,69 @@ type Note {
 Assuming you have created your various `*.graphql` data model files in the `models` directory, to automatically generate resolvers and start a GraphQL server listening on port 8080 do the following:
 
 ```
-$ gqlserve --model=models --port=8080
+$ gqls serve models --port=8080
 ```
 
 
 If you only need to see the generated GraphQL Schema, use the `print-schema` command:
 
 ```
-$ gqlserve print-schema -m .
+$ gqls print-schema .
 ```
 The above command prints schema generated from data model files in the current directory.
 
 This information is also provided with the command itself:
 ```
-$ gqlserve -h
-Usage: gqlserve <command> [options]
+$ gqls -h
+gqls <command>
 
 Commands:
-  gqlserve [options]               Generate and start GraphQL server from data
-                                   model files                         [default]
-  gqlserve print-schema [options]  Generate and print GraphQL schema from data
+  gqls print-schema [modelDir]     Generate and print GraphQL schema from data
+                                   model files
+  gqls serve [modelDir] [options]  Generate and start GraphQL server from data
                                    model files
 
 Options:
-  --model, -m    Directory to search for data models                    [string]
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show version number                                   [boolean]
+```
+For the serve command:
+```
+$ gqls serve -h
+gqls serve [modelDir] [options]
+
+Generate and start GraphQL server from data model files
+
+Positionals:
+  modelDir, model  Directory to search for data models                  [string]
+
+Options:
   --port, -p     Specify the port on which to listen on                 [number]
   -h, --help     Show help                                             [boolean]
   -v, --version  Show version number                                   [boolean]
 
 Examples:
-  gqlserve -m . -p 8080                   generate schema from data model files
-                                          in current directory and start GraphQL
-                                          server on port 8080
-  gqlserve print-schema --model=modelDir  only display generated schema from
-                                          data model files in modelDir directory
-                                          and quit
+  gqls serve . -p 8080  generate schema from data model files in current
+                        directory and start GraphQL server on port 8080
 ```
-Also for print-schema:
+
+Also for print-schema command:
 ```
-$ gqlserve print-schema -h
-gqlserve print-schema [options]
+$ gqls print-schema -h
+gqls print-schema [modelDir]
 
 Generate and print GraphQL schema from data model files
 
+Positionals:
+  modelDir, model  Directory to search for data models                  [string]
+
 Options:
-  --model, -m    Directory to search for data models                    [string]
   -h, --help     Show help                                             [boolean]
   -v, --version  Show version number                                   [boolean]
+
+Examples:
+  gqls print-schema modelDir  only display generated schema from data model
+                              files in modelDir directory and quit
 ```
 
 Under to hood we use Graphback to parse the Type Definitions/Data Model and
