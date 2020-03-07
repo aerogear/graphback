@@ -22,7 +22,7 @@ export interface Runtime {
 
 export const createMongoDBConnection = async () => {
   const server = new MongoMemoryServer();
-  const client = new MongoClient(await server.getConnectionString())
+  const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true })
   await client.connect();
   const db = client.db('test');
   return db;
