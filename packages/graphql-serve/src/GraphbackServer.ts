@@ -46,8 +46,9 @@ export class GraphbackServer {
       }
     }
 
-    this.httpServer.listen({ port }, () => console.log(`Listening at: ${port}`));
+    this.httpServer.listen({ port });
     this.serverPort = port;
+    console.log(`Listening at: ${this.getHttpUrl()}`);
   }
 
   public async stop(): Promise<void> {
