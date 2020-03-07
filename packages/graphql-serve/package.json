@@ -4,7 +4,7 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "gqlserve": "dist/index.js"
+    "gqls": "dist/index.js"
   },
   "scripts": {
     "clean": "rm -rf dist/ node_modules/",
