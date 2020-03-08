@@ -74,7 +74,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
     //tslint:disable-next-line: await-promise
-    let query = this.db.select().from(this.tableName);
+    const query = this.db.select().from(this.tableName);
     const dbResult = await this.usePage(query, page);
     if (dbResult) {
       return dbResult;
