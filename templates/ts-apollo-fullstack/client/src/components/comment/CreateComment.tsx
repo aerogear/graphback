@@ -19,7 +19,7 @@ const CreateComment = ({noteId,addCommentState}:createCommentProps) => {
         <div>
             <Card className="inputCard">
                 <form noValidate autoComplete="off" className="inputForm">
-                <h3>Create Note</h3>
+                <h3>Create Comment</h3>
                 <TextField 
                     label="Title" 
                     variant="outlined" 
