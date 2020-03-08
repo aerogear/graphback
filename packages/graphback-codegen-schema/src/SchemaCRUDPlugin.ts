@@ -279,6 +279,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
                     fields: {
                         type: modelInputType,
                     },
+                    limit: {
+                        type: GraphQLInt,
+                    },
+                    offset: {
+                        type: GraphQLInt,
+                    },
                 }
             };
         }
