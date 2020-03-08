@@ -1,5 +1,7 @@
 import React from 'react';
 import { useDeleteCommentMutation } from '../../generated-types';
+import { Button } from '@material-ui/core';
+import './Comment.css';
 
 type comment ={
     id:string,
@@ -12,10 +14,10 @@ const OneComment = ({id, text, description }: comment) => {
 
     return(
         <div>
-            <li>
-              <strong>{text}</strong>:&nbsp;
+            <li className="comment">
+              <strong >{text}</strong>:&nbsp;
               {description}
-              <button onClick={()=>deleteComment({variables:{id:id}})}>Delete Comment</button>
+              <Button variant="outlined" color="secondary"  onClick={()=>deleteComment({variables:{id:id}})}>Delete Comment</Button>
             </li>
         </div>
     );

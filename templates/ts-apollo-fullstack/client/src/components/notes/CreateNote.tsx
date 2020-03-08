@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useCreateNoteMutation } from '../../generated-types';
+import {Button, TextField, Card} from '@material-ui/core';
+import './Note.css';
 
 const CreateNote: React.FC = () => {
     const [createNote] = useCreateNoteMutation();
@@ -8,29 +10,29 @@ const CreateNote: React.FC = () => {
 
     return(
         <div>
-            <fieldset>
-                <legend>Create New Note</legend>
-                <form onSubmit={e => {
-                e.preventDefault();
-                createNote({ variables: { title: newNoteTitle, description: newNoteDescription } });
-                }}>
-                <p>
-                    <label htmlFor="title">Title: </label>
-                    <input
-                    name="title"
+            <Card className="inputCard">
+                <form noValidate autoComplete="off" className="inputForm">
+                <h3>Create Note</h3>
+                <TextField 
+                    label="Title" 
+                    variant="outlined" 
+                    onChange={(e) => setNewNoteTitle(e.target.value)}
                     value={newNoteTitle}
-                    onChange={(e) => setNewNoteTitle(e.target.value)} />
-                </p>
-                <p>
-                    <label htmlFor="description">Description: </label>
-                    <input
-                    name="description"
+                   
+                    />
+                <TextField 
+                    label="Description" 
+                    variant="outlined" 
+                    onChange={(e) => setNewNoteDescription(e.target.value)}
                     value={newNoteDescription}
-                    onChange={(e) => setNewNoteDescription(e.target.value)} />
-                </p>
-                <input type='submit' />
+                    
+                />
+                <Button variant="outlined" color="primary" 
+                    onClick={()=>{
+                        createNote({ variables: {title: newNoteTitle, description: newNoteDescription } });
+                    }}>Add Note</Button>
                 </form>
-            </fieldset>
+            </Card>
         </div>
     );
 }

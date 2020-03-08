@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useCreateCommentMutation } from '../../generated-types';
+import { Card, TextField, Button } from '@material-ui/core';
+import './../notes/Note.css';
 
 
 type createCommentProps = {
@@ -15,30 +17,28 @@ const CreateComment = ({noteId,addCommentState}:createCommentProps) => {
 
     return(
         <div>
-            <fieldset>
-                <legend>Create New Comment</legend>
-                <form onSubmit={e => {
-                e.preventDefault();
-                createComment({ variables: { text:newCommentTitle, description: newCommentDescription, noteId:noteId } });
-                addCommentState(false);
-                }}>
-                <p>
-                    <label htmlFor="title">Title: </label>
-                    <input
-                    name="title"
+            <Card className="inputCard">
+                <form noValidate autoComplete="off" className="inputForm">
+                <h3>Create Note</h3>
+                <TextField 
+                    label="Title" 
+                    variant="outlined" 
+                    onChange={(e) => setNewCommentTitle(e.target.value)}
                     value={newCommentTitle}
-                    onChange={(e) => setNewCommentTitle(e.target.value)} />
-                </p>
-                <p>
-                    <label htmlFor="description">Description: </label>
-                    <input
-                    name="description"
-                    value={newCommentDescription}
-                    onChange={(e) => setNewCommentDescription(e.target.value)} />
-                </p>
-                <input type='submit' />
+                    />
+                <TextField 
+                    label="Description" 
+                    variant="outlined" 
+                    onChange={(e) => setNewCommentDescription(e.target.value)}
+                    value={newCommentDescription} 
+                />
+                <Button variant="outlined" color="primary" 
+                    onClick={()=>{
+                        createComment({ variables: { text:newCommentTitle, description: newCommentDescription, noteId:noteId } });
+                        addCommentState(false);
+                    }}>Add Comment</Button>
                 </form>
-            </fieldset>
+            </Card>
         </div>
     );
 }

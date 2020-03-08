@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useUpdateNoteMutation } from '../../generated-types';
+import {Button, TextField, Card} from '@material-ui/core';
+import './Note.css';
 
 type noteProps = {
     id:string
@@ -17,30 +19,28 @@ const EditNote = ({id, title, description,editState }: noteProps) => {
 
     return(
         <div>
-            <fieldset>
-                <legend>Edit Note</legend>
-                <form onSubmit={e => {
-                e.preventDefault();
-                updateNote({ variables: {id:id, title: NoteTitle, description: NoteDescription } });
-                editState(false);
-                }}>
-                <p>
-                    <label htmlFor="title">Title: </label>
-                    <input
-                    name="title"
+            <Card className="inputCard">
+                <form noValidate autoComplete="off" className="inputForm">
+                <h3>Edit Note</h3>
+                <TextField 
+                    label="Title" 
+                    variant="outlined" 
+                    onChange={(e) => setNoteTitle(e.target.value)}
                     value={NoteTitle}
-                    onChange={(e) => setNoteTitle(e.target.value)} />
-                </p>
-                <p>
-                    <label htmlFor="description">Description: </label>
-                    <input
-                    name="description"
+                    />
+                <TextField 
+                    label="Description" 
+                    variant="outlined" 
+                    onChange={(e) => setNoteDescription(e.target.value)}
                     value={NoteDescription}
-                    onChange={(e) => setNoteDescription(e.target.value)} />
-                </p>
-                <input type='submit' />
+                />
+                <Button variant="outlined" color="primary" 
+                    onClick={()=>{
+                        updateNote({ variables: { id:id,title: NoteTitle, description: NoteDescription } });
+                        editState(false);
+                    }}>Update Note</Button>
                 </form>
-            </fieldset>
+            </Card>
         </div>
     );
 }
