@@ -26,7 +26,8 @@ export const findAllTemplate = (modelName: string): string => {
 
 export const findTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.findBy(args.fields);
+      const { fields, ...page } = args;
+      return context.${modelName}.findBy(fields, page);
     }`
 }
 
