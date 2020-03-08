@@ -13,6 +13,7 @@ const CreateNote: React.FC = () => {
             <Card className="inputCard">
                 <form noValidate autoComplete="off" className="inputForm">
                 <h3>Create Note</h3>
+                <p>This application works only with sample Node/Comment model</p>
                 <TextField 
                     label="Title" 
                     variant="outlined" 
