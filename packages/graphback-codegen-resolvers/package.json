@@ -1,6 +1,6 @@
 {
   "name": "@graphback/codegen-resolvers",
-  "version": "0.11.0-rc5",
+  "version": "0.11.0-rc6",
   "description": "GraphQL-Code-Generator compatibile schema generator",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -39,14 +39,14 @@
     "@types/node": "12.12.29",
     "@types/prettier": "1.19.0",
     "ava": "2.4.0",
-    "graphql": "15.0.0-rc.2" ,
+    "graphql": "15.0.0-rc.2",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@graphback/core": "0.11.0-rc5",
+    "@graphback/core": "0.11.0-rc6",
     "pg": "7.18.2",
     "pluralize": "8.0.0",
     "prettier": "1.19.1",
