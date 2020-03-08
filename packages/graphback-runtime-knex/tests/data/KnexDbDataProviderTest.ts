@@ -152,3 +152,36 @@ test('find Todo by text', async t => {
   t.assert(todos.length === 1);
   t.assert(todos[0].id === 2);
 });
+
+test('find first n todos by text', async t => {
+  const numberOfTodos = 5;
+  const text = 'test-todo';
+  for (let i = 0; i < numberOfTodos + 1; i++) {
+    await t.context.provider.create({
+      text,
+    });
+  }
+
+  const todos: Todo[] = await t.context.provider.findBy({ text }, { limit: numberOfTodos });
+
+  t.assert(todos.length === numberOfTodos);
+});
+
+test('Skip n todos and find next m todos by text', async t => {
+  const n = 2;
+  const m = 3;
+  const numberOfTodos = n + m;
+  const text = 'test-todo';
+  for (let i = 0; i < numberOfTodos; i++) {
+    await t.context.provider.create({
+      text,
+    });
+  }
+
+  const todos: Todo[] = await t.context.provider.findBy({ text }, { 
+    offset: n,
+    limit: numberOfTodos
+  });
+
+  t.assert(todos.length === m);
+});
