@@ -74,23 +74,19 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
     //tslint:disable-next-line: await-promise
-    let query = this.db.select().from(this.tableName)
-    if (page) {
-      page.limit = page.limit || 10;
-      page.offset = page.offset || 0
-      query = query.limit(page.limit).offset(page.offset)
-    }
-    const dbResult = await query;
+    let query = this.db.select().from(this.tableName);
+    const dbResult = await this.usePage(query, page);
     if (dbResult) {
       return dbResult;
     }
     throw new NoDataError(`Cannot find all results for ${this.tableName}`);
   }
 
-  public async findBy(filter: Type | AdvancedFilter): Promise<Type[]> {
+  public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
     const { data } = getDatabaseArguments(this.tableMap, filter);
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).where(data);
+    const query = this.db.select().from(this.tableName).where(data);
+    const dbResult = await this.usePage(query, page);
     if (dbResult) {
       return dbResult;
     }
@@ -112,6 +108,17 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     }
 
     throw new NoDataError(`No results for ${this.tableName} and id: ${JSON.stringify(ids)}`);
+  }
+
+  private usePage(query: Knex.QueryBuilder, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
+    if (page) {
+      page.limit = page.limit || defaultLimit
+      page.offset = page.offset || defaultOffset
+      
+      return query.offset(page.offset).limit(page.limit);
+    } else {
+      return query;
+    }
   }
 
 }
