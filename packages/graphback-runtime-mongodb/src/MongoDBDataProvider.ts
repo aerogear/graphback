@@ -137,7 +137,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   }
 
-  private usePage(query: Cursor<any>, page: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
+  private usePage(query: Cursor<any>, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
     if (page) {
       page.limit = page.limit || defaultLimit
       page.offset = page.offset || defaultOffset
