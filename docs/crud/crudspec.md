@@ -53,8 +53,8 @@ input NoteInput {
 }
 
 type Query {
-  findAllNotes: [Note]!
-  findNotes(fields: NoteInput): [Note]!
+  findAllNotes(limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
 } 
 
 type Mutation {

@@ -23,7 +23,6 @@ Graphback provides following implementations of GraphbackCRUDService
 
 Graphback provides following implementations of GraphbackDataProvider
 
-- KnexDBDataProvider (`@graphback/runtime-knex`)
 - PgKnexDBDataProvider (PostgreSQL version from `@graphback/runtime-knex`)
 - MongoDBDataProvider (`@graphback/runtime-mongodb`)
 
@@ -57,10 +56,12 @@ findAllComments: (parent, args, context) => {
 Graphback plugin will generate `createContext.ts` file that creates instances of your model.
 Developers can modify them and point them to the different datasources without using code generation.
 
-To use runtime developers need to call `createCRUDResolversRuntimeContext` from `createContext.ts` when creating their GraphQL Server:
+To use runtime developers need to call respective helper from the runtime-knex or runtime-mongodb libraries.
+For example:
 
 ```ts
-   const context = createCRUDResolversRuntimeContext({ schema, db, pubSub });
+  import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
+   const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
     const apolloServer = new ApolloServer({
         typeDefs: typeDefs,
         resolvers,

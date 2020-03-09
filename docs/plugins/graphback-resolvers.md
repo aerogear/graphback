@@ -33,13 +33,15 @@ Minimalistic example of the Apollo Server based GraphQL server will look as foll
 ```ts
 import resolvers from './resolvers/resolvers';
 import schema from './schema/schema';
+import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 
-const context = createCRUDResolversRuntimeContext({ schema, db, pubSub });
-const apolloServer = new ApolloServer({
-  typeDefs: schema,
-  resolvers,
-  context,
-});
+  const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
+  const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context,
+      playground: true,
+  })
 ```
 
 Please refer to ts-apollo-fullstack app for fully functional example:

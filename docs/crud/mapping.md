@@ -13,12 +13,9 @@ For example:
 """ @model """
 type Note {
   id: ID!
-  """ @db.name: note_title """
   title: String!
   description: String!
-  comment: [Comment!]!
 }
-
 ```
 
-For more information please refer to [`migrations documentation`](/docs/migrations.
+For more information please refer to [`migrations documentation`](/docs/migrations).
