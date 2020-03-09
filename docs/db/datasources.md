@@ -15,7 +15,7 @@ Our runtime supports following datasources
 
 ### Migrations
 
-Graphback provides out of the box database migrations for Postgress.
+Graphback provides out of the box database migrations for PostgreSQL.
 Developers can edit their schema and their changes will be replicated into the database.
 
 > NOTE: Database migrations are not supported for MongoDB
