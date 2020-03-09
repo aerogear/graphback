@@ -37,7 +37,7 @@ import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 
   const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
   const apolloServer = new ApolloServer({
-      typeDefs: typeDefs,
+      typeDefs,
       resolvers,
       context,
       playground: true,
