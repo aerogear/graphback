@@ -22,10 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "echo disabled",
-    "lint": "echo disabled",
     "build:react": "react-scripts build",
-    "test:react": "react-scripts test",
     "eject:react": "react-scripts eject"
   },
   "eslintConfig": {
