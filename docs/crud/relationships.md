@@ -4,7 +4,7 @@ title: Model Relationships
 sidebar_label: Model Relationships
 ---
 
-> NOTE: This document is still in progress
+> NOTE: This document is outdated and needs more work
 
 ## Database Relationships
 

@@ -5,16 +5,17 @@ title: Data Sources
 
 ## Data Sources
 
-Graphback allows you to work with different database systems and other data sources, according to your needs.
-Graphback provides support to multiple databases when performing migrations.
+Graphback allows you to work with different database systems and other data sources.
+Graphback provides support to multiple databases.
 
-Our migration engine is based on Knex.js and we are actively supporting and testing the following database systems:
+Our runtime supports following datasources
 
-- PostgreSQL (Using Knex.js)
-- MySQL (Using Knex.js) 
-- SQLite (No database fields mapping supported)
-- MongoDB (No database fields mapping supported)
-early version based on MongoDriver - @graphback/runtime-mongodb
+- PostgreSQL (@graphback/runtime-knex)
+- MongoDB  (@graphback/runtime-mongodb)
 
-This databases are supported for relational database schema migration. 
-Graphback `CRUD Runtime abstraction` allows developers to use any type of datasource.
+### Migrations
+
+Graphback provides out of the box database migrations for Postgress.
+Developers can edit their schema and their changes will be replicated into the database.
+
+> NOTE: Database migrations are not supported for MongoDB
