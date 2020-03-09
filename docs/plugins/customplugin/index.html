@@ -56,7 +56,7 @@
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Creating your own plugin</h1></header><article><div><span><p>Graphback allows to create your own plugins that can affect generated schema
 and create files in filesystem.</p>
-<p>Each plugin needs to be an new npm package that will implement GraphbackPlugin.</p>
+<p>Each plugin needs to be a new npm package that will implement GraphbackPlugin.</p>
 <h2><a class="anchor" aria-hidden="true" id="building-your-plugin"></a><a href="#building-your-plugin" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Building your plugin</h2>
 <p>Graphback plugins are executed in the order they are defined in the configuration.
 <code>transformSchema</code> is called first for each plugin to determine final shape of the schema.
@@ -97,10 +97,10 @@ Then <code>createResources</code> method is called that can create files etc.</p
 <p>NOTE: Plugin name cannot start with <code>graphback-</code> as this name is reserved for graphback internal plugins</p>
 </blockquote>
 <h2><a class="anchor" aria-hidden="true" id="plugin-configuration"></a><a href="#plugin-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugin configuration</h2>
-<p>Plugins are loaded using commonjs require method based on the graphback plugin section.
-Each plugin should have his own configuration embeeded as folows.
+<p>Plugins are loaded using CommonJS 'require' method based on the Graphback plugin section.
 Order of the plugins matter especially when transforming schema.
-If your plugin relies on other plugins it should be placed on the bottom of the list.</p>
+If your plugin relies on other plugins, it should be placed on the bottom of the list.
+Each plugin should have its own configuration embedded as follows:</p>
 <pre><code class="hljs css language-yaml">  <span class="hljs-attr">graphback:</span>
     <span class="hljs-comment">## Codegen plugins</span>
     <span class="hljs-attr">plugins:</span>
@@ -116,8 +116,8 @@ If your plugin relies on other plugins it should be placed on the bottom of the 
 
 </code></pre>
 <blockquote>
-<p>NOTE: Graphback CLI includes Graphback core pluging. When adding your own plugins you need to run Graphback CLI from your npm scripts
-for the graphback engine to be able to pick up the plugin package.</p>
+<p>NOTE: Graphback CLI includes Graphback core plugin. When adding your own plugins, you need to run Graphback CLI from your npm scripts
+for the Graphback engine to be able to pick up the plugin package.</p>
 </blockquote>
 <h2><a class="anchor" aria-hidden="true" id="plugins-helper"></a><a href="#plugins-helper" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugins helper</h2>
 <p>'@graphback/core' offers helpers for building plugins.

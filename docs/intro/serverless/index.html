@@ -63,14 +63,28 @@ Schema and resolvers can be created when your application code is executed and u
     <span class="hljs-keyword">import</span> { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } <span class="hljs-keyword">from</span> <span class="hljs-string">'graphback'</span>
     <span class="hljs-keyword">import</span> { PubSub } <span class="hljs-keyword">from</span> <span class="hljs-string">'graphql-subscriptions'</span>;
 
+    <span class="hljs-comment">// Create provider using knex</span>
+    <span class="hljs-keyword">class</span> PostgreSQLRuntime <span class="hljs-keyword">extends</span> GraphbackRuntime {
+      db: Knex&lt;<span class="hljs-built_in">any</span>, <span class="hljs-built_in">any</span>[]&gt;;
+
+      <span class="hljs-keyword">constructor</span>(<span class="hljs-params">schema: <span class="hljs-built_in">string</span>, config: GraphbackGeneratorConfig, db: Knex</span>) {
+        <span class="hljs-keyword">super</span>(schema, config);
+        <span class="hljs-keyword">this</span>.db = db;
+      }
+
+      <span class="hljs-keyword">protected</span> createDBProvider(model: ModelDefinition) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> PgKnexDBDataProvider(model.graphqlType, <span class="hljs-keyword">this</span>.db);
+      }
+    }
+
     <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> Knex(...);
     <span class="hljs-keyword">const</span> graphbackOptions = {...}
     <span class="hljs-keyword">const</span> schemaText = <span class="hljs-string">`type Test ...`</span>
 
     <span class="hljs-keyword">const</span> pubSub = <span class="hljs-keyword">new</span> PubSub();
     <span class="hljs-keyword">const</span> serviceOverrides = {}
-    <span class="hljs-keyword">const</span> runtimeEngine = <span class="hljs-keyword">new</span> GraphbackRuntime(schemaText, graphbackConfig);
-    <span class="hljs-keyword">const</span> runtime = runtimeEngine.buildRuntime(db, pubSub, {});
+    <span class="hljs-keyword">const</span> runtimeEngine = <span class="hljs-keyword">new</span> PostgreSQLRuntime(schemaText, graphbackConfig, client);
+    <span class="hljs-keyword">const</span> runtime = runtimeEngine.buildRuntime(pubSub, {});
 
   <span class="hljs-keyword">const</span> executableSchema = makeExecutableSchema({
     typeDefs: printSchema(runtime.schema),
@@ -81,19 +95,17 @@ Schema and resolvers can be created when your application code is executed and u
   });
 </code></pre>
 <p>See <a href="https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts"><code>./runtime.ts</code></a> for a fully functional example.</p>
+<h3><a class="anchor" aria-hidden="true" id="graphbackdataprovider"></a><a href="#graphbackdataprovider" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>GraphbackDataProvider</h3>
+<p>Graphback provides following implementations of GraphbackDataProvider</p>
+<ul>
+<li>KnexDBDataProvider (<code>@graphback/runtime-knex</code>)</li>
+<li>PgKnexDBDataProvider (PostgreSQL version from <code>@graphback/runtime-knex</code>)</li>
+<li>MongoDBDataProvider (<code>@graphback/runtime-mongodb</code>)</li>
+</ul>
+<p>Your resolvers can use different data providers thanks to swapping implementation in resolver context</p>
 <h2><a class="anchor" aria-hidden="true" id="using-different-datasource"></a><a href="#using-different-datasource" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using different DataSource</h2>
 <p>Runtime is created using default CRUDService instance and KnexDBDataProvider db layer to retrieve the data.
 Developers can override implementations for those when different datasource is used.</p>
-<p>Currently 2 data providers are supported:</p>
-<ul>
-<li>KnexDBDataProvider</li>
-<li>PgKnexDBDataProvider</li>
-</ul>
-<p>Your resolvers can use different data providers thanks to swapping implementation in resolver context</p>
-<p><img src="/img/runtime.png" alt=""></p>
 <p>See <a href="https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend"><code>runtime example application</code></a>
 for more information.</p>
-<h2><a class="anchor" aria-hidden="true" id="adding-custom-resolvers-to-runtime"></a><a href="#adding-custom-resolvers-to-runtime" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Adding custom resolvers to runtime</h2>
-<p>Runtime layer will come with autogenerated schema that will also include custom resolvers provided in model.
-Developers can append their custom resolvers to resolver array to extend runtime layer.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/intro/existingproject"><span class="arrow-prev">← </span><span>Add to Project</span></a><a class="docs-next button" href="/docs/crud/crudspec"><span>CRUD Specification</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#adding-runtime-layer-to-your-application">Adding runtime layer to your application</a></li><li><a href="#using-different-datasource">Using different DataSource</a></li><li><a href="#adding-custom-resolvers-to-runtime">Adding custom resolvers to runtime</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2020 Graphback Contributors</section></footer></div></body></html>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/intro/existingproject"><span class="arrow-prev">← </span><span>Add to Project</span></a><a class="docs-next button" href="/docs/crud/crudspec"><span>CRUD Specification</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#adding-runtime-layer-to-your-application">Adding runtime layer to your application</a><ul class="toc-headings"><li><a href="#graphbackdataprovider">GraphbackDataProvider</a></li></ul></li><li><a href="#using-different-datasource">Using different DataSource</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2020 Graphback Contributors</section></footer></div></body></html>

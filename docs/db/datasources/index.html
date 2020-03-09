@@ -55,14 +55,17 @@
               }
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Data Sources</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="data-sources"></a><a href="#data-sources" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Data Sources</h2>
-<p>Graphback allows you to work with different database systems and other data sources, according to your needs.
-Graphback provides support to multiple databases when performing migrations.</p>
-<p>Our migration engine is based on Knex.js and we actively supporting and testing following database systems:</p>
+<p>Graphback allows you to work with different database systems and other data sources.
+Graphback provides support to multiple databases.</p>
+<p>Our runtime supports following datasources</p>
 <ul>
-<li>PostgreSQL</li>
-<li>MySQL</li>
-<li>SQLite (Limited ability to modify tables - requires recreation of the database for each change)</li>
+<li>PostgreSQL (@graphback/runtime-knex)</li>
+<li>MongoDB  (@graphback/runtime-mongodb)</li>
 </ul>
-<p>This databases are supported for relational database schema migration.
-Graphback <code>CRUD Runtime abstraction</code> allows developers to use any type of datasource</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/db/dbmigrations"><span class="arrow-prev">← </span><span>Database Schema Migrations</span></a><a class="docs-next button" href="/docs/migrations/intromigrations"><span>Migrate To Graphback</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#data-sources">Data Sources</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2020 Graphback Contributors</section></footer></div></body></html>
+<h3><a class="anchor" aria-hidden="true" id="migrations"></a><a href="#migrations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Migrations</h3>
+<p>Graphback provides out of the box database migrations for PostgreSQL.
+Developers can edit their schema and their changes will be replicated into the database.</p>
+<blockquote>
+<p>NOTE: Database migrations are not supported for MongoDB</p>
+</blockquote>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/db/dbmigrations"><span class="arrow-prev">← </span><span>Database Schema Migrations</span></a><a class="docs-next button" href="/docs/migrations/intromigrations"><span>Migrate To Graphback</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#data-sources">Data Sources</a><ul class="toc-headings"><li><a href="#migrations">Migrations</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="copyright">Copyright © 2020 Graphback Contributors</section></footer></div></body></html>

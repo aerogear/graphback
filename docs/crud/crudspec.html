@@ -94,8 +94,8 @@ that you might not use in your application.</p>
 }
 <span class="hljs-built_in">
 type </span>Query {
-  findAllNotes: [Note]!
-  findNotes(fields: NoteInput): [Note]!
+  findAllNotes(limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
 } 
 <span class="hljs-built_in">
 type </span>Mutation {

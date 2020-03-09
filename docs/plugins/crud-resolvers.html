@@ -55,10 +55,10 @@
               }
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Graphback CRUD Resolvers Plugin</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="graphback-crud-resolvers-plugin"></a><a href="#graphback-crud-resolvers-plugin" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Graphback CRUD Resolvers plugin</h2>
-<p>Graphback resolvers plugin gives developers opiniated way to generate Node.js server compatible set of the GraphQL resolvels
+<p>Graphback resolvers plugin gives developers opinionated way to generate Node.js server compatible set of the GraphQL resolvels
 that will work with the Graphback Schema and Client side generated queries.</p>
-<p>Resolvers plugin using Graphback Runtme Abstraction that gives developers ability to dynamically connect them to many datasources.
-Please refer to <a href="/docs/crudruntime"><code>Runtime Abstraction</code></a> documentation for more information</p>
+<p>Resolvers plugin using Graphback Runtime Abstraction that gives developers ability to dynamically connect them to many datasources.
+Please refer to <a href="/docs/crudruntime"><code>Runtime Abstraction</code></a> documentation for more information.</p>
 <h2><a class="anchor" aria-hidden="true" id="installation"></a><a href="#installation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Installation</h2>
 <pre><code class="hljs"><span class="hljs-built_in">npm</span> install @graphback/codegen-resolvers
 </code></pre>
@@ -72,15 +72,17 @@ can be used to create all required services.</p>
 <p>Minimalistic example of the Apollo Server based GraphQL server will look as follows:</p>
 <pre><code class="hljs css language-ts"><span class="hljs-keyword">import</span> resolvers <span class="hljs-keyword">from</span> <span class="hljs-string">'./resolvers/resolvers'</span>;
 <span class="hljs-keyword">import</span> schema <span class="hljs-keyword">from</span> <span class="hljs-string">'./schema/schema'</span>;
+<span class="hljs-keyword">import</span> { createKnexPGCRUDRuntimeServices } <span class="hljs-keyword">from</span> <span class="hljs-string">"@graphback/runtime-knex"</span>
 
-<span class="hljs-keyword">const</span> context = createCRUDResolversRuntimeContext({ schema, db, pubSub });
-<span class="hljs-keyword">const</span> apolloServer = <span class="hljs-keyword">new</span> ApolloServer({
-  typeDefs: schema,
-  resolvers,
-  context,
-});
+  <span class="hljs-keyword">const</span> context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
+  <span class="hljs-keyword">const</span> apolloServer = <span class="hljs-keyword">new</span> ApolloServer({
+      typeDefs,
+      resolvers,
+      context,
+      playground: <span class="hljs-literal">true</span>,
+  })
 </code></pre>
-<p>Please reffer to ts-apollo-fullstack app for fully functional example:
+<p>Please refer to ts-apollo-fullstack app for fully functional example:
 <a href="https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack">https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack</a></p>
 <h2><a class="anchor" aria-hidden="true" id="plugin-config"></a><a href="#plugin-config" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugin Config</h2>
 <pre><code class="hljs css language-ts">  <span class="hljs-comment">/**
