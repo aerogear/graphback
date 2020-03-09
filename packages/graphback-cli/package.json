@@ -64,7 +64,6 @@
     "graphql": "15.0.0-rc.2",
     "graphql-config": "3.0.0-alpha.18",
     "graphql-migrations": "0.11.0",
-    "graphql-serve": "0.11.0",
     "inquirer": "7.0.6",
     "js-yaml": "3.13.1",
     "node-emoji": "1.10.0",
