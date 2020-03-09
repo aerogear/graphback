@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "echo disabled",
+    "build": "react-scripts build",
     "test": "echo disabled",
     "lint": "echo disabled",
     "build:react": "react-scripts build",
