@@ -20,5 +20,5 @@ export const createDB = async () => {
     // connect to db
     const db = Knex(dbmigrations)
 
-    return db
+    return db as any
 }
