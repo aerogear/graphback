@@ -1,0 +1,45 @@
+{
+  "version-0.11.x-docs": {
+    "Getting Started": [
+      "version-0.11.x-gettingstarted",
+      "version-0.11.x-intro/quickstart",
+      "version-0.11.x-intro/concepts",
+      "version-0.11.x-intro/datamodel",
+      "version-0.11.x-intro/config"
+    ],
+    "Use Cases": [
+      "version-0.11.x-intro/usecases",
+      "version-0.11.x-intro/template",
+      "version-0.11.x-intro/existingproject",
+      "version-0.11.x-intro/serverless"
+    ],
+    "CRUD": [
+      "version-0.11.x-crud/crudspec",
+      "version-0.11.x-crud/crudruntime",
+      "version-0.11.x-crud/relationships",
+      "version-0.11.x-crud/crudmapping"
+    ],
+    "Generator Plugins": [
+      "version-0.11.x-plugins/plugin-intro",
+      "version-0.11.x-plugins/crud-schema",
+      "version-0.11.x-plugins/crud-resolvers",
+      "version-0.11.x-plugins/crud-client",
+      "version-0.11.x-plugins/customplugin"
+    ],
+    "Database": [
+      "version-0.11.x-db/dbintroduction",
+      "version-0.11.x-db/dbmigrations",
+      "version-0.11.x-db/datasources"
+    ],
+    "Migrating to Graphback": [
+      "version-0.11.x-migrations/intromigrations",
+      "version-0.11.x-migrations/openapi"
+    ],
+    "Reference": [
+      "version-0.11.x-commands"
+    ],
+    "Releases": [
+      "version-0.11.x-releases"
+    ]
+  }
+}
