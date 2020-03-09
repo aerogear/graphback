@@ -1,6 +1,6 @@
 {
   "name": "graphback-templates-fullstack",
-  "version": "0.11.0-rc6",
+  "version": "0.11.0",
   "private": true,
   "workspaces": [
     "client",
@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "graphback-cli": "0.11.0-rc5",
+    "graphback-cli": "0.11.0",
     "graphql": "15.0.0-rc.2",
     "tslint": "5.20.1",
     "typescript": "3.8.3"
