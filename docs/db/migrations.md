@@ -61,23 +61,91 @@ type Note {
 }
 ```
 
-#### Foreign key
+#### Foreign keys
 
-To set a foreign key, set a field reference to the related type.
+##### OneToOne
 
-```gql
-type Comment {
+```graphql
+"""
+@model
+"""
+type Profile {
   id: ID!
-  note: Note! # this creates a `noteId` column in the `comment` table.
+  """
+  @oneToOne
+  """
+  user: User!
 }
 
-type Note {
+"""
+@model
+"""
+type User {
   id: ID!
-  title: String!
+  name: String
 }
 ```
 
-> NOTE: See [relationships](./relationships) for how to customise foreign key field names.
+This creates a relationship via a `userId` column in the `profile` table. You can customize the key tracking the relationship with the `key` annotation:
+
+```graphql
+"""
+@model
+"""
+type Profile {
+  id: ID!
+  """
+  @oneToOne key: 'user_id'
+  """
+  user: User!
+}
+
+"""
+@model
+"""
+type User {
+  id: ID!
+  name: String
+}
+```
+
+This maps `Profile.user` to `profile.user_id` in the database.
+
+##### OneToMany
+
+```graphql
+"""
+@model
+"""
+type Note {
+  id: ID!
+  title: String!
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]
+}
+```
+
+This creates a relationship between `Note.comments` and `Comment.note` and maps to `comment.noteId` in the database. If `Comment.note` does not exist it will be generated for you.
+
+With the `key` annotation you can customise the database column to map to.
+
+```graphql
+"""
+@model
+"""
+type Note {
+  id: ID!
+  title: String!
+  """
+  @oneToMany field: 'note', key: 'note_id'
+  """
+  comments: [Comment]
+}
+```
+
+This maps to `comment.note_id` in the database.
 
 #### Default field value
 
@@ -105,7 +173,7 @@ type Note {
 }
 ```
 
-#### Changing column names in graphback
+#### Changing column names in Graphback
 
 When working with database migration library it is possible to change individual database columns.
 Using custom column will require manual mapping in resolver or database layer. 

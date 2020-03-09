@@ -8,87 +8,88 @@ sidebar_label: Model Relationships
 
 ## Database Relationships
 
-Graphback supports `one-to-one`, `one-to-many` and `many-to-one` relationships and provides out of the box support for the schema and resolvers accordingly.
+Graphback supports `one-to-one` and `one-to-many` relationships and provides out of the box support for the schema and resolvers accordingly.
 
 ### OneToOne
 
 ```graphql
+"""
+@model
+"""
 type Profile {
+  id: ID!
+  """
+  @oneToOne
+  """
   user: User!
 }
 
+"""
+@model
+"""
 type User {
-  profile: Profile!
+  id: ID!
+  name: String
 }
 ```
 
-This creates a relationship via a `userId` column in the `profile` table and a `profileId` column in the `user` table. You can customize the field which tracks the relationship using annotations:
+This creates a relationship via a `userId` column in the `profile` table. You can customize the key tracking the relationship with the `key` annotation:
 
 ```graphql
+"""
+@model
+"""
 type Profile {
-  profileUser: User!
+  id: ID!
+  """
+  @oneToOne key: 'user_id'
+  """
+  user: User!
 }
 
+"""
+@model
+"""
 type User {
-  """
-  @db.oneToOne: 'profileUser'
-  """
-  profile: Profile!
+  id: ID!
+  name: String
 }
 ```
 
-This creates a `1:1` relationship between `profile.profileUserId` and `user.profileId`.
+This maps `Profile.user` to `profile.user_id` in the database.
 
 ### OneToMany
 
-```gql
+```graphql
+"""
+@model
+"""
 type Note {
+  id: ID!
+  title: String!
+  """
+  @oneToMany field: 'note'
+  """
   comments: [Comment]
 }
 ```
 
-This creates a `noteId` column in the `comment` table. You can also customise the field name:
+This creates a relationship between `Note.comments` and `Comment.note` and maps to `comment.noteId` in the database. If `Comment.note` does not exist it will be generated for you.
 
-```gql
+With the `key` annotation you can customise the database column to map to.
+
+```graphql
+"""
+@model
+"""
 type Note {
+  id: ID!
+  title: String!
   """
-  @oneToMany field: 'commentNote'
+  @oneToMany field: 'note', key: 'note_id'
   """
   comments: [Comment]
 }
 ```
 
-This will create a `commentNoteId` foreign key column in the `comment` table.
-
-### ManyToOne
-
-```graphql
-type Comment {
-  note: Note!
-}
-```
-
-This creates a `noteId` foreign key column in the `comment` table which tracks to `note.commentId`.
-
-You can also customise the field name:
-
-```graphql
-type Comment {
-  commentNote: Note
-}
-```
-
-This will create a `commentNoteId` foreign key column in the `comment` table.
-
-You can track to custom field names in the relation table using the `@db.manyToOne` annotation.
-
-```gql
-type Comment {
-  """
-  @db.manyToOne: 'noteComments'
-  """
-  note: Note
-}
-```
-
-This tracks to the GraphQL `Note.noteComments` field.
+This maps to `comment.note_id` in the database.
