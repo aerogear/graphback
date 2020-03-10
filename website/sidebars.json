@@ -1,23 +1,17 @@
 {
   "docs": {
-    "Getting Started": [
-      "gettingstarted",
-      "intro/quickstart",
-      "intro/concepts",
-      "intro/datamodel",
-      "intro/config"
+    "Introduction": [
+      "gettingstarted"
     ],
-    "Use Cases": [
-      "intro/usecases",
-      "intro/template",
+    "Getting Started": [
+      "intro/quickstart",
       "intro/existingproject",
-      "intro/serverless"
+      "intro/serverless",
+      "intro/datamodel"
     ],
     "CRUD": [
       "crud/crudspec",
-      "crud/crudruntime",
-      "crud/relationships",
-      "crud/crudmapping"
+      "crud/crudruntime"
     ],
     "Generator Plugins": [
       "plugins/plugin-intro",

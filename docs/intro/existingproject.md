@@ -1,7 +1,7 @@
 ---
 id: existingproject
 title: Adding Graphback to your Node.js project
-sidebar_label: Add to Project
+sidebar_label: Add to existing project
 ---
 
 ## Adding Graphback to existing project using Graphback CLI
@@ -11,59 +11,28 @@ Graphback CLI can be used to add code generation capabilities to your existing N
 ```bash
 npx graphback-cli config
 ```
+
 Follow the on-screen instructions.
 
-You can use Graphback with either a SQLite (for prototyping) or PostgreSQL (for production) databases.
-Config command will:
-- Create `graphqlrc.yml` file with default graphback plugins
-- Initialize example model file 
-- Add required packages to your package.json file
-- Provide database migration configuration for database running on local machine
+Graphback will do the following:
 
-> NOTE: If you use SQLite, you don't need to use Docker 
+- Create `.graphqlrc.yml` file with default Graphback plugins
+- Initialize an example model file 
+- Add required packages to your `package.json` file
+- Add a `dbmigrations` config to your `.graphqlrc.yml` file for PostgreSQL databases
+
+### Next Steps
+
+See [Defining your Data model](./datamodel.md) for how to design your data model to work with Graphback.
+
+To change the default application configuration see [Graphback Config](./config.md).
+
+Once your data model is complete, run `graphback generate` from your project to generate a GraphQL schema and API.
+
+You can migrate your database to match your schema by running `graphback db`. See [Database Migrations](../db/migrations.md) for more.
 
 ## Running Graphback in existing application without code generation
 
-Graphback offers runtime layer that will create an in-memory implementation of the graphql services without code generation.
+Graphback offers runtime layer that will create an in-memory implementation of the Graphql services without code generation.
 Developers can still customize the way that data is queried and cached thanks to runtime architecture.
 For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation.
-
-## Creating and updating your database from your data model
-
-Graphback will create or update the database configured in `graphqlrc.yml` file, using the types defined in your data model.
-
-```gql
-type User {
-  id: ID!
-  name: String
-}
-```
-
-When ready, run `graphback db` in your terminal to create or update your database structure.
-
-This creates a `user` table with `id` and `name` columns. Each type must have an `id: ID!` field which creates a primary key in the database table.
-
-If you want to customise your database structure, check out [Database Schema Migrations](./database-schema-migrations#defining-your-data-model).
-
-You can create relationships between tables directly in your model:
-
-```gql
-type User {
-  id: ID!
-  name: String
-  messages: [Message]
-}
-
-type Message {
-  id: ID!
-  title: String
-  body: String
-  user: User!
-}
-```
-
-Run `graphback db` again to update your existing database structure with the new table.
-
-This creates a `message` table with the `id`, `title`, `body` columns and the `userId` foreign key column that references `user.id`.
-
-See [Database Relationships](../crud/relationships.md) on the different relationships kinds and how you can customise them further.

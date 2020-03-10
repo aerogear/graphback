@@ -1,7 +1,7 @@
 ---
 id: serverless
 title: Serve GraphQL API without code
-sidebar_label: Serverless
+sidebar_label: In-memory API
 ---
 
 Graphback allows you to add GraphQL API without code generation.
@@ -49,7 +49,7 @@ To create GraphQL Layer at runtime developers need to initialize `GraphbackRunti
   });
 ```
 
-See [`./runtime.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts) for a fully functional example.
+See our [`ts-apollo-runtime-backend`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts) for a fully functional example.
 
 ### GraphbackDataProvider
 

@@ -39,10 +39,6 @@
         "title": "Introduction to Graphback",
         "sidebar_label": "What is Graphback"
       },
-      "intro/concepts": {
-        "title": "Graphback Concepts",
-        "sidebar_label": "Concepts"
-      },
       "intro/config": {
         "title": "Config"
       },
@@ -51,15 +47,15 @@
       },
       "intro/existingproject": {
         "title": "Adding Graphback to your Node.js project",
-        "sidebar_label": "Add to Project"
+        "sidebar_label": "Add to existing project"
       },
       "intro/quickstart": {
         "title": "Create client and server application from template",
-        "sidebar_label": "Create app"
+        "sidebar_label": "Create a new app"
       },
       "intro/serverless": {
         "title": "Serve GraphQL API without code",
-        "sidebar_label": "Serverless"
+        "sidebar_label": "In-memory API"
       },
       "intro/template": {
         "title": "Create client and server application from template",
@@ -183,15 +179,15 @@
       },
       "version-0.11.x/intro/version-0.11.x-existingproject": {
         "title": "Adding Graphback to your Node.js project",
-        "sidebar_label": "Add to Project"
+        "sidebar_label": "Add to existing project"
       },
       "version-0.11.x/intro/version-0.11.x-quickstart": {
         "title": "Create client and server application from template",
-        "sidebar_label": "Create app"
+        "sidebar_label": "Create a new app"
       },
       "version-0.11.x/intro/version-0.11.x-serverless": {
         "title": "Serve GraphQL API without code",
-        "sidebar_label": "Serverless"
+        "sidebar_label": "In-memory API"
       },
       "version-0.11.x/intro/version-0.11.x-template": {
         "title": "Create client and server application from template",
@@ -283,8 +279,8 @@
       "Blog": "Blog"
     },
     "categories": {
+      "Introduction": "Introduction",
       "Getting Started": "Getting Started",
-      "Use Cases": "Use Cases",
       "CRUD": "CRUD",
       "Generator Plugins": "Generator Plugins",
       "Database": "Database",

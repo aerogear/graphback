@@ -4,43 +4,120 @@ title: Data Model
 original_id: datamodel
 ---
 
+Graphback processes your data model to generate a server and client side using best patterns for production ready applications and reduces amount of boilerplate code needed to be added by you.
+Developers can focus on data and application requirements by modeling them using a GraphQL SDL.
+
 ## Model
 
-Graphback is processing GraphQL Schema Language to generate server and client side artifacts to 
-introduce best patterns for production ready applications and reduce amount of boilerplate related with GraphQL usage.
-Developers can focus on data and application requirements by modeling them using GraphQL DSL.
-
-Graphback operates on GraphQL Schema types that are annotated with `""" @model """`.
-Adding this annotation to your type will enable Graphback Plugins to add additional elements to the schema
-and generate related code in language of your choice. 
-
-Graphback will work with any GraphQL compatible DSL schema even with already defined Queries and Mutations etc.
-
-## Example
+Graphback operates on GraphQL Schema types annotated with `@model`.
+Adding this annotation to your type will enable Graphback to add additional elements to the schema and generate related code in JavaScript or TypeScript.
 
 ```graphql
-""" @model """
+"""
+@model
+"""
+type Note {
+  ...
+}
+```
+
+## Primary key
+
+Graphback requires your data models to have one primary key field which is used to uniquely represent every object in the database.
+
+By default Graphback will use `id: ID` as the primary key.
+
+```graphql
+"""
+@model
+"""
+type Note {
+  id: ID!
+  ...
+}
+```
+
+You can set a custom primary key field using the `@db.primary` field annotation.
+
+```graphql
+"""
+@model
+"""
+type Note {
+  id: ID!
+  """
+  @db.primary
+  """
+  email: String
+}
+```
+
+## Relationships
+
+Graphback provides support for one-to-many and one-to-one relationships.
+
+### OneToMany
+
+```graphql
+"""
+@model
+"""
 type Note {
   id: ID!
   title: String!
-  description: String!
-  comment: [Comment!]!
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]
 }
-
-""" @model """
-type Comment {
-  id: ID!
-  title: String!
-  description: String!
-  note: Note!
-}
-
-type Query {
-  getNoteWithBigestNumberOfComments: Note!
-}
-
 ```
 
-Graphback requires your data models to have at least one field with `ID` type that will be used to uniquely represent every object in the database. 
-When your type has multiple `ID` scalars defined you can use `db.primary` annotation to define which one should be used as primary key.
-Objects can also reference each other using relationships.
+This creates a one-to-many relationship between `Note.comments` and `Comment.note`. If `Comment.note` does not exist Graphback will generate it for you, otherwise you can define it yourself.
+
+By default this maps to `comment.noteId` in the underlying data source. Yon can customise this by adding `key` to the `@oneToMany` annotation:
+
+```graphql
+"""
+@model
+"""
+type Note {
+  id: ID!
+  title: String!
+  """
+  @oneToMany field: 'note', key: 'note_id'
+  """
+  comments: [Comment]
+}
+```
+
+### OneToOne
+
+```graphql
+"""
+@model
+"""
+type Profile {
+  id: ID!
+  """
+  @oneToOne
+  """
+  user: User!
+}
+```
+
+This creates a one-sided relationship between the `Profile` and `User` models.
+
+By default this maps to `profile.userId` in the underlying data source. Yon can customise this by adding `key` to the `@oneToOne` annotation:
+
+```graphql
+"""
+@model
+"""
+type Profile {
+  id: ID!
+  """
+  @oneToOne key: 'user_id'
+  """
+  user: User!
+}
+```
