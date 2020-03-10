@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 
@@ -55,7 +55,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
-        let schema = metadata.getSchema();
+        const schema = metadata.getSchema();
         const models = metadata.getModelDefinitions();
         if (models.length === 0) {
             this.logWarning("Provided schema has no models. Returning original schema without any changes.")
@@ -63,16 +63,17 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             return schema;
         };
 
-        schema = this.buildSchemaModelRelationships(schema, models);
-
         const modelsSchema = this.buildSchemaForModels(models);
         const config = schema.toConfig();
         const modelsConfig = modelsSchema.toConfig();
 
-        const newSchema = new GraphQLSchema({
+        // merge CRUD types with models
+        let newSchema = new GraphQLSchema({
             ...config,
             ...modelsConfig
         })
+
+        newSchema = this.buildSchemaModelRelationships(newSchema, models);
 
         return newSchema;
     }
@@ -318,11 +319,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             modifiedType.addFields(newRelationshipFields);
         }
 
-        if (!schemaComposer.has('Query')) {
-            schemaComposer.createObjectTC('Query');
-            schemaComposer.Query.addFields({})
-        }
-
-        return schemaComposer.buildSchema()
+        return buildSchema(schemaComposer.toSDL({ exclude: ['schema'] }));
     }
 }

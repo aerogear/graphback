@@ -15,11 +15,3 @@ type Comment {
   text: String
   description: String
 }
-
-type Query {
-  mostLikedNote: Note!
-}
-
-type Mutation {
-  likeNote: Note!
-}
