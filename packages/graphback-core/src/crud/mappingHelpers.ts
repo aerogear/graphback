@@ -1,9 +1,8 @@
-import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { parseRelationshipAnnotation } from '../relationships/relationshipHelpers';
 import { transformForeignKeyName, getPrimaryKey } from '../db';
-import { getBaseType } from '../utils/getBaseType';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO is is esential to document this element
@@ -123,11 +122,11 @@ export function getRelationFieldName(field: any, type: any) {
 
 
 export function getInputFieldType(field: GraphQLField<any, any>): GraphQLNamedType {
-  let fieldType = getBaseType(field.type);
+  let fieldType = getNamedType(field.type);
 
   if (isObjectType(fieldType) && isModelType(fieldType)) {
     const idField = getPrimaryKey(fieldType);
-    fieldType = getBaseType(idField.type);
+    fieldType = getNamedType(idField.type);
   }
 
   return getNullableType(fieldType);
