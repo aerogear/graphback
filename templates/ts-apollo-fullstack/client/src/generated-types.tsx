@@ -17,6 +17,8 @@ export type Comment = {
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  /** @manyToOne field: 'comments', key: 'noteId' */
+  note?: Maybe<Note>;
 };
 
 export type CommentInput = {
@@ -71,7 +73,7 @@ export type Note = {
   id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  /** @oneToMany field: 'note' */
+  /** @oneToMany field: 'note', key: 'noteId' */
   comments: Array<Maybe<Comment>>;
 };
 
