@@ -1,23 +1,17 @@
 {
   "version-0.11.x-docs": {
-    "Getting Started": [
-      "version-0.11.x-gettingstarted",
-      "version-0.11.x-intro/quickstart",
-      "version-0.11.x-intro/concepts",
-      "version-0.11.x-intro/datamodel",
-      "version-0.11.x-intro/config"
+    "Introduction": [
+      "version-0.11.x-gettingstarted"
     ],
-    "Use Cases": [
-      "version-0.11.x-intro/usecases",
-      "version-0.11.x-intro/template",
+    "Getting Started": [
+      "version-0.11.x-intro/quickstart",
       "version-0.11.x-intro/existingproject",
-      "version-0.11.x-intro/serverless"
+      "version-0.11.x-intro/serverless",
+      "version-0.11.x-intro/datamodel"
     ],
     "CRUD": [
       "version-0.11.x-crud/crudspec",
-      "version-0.11.x-crud/crudruntime",
-      "version-0.11.x-crud/relationships",
-      "version-0.11.x-crud/crudmapping"
+      "version-0.11.x-crud/crudruntime"
     ],
     "Generator Plugins": [
       "version-0.11.x-plugins/plugin-intro",

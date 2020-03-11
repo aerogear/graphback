@@ -46,6 +46,8 @@ migrateDB(dbConfig, schemaText, {
   - `scalarMap`: Custom scalar mapping. Default: `null`.
   - `mapListToJson`: Map scalar lists to JSON column type by default.
   - `debug`: display debugging information and SQL queries.
+  - `removeDirectivesFromSchema`: Strips all directives from schema before processing.
+  - `operationFilter`: Filter out database operations that we don't want, e.g. prevent table deletion.
   - All other options are not currently supported by Graphback.
 
 ### Defining your data model
