@@ -30,7 +30,7 @@ const CreateNote: React.FC = () => {
                 />
                 <Button variant="outlined" color="primary" 
                     onClick={()=>{
-                        createNote({ variables: {title: newNoteTitle, description: newNoteDescription } });
+                        createNote({ variables: {input: {title: newNoteTitle, description: newNoteDescription }} });
                     }}>Add Note</Button>
                 </form>
             </Card>
