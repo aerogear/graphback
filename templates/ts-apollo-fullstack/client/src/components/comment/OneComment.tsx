@@ -1,23 +1,19 @@
 import React from 'react';
-import { useDeleteCommentMutation } from '../../generated-types';
+import { useDeleteCommentMutation, Comment } from '../../generated-types';
 import { Button } from '@material-ui/core';
 import './Comment.css';
 
-type comment ={
-    id:string,
-    text:string,
-    description:string,
-}
+ 
 
-const OneComment = ({id, text, description }: comment) => {
+const OneComment = ({ id, text, description }: Comment) => {
     const [deleteComment] = useDeleteCommentMutation();
 
-    return(
+    return (
         <div>
             <li className="comment">
-              <strong >{text}</strong>:&nbsp;
+                <strong >{text}</strong>:&nbsp;
               {description}
-              <Button variant="outlined" color="secondary"  onClick={()=>deleteComment({variables:{id:id}})}>Delete Comment</Button>
+                <Button variant="outlined" color="secondary" onClick={() => deleteComment({ variables: { input: { id: id } } })}>Delete Comment</Button>
             </li>
         </div>
     );

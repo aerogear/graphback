@@ -9,7 +9,6 @@ type createCommentProps = {
     addCommentState: any
 }
 
-
 const CreateComment = ({ noteId, addCommentState }: createCommentProps) => {
     const [createComment] = useCreateCommentMutation();
     const [newCommentTitle, setNewCommentTitle] = useState("");
@@ -34,7 +33,7 @@ const CreateComment = ({ noteId, addCommentState }: createCommentProps) => {
                     />
                     <Button variant="outlined" color="primary"
                         onClick={() => {
-                            createComment({ variables: { input: { text: newCommentTitle, description: newCommentDescription, : noteId } } });
+                            createComment({ variables: { input: { text: newCommentTitle, description: newCommentDescription, noteId: noteId } } });
                             addCommentState(false);
                         }}>Add Comment</Button>
                 </form>
