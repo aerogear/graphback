@@ -19,7 +19,7 @@ export type Comment = {
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  /** @manyToOne field: 'comments', key: 'noteId' */
+  /**  @manyToOne field: 'comments', key: 'noteId'  */
   note?: Maybe<Note>;
 };
 
@@ -27,6 +27,7 @@ export type CommentInput = {
   id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  noteId?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
