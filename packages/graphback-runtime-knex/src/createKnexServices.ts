@@ -3,7 +3,7 @@ import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { CRUDService, GraphbackPubSubModel } from "@graphback/runtime";
 import { PgKnexDBDataProvider } from './PgKnexDBDataProvider';
-import { KnexDBDataProvider } from './KnexDBDataProvider';
+import { PostgreDBDataProvider } from './PostgreDBDataProvider';
 
 /**
  * Helper function for creating array of datasources based on the model files that will 
@@ -65,7 +65,7 @@ export const createKnexCRUDRuntimeServices = (
       Please make sure that you pass the right schema to createCRUDRuntimeContext`)
     }
 
-    const objectDB = new KnexDBDataProvider(modelType, db)
+    const objectDB = new PostgreDBDataProvider(modelType, db)
 
     services[model.name] = new CRUDService(modelType, objectDB, {
       pubSub,

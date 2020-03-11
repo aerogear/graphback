@@ -1,6 +1,6 @@
 
 export * from "./PgKnexDBDataProvider"
-export * from "./KnexDBDataProvider"
+export * from "./PostgreDBDataProvider"
 export * from "./OffixDataProvider"
 
 // Helpers

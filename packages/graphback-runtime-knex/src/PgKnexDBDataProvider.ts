@@ -2,7 +2,7 @@ import { getDatabaseArguments } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { NoDataError } from '@graphback/runtime';
-import { KnexDBDataProvider } from './KnexDBDataProvider';
+import { PostgreDBDataProvider } from './PostgreDBDataProvider';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations.
@@ -11,7 +11,8 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
  * that works with the rest of the databases.
  */
 //tslint:disable-next-line: no-any
-export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends KnexDBDataProvider<Type, GraphbackContext>{
+
+export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends PostgreDBDataProvider<Type, GraphbackContext>{
 
     public constructor(baseType: GraphQLObjectType, db: Knex) {
         super(baseType, db);
