@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject, FieldRelationshipMetadata } from '@graphback/core'
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -131,11 +131,16 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     protected createInputTypes(model: ModelDefinition) {
         const modelFields = Object.values(model.graphqlType.getFields());
+
+        const relationshipFields = model.relationships.map((relationship: FieldRelationshipMetadata) => relationship.ownerField);
+
+        const allModelFields = [...modelFields, ...relationshipFields];
+
         const inputName = getInputTypeName(model.graphqlType.name);
 
         return new GraphQLInputObjectType({
             name: inputName,
-            fields: () => (modelFields.filter(isInputField).map((field: GraphQLField<any, any>) => {
+            fields: () => (allModelFields.filter(isInputField).map((field: GraphQLField<any, any>) => {
                 return {
                     name: getInputFieldName(field),
                     type: getInputFieldType(field),
