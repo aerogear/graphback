@@ -2,6 +2,7 @@ import { buildSchema, GraphQLSchema } from 'graphql';
 import { GraphbackCoreMetadata } from './GraphbackCoreMetadata';
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
 import { GraphbackPlugin } from './GraphbackPlugin';
+import { SchemaComposer } from 'graphql-compose';
 
 /**
  * Allows to execute chain of plugins that create resources. 
@@ -52,13 +53,20 @@ export class GraphbackPluginEngine {
         if (this.plugins.length === 0) {
             throw new Error("GraphbackEngine: No Graphback plugins registered")
         }
+        const schema = this.metadata.getSchema();
+
+        // This will be used to store intermediate schemas
+        const schemaComposer = new SchemaComposer(schema);
+
         //We need to apply all required changes to the schema we need 
         //This is to ensure that every plugin can add changes to the schema
         for (const plugin of this.plugins) {
             const newSchema = plugin.transformSchema(this.metadata);
-            this.metadata.setSchema(newSchema);
+            schemaComposer.merge(newSchema);
         }
 
+        // Set final schema
+        this.metadata.setSchema(schemaComposer.buildSchema());
         return this.metadata;
     }
 }
