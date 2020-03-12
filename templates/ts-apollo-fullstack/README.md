@@ -32,6 +32,9 @@ yarn start:server
 ```
 
 - Generate React components
+```
+yarn codegen:client
+```
 
 - Start React App
 

@@ -8,13 +8,14 @@ const App: React.FC = () => {
   const allNotes = useFindAllNotesQuery();
   allNotes.startPolling(2000);
   console.log(allNotes.data?.findAllNotes)
- 
+
   return (
     <div>
       <CreateNote></CreateNote>
       <ul>
         {
-          allNotes.data && allNotes.data.findAllNotes.map((note) => (
+          // TODO fix typings
+          allNotes.data && allNotes.data.findAllNotes.map((note: any) => (
             <OneNote key={note.id} id={note.id} title={note.title} description={note.description} comments={note.comments}></OneNote>
           ))
         }

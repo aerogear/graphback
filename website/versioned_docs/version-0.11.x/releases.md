@@ -9,6 +9,11 @@ original_id: releases
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.11.1
+
+- Fixed issue where root query type needed to properly created final schema.
+- Remove serve from graphback-cli
+
 # 0.11.0
 
 New features:

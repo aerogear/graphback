@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "apollo-boost": "0.4.7",
-    "graphback": "0.11.1",
+    "graphback": "0.11.2",
     "graphql-testx": "0.3.0",
     "knex": "0.20.11",
     "node-fetch": "2.6.0"
@@ -37,7 +37,7 @@
   "devDependencies": {
     "sqlite3": "4.1.1",
     "ava": "2.4.0",
-    "graphql": "15.0.0-rc.2",
+    "graphql": "14.6.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",

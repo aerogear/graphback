@@ -9,21 +9,19 @@ Graphback Config allows you to control and configure all those use cases for you
 The Core of Graphback will take your GraphQL Schema types annotated by `model` and perform various operations on them like:
 
 - Code generation
-- DB migrations
+- Database migrations
 - InMemory GraphQL API. 
 
 All those operations could be controlled by `crud` flags that enable or disable various data access methods in plugins and runtime. 
- These include `create`, `update`, `delete`, `find` and `findAll`.
-
-Graphback allows the user to customize all process by using open configuration standard `graphql-config`:
-https://graphql-config.com/docs/introduction
+These include `create`, `update`, `delete`, `find` and `findAll`.
 
 ## Configuration
 
-Each project needs to have .graphqlrc.yml file available in the root folder. 
-This file is also automatically generated when using `graphback config` command.
+Graphback allows you to customize all processes by using the open configuration standard [GraphQL Config](https://graphql-config.com).
 
-Typical configuration looks as follows
+Each project needs to have a `.graphqlrc.yml` file available in the root folder. In new projects this will be added for you. For existing projects you can run `graphback config` to generate one for you - see [Adding to existing project](/docs/existingproject).
+
+Typical configuration looks like this:
 
 ```yaml
 ## Schema is not used by graphback but it is required by graphql-config and can be used by other extensions
@@ -70,18 +68,16 @@ extensions:
       database: users
       host: localhost
       port: 55432
-        
 
 ```
-Changing `crud` flags and performing `graphback generate`, regenerates your `schema` and `resolvers` with provided config.
-> **Note**: For subscriptions, the user needs to change the value of the respective operations to `true`. For example, changing
-`subDelete` to `true` won't work unless, `delete` is `true`.
+Changing `crud` flags and running `graphback generate` will update the `schema` and `resolvers` using the latest config.
 
-## Changing CRUD configuration for the type
+> **Note**: For subscriptions, the user needs to change the value of the respective operations to `true`. For example, changing `subDelete` to `true` won't work unless, `delete` is `true`.
+
+## Changing CRUD configuration per type
 
 Generator config applies the config to all the types in your schema. 
-Graphback allows you to change these for any single type using [`graphql-metadata`](https://github.com/aerogear/graphql-metadata).
-
+Graphback allows you to change these for any single type using annotations.
 
 ```graphql
 """
@@ -92,7 +88,9 @@ type User {
   ....
 }
 ```
-or to enable it
+
+or to enable it:
+
 ```graphql
 """
 @crud.create
@@ -103,6 +101,7 @@ type User {
 ```
  
 #### Available Options
+
 All config options can be replicated by specifying the `@crud.` prefix
 
 ```
@@ -117,8 +116,10 @@ All config options can be replicated by specifying the `@crud.` prefix
 ```
 
 You can use these annotations to have more control over individual elements. For example:
+
 ```
 """
+@model
 @crud.delete
 """
 type Note {
@@ -127,4 +128,4 @@ type Note {
 ```
 will create the `delete` mutation for `Note` type.
 
-> **Note**: Annotations override the configuration flags to `true`
+> **Note**: Annotations override the configuration values in `.graphqlrc.yml`.

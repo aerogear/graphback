@@ -1,6 +1,6 @@
 {
   "name": "@graphback/core",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "Api for building Graphback generator metadata",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -37,7 +37,8 @@
     "@types/pino": "5.20.0",
     "ava": "2.4.0",
     "graphql": "15.0.0-rc.2",
-    "nyc": "^15.0.0",
+    "nyc": "15.0.0",
+    "graphql": "14.6.0",
     "rimraf": "3.0.2",
     "ts-node": "8.6.2",
     "tslint": "5.20.1",
