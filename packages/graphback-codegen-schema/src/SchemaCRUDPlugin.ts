@@ -120,9 +120,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
         }
 
-        // const customQueryTypes = this.createCustomRootTypes(schema.getQueryType());
-        // const customMutationTypes = this.createCustomRootTypes(schema.getMutationType());
-        // const customSubscriptionTypes = this.createCustomRootTypes(schema.getSubscriptionType());
 
         schemaComposer.Query.addFields(queryTypes);
         schemaComposer.Mutation.addFields(mutationTypes);
