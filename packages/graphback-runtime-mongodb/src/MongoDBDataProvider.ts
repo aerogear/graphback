@@ -71,6 +71,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: { softDelete: true } });
       if (result && result[0]) {
         result[0][idField.name] = result[0]._id;
+        
         return queryResult[0];
       }
     }
