@@ -1,6 +1,5 @@
-import { GraphQLField, GraphQLObjectType } from "graphql";
+import { GraphQLField, GraphQLObjectType, getNamedType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
-import { getBaseType } from '../utils/getBaseType';
 
 /**
  * Returns the primary key field of a GraphQL object.
@@ -16,7 +15,7 @@ export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any,
   let primariesCount = 0;
   for (const field of fields) {
     const dbConfig: any = parseDbAnnotations(field);
-    const baseType = getBaseType(field.type);
+    const baseType = getNamedType(field.type);
 
     if (dbConfig.primary) {
       primaryKey = field;
