@@ -63,6 +63,21 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
+  public async softDelete(data: Type): Promise<Type> {
+    const { idField } = getDatabaseArguments(this.tableMap, data);
+
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) });
+    if (queryResult) {
+      const queryResult = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: { soft_delete: true } });
+      if (queryResult && queryResult[0]) {
+        queryResult[0][idField.name] = queryResult[0]._id;
+
+        return queryResult[0];
+      }
+    }
+    throw new NoDataError(`Cannot update ${this.collectionName}`);
+  }
+
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
     const query = this.db.collection(this.collectionName).find({});
     const data = await this.usePage(query, page);
@@ -141,7 +156,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (page) {
       page.limit = page.limit || defaultLimit
       page.offset = page.offset || defaultOffset
-      
+
       return query.skip(page.offset).limit(page.limit).toArray();
     } else {
       return query.toArray();
