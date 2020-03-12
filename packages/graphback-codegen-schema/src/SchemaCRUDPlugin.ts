@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject, FieldRelationshipMetadata } from '@graphback/core'
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLArgument } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 
@@ -63,15 +63,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             return schema;
         };
 
-        const modelsSchema = this.buildSchemaForModels(models);
-        const config = schema.toConfig();
-        const modelsConfig = modelsSchema.toConfig();
-
-        // merge CRUD types with models
-        let newSchema = new GraphQLSchema({
-            ...config,
-            ...modelsConfig
-        })
+        let newSchema = this.buildSchemaForModels(schema, models);
 
         newSchema = this.buildSchemaModelRelationships(newSchema, models);
 
@@ -114,7 +106,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return SCHEMA_CRUD_PLUGIN_NAME;
     }
 
-    protected buildSchemaForModels(models: ModelDefinition[]) {
+    protected buildSchemaForModels(schema: GraphQLSchema, models: ModelDefinition[]) {
         let queryTypes = {};
         let mutationTypes = {};
         let subscriptionTypes = {};
@@ -126,7 +118,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
         }
 
-        return this.createSchema(queryTypes, mutationTypes, subscriptionTypes);
+        const customQueryTypes = this.createCustomRootTypes(schema.getQueryType());
+        const customMutationTypes = this.createCustomRootTypes(schema.getMutationType());
+        const customSubscriptionTypes = this.createCustomRootTypes(schema.getSubscriptionType());
+
+        return this.createSchema(
+            { ...queryTypes, ...customQueryTypes },
+            { ...mutationTypes, ...customMutationTypes },
+            { ...subscriptionTypes, ...customSubscriptionTypes }
+        );
     }
 
     protected createInputTypes(model: ModelDefinition) {
@@ -296,6 +296,32 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
 
         return queryTypes;
+    }
+
+    protected createCustomRootTypes(inputRootType: GraphQLObjectType) {
+        if (!inputRootType) {
+            return {};
+        }
+        
+        const queryFields = Object.values(inputRootType.getFields());
+
+        const rootTypeFields = {};
+        for (const field of queryFields) {
+            rootTypeFields[field.name] = {
+                type: field.type,
+                args: field.args.reduce((argsObj: any, arg: GraphQLArgument) => {
+                    argsObj[arg.name] = {
+                        type: arg.type,
+                        default: arg.defaultValue
+                    }
+
+                    return argsObj;
+                }, {}),
+                description: field.description,
+            }
+        }
+
+        return rootTypeFields;
     }
 
     /**
