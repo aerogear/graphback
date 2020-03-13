@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create simple table 1`] = `
+Array [
+  Object {
+    "priority": 0,
+    "table": "User",
+    "type": "table.create",
+  },
+  Object {
+    "comment": "Some comment",
+    "priority": 0,
+    "table": "User",
+    "type": "table.comment.set",
+  },
+  Object {
+    "column": "id",
+    "columnType": "increments",
+    "priority": 0,
+    "table": "User",
+    "type": "table.primary.set",
+  },
+  Object {
+    "args": Array [
+      150,
+    ],
+    "column": "name",
+    "columnType": "string",
+    "comment": undefined,
+    "defaultValue": undefined,
+    "nullable": true,
+    "priority": 0,
+    "table": "User",
+    "type": "column.create",
+  },
+]
+`;
