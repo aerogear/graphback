@@ -1,26 +1,25 @@
-import ava, { ExecutionContext } from 'ava';
 import { hasListType } from '../src/utils/hasListType';
 import { GraphQLNonNull, GraphQLList, GraphQLFloat } from 'graphql';
 
-ava('should return false for plain output type', (t: ExecutionContext) => {
+test('should return false for plain output type', () => {
     const outputType = GraphQLFloat;
     const hasList = hasListType(outputType);
     t.assert(!hasList);
 });
 
-ava('should return false for wrapped output type', (t: ExecutionContext) => {
+test('should return false for wrapped output type', () => {
     const outputType = GraphQLNonNull(GraphQLFloat);
     const hasList = hasListType(outputType);
     t.assert(!hasList);
 });
 
-ava('should return true for list output type', (t: ExecutionContext) => {
+test('should return true for list output type', () => {
     const outputType = GraphQLList(GraphQLFloat);
     const hasList = hasListType(outputType);
     t.assert(hasList);
 });
 
-ava('should return true for wrapped list', (t: ExecutionContext) => {
+test('should return true for wrapped list', () => {
     const outputType = GraphQLNonNull(GraphQLList(GraphQLFloat));
     const hasList = hasListType(outputType);
     t.assert(hasList);

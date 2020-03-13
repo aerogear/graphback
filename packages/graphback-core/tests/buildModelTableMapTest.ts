@@ -1,9 +1,8 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { buildModelTableMap } from '../src/db/buildModelTableMap';
 
-ava('should build model-table mapping using default values', (t: ExecutionContext) => {
+test('should build model-table mapping using default values', () => {
     const schema = buildSchema(`
     """
     @model
@@ -18,10 +17,10 @@ ava('should build model-table mapping using default values', (t: ExecutionContex
     const modelTableMap = buildModelTableMap(userModel);
 
     t.assert(modelTableMap.tableName === 'user');
-    t.deepEqual(modelTableMap.fieldMap, {});
+    expect(modelTableMap.fieldMap).toEqual({});
 });
 
-ava('should build mapping using custom values from mapping annotations', (t: ExecutionContext) => {
+test('should build mapping using custom values from mapping annotations', () => {
     const schema = buildSchema(`
     """
     @model
@@ -49,11 +48,13 @@ ava('should build mapping using custom values from mapping annotations', (t: Exe
     const modelTableMap = buildModelTableMap(userModel);
 
     t.assert(modelTableMap.tableName === 'user_account');
-    t.deepEqual(modelTableMap.fieldMap, { email: 'user_email', name: 'userName', accountConfirmed: 'AccountConfirmed' });
-    t.snapshot(JSON.stringify(modelTableMap, undefined, 1))
+    expect(modelTableMap.fieldMap).toEqual(
+        { email: 'user_email', name: 'userName', accountConfirmed: 'AccountConfirmed' }
+    );
+    expect(JSON.stringify(modelTableMap, undefined, 1)).toMatchSnapshot()
 });
 
-ava('should use default ID field', (t: ExecutionContext) => {
+test('should use default ID field', () => {
     const schema = buildSchema(`
     """
     @model
@@ -71,7 +72,7 @@ ava('should use default ID field', (t: ExecutionContext) => {
     t.assert(modelTableMap.idField === 'id')
 });
 
-ava('should use custom ID field from annotation', (t: ExecutionContext) => {
+test('should use custom ID field from annotation', () => {
     const schema = buildSchema(`
     """
     @model
@@ -92,7 +93,7 @@ ava('should use custom ID field from annotation', (t: ExecutionContext) => {
     t.assert(modelTableMap.idField === 'user_email');
 });
 
-ava('should throw error if no ID Field', (t: ExecutionContext) => {
+test('should throw error if no ID Field', () => {
     const schema = buildSchema(`
     """
     @model
@@ -104,5 +105,5 @@ ava('should throw error if no ID Field', (t: ExecutionContext) => {
 
     const userModel = schema.getType("User") as GraphQLObjectType;
 
-    t.throws(() => buildModelTableMap(userModel), 'User type has no primary field.');
+    expect(() => buildModelTableMap(userModel)).toThrowError('User type has no primary field.');
 });

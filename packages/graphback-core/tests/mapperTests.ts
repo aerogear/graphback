@@ -1,15 +1,14 @@
 //eslint-disable-next-line @typescript-eslint/tslint/config
-import ava, { ExecutionContext } from 'ava';
-import { getFieldName, getSubscriptionName, GraphbackOperationType } from '../src'
+import { getFieldName, getSubscriptionName, GraphbackOperationType } from '../src';
 
 
-ava('Test plugin engine', async (t: ExecutionContext) => {
+test('Test plugin engine', async () => {
 
     const fieldName = getFieldName('unicorn', GraphbackOperationType.FIND_ALL);
 
-    t.deepEqual(fieldName, 'findAllUnicorns');
+    expect(fieldName).toEqual('findAllUnicorns');
 
     const sub = getSubscriptionName('unicorn', GraphbackOperationType.CREATE);
 
-    t.deepEqual(sub, 'newUnicorn');
+    expect(sub).toEqual('newUnicorn');
 });

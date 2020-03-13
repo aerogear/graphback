@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/tslint/config
-import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { RESTDataProvider } from '../../src/data/RESTDataProvider';
 

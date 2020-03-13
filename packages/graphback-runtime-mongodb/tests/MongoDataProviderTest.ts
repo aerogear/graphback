@@ -1,5 +1,4 @@
 //tslint:disable-next-line: match-default-export-name
-import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient } from 'mongodb';
@@ -67,7 +66,7 @@ test('Test mongo crud', async (t: any) => {
 
   const data = await t.context.provider.delete({ id: todo.id });
 
-  t.deepEqual(data.id, todo.id);
+  expect(data.id).toEqual(todo.id);
 });
 
 

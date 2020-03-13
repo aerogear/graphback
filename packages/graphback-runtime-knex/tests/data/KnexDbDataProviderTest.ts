@@ -1,5 +1,4 @@
 //tslint:disable-next-line: match-default-export-name
-import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
@@ -84,7 +83,7 @@ test('update Todo', async t => {
 test('delete Todo', async t => {
   const data = await t.context.provider.delete({ id: '3' });
 
-  t.deepEqual(data.id, 3);
+  expect(data.id).toEqual(3);
 });
 
 test('find all Todos', async t => {
