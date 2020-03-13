@@ -39,7 +39,12 @@ class TestPlugin extends GraphbackPlugin {
   }
 }
 
+const context = {
+  model: undefined
+};
+
 test('Test plugin engine', async () => {
+  
   const crudMethods = {
     "create": true,
     "update": true,
@@ -51,10 +56,11 @@ test('Test plugin engine', async () => {
   let engine = new GraphbackPluginEngine(schemaText, { crudMethods: {} });
   engine = new GraphbackPluginEngine(buildSchema(schemaText), { crudMethods: crudMethods });
   expect.assertions(6);
+
   expect(engine.createResources).toThrow()
   const plugin = new TestPlugin((callbackModel: any) => {
     //eslint-disable-next-line dot-notation
-    t.context['model'] = callbackModel;
+    context['model'] = callbackModel;
   })
 
   engine.registerPlugin(plugin, plugin, plugin)
