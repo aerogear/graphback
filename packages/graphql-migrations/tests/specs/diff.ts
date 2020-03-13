@@ -55,7 +55,7 @@ test('create simple table', async () => {
       ]
     }),
   ]))
-  t.assert(result.length === 4)
+  expect(result.length).toEqual(4);
 
   expect(result[0]).toEqual({
     type: 'table.create',
@@ -103,7 +103,7 @@ test('rename table', async () => {
       },
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'table.rename',
     fromName: 'User',
@@ -126,7 +126,7 @@ test('update table comment', async () => {
   ]), {
     updateComments: true,
   })
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'table.comment.set',
     table: 'User',
@@ -151,7 +151,7 @@ test('set primary key', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'table.primary.set',
     table: 'User',
@@ -187,7 +187,7 @@ test('add column', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.create',
     table: 'User',
@@ -223,7 +223,7 @@ test('add and remove column', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 2)
+  expect(result.length).toEqual(2);
   expect(result[0]).toEqual({
     type: 'column.drop',
     table: 'User',
@@ -268,7 +268,7 @@ test('rename column', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.rename',
     table: 'User',
@@ -304,7 +304,7 @@ test('change column comment', async () => {
   ]), {
     updateComments: true,
   })
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.alter',
     table: 'User',
@@ -340,7 +340,7 @@ test('change column type', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.alter',
     table: 'User',
@@ -378,7 +378,7 @@ test('change column type args', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.alter',
     table: 'User',
@@ -416,7 +416,7 @@ test('change column nullable', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.alter',
     table: 'User',
@@ -454,7 +454,7 @@ test('change column default value', async () => {
       ],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'column.alter',
     table: 'User',
@@ -500,7 +500,7 @@ test('change anonymous index', async () => {
       indexes: [{ columns: ['email'] }],
     }),
   ]))
-  t.assert(result.length === 2)
+  expect(result.length).toEqual(2);
   expect(result[0]).toEqual({
     type: 'table.index.drop',
     table: 'User',
@@ -550,7 +550,7 @@ test('change named index', async () => {
       indexes: [{ columns: ['email'], name: 'foo' }],
     }),
   ]))
-  t.assert(result.length === 2)
+  expect(result.length).toEqual(2);
   expect(result[0]).toEqual({
     type: 'table.index.drop',
     table: 'User',
@@ -600,7 +600,7 @@ test('untouched named index', async () => {
       indexes: [{ columns: ['id'], name: 'foo' }],
     }),
   ]))
-  t.assert(result.length === 1)
+  expect(result.length).toEqual(1);
   expect(result[0]).toEqual({
     type: 'table.index.drop',
     indexName: undefined,
@@ -619,7 +619,7 @@ test('create table & join table', async () => {
       name: 'user_groups_join_group_users',
     }),
   ]))
-  t.assert(result.length === 2)
+  expect(result.length).toEqual(2);
   expect(result[0]).toEqual({
     type: 'table.create',
     table: 'user',
