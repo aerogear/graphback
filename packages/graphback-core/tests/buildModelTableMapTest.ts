@@ -16,7 +16,7 @@ test('should build model-table mapping using default values', () => {
 
     const modelTableMap = buildModelTableMap(userModel);
 
-    t.assert(modelTableMap.tableName === 'user');
+    expect(modelTableMap.tableName).toEqual('user');
     expect(modelTableMap.fieldMap).toEqual({});
 });
 
@@ -47,7 +47,7 @@ test('should build mapping using custom values from mapping annotations', () => 
 
     const modelTableMap = buildModelTableMap(userModel);
 
-    t.assert(modelTableMap.tableName === 'user_account');
+    expect(modelTableMap.tableName).toEqual('user_account');
     expect(modelTableMap.fieldMap).toEqual(
         { email: 'user_email', name: 'userName', accountConfirmed: 'AccountConfirmed' }
     );
@@ -69,7 +69,7 @@ test('should use default ID field', () => {
 
     const modelTableMap = buildModelTableMap(userModel);
 
-    t.assert(modelTableMap.idField === 'id')
+    expect(modelTableMap.idField).toEqual('id');
 });
 
 test('should use custom ID field from annotation', () => {
@@ -90,7 +90,7 @@ test('should use custom ID field from annotation', () => {
 
     const modelTableMap = buildModelTableMap(userModel);
 
-    t.assert(modelTableMap.idField === 'user_email');
+    expect(modelTableMap.idField).toEqual('user_email');
 });
 
 test('should throw error if no ID Field', () => {

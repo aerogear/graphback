@@ -29,8 +29,8 @@
     "typescript": "3.8.3"
   },
   "scripts": {
-    "test": "nyc lerna run test",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "bootstrap": "lerna bootstrap --no-ci",
     "lint": "eslint 'packages/*/src/**/*.ts'",
     "lint-fix": "eslint 'packages/*/src/**/*.ts' --fix",

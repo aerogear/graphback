@@ -17,7 +17,7 @@ test('should get primary from id: ID field', () => {
 
     const primaryKey = getPrimaryKey(userModel);
 
-    t.assert(primaryKey.name === 'id');
+    expect(primaryKey.name).toEqual('id');
 });
 
 test('should get primary key from @db.primary annotation', () => {
@@ -38,7 +38,7 @@ test('should get primary key from @db.primary annotation', () => {
 
     const primaryKey = getPrimaryKey(userModel);
 
-    t.assert(primaryKey.name === 'email');
+    expect(primaryKey.name).toEqual('email');
 });
 
 test('should throw an error if no primary key in model', () => {
