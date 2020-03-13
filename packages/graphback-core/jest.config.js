@@ -18,7 +18,7 @@ module.exports = {
     `<rootDir>/packages/${packageName}`,
   ],
   collectCoverageFrom: [
-      'src/**/*.{ts}',
+    `<rootDir>/packages/${packageName}/src/**/*`,
   ],
   testRegex: '(/tests/.*)\\.(tsx?)$',
   testURL: 'http://localhost/',

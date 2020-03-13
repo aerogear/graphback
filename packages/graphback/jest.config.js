@@ -5,20 +5,16 @@ const packageName = require("./package.json").name;
 module.exports = {
   ...baseConfig,
   rootDir: '../..',
-  'preset': 'ts-jest',
+  preset: 'ts-jest',
   moduleFileExtensions: [
     "ts",
-    "js",
-    "json",
-    "jsx",
-    "tsx",
-    "node"
+    "js"
   ],
   roots: [
     `<rootDir>/packages/${packageName}`,
   ],
   collectCoverageFrom: [
-      'src/**/*.{ts,tsx}',
+      `<rootDir>/packages/${packageName}/src/**/*`,
   ],
   testRegex: '(/tests/.*)\\.(tsx?)$',
   testURL: 'http://localhost/',
