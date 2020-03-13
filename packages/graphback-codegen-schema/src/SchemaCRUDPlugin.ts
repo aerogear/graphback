@@ -63,11 +63,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             return schema;
         };
 
-        let newSchema = this.buildSchemaForModels(schema, models);
+        const schemaComposer = new SchemaComposer(schema)
+        
+        this.buildSchemaForModels(schemaComposer, models);
 
-        newSchema = this.buildSchemaModelRelationships(newSchema, models);
+        this.buildSchemaModelRelationships(schemaComposer, models);
 
-        return newSchema;
+        return schemaComposer.buildSchema();
     }
 
     public createResources(metadata: GraphbackCoreMetadata): void {
@@ -106,7 +108,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return SCHEMA_CRUD_PLUGIN_NAME;
     }
 
-    protected buildSchemaForModels(schema: GraphQLSchema, models: ModelDefinition[]) {
+    protected buildSchemaForModels(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
         let queryTypes = {};
         let mutationTypes = {};
         let subscriptionTypes = {};
@@ -118,15 +120,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
         }
 
-        const customQueryTypes = this.createCustomRootTypes(schema.getQueryType());
-        const customMutationTypes = this.createCustomRootTypes(schema.getMutationType());
-        const customSubscriptionTypes = this.createCustomRootTypes(schema.getSubscriptionType());
 
-        return this.createSchema(
-            { ...queryTypes, ...customQueryTypes },
-            { ...mutationTypes, ...customMutationTypes },
-            { ...subscriptionTypes, ...customSubscriptionTypes }
-        );
+        schemaComposer.Query.addFields(queryTypes);
+        schemaComposer.Mutation.addFields(mutationTypes);
+        schemaComposer.Subscription.addFields(subscriptionTypes);
     }
 
     protected createInputTypes(model: ModelDefinition) {
@@ -298,41 +295,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return queryTypes;
     }
 
-    protected createCustomRootTypes(inputRootType: GraphQLObjectType) {
-        if (!inputRootType) {
-            return {};
-        }
-        
-        const queryFields = Object.values(inputRootType.getFields());
-
-        const rootTypeFields = {};
-        for (const field of queryFields) {
-            rootTypeFields[field.name] = {
-                type: field.type,
-                args: field.args.reduce((argsObj: any, arg: GraphQLArgument) => {
-                    argsObj[arg.name] = {
-                        type: arg.type,
-                        default: arg.defaultValue
-                    }
-
-                    return argsObj;
-                }, {}),
-                description: field.description,
-            }
-        }
-
-        return rootTypeFields;
-    }
-
     /**
      * Add relationship fields to GraphQL model types
      * 
      * @param schema 
      * @param models 
      */
-    private buildSchemaModelRelationships(schema: GraphQLSchema, models: ModelDefinition[]) {
-        const schemaComposer = new SchemaComposer(schema)
-
+    private buildSchemaModelRelationships(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
         // create or update relationship fields to the model types.
         for (const model of models) {
             const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
@@ -349,7 +318,5 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
             modifiedType.addFields(newRelationshipFields);
         }
-
-        return buildSchema(schemaComposer.toSDL({ exclude: ['schema'] }));
     }
 }
