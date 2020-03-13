@@ -23,6 +23,9 @@ jobs:
           name: run lint
           command: yarn lint
       - run:
+          name: build-packages
+          command: yarn build
+      - run:
           name: test
           command: yarn test
   npm_publish:
