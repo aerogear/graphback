@@ -13,20 +13,7 @@
     "build": "tsc",
     "watch": "tsc -w ",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
-    "test": "jest",
-    "pretest": "yarn build"
-  },
-  "ava": {
-    "files": [
-      "tests/**/*"
-    ],
-    "compileEnhancements": false,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
+    "test": "jest"
   },
   "engines": {
     "node": ">=10.15.3"
@@ -41,7 +28,7 @@
     "ts-jest": "25.2.1",
     "tsutils": "3.17.1",
     "typescript": "3.8.3",
-    "jest": "^25.0.0"
+    "jest": "25.1.0"
   },
   "license": "Apache-2.0",
   "dependencies": {
