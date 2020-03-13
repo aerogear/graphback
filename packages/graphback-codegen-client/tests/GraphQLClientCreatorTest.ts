@@ -1,14 +1,12 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { readFileSync } from 'fs';
 import { GraphbackCoreMetadata } from '@graphback/core';
-//eslint-disable-next-line @typescript-eslint/tslint/config
-import ava, { ExecutionContext } from 'ava';
 import { buildSchema } from 'graphql';
 import { ClientCRUDPlugin } from '../src'
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
-ava('Test plugin engine ts', async (t: ExecutionContext) => {
+test('Test plugin engine ts', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
@@ -19,11 +17,11 @@ ava('Test plugin engine ts', async (t: ExecutionContext) => {
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
   const plugin = new ClientCRUDPlugin({ format: 'ts', outputPath: './tmp' });
-  t.snapshot(plugin.getDocuments(metadata));
+  expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
 
 
-ava('Test plugin engine gql', async (t: ExecutionContext) => {
+test('Test plugin engine gql', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
@@ -34,11 +32,11 @@ ava('Test plugin engine gql', async (t: ExecutionContext) => {
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
   const plugin = new ClientCRUDPlugin({ format: 'graphql', outputPath: './tmp' });
-  t.snapshot(plugin.getDocuments(metadata));
+  expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
 
 
-ava('Test plugin engine gqlfragments', async (t: ExecutionContext) => {
+test('Test plugin engine gqlfragments', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
@@ -49,5 +47,5 @@ ava('Test plugin engine gqlfragments', async (t: ExecutionContext) => {
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
   const plugin = new ClientCRUDPlugin({ format: 'gqlwithfragment', outputPath: './tmp' });
-  t.snapshot(plugin.getDocuments(metadata));
+  expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });

@@ -1,8 +1,7 @@
-import test, { ExecutionContext } from 'ava';
 import { Operation } from '../../src/diff/Operation'
 import { sortOps } from '../../src/util/sortOps'
 
-test('sort ops by type priority', (t: ExecutionContext) => {
+test('sort ops by type priority', () => {
   const ops: Operation[] = [
     { type: 'table.index.drop', priority: 0 },
     { type: 'column.create', priority: 0 },
@@ -11,7 +10,7 @@ test('sort ops by type priority', (t: ExecutionContext) => {
     { type: 'table.drop', priority: 0 },
   ]
   ops.sort(sortOps)
-  t.deepEqual(ops, [
+  expect(ops).toEqual([
     { type: 'table.unique.drop', priority: 0 },
     { type: 'table.index.drop', priority: 0 },
     { type: 'table.drop', priority: 0 },
@@ -20,7 +19,7 @@ test('sort ops by type priority', (t: ExecutionContext) => {
   ])
 })
 
-test('sort ops by priority', (t: ExecutionContext) => {
+test('sort ops by priority', () => {
   const ops: Operation[] = [
     { type: 'table.create', priority: 1 },
     { type: 'table.create', priority: 0 },
@@ -28,7 +27,7 @@ test('sort ops by priority', (t: ExecutionContext) => {
     { type: 'table.create', priority: 2 },
   ]
   ops.sort(sortOps)
-  t.deepEqual(ops, [
+  expect(ops).toEqual([
     { type: 'table.create', priority: 0 },
     { type: 'table.create', priority: 1 },
     { type: 'table.create', priority: 2 },

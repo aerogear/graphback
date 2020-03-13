@@ -1,10 +1,9 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import ava, { ExecutionContext } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { buildModelTableMap } from '../src/db/buildModelTableMap';
 import { getDatabaseArguments } from '../src/db/dataMapper';
 
-ava('should map to default ID field', (t: ExecutionContext) => {
+test('should map to default ID field', () => {
     const schema = buildSchema(`
     """
     @model
@@ -27,10 +26,10 @@ ava('should map to default ID field', (t: ExecutionContext) => {
 
     const args = getDatabaseArguments(modelTableMap, data);
 
-    t.deepEqual(args.idField, { name: 'id', value: 1 })
+    expect(args.idField).toEqual({ name: 'id', value: 1 })
 });
 
-ava('should map to default custom ID field from annotations', (t: ExecutionContext) => {
+test('should map to default custom ID field from annotations', () => {
     const schema = buildSchema(`
     """
     @model
@@ -56,5 +55,5 @@ ava('should map to default custom ID field from annotations', (t: ExecutionConte
 
     const args = getDatabaseArguments(modelTableMap, data);
 
-    t.deepEqual(args.idField, { name: 'email', value: 'johndoe@gmail.com' })
+    expect(args.idField).toEqual({ name: 'email', value: 'johndoe@gmail.com' })
 });

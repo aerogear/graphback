@@ -1,5 +1,4 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
@@ -130,7 +129,7 @@ test('delete Todo', async t => {
     text: 'my updated first todo',
   });
 
-  t.deepEqual(data.id, 3);
+  expect(data.id).toEqual(3);
 });
 
 test('find all Todos', async t => {

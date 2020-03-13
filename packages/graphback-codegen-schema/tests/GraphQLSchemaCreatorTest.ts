@@ -1,12 +1,11 @@
 import { readFileSync } from 'fs';
-import test, { ExecutionContext } from 'ava';
 import { buildSchema, printSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
-test('Test snapshot config gql', async (t: ExecutionContext) => {
+test('Test snapshot config gql', async () => {
   const defautConfig = {
     "create": true,
     "update": true,
@@ -24,11 +23,11 @@ test('Test snapshot config gql', async (t: ExecutionContext) => {
     crudMethods: defautConfig
   }, buildSchema(schemaText))
   const schema = schemaGenerator.transformSchema(metadata)
-  t.snapshot(printSchema(schema));
+  expect(printSchema(schema)).toMatchSnapshot();
 });
 
 
-test('Test snapshot config ts', async (t: ExecutionContext) => {
+test('Test snapshot config ts', async () => {
   const defautConfig = {
     "create": true,
     "update": true,
@@ -46,11 +45,11 @@ test('Test snapshot config ts', async (t: ExecutionContext) => {
     crudMethods: defautConfig
   }, buildSchema(schemaText))
   const schema = schemaGenerator.transformSchema(metadata)
-  t.snapshot(printSchema(schema));
+  expect(printSchema(schema)).toMatchSnapshot();
 });
 
 
-test('Test snapshot config js', async (t: ExecutionContext) => {
+test('Test snapshot config js', async () => {
   const defautConfig = {
     "create": true,
     "update": true,
@@ -68,5 +67,5 @@ test('Test snapshot config js', async (t: ExecutionContext) => {
     crudMethods: defautConfig
   }, buildSchema(schemaText))
   const schema = schemaGenerator.transformSchema(metadata)
-  t.snapshot(printSchema(schema));
+  expect(printSchema(schema)).toMatchSnapshot();
 });
