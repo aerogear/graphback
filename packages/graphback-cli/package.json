@@ -39,7 +39,7 @@
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/js-yaml": "3.12.2",
-    "@types/node": "12.12.29",
+    "@types/node": "12.12.30",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.30",
     "@types/yargs": "15.0.4",
