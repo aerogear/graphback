@@ -6,7 +6,7 @@ type Comment {
   text: String
   description: String
 
-  """ @manyToOne field: 'comments', key: 'noteId' """
+  """@manyToOne field: 'comments', key: 'noteId'"""
   note: Note
 }
 
@@ -14,7 +14,7 @@ input CommentInput {
   id: ID
   text: String
   description: String
-  noteId: String
+  noteId: ID
 }
 
 type Mutation {
@@ -43,6 +43,7 @@ input NoteInput {
 }
 
 type Query {
+  test: String @deprecated
   findAllNotes(limit: Int, offset: Int): [Note]!
   findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
   findAllComments(limit: Int, offset: Int): [Comment]!

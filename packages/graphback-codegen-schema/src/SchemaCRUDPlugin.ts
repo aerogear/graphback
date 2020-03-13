@@ -295,32 +295,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return queryTypes;
     }
 
-    protected createCustomRootTypes(inputRootType: GraphQLObjectType) {
-        if (!inputRootType) {
-            return {};
-        }
-        
-        const queryFields = Object.values(inputRootType.getFields());
-
-        const rootTypeFields = {};
-        for (const field of queryFields) {
-            rootTypeFields[field.name] = {
-                type: field.type,
-                args: field.args.reduce((argsObj: any, arg: GraphQLArgument) => {
-                    argsObj[arg.name] = {
-                        type: arg.type,
-                        default: arg.defaultValue
-                    }
-
-                    return argsObj;
-                }, {}),
-                description: field.description,
-            }
-        }
-
-        return rootTypeFields;
-    }
-
     /**
      * Add relationship fields to GraphQL model types
      * 
