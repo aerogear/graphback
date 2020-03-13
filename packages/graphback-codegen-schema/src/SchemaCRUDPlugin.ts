@@ -328,8 +328,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
      * @param models 
      */
     private buildSchemaModelRelationships(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
-        // const schemaComposer = new SchemaComposer(schema)
-
         // create or update relationship fields to the model types.
         for (const model of models) {
             const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
