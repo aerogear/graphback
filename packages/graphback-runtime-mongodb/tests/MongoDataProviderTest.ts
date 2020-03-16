@@ -23,6 +23,7 @@ interface Context {
 interface Todo {
   id: number;
   text: string;
+  softDelete: boolean;
 }
 
 //tslint:disable-next-line: no-any
@@ -95,7 +96,7 @@ test('find all offset defaults to 0', async () => {
 });
 
 test('find first 1 todos', async () => {
-  const todos = await context.provider.findAll({ limit: 1, offset: 0});
+  const todos = await context.provider.findAll({ limit: 1, offset: 0 });
 
   expect(todos.length).toEqual(1);
 
@@ -103,7 +104,7 @@ test('find first 1 todos', async () => {
 });
 
 test('find first 1 todo(s) excluding first todo', async () => {
-  const todos = await context.provider.findAll({ limit: 1, offset: 1});
+  const todos = await context.provider.findAll({ limit: 1, offset: 1 });
 
   expect(todos.length).toEqual(1);
 
@@ -148,24 +149,29 @@ test('find first 1 todos by text', async () => {
     });
   }
 
-  const todos = await context.provider.findBy({ text } , { limit: 1, offset: 0});
+  const todos = await context.provider.findBy({ text }, { limit: 1, offset: 0 });
   expect(todos.length).toEqual(1);
   expect(todos[0].text).toEqual(text);
 });
 
 test('Soft Delete first 5 todos', async () => {
-  for(let i = 0; i < 10; i++) {
-    await context.provider.create({
-     todo:`todo number ${i}`,
-    });
-  }
+  let todo: Todo = await context.provider.create({
+    text: 'todo created'
+  });
+  expect(todo.softDelete).toEqual(false);
 
-  for(let i = 0; i < 5; i++) {
-    await context.provider.softDelete({
-      todo:`todo number ${i}`,
-    });
-  }
+  todo = await context.provider.softDelete({
+    id: todo.id
+  })
+  expect(todo.softDelete).toEqual(true);
 
-  const todos = await context.provider.findAll();
-  expect(todos.length).toBeGreaterThanOrEqual(5);
+  let todos = await context.provider.findBy({
+    id: todo.id
+  })
+  expect(todos.length).toEqual(0);
+
+  todos = await context.provider.findAll();
+  for (var i = 0; i < todos.length; i++) {
+    expect(todos[i].softDelete).toEqual(false);
+  }
 })

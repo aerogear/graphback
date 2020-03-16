@@ -65,16 +65,16 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async softDelete(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) });
-    if (queryResult) {
-      const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: { softDelete: true } });
-      if (result && result[0]) {
-        result[0][idField.name] = result[0]._id;
-        
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: {softDelete: true} });
+    if (result) {
+      const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
+      if (queryResult && queryResult[0]) {
+        queryResult[0][idField.name] = queryResult[0]._id;
+
         return queryResult[0];
       }
     }
-    throw new NoDataError(`Cannot update ${this.collectionName}`);
+    throw new NoDataError(`Cannot soft delete ${this.collectionName}`);
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
