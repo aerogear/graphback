@@ -1,7 +1,3 @@
-import test from 'ava';
-
-
-
-test('it is', (t) => {
-    t.assert(1,"1");
+test('it is', () => {
+    expect(1).toBe(1);
 });

@@ -1,5 +1,4 @@
 //tslint:disable-next-line: match-default-export-name
-import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
@@ -25,13 +24,13 @@ interface Todo {
   text: string;
 }
 
-const test = _test as TestInterface<Context>;
 //tslint:disable-next-line: no-any
 const modelType = schema.getType('Todos') as GraphQLObjectType
+let context: Context;
 
 //Create a new database before each tests so that
 //all tests can run parallel
-test.beforeEach(async t => {
+beforeEach(async () => {
   const db = Knex({
     client: 'sqlite3',
     connection: {
@@ -52,136 +51,136 @@ test.beforeEach(async t => {
 
   const provider = new KnexDBDataProvider(modelType, db);
 
-  t.context = { db, provider };
+  context = { db, provider };
 });
 
-test('batch read Todos', async t => {
-  const todos = await t.context.provider.batchRead('id', ['1', '2']);
+test('batch read Todos', async () => {
+  const todos = await context.provider.batchRead('id', ['1', '2']);
 
-  t.assert(todos[0][0].id === 1);
-  t.assert(todos[1][0].id === 2);
+  expect(todos[0][0].id).toEqual(1);
+  expect(todos[1][0].id).toEqual(2);
 });
 
-test('create Todo', async t => {
-  const todo: Todo = await t.context.provider.create({
+test('create Todo', async () => {
+  const todo: Todo = await context.provider.create({
     text: 'create a todo',
   });
 
-  t.assert(todo.id === 4);
-  t.assert(todo.text === 'create a todo');
+  expect(todo.id === 4);
+  expect(todo.text === 'create a todo');
 });
 
-test('update Todo', async t => {
-  const todo: Todo = await t.context.provider.update({
+test('update Todo', async () => {
+  const todo: Todo = await context.provider.update({
     id: '1',
     text: 'my updated first todo',
   });
 
-  t.assert(todo.id === 1);
-  t.assert(todo.text === 'my updated first todo');
+  expect(todo.id).toEqual(1);
+  expect(todo.text).toEqual('my updated first todo');
 });
 
-test('delete Todo', async t => {
-  const data = await t.context.provider.delete({ id: '3' });
+test('delete Todo', async () => {
+  const data = await context.provider.delete({ id: '3' });
 
-  t.deepEqual(data.id, 3);
+  expect(data.id).toEqual(3);
 });
 
-test('find all Todos', async t => {
-  const todos = await t.context.provider.findAll();
+test('find all Todos', async () => {
+  const todos = await context.provider.findAll();
 
-  t.assert(todos.length === 3);
+  expect(todos.length).toEqual(3);
 });
 
-test('find first 2 todos', async t => {
-  const todos = await t.context.provider.findAll({ limit: 2, offset: 0});
+test('find first 2 todos', async () => {
+  const todos = await context.provider.findAll({ limit: 2, offset: 0});
 
-  t.assert(todos.length === 2);
+  expect(todos.length).toEqual(2);
 
-  t.assert(todos[0].id === 1);
-  t.assert(todos[0].text === "my first default todo");
+  expect(todos[0].id).toEqual(1);
+  expect(todos[0].text).toEqual('my first default todo');
 
-  t.assert(todos[1].id === 2);
-  t.assert(todos[1].text === "the second todo");
+  expect(todos[1].id).toEqual(2);
+  expect(todos[1].text).toEqual('the second todo');
 });
 
-test('find first 2 todos excluding first todo', async t => {
-  const todos = await t.context.provider.findAll({ limit: 2, offset: 1});
+test('find first 2 todos excluding first todo', async () => {
+  const todos = await context.provider.findAll({ limit: 2, offset: 1});
 
-  t.assert(todos.length === 2);
+  expect(todos.length).toEqual(2);
 
-  t.assert(todos[0].id == 2);
-  t.assert(todos[0].text == "the second todo");
+  expect(todos[0].id).toEqual(2);
+  expect(todos[0].text).toEqual('the second todo');
 
-  t.assert(todos[1].id == 3);
-  t.assert(todos[1].text == "just another todo");
+  expect(todos[1].id).toEqual(3);
+  expect(todos[1].text).toEqual('just another todo');
 });
 
-test('find all offset defaults to zero', async t => {
-  const todos = await t.context.provider.findAll({ limit: 2 });
+test('find all offset defaults to zero', async () => {
+  const todos = await context.provider.findAll({ limit: 2 });
 
-  t.assert(todos.length === 2);
+  expect(todos.length).toEqual(2);
 
-  t.assert(todos[0].id == 1);
-  t.assert(todos[0].text == "my first default todo");
+  expect(todos[0].id).toEqual(1);
+  expect(todos[0].text).toEqual('my first default todo');
 
-  t.assert(todos[1].id == 2);
-  t.assert(todos[1].text == "the second todo");
+  expect(todos[1].id).toEqual(2);
+  expect(todos[1].text).toEqual('the second todo');
 });
 
-test('find all limit defaults to 10', async t => {
+test('find all limit defaults to 10', async () => {
   for (let i = 0; i < 10; i++) {
-    await t.context.provider.create({
+    await context.provider.create({
       text: `todo${i}`,
     });
   }
 
-  const todos = await t.context.provider.findAll({ offset: 1 });
+  const todos = await context.provider.findAll({ offset: 1 });
 
-  t.assert(todos.length <= 10);
+  expect(todos.length).toBeLessThanOrEqual(10);
 
-  t.assert(todos[0].id == 2);
-  t.assert(todos[0].text == "the second todo");
+  expect(todos[0].id).toEqual(2);
+  expect(todos[0].text).toEqual('the second todo');
 });
 
-test('find Todo by text', async t => {
-  const todos: Todo[] = await t.context.provider.findBy({
+test('find Todo by text', async () => {
+  const todos: Todo[] = await context.provider.findBy({
     text: 'the second todo',
   });
 
-  t.assert(todos.length === 1);
-  t.assert(todos[0].id === 2);
+  expect(todos.length).toEqual(1);
+  expect(todos[0].id).toEqual(2);
 });
 
-test('find first n todos by text', async t => {
+test('find first n todos by text', async () => {
   const numberOfTodos = 5;
   const text = 'test-todo';
   for (let i = 0; i < numberOfTodos + 1; i++) {
-    await t.context.provider.create({
+    await context.provider.create({
       text,
     });
   }
 
-  const todos: Todo[] = await t.context.provider.findBy({ text }, { limit: numberOfTodos });
+  const todos: Todo[] = await context.provider.findBy({ text }, { limit: numberOfTodos });
 
-  t.assert(todos.length === numberOfTodos);
+  expect(todos.length).toEqual(numberOfTodos);
 });
 
-test('Skip n todos and find next m todos by text', async t => {
+test('Skip n todos and find next m todos by text', async () => {
   const n = 2;
   const m = 3;
   const numberOfTodos = n + m;
   const text = 'test-todo';
   for (let i = 0; i < numberOfTodos; i++) {
-    await t.context.provider.create({
+    await context.provider.create({
       text,
     });
   }
 
-  const todos: Todo[] = await t.context.provider.findBy({ text }, { 
+  const todos: Todo[] = await context.provider.findBy({ text }, { 
     offset: n,
     limit: numberOfTodos
   });
 
-  t.assert(todos.length === m);
+  expect(todos.length).toEqual(m);
 });

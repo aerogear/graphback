@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/tslint/config
-import ava, { ExecutionContext } from 'ava';
 import { buildSchema, GraphQLSchema } from 'graphql';
 import { getModelTypesFromSchema, RelationshipMetadataBuilder } from '../src';
 
@@ -11,7 +10,7 @@ const setup = (schemaText: string): { builder: RelationshipMetadataBuilder, sche
     return { builder, schema };
 }
 
-ava('should have no relationship metadata', (t: ExecutionContext) => {
+test('should have no relationship metadata', () => {
     const { builder } = setup(`
     type User {
         id: ID!
@@ -22,10 +21,10 @@ ava('should have no relationship metadata', (t: ExecutionContext) => {
 
     const userRelationships = builder.getModelRelationships('User');
 
-    t.assert(userRelationships.length === 0);
+    expect(userRelationships.length).toEqual(0);
 });
 
-ava('should create many-to-one relationship metadata from one-to-many field', (t: ExecutionContext) => {
+test('should create many-to-one relationship metadata from one-to-many field', () => {
     const { builder } = setup(`
     """
     @model
@@ -50,23 +49,23 @@ ava('should create many-to-one relationship metadata from one-to-many field', (t
     builder.build();
 
     const userRelationships = builder.getModelRelationships('User');
-    t.assert(userRelationships.length === 1);
-    t.assert(userRelationships[0].kind === 'oneToMany');
-    t.assert(userRelationships[0].ownerField.name === 'sentMessages')
-    t.assert(userRelationships[0].relationFieldName === 'sender');
-    t.assert(userRelationships[0].relationForeignKey === 'sender_id')
-    t.assert(userRelationships[0].relationType.name === 'Message');
+    expect(userRelationships.length).toEqual(1);
+    expect(userRelationships[0].kind).toEqual('oneToMany');
+    expect(userRelationships[0].ownerField.name).toEqual('sentMessages');
+    expect(userRelationships[0].relationFieldName).toEqual('sender');
+    expect(userRelationships[0].relationForeignKey).toEqual('sender_id');
+    expect(userRelationships[0].relationType.name).toEqual('Message');
 
     const messageRelationships = builder.getModelRelationships('Message');
-    t.assert(messageRelationships.length === 1);
-    t.assert(messageRelationships[0].kind === 'manyToOne');
-    t.assert(messageRelationships[0].ownerField.name === 'sender');
-    t.assert(messageRelationships[0].relationFieldName === 'sentMessages');
-    t.assert(userRelationships[0].relationForeignKey === 'sender_id')
-    t.assert(messageRelationships[0].relationType.name === 'User');
+    expect(messageRelationships.length).toEqual(1);
+    expect(messageRelationships[0].kind).toEqual('manyToOne');
+    expect(messageRelationships[0].ownerField.name).toEqual('sender');
+    expect(messageRelationships[0].relationFieldName).toEqual('sentMessages');
+    expect(userRelationships[0].relationForeignKey).toEqual('sender_id');
+    expect(messageRelationships[0].relationType.name).toEqual('User');
 });
 
-ava('should build one-to-one relationship metadata from one-to-one field', (t: ExecutionContext) => {
+test('should build one-to-one relationship metadata from one-to-one field', () => {
     const { builder } = setup(`
     """
     @model
@@ -90,17 +89,17 @@ ava('should build one-to-one relationship metadata from one-to-one field', (t: E
     builder.build();
 
     const addressRelationships = builder.getModelRelationships('Address');
-    t.assert(addressRelationships.length === 1);
-    t.assert(addressRelationships[0].kind === 'oneToOne');
-    t.assert(addressRelationships[0].ownerField.name === 'resident');
-    t.assert(addressRelationships[0].relationForeignKey === 'residentId');
-    t.assert(addressRelationships[0].relationType.name === 'User');
-    t.assert(addressRelationships[0].relationFieldName === undefined);
+    expect(addressRelationships.length).toEqual(1);
+    expect(addressRelationships[0].kind).toEqual('oneToOne');
+    expect(addressRelationships[0].ownerField.name).toEqual('resident');
+    expect(addressRelationships[0].relationForeignKey).toEqual('residentId');
+    expect(addressRelationships[0].relationType.name).toEqual('User');
+    expect(addressRelationships[0].relationFieldName).toBeUndefined();
 
-    t.snapshot(JSON.stringify(builder.getRelationships(), undefined, 1));
+    expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
 });
 
-ava('should build one-to-many and many-to-one relationships from both fields', (t: ExecutionContext) => {
+test('should build one-to-many and many-to-one relationships from both fields', () => {
     const { builder } = setup(`
     """
     @model
@@ -129,25 +128,25 @@ ava('should build one-to-many and many-to-one relationships from both fields', (
     builder.build();
 
     const userRelationships = builder.getModelRelationships('User');
-    t.assert(userRelationships.length === 1);
-    t.assert(userRelationships[0].kind === 'oneToMany');
-    t.assert(userRelationships[0].ownerField.name === 'sentMessages')
-    t.assert(userRelationships[0].relationFieldName === 'sender');
-    t.assert(userRelationships[0].relationForeignKey === 'senderId')
-    t.assert(userRelationships[0].relationType.name === 'Message');
+    expect(userRelationships.length).toEqual(1);
+    expect(userRelationships[0].kind).toEqual('oneToMany');
+    expect(userRelationships[0].ownerField.name).toEqual('sentMessages')
+    expect(userRelationships[0].relationFieldName).toEqual('sender');
+    expect(userRelationships[0].relationForeignKey).toEqual('senderId')
+    expect(userRelationships[0].relationType.name).toEqual('Message');
 
     const messageRelationships = builder.getModelRelationships('Message');
-    t.assert(messageRelationships.length === 1);
-    t.assert(messageRelationships[0].kind === 'manyToOne');
-    t.assert(messageRelationships[0].ownerField.name === 'sender');
-    t.assert(messageRelationships[0].relationFieldName === 'sentMessages');
-    t.assert(userRelationships[0].relationForeignKey === 'senderId')
-    t.assert(messageRelationships[0].relationType.name === 'User');
+    expect(messageRelationships.length).toEqual(1);
+    expect(messageRelationships[0].kind).toEqual('manyToOne');
+    expect(messageRelationships[0].ownerField.name).toEqual('sender');
+    expect(messageRelationships[0].relationFieldName).toEqual('sentMessages');
+    expect(userRelationships[0].relationForeignKey).toEqual('senderId')
+    expect(messageRelationships[0].relationType.name).toEqual('User');
     
-    t.snapshot(JSON.stringify(builder.getRelationships(), null, 1));
+    expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
 });
 
-ava('should throw error when relationship field is missing @model annotation', (t: ExecutionContext) => {
+test('should throw error when relationship field is missing @model annotation', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -164,10 +163,10 @@ ava('should throw error when relationship field is missing @model annotation', (
         text: String
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 })
 
-ava('should throw error when relationship field is not an object type', (t: ExecutionContext) => {
+test('should throw error when relationship field is not an object type', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -179,10 +178,10 @@ ava('should throw error when relationship field is not an object type', (t: Exec
         messages: [String]
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 });
 
-ava('should throw error when relationship field base type is not a model type', (t: ExecutionContext) => {
+test('should throw error when relationship field base type is not a model type', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -199,10 +198,10 @@ ava('should throw error when relationship field base type is not a model type', 
         text: String
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 });
 
-ava('should throw error when relation field maps to wrong type', (t: ExecutionContext) => {
+test('should throw error when relation field maps to wrong type', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -226,10 +225,10 @@ ava('should throw error when relation field maps to wrong type', (t: ExecutionCo
         user: Test
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 });
 
-ava('should throw error when relation field is no a single object', (t: ExecutionContext) => {
+test('should throw error when relation field is no a single object', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -248,10 +247,10 @@ ava('should throw error when relation field is no a single object', (t: Executio
         user: [User]
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 });
 
-ava('should throw error when relationship key annotations are not the same', (t: ExecutionContext) => {
+test('should throw error when relationship key annotations are not the same', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -273,10 +272,10 @@ ava('should throw error when relationship key annotations are not the same', (t:
         user: User
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 });
 
-ava('should throw error when relationship field in one-to-one is not a single object', (t: ExecutionContext) => {
+test('should throw error when relationship field in one-to-one is not a single object', () => {
     const { builder } = setup(`
     """@model"""
     type User {
@@ -294,6 +293,6 @@ ava('should throw error when relationship field in one-to-one is not a single ob
         text: String
     }`);
 
-    t.throws(() => builder.build());
+    expect(() => builder.build()).toThrow();
 });
 

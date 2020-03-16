@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should build mapping using custom values from mapping annotations 1`] = `
+"{
+ \\"idField\\": \\"id\\",
+ \\"typeName\\": \\"User\\",
+ \\"tableName\\": \\"user_account\\",
+ \\"fieldMap\\": {
+  \\"email\\": \\"user_email\\",
+  \\"name\\": \\"userName\\",
+  \\"accountConfirmed\\": \\"AccountConfirmed\\"
+ }
+}"
+`;

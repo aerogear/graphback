@@ -1,0 +1,869 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test plugin engine gql 1`] = `
+Object {
+  "fragments": Array [
+    Object {
+      "implementation": "fragment NoteFields on Note {
+   id
+   title
+   description
+
+} ",
+      "name": "Note",
+    },
+    Object {
+      "implementation": "fragment NoteExpandedFields on Note {
+   id
+   title
+   description
+   comments {
+      id
+      title
+      description
+   }
+} ",
+      "name": "NoteExpanded",
+    },
+    Object {
+      "implementation": "fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} ",
+      "name": "Comment",
+    },
+    Object {
+      "implementation": "fragment CommentExpandedFields on Comment {
+   id
+   title
+   description
+   noteComment {
+      id
+      title
+      description
+   }
+} ",
+      "name": "CommentExpanded",
+    },
+  ],
+  "mutations": Array [
+    Object {
+      "implementation": "mutation createNote($input: NoteInput!) {
+  createNote(input: $input) {
+      ...NoteFields
+  }
+}
+",
+      "name": "createNote",
+    },
+    Object {
+      "implementation": "mutation updateNote($input: NoteInput!) {
+  updateNote(input: $input) {
+      ...NoteFields
+  }
+}
+",
+      "name": "updateNote",
+    },
+    Object {
+      "implementation": "mutation deleteNote($input: NoteInput!) {
+  deleteNote(input: $input) {
+      ...NoteFields
+  }
+}
+",
+      "name": "deleteNote",
+    },
+    Object {
+      "implementation": "mutation createComment($input: CommentInput!) {
+  createComment(input: $input) {
+      ...CommentFields
+  }
+}
+",
+      "name": "createComment",
+    },
+    Object {
+      "implementation": "mutation updateComment($input: CommentInput!) {
+  updateComment(input: $input) {
+      ...CommentFields
+  }
+}
+",
+      "name": "updateComment",
+    },
+    Object {
+      "implementation": "mutation deleteComment($input: CommentInput!) {
+  deleteComment(input: $input) {
+      ...CommentFields
+  }
+}
+",
+      "name": "deleteComment",
+    },
+  ],
+  "queries": Array [
+    Object {
+      "implementation": "query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
+    findNotes(fields: $fields, limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }",
+      "name": "findNotes",
+    },
+    Object {
+      "implementation": "query findAllNotes($limit: Int, $offset: Int) {
+    findAllNotes(limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }",
+      "name": "findAllNotes",
+    },
+    Object {
+      "implementation": "query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
+    findComments(fields: $fields, limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }",
+      "name": "findComments",
+    },
+    Object {
+      "implementation": "query findAllComments($limit: Int, $offset: Int) {
+    findAllComments(limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }",
+      "name": "findAllComments",
+    },
+  ],
+  "subscriptions": Array [
+    Object {
+      "implementation": "subscription newNote {
+  newNote {
+      ...NoteFields
+  }
+} ",
+      "name": "newNote",
+    },
+    Object {
+      "implementation": "subscription updatedNote {
+  updatedNote {
+      ...NoteFields
+  }
+} ",
+      "name": "updatedNote",
+    },
+    Object {
+      "implementation": "subscription deletedNote {
+  deletedNote {
+      ...NoteFields
+  }
+} ",
+      "name": "deletedNote",
+    },
+    Object {
+      "implementation": "subscription newComment {
+  newComment {
+      ...CommentFields
+  }
+} ",
+      "name": "newComment",
+    },
+    Object {
+      "implementation": "subscription updatedComment {
+  updatedComment {
+      ...CommentFields
+  }
+} ",
+      "name": "updatedComment",
+    },
+    Object {
+      "implementation": "subscription deletedComment {
+  deletedComment {
+      ...CommentFields
+  }
+} ",
+      "name": "deletedComment",
+    },
+  ],
+}
+`;
+
+exports[`Test plugin engine gqlfragments 1`] = `
+Object {
+  "fragments": Array [],
+  "mutations": Array [
+    Object {
+      "implementation": "
+
+mutation createNote($input: NoteInput!) {
+  createNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "createNote",
+    },
+    Object {
+      "implementation": "
+
+mutation updateNote($input: NoteInput!) {
+  updateNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "updateNote",
+    },
+    Object {
+      "implementation": "
+
+mutation deleteNote($input: NoteInput!) {
+  deleteNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "deleteNote",
+    },
+    Object {
+      "implementation": "
+
+mutation createComment($input: CommentInput!) {
+  createComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "createComment",
+    },
+    Object {
+      "implementation": "
+
+mutation updateComment($input: CommentInput!) {
+  updateComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "updateComment",
+    },
+    Object {
+      "implementation": "
+
+mutation deleteComment($input: CommentInput!) {
+  deleteComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "deleteComment",
+    },
+  ],
+  "queries": Array [
+    Object {
+      "implementation": "
+
+query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
+    findNotes(fields: $fields, limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }
+
+fragment NoteExpandedFields on Note {
+   id
+   title
+   description
+   comments {
+      id
+      title
+      description
+   }
+} 
+
+",
+      "name": "findNotes",
+    },
+    Object {
+      "implementation": "
+
+query findAllNotes($limit: Int, $offset: Int) {
+    findAllNotes(limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }
+
+fragment NoteExpandedFields on Note {
+   id
+   title
+   description
+   comments {
+      id
+      title
+      description
+   }
+} 
+
+",
+      "name": "findAllNotes",
+    },
+    Object {
+      "implementation": "
+
+query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
+    findComments(fields: $fields, limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }
+
+fragment CommentExpandedFields on Comment {
+   id
+   title
+   description
+   noteComment {
+      id
+      title
+      description
+   }
+} 
+
+",
+      "name": "findComments",
+    },
+    Object {
+      "implementation": "
+
+query findAllComments($limit: Int, $offset: Int) {
+    findAllComments(limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }
+
+fragment CommentExpandedFields on Comment {
+   id
+   title
+   description
+   noteComment {
+      id
+      title
+      description
+   }
+} 
+
+",
+      "name": "findAllComments",
+    },
+  ],
+  "subscriptions": Array [
+    Object {
+      "implementation": "
+
+subscription newNote {
+  newNote {
+      ...NoteFields
+  }
+} 
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "newNote",
+    },
+    Object {
+      "implementation": "
+
+subscription updatedNote {
+  updatedNote {
+      ...NoteFields
+  }
+} 
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "updatedNote",
+    },
+    Object {
+      "implementation": "
+
+subscription deletedNote {
+  deletedNote {
+      ...NoteFields
+  }
+} 
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "deletedNote",
+    },
+    Object {
+      "implementation": "
+
+subscription newComment {
+  newComment {
+      ...CommentFields
+  }
+} 
+
+fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "newComment",
+    },
+    Object {
+      "implementation": "
+
+subscription updatedComment {
+  updatedComment {
+      ...CommentFields
+  }
+} 
+
+fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "updatedComment",
+    },
+    Object {
+      "implementation": "
+
+subscription deletedComment {
+  deletedComment {
+      ...CommentFields
+  }
+} 
+
+fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+
+",
+      "name": "deletedComment",
+    },
+  ],
+}
+`;
+
+exports[`Test plugin engine ts 1`] = `
+Object {
+  "fragments": Array [
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+
+export const NoteFragment = gql\`
+  fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+\`
+",
+      "name": "Note",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+
+export const NoteExpandedFragment = gql\`
+  fragment NoteExpandedFields on Note {
+   id
+   title
+   description
+   comments {
+      id
+      title
+      description
+   }
+} 
+\`
+",
+      "name": "NoteExpanded",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+
+export const CommentFragment = gql\`
+  fragment CommentFields on Comment {
+   id
+   title
+   description
+
+} 
+\`
+",
+      "name": "Comment",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+
+export const CommentExpandedFragment = gql\`
+  fragment CommentExpandedFields on Comment {
+   id
+   title
+   description
+   noteComment {
+      id
+      title
+      description
+   }
+} 
+\`
+",
+      "name": "CommentExpanded",
+    },
+  ],
+  "mutations": Array [
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteFragment } from \\"../fragments/Note\\"
+
+export const createNote = gql\`
+  mutation createNote($input: NoteInput!) {
+  createNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+  \${NoteFragment}
+\`
+",
+      "name": "createNote",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteFragment } from \\"../fragments/Note\\"
+
+export const updateNote = gql\`
+  mutation updateNote($input: NoteInput!) {
+  updateNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+  \${NoteFragment}
+\`
+",
+      "name": "updateNote",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteFragment } from \\"../fragments/Note\\"
+
+export const deleteNote = gql\`
+  mutation deleteNote($input: NoteInput!) {
+  deleteNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+  \${NoteFragment}
+\`
+",
+      "name": "deleteNote",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentFragment } from \\"../fragments/Comment\\"
+
+export const createComment = gql\`
+  mutation createComment($input: CommentInput!) {
+  createComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+  \${CommentFragment}
+\`
+",
+      "name": "createComment",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentFragment } from \\"../fragments/Comment\\"
+
+export const updateComment = gql\`
+  mutation updateComment($input: CommentInput!) {
+  updateComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+  \${CommentFragment}
+\`
+",
+      "name": "updateComment",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentFragment } from \\"../fragments/Comment\\"
+
+export const deleteComment = gql\`
+  mutation deleteComment($input: CommentInput!) {
+  deleteComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+  \${CommentFragment}
+\`
+",
+      "name": "deleteComment",
+    },
+  ],
+  "queries": Array [
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
+
+export const findNotes = gql\`
+  query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
+    findNotes(fields: $fields, limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }
+
+  \${NoteExpandedFragment}
+\`
+",
+      "name": "findNotes",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
+
+export const findAllNotes = gql\`
+  query findAllNotes($limit: Int, $offset: Int) {
+    findAllNotes(limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }
+
+  \${NoteExpandedFragment}
+\`
+",
+      "name": "findAllNotes",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
+
+export const findComments = gql\`
+  query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
+    findComments(fields: $fields, limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }
+
+  \${CommentExpandedFragment}
+\`
+",
+      "name": "findComments",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
+
+export const findAllComments = gql\`
+  query findAllComments($limit: Int, $offset: Int) {
+    findAllComments(limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }
+
+  \${CommentExpandedFragment}
+\`
+",
+      "name": "findAllComments",
+    },
+  ],
+  "subscriptions": Array [
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteFragment } from \\"../fragments/Note\\"
+
+export const newNote = gql\`
+  subscription newNote {
+  newNote {
+      ...NoteFields
+  }
+} 
+
+  \${NoteFragment}
+\`
+",
+      "name": "newNote",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteFragment } from \\"../fragments/Note\\"
+
+export const updatedNote = gql\`
+  subscription updatedNote {
+  updatedNote {
+      ...NoteFields
+  }
+} 
+
+  \${NoteFragment}
+\`
+",
+      "name": "updatedNote",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { NoteFragment } from \\"../fragments/Note\\"
+
+export const deletedNote = gql\`
+  subscription deletedNote {
+  deletedNote {
+      ...NoteFields
+  }
+} 
+
+  \${NoteFragment}
+\`
+",
+      "name": "deletedNote",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentFragment } from \\"../fragments/Comment\\"
+
+export const newComment = gql\`
+  subscription newComment {
+  newComment {
+      ...CommentFields
+  }
+} 
+
+  \${CommentFragment}
+\`
+",
+      "name": "newComment",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentFragment } from \\"../fragments/Comment\\"
+
+export const updatedComment = gql\`
+  subscription updatedComment {
+  updatedComment {
+      ...CommentFields
+  }
+} 
+
+  \${CommentFragment}
+\`
+",
+      "name": "updatedComment",
+    },
+    Object {
+      "implementation": "import gql from \\"graphql-tag\\"
+import { CommentFragment } from \\"../fragments/Comment\\"
+
+export const deletedComment = gql\`
+  subscription deletedComment {
+  deletedComment {
+      ...CommentFields
+  }
+} 
+
+  \${CommentFragment}
+\`
+",
+      "name": "deletedComment",
+    },
+  ],
+}
+`;

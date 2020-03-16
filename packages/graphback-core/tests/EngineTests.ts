@@ -1,6 +1,5 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { readFileSync } from 'fs';
-import test, { ExecutionContext } from 'ava';
 import { buildSchema, print } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, GraphbackPluginEngine } from '../src'
 
@@ -40,7 +39,12 @@ class TestPlugin extends GraphbackPlugin {
   }
 }
 
-test('Test plugin engine', async (t: ExecutionContext) => {
+const context = {
+  model: undefined
+};
+
+test('Test plugin engine', async () => {
+  
   const crudMethods = {
     "create": true,
     "update": true,
@@ -51,18 +55,20 @@ test('Test plugin engine', async (t: ExecutionContext) => {
 
   let engine = new GraphbackPluginEngine(schemaText, { crudMethods: {} });
   engine = new GraphbackPluginEngine(buildSchema(schemaText), { crudMethods: crudMethods });
-  t.plan(6);
-  t.throws(engine.createResources)
+
+  expect.assertions(6);
+
+  expect(engine.createResources).toThrow()
   const plugin = new TestPlugin((callbackModel: any) => {
     //eslint-disable-next-line dot-notation
-    t.context['model'] = callbackModel;
-    t.pass();
+    context['model'] = callbackModel;
+    expect(callbackModel).toBeTruthy();
   })
 
   engine.registerPlugin(plugin, plugin, plugin)
   const model = engine.createResources();
   
   const printedModels = model.getModelDefinitions().map((element: any) => print(element.graphqlType.astNode))
-  t.snapshot(printedModels);
-  t.true(model.getSchema().getQueryType().description === 'test');
+  expect(printedModels).toMatchSnapshot();
+  expect(model.getSchema().getQueryType().description === 'test').toBe(true);
 });

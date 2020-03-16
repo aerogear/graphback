@@ -1,10 +1,9 @@
 //eslint-disable-next-line @typescript-eslint/tslint/config
-import ava, { ExecutionContext } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { getPrimaryKey } from '../src/db/getPrimaryKey'
 import { getModelTypesFromSchema } from '../src/plugin/getModelTypesFromSchema';
 
-ava('should get primary from id: ID field', (t: ExecutionContext) => {
+test('should get primary from id: ID field', () => {
     const schema = buildSchema(`
     """ @model """
     type User {
@@ -18,10 +17,10 @@ ava('should get primary from id: ID field', (t: ExecutionContext) => {
 
     const primaryKey = getPrimaryKey(userModel);
 
-    t.assert(primaryKey.name === 'id');
+    expect(primaryKey.name).toEqual('id');
 });
 
-ava('should get primary key from @db.primary annotation', (t: ExecutionContext) => {
+test('should get primary key from @db.primary annotation', () => {
     const schema = buildSchema(`
     """ @model """
     type User {
@@ -39,10 +38,10 @@ ava('should get primary key from @db.primary annotation', (t: ExecutionContext) 
 
     const primaryKey = getPrimaryKey(userModel);
 
-    t.assert(primaryKey.name === 'email');
+    expect(primaryKey.name).toEqual('email');
 });
 
-ava('should throw an error if no primary key in model', (t: ExecutionContext) => {
+test('should throw an error if no primary key in model', () => {
     const schema = buildSchema(`
     """ @db.model """
     type User {
@@ -54,10 +53,10 @@ ava('should throw an error if no primary key in model', (t: ExecutionContext) =>
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
-    t.throws(() => getPrimaryKey(userModel), 'User type has no primary field.')
+    expect(() => getPrimaryKey(userModel)).toThrowError('User type has no primary field.')
 });
 
-ava('should throw an error if multiple @db.primary annotations', (t: ExecutionContext) => {
+test('should throw an error if multiple @db.primary annotations', () => {
     const schema = buildSchema(`
     """ @db.model """
     type User {
@@ -76,5 +75,5 @@ ava('should throw an error if multiple @db.primary annotations', (t: ExecutionCo
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
-    t.throws(() => getPrimaryKey(userModel))
+    expect(() => getPrimaryKey(userModel)).toThrow()
 });

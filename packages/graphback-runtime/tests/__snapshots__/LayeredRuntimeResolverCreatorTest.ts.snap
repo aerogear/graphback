@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`find Todo by text 1`] = `
+Object {
+  "Mutation": Object {
+    "createTodos": [Function],
+    "createUser": [Function],
+    "deleteTodos": [Function],
+    "deleteUser": [Function],
+    "updateTodos": [Function],
+    "updateUser": [Function],
+  },
+  "Query": Object {
+    "findAllTodos": [Function],
+    "findAllUsers": [Function],
+    "findTodos": [Function],
+    "findUsers": [Function],
+  },
+  "Subscription": Object {
+    "deletedTodos": Object {
+      "subscribe": [Function],
+    },
+    "deletedUser": Object {
+      "subscribe": [Function],
+    },
+    "newTodos": Object {
+      "subscribe": [Function],
+    },
+    "newUser": Object {
+      "subscribe": [Function],
+    },
+    "updatedTodos": Object {
+      "subscribe": [Function],
+    },
+    "updatedUser": Object {
+      "subscribe": [Function],
+    },
+  },
+}
+`;

@@ -13,20 +13,7 @@
     "build": "tsc",
     "watch": "tsc -w ",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
-    "test": "ava",
-    "pretest": "yarn build"
-  },
-  "ava": {
-    "files": [
-      "tests/**/*"
-    ],
-    "compileEnhancements": false,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
+    "test": "jest"
   },
   "engines": {
     "node": ">=10.15.3"
@@ -36,14 +23,17 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/node": "12.12.29",
+    "@types/node": "12.12.30",
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
     "sqlite3": "4.1.1",
     "ts-node": "8.6.2",
     "tsutils": "3.17.1",
-    "typescript": "3.8.3"
+    "typescript": "3.8.3",
+    "@types/jest": "25.1.4",
+    "ts-jest": "25.2.1",
+    "jest": "25.1.0"
   },
   "dependencies": {
     "@graphback/core": "0.11.2",

@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/tslint/config
-import _test, { TestInterface } from 'ava';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { RESTDataProvider } from '../../src/data/RESTDataProvider';
 
@@ -22,38 +21,37 @@ interface Context {
     provider: RESTDataProvider;
 }
 
-const test = _test as TestInterface<Context>;
 const modelType = schema.getType('Users') as GraphQLObjectType
+let context: Context;
 
 // eslint-disable-next-line @typescript-eslint/tslint/config
-test.beforeEach(async t => {
+beforeEach(async () => {
     const provider = new RESTDataProvider(modelType,'https://reqres.in/api',{'Content-Type': 'application/json'});
-    t.context = { provider };
+    context = { provider };
 });
 
 
 //test for findAll
 // eslint-disable-next-line @typescript-eslint/tslint/config
-test('find all persons', async t => {
-    const result = await t.context.provider.findAll();
+test('find all persons', async () => {
+    const result = await context.provider.findAll();
     // eslint-disable-next-line dot-notation
-    t.assert(result['total'] > 0);
+    expect(result['total']).toBeGreaterThan(0);
 });
 
 //test for create
 // eslint-disable-next-line @typescript-eslint/tslint/config
-test('create a person',async t => {
+test('create a person',async () => {
     const person = {name:'JBossss',job:'Software engineer'}
-    const result = await t.context.provider.create(person)
+    const result = await context.provider.create(person)
     // console.log("create",result)
-    t.assert(result.name === person.name)
+    expect(result.name).toEqual(person.name);
 })
 
 
 // eslint-disable-next-line @typescript-eslint/tslint/config
-test('update a person with id',async t => {
+test('update a person with id',async () => {
     const updated = {key:"1"}
-    const result = await t.context.provider.update(updated)
-    // console.log(result)
-    t.assert(result.key === updated.key);
+    const result = await context.provider.update(updated)
+    expect(result.key).toEqual(updated.key);
 })

@@ -25,6 +25,6 @@ export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends Kn
         if (dbResult && dbResult[0]) {
             return dbResult[0]
         }
-        throw new NoDataError(`Cannot create ${name}`);
+        throw new NoDataError(`Cannot create ${this.tableName}`);
     }
 }

@@ -1,0 +1,262 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test snapshot config gql 1`] = `
+"\\"\\"\\" @model \\"\\"\\"
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  noteComment: Note!
+}
+
+input CommentInput {
+  id: ID
+  title: String
+  description: String
+  noteComment: ID
+  note_id: ID
+}
+
+type Mutation {
+  likeNote(id: ID!): Note!
+  createNote(input: NoteInput): Note!
+  updateNote(input: NoteInput): Note!
+  deleteNote(input: NoteInput): Note!
+  createComment(input: CommentInput): Comment!
+  updateComment(input: CommentInput): Comment!
+  deleteComment(input: CommentInput): Comment!
+  createTest(input: TestInput): Test!
+  updateTest(input: TestInput): Test!
+  deleteTest(input: TestInput): Test!
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments: [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
+input NoteInput {
+  id: ID
+  title: String
+  description: String
+  test_id: ID
+}
+
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+  findAllNotes(limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findAllComments(limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findAllTests(limit: Int, offset: Int): [Test]!
+  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+}
+
+type Subscription {
+  newNote(input: NoteInput): Note!
+  updatedNote(input: NoteInput): Note!
+  deletedNote(input: NoteInput): Note!
+  newComment(input: CommentInput): Comment!
+  updatedComment(input: CommentInput): Comment!
+  deletedComment(input: CommentInput): Comment!
+  newTest(input: TestInput): Test!
+  updatedTest(input: TestInput): Test!
+  deletedTest(input: TestInput): Test!
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+
+input TestInput {
+  id: ID
+  name: String
+}
+"
+`;
+
+exports[`Test snapshot config js 1`] = `
+"\\"\\"\\" @model \\"\\"\\"
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  noteComment: Note!
+}
+
+input CommentInput {
+  id: ID
+  title: String
+  description: String
+  noteComment: ID
+  note_id: ID
+}
+
+type Mutation {
+  likeNote(id: ID!): Note!
+  createNote(input: NoteInput): Note!
+  updateNote(input: NoteInput): Note!
+  deleteNote(input: NoteInput): Note!
+  createComment(input: CommentInput): Comment!
+  updateComment(input: CommentInput): Comment!
+  deleteComment(input: CommentInput): Comment!
+  createTest(input: TestInput): Test!
+  updateTest(input: TestInput): Test!
+  deleteTest(input: TestInput): Test!
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments: [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
+input NoteInput {
+  id: ID
+  title: String
+  description: String
+  test_id: ID
+}
+
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+  findAllNotes(limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findAllComments(limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findAllTests(limit: Int, offset: Int): [Test]!
+  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+}
+
+type Subscription {
+  newNote(input: NoteInput): Note!
+  updatedNote(input: NoteInput): Note!
+  deletedNote(input: NoteInput): Note!
+  newComment(input: CommentInput): Comment!
+  updatedComment(input: CommentInput): Comment!
+  deletedComment(input: CommentInput): Comment!
+  newTest(input: TestInput): Test!
+  updatedTest(input: TestInput): Test!
+  deletedTest(input: TestInput): Test!
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+
+input TestInput {
+  id: ID
+  name: String
+}
+"
+`;
+
+exports[`Test snapshot config ts 1`] = `
+"\\"\\"\\" @model \\"\\"\\"
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  noteComment: Note!
+}
+
+input CommentInput {
+  id: ID
+  title: String
+  description: String
+  noteComment: ID
+  note_id: ID
+}
+
+type Mutation {
+  likeNote(id: ID!): Note!
+  createNote(input: NoteInput): Note!
+  updateNote(input: NoteInput): Note!
+  deleteNote(input: NoteInput): Note!
+  createComment(input: CommentInput): Comment!
+  updateComment(input: CommentInput): Comment!
+  deleteComment(input: CommentInput): Comment!
+  createTest(input: TestInput): Test!
+  updateTest(input: TestInput): Test!
+  deleteTest(input: TestInput): Test!
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments: [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
+input NoteInput {
+  id: ID
+  title: String
+  description: String
+  test_id: ID
+}
+
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+  findAllNotes(limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findAllComments(limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findAllTests(limit: Int, offset: Int): [Test]!
+  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+}
+
+type Subscription {
+  newNote(input: NoteInput): Note!
+  updatedNote(input: NoteInput): Note!
+  deletedNote(input: NoteInput): Note!
+  newComment(input: CommentInput): Comment!
+  updatedComment(input: CommentInput): Comment!
+  deletedComment(input: CommentInput): Comment!
+  newTest(input: TestInput): Test!
+  updatedTest(input: TestInput): Test!
+  deletedTest(input: TestInput): Test!
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+
+input TestInput {
+  id: ID
+  name: String
+}
+"
+`;
