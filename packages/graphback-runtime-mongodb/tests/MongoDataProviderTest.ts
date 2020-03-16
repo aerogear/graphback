@@ -152,3 +152,20 @@ test('find first 1 todos by text', async () => {
   expect(todos.length).toEqual(1);
   expect(todos[0].text).toEqual(text);
 });
+
+test('Soft Delete first 5 todos', async () => {
+  for(let i = 0; i < 10; i++) {
+    await context.provider.create({
+     todo:`todo number ${i}`,
+    });
+  }
+
+  for(let i = 0; i < 5; i++) {
+    await context.provider.softDelete({
+      todo:`todo number ${i}`,
+    });
+  }
+
+  const todos = await context.provider.findAll();
+  expect(todos.length).toBeGreaterThanOrEqual(5);
+})

@@ -25,7 +25,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       delete data[idField.name];
     }
 
-    const result = await this.db.collection(this.collectionName).insertOne(data);
+    const result = await this.db.collection(this.collectionName).insertOne({... data,softDelete: false});
     if (result && result.ops) {
       result.ops[0][idField.name] = result.ops[0]._id;
 
@@ -65,7 +65,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async softDelete(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
-
     const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) });
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: { softDelete: true } });
@@ -79,7 +78,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    const query = this.db.collection(this.collectionName).find({});
+    const query = this.db.collection(this.collectionName).find({softDelete:false});
     const data = await this.usePage(query, page);
 
     if (data) {
@@ -99,10 +98,10 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     // TODO MongoDB should use advanced filter with JSON scalar defined as InputType
     if (filter[idField.name]) {
       const query = this.db.collection(this.collectionName).
-        find({ _id: new ObjectId(filter[idField.name]) });
+        find({ _id: new ObjectId(filter[idField.name]),softDelete: false});
       dbResult = await this.usePage(query, page);
     } else {
-      const query = this.db.collection(this.collectionName).find(filter);
+      const query = this.db.collection(this.collectionName).find({... filter,softDelete: false});
       dbResult = await this.usePage(query, page);
     }
     if (dbResult) {
@@ -126,11 +125,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await this.db.collection(this.collectionName).find({ _id: { $in: array } }).toArray();
+      result = await this.db.collection(this.collectionName).find({ _id: { $in: array },softDelete:false }).toArray();
     } else {
       const query: any = {};
       query[relationField] = { $in: ids };
-      result = await this.db.collection(this.collectionName).find(query).toArray();
+      result = await this.db.collection(this.collectionName).find({... query,softDelete: false}).toArray();
     }
 
     if (result) {
