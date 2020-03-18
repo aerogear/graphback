@@ -27,7 +27,7 @@
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
-    "ts-node": "8.6.2",
+    "ts-node": "8.7.0",
     "tsutils": "3.17.1",
     "typescript": "3.8.3",
     "@types/jest": "25.1.4",
