@@ -27,7 +27,10 @@ class HomeSplash extends React.Component {
     const ProjectTitle = () => (
       <h2 className="projectTitle">
         {siteConfig.title}
-        <small>{siteConfig.tagline}</small>
+        <small style={{fontSize:"xx-large"}}><b>{siteConfig.tagline}</b></small>
+        <small><i className="fas fa-database"/> {siteConfig.firstfeature}<hr/></small>
+        <small><i className="fas fa-rocket"/> {siteConfig.secondfeature}<hr/></small>
+        <small><i className="fas fa-database"/> {siteConfig.thirdfeature}<hr/></small>
       </h2>
     );
 
@@ -49,14 +52,14 @@ class HomeSplash extends React.Component {
 
     return (
       <SplashContainer>
-        <image style={{width: "30%"}} src={`${baseUrl}img/graphback.png`} />
+        <image className="graphback" src={`${baseUrl}img/graphback.png`} />
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
-          <PromoSection>
-            <Button href="/docs/gettingstarted">View Docs</Button>
-            <Button href={siteConfig.repoUrl}>Github</Button>
-          </PromoSection>
         </div>
+        <PromoSection>
+          <Button href="/docs/gettingstarted">View Docs </Button>
+          <Button href={siteConfig.repoUrl}><i className="fab fa-github"/> Github</Button>
+        </PromoSection>
       </SplashContainer>
     );
   }

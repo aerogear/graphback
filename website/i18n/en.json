@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Production ready GraphQL API for your client and server applications",
+    "tagline": "Production ready GraphQL API for your client & server applications",
     "docs": {
       "commands": {
         "title": "CLI commands"
