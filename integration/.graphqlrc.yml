@@ -1,0 +1,37 @@
+schema: ./output/schema/*.graphql
+documents: ./output/client/**/*.graphql
+extensions:
+  # Graphback configuration
+  graphback:
+    ##  Input schema`
+    model: ./mock.graphql
+    ## Global configuration for CRUD generator
+    crud:
+      create: true
+      update: true
+      findAll: true
+      find: true
+      delete: true
+      subCreate: true
+      subUpdate: true
+      subDelete: true
+    ## Codegen plugins
+    plugins:
+        graphback-schema:
+          format: 'graphql'
+          outputPath: ./output/schema
+        graphback-client:
+          format: 'gqlwithfragment'
+          outputPath: './output/client'
+        graphback-resolvers:
+          format: ts
+          outputPath: ./output/resolvers
+  dbmigrations:
+    ## See knex.js for db specific config format
+    client: pg
+    connection:
+      user: postgresql
+      password: postgres
+      database: users
+      host: localhost
+      port: 5432
