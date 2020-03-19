@@ -5,6 +5,11 @@ jobs:
     docker:
       # Node 8 LTS
       - image: circleci/node:lts-browsers
+      - image: circleci/postgres:latest
+        environment:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgresql
+          POSTGRES_DB: users
     steps:
       - checkout
       - restore_cache:
@@ -28,6 +33,9 @@ jobs:
       - run:
           name: test
           command: yarn test
+      - run:
+          name: run integration tests
+          command: yarn test:integration
   npm_publish:
     working_directory: ~/aerogear/graphback
     docker:

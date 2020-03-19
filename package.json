@@ -30,6 +30,7 @@
   },
   "scripts": {
     "test": "jest -w 1",
+    "test:integration": "cd integration && yarn && yarn integration",
     "coverage": "jest --coverage",
     "bootstrap": "lerna bootstrap --no-ci",
     "lint": "eslint 'packages/*/src/**/*.ts'",

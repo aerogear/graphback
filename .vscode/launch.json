@@ -2,22 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Temp File",
-      "type": "node",
-      "request": "launch",
-      "env": {},
-      "args": [
-        "${workspaceRoot}/packages/graphback/src/temp.ts"
-      ],
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register"
-      ],
-      "cwd": "${workspaceRoot}",
-      "protocol": "inspector",
-      "internalConsoleOptions": "openOnSessionStart"
-    },
-    {
       "name": "Current TS File",
       "type": "node",
       "request": "launch",
