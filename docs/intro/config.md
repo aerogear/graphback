@@ -56,25 +56,12 @@ extensions:
         graphback-resolvers:
           format: ts
           outputPath: ./server/src/resolvers
-  ## graphql-migration config that can be also used in application
-  ## Please do not connect it to shared database as Graphback will automatically 
-  ## execute dlls statements that can affect other applications.
-  dbmigrations:
-    ## See knex.js for db specific config format
-    client: pg
-    connection:
-      user: postgresql
-      password: postgres
-      database: users
-      host: localhost
-      port: 55432
-
 ```
 Changing `crud` flags and running `graphback generate` will update the `schema` and `resolvers` using the latest config.
 
 > **Note**: For subscriptions, the user needs to change the value of the respective operations to `true`. For example, changing `subDelete` to `true` won't work unless, `delete` is `true`.
 
-## Changing CRUD configuration per type
+### Changing CRUD configuration per type
 
 Generator config applies the config to all the types in your schema. 
 Graphback allows you to change these for any single type using annotations.
@@ -129,3 +116,31 @@ type Note {
 will create the `delete` mutation for `Note` type.
 
 > **Note**: Annotations override the configuration values in `.graphqlrc.yml`.
+
+## Database Migrations
+
+Graphback can migrate your database structure using your GraphQL schema.
+
+> Note: Full database migration support is currently only supported for PostgreSQL databases. See [Database Compatibility](../db/dbintroduction#compatibility).
+
+To enable migrations to work, add the `dbmigrations` extension to your `.graphqlrc.yml` file:
+
+```yaml
+...
+extensions:
+  # Graphback configuration
+  graphback:
+    ...
+  ## graphql-migration config that can be also used in application
+  ## Please do not connect it to shared database as Graphback will automatically 
+  ## execute dlls statements that can affect other applications.
+  dbmigrations:
+    ## See knex.js for db specific config format
+    client: pg
+    connection:
+      user: postgresql
+      password: postgres
+      database: users
+      host: localhost
+      port: 55432
+```

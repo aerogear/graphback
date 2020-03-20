@@ -6,6 +6,10 @@ export const getGraphbackConfig = async () => {
         extensions: [() => ({ name: 'graphback' })]
     });
 
+    if (!config) {
+        throw new Error("Can't load GraphQL Config");
+    }
+
     const conf = await config.getDefault().extension('graphback');
     return conf;
 }
@@ -14,6 +18,10 @@ export const getMigrateConfig = async () => {
     const config = await loadConfig({
         extensions: [() => ({ name: 'dbmigrations' })]
     });
+
+    if (!config) {
+        throw new Error("Can't load GraphQL Config");
+    }
 
     const conf = await config.getDefault().extension('dbmigrations');
     return conf;
