@@ -8,6 +8,9 @@
 	.projectTitle{
 		text-align: center;
 	}
+	.mycontainer{
+		grid-template-columns: 1fr 1fr;		
+	}
 }
 
 @media only screen and (min-width: 1024px) {
@@ -27,6 +30,9 @@
 }
 
 @media only screen and (min-width: 1400px) {
+	.mycontainer{
+		grid-template-columns: 1fr 2fr;		
+	}
 }
 
 @media only screen and (min-width: 1500px) {
@@ -56,4 +62,22 @@ hr{
 }
 small{
 	letter-spacing: 0.5px;
+}
+.mycontainer{
+	display: grid;
+	gap:5%;	
+	padding: 2% 5%;
+	margin-top: 5%;
+	background-color: #f7f7f7;
+}
+.supported{
+	opacity: 0.4;
+	filter: grayscale(100%);
+
+}
+.supported img{
+	margin: 5% 5%;
+}
+figcaption{
+	font-size: 24px;
 }

@@ -83,6 +83,25 @@ class Index extends React.Component {
       </Container>
     );
 
+    const Content = () => (
+      <div className="mycontainer">
+        <div align="center" className="supported">
+          <h1>Supported Databases</h1>
+          <figure>
+            <image src={`${baseUrl}img/postgresql.png`} />
+            <figcaption>PostgreSQL</figcaption>
+          </figure>
+          <figure>
+            <image src={`${baseUrl}img/mongodb.png`} />
+            <figcaption>MongoDB</figcaption>
+          </figure>
+        </div>
+        <div className="initdemo">
+          <image src={`${baseUrl}img/npxinit.png`} />
+        </div>
+      </div>
+    );
+
     const Demo = () => (
       <Block align="center">
         {[
@@ -95,7 +114,7 @@ class Index extends React.Component {
             title: 'Graphback in 10 minutes',
           },
         ]}
-      </Block>
+      </Block> 
     );
 
     const LearnHow = () => (
@@ -117,6 +136,7 @@ class Index extends React.Component {
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
+          <Content/>
           <LearnHow />
           <Demo />
         </div>
