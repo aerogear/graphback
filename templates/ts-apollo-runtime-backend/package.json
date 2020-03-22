@@ -18,18 +18,18 @@
     "glob": "7.1.6",
     "graphback": "0.11.2",
     "graphql": "14.6.0",
-    "graphql-config": "3.0.0-alpha.19",
+    "graphql-config": "3.0.0-alpha.23",
     "graphql-migrations": "0.11.2",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
-    "knex": "0.20.11",
+    "knex": "0.20.12",
     "pg": "7.18.2"
   },
   "devDependencies": {
     "@types/glob": "7.1.1",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.5",
-    "ts-node": "8.6.2",
+    "ts-node": "8.8.1",
     "tslint": "6.1.0",
     "typescript": "3.8.3"
   }
