@@ -40,7 +40,7 @@
     "pg": "7.18.2",
     "rimraf": "3.0.2",
     "sqlite3": "4.1.1",
-    "ts-node": "8.7.0",
+    "ts-node": "8.8.0",
     "tsutils": "3.17.1",
     "typescript": "3.8.3"
   },
