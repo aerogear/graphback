@@ -95,6 +95,10 @@ class Index extends React.Component {
             <image src={`${baseUrl}img/mongodb.png`} />
             <figcaption>MongoDB</figcaption>
           </figure>
+          <figure>
+            <image src={`${baseUrl}img/sqlite.png`} />
+            <figcaption>SQLite</figcaption>
+          </figure>
         </div>
         <div className="initdemo">
           <image src={`${baseUrl}img/npxinit.png`} />

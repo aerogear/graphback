@@ -9,13 +9,14 @@
 		text-align: center;
 	}
 	.mycontainer{
-		grid-template-columns: 1fr;		
+		grid-template-columns: 1fr;
+		padding: 2% 5%;
 	}
 }
 
 @media only screen and (min-width: 1024px) {
 	.graphback{
-		width: 45%;
+		width: 30%;
 		float: right;
 	}
 	.projectTitle{
@@ -24,6 +25,9 @@
 	.button{
 	 align-content:left;
 	}
+	.mycontainer{
+		padding:2% 5% ;
+	}
 }
 
 @media only screen and (max-width: 1023px) {
@@ -31,7 +35,11 @@
 
 @media only screen and (min-width: 1400px) {
 	.mycontainer{
-		grid-template-columns: 1fr 2fr;		
+		grid-template-columns: 1fr 2fr;
+		padding-top: 2%;
+		padding-bottom: 2%;
+		padding-left: 12%;
+		padding-right: 15%;		
 	}
 }
 
@@ -66,8 +74,6 @@ small{
 .mycontainer{
 	display: grid;
 	gap:5%;	
-	padding: 2% 5%;
-	margin-top: 5%;
 	background-color: #f7f7f7;
 }
 .supported{
@@ -76,8 +82,20 @@ small{
 
 }
 .supported img{
-	margin: 5% 5%;
+	margin: 4% 0%;
+	width: 20%;
 }
 figcaption{
 	font-size: 24px;
+}
+.homeContainer .homeWrapper{
+	padding-top: 5%;
+	padding-left:2%;
+	padding-right:2%;
+}
+.promoSection .promoRow .pluginRowBlock{
+	margin-top: 2%;
+}
+.mycontainer h1{
+	margin-top: 0;
 }
