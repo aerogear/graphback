@@ -39,7 +39,7 @@
     "@graphback/core": "0.11.2",
     "pg": "7.18.2",
     "pluralize": "8.0.0",
-    "prettier": "2.0.1",
+    "prettier": "2.0.2",
     "sqlite3": "4.1.1"
   },
   "peerDependencies": {
