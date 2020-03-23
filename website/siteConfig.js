@@ -5,13 +5,13 @@
 
 const siteConfig = {
   title: 'Graphback', // Title for your website.
-  tagline: 'Production ready GraphQL API for your client and server applications',
+  tagline: 'GraphQL API for your client and server',
   url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
   cname: 'graphback.dev',
-  firstfeature:'Generates GraphQL CRUD queries and mutations', //features of graphback
-  secondfeature:'Generates an unopiniated GraphQL resolver layer ',
-  thirdfeature: 'Generates database DDL statements'
+  firstfeature:'Out of the Box Node.js GraphQL API based on your model', //features of graphback
+  secondfeature:'Full control over the generated code or runtime framework',
+  thirdfeature: 'Manages complexity of database management'
   ,
 
   // Used for publishing and more
