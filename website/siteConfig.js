@@ -9,6 +9,10 @@ const siteConfig = {
   url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
   cname: 'graphback.dev',
+  firstfeature:'Generates GraphQL CRUD queries and mutations', //features of graphback
+  secondfeature:'Generates an unopiniated GraphQL resolver layer ',
+  thirdfeature: 'Generates database DDL statements'
+  ,
 
   // Used for publishing and more
   projectName: 'graphback',
@@ -45,6 +49,7 @@ const siteConfig = {
     'https://buttons.github.io/buttons.js',
     'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js',
     '/js/code-block-buttons.js',
+    'https://kit.fontawesome.com/48d4048ec6.js'
   ],
 
   stylesheets: ['/css/code-block-buttons.css'],
