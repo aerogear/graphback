@@ -9,7 +9,7 @@
         "title": "CLI commands"
       },
       "crud/crudruntime": {
-        "title": "CRUD Runtime abstraction",
+        "title": "CRUD Runtime Abstraction",
         "sidebar_label": "CRUD Abstraction"
       },
       "crud/crudspec": {
@@ -28,12 +28,12 @@
         "title": "Data Sources"
       },
       "db/dbintroduction": {
-        "title": "Introduction Database Schema Migrations",
+        "title": "Database",
         "sidebar_label": "Introduction"
       },
       "db/dbmigrations": {
-        "title": "Database Schema Migrations",
-        "sidebar_label": "Database Schema Migrations"
+        "title": "Database Migrations",
+        "sidebar_label": "Migrations"
       },
       "gettingstarted": {
         "title": "Introduction to Graphback",
@@ -136,10 +136,6 @@
       "version-0.11.x/version-0.11.x-commands": {
         "title": "CLI commands"
       },
-      "version-0.11.x/crud/version-0.11.x-crudruntime": {
-        "title": "CRUD Runtime abstraction",
-        "sidebar_label": "CRUD Abstraction"
-      },
       "version-0.11.x/crud/version-0.11.x-crudspec": {
         "title": "Graphback CRUD Specification",
         "sidebar_label": "CRUD Specification"
@@ -152,9 +148,6 @@
         "title": "Model Relationships",
         "sidebar_label": "Model Relationships"
       },
-      "version-0.11.x/db/version-0.11.x-datasources": {
-        "title": "Data Sources"
-      },
       "version-0.11.x/db/version-0.11.x-dbintroduction": {
         "title": "Introduction Database Schema Migrations",
         "sidebar_label": "Introduction"
@@ -166,10 +159,6 @@
       "version-0.11.x/version-0.11.x-gettingstarted": {
         "title": "Introduction to Graphback",
         "sidebar_label": "What is Graphback"
-      },
-      "version-0.11.x/intro/version-0.11.x-concepts": {
-        "title": "Graphback Concepts",
-        "sidebar_label": "Concepts"
       },
       "version-0.11.x/intro/version-0.11.x-config": {
         "title": "Config"
@@ -204,17 +193,9 @@
       "version-0.11.x/migrations/version-0.11.x-openapi": {
         "title": "OpenAPI migrations"
       },
-      "version-0.11.x/plugins/version-0.11.x-customplugin": {
-        "title": "Creating your own plugin",
-        "sidebar_label": "Custom plugin"
-      },
       "version-0.11.x/plugins/version-0.11.x-crud-client": {
         "title": "Graphback CRUD Client Queries Plugin",
         "sidebar_label": "CRUD Client Queries"
-      },
-      "version-0.11.x/plugins/version-0.11.x-crud-resolvers": {
-        "title": "Graphback CRUD Resolvers Plugin",
-        "sidebar_label": "CRUD Resolvers"
       },
       "version-0.11.x/plugins/version-0.11.x-crud-schema": {
         "title": "Graphback CRUD Schema Plugin",

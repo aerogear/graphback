@@ -6,9 +6,13 @@ export const getConfig = async () => {
         extensions: [() => ({ name: 'dbmigrations' })]
     });
 
-    const conf = await config.getDefault().extension('dbmigrations');
+    if (!config) {
+        throw new Error("Can't load GraphQL Config");
+    }
 
-    return conf;
+    const dbConfig = await config.getDefault().extension('dbmigrations');
+
+    return dbConfig;
 }
 
 /**

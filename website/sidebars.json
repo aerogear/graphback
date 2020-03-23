@@ -7,7 +7,8 @@
       "intro/quickstart",
       "intro/existingproject",
       "intro/serverless",
-      "intro/datamodel"
+      "intro/datamodel",
+      "intro/config"
     ],
     "CRUD": [
       "crud/crudspec",
@@ -22,8 +23,8 @@
     ],
     "Database": [
       "db/dbintroduction",
-      "db/dbmigrations",
-      "db/datasources"
+      "db/datasources",
+      "db/dbmigrations"
     ],
     "Migrating to Graphback": [
       "migrations/intromigrations",
