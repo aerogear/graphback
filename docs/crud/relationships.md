@@ -33,7 +33,7 @@ type User {
 }
 ```
 
-This creates a relationship via a `userId` column in the `profile` table. You can customize the key tracking the relationship with the `key` annotation:
+This creates a unidirectional relationship via a `userId` column in the `profile` table. You can customize the key tracking the relationship with the `key` annotation:
 
 ```graphql
 """
@@ -57,6 +57,25 @@ type User {
 ```
 
 This maps `Profile.user` to `profile.user_id` in the database.
+
+To create a bidirectional one-to-one relationship:
+
+```graphql
+"""
+@model
+"""
+type Profile {
+  id: ID!
+  """
+  @oneToOne key: 'user_id', field: 'profile'
+  """
+  user: User!
+}
+```
+
+This generates a `User.profile` field and allows you to retrieve relation data from both `Profile` and `User` models. 
+
+> NOTE: In this scenario, only `Profile.user` has an associated foreign key field in the database. `User.profile` is a "virtual" relationship field, meaning it only exists at the resolver level.
 
 ### OneToMany
 

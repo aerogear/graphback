@@ -14,6 +14,7 @@ Array [
         "name": "id",
         "nullable": false,
         "type": "increments",
+        "unique": false,
       },
       "name" => Object {
         "annotations": Object {
@@ -28,6 +29,7 @@ Array [
         "name": "name",
         "nullable": false,
         "type": "string",
+        "unique": false,
       },
       "email" => Object {
         "annotations": Object {},
@@ -40,6 +42,7 @@ Array [
         "name": "email",
         "nullable": false,
         "type": "string",
+        "unique": false,
       },
       "score" => Object {
         "annotations": Object {},
@@ -50,6 +53,7 @@ Array [
         "name": "score",
         "nullable": true,
         "type": "integer",
+        "unique": false,
       },
       "scores" => Object {
         "annotations": Object {
@@ -62,6 +66,7 @@ Array [
         "name": "scores",
         "nullable": true,
         "type": "json",
+        "unique": false,
       },
     },
     "columns": Array [
@@ -74,6 +79,7 @@ Array [
         "name": "id",
         "nullable": false,
         "type": "increments",
+        "unique": false,
       },
       Object {
         "annotations": Object {
@@ -88,6 +94,7 @@ Array [
         "name": "name",
         "nullable": false,
         "type": "string",
+        "unique": false,
       },
       Object {
         "annotations": Object {},
@@ -100,6 +107,7 @@ Array [
         "name": "email",
         "nullable": false,
         "type": "string",
+        "unique": false,
       },
       Object {
         "annotations": Object {},
@@ -110,6 +118,7 @@ Array [
         "name": "score",
         "nullable": true,
         "type": "integer",
+        "unique": false,
       },
       Object {
         "annotations": Object {
@@ -122,6 +131,7 @@ Array [
         "name": "scores",
         "nullable": true,
         "type": "json",
+        "unique": false,
       },
     ],
     "comment": "A user.",
@@ -149,6 +159,7 @@ Array [
         "name": "id",
         "nullable": false,
         "type": "increments",
+        "unique": false,
       },
       "user" => Object {
         "annotations": Object {},
@@ -164,6 +175,7 @@ Array [
         "name": "userId",
         "nullable": false,
         "type": "integer",
+        "unique": false,
       },
       "created" => Object {
         "annotations": Object {
@@ -178,6 +190,7 @@ Array [
         "name": "created",
         "nullable": false,
         "type": "datetime",
+        "unique": false,
       },
       "title" => Object {
         "annotations": Object {},
@@ -190,6 +203,7 @@ Array [
         "name": "title",
         "nullable": false,
         "type": "string",
+        "unique": false,
       },
       "content" => Object {
         "annotations": Object {
@@ -202,6 +216,7 @@ Array [
         "name": "content",
         "nullable": false,
         "type": "text",
+        "unique": false,
       },
     },
     "columns": Array [
@@ -214,6 +229,7 @@ Array [
         "name": "id",
         "nullable": false,
         "type": "increments",
+        "unique": false,
       },
       Object {
         "annotations": Object {},
@@ -229,6 +245,7 @@ Array [
         "name": "userId",
         "nullable": false,
         "type": "integer",
+        "unique": false,
       },
       Object {
         "annotations": Object {
@@ -243,6 +260,7 @@ Array [
         "name": "created",
         "nullable": false,
         "type": "datetime",
+        "unique": false,
       },
       Object {
         "annotations": Object {},
@@ -255,6 +273,7 @@ Array [
         "name": "title",
         "nullable": false,
         "type": "string",
+        "unique": false,
       },
       Object {
         "annotations": Object {
@@ -267,6 +286,7 @@ Array [
         "name": "content",
         "nullable": false,
         "type": "text",
+        "unique": false,
       },
     ],
     "comment": undefined,
@@ -301,6 +321,7 @@ Array [
         "name": "usersId",
         "nullable": true,
         "type": "integer",
+        "unique": false,
       },
       "sharedMessagesId" => Object {
         "annotations": Object {
@@ -318,6 +339,7 @@ Array [
         "name": "sharedMessagesId",
         "nullable": true,
         "type": "integer",
+        "unique": false,
       },
     },
     "columns": Array [
@@ -337,6 +359,7 @@ Array [
         "name": "usersId",
         "nullable": true,
         "type": "integer",
+        "unique": false,
       },
       Object {
         "annotations": Object {
@@ -354,6 +377,7 @@ Array [
         "name": "sharedMessagesId",
         "nullable": true,
         "type": "integer",
+        "unique": false,
       },
     ],
     "comment": "[Auto] Join table between User.sharedMessages and Message.users",
@@ -394,6 +418,7 @@ Array [
         "name": "idId",
         "nullable": false,
         "type": "integer",
+        "unique": false,
       },
       "idId_other" => Object {
         "annotations": Object {},
@@ -409,6 +434,7 @@ Array [
         "name": "idId_other",
         "nullable": false,
         "type": "integer",
+        "unique": false,
       },
     },
     "columns": Array [
@@ -426,6 +452,7 @@ Array [
         "name": "idId",
         "nullable": false,
         "type": "integer",
+        "unique": false,
       },
       Object {
         "annotations": Object {},
@@ -441,6 +468,7 @@ Array [
         "name": "idId_other",
         "nullable": false,
         "type": "integer",
+        "unique": false,
       },
     ],
     "comment": "[Auto] Join table between User.contacts and User.contacts",

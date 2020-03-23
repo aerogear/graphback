@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
-import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, isScalarType, getNamedType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType } from 'graphql';
 import { isModelType } from '../crud';
 import { transformForeignKeyName } from '../db';
 import { hasListType } from '../utils/hasListType';
-import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, relationshipOneToOneFieldDescriptionTemplate, mergeDescriptionWithRelationshipAnnotation } from './relationshipHelpers';
+import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, mergeDescriptionWithRelationshipAnnotation } from './relationshipHelpers';
 
 export interface FieldRelationshipMetadata {
     kind: 'oneToMany' | 'oneToOne' | 'manyToOne'
@@ -13,12 +13,14 @@ export interface FieldRelationshipMetadata {
     relationFieldName: string
     relationFieldType?: GraphQLScalarType
     relationForeignKey?: string
+    virtual?: boolean
 }
 
 export interface RelationshipAnnotation {
     kind: 'oneToMany' | 'oneToOne' | 'manyToOne'
     field?: string
     key?: string
+    virtual?: boolean
 }
 
 /**
@@ -98,17 +100,31 @@ export class RelationshipMetadataBuilder {
                 this.addManyToOne(modelType, field);
                 this.addOneToMany(relationType, relationField);
 
-            } else if (annotation.kind === 'oneToOne') {
-                field = this.updateOneToOneField(field, annotation.key);
-
+            } else if (annotation.kind === 'oneToOne' && !annotation.virtual) {
+                field = this.updateOneToOneField(field, annotation.key, annotation.field);
+                
                 this.addOneToOne(modelType, field);
+
+                if (annotation.virtual || !annotation.field) {
+                    return;
+                }
+
+                if (!relationField) {
+                    relationField = this.createVirtualOneToOneField(annotation.field, modelType, field.name, annotation.key);
+                } else {
+                    relationField = this.updateVirtualOneToOneField(relationField, field.name, annotation.key)
+                }
+
+                if (relationField) {
+                    this.addVirtualOneToOne(relationType, relationField);
+                }
             }
         }
     }
 
     private createOneToManyField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(relationFieldName);
-        const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', relationFieldName, columnField);
+        const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', columnField, relationFieldName);
 
         const fieldType = GraphQLNonNull(GraphQLList(baseType));
 
@@ -123,8 +139,8 @@ export class RelationshipMetadataBuilder {
 
     private createManyToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(fieldName);
-        const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', relationFieldName, columnField);
-        
+        const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', columnField, relationFieldName);
+
         return {
             name: fieldName,
             description: fieldDescription,
@@ -136,7 +152,7 @@ export class RelationshipMetadataBuilder {
 
     private updateOneToManyField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(relationFieldName);
-        const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', relationFieldName, columnField);
+        const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', columnField, relationFieldName);
         const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
         return {
@@ -147,7 +163,7 @@ export class RelationshipMetadataBuilder {
 
     private updateManyToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(field.name);
-        const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', relationFieldName, columnField);
+        const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', columnField, relationFieldName);
         const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
         return {
@@ -156,9 +172,33 @@ export class RelationshipMetadataBuilder {
         }
     }
 
-    private updateOneToOneField(field: GraphQLField<any, any>, columnName?: string): GraphQLField<any, any> {
+    private updateOneToOneField(field: GraphQLField<any, any>, columnName?: string, relationFieldName?: string): GraphQLField<any, any> {
         const columnField = columnName || transformForeignKeyName(field.name);
-        const fieldDescription = relationshipOneToOneFieldDescriptionTemplate('oneToOne', columnField);
+        const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', columnField, relationFieldName);
+        const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
+
+        return {
+            ...field,
+            description: finalDescription
+        }
+    }
+
+    private createVirtualOneToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+        const columnField = columnName || transformForeignKeyName(relationFieldName);
+        const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', columnField, relationFieldName, true);
+
+        return {
+            name: fieldName,
+            description: fieldDescription,
+            type: baseType,
+            args: [],
+            extensions: []
+        }
+    }
+
+    private updateVirtualOneToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+        const columnField = columnName || transformForeignKeyName(relationFieldName);
+        const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', columnField, relationFieldName, true);
         const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
         return {
@@ -238,6 +278,33 @@ export class RelationshipMetadataBuilder {
             relationType,
             relationFieldName: metadata.field,
             relationForeignKey: columnField
+        };
+
+        this.relationships.push(oneToOne);
+    }
+
+    private addVirtualOneToOne(ownerType: GraphQLObjectType, field: GraphQLField<any, any>) {
+        this.validateOneToOneRelationship(ownerType.name, field);
+
+        const metadata = parseRelationshipAnnotation(field.description);
+
+        // skip - relationship with key mapping will be generated at a later stage
+        if (!metadata.virtual) {
+            return;
+        }
+
+        const relationType = getNamedType(field.type) as GraphQLObjectType;
+
+        const columnField = metadata.key || transformForeignKeyName(metadata.field);
+
+        const oneToOne: FieldRelationshipMetadata = {
+            kind: 'oneToOne',
+            owner: ownerType,
+            ownerField: field,
+            relationType,
+            relationFieldName: metadata.field,
+            relationForeignKey: columnField,
+            virtual: true
         };
 
         this.relationships.push(oneToOne);

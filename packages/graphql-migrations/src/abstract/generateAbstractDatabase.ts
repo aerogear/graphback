@@ -22,7 +22,7 @@ import getKnexColumnType from '../util/getKnexColumnType';
 import { AbstractDatabase } from './AbstractDatabase'
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
 import { OneToManyRelationship } from './RelationshipTypes'
-import { Table } from './Table'
+import { Table, TableUnique } from './Table'
 import { ForeignKey, TableColumn } from './TableColumn'
 
 const ROOT_TYPES = ['Query', 'Mutation', 'Subscription']
@@ -169,6 +169,9 @@ class AbstractDatabaseBuilder {
     this.currentTable = undefined
     this.currentType = undefined
 
+    const uniques = this.getUniqueColumnConstraints(table.name, table.columns);
+    table.uniques.push(...uniques);
+
     this.database.tables.push(table)
     this.database.tableMap.set(type.name, table)
 
@@ -205,6 +208,7 @@ class AbstractDatabaseBuilder {
     let type: string
     let args: any[]
     let foreign: ForeignKey | undefined
+    let unique = false
 
     if (columnName === 'id' && (isScalarType(fieldType) && fieldType.name !== 'ID')) {
       throw new Error(`Scalar ID is missing on type ${this.currentType}.${field.name}`);
@@ -234,6 +238,10 @@ class AbstractDatabaseBuilder {
 
       // Object
     } else if (isObjectType(fieldType)) {
+      if (relationshipMarker?.virtual) {
+        return undefined;
+      }
+
       columnName = relationshipMarker?.key || annotations.name || `${field.name}Id`
       const foreignType = this.typeMap[fieldType.name]
       if (!foreignType) {
@@ -260,6 +268,11 @@ class AbstractDatabaseBuilder {
 
         return undefined
       }
+
+      if (relationshipMarker?.kind === 'oneToOne') {
+        unique = true;
+      }
+
       type = getKnexColumnType(descriptor.type)
       args = descriptor.args
       foreign = {
@@ -428,6 +441,7 @@ class AbstractDatabaseBuilder {
       foreign,
       // eslint-disable-next-line no-null/no-null
       defaultValue: annotations.default !== null ? annotations.default : null,
+      unique
     }
   }
 
@@ -477,6 +491,15 @@ class AbstractDatabaseBuilder {
     const column = table.columns.find((tc: TableColumn) => tc.name === columnDescriptor.name);
 
     return !!column;
+  }
+
+  private getUniqueColumnConstraints(tableName: string, columns: TableColumn[]): TableUnique[] {
+    return columns.filter((column: TableColumn) => column.unique).map((column: TableColumn) => {
+      return {
+        name: `${tableName}_${column.name}_unique`,
+        columns: [column.name]
+      }
+    });
   }
 
   /**

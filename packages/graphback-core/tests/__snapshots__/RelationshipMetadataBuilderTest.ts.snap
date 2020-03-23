@@ -1,5 +1,169 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`should build bidirectional one-to-one relationship metadata from one-to-one field 1`] = `
+"[
+ {
+  \\"kind\\": \\"oneToOne\\",
+  \\"owner\\": \\"Address\\",
+  \\"ownerField\\": {
+   \\"type\\": \\"User!\\",
+   \\"description\\": \\"@oneToOne field: 'address', key: 'residentId'\\",
+   \\"args\\": [],
+   \\"astNode\\": {
+    \\"kind\\": \\"FieldDefinition\\",
+    \\"description\\": {
+     \\"kind\\": \\"StringValue\\",
+     \\"value\\": \\"@oneToOne field: 'address'\\",
+     \\"block\\": true,
+     \\"loc\\": {
+      \\"start\\": 180,
+      \\"end\\": 230
+     }
+    },
+    \\"name\\": {
+     \\"kind\\": \\"Name\\",
+     \\"value\\": \\"resident\\",
+     \\"loc\\": {
+      \\"start\\": 239,
+      \\"end\\": 247
+     }
+    },
+    \\"arguments\\": [],
+    \\"type\\": {
+     \\"kind\\": \\"NonNullType\\",
+     \\"type\\": {
+      \\"kind\\": \\"NamedType\\",
+      \\"name\\": {
+       \\"kind\\": \\"Name\\",
+       \\"value\\": \\"User\\",
+       \\"loc\\": {
+        \\"start\\": 249,
+        \\"end\\": 253
+       }
+      },
+      \\"loc\\": {
+       \\"start\\": 249,
+       \\"end\\": 253
+      }
+     },
+     \\"loc\\": {
+      \\"start\\": 249,
+      \\"end\\": 254
+     }
+    },
+    \\"directives\\": [],
+    \\"loc\\": {
+     \\"start\\": 180,
+     \\"end\\": 254
+    }
+   },
+   \\"name\\": \\"resident\\",
+   \\"isDeprecated\\": false
+  },
+  \\"relationType\\": \\"User\\",
+  \\"relationFieldName\\": \\"address\\",
+  \\"relationForeignKey\\": \\"residentId\\"
+ },
+ {
+  \\"kind\\": \\"oneToOne\\",
+  \\"owner\\": \\"User\\",
+  \\"ownerField\\": {
+   \\"name\\": \\"address\\",
+   \\"description\\": \\"@oneToOne field: 'resident', key: 'residentId', virtual: true\\",
+   \\"type\\": \\"Address\\",
+   \\"args\\": [],
+   \\"extensions\\": []
+  },
+  \\"relationType\\": \\"Address\\",
+  \\"relationFieldName\\": \\"resident\\",
+  \\"relationForeignKey\\": \\"residentId\\",
+  \\"virtual\\": true
+ }
+]"
+`;
+
+exports[`should build generated bidirectional one-to-one relationship metadata from one-to-one field 1`] = `
+"[
+ {
+  \\"kind\\": \\"oneToOne\\",
+  \\"owner\\": \\"Address\\",
+  \\"ownerField\\": {
+   \\"type\\": \\"User!\\",
+   \\"description\\": \\"@oneToOne field: 'address', key: 'residentId'\\",
+   \\"args\\": [],
+   \\"astNode\\": {
+    \\"kind\\": \\"FieldDefinition\\",
+    \\"description\\": {
+     \\"kind\\": \\"StringValue\\",
+     \\"value\\": \\"@oneToOne field: 'address'\\",
+     \\"block\\": true,
+     \\"loc\\": {
+      \\"start\\": 180,
+      \\"end\\": 230
+     }
+    },
+    \\"name\\": {
+     \\"kind\\": \\"Name\\",
+     \\"value\\": \\"resident\\",
+     \\"loc\\": {
+      \\"start\\": 239,
+      \\"end\\": 247
+     }
+    },
+    \\"arguments\\": [],
+    \\"type\\": {
+     \\"kind\\": \\"NonNullType\\",
+     \\"type\\": {
+      \\"kind\\": \\"NamedType\\",
+      \\"name\\": {
+       \\"kind\\": \\"Name\\",
+       \\"value\\": \\"User\\",
+       \\"loc\\": {
+        \\"start\\": 249,
+        \\"end\\": 253
+       }
+      },
+      \\"loc\\": {
+       \\"start\\": 249,
+       \\"end\\": 253
+      }
+     },
+     \\"loc\\": {
+      \\"start\\": 249,
+      \\"end\\": 254
+     }
+    },
+    \\"directives\\": [],
+    \\"loc\\": {
+     \\"start\\": 180,
+     \\"end\\": 254
+    }
+   },
+   \\"name\\": \\"resident\\",
+   \\"isDeprecated\\": false
+  },
+  \\"relationType\\": \\"User\\",
+  \\"relationFieldName\\": \\"address\\",
+  \\"relationForeignKey\\": \\"residentId\\"
+ },
+ {
+  \\"kind\\": \\"oneToOne\\",
+  \\"owner\\": \\"User\\",
+  \\"ownerField\\": {
+   \\"name\\": \\"address\\",
+   \\"description\\": \\"@oneToOne field: 'resident', key: 'residentId', virtual: true\\",
+   \\"type\\": \\"Address\\",
+   \\"args\\": [],
+   \\"extensions\\": []
+  },
+  \\"relationType\\": \\"Address\\",
+  \\"relationFieldName\\": \\"resident\\",
+  \\"relationForeignKey\\": \\"residentId\\",
+  \\"virtual\\": true
+ }
+]"
+`;
+
 exports[`should build one-to-many and many-to-one relationships from both fields 1`] = `
 "[
  {
@@ -136,32 +300,32 @@ exports[`should build one-to-many and many-to-one relationships from both fields
 ]"
 `;
 
-exports[`should build one-to-one relationship metadata from one-to-one field 1`] = `
+exports[`should build unidirectional one-to-one relationship metadata from one-to-one field 1`] = `
 "[
  {
   \\"kind\\": \\"oneToOne\\",
   \\"owner\\": \\"Address\\",
   \\"ownerField\\": {
    \\"type\\": \\"User!\\",
-   \\"description\\": \\"@oneToOne key: 'residentId'\\",
+   \\"description\\": \\"@oneToOne field: 'address', key: 'resident_id'\\",
    \\"args\\": [],
    \\"astNode\\": {
     \\"kind\\": \\"FieldDefinition\\",
     \\"description\\": {
      \\"kind\\": \\"StringValue\\",
-     \\"value\\": \\"@oneToOne\\",
+     \\"value\\": \\"@oneToOne field: 'address', key: 'resident_id'\\",
      \\"block\\": true,
      \\"loc\\": {
-      \\"start\\": 180,
-      \\"end\\": 213
+      \\"start\\": 205,
+      \\"end\\": 275
      }
     },
     \\"name\\": {
      \\"kind\\": \\"Name\\",
      \\"value\\": \\"resident\\",
      \\"loc\\": {
-      \\"start\\": 222,
-      \\"end\\": 230
+      \\"start\\": 284,
+      \\"end\\": 292
      }
     },
     \\"arguments\\": [],
@@ -173,31 +337,79 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
        \\"kind\\": \\"Name\\",
        \\"value\\": \\"User\\",
        \\"loc\\": {
-        \\"start\\": 232,
-        \\"end\\": 236
+        \\"start\\": 294,
+        \\"end\\": 298
        }
       },
       \\"loc\\": {
-       \\"start\\": 232,
-       \\"end\\": 236
+       \\"start\\": 294,
+       \\"end\\": 298
       }
      },
      \\"loc\\": {
-      \\"start\\": 232,
-      \\"end\\": 237
+      \\"start\\": 294,
+      \\"end\\": 299
      }
     },
     \\"directives\\": [],
     \\"loc\\": {
-     \\"start\\": 180,
-     \\"end\\": 237
+     \\"start\\": 205,
+     \\"end\\": 299
     }
    },
    \\"name\\": \\"resident\\",
    \\"isDeprecated\\": false
   },
   \\"relationType\\": \\"User\\",
-  \\"relationForeignKey\\": \\"residentId\\"
+  \\"relationFieldName\\": \\"address\\",
+  \\"relationForeignKey\\": \\"resident_id\\"
+ },
+ {
+  \\"kind\\": \\"oneToOne\\",
+  \\"owner\\": \\"User\\",
+  \\"ownerField\\": {
+   \\"type\\": \\"Address\\",
+   \\"description\\": \\"@oneToOne field: 'resident', key: 'resident_id', virtual: true\\",
+   \\"args\\": [],
+   \\"astNode\\": {
+    \\"kind\\": \\"FieldDefinition\\",
+    \\"name\\": {
+     \\"kind\\": \\"Name\\",
+     \\"value\\": \\"address\\",
+     \\"loc\\": {
+      \\"start\\": 89,
+      \\"end\\": 96
+     }
+    },
+    \\"arguments\\": [],
+    \\"type\\": {
+     \\"kind\\": \\"NamedType\\",
+     \\"name\\": {
+      \\"kind\\": \\"Name\\",
+      \\"value\\": \\"Address\\",
+      \\"loc\\": {
+       \\"start\\": 98,
+       \\"end\\": 105
+      }
+     },
+     \\"loc\\": {
+      \\"start\\": 98,
+      \\"end\\": 105
+     }
+    },
+    \\"directives\\": [],
+    \\"loc\\": {
+     \\"start\\": 89,
+     \\"end\\": 105
+    }
+   },
+   \\"name\\": \\"address\\",
+   \\"isDeprecated\\": false
+  },
+  \\"relationType\\": \\"Address\\",
+  \\"relationFieldName\\": \\"resident\\",
+  \\"relationForeignKey\\": \\"resident_id\\",
+  \\"virtual\\": true
  }
 ]"
 `;

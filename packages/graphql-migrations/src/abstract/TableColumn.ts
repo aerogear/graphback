@@ -32,4 +32,5 @@ export interface TableColumn {
   nullable: boolean
   foreign: ForeignKey | null
   defaultValue: any
+  unique?: boolean
 }

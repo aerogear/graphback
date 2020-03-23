@@ -104,7 +104,7 @@ type Profile {
 }
 ```
 
-This creates a one-sided relationship between the `Profile` and `User` models.
+This creates a unidirectional relationship between the `Profile` and `User` models.
 
 By default this maps to `profile.userId` in the underlying data source. Yon can customise this by adding `key` to the `@oneToOne` annotation:
 
@@ -120,3 +120,22 @@ type Profile {
   user: User!
 }
 ```
+
+To create a bidirectional one-to-one relationship:
+
+```graphql
+"""
+@model
+"""
+type Profile {
+  id: ID!
+  """
+  @oneToOne key: 'user_id', field: 'profile'
+  """
+  user: User!
+}
+```
+
+This generates a `User.profile` field and allows you to retrieve relation data from both `Profile` and `User` models. 
+
+> NOTE: In this scenario, only `Profile.user` has an associated foreign key field in the database. `User.profile` is a "virtual" relationship field, meaning it only exists at the resolver level.

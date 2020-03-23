@@ -65,7 +65,7 @@ test('should create many-to-one relationship metadata from one-to-many field', (
     expect(messageRelationships[0].relationType.name).toEqual('User');
 });
 
-test('should build one-to-one relationship metadata from one-to-one field', () => {
+test('should build bidirectional one-to-one relationship metadata from one-to-one field', () => {
     const { builder } = setup(`
     """
     @model
@@ -80,7 +80,7 @@ test('should build one-to-one relationship metadata from one-to-one field', () =
         id: ID!
         description: String
         """
-        @oneToOne
+        @oneToOne field: 'address'
         """
         resident: User!
     }
@@ -94,10 +94,107 @@ test('should build one-to-one relationship metadata from one-to-one field', () =
     expect(addressRelationships[0].ownerField.name).toEqual('resident');
     expect(addressRelationships[0].relationForeignKey).toEqual('residentId');
     expect(addressRelationships[0].relationType.name).toEqual('User');
-    expect(addressRelationships[0].relationFieldName).toBeUndefined();
+    expect(addressRelationships[0].relationFieldName).toEqual('address');
+
+    const userRelationships = builder.getModelRelationships('User');
+    expect(userRelationships).toHaveLength(1);
+    expect(userRelationships[0].kind).toEqual('oneToOne');
+    expect(userRelationships[0].ownerField.name).toEqual('address');
+    expect(userRelationships[0].relationForeignKey).toEqual('residentId');
+    expect(userRelationships[0].relationType.name).toEqual('Address');
+    expect(userRelationships[0].relationFieldName).toEqual('resident');
 
     expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
 });
+
+test('should build generated bidirectional one-to-one relationship metadata from one-to-one field', () => {
+    const { builder } = setup(`
+    """
+    @model
+    """
+    type User {
+        id: ID!
+        name: String
+    }
+    
+    """@model"""
+    type Address {
+        id: ID!
+        description: String
+        """
+        @oneToOne field: 'address'
+        """
+        resident: User!
+    }
+    `)
+
+    builder.build();
+
+    const addressRelationships = builder.getModelRelationships('Address');
+    expect(addressRelationships.length).toEqual(1);
+    expect(addressRelationships[0].kind).toEqual('oneToOne');
+    expect(addressRelationships[0].ownerField.name).toEqual('resident');
+    expect(addressRelationships[0].relationForeignKey).toEqual('residentId');
+    expect(addressRelationships[0].relationType.name).toEqual('User');
+    expect(addressRelationships[0].relationFieldName).toEqual('address');
+
+    const userRelationships = builder.getModelRelationships('User');
+    expect(userRelationships).toHaveLength(1);
+    expect(userRelationships[0].kind).toEqual('oneToOne');
+    expect(userRelationships[0].ownerField.name).toEqual('address');
+    expect(userRelationships[0].relationForeignKey).toEqual('residentId');
+    expect(userRelationships[0].relationType.name).toEqual('Address');
+    expect(userRelationships[0].relationFieldName).toEqual('resident');
+    expect(userRelationships[0].virtual).toEqual(true);
+
+    expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
+});
+
+test('should build unidirectional one-to-one relationship metadata from one-to-one field', () => {
+    const { builder } = setup(`
+    """
+    @model
+    """
+    type User {
+        id: ID!
+        name: String
+        address: Address
+    }
+    
+    """@model"""
+    type Address {
+        id: ID!
+        description: String
+        """
+        @oneToOne field: 'address', key: 'resident_id'
+        """
+        resident: User!
+    }
+    `)
+
+    builder.build();
+
+    const addressRelationships = builder.getModelRelationships('Address');
+    expect(addressRelationships.length).toEqual(1);
+    expect(addressRelationships[0].kind).toEqual('oneToOne');
+    expect(addressRelationships[0].ownerField.name).toEqual('resident');
+    expect(addressRelationships[0].relationForeignKey).toEqual('resident_id');
+    expect(addressRelationships[0].relationType.name).toEqual('User');
+    expect(addressRelationships[0].relationFieldName).toEqual('address');
+
+    const userRelationships = builder.getModelRelationships('User');
+    expect(userRelationships).toHaveLength(1);
+    expect(userRelationships[0].kind).toEqual('oneToOne');
+    expect(userRelationships[0].ownerField.name).toEqual('address');
+    expect(userRelationships[0].relationForeignKey).toEqual('resident_id');
+    expect(userRelationships[0].relationType.name).toEqual('Address');
+    expect(userRelationships[0].relationFieldName).toEqual('resident');
+    expect(userRelationships[0].virtual).toEqual(true);
+
+    expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
+});
+
+
 
 test('should build one-to-many and many-to-one relationships from both fields', () => {
     const { builder } = setup(`

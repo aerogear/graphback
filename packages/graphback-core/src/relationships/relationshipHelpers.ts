@@ -7,7 +7,11 @@ import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
  * 
  * @param description field description
  */
-export function parseRelationshipAnnotation(description: string = ''): RelationshipAnnotation | undefined {
+export function parseRelationshipAnnotation(description?: string): RelationshipAnnotation | undefined {
+    if (!description) {
+        return undefined;
+    }
+    
     const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
 
     for (const kind of relationshipKinds) {
@@ -97,7 +101,9 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
         const relationshipDescription = getRelationshipAnnotationString(description);
         const parsedAnnotation = parseRelationshipAnnotation(description);
 
-        if (parsedAnnotation && parsedAnnotation.key) {
+        if (!parsedAnnotation) {
+            descriptionLines.push(description);
+        } else if (parsedAnnotation.key) {
             descriptionLines.push(relationshipDescription);
             break;
         }
@@ -133,23 +139,13 @@ export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
 }
 
 /**
- * Generic template for relationship annotations
+ * Template for relationship annotations
  * 
  * @param relationshipKind 
  * @param fieldName 
  * @param columnKey 
+ * @param virtual
  */
-export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
-    return `@${relationshipKind} field: '${fieldName}', key: '${columnKey}'`;
-}
-
-/**
- * Template for one-to-one relationship annotations
- * 
- * @param relationshipKind 
- * @param fieldName 
- * @param columnKey 
- */
-export const relationshipOneToOneFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', columnKey: string): string => {
-    return `@${relationshipKind} key: '${columnKey}'`;
+export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', columnKey: string, field?: string, virtual?: boolean): string => {
+    return `@${relationshipKind}${field ? ` field: '${field}', `: ' '}key: '${columnKey}'${virtual ? `, virtual: true` : ''}`;
 }

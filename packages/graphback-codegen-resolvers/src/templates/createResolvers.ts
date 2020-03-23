@@ -16,7 +16,10 @@ function createRelationshipResolvers(relationships: FieldRelationshipMetadata[])
 
         if (relationship.kind === 'oneToMany') {
             resolverOutput = oneToManyTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
-        } else if (relationship.kind === 'oneToOne' || relationship.kind === 'manyToOne') {
+        } else if (relationship.kind === 'oneToOne' && relationship.virtual) {
+            const idField = getPrimaryKey(relationship.owner);
+            resolverOutput = oneToOneTemplate(relationTypeName, idField.name, relationship.relationForeignKey)
+        } else if (relationship.kind === 'manyToOne' || relationship.kind === 'oneToOne') {
             resolverOutput = oneToOneTemplate(relationTypeName, relationship.relationForeignKey, relationIdField.name)
         }
 
