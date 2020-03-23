@@ -28,7 +28,7 @@ class HomeSplash extends React.Component {
       <h2 className="projectTitle">
         {siteConfig.title}
         <small style={{fontSize:"xx-large"}}><b>{siteConfig.tagline}</b></small>
-        <small><i className="fas fa-database"/> {siteConfig.firstfeature}<hr/></small>
+        <small><i className="fas fa-server"/> {siteConfig.firstfeature}<hr/></small>
         <small><i className="fas fa-rocket"/> {siteConfig.secondfeature}<hr/></small>
         <small><i className="fas fa-database"/> {siteConfig.thirdfeature}<hr/></small>
       </h2>
@@ -100,7 +100,7 @@ class Index extends React.Component {
             <figcaption>SQLite</figcaption>
           </figure>
         </div>
-        <div className="initdemo">
+        <div>
           <image src={`${baseUrl}img/npxinit.png`} />
         </div>
       </div>
