@@ -6,7 +6,6 @@ import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { GraphbackPubSub } from "./GraphbackPubSub"
-import { subscriptionTopicMapping } from './subscriptionTopicMapping';
 
 /**
  * Default implementation of the CRUD service offering following capabilities:
@@ -36,7 +35,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         const result = await this.db.create(data, context);
 
         if (this.pubSub && this.publishConfig.publishCreate) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
+            const topic = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
             //TODO use subscription name mapping 
             const payload = this.buildEventPayload('new', result);
             await this.pubSub.publish(topic, payload);
@@ -51,7 +50,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         const result = await this.db.update(data, context);
 
         if (this.pubSub && this.publishConfig.publishUpdate) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
+            const topic = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
             //TODO use subscription name mapping 
             const payload = this.buildEventPayload('updated', result);
             await this.pubSub.publish(topic, payload);
@@ -67,7 +66,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         const result = await this.db.delete(data, context);
 
         if (this.pubSub && this.publishConfig.publishUpdate) {
-            const topic = subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
+            const topic = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
             const payload = this.buildEventPayload('deleted', result);
             await this.pubSub.publish(topic, payload);
         }
@@ -94,7 +93,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
             throw Error(`Missing PubSub implementation in CRUDService`);
         }
-        const createSubKey = subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
+        const createSubKey = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
 
         return this.pubSub.asyncIterator(createSubKey)
     }
@@ -105,7 +104,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
             throw Error(`Missing PubSub implementation in CRUDService`);
         }
-        const updateSubKey = subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
+        const updateSubKey = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
 
         return this.pubSub.asyncIterator(updateSubKey)
     }
@@ -116,7 +115,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
             throw Error(`Missing PubSub implementation in CRUDService`);
         }
-        const deleteSubKey = subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
+        const deleteSubKey = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
 
         return this.pubSub.asyncIterator(deleteSubKey)
     }
@@ -132,6 +131,14 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         }
 
         return context[keyName].load(id);
+    }
+
+
+    /**
+     * Provides way to map runtime topics for subscriptions for specific types and object names
+     */
+    protected subscriptionTopicMapping(tiggerType: GraphbackOperationType, objectName: string) {
+        return `${tiggerType}_${objectName}`.toUpperCase();
     }
 
     private buildEventPayload(action: string, result: any) {
