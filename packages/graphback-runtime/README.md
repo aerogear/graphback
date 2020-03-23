@@ -29,3 +29,14 @@ By default resolver layer will based on the `CRUDService` field attached to cont
 
 See example app:
 https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
+
+## Using different topics
+
+`CRUDService.subscriptionTopicMapping` method allows developers to override default publish subscribe topics
+that will be used for GraphQL subscriptions. For example:
+
+```typescript
+    protected subscriptionTopicMapping(tiggerType: GraphbackOperationType, objectName: string) {
+        return `namespace/${tiggerType}_${objectName}`.toUpperCase();
+    }
+```
