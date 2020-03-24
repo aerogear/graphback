@@ -37,6 +37,6 @@ that will be used for GraphQL subscriptions. For example:
 
 ```typescript
     protected subscriptionTopicMapping(triggerType: GraphbackOperationType, objectName: string) {
-        return `namespace/${tiggerType}_${objectName}`.toUpperCase();
+        return `namespace/${triggerType}_${objectName}`.toUpperCase();
     }
 ```
