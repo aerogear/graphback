@@ -1,13 +1,18 @@
 ---
 id: version-0.11.x-dbmigrations
-title: Database Schema Migrations
-sidebar_label: Database Schema Migrations
+title: Database Migrations
+sidebar_label: Migrations
 original_id: dbmigrations
 ---
 
-## Database Schema Migrations
-
 Graphback uses [graphql-migrations](https://www.npmjs.com/package/graphql-migrations) to automatically create and update tables from a GraphQL schema.
+
+## Compatibility
+
+- PostgreSQL (create and update database)
+- SQLite (create database only)
+
+## Usage
 
 ### CLI
 
@@ -17,7 +22,7 @@ To create or update your database from the CLI, run:
 graphback db
 ```
 
-### Usage
+### API
 
 The `migrateDB` method creates and updates your tables and columns to match your GraphQL schema.
 
@@ -51,7 +56,7 @@ migrateDB(dbConfig, schemaText, {
   - `operationFilter`: Filter out database operations that we don't want, e.g. prevent table deletion.
   - All other options are not currently supported by Graphback.
 
-### Defining your data model
+## Defining your data model
 
 #### Primary key
 
@@ -152,7 +157,7 @@ This maps to `comment.note_id` in the database.
 
 #### Default field value
 
-```gql
+```graphql
 type Note {
   id: ID!
   title: String!
@@ -165,7 +170,7 @@ type Note {
 
 #### Custom column type
 
-```gql
+```graphql
 type Note {
   id: ID!
   """
@@ -181,7 +186,7 @@ type Note {
 When working with database migration library it is possible to change individual database columns.
 Using custom column will require manual mapping in resolver or database layer. 
 
-```gql
+```graphql
 type Note {
   id: ID!
   """
@@ -202,10 +207,3 @@ When using custom name in database we need to map it directly inside resolver or
 
 > NOTE: database migration logic require objects to have `id: ID!` field defined. 
 Renaming `id` field to anything else will break Graphback data resolution logic
-
-### Compatibility
-
-The following database providers support full database schema migrations.
-
-- PostgreSQL
-- SQLLite

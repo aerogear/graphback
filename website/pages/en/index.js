@@ -27,7 +27,10 @@ class HomeSplash extends React.Component {
     const ProjectTitle = () => (
       <h2 className="projectTitle">
         {siteConfig.title}
-        <small>{siteConfig.tagline}</small>
+        <small style={{fontSize:"xx-large"}}><b>{siteConfig.tagline}</b></small>
+        <small><i className="fas fa-server"/> {siteConfig.firstfeature}<hr/></small>
+        <small><i className="fas fa-rocket"/> {siteConfig.secondfeature}<hr/></small>
+        <small><i className="fas fa-database"/> {siteConfig.thirdfeature}<hr/></small>
       </h2>
     );
 
@@ -49,14 +52,14 @@ class HomeSplash extends React.Component {
 
     return (
       <SplashContainer>
-        <image style={{width: "30%"}} src={`${baseUrl}img/graphback.png`} />
+        <image className="graphback" src={`${baseUrl}img/graphback.png`} />
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
-          <PromoSection>
-            <Button href="/docs/gettingstarted">View Docs</Button>
-            <Button href={siteConfig.repoUrl}>Github</Button>
-          </PromoSection>
         </div>
+        <PromoSection>
+          <Button href="/docs/gettingstarted">View Docs </Button>
+          <Button href={siteConfig.repoUrl}><i className="fab fa-github"/> Github</Button>
+        </PromoSection>
       </SplashContainer>
     );
   }
@@ -80,6 +83,29 @@ class Index extends React.Component {
       </Container>
     );
 
+    const Content = () => (
+      <div className="mycontainer">
+        <div align="center" className="supported">
+          <h1>Supported Databases</h1>
+          <figure>
+            <image src={`${baseUrl}img/postgresql.png`} />
+            <figcaption>PostgreSQL</figcaption>
+          </figure>
+          <figure>
+            <image src={`${baseUrl}img/mongodb.png`} />
+            <figcaption>MongoDB</figcaption>
+          </figure>
+          <figure>
+            <image src={`${baseUrl}img/sqlite.png`} />
+            <figcaption>SQLite</figcaption>
+          </figure>
+        </div>
+        <div>
+          <image src={`${baseUrl}img/npxinit.png`} />
+        </div>
+      </div>
+    );
+
     const Demo = () => (
       <Block align="center">
         {[
@@ -92,7 +118,7 @@ class Index extends React.Component {
             title: 'Graphback in 10 minutes',
           },
         ]}
-      </Block>
+      </Block> 
     );
 
     const LearnHow = () => (
@@ -114,6 +140,7 @@ class Index extends React.Component {
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
+          <Content/>
           <LearnHow />
           <Demo />
         </div>

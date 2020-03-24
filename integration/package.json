@@ -18,7 +18,7 @@
     "apollo-server-testing": "2.11.0",
     "graphback": "0.11.2",
     "jest": "25.1.0",
-    "knex": "0.20.12",
+    "knex": "0.20.13",
     "node-fetch": "2.6.0"
   },
   "engines": {

@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "12.12.30",
-    "@types/prettier": "1.19.0",
+    "@types/prettier": "1.19.1",
     "ava": "2.4.0",
     "graphql": "14.6.0",
     "rimraf": "3.0.2",
@@ -39,7 +39,7 @@
     "@graphback/core": "0.11.2",
     "pg": "7.18.2",
     "pluralize": "8.0.0",
-    "prettier": "2.0.1",
+    "prettier": "2.0.2",
     "sqlite3": "4.1.1"
   },
   "peerDependencies": {

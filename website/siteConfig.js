@@ -5,10 +5,14 @@
 
 const siteConfig = {
   title: 'Graphback', // Title for your website.
-  tagline: 'Production ready GraphQL API for your client and server applications',
+  tagline: 'GraphQL API for your client and server',
   url: 'https://graphback.dev', // Your website URL
   baseUrl: '/', // Base URL for your project */
   cname: 'graphback.dev',
+  firstfeature:'Out of the Box Node.js GraphQL API based on your model', //features of graphback
+  secondfeature:'Full control over the generated code or runtime framework',
+  thirdfeature: 'Manages complexity of database management'
+  ,
 
   // Used for publishing and more
   projectName: 'graphback',
@@ -45,6 +49,7 @@ const siteConfig = {
     'https://buttons.github.io/buttons.js',
     'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js',
     '/js/code-block-buttons.js',
+    'https://kit.fontawesome.com/48d4048ec6.js'
   ],
 
   stylesheets: ['/css/code-block-buttons.css'],

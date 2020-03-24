@@ -1,13 +1,26 @@
 ---
 id: dbintroduction
-title: Introduction Database Schema Migrations
+title: Database
 sidebar_label: Introduction
 ---
 
-## Database Schema Migrations
+Graphback provides a rich set of tools and APIs that help you get your database working with your GraphQL application in minutes.
 
-To offer fully comprehensive getting started experience Graphback provides database migration capabilities.
-Database migration will rely on your schema with additional annotations to create all database tables.
-Migration can incrementally alter database structure as your schema evolves.
+Graphback has a [CRUD abstraction](../crud/crudruntime) with a number of out-of-the-box implementations for different datasources (see [Data sources](./datasources)).
 
-For more information please refer to [`knex migrations`](/docs/dbmigrations) documentation.
+Graphback integrates with [`graphql-migrations`](https://www.npmjs.com/package/graphql-migrations) so that you can migrate your database using your GraphQL schema. `graphql-migrations` can be used with the `graphback db` subcommand or programatically from your application code using the `migrateDB` API. For more see [Database Migrations](./dbmigrations).
+
+## Compatibility
+
+| Operation | PostgreSQL | MongoDB | SQLite |
+| ------------- |:--:|:-----:|:-----:|
+| Create        | ✔️ | ✔️     | ✔️     |
+| Read | ✔️ | ✔️ | ✔️ |
+| Update | ✔️ | ✔️ | ✔️ |
+| Delete | ✔️ | ✔️ | ✔️ |
+| Find | ✔️ | ✔️ | ✔️ |
+| Batch queries | ✔️ | ✔️ | ✔️ |
+| Relationships - 1:M | ✔️ | ✔️ | ✔️ |
+| Relationships - 1:1 | ✔️ | ✔️ | ✔️ |
+| Migrations - Create database | ✔️ | ❌ | ✔️ |
+| Migrations - Update database | ✔️ | ❌ | ❌ |
