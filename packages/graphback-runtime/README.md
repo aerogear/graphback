@@ -36,7 +36,7 @@ https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
 that will be used for GraphQL subscriptions. For example:
 
 ```typescript
-    protected subscriptionTopicMapping(tiggerType: GraphbackOperationType, objectName: string) {
+    protected subscriptionTopicMapping(triggerType: GraphbackOperationType, objectName: string) {
         return `namespace/${tiggerType}_${objectName}`.toUpperCase();
     }
 ```
