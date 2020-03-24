@@ -14,10 +14,6 @@ type Comment {
   id: ID!
   text: String
   description: String
-  """
-  @oneToOne
-  """
-  metadata: CommentMetadata
 }
 
 """
@@ -26,6 +22,10 @@ type Comment {
 type CommentMetadata {
   id: ID!
   opened: Boolean
+  """
+  @oneToOne field: 'metadata'
+  """
+  comment: Comment
 }
 
 type Query {

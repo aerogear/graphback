@@ -6,29 +6,32 @@ type Comment {
   id: ID!
   text: String
   description: String
-  \\"\\"\\"@oneToOne key: 'metadataId'\\"\\"\\"
-  metadata: CommentMetadata
   \\"\\"\\"@manyToOne field: 'comments', key: 'noteId'\\"\\"\\"
   note: Note
+  \\"\\"\\"@oneToOne field: 'comment', key: 'commentId', virtual: true\\"\\"\\"
+  metadata: CommentMetadata
 }
 
 input CommentInput {
   id: ID
   text: String
   description: String
-  metadataId: ID
   noteId: ID
+  commentId: ID
 }
 
 \\"\\"\\"@model\\"\\"\\"
 type CommentMetadata {
   id: ID!
   opened: Boolean
+  \\"\\"\\"@oneToOne field: 'metadata', key: 'commentId'\\"\\"\\"
+  comment: Comment
 }
 
 input CommentMetadataInput {
   id: ID
   opened: Boolean
+  commentId: ID
 }
 
 type Mutation {
@@ -103,6 +106,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         "title" => Object {
           "annotations": Object {},
@@ -115,6 +119,7 @@ Object {
           "name": "title",
           "nullable": false,
           "type": "string",
+          "unique": false,
         },
         "description" => Object {
           "annotations": Object {},
@@ -127,6 +132,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
       },
       "columns": Array [
@@ -139,6 +145,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -151,6 +158,7 @@ Object {
           "name": "title",
           "nullable": false,
           "type": "string",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -163,6 +171,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
       ],
       "comment": undefined,
@@ -190,6 +199,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         "text" => Object {
           "annotations": Object {},
@@ -202,6 +212,7 @@ Object {
           "name": "text",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
         "description" => Object {
           "annotations": Object {},
@@ -214,21 +225,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
-        },
-        "metadata" => Object {
-          "annotations": Object {},
-          "args": Array [],
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": Object {
-            "columnName": "id",
-            "field": "id",
-            "tableName": "commentmetadata",
-            "type": "CommentMetadata",
-          },
-          "name": "metadataId",
-          "nullable": true,
-          "type": "integer",
+          "unique": false,
         },
         "note" => Object {
           "annotations": Object {},
@@ -244,6 +241,7 @@ Object {
           "name": "noteId",
           "nullable": true,
           "type": "integer",
+          "unique": false,
         },
       },
       "columns": Array [
@@ -256,6 +254,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -268,6 +267,7 @@ Object {
           "name": "text",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -280,21 +280,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
-        },
-        Object {
-          "annotations": Object {},
-          "args": Array [],
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": Object {
-            "columnName": "id",
-            "field": "id",
-            "tableName": "commentmetadata",
-            "type": "CommentMetadata",
-          },
-          "name": "metadataId",
-          "nullable": true,
-          "type": "integer",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -310,6 +296,7 @@ Object {
           "name": "noteId",
           "nullable": true,
           "type": "integer",
+          "unique": false,
         },
       ],
       "comment": undefined,
@@ -337,6 +324,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         "opened" => Object {
           "annotations": Object {},
@@ -347,6 +335,23 @@ Object {
           "name": "opened",
           "nullable": true,
           "type": "boolean",
+          "unique": false,
+        },
+        "comment" => Object {
+          "annotations": Object {},
+          "args": Array [],
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": Object {
+            "columnName": "id",
+            "field": "id",
+            "tableName": "comment",
+            "type": "Comment",
+          },
+          "name": "commentId",
+          "nullable": true,
+          "type": "integer",
+          "unique": true,
         },
       },
       "columns": Array [
@@ -359,6 +364,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -369,6 +375,23 @@ Object {
           "name": "opened",
           "nullable": true,
           "type": "boolean",
+          "unique": false,
+        },
+        Object {
+          "annotations": Object {},
+          "args": Array [],
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": Object {
+            "columnName": "id",
+            "field": "id",
+            "tableName": "comment",
+            "type": "Comment",
+          },
+          "name": "commentId",
+          "nullable": true,
+          "type": "integer",
+          "unique": true,
         },
       ],
       "comment": undefined,
@@ -382,7 +405,14 @@ Object {
           "name": "commentmetadata_pkey",
         },
       ],
-      "uniques": Array [],
+      "uniques": Array [
+        Object {
+          "columns": Array [
+            "commentId",
+          ],
+          "name": "commentmetadata_commentId_unique",
+        },
+      ],
     },
   },
   "tables": Array [
@@ -398,6 +428,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         "title" => Object {
           "annotations": Object {},
@@ -410,6 +441,7 @@ Object {
           "name": "title",
           "nullable": false,
           "type": "string",
+          "unique": false,
         },
         "description" => Object {
           "annotations": Object {},
@@ -422,6 +454,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
       },
       "columns": Array [
@@ -434,6 +467,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -446,6 +480,7 @@ Object {
           "name": "title",
           "nullable": false,
           "type": "string",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -458,6 +493,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
       ],
       "comment": undefined,
@@ -485,6 +521,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         "text" => Object {
           "annotations": Object {},
@@ -497,6 +534,7 @@ Object {
           "name": "text",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
         "description" => Object {
           "annotations": Object {},
@@ -509,21 +547,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
-        },
-        "metadata" => Object {
-          "annotations": Object {},
-          "args": Array [],
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": Object {
-            "columnName": "id",
-            "field": "id",
-            "tableName": "commentmetadata",
-            "type": "CommentMetadata",
-          },
-          "name": "metadataId",
-          "nullable": true,
-          "type": "integer",
+          "unique": false,
         },
         "note" => Object {
           "annotations": Object {},
@@ -539,6 +563,7 @@ Object {
           "name": "noteId",
           "nullable": true,
           "type": "integer",
+          "unique": false,
         },
       },
       "columns": Array [
@@ -551,6 +576,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -563,6 +589,7 @@ Object {
           "name": "text",
           "nullable": true,
           "type": "string",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -575,21 +602,7 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
-        },
-        Object {
-          "annotations": Object {},
-          "args": Array [],
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": Object {
-            "columnName": "id",
-            "field": "id",
-            "tableName": "commentmetadata",
-            "type": "CommentMetadata",
-          },
-          "name": "metadataId",
-          "nullable": true,
-          "type": "integer",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -605,6 +618,7 @@ Object {
           "name": "noteId",
           "nullable": true,
           "type": "integer",
+          "unique": false,
         },
       ],
       "comment": undefined,
@@ -632,6 +646,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         "opened" => Object {
           "annotations": Object {},
@@ -642,6 +657,23 @@ Object {
           "name": "opened",
           "nullable": true,
           "type": "boolean",
+          "unique": false,
+        },
+        "comment" => Object {
+          "annotations": Object {},
+          "args": Array [],
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": Object {
+            "columnName": "id",
+            "field": "id",
+            "tableName": "comment",
+            "type": "Comment",
+          },
+          "name": "commentId",
+          "nullable": true,
+          "type": "integer",
+          "unique": true,
         },
       },
       "columns": Array [
@@ -654,6 +686,7 @@ Object {
           "name": "id",
           "nullable": false,
           "type": "increments",
+          "unique": false,
         },
         Object {
           "annotations": Object {},
@@ -664,6 +697,23 @@ Object {
           "name": "opened",
           "nullable": true,
           "type": "boolean",
+          "unique": false,
+        },
+        Object {
+          "annotations": Object {},
+          "args": Array [],
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": Object {
+            "columnName": "id",
+            "field": "id",
+            "tableName": "comment",
+            "type": "Comment",
+          },
+          "name": "commentId",
+          "nullable": true,
+          "type": "integer",
+          "unique": true,
         },
       ],
       "comment": undefined,
@@ -677,7 +727,14 @@ Object {
           "name": "commentmetadata_pkey",
         },
       ],
-      "uniques": Array [],
+      "uniques": Array [
+        Object {
+          "columns": Array [
+            "commentId",
+          ],
+          "name": "commentmetadata_commentId_unique",
+        },
+      ],
     },
   ],
 }

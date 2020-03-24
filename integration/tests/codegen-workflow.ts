@@ -45,7 +45,7 @@ beforeAll(async (done) => {
     const { models } = require('../output/resolvers/models');
 
     const pubSub = new PubSub();
-    const context = createKnexPGCRUDRuntimeServices(models, schema, knex, pubSub);
+    const context = createKnexPGCRUDRuntimeServices(models, schema, knex as any, pubSub);
 
     const server = new ApolloServer({
         typeDefs: await projectConfig.getSchema('DocumentNode'),
@@ -77,29 +77,29 @@ async function seedDatabase(db: Knex) {
         }
     ]);
 
-    await db('commentmetadata').insert([
-        {
-            opened: true
-        },
-        {
-            opened: false
-        }
-    ])
-
     await db('comment').insert([
         {
             text: 'Note A Comment',
             description: 'Note A Comment Description',
-            noteId: 1,
-            metadataId: 1
+            noteId: 1
         },
         {
             text: 'Note A Comment 2',
             description: 'Note A Comment Description',
-            noteId: 1,
-            metadataId: 2
+            noteId: 1
         }
     ]);
+
+     await db('commentmetadata').insert([
+        {
+            opened: true,
+            commentId: 1
+        },
+        {
+            opened: false,
+            commentId: 2
+        }
+    ])
 }
 
 const getConfig = async () => {
