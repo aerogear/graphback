@@ -100,7 +100,7 @@ class Index extends React.Component {
             <figcaption>SQLite</figcaption>
           </figure>
         </div>
-        <div>
+        <div className="card">
           <image src={`${baseUrl}img/npxinit.png`} />
         </div>
       </div>
