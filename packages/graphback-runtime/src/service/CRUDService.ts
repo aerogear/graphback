@@ -137,7 +137,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     /**
      * Provides way to map runtime topics for subscriptions for specific types and object names
      */
-    protected subscriptionTopicMapping(tiggerType: GraphbackOperationType, objectName: string) {
+    protected subscriptionTopicMapping(triggerType: GraphbackOperationType, objectName: string) {
         return `${tiggerType}_${objectName}`.toUpperCase();
     }
 
