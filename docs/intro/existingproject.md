@@ -21,18 +21,16 @@ Graphback will do the following:
 - Add required packages to your `package.json` file
 - Add a `dbmigrations` config to your `.graphqlrc.yml` file for PostgreSQL databases
 
-### Next Steps
+## Next Steps
 
-See [Defining your Data model](./datamodel.md) for how to design your data model to work with Graphback.
+1. To change the default application configuration see [Graphback Config](./config.md).
 
-To change the default application configuration see [Graphback Config](./config.md).
+2. See [Defining your Data model](./datamodel.md) for how to design your data model.
 
-Once your data model is complete, run `graphback generate` from your project to generate a GraphQL schema and API.
+3. Graphback provides a number of different data sources which can be configured at application runtime. See [Data Sources](../db/datasources).
 
-You can migrate your database to match your schema by running `graphback db`. See [Database Migrations](../db/migrations.md) for more.
+4. You can migrate your database to match your schema by running `graphback db`. See [Database Migrations](../db/migrations.md) for more.*
 
-## Running Graphback in existing application without code generation
+5. Run your application! 🚀
 
-Graphback offers runtime layer that will create an in-memory implementation of the Graphql services without code generation.
-Developers can still customize the way that data is queried and cached thanks to runtime architecture.
-For more information about runtime layer please follow [`runtime`](/docs/runtime) documentation.
+> **NOTE**: Database migrations only supports PostgreSQL databases.

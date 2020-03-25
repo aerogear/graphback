@@ -1,12 +1,12 @@
 ---
 id: serverless
-title: Serve GraphQL API without code
+title: In-memory API
 sidebar_label: In-memory API
 ---
 
-Graphback allows you to add GraphQL API without code generation.
+Graphback allows you to add a GraphQL API to your application without generating any code.
 Graphback package can be imported and used directly from your code or serverless handlers. 
-Schema and resolvers can be created when your application code is executed and used to create instance of Apollo or GraphQL-js server
+Schema and resolvers are created in-code and are passed to an Apollo GraphQL or GraphQL.js server instance.
 
 ## Adding runtime layer to your application
 
@@ -49,25 +49,18 @@ To create GraphQL Layer at runtime developers need to initialize `GraphbackRunti
   });
 ```
 
-See our [`ts-apollo-runtime-backend`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts) for a fully functional example.
+See our [TypeScript Apollo Runtime](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts) template for a fully functional example.
 
-### GraphbackDataProvider
+## Next steps
 
-Graphback provides following implementations of GraphbackDataProvider
+1. To change the default application configuration see [Graphback Config](./config.md).
 
-- KnexDBDataProvider (`@graphback/runtime-knex`)
-- PgKnexDBDataProvider (PostgreSQL version from `@graphback/runtime-knex`)
-- MongoDBDataProvider (`@graphback/runtime-mongodb`)
+2. See [Defining your Data model](./datamodel.md) for how to design your data model.
 
-Your resolvers can use different data providers thanks to swapping implementation in resolver context
+3. Graphback provides a number of different data sources which can be configured at application runtime. See [Data Sources](../db/datasources).
 
-## Using different DataSource
+4. You can migrate your database to match your schema by running `graphback db`. See [Database Migrations](../db/migrations.md) for more.*
 
-Runtime is created using default CRUDService instance and KnexDBDataProvider db layer to retrieve the data. 
-Developers can override implementations for those when different datasource is used. 
+4. Run your application! 🚀
 
-
-
-See [`runtime example application`](https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend)
-for more information.
-
+> **NOTE**: Database migrations only supports PostgreSQL databases.
