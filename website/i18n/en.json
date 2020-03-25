@@ -81,7 +81,7 @@
         "sidebar_label": "CRUD Client Queries"
       },
       "plugins/crud-resolvers": {
-        "title": "Graphback CRUD Resolvers Plugin",
+        "title": "CRUD Resolvers Plugin",
         "sidebar_label": "CRUD Resolvers"
       },
       "plugins/crud-schema": {

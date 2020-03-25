@@ -54,7 +54,7 @@ const db = Knex(...);
 
 const pubSub = new PubSub();
 
-// create runtime services for MongoDB
+// create runtime services for Postgres
 const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
 
 const apolloServer = new ApolloServer({
