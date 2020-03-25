@@ -99,8 +99,10 @@ figcaption{
 .mycontainer h1{
 	margin-top: 0;
 }
-.card {
-	padding: 1rem;
-	border: #ccc 1px dotted;
+.initimg{
 	text-align: center;
-  }
+}
+ .initimg img{
+	 border-radius: 40px;
+	 width: 95%;
+ } 
