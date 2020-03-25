@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@types/express": "4.17.3",
-    "@types/node": "12.12.30",
+    "@types/node": "12.12.31",
     "@types/pino": "5.17.0",
     "@typescript-eslint/eslint-plugin": "2.25.0",
     "@typescript-eslint/parser": "2.25.0",
