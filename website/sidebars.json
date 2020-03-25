@@ -27,7 +27,6 @@
       "db/dbmigrations"
     ],
     "Migrating to Graphback": [
-      "migrations/intromigrations",
       "migrations/openapi"
     ],
     "Reference": [

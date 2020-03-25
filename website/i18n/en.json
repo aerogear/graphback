@@ -70,7 +70,7 @@
         "sidebar_label": "Migrate To Graphback"
       },
       "migrations/openapi": {
-        "title": "OpenAPI migrations"
+        "title": "Migrating from REST"
       },
       "plugins/customplugin": {
         "title": "Creating your own plugin",
