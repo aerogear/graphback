@@ -54,7 +54,7 @@
         "sidebar_label": "Create a new app"
       },
       "intro/serverless": {
-        "title": "Serve GraphQL API without code",
+        "title": "In-memory API",
         "sidebar_label": "In-memory API"
       },
       "intro/template": {
