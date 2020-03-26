@@ -7,6 +7,7 @@
       "version-0.11.x-intro/quickstart",
       "version-0.11.x-intro/existingproject",
       "version-0.11.x-intro/serverless",
+      "version-0.11.x-intro/graphqlserve",
       "version-0.11.x-intro/datamodel",
       "version-0.11.x-intro/config"
     ],
@@ -27,7 +28,6 @@
       "version-0.11.x-db/dbmigrations"
     ],
     "Migrating to Graphback": [
-      "version-0.11.x-migrations/intromigrations",
       "version-0.11.x-migrations/openapi"
     ],
     "Reference": [
