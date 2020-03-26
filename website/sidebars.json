@@ -7,6 +7,7 @@
       "intro/quickstart",
       "intro/existingproject",
       "intro/serverless",
+      "intro/graphqlserve",
       "intro/datamodel",
       "intro/config"
     ],

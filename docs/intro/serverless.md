@@ -1,7 +1,7 @@
 ---
 id: serverless
-title: In-memory API
-sidebar_label: In-memory API
+title: Runtime API
+sidebar_label: Runtime API
 ---
 
 Graphback allows you to add a GraphQL API to your application without generating any code.

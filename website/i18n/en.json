@@ -49,13 +49,17 @@
         "title": "Adding Graphback to your Node.js project",
         "sidebar_label": "Add to existing project"
       },
+      "intro/graphqlserve": {
+        "title": "Running an API without code",
+        "sidebar_label": "API without code"
+      },
       "intro/quickstart": {
         "title": "Create client and server application from template",
         "sidebar_label": "Create a new app"
       },
       "intro/serverless": {
-        "title": "In-memory API",
-        "sidebar_label": "In-memory API"
+        "title": "Runtime API",
+        "sidebar_label": "Runtime API"
       },
       "intro/template": {
         "title": "Create client and server application from template",
