@@ -60,7 +60,7 @@
   },
   "homepage": "https://github.com/aerogear/graphback#readme",
   "resolutions": {
-    "@types/react": "16.9.25",
+    "@types/react": "16.9.26",
     "graphql": "14.6.0"
   }
 }
