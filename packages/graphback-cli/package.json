@@ -42,7 +42,7 @@
     "jest": "25.2.1"
   },
   "dependencies": {
-    "@graphql-toolkit/code-file-loader": "0.9.9",
+    "@graphql-toolkit/code-file-loader": "0.9.10",
     "chalk": "2.4.2",
     "chokidar": "3.3.1",
     "debounce": "1.2.0",
