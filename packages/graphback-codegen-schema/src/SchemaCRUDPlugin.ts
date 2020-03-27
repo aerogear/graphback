@@ -64,7 +64,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         };
 
         const schemaComposer = new SchemaComposer(schema)
-        
+
         this.buildSchemaForModels(schemaComposer, models);
 
         this.buildSchemaModelRelationships(schemaComposer, models);
@@ -120,10 +120,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputType);
         }
 
-
-        schemaComposer.Query.addFields(queryTypes);
-        schemaComposer.Mutation.addFields(mutationTypes);
-        schemaComposer.Subscription.addFields(subscriptionTypes);
+        if (Object.keys(queryTypes).length) {
+            schemaComposer.Query.addFields(queryTypes);
+        }
+        if (Object.keys(mutationTypes).length) {
+            schemaComposer.Mutation.addFields(mutationTypes);
+        }
+        if (Object.keys(subscriptionTypes).length) {
+            schemaComposer.Subscription.addFields(subscriptionTypes);
+        }
     }
 
     protected createInputTypes(model: ModelDefinition) {
