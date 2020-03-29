@@ -27,7 +27,7 @@
     "@types/node": "12.12.32",
     "ava": "2.4.0",
     "graphql": "14.6.0",
-    "jest": "25.2.3",
+    "jest": "25.2.4",
     "mongodb-memory-server": "6.5.0",
     "rimraf": "3.0.2",
     "ts-jest": "25.2.1",
