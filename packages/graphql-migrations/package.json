@@ -22,7 +22,6 @@
     "chalk": "3.0.0",
     "glob": "7.1.6",
     "graphql-metadata": "0.5.0",
-    "jest": "25.2.4",
     "knex": "0.20.13",
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
@@ -32,6 +31,7 @@
   },
   "devDependencies": {
     "@types/jest": "25.1.4",
+    "jest": "25.2.4",
     "@types/lodash": "4.14.149",
     "@types/node": "12.12.32",
     "ava": "2.4.0",
