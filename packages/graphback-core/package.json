@@ -38,7 +38,7 @@
   "dependencies": {
     "glob": "7.1.6",
     "graphql-metadata": "0.5.0",
-    "pino": "5.17.0",
+    "pino": "6.0.0",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
