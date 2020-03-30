@@ -57,7 +57,7 @@ export interface ModelTemplate {
 /**
  * Ask user to include model or not
  */
-export async function createModel(): Promise<ModelTemplate> {
+export async function createModel(): Promise<ModelTemplate | undefined> {
   const { includeModel } = await ask([
     {
       type: 'confirm',
@@ -80,7 +80,6 @@ export async function createModel(): Promise<ModelTemplate> {
 
     return { modelName, content }
   }
-  const defaultName = 'Default'
 
-  return { modelName: defaultName, content: defaultModel }
+  return undefined
 }
