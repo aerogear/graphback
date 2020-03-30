@@ -25,8 +25,8 @@ function postSetupMessage(): string {
 Graphback configuration successfully bootstrapped :rocket:
 
 Next Steps:
-1. Review your configuration in ${chalk.white('.graphqlrc')} file
-2. Edit the ${chalk.white('*.graphql')} files inside your model folder.
+1. Review your configuration in your ${chalk.green('.graphqlrc')} file
+2. Edit the ${chalk.green('*.graphql')} files inside your model folder
 3. Run ${chalk.cyan('graphback generate')} to generate your schema and resolvers
 `
 }
@@ -55,10 +55,12 @@ export async function initConfig(options: InitOptions = {}) {
     figlet.textSync('Graphback', { horizontalLayout: 'full' })
   ));
 
-  const { modelName, content } = options.model || await createModel()
+  const model = options.model || await createModel()
   const database = options.database || await chooseDatabase()
   const client = options.client || await askForClient()
-  addModel("", modelName, content)
+  if (model) {
+    addModel("", model.modelName, model.content)
+  }
   if (!options.skipInstall) {
     await installDependencies(database)
   }
