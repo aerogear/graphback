@@ -1,4 +1,5 @@
 import { AdvancedFilter } from '../data/GraphbackDataProvider';
+import { GraphbackPage } from "../GraphbackPage"
 
 
 /**
@@ -48,7 +49,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param id id of the object
      * @param context context object passed from graphql or rest layer
      */
-    findAll(context?: GraphbackContext): Promise<Type[]>;
+    findAll(page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Implementation for reading objects with filtering capabilities

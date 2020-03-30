@@ -14,3 +14,4 @@ export * from "./resolvers/LayeredRuntimeResolverCreator"
 export * from "./resolvers/RuntimeResolversDefinition"
 
 export * from "./GraphbackPubSubModel"
+export * from "./GraphbackPage"
