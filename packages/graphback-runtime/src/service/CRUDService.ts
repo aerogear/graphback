@@ -6,6 +6,7 @@ import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { GraphbackPubSub } from "./GraphbackPubSub"
+import { GraphbackPage } from "../GraphbackPage"
 
 /**
  * Default implementation of the CRUD service offering following capabilities:
@@ -74,10 +75,10 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
         return result;
     }
 
-    public findAll(context?: any): Promise<T[]> {
-        this.logger.log(`querying object ${this.modelName}`)
+    public findAll(page?: GraphbackPage, context?: any): Promise<T[]> {
+        this.logger.log(`querying object ${this.modelName}, with page: ${JSON.stringify(page)}`)
 
-        return this.db.findAll(context);
+        return this.db.findAll(page, context);
     }
 
     //tslint:disable-next-line: no-any
