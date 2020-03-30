@@ -1,15 +1,9 @@
+import { GraphbackPage } from "../GraphbackPage"
+
 //If we come with Union on client we might use some complex JSON for describing rules
 //and single key for type for simple use cases
 //tslint:disable-next-line: no-any
 export type AdvancedFilter = any;
-
-/**
- * Interface represents GraphbackPage type used for findAll queries
- */
-export interface GraphbackPage {
-    limit?: number,
-    offset?: number,
-};
 
 /**
  * Graphback layered architecture component that can be called
