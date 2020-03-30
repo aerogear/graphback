@@ -82,7 +82,8 @@ export class LayeredRuntimeResolverCreator {
         const findField = getFieldName(modelName, GraphbackOperationType.FIND);
         //tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          return this.services[modelName].findBy(args.fields, context)
+          const page = { limit: args.limit, offset: args.offset };
+          return this.services[modelName].findBy(args.fields, page, context)
         }
       }
 
