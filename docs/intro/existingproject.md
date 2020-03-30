@@ -19,7 +19,6 @@ Graphback will do the following:
 - Create `.graphqlrc.yml` file with default Graphback plugins
 - Initialize an example model file 
 - Add required packages to your `package.json` file
-- Add a `dbmigrations` config to your `.graphqlrc.yml` file for PostgreSQL databases
 
 ## Next Steps
 
