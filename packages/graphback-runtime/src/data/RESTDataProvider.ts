@@ -1,8 +1,8 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import fetch from 'node-fetch';
-import { GraphbackDataProvider } from './GraphbackDataProvider';
 import { GraphbackPage } from '../GraphbackPage';
+import { GraphbackDataProvider } from './GraphbackDataProvider';
 
 /**
  * RESTDataProvider is providing the required functionality to connect with a RESTful Datasource.

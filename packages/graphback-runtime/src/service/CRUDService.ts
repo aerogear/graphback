@@ -4,9 +4,9 @@ import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
+import { GraphbackPage } from "../GraphbackPage"
 import { GraphbackCRUDService } from "./GraphbackCRUDService";
 import { GraphbackPubSub } from "./GraphbackPubSub"
-import { GraphbackPage } from "../GraphbackPage"
 
 /**
  * Default implementation of the CRUD service offering following capabilities:
