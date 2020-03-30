@@ -57,7 +57,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
-    findBy(filter: Type | AdvancedFilter, context?: GraphbackContext): Promise<Type[]>;
+    findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
     /**
      * Subscription for all creation events
