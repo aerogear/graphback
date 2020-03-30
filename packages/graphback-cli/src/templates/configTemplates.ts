@@ -63,7 +63,7 @@ export const createConfig = async (database: string, client: boolean) => {
   const configPath = `${process.cwd()}/.graphqlrc.yml`;
 
   if (existsSync(configPath)) {
-    logInfo("Graphback config already exist in following location and it cannot be overriden")
+    logInfo("Graphback config already exist in following location and it cannot be overwritten")
   }
 
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`;
@@ -98,13 +98,6 @@ export const createConfig = async (database: string, client: boolean) => {
       }
     }
   };
-
-  if(database === "pg") {
-    graphqlConfig.extensions.graphback.dbmigrations = {
-      "connection": JSON.parse(dbConfig),
-      "client": database
-    };
-  }
 
   if (client) {
     //Add client extension

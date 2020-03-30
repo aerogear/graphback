@@ -25,9 +25,9 @@ function postSetupMessage(): string {
 Graphback configuration successfully bootstrapped :rocket:
 
 Next Steps:
-1. Review your configuration in "graphqlrc.yaml" file
-2. Edit the *.graphql files inside your model folder.
-3. Run  generate command to generate your schema and resolvers
+1. Review your configuration in ${chalk.white('.graphqlrc')} file
+2. Edit the ${chalk.white('*.graphql')} files inside your model folder.
+3. Run ${chalk.cyan('graphback generate')} to generate your schema and resolvers
 `
 }
 
