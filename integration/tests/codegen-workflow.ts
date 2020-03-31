@@ -168,6 +168,53 @@ test('Find all notes', async (done) => {
     done();
 })
 
+test('Find all notes except the first', async (done) => {
+    const { document } = await getDocument('findAllNotes');
+
+    const { data } = await client.query({ query: document, variables: { offset: 1 } });
+
+    expect(data).toBeDefined();
+    expect(data.findAllNotes).toEqual([
+        {
+            id: '2',
+            title: 'Note B',
+            description: 'Note B Description',
+            comments: []
+        }
+    ])
+
+    done();
+})
+
+test('Find at most one note', async (done) => {
+    const { document } = await getDocument('findAllNotes');
+
+    const { data } = await client.query({ query: document, variables: { limit: 1 } });
+
+    expect(data).toBeDefined();
+    expect(data.findAllNotes).toEqual([
+        {
+            id: '1',
+            title: 'Note A',
+            description: 'Note A Description',
+            comments: [
+                {
+                    id: '1',
+                    text: 'Note A Comment',
+                    description: 'Note A Comment Description'
+                },
+                {
+                    id: '2',
+                    text: 'Note A Comment 2',
+                    description: 'Note A Comment Description'
+                }
+            ]
+        },
+    ])
+
+    done();
+})
+
 test('Find all comments', async done => {
     const { document } = await getDocument('findAllComments');
 
@@ -237,6 +284,64 @@ test('Note 1 Comments exists', async (done) => {
     const response = await findNoteComments('1', client);
     expect(response.data).toBeDefined()
     expect(response.data.findComments).toHaveLength(2);
+
+    done();
+})
+
+test('Find at most one comment on Note 1', async (done) => {
+
+    const { document } = await getDocument('findComments');
+
+    const response = await client.query({ query: document, variables: { fields: { noteId: 1 }, limit: 1 } });
+    
+    expect(response.data).toBeDefined()
+    const notes = response.data.findComments
+    expect(notes).toHaveLength(1);
+    expect(notes).toEqual([
+        {
+            id: '1',
+            text: 'Note A Comment',
+            description: 'Note A Comment Description',
+            metadata: {
+                id: "1",
+                opened: true,
+            },
+            note: {
+                description: "Note A Description",
+                id: "1",
+                title: "Note A",
+            },
+        }
+    ])
+
+    done();
+})
+
+test('Find comments on Note 1 except first', async (done) => {
+
+    const { document } = await getDocument('findComments');
+
+    const response = await client.query({ query: document, variables: { fields: { noteId: 1 }, offset: 1 } });
+    
+    expect(response.data).toBeDefined()
+    const notes = response.data.findComments
+    expect(notes).toHaveLength(1);
+    expect(notes).toEqual([
+        {
+            id: '2',
+            text: 'Note A Comment 2',
+            description: 'Note A Comment Description',
+            metadata: {
+                "id": "2",
+                "opened": false,
+            },
+            note: {
+                "description": "Note A Description",
+                "id": "1",
+                "title": "Note A",
+            },
+        }
+    ])
 
     done();
 })
@@ -317,3 +422,4 @@ async function findNoteComments(noteId: string, client: ApolloServerTestClient) 
 
     return response;
 }
+
