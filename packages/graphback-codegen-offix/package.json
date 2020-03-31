@@ -1,6 +1,6 @@
 {
   "name": "@graphback/codegen-offix",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "GraphQL-Code-Generator offix plugin",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -34,7 +34,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@graphback/core": "0.11.3",
+    "@graphback/core": "0.11.4",
     "@graphql-toolkit/common": "0.9.12",
     "@graphql-toolkit/core": "0.9.12",
     "graphql-compose": "7.14.0",

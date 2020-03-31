@@ -1,16 +1,16 @@
-/* eslint-disable @typescript-eslint/no-var-requires import/no-extraneous-dependencies  */
+/* eslint-disable import/no-extraneous-dependencies */
 import { readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer, PubSub, gql } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
 import { loadConfig } from 'graphql-config';
-import { migrateDB } from 'graphql-migrations';
-import { GraphbackGenerator } from "../../packages/graphback";
-import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 import { loadResolversFiles } from '@graphql-toolkit/file-loading';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
+import { migrateDB } from '../../packages/graphql-migrations/src';
+import { GraphbackGenerator } from "../../packages/graphback/src";
+import { createKnexPGCRUDRuntimeServices } from "../../packages/graphback-runtime-knex/src"
 
 /** global config */
 let client: any;
