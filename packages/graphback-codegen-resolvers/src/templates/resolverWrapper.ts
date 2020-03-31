@@ -17,7 +17,7 @@ export const resolverFileTemplateTS = (outputResolvers: string[], options: Resol
 }
 
 export const resolverFileTemplateJS = (outputResolvers: string[], options: ResolverGeneratorPluginConfig) => {
-    return `${topNote}\n\n exports = {
+    return `${topNote}\n\n module.exports = {
       ${outputResolvers.join('\n\n')}  
     }`
 }
