@@ -8,6 +8,13 @@ title: Releases
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.11.4
+
+##### Bug Fixes
+
+*  don't generate blank model file ([ca29103e](https://github.com/aerogear/graphback/commit/ca29103e236800462bf110775c3f243adc363b44))
+*  remove generation of dbmigrations config in `graphback config` ([f0b8ed4](https://github.com/aerogear/graphback/commit/f0b8ed45af536e4157c9a3d2bc74b18369eac488))
+
 # 0.11.1
 
 - Fixed issue where root query type needed to properly created final schema.
