@@ -128,7 +128,7 @@ test('find all offset defaults to zero', async () => {
   expect(todos[1].text).toEqual('the second todo');
 });
 
-test('find all limit defaults to 10', async () => {
+test('find all limit defaults to complete set', async () => {
   for (let i = 0; i < 10; i++) {
     await context.provider.create({
       text: `todo${i}`,
@@ -137,7 +137,7 @@ test('find all limit defaults to 10', async () => {
 
   const todos = await context.provider.findAll({ offset: 1 });
 
-  expect(todos.length).toBeLessThanOrEqual(10);
+  expect(todos.length).toEqual(12);
 
   expect(todos[0].id).toEqual(2);
   expect(todos[0].text).toEqual('the second todo');
@@ -183,4 +183,18 @@ test('Skip n todos and find next m todos by text', async () => {
   });
 
   expect(todos.length).toEqual(m);
+});
+
+test('find todos by text, limit defaults to complete set', async () => {
+  const numberOfTodos = 12;
+  const text = 'test-todo';
+  for (let i = 0; i < numberOfTodos + 1; i++) {
+    await context.provider.create({
+      text,
+    });
+  }
+
+  const todos: Todo[] = await context.provider.findBy({ text });
+
+  expect(todos.length).toEqual(numberOfTodos);
 });
