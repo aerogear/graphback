@@ -188,7 +188,7 @@ test('Skip n todos and find next m todos by text', async () => {
 test('find todos by text, limit defaults to complete set', async () => {
   const numberOfTodos = 12;
   const text = 'test-todo';
-  for (let i = 0; i < numberOfTodos + 1; i++) {
+  for (let i = 0; i < numberOfTodos; i++) {
     await context.provider.create({
       text,
     });
