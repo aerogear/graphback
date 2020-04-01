@@ -120,7 +120,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
           throw new Error("Please use an offset of greater than or equal to 0 in queries")
         }
       }
-      query.offset(page.offset)
+      query = query.offset(page.offset)
       // console.log('page desu: ', page)
       if (page.hasOwnProperty("limit")) {
         if (page.limit <= 0) {

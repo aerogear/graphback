@@ -147,7 +147,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
           throw new Error("Please use an offset of greater than or equal to 0 in queries")
         }
       }
-      query.skip(page.offset)
+      query = query.skip(page.offset)
       // console.log('page desu: ', page)
       if (page.hasOwnProperty("limit")) {
         if (page.limit <= 0) {
