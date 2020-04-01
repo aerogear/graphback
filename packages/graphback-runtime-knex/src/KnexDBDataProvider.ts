@@ -112,13 +112,25 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   private usePage(query: Knex.QueryBuilder, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
     if (page) {
-      page.limit = page.limit || defaultLimit
-      page.offset = page.offset || defaultOffset
-      
-      return query.offset(page.offset).limit(page.limit);
-    } else {
-      return query;
+      if (!(page.hasOwnProperty("offset"))) {
+        // If no offset is supplied
+        page.offset = defaultOffset
+      } else {
+        if (page.offset < 0) {
+          throw new Error("Please use an offset of greater than or equal to 0 in queries")
+        }
+      }
+      query.offset(page.offset)
+      // console.log('page desu: ', page)
+      if (page.hasOwnProperty("limit")) {
+        if (page.limit <= 0) {
+          throw new Error("Please use a limit of greater than 0 in queries")
+        }
+        query = query.limit(page.limit)
+      }
     }
+
+    return query;
   }
 
 }
