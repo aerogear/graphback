@@ -44,7 +44,7 @@
     "glob": "7.1.6",
     "graphback": "0.11.4",
     "graphql": "14.6.0",
-    "graphql-config": "3.0.0-rc.1",
+    "graphql-config": "3.0.0-rc.2",
     "graphql-migrations": "0.11.4",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
