@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "apollo-boost": "0.4.7",
-    "apollo-server": "2.11.0",
-    "apollo-server-testing": "2.11.0",
+    "apollo-server": "2.12.0",
+    "apollo-server-testing": "2.12.0",
     "jest": "25.2.7",
     "knex": "0.20.13",
     "node-fetch": "2.6.0"
