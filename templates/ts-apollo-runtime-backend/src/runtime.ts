@@ -13,7 +13,6 @@ export const createRuntime = () => {
   const db = connectDB();
 
   const projectConfig = loadConfigSync({
-    rootDir: process.cwd(),
     extensions: [
       () => ({ name: 'graphback' }),
       () => ({ name: 'dbmigrations' })

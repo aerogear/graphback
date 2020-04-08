@@ -12,7 +12,6 @@ export const createApolloServer = () => {
   const db = connectDB();
 
   const projectConfig = loadConfigSync({
-    rootDir: process.cwd(),
     extensions: [
       () => ({ name: 'graphback' }),
       () => ({ name: 'dbmigrations' })
