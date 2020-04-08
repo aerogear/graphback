@@ -5,7 +5,6 @@
       "name": "Current TS File",
       "type": "node",
       "request": "launch",
-      "env": {},
       "args": [
         "${relativeFile}"
       ],
@@ -21,7 +20,14 @@
       "name": "Generator template app",
       "type": "node",
       "request": "launch",
-      "env": {},
+      "env": {
+        "DB_CLIENT": "pg",
+        "DB_USER": "postgresql",
+        "DB_PASSWORD": "postgres",
+        "DB_DATABASE": "users",
+        "DB_HOST": "localhost",
+        "DB_PORT": "55432"
+      },
       "args": [
         "${workspaceRoot}/templates/ts-apollo-fullstack/server/src/index.ts"
       ],
@@ -37,7 +43,14 @@
       "name": "Runtime template app",
       "type": "node",
       "request": "launch",
-      "env": {},
+      "env": {
+        "DB_CLIENT": "pg",
+        "DB_USER": "postgresql",
+        "DB_PASSWORD": "postgres",
+        "DB_DATABASE": "users",
+        "DB_HOST": "localhost",
+        "DB_PORT": "55432"
+      },
       "args": [
         "${workspaceRoot}/templates/ts-apollo-runtime-backend/src/index.ts"
       ],
