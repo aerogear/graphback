@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { existsSync, lstatSync } from 'fs';
 import chokidar from 'chokidar';
 import { debounce } from 'debounce';
 import { GraphbackCRUDGeneratorConfig, GraphbackGenerator } from "graphback"
@@ -49,15 +50,37 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   };
   const debouncedExec = debounce(runGeneration, 100);
 
+  const modelPath = getModelPath(config.dirpath, graphbackConfig.model)
+
   if (cliFlags.watch) {
-    chokidar.watch(graphbackConfig.model, {
+    chokidar.watch(modelPath, {
       persistent: true,
       cwd: config.dirpath,
     }).on('all', debouncedExec);
   } else {
-    const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
+    
+    const schemaDocument = await project.loadSchema(modelPath);
     const generator = new GraphbackGenerator(schemaDocument, graphbackConfig);
     generator.generateSourceCode();
   }
 };
 
+/**
+ * 
+ * Formats the model path or list of paths to ensure
+ *   * only paths from inside the project are allowed
+ *   * if a directory is supplied *.graphql is appended
+ * 
+ * @param baseDir the base directory that should be appended to the path or paths
+ * @param model a path or a list of paths
+ */
+function getModelPath(baseDir: string, model: string | Array<string>): string | Array<string> {
+  if (typeof model === 'string' && existsSync(model) && lstatSync(model).isDirectory()) {
+    return join(baseDir, model, '/**/*.graphql')
+  } else if (typeof model === 'string') {
+    return join(baseDir, model)
+  } else if (Array.isArray(model)) {
+    return model.map((path) => join(baseDir, path))
+  }
+  return model
+}
