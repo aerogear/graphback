@@ -37,7 +37,7 @@
     "@graphback/codegen-schema": "0.11.4",
     "@graphback/core": "0.11.4",
     "@graphback/runtime": "0.11.4",
-    "@graphql-inspector/core": "1.27.0",
+    "@graphql-inspector/core": "1.30.3",
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
     "pg": "8.0.0",
