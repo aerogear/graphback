@@ -1,16 +1,20 @@
+import dotenv from 'dotenv'
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
 
 import { createApolloServer } from './graphql';
 
+dotenv.config()
+
 async function start() {
+
   const app = express();
 
   app.use(cors());
 
   app.get('/health', (req, res) => res.sendStatus(200));
-  
+
   const apolloServer = await createApolloServer();
   apolloServer.applyMiddleware({ app })
 
