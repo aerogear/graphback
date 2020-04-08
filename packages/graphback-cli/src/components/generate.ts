@@ -76,7 +76,7 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
  */
 function getModelPath(baseDir: string, model: string | Array<string>): string | Array<string> {
   if (typeof model === 'string' && existsSync(model) && lstatSync(model).isDirectory()) {
-    return join(baseDir, model, '/**/*.graphql')
+    return join(baseDir, model, '/*.graphql')
   } else if (typeof model === 'string') {
     return join(baseDir, model)
   } else if (Array.isArray(model)) {
