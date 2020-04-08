@@ -7,15 +7,15 @@ import { getProjectConfig, createDB } from './utils';
 /**
  * Creates Apollo server
  */
-export const createApolloServer = async () => {
+export const createApolloServer = () => {
     const db = createDB();
 
     const pubSub = new PubSub();
 
-    const projectConfig = await getProjectConfig()
+    const projectConfig = getProjectConfig()
 
-    const schema = await projectConfig.getSchema()
-    const typeDefs = await projectConfig.getSchema('DocumentNode')
+    const schema = projectConfig.getSchemaSync()
+    const typeDefs = projectConfig.getSchemaSync('DocumentNode')
 
     const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
     const apolloServer = new ApolloServer({

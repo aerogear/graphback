@@ -1,8 +1,8 @@
-import { loadConfig } from 'graphql-config';
+import { loadConfigSync } from 'graphql-config';
 import Knex from 'knex';
 
-export async function getProjectConfig() {
-  const config = await loadConfig({
+export function getProjectConfig() {
+  const config = loadConfigSync({
     rootDir: process.cwd(),
     extensions: [
       () => ({ name: 'graphback' }),
