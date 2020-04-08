@@ -1,30 +1,24 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config()
+import http from 'http';
 import cors from 'cors';
 import express from 'express';
-import http from 'http';
-
 import { createApolloServer } from './graphql';
 
-async function start() {
-  const app = express();
+const app = express();
 
-  app.use(cors());
+app.use(cors());
 
-  app.get('/health', (req, res) => res.sendStatus(200));
-  
-  const apolloServer = await createApolloServer();
-  apolloServer.applyMiddleware({ app })
+app.get('/health', (req, res) => res.sendStatus(200));
 
-  const httpServer = http.createServer(app)
-  apolloServer.installSubscriptionHandlers(httpServer)
+const apolloServer = createApolloServer();
+apolloServer.applyMiddleware({ app })
 
-  const port = process.env.PORT || 4000;
+const httpServer = http.createServer(app)
+apolloServer.installSubscriptionHandlers(httpServer)
 
-  httpServer.listen({ port }, () => {
-    console.log(`🚀  Server ready at http://localhost:${port}/graphql`)
-  })
-}
+const port = process.env.PORT || 4000;
 
-start().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+httpServer.listen({ port }, () => {
+  console.log(`🚀  Server ready at http://localhost:${port}/graphql`)
+})

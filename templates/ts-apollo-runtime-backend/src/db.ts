@@ -1,42 +1,19 @@
-import { loadConfig } from 'graphql-config';
 import Knex from 'knex'
 
-export const getGraphbackConfig = async () => {
-    const config = await loadConfig({
-        extensions: [() => ({ name: 'graphback' })]
-    });
+export function connectDB() {
+  let port;
+  if (process.env.DB_PORT) {
+    port = parseInt(process.env.DB_PORT, 10)
+  }
 
-    if (!config) {
-        throw new Error("Can't load GraphQL Config");
+  return Knex({
+    client: process.env.DB_CLIENT,
+    connection: {
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      host: process.env.DB_HOST,
+      port: port && !isNaN(port) ? port : 5432
     }
-
-    const conf = await config.getDefault().extension('graphback');
-    return conf;
-}
-
-export const getMigrateConfig = async () => {
-    const config = await loadConfig({
-        extensions: [() => ({ name: 'dbmigrations' })]
-    });
-
-    if (!config) {
-        throw new Error("Can't load GraphQL Config");
-    }
-
-    const conf = await config.getDefault().extension('dbmigrations');
-    return conf;
-}
-
-/**
- * Creates knex based database using migration configuration
- * For production use please use different source of the configuration
- */
-export const createDB = async () => {
-
-    const dbmigrations = await getMigrateConfig()
-
-    // connect to db
-    const db = Knex(dbmigrations)
-
-    return db
+  })
 }
