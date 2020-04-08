@@ -1,10 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config()
 import http from 'http';
 import cors from 'cors';
 import express from 'express';
-import dotenv from 'dotenv'
 import { createApolloServer } from './graphql';
 
-dotenv.config()
 
 const app = express();
 

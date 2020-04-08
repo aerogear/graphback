@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config()
 import { ApolloServer } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
