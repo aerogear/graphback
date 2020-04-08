@@ -28,7 +28,7 @@
     "@types/prettier": "1.19.1",
     "ava": "2.4.0",
     "graphql": "14.6.0",
-    "jest": "25.2.7",
+    "jest": "25.3.0",
     "rimraf": "3.0.2",
     "ts-jest": "25.3.1",
     "ts-node": "8.8.2",
