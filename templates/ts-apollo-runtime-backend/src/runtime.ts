@@ -2,15 +2,25 @@ import { GraphbackRuntime } from 'graphback'
 import { createKnexPGCRUDRuntimeServices } from '@graphback/runtime-knex'
 import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
-import { createDB, getProjectConfig } from './utils'
+import { connectDB } from './db'
 import path from 'path';
+import { loadConfigSync } from 'graphql-config';
 
 /**
  * Method used to create runtime schema
  */
 export const createRuntime = () => {
-  const db = createDB();
-  const projectConfig = getProjectConfig();
+  const db = connectDB();
+
+  const projectConfig = loadConfigSync({
+    rootDir: process.cwd(),
+    extensions: [
+      () => ({ name: 'graphback' }),
+      () => ({ name: 'dbmigrations' })
+    ]
+  }).getDefault()
+
+  // const projectConfig = getProjectConfig();
   const graphbackConfig = projectConfig.extension('graphback');
   const dbMigrationsConfig = projectConfig.extension('dbmigrations');
   const model = projectConfig.loadSchemaSync(path.resolve(graphbackConfig.model, './*.graphql'));

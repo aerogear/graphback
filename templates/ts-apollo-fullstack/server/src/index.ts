@@ -5,7 +5,6 @@ import cors from 'cors';
 import express from 'express';
 import { createApolloServer } from './graphql';
 
-
 const app = express();
 
 app.use(cors());

@@ -1,29 +1,36 @@
 import { ApolloServer, PubSub } from 'apollo-server-express';
 import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
+import { loadConfigSync } from 'graphql-config'
 import { models } from './resolvers/models';
 import resolvers from './resolvers/resolvers'
-import { getProjectConfig, createDB } from './utils';
+import { connectDB } from './db';
 
 /**
  * Creates Apollo server
  */
 export const createApolloServer = () => {
-    const db = createDB();
+  const db = connectDB();
 
-    const pubSub = new PubSub();
+  const projectConfig = loadConfigSync({
+    rootDir: process.cwd(),
+    extensions: [
+      () => ({ name: 'graphback' }),
+      () => ({ name: 'dbmigrations' })
+    ]
+  }).getDefault()
 
-    const projectConfig = getProjectConfig()
+  const pubSub = new PubSub();
 
-    const schema = projectConfig.getSchemaSync()
-    const typeDefs = projectConfig.getSchemaSync('DocumentNode')
+  const schema = projectConfig.getSchemaSync()
+  const typeDefs = projectConfig.getSchemaSync('DocumentNode')
 
-    const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
-    const apolloServer = new ApolloServer({
-        typeDefs,
-        resolvers,
-        context,
-        playground: true,
-    })
+  const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
+  const apolloServer = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context,
+    playground: true,
+  })
 
-    return apolloServer;
+  return apolloServer;
 }

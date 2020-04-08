@@ -1,23 +1,6 @@
-import { loadConfigSync } from 'graphql-config';
 import Knex from 'knex';
 
-export function getProjectConfig() {
-  const config = loadConfigSync({
-    rootDir: process.cwd(),
-    extensions: [
-      () => ({ name: 'graphback' }),
-      () => ({ name: 'dbmigrations' })
-    ]
-  });
-
-  if (!config) {
-    throw new Error("Can't load GraphQL Config");
-  }
-
-  return config.getDefault()
-}
-
-export function createDB() {
+export function connectDB() {
   let port;
   if (process.env.DB_PORT) {
     port = parseInt(process.env.DB_PORT, 10)
