@@ -15,7 +15,7 @@
     "print-schema": "ts-node bin/printSchema.ts"
   },
   "devDependencies": {
-    "@types/express": "4.17.4",
+    "@types/express": "4.17.5",
     "@types/jest": "25.2.1",
     "@types/node": "12.12.34",
     "@types/pino": "5.17.0",
