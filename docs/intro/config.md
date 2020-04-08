@@ -33,8 +33,9 @@ documents: ./client/src/graphql/**/*.graphql
 extensions:
   # Graphback configuration
   graphback:
-    ##  Location to file that is contains GraphQL schema that will be processed by Graphback
-    model: ./model
+    ##  Path to file that contains GraphQL schema that will be processed by Graphback
+    ## Can be an array of paths too
+    model: ./model/**/*.graphql
     ## Global flags for CRUD methods that will be used in plugins
     crud:
       create: true

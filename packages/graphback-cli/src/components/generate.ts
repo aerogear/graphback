@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { existsSync, lstatSync } from 'fs';
 import chokidar from 'chokidar';
 import { debounce } from 'debounce';
 import { GraphbackCRUDGeneratorConfig, GraphbackGenerator } from "graphback"
@@ -35,9 +36,23 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
     throw new Error(`'${graphbackExtension}' config 'plugins' section is empty. No code will be generated`);
   }
 
+  let { model } = graphbackConfig
+
+  // Formats the model path or list of paths to ensure
+  // 1. only paths from inside the project are allowed
+  // 2. if a directory is supplied *.graphql is appended
+
+  if (typeof model === 'string' && existsSync(model) && lstatSync(model).isDirectory()) {
+    model = join(config.dirpath, model, '/*.graphql')
+  } else if (typeof model === 'string') {
+    model = join(config.dirpath, model)
+  } else if (Array.isArray(model)) {
+    model = model.map((path: string) => join(config.dirpath, path))
+  }
+
   const runGeneration = async () => {
     try {
-      const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
+      const schemaDocument = await project.loadSchema(model);
       const generator = new GraphbackGenerator(schemaDocument, graphbackConfig);
       generator.generateSourceCode();
     } catch (e) {
@@ -50,14 +65,14 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   const debouncedExec = debounce(runGeneration, 100);
 
   if (cliFlags.watch) {
-    chokidar.watch(graphbackConfig.model, {
+    chokidar.watch(model, {
       persistent: true,
       cwd: config.dirpath,
     }).on('all', debouncedExec);
   } else {
-    const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
+    
+    const schemaDocument = await project.loadSchema(model);
     const generator = new GraphbackGenerator(schemaDocument, graphbackConfig);
     generator.generateSourceCode();
   }
 };
-

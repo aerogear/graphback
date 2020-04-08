@@ -74,7 +74,7 @@ export const createConfig = async (database: string, client: boolean) => {
     documents: './client/src/graphql/**/*.graphql',
     extensions: {
       graphback: {
-        "model": "./model",
+        "model": "./model/**/*.graphql",
         "crud": {
           "create": true,
           "update": true,
