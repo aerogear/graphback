@@ -36,9 +36,23 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
     throw new Error(`'${graphbackExtension}' config 'plugins' section is empty. No code will be generated`);
   }
 
+  let { model } = graphbackConfig
+
+  // Formats the model path or list of paths to ensure
+  // 1. only paths from inside the project are allowed
+  // 2. if a directory is supplied *.graphql is appended
+
+  if (typeof model === 'string' && existsSync(model) && lstatSync(model).isDirectory()) {
+    model = join(config.dirpath, model, '/*.graphql')
+  } else if (typeof model === 'string') {
+    model = join(config.dirpath, model)
+  } else if (Array.isArray(model)) {
+    model = model.map((path: string) => join(config.dirpath, path))
+  }
+
   const runGeneration = async () => {
     try {
-      const schemaDocument = await project.loadSchema(join(config.dirpath, graphbackConfig.model, '/**/*.graphql'));
+      const schemaDocument = await project.loadSchema(model);
       const generator = new GraphbackGenerator(schemaDocument, graphbackConfig);
       generator.generateSourceCode();
     } catch (e) {
@@ -50,37 +64,15 @@ export const generateUsingPlugins = async (cliFlags: CliFlags) => {
   };
   const debouncedExec = debounce(runGeneration, 100);
 
-  const modelPath = getModelPath(config.dirpath, graphbackConfig.model)
-
   if (cliFlags.watch) {
-    chokidar.watch(modelPath, {
+    chokidar.watch(model, {
       persistent: true,
       cwd: config.dirpath,
     }).on('all', debouncedExec);
   } else {
     
-    const schemaDocument = await project.loadSchema(modelPath);
+    const schemaDocument = await project.loadSchema(model);
     const generator = new GraphbackGenerator(schemaDocument, graphbackConfig);
     generator.generateSourceCode();
   }
 };
-
-/**
- * 
- * Formats the model path or list of paths to ensure
- *   * only paths from inside the project are allowed
- *   * if a directory is supplied *.graphql is appended
- * 
- * @param baseDir the base directory that should be appended to the path or paths
- * @param model a path or a list of paths
- */
-function getModelPath(baseDir: string, model: string | Array<string>): string | Array<string> {
-  if (typeof model === 'string' && existsSync(model) && lstatSync(model).isDirectory()) {
-    return join(baseDir, model, '/*.graphql')
-  } else if (typeof model === 'string') {
-    return join(baseDir, model)
-  } else if (Array.isArray(model)) {
-    return model.map((path) => join(baseDir, path))
-  }
-  return model
-}
