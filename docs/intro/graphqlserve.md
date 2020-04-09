@@ -70,9 +70,9 @@ $ gqlserve print-schema ./path/to/models
 Generated schema:
 
 type Mutation {
-  createNote(input: NoteInput): Note!
-  updateNote(input: NoteInput): Note!
-  deleteNote(input: NoteInput): Note!
+  createNote(data: NoteData): Note!
+  updateNote(data: NoteData): Note!
+  deleteNote(data: NoteFilter): Note!
 }
 
 """ @model """
@@ -83,7 +83,7 @@ type Note {
   likes: Int
 }
 
-input NoteInput {
+input NoteData {
   id: ID
   title: String
   description: String
@@ -92,13 +92,13 @@ input NoteInput {
 
 type Query {
   findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findNotes(filter:  NoteFilter, limit: Int, offset: Int): [Note]!
 }
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(data: NoteFilter): Note!
 }
 ```
 

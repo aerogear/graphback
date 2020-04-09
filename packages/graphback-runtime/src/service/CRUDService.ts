@@ -37,7 +37,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
         if (this.pubSub && this.publishConfig.publishCreate) {
             const topic = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
-            //TODO use subscription name mapping 
+            //TODO use subscription name mapping
             const payload = this.buildEventPayload('new', result);
             await this.pubSub.publish(topic, payload);
         }
@@ -52,7 +52,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
         if (this.pubSub && this.publishConfig.publishUpdate) {
             const topic = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
-            //TODO use subscription name mapping 
+            //TODO use subscription name mapping
             const payload = this.buildEventPayload('updated', result);
             await this.pubSub.publish(topic, payload);
         }
@@ -61,10 +61,10 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     }
 
     //tslint:disable-next-line: no-reserved-keywords
-    public async delete(data: T, context?: any): Promise<T> {
+    public async delete(filter: T, context?: any): Promise<T> {
         this.logger.log(`deleting object ${this.modelName}`)
 
-        const result = await this.db.delete(data, context);
+        const result = await this.db.delete(filter, context);
 
         if (this.pubSub && this.publishConfig.publishUpdate) {
             const topic = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);

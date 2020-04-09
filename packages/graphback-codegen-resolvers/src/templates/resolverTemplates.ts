@@ -1,20 +1,22 @@
 //Templates for individual CRUD methods
 
+import { inputDataVariableName, inputFilterVariableName } from '@graphback/core';
+
 export const createTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-        return context.${modelName}.create(args.input, context);
+        return context.${modelName}.create(args.${inputDataVariableName}, context);
     }`;
 }
 
 export const updateTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.update(args.input, context);
+      return context.${modelName}.update(args.${inputDataVariableName}, context);
     }`
 }
 
 export const deleteTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.delete(args.input, context);
+      return context.${modelName}.delete(args.${inputFilterVariableName}, context);
     }`
 }
 
@@ -26,8 +28,8 @@ export const findAllTemplate = (modelName: string): string => {
 
 export const findTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      const { fields, ...page } = args;
-      return context.${modelName}.findBy(fields, page);
+      const { ${inputFilterVariableName}, ...page } = args;
+      return context.${modelName}.findBy(${inputFilterVariableName}, page);
     }`
 }
 

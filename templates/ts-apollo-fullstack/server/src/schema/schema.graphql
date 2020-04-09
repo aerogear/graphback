@@ -10,7 +10,14 @@ type Comment {
   note: Note
 }
 
-input CommentInput {
+input CommentData {
+  id: ID
+  text: String
+  description: String
+  noteId: ID
+}
+
+input CommentFilter {
   id: ID
   text: String
   description: String
@@ -18,12 +25,12 @@ input CommentInput {
 }
 
 type Mutation {
-  createNote(input: NoteInput): Note!
-  updateNote(input: NoteInput): Note!
-  deleteNote(input: NoteInput): Note!
-  createComment(input: CommentInput): Comment!
-  updateComment(input: CommentInput): Comment!
-  deleteComment(input: CommentInput): Comment!
+  createNote(data: NoteData): Note!
+  updateNote(data: NoteData): Note!
+  deleteNote(filter: NoteFilter): Note!
+  createComment(data: CommentData): Comment!
+  updateComment(data: CommentData): Comment!
+  deleteComment(filter: CommentFilter): Comment!
 }
 
 """ @model """
@@ -36,7 +43,13 @@ type Note {
   comments: [Comment]!
 }
 
-input NoteInput {
+input NoteData {
+  id: ID
+  title: String!
+  description: String
+}
+
+input NoteFilter {
   id: ID
   title: String
   description: String
@@ -45,16 +58,16 @@ input NoteInput {
 type Query {
   test: String @deprecated
   findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findNotes(filter: NoteFilter, limit: Int, offset: Int): [Note]!
   findAllComments(limit: Int, offset: Int): [Comment]!
-  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findComments(filter: CommentFilter, limit: Int, offset: Int): [Comment]!
 }
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
-  newComment(input: CommentInput): Comment!
-  updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentInput): Comment!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(filter: NoteFilter): Note!
+  newComment(data: CommentData): Comment!
+  updatedComment(data: CommentData): Comment!
+  deletedComment(filter: CommentFilter): Comment!
 }

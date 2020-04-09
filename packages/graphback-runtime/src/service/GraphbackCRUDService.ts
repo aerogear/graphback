@@ -38,10 +38,10 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * Implementation for object deletes
      *
      * @param id of the object to delete
-     * @param data data used for consistency reasons
+     * @param filter data used for consistency reasons
      * @param context context object passed from graphql or rest layer
      */
-    delete(data: Type, context?: GraphbackContext): Promise<Type>;
+    delete(filter: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
      * Implementation for finding all objects
@@ -84,13 +84,13 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     subscribeToDelete(filter?: any, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
-     * Speciallized function that can utilize batching the data basing on 
+     * Speciallized function that can utilize batching the data basing on
      * DataLoader library
-     * 
+     *
      * @param context resolver context object that will be used to apply new loader
      * @param name name of the object we want to load
      * @param relationField - name of the field that will be used to match ids
-     * @param id id of the object we want to load 
+     * @param id id of the object we want to load
      */
     batchLoadData(relationField: string, id: string | number, context: any);
 

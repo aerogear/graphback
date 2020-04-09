@@ -39,10 +39,17 @@ type Note {
 }
 ```
 
-Graphback will decorate it with additional Queries, Mutations and Subscriptions along with InputTypes and other wrapper types that are needed.
+Graphback will decorate it with additional Queries, Mutations and Subscriptions along with Input Types and other wrapper types that are needed.
 
 ```graphql
-input NoteInput {
+input NoteData {
+  id: ID
+  title: String!
+  description: String
+  likes: Int
+}
+
+input NoteFields {
   id: ID
   title: String
   description: String
@@ -51,19 +58,19 @@ input NoteInput {
 
 type Query {
   findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findNotes(filter: NoteFilter, limit: Int, offset: Int): [Note]!
 } 
 
 type Mutation {
-  createNote(input: NoteInput): Note!
-  updateNote(input: NoteInput): Note!
-  deleteNote(input: NoteInput): Note!
+  createNote(data: NoteData): Note!
+  updateNote(data: NoteData): Note!
+  deleteNote(data: NoteFilter): Note!
 } 
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(data: NoteFilter): Note!
 } 
 ```
 

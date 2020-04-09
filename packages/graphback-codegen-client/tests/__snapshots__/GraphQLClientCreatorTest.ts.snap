@@ -4,7 +4,7 @@ exports[`Test plugin engine gql 1`] = `
 Object {
   "fragments": Array [
     Object {
-      "implementation": "fragment NoteFilter on Note {
+      "implementation": "fragment NoteFields on Note {
    id
    title
    description
@@ -26,7 +26,7 @@ Object {
       "name": "NoteExpanded",
     },
     Object {
-      "implementation": "fragment CommentFilter on Comment {
+      "implementation": "fragment CommentFields on Comment {
    id
    title
    description
@@ -203,7 +203,7 @@ mutation createNote($data: NoteData!) {
 }
 
 
-fragment NoteFilter on Note {
+fragment NoteFields on Note {
    id
    title
    description
@@ -223,7 +223,7 @@ mutation updateNote($data: NoteData!) {
 }
 
 
-fragment NoteFilter on Note {
+fragment NoteFields on Note {
    id
    title
    description
@@ -242,7 +242,7 @@ mutation deleteNote($data: NoteData!) {
   }
 }
 
-fragment NoteFilter on Note {
+fragment NoteFields on Note {
    id
    title
    description
@@ -262,7 +262,7 @@ mutation createComment($data: CommentData!) {
 }
 
 
-fragment CommentFilter on Comment {
+fragment CommentFields on Comment {
    id
    title
    description
@@ -282,7 +282,7 @@ mutation updateComment($data: CommentData!) {
 }
 
 
-fragment CommentFilter on Comment {
+fragment CommentFields on Comment {
    id
    title
    description
@@ -301,7 +301,7 @@ mutation deleteComment($data: CommentData!) {
   }
 }
 
-fragment CommentFilter on Comment {
+fragment CommentFields on Comment {
    id
    title
    description
@@ -416,7 +416,7 @@ subscription newNote {
   }
 }
 
-fragment NoteFilter on Note {
+fragment NoteFields on Note {
    id
    title
    description
@@ -435,7 +435,7 @@ subscription updatedNote {
   }
 }
 
-fragment NoteFilter on Note {
+fragment NoteFields on Note {
    id
    title
    description
@@ -454,7 +454,7 @@ subscription deletedNote {
   }
 }
 
-fragment NoteFilter on Note {
+fragment NoteFields on Note {
    id
    title
    description
@@ -473,7 +473,7 @@ subscription newComment {
   }
 }
 
-fragment CommentFilter on Comment {
+fragment CommentFields on Comment {
    id
    title
    description
@@ -492,7 +492,7 @@ subscription updatedComment {
   }
 }
 
-fragment CommentFilter on Comment {
+fragment CommentFields on Comment {
    id
    title
    description
@@ -511,7 +511,7 @@ subscription deletedComment {
   }
 }
 
-fragment CommentFilter on Comment {
+fragment CommentFields on Comment {
    id
    title
    description
@@ -532,7 +532,7 @@ Object {
       "implementation": "import gql from \\"graphql-tag\\"
 
 export const NoteFragment = gql\`
-  fragment NoteFilter on Note {
+  fragment NoteFields on Note {
    id
    title
    description
@@ -564,7 +564,7 @@ export const NoteExpandedFragment = gql\`
       "implementation": "import gql from \\"graphql-tag\\"
 
 export const CommentFragment = gql\`
-  fragment CommentFilter on Comment {
+  fragment CommentFields on Comment {
    id
    title
    description
