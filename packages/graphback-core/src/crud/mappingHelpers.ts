@@ -1,8 +1,10 @@
-import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, isObjectType, getNullableType, getNamedType, GraphQLOutputType, isNonNullType, GraphQLNonNull, GraphQLScalarType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { parseRelationshipAnnotation } from '../relationships/relationshipHelpers';
 import { transformForeignKeyName, getPrimaryKey } from '../db';
+import { ModelDefinition } from '../plugin/ModelDefinition';
+import { FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO is is esential to document this element
@@ -22,7 +24,7 @@ export function upperCaseFirstChar(text: string) {
 /**
  * Get name of the field for query and mutation using our crud model.
  * Method trasform specific CRUD operation into compatible name
- * 
+ *
  * Example:
  * ```
  * type Query {
@@ -31,9 +33,9 @@ export function upperCaseFirstChar(text: string) {
  * }
  * ```
  * This method is compatible with Graphback CRUD specification
- * 
- * @param typeName 
- * @param action 
+ *
+ * @param typeName
+ * @param action
  */
 export const getFieldName = (typeName: string, action: GraphbackOperationType): string => {
   let finalName = upperCaseFirstChar(typeName);
@@ -59,7 +61,7 @@ export function getInputFieldName(field: GraphQLField<any, any>): string {
 }
 
 /**
- * Provides naming patterns for CRUD subscriptions 
+ * Provides naming patterns for CRUD subscriptions
  */
 export const getSubscriptionName = (typeName: string, action: GraphbackOperationType, ): string => {
   const finalName = upperCaseFirstChar(typeName);
@@ -80,11 +82,20 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
 
 /**
  * Provides naming pattern for InputType
- * 
- * @param typeName 
+ *
+ * @param typeName
  */
 export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
+}
+
+/**
+ * Provides naming pattern for InputType
+ *
+ * @param typeName
+ */
+export const getInputFieldsTypeName = (typeName: string): string => {
+  return `${typeName}Fields`;
 }
 
 export function isModelType(graphqlType: GraphQLObjectType): boolean {
@@ -99,6 +110,12 @@ export function isInputField(field: GraphQLField<any, any>): boolean {
   const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
   return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
+}
+
+export function isPrimaryKey(field: GraphQLField<any, any>, modelType: GraphQLObjectType) {
+  const primaryKey = getPrimaryKey(modelType)
+
+  return primaryKey?.name === field.name;
 }
 
 //tslint:disable-next-line: no-reserved-keywords
@@ -120,14 +137,51 @@ export function getRelationFieldName(field: any, type: any) {
   return fieldName;
 }
 
-
-export function getInputFieldType(field: GraphQLField<any, any>): GraphQLNamedType {
-  let fieldType = getNamedType(field.type);
-
-  if (isObjectType(fieldType) && isModelType(fieldType)) {
-    const idField = getPrimaryKey(fieldType);
-    fieldType = getNamedType(idField.type);
+export function getInputFieldOutputType(field: GraphQLField<any, any>, modelType?: GraphQLObjectType): GraphQLOutputType {
+  if (modelType && isPrimaryKey(field, modelType)) {
+    return getNamedType(field.type) as GraphQLOutputType;
   }
 
-  return getNullableType(fieldType);
+  let namedType = getNamedType(field.type);
+
+  if (isObjectType(namedType) && isModelType(namedType)) {
+    const idField = getPrimaryKey(namedType);
+    namedType = getNamedType(idField.type);
+
+    if (isNonNullType(field.type)) {
+      return idField.type;
+    }
+
+    return namedType as GraphQLOutputType;
+  }
+
+  return field.type
+}
+
+export function getNonObjectFields(graphqlType: GraphQLObjectType) {
+  const allFields = Object.values(graphqlType.getFields());
+
+  return allFields.filter((field: GraphQLField<any, any>) => {
+    const namedType = getNamedType(field.type);
+
+    return !isObjectType(namedType)
+  });
+}
+
+export function getModelFields({ graphqlType, relationships }: ModelDefinition): GraphQLField<any, any>[] {
+  const modelFields = getNonObjectFields(graphqlType)
+
+  const relationshipFields = relationships.map((relationship: FieldRelationshipMetadata) => relationship.ownerField);
+
+  const allModelFields = [...modelFields, ...relationshipFields];
+
+  return allModelFields;
+}
+
+export function mapInputFields(fields: GraphQLField<any, any>[], graphqlType?: GraphQLObjectType) {
+  return fields.filter(isInputField).map((field: GraphQLField<any, any>) => ({
+    name: getInputFieldName(field),
+    type: getInputFieldOutputType(field, graphqlType),
+    description: undefined
+  }))
 }
