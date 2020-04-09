@@ -11,12 +11,18 @@ type Comment {
   noteComment: Note!
 }
 
-input CommentInput {
+input CommentFields {
   id: ID
   title: String
   description: String
-  noteComment: ID
   note_id: ID
+}
+
+input CommentInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
 }
 
 type Mutation {
@@ -45,21 +51,28 @@ type Note {
   test: Test
 }
 
-input NoteInput {
+input NoteFields {
   id: ID
   title: String
   description: String
   test_id: ID
 }
 
+input NoteInput {
+  id: ID
+  title: String!
+  description: String!
+  test_id: ID
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteFields, limit: Int, offset: Int): [Note]!
   findAllComments(limit: Int, offset: Int): [Comment]!
-  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentFields, limit: Int, offset: Int): [Comment]!
   findAllTests(limit: Int, offset: Int): [Test]!
-  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+  findTests(fields: TestFields, limit: Int, offset: Int): [Test]!
 }
 
 type Subscription {
@@ -77,6 +90,11 @@ type Subscription {
 \\"\\"\\"@model\\"\\"\\"
 type Test {
   id: ID!
+  name: String
+}
+
+input TestFields {
+  id: ID
   name: String
 }
 
@@ -98,12 +116,18 @@ type Comment {
   noteComment: Note!
 }
 
-input CommentInput {
+input CommentFields {
   id: ID
   title: String
   description: String
-  noteComment: ID
   note_id: ID
+}
+
+input CommentInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
 }
 
 type Mutation {
@@ -132,21 +156,28 @@ type Note {
   test: Test
 }
 
-input NoteInput {
+input NoteFields {
   id: ID
   title: String
   description: String
   test_id: ID
 }
 
+input NoteInput {
+  id: ID
+  title: String!
+  description: String!
+  test_id: ID
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteFields, limit: Int, offset: Int): [Note]!
   findAllComments(limit: Int, offset: Int): [Comment]!
-  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentFields, limit: Int, offset: Int): [Comment]!
   findAllTests(limit: Int, offset: Int): [Test]!
-  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+  findTests(fields: TestFields, limit: Int, offset: Int): [Test]!
 }
 
 type Subscription {
@@ -164,6 +195,11 @@ type Subscription {
 \\"\\"\\"@model\\"\\"\\"
 type Test {
   id: ID!
+  name: String
+}
+
+input TestFields {
+  id: ID
   name: String
 }
 
@@ -185,12 +221,18 @@ type Comment {
   noteComment: Note!
 }
 
-input CommentInput {
+input CommentFields {
   id: ID
   title: String
   description: String
-  noteComment: ID
   note_id: ID
+}
+
+input CommentInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
 }
 
 type Mutation {
@@ -219,21 +261,28 @@ type Note {
   test: Test
 }
 
-input NoteInput {
+input NoteFields {
   id: ID
   title: String
   description: String
   test_id: ID
 }
 
+input NoteInput {
+  id: ID
+  title: String!
+  description: String!
+  test_id: ID
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteFields, limit: Int, offset: Int): [Note]!
   findAllComments(limit: Int, offset: Int): [Comment]!
-  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentFields, limit: Int, offset: Int): [Comment]!
   findAllTests(limit: Int, offset: Int): [Test]!
-  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+  findTests(fields: TestFields, limit: Int, offset: Int): [Test]!
 }
 
 type Subscription {
@@ -251,6 +300,11 @@ type Subscription {
 \\"\\"\\"@model\\"\\"\\"
 type Test {
   id: ID!
+  name: String
+}
+
+input TestFields {
+  id: ID
   name: String
 }
 
