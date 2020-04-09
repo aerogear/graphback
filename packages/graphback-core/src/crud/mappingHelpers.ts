@@ -80,13 +80,16 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
   return "";
 }
 
+export const inputDataVariableName = 'data';
+export const inputFilterVariableName = 'filter';
+
 /**
  * Provides naming pattern for InputType
  *
  * @param typeName
  */
 export const getInputTypeName = (typeName: string): string => {
-  return `${typeName}Input`;
+  return `${typeName}Data`;
 }
 
 /**
@@ -94,8 +97,8 @@ export const getInputTypeName = (typeName: string): string => {
  *
  * @param typeName
  */
-export const getInputFieldsTypeName = (typeName: string): string => {
-  return `${typeName}Fields`;
+export const getFilterInputTypeName = (typeName: string): string => {
+  return `${typeName}Filter`;
 }
 
 export function isModelType(graphqlType: GraphQLObjectType): boolean {

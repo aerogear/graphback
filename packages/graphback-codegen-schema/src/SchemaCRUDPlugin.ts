@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, mapInputFields, getInputFieldsTypeName, getInputFieldOutputType, getNonObjectFields, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, buildModifiedRelationshipsFieldObject, FieldRelationshipMetadata, isModelType, getModelFields } from '@graphback/core'
+import { getFieldName, mapInputFields, getFilterInputTypeName, getInputFieldOutputType, getNonObjectFields, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, buildModifiedRelationshipsFieldObject, FieldRelationshipMetadata, isModelType, getModelFields } from '@graphback/core'
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLArgument, getNullableType, isNonNullType, getNamedType, isScalarType, isObjectType } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -136,7 +136,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   protected createQueryInputType(model: ModelDefinition) {
     const modelFields = getModelFields(model);
 
-    const inputName = getInputFieldsTypeName(model.graphqlType.name);
+    const inputName = getFilterInputTypeName(model.graphqlType.name);
 
     return new GraphQLInputObjectType({
       name: inputName,

@@ -88,14 +88,14 @@ test('Test generated filter input types', async () => {
   }, model)
   const schema = schemaGenerator.transformSchema(metadata)
 
-  const userInput = schema.getType('UserFields') as GraphQLInputObjectType
+  const userInput = schema.getType('UserFilter') as GraphQLInputObjectType
   expect(userInput).toBeDefined()
   const userInputFields = Object.values(userInput.getFields())
   expect(userInputFields).toHaveLength(3)
   const nonNullUserFields = userInputFields.filter(isRequiredInputField);
   expect(nonNullUserFields).toHaveLength(0)
 
-  const noteInput = schema.getType('NoteFields') as GraphQLInputObjectType
+  const noteInput = schema.getType('NoteFilter') as GraphQLInputObjectType
   expect(noteInput).toBeDefined()
   const noteInputFields = Object.values(noteInput.getFields())
   expect(noteInputFields).toHaveLength(3)
@@ -131,14 +131,14 @@ test('Test generated mutation input types', async () => {
   }, model)
   const schema = schemaGenerator.transformSchema(metadata)
 
-  const userInput = schema.getType('UserInput') as GraphQLInputObjectType
+  const userInput = schema.getType('UserData') as GraphQLInputObjectType
   expect(userInput).toBeDefined()
   const userInputFields = Object.values(userInput.getFields())
   expect(userInputFields).toHaveLength(3)
   const nonNullUserFields = userInputFields.filter(isRequiredInputField);
   expect(nonNullUserFields).toHaveLength(1)
 
-  const noteInput = schema.getType('NoteInput') as GraphQLInputObjectType
+  const noteInput = schema.getType('NoteData') as GraphQLInputObjectType
   expect(noteInput).toBeDefined()
   const noteInputFields = Object.values(noteInput.getFields())
   expect(noteInputFields).toHaveLength(3)
@@ -173,7 +173,7 @@ test('Test generated relationship input field', async () => {
   }, model)
   const schema = schemaGenerator.transformSchema(metadata)
 
-  const noteInput = schema.getType('NoteInput') as GraphQLInputObjectType
+  const noteInput = schema.getType('NoteData') as GraphQLInputObjectType
   expect(noteInput).toBeDefined()
   const noteInputFields = Object.values(noteInput.getFields())
 

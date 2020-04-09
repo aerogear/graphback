@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getFilterInputTypeName, inputFilterVariableName, inputDataVariableName, getInputTypeName } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
 import { ClientTemplate } from './ClientTemplates';
 import { buildReturnFields, printReturnFields } from './fragmentFields';
@@ -35,8 +35,8 @@ export const findAllQuery = (t: GraphQLObjectType) => {
 export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
 
-  return `query ${fieldName}($fields: ${t.name}Fields!, $limit: Int, $offset: Int) {
-    ${fieldName}(fields: $fields, limit: $limit, offset: $offset) {
+  return `query ${fieldName}($${inputFilterVariableName}: ${getFilterInputTypeName(t.name)}!, $limit: Int, $offset: Int) {
+    ${fieldName}(${inputFilterVariableName}: $${inputFilterVariableName}, limit: $limit, offset: $offset) {
       ...${ t.name}ExpandedFields
     }
   }`
@@ -46,8 +46,8 @@ export const findQuery = (t: GraphQLObjectType) => {
 export const createMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName}($input: ${t.name}Input!) {
-  ${ fieldName}(input: $input) {
+  return `mutation ${fieldName}($${inputDataVariableName}: ${getInputTypeName(t.name)}!) {
+  ${ fieldName}(${inputDataVariableName}: $${inputDataVariableName}) {
       ...${ t.name}Fields
   }
 }
@@ -57,8 +57,8 @@ export const createMutation = (t: GraphQLObjectType) => {
 export const updateMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
-  return `mutation ${fieldName}($input: ${t.name}Input!) {
-  ${ fieldName}(input: $input) {
+  return `mutation ${fieldName}($${inputDataVariableName}: ${getInputTypeName(t.name)}!) {
+  ${ fieldName}(${inputDataVariableName}: $${inputDataVariableName}) {
       ...${ t.name}Fields
   }
 }
@@ -68,12 +68,11 @@ export const updateMutation = (t: GraphQLObjectType) => {
 export const deleteMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
-  return `mutation ${fieldName}($input: ${t.name}Input!) {
-  ${fieldName}(input: $input) {
+  return `mutation ${fieldName}($${inputDataVariableName}: ${getInputTypeName(t.name)}!) {
+  ${fieldName}(${inputDataVariableName}: $${inputDataVariableName}) {
       ...${t.name}Fields
   }
-}
-`
+}`
 }
 
 export const subscription = (t: GraphQLObjectType, fieldName: string) => {
@@ -81,7 +80,7 @@ export const subscription = (t: GraphQLObjectType, fieldName: string) => {
   ${fieldName} {
       ...${t.name}Fields
   }
-} `
+}`
 }
 
 export const createFragments = (types: ModelDefinition[]) => {
