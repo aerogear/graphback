@@ -22,7 +22,7 @@
     "dotenv": "8.2.0",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
-    "knex": "0.20.13"
+    "knex": "0.20.14"
   },
   "devDependencies": {
     "@types/glob": "7.1.1",
