@@ -4,7 +4,7 @@ import { buildModelTableMap } from '../src/db/buildModelTableMap';
 import { getDatabaseArguments } from '../src/db/dataMapper';
 
 test('should map to default ID field', () => {
-    const schema = buildSchema(`
+  const schema = buildSchema(`
     """
     @model
     """
@@ -14,23 +14,23 @@ test('should map to default ID field', () => {
         email: String
     }`);
 
-    const userModel = schema.getType("User") as GraphQLObjectType;
+  const userModel = schema.getType("User") as GraphQLObjectType;
 
-    const modelTableMap = buildModelTableMap(userModel);
+  const modelTableMap = buildModelTableMap(userModel);
 
-    const data = {
-        id: 1,
-        email: 'johndoe@gmail.com',
-        name: 'John Doe',
-    }
+  const data = {
+    id: 1,
+    email: 'johndoe@gmail.com',
+    name: 'John Doe',
+  }
 
-    const args = getDatabaseArguments(modelTableMap, data);
+  const args = getDatabaseArguments(modelTableMap, data);
 
-    expect(args.idField).toEqual({ name: 'id', value: 1 })
+  expect(args.idField).toEqual({ name: 'id', value: 1 })
 });
 
 test('should map to default custom ID field from annotations', () => {
-    const schema = buildSchema(`
+  const schema = buildSchema(`
     """
     @model
     """
@@ -43,17 +43,37 @@ test('should map to default custom ID field from annotations', () => {
         email: String
     }`);
 
-    const userModel = schema.getType("User") as GraphQLObjectType;
+  const userModel = schema.getType("User") as GraphQLObjectType;
 
-    const modelTableMap = buildModelTableMap(userModel);
+  const modelTableMap = buildModelTableMap(userModel);
 
-    const data = {
-        id: 1,
-        email: 'johndoe@gmail.com',
-        name: 'John Doe',
-    }
+  const data = {
+    id: 1,
+    email: 'johndoe@gmail.com',
+    name: 'John Doe',
+  }
 
-    const args = getDatabaseArguments(modelTableMap, data);
+  const args = getDatabaseArguments(modelTableMap, data);
 
-    expect(args.idField).toEqual({ name: 'email', value: 'johndoe@gmail.com' })
+  expect(args.idField).toEqual({ name: 'email', value: 'johndoe@gmail.com' })
+});
+
+test('should map undefined data to an empty object', () => {
+  const schema = buildSchema(`
+    """
+    @model
+    """
+    type User {
+        id: ID!
+    }`);
+
+  const userModel = schema.getType("User") as GraphQLObjectType;
+
+  const modelTableMap = buildModelTableMap(userModel);
+
+  const data = undefined;
+
+  const args = getDatabaseArguments(modelTableMap, data);
+
+  expect(args).toEqual({ data: {} })
 });
