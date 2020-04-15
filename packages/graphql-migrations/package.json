@@ -35,7 +35,7 @@
     "@types/node": "12.12.35",
     "ava": "2.4.0",
     "graphql": "14.6.0",
-    "graphql-tools": "4.0.7",
+    "graphql-tools": "4.0.8",
     "jest": "25.3.0",
     "pg": "8.0.2",
     "rimraf": "3.0.2",
