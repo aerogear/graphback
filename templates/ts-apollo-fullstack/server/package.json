@@ -15,7 +15,7 @@
     "graphql": "14.6.0",
     "graphql-config": "3.0.0",
     "graphql-tag": "2.10.3",
-    "knex": "0.20.14",
+    "knex": "0.20.15",
     "dotenv": "8.2.0"
   },
   "devDependencies": {
