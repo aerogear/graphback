@@ -45,7 +45,19 @@
     "link": "lerna exec npm link .",
     "clean": "npm-run-all clean:*",
     "clean:packages": "lerna run clean",
-    "clean:dependencies": "lerna clean --yes"
+    "clean:dependencies": "lerna clean --yes",
+    "ws-core": "yarn workspace @graphback/core",
+    "ws-graphback": "yarn workspace graphback",
+    "ws-cli": "yarn workspace graphback-cli",
+    "ws-codegen-offix": "yarn workspace @graphback/codegen-offix",
+    "ws-codegen-client": "yarn workspace @graphback/codegen-client",
+    "ws-codegen-resolvers": "yarn workspace @graphback/codegen-resolvers",
+    "ws-codegen-schema": "yarn workspace @graphback/codegen-schema",
+    "ws-runtime": "yarn workspace @graphback/runtime",
+    "ws-runtime-knex": "yarn workspace @graphback/runtime-knex",
+    "ws-runtime-mongo": "yarn workspace @graphback/runtime-mongo",
+    "ws-graphql-migrations": "yarn workspace graphql-migrations",
+    "ws-graphql-serve": "yarn workspace graphql-serve"
   },
   "workspaces": [
     "packages/*",
