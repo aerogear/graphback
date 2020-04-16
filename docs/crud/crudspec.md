@@ -64,13 +64,13 @@ type Query {
 type Mutation {
   createNote(data: NoteData!): Note!
   updateNote(data: NoteData!): Note!
-  deleteNote(filter: NoteFilter!): Note!
+  deleteNote(data: NoteData!): Note!
 } 
 
 type Subscription {
-  newNote(data: NoteData!): Note!
-  updatedNote(data: NoteData!): Note!
-  deletedNote(filter: NoteFilter!): Note!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(data: NoteData): Note!
 } 
 ```
 
