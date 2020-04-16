@@ -33,7 +33,7 @@ const CreateComment = ({ noteId, addCommentState }: createCommentProps) => {
                     />
                     <Button variant="outlined" color="primary"
                         onClick={() => {
-                            createComment({ variables: { input: { text: newCommentTitle, description: newCommentDescription, noteId: noteId } } });
+                            createComment({ variables: { data: { text: newCommentTitle, description: newCommentDescription, noteId: noteId } } });
                             addCommentState(false);
                         }}>Add Comment</Button>
                 </form>

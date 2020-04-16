@@ -3,7 +3,7 @@ import { useDeleteCommentMutation, Comment } from '../../generated-types';
 import { Button } from '@material-ui/core';
 import './Comment.css';
 
- 
+
 
 const OneComment = ({ id, text, description }: Comment) => {
     const [deleteComment] = useDeleteCommentMutation();
@@ -13,7 +13,7 @@ const OneComment = ({ id, text, description }: Comment) => {
             <li className="comment">
                 <strong >{text}</strong>:&nbsp;
               {description}
-                <Button variant="outlined" color="secondary" onClick={() => deleteComment({ variables: { input: { id: id } } })}>Delete Comment</Button>
+                <Button variant="outlined" color="secondary" onClick={() => deleteComment({ variables: { data: { id: id } } })}>Delete Comment</Button>
             </li>
         </div>
     );

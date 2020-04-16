@@ -59,7 +59,7 @@ export type MutationUpdateNoteArgs = {
 
 
 export type MutationDeleteNoteArgs = {
-  filter: NoteFilter;
+  data: NoteData;
 };
 
 
@@ -74,7 +74,7 @@ export type MutationUpdateCommentArgs = {
 
 
 export type MutationDeleteCommentArgs = {
-  filter: CommentFilter;
+  data: CommentData;
 };
 
 /**  @model  */
@@ -155,7 +155,7 @@ export type SubscriptionUpdatedNoteArgs = {
 
 
 export type SubscriptionDeletedNoteArgs = {
-  filter?: Maybe<NoteFilter>;
+  data?: Maybe<NoteData>;
 };
 
 
@@ -170,7 +170,7 @@ export type SubscriptionUpdatedCommentArgs = {
 
 
 export type SubscriptionDeletedCommentArgs = {
-  filter?: Maybe<CommentFilter>;
+  data?: Maybe<CommentData>;
 };
 
 export type CommentFieldsFragment = (
@@ -228,7 +228,7 @@ export type CreateNoteMutation = (
 );
 
 export type DeleteCommentMutationVariables = {
-  filter: CommentFilter;
+  data: CommentData;
 };
 
 
@@ -241,7 +241,7 @@ export type DeleteCommentMutation = (
 );
 
 export type DeleteNoteMutationVariables = {
-  filter: NoteFilter;
+  data: NoteData;
 };
 
 
@@ -506,8 +506,8 @@ export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutati
 export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
 export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
 export const DeleteCommentDocument = gql`
-    mutation deleteComment($filter: CommentFilter!) {
-  deleteComment(filter: $filter) {
+    mutation deleteComment($data: CommentData!) {
+  deleteComment(data: $data) {
     ...CommentFields
   }
 }
@@ -527,7 +527,7 @@ export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteC
  * @example
  * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
  *   variables: {
- *      filter: // value for 'filter'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -538,8 +538,8 @@ export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteComment
 export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
 export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const DeleteNoteDocument = gql`
-    mutation deleteNote($filter: NoteFilter!) {
-  deleteNote(filter: $filter) {
+    mutation deleteNote($data: NoteData!) {
+  deleteNote(data: $data) {
     ...NoteFields
   }
 }
@@ -559,7 +559,7 @@ export type DeleteNoteMutationFn = ApolloReactCommon.MutationFunction<DeleteNote
  * @example
  * const [deleteNoteMutation, { data, loading, error }] = useDeleteNoteMutation({
  *   variables: {
- *      filter: // value for 'filter'
+ *      data: // value for 'data'
  *   },
  * });
  */

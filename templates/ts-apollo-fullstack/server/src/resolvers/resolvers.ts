@@ -45,7 +45,7 @@ export default {
       return context.Note.update(args.data, context)
     },
     deleteNote: (parent, args, context) => {
-      return context.Note.delete(args.filter, context)
+      return context.Note.delete(args.data, context)
     },
     createComment: (parent, args, context) => {
       return context.Comment.create(args.data, context)
@@ -54,7 +54,7 @@ export default {
       return context.Comment.update(args.data, context)
     },
     deleteComment: (parent, args, context) => {
-      return context.Comment.delete(args.filter, context)
+      return context.Comment.delete(args.data, context)
     },
   },
 

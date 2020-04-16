@@ -36,7 +36,7 @@ const EditNote = ({ id, title, description, editState }: noteProps) => {
                     />
                     <Button variant="outlined" color="primary"
                         onClick={() => {
-                            updateNote({ variables: { input: { id: id, title: NoteTitle, description: NoteDescription } } });
+                            updateNote({ variables: { data: { id: id, title: NoteTitle, description: NoteDescription } } });
                             editState(false);
                         }}>Update Note</Button>
                 </form>

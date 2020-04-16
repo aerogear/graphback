@@ -14,23 +14,23 @@ const CreateNote: React.FC = () => {
                 <form noValidate autoComplete="off" className="inputForm">
                 <h3>Create Note</h3>
                 <p>This application works only with sample Node/Comment model</p>
-                <TextField 
-                    label="Title" 
-                    variant="outlined" 
+                <TextField
+                    label="Title"
+                    variant="outlined"
                     onChange={(e) => setNewNoteTitle(e.target.value)}
                     value={newNoteTitle}
-                   
+
                     />
-                <TextField 
-                    label="Description" 
-                    variant="outlined" 
+                <TextField
+                    label="Description"
+                    variant="outlined"
                     onChange={(e) => setNewNoteDescription(e.target.value)}
                     value={newNoteDescription}
-                    
+
                 />
-                <Button variant="outlined" color="primary" 
+                <Button variant="outlined" color="primary"
                     onClick={()=>{
-                        createNote({ variables: {input: {title: newNoteTitle, description: newNoteDescription }} });
+                        createNote({ variables: {data: {title: newNoteTitle, description: newNoteDescription }} });
                     }}>Add Note</Button>
                 </form>
             </Card>
