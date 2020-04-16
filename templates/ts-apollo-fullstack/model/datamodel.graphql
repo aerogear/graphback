@@ -15,7 +15,3 @@ type Comment {
   text: String
   description: String
 }
-
-type Query {
-  test: String @deprecated
-}

@@ -49,32 +49,32 @@ export type Mutation = {
 
 
 export type MutationCreateNoteArgs = {
-  data?: Maybe<NoteData>;
+  data: NoteData;
 };
 
 
 export type MutationUpdateNoteArgs = {
-  data?: Maybe<NoteData>;
+  data: NoteData;
 };
 
 
 export type MutationDeleteNoteArgs = {
-  data?: Maybe<NoteData>;
+  filter: NoteFilter;
 };
 
 
 export type MutationCreateCommentArgs = {
-  data?: Maybe<CommentData>;
+  data: CommentData;
 };
 
 
 export type MutationUpdateCommentArgs = {
-  data?: Maybe<CommentData>;
+  data: CommentData;
 };
 
 
 export type MutationDeleteCommentArgs = {
-  data?: Maybe<CommentData>;
+  filter: CommentFilter;
 };
 
 /**  @model  */
@@ -101,8 +101,6 @@ export type NoteFilter = {
 
 export type Query = {
    __typename?: 'Query';
-  /** @deprecated Field no longer supported */
-  test?: Maybe<Scalars['String']>;
   findAllNotes: Array<Maybe<Note>>;
   findNotes: Array<Maybe<Note>>;
   findAllComments: Array<Maybe<Comment>>;
@@ -147,32 +145,32 @@ export type Subscription = {
 
 
 export type SubscriptionNewNoteArgs = {
-  input?: Maybe<NoteData>;
+  data?: Maybe<NoteData>;
 };
 
 
 export type SubscriptionUpdatedNoteArgs = {
-  input?: Maybe<NoteData>;
+  data?: Maybe<NoteData>;
 };
 
 
 export type SubscriptionDeletedNoteArgs = {
-  input?: Maybe<NoteData>;
+  filter?: Maybe<NoteFilter>;
 };
 
 
 export type SubscriptionNewCommentArgs = {
-  input?: Maybe<CommentData>;
+  data?: Maybe<CommentData>;
 };
 
 
 export type SubscriptionUpdatedCommentArgs = {
-  input?: Maybe<CommentData>;
+  data?: Maybe<CommentData>;
 };
 
 
 export type SubscriptionDeletedCommentArgs = {
-  input?: Maybe<CommentData>;
+  filter?: Maybe<CommentFilter>;
 };
 
 export type CommentFieldsFragment = (
@@ -230,7 +228,7 @@ export type CreateNoteMutation = (
 );
 
 export type DeleteCommentMutationVariables = {
-  data: CommentData;
+  filter: CommentFilter;
 };
 
 
@@ -243,7 +241,7 @@ export type DeleteCommentMutation = (
 );
 
 export type DeleteNoteMutationVariables = {
-  data: NoteData;
+  filter: NoteFilter;
 };
 
 
@@ -508,8 +506,8 @@ export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutati
 export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
 export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
 export const DeleteCommentDocument = gql`
-    mutation deleteComment($data: CommentData!) {
-  deleteComment(data: $data) {
+    mutation deleteComment($filter: CommentFilter!) {
+  deleteComment(filter: $filter) {
     ...CommentFields
   }
 }
@@ -529,7 +527,7 @@ export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteC
  * @example
  * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -540,8 +538,8 @@ export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteComment
 export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
 export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const DeleteNoteDocument = gql`
-    mutation deleteNote($data: NoteData!) {
-  deleteNote(data: $data) {
+    mutation deleteNote($filter: NoteFilter!) {
+  deleteNote(filter: $filter) {
     ...NoteFields
   }
 }
@@ -561,7 +559,7 @@ export type DeleteNoteMutationFn = ApolloReactCommon.MutationFunction<DeleteNote
  * @example
  * const [deleteNoteMutation, { data, loading, error }] = useDeleteNoteMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
