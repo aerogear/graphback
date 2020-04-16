@@ -62,15 +62,15 @@ type Query {
 } 
 
 type Mutation {
-  createNote(data: NoteData): Note!
-  updateNote(data: NoteData): Note!
-  deleteNote(data: NoteFilter): Note!
+  createNote(data: NoteData!): Note!
+  updateNote(data: NoteData!): Note!
+  deleteNote(filter: NoteFilter!): Note!
 } 
 
 type Subscription {
-  newNote(data: NoteData): Note!
-  updatedNote(data: NoteData): Note!
-  deletedNote(data: NoteFilter): Note!
+  newNote(data: NoteData!): Note!
+  updatedNote(data: NoteData!): Note!
+  deletedNote(filter: NoteFilter!): Note!
 } 
 ```
 

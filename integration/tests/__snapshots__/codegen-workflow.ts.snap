@@ -45,8 +45,8 @@ input CommentMetadataFilter {
 }
 
 type Mutation {
-  createNote(data: NoteData): Note!
-  updateNote(data: NoteData): Note!
+  createNote(data: NoteData!): Note!
+  updateNote(data: NoteData!): Note!
   deleteNote(filter: NoteFilter): Note!
   createComment(data: CommentData): Comment!
   updateComment(data: CommentData): Comment!
@@ -88,8 +88,8 @@ type Query {
 }
 
 type Subscription {
-  newNote(data: NoteData): Note!
-  updatedNote(data: NoteData): Note!
+  newNote(data: NoteData!): Note!
+  updatedNote(data: NoteData!): Note!
   deletedNote(filter: NoteFilter): Note!
   newComment(data: CommentData): Comment!
   updatedComment(data: CommentData): Comment!

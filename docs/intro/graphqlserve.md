@@ -70,8 +70,8 @@ $ gqlserve print-schema ./path/to/models
 Generated schema:
 
 type Mutation {
-  createNote(data: NoteData): Note!
-  updateNote(data: NoteData): Note!
+  createNote(data: NoteData!): Note!
+  updateNote(data: NoteData!): Note!
   deleteNote(data: NoteFilter): Note!
 }
 
@@ -96,8 +96,8 @@ type Query {
 }
 
 type Subscription {
-  newNote(data: NoteData): Note!
-  updatedNote(data: NoteData): Note!
+  newNote(data: NoteData!): Note!
+  updatedNote(data: NoteData!): Note!
   deletedNote(data: NoteFilter): Note!
 }
 ```
