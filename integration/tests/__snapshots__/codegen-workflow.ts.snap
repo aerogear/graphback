@@ -47,13 +47,13 @@ input CommentMetadataFilter {
 type Mutation {
   createNote(data: NoteData!): Note!
   updateNote(data: NoteData!): Note!
-  deleteNote(filter: NoteFilter!): Note!
+  deleteNote(data: NoteData!): Note!
   createComment(data: CommentData!): Comment!
   updateComment(data: CommentData!): Comment!
-  deleteComment(filter: CommentFilter!): Comment!
+  deleteComment(data: CommentData!): Comment!
   createCommentMetadata(data: CommentMetadataData!): CommentMetadata!
   updateCommentMetadata(data: CommentMetadataData!): CommentMetadata!
-  deleteCommentMetadata(filter: CommentMetadataFilter!): CommentMetadata!
+  deleteCommentMetadata(data: CommentMetadataData!): CommentMetadata!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -90,13 +90,13 @@ type Query {
 type Subscription {
   newNote(data: NoteData): Note!
   updatedNote(data: NoteData): Note!
-  deletedNote(filter: NoteFilter): Note!
+  deletedNote(data: NoteData): Note!
   newComment(data: CommentData): Comment!
   updatedComment(data: CommentData): Comment!
-  deletedComment(filter: CommentFilter): Comment!
+  deletedComment(data: CommentData): Comment!
   newCommentMetadata(data: CommentMetadataData): CommentMetadata!
   updatedCommentMetadata(data: CommentMetadataData): CommentMetadata!
-  deletedCommentMetadata(filter: CommentMetadataFilter): CommentMetadata!
+  deletedCommentMetadata(data: CommentMetadataData): CommentMetadata!
 }
 
 schema {
