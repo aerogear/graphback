@@ -243,7 +243,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           [inputDataVariableName]: {
-            type: dataInputType
+            type: GraphQLNonNull(dataInputType)
           },
         }
       };
@@ -254,7 +254,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           [inputDataVariableName]: {
-            type: dataInputType
+            type: GraphQLNonNull(dataInputType)
           },
         }
       };
@@ -265,7 +265,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           [inputFilterVariableName]: {
-            type: filterInputType
+            type: GraphQLNonNull(filterInputType)
           }
         }
       };
