@@ -63,7 +63,7 @@ export class LayeredRuntimeResolverCreator {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].delete(args.delete, context)
+          return this.services[modelName].delete(args.data, context)
         }
       }
 
