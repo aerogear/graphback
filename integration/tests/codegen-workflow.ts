@@ -363,7 +363,7 @@ test('Should create a new Note', async (done) => {
 })
 
 test('Delete Note 1', async done => {
-    const response = await deleteNote(client, { id: '2' });
+    const response = await deleteNote(client, { id: '2', title: 'Note B' });
     expect(response.data).toBeDefined();
     expect(response.data.deleteNote).toEqual({ id: '2', description: 'Note B Description', title: 'Note B' });
 
