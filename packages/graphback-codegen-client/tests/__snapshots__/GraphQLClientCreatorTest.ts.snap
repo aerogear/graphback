@@ -68,8 +68,8 @@ Object {
       "name": "updateNote",
     },
     Object {
-      "implementation": "mutation deleteNote($data: NoteData!) {
-  deleteNote(data: $data) {
+      "implementation": "mutation deleteNote($filter: NoteFilter!) {
+  deleteNote(filter: $filter) {
       ...NoteFields
   }
 }",
@@ -94,8 +94,8 @@ Object {
       "name": "updateComment",
     },
     Object {
-      "implementation": "mutation deleteComment($data: CommentData!) {
-  deleteComment(data: $data) {
+      "implementation": "mutation deleteComment($filter: CommentFilter!) {
+  deleteComment(filter: $filter) {
       ...CommentFields
   }
 }",
@@ -236,8 +236,8 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-mutation deleteNote($data: NoteData!) {
-  deleteNote(data: $data) {
+mutation deleteNote($filter: NoteFilter!) {
+  deleteNote(filter: $filter) {
       ...NoteFields
   }
 }
@@ -295,8 +295,8 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-mutation deleteComment($data: CommentData!) {
-  deleteComment(data: $data) {
+mutation deleteComment($filter: CommentFilter!) {
+  deleteComment(filter: $filter) {
       ...CommentFields
   }
 }
@@ -633,8 +633,8 @@ export const updateNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const deleteNote = gql\`
-  mutation deleteNote($data: NoteData!) {
-  deleteNote(data: $data) {
+  mutation deleteNote($filter: NoteFilter!) {
+  deleteNote(filter: $filter) {
       ...NoteFields
   }
 }
@@ -683,8 +683,8 @@ export const updateComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const deleteComment = gql\`
-  mutation deleteComment($data: CommentData!) {
-  deleteComment(data: $data) {
+  mutation deleteComment($filter: CommentFilter!) {
+  deleteComment(filter: $filter) {
       ...CommentFields
   }
 }

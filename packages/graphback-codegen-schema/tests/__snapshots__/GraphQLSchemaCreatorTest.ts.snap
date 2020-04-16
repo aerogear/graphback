@@ -27,15 +27,15 @@ input CommentFilter {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(data: NoteData): Note!
-  updateNote(data: NoteData): Note!
-  deleteNote(filter: NoteFilter): Note!
-  createComment(data: CommentData): Comment!
-  updateComment(data: CommentData): Comment!
-  deleteComment(filter: CommentFilter): Comment!
-  createTest(data: TestData): Test!
-  updateTest(data: TestData): Test!
-  deleteTest(filter: TestFilter): Test!
+  createNote(data: NoteData!): Note!
+  updateNote(data: NoteData!): Note!
+  deleteNote(filter: NoteFilter!): Note!
+  createComment(data: CommentData!): Comment!
+  updateComment(data: CommentData!): Comment!
+  deleteComment(filter: CommentFilter!): Comment!
+  createTest(data: TestData!): Test!
+  updateTest(data: TestData!): Test!
+  deleteTest(filter: TestFilter!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -132,15 +132,15 @@ input CommentFilter {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(data: NoteData): Note!
-  updateNote(data: NoteData): Note!
-  deleteNote(filter: NoteFilter): Note!
-  createComment(data: CommentData): Comment!
-  updateComment(data: CommentData): Comment!
-  deleteComment(filter: CommentFilter): Comment!
-  createTest(data: TestData): Test!
-  updateTest(data: TestData): Test!
-  deleteTest(filter: TestFilter): Test!
+  createNote(data: NoteData!): Note!
+  updateNote(data: NoteData!): Note!
+  deleteNote(filter: NoteFilter!): Note!
+  createComment(data: CommentData!): Comment!
+  updateComment(data: CommentData!): Comment!
+  deleteComment(filter: CommentFilter!): Comment!
+  createTest(data: TestData!): Test!
+  updateTest(data: TestData!): Test!
+  deleteTest(filter: TestFilter!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -237,15 +237,15 @@ input CommentFilter {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(data: NoteData): Note!
-  updateNote(data: NoteData): Note!
-  deleteNote(filter: NoteFilter): Note!
-  createComment(data: CommentData): Comment!
-  updateComment(data: CommentData): Comment!
-  deleteComment(filter: CommentFilter): Comment!
-  createTest(data: TestData): Test!
-  updateTest(data: TestData): Test!
-  deleteTest(filter: TestFilter): Test!
+  createNote(data: NoteData!): Note!
+  updateNote(data: NoteData!): Note!
+  deleteNote(filter: NoteFilter!): Note!
+  createComment(data: CommentData!): Comment!
+  updateComment(data: CommentData!): Comment!
+  deleteComment(filter: CommentFilter!): Comment!
+  createTest(data: TestData!): Test!
+  updateTest(data: TestData!): Test!
+  deleteTest(filter: TestFilter!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
