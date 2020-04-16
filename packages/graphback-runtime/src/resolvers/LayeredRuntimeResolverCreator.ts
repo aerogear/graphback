@@ -41,7 +41,7 @@ export class LayeredRuntimeResolverCreator {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].create(args.input, context)
+          return this.services[modelName].create(args.data, context)
         }
       }
       if (resolverElement.crudOptions.update) {
@@ -52,7 +52,7 @@ export class LayeredRuntimeResolverCreator {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].update(args.input, context)
+          return this.services[modelName].update(args.data, context)
         }
       }
       if (resolverElement.crudOptions.delete) {
@@ -63,7 +63,7 @@ export class LayeredRuntimeResolverCreator {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].delete(args.input, context)
+          return this.services[modelName].delete(args.filter, context)
         }
       }
 
@@ -83,8 +83,8 @@ export class LayeredRuntimeResolverCreator {
         //tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           const page = { limit: args.limit, offset: args.offset };
-          
-          return this.services[modelName].findBy(args.fields, page, context)
+
+          return this.services[modelName].findBy(args.filter, page, context)
         }
       }
 
