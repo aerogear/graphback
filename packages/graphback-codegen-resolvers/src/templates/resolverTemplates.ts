@@ -16,7 +16,7 @@ export const updateTemplate = (modelName: string): string => {
 
 export const deleteTemplate = (modelName: string): string => {
   return `(parent, args, context) => {
-      return context.${modelName}.delete(args.${inputFilterVariableName}, context);
+      return context.${modelName}.delete(args.${inputDataVariableName}, context);
     }`
 }
 

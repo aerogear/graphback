@@ -58,8 +58,8 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   //tslint:disable-next-line: no-reserved-keywords
-  public async delete(filter: Type): Promise<Type> {
-    const { idField } = getDatabaseArguments(this.tableMap, filter);
+  public async delete(data: Type): Promise<Type> {
+    const { idField } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
     const beforeDelete = await this.db.select().from(this.tableName).where(idField.name, '=', idField.value);
@@ -68,7 +68,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     if (dbResult && beforeDelete[0]) {
       return beforeDelete[0];
     }
-    throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(filter)}`);
+    throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(data)}`);
 
   }
 

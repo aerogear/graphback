@@ -68,8 +68,8 @@ export const updateMutation = (t: GraphQLObjectType) => {
 export const deleteMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
-  return `mutation ${fieldName}($${inputFilterVariableName}: ${getFilterInputTypeName(t.name)}!) {
-  ${fieldName}(${inputFilterVariableName}: $${inputFilterVariableName}) {
+  return `mutation ${fieldName}($${inputDataVariableName}: ${getInputTypeName(t.name)}!) {
+  ${fieldName}(${inputDataVariableName}: $${inputDataVariableName}) {
       ...${t.name}Fields
   }
 }`

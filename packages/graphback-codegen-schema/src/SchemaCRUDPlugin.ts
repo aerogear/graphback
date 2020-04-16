@@ -196,8 +196,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       subscriptionTypes[operation] = {
         type: GraphQLNonNull(model.graphqlType),
         args: {
-          [inputFilterVariableName]: {
-            type: filterInputType,
+          [inputDataVariableName]: {
+            type: dataInputType,
           },
         }
       };
@@ -264,8 +264,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       mutationTypes[operation] = {
         type: GraphQLNonNull(model.graphqlType),
         args: {
-          [inputFilterVariableName]: {
-            type: GraphQLNonNull(filterInputType)
+          [inputDataVariableName]: {
+            type: GraphQLNonNull(dataInputType)
           }
         }
       };
