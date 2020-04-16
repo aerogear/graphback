@@ -36,6 +36,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async update(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
+
+    if (!idField.value) {
+      throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
+    }
+
     const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
     if (result) {
       const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
@@ -50,6 +55,10 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async delete(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
+
+    if (!idField.value) {
+      throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
+    }
 
     const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) });
     if (queryResult) {
