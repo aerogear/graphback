@@ -22,7 +22,7 @@ export const createRuntime = () => {
   // const projectConfig = getProjectConfig();
   const graphbackConfig = projectConfig.extension('graphback');
   const dbMigrationsConfig = projectConfig.extension('dbmigrations');
-  const model = projectConfig.loadSchemaSync(path.resolve(graphbackConfig.model, './**/*.graphql'));
+  const model = projectConfig.loadSchemaSync(path.resolve(graphbackConfig.model));
 
   const migrateOptions: MigrateOptions = {
     //Do not perform delete operations on tables
