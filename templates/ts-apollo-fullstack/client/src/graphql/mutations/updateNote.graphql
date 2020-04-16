@@ -1,0 +1,5 @@
+mutation updateNote($data: NoteData!) {
+  updateNote(data: $data) {
+      ...NoteFields
+  }
+}

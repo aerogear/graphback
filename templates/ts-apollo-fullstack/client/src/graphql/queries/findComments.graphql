@@ -1,0 +1,5 @@
+query findComments($filter: CommentFilter!, $limit: Int, $offset: Int) {
+    findComments(filter: $filter, limit: $limit, offset: $offset) {
+      ...CommentExpandedFields
+    }
+  }

@@ -29,13 +29,13 @@ type Mutation {
   likeNote(id: ID!): Note!
   createNote(data: NoteData!): Note!
   updateNote(data: NoteData!): Note!
-  deleteNote(filter: NoteFilter!): Note!
+  deleteNote(data: NoteData!): Note!
   createComment(data: CommentData!): Comment!
   updateComment(data: CommentData!): Comment!
-  deleteComment(filter: CommentFilter!): Comment!
+  deleteComment(data: CommentData!): Comment!
   createTest(data: TestData!): Test!
   updateTest(data: TestData!): Test!
-  deleteTest(filter: TestFilter!): Test!
+  deleteTest(data: TestData!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -76,15 +76,15 @@ type Query {
 }
 
 type Subscription {
-  newNote(data: NoteData!): Note!
-  updatedNote(data: NoteData!): Note!
-  deletedNote(filter: NoteFilter): Note!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(data: NoteData): Note!
   newComment(data: CommentData): Comment!
   updatedComment(data: CommentData): Comment!
-  deletedComment(filter: CommentFilter): Comment!
+  deletedComment(data: CommentData): Comment!
   newTest(data: TestData): Test!
   updatedTest(data: TestData): Test!
-  deletedTest(filter: TestFilter): Test!
+  deletedTest(data: TestData): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -134,13 +134,13 @@ type Mutation {
   likeNote(id: ID!): Note!
   createNote(data: NoteData!): Note!
   updateNote(data: NoteData!): Note!
-  deleteNote(filter: NoteFilter!): Note!
+  deleteNote(data: NoteData!): Note!
   createComment(data: CommentData!): Comment!
   updateComment(data: CommentData!): Comment!
-  deleteComment(filter: CommentFilter!): Comment!
+  deleteComment(data: CommentData!): Comment!
   createTest(data: TestData!): Test!
   updateTest(data: TestData!): Test!
-  deleteTest(filter: TestFilter!): Test!
+  deleteTest(data: TestData!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -181,15 +181,15 @@ type Query {
 }
 
 type Subscription {
-  newNote(data: NoteData!): Note!
-  updatedNote(data: NoteData!): Note!
-  deletedNote(filter: NoteFilter): Note!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(data: NoteData): Note!
   newComment(data: CommentData): Comment!
   updatedComment(data: CommentData): Comment!
-  deletedComment(filter: CommentFilter): Comment!
+  deletedComment(data: CommentData): Comment!
   newTest(data: TestData): Test!
   updatedTest(data: TestData): Test!
-  deletedTest(filter: TestFilter): Test!
+  deletedTest(data: TestData): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -239,13 +239,13 @@ type Mutation {
   likeNote(id: ID!): Note!
   createNote(data: NoteData!): Note!
   updateNote(data: NoteData!): Note!
-  deleteNote(filter: NoteFilter!): Note!
+  deleteNote(data: NoteData!): Note!
   createComment(data: CommentData!): Comment!
   updateComment(data: CommentData!): Comment!
-  deleteComment(filter: CommentFilter!): Comment!
+  deleteComment(data: CommentData!): Comment!
   createTest(data: TestData!): Test!
   updateTest(data: TestData!): Test!
-  deleteTest(filter: TestFilter!): Test!
+  deleteTest(data: TestData!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -286,15 +286,15 @@ type Query {
 }
 
 type Subscription {
-  newNote(data: NoteData!): Note!
-  updatedNote(data: NoteData!): Note!
-  deletedNote(filter: NoteFilter): Note!
+  newNote(data: NoteData): Note!
+  updatedNote(data: NoteData): Note!
+  deletedNote(data: NoteData): Note!
   newComment(data: CommentData): Comment!
   updatedComment(data: CommentData): Comment!
-  deletedComment(filter: CommentFilter): Comment!
+  deletedComment(data: CommentData): Comment!
   newTest(data: TestData): Test!
   updatedTest(data: TestData): Test!
-  deletedTest(filter: TestFilter): Test!
+  deletedTest(data: TestData): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"

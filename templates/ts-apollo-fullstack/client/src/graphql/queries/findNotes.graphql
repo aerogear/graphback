@@ -1,0 +1,5 @@
+query findNotes($filter: NoteFilter!, $limit: Int, $offset: Int) {
+    findNotes(filter: $filter, limit: $limit, offset: $offset) {
+      ...NoteExpandedFields
+    }
+  }

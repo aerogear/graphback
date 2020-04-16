@@ -399,10 +399,10 @@ async function createNote(client: ApolloServerTestClient, data: any) {
     return response;
 }
 
-async function deleteNote(client: ApolloServerTestClient, filter: any) {
+async function deleteNote(client: ApolloServerTestClient, data: any) {
     const { document } = await getDocument('deleteNote');
 
-    const response = await client.mutate({ mutation: document, variables: { filter } });
+    const response = await client.mutate({ mutation: document, variables: { data } });
 
     return response;
 }
