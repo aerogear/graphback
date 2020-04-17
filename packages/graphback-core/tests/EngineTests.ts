@@ -29,7 +29,7 @@ class TestPlugin extends GraphbackPlugin {
    * This method should write resouces to filesystem
    */
   public createResources(metadata: GraphbackCoreMetadata) {
-    this.logError("I love")
+    this.logError("")
     this.logWarning("High code coverage")
     this.generateCallback(metadata);
   }

@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test metadata 1`] = `
+Array [
+  Object {
+    "create": true,
+    "delete": false,
+    "find": false,
+    "findAll": true,
+    "subCreate": true,
+    "subDelete": true,
+    "subUpdate": true,
+    "update": true,
+  },
+  Object {
+    "create": false,
+    "delete": true,
+    "find": false,
+    "findAll": true,
+    "subCreate": true,
+    "subDelete": true,
+    "subUpdate": true,
+    "update": true,
+  },
+]
+`;
