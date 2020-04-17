@@ -1,7 +1,7 @@
 {
-  "name": "graphback-templates-runtime",
+  "name": "graphback-templates-mongodb-runtime",
   "version": "0.11.4",
-  "description": "Graphback runtime template",
+  "description": "Graphback runtime template with Apollo Server and MongoDb",
   "private": true,
   "main": "dist/src/index.js",
   "scripts": {
