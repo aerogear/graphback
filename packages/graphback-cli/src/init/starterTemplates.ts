@@ -22,13 +22,23 @@ export const allTemplates: Template[] = [
     }
   },
   {
-    name: 'apollo-runtime-ts',
-    description: 'Apollo GraphQL Serverless (InMemory) template',
+    name: 'apollo-postgres-runtime-ts',
+    description: 'Apollo GraphQL Server using Graphback runtime API and PostgreSQL database',
     repo: {
       uri: 'https://github.com/aerogear/graphback',
       // TODO dynamic branching
       branch: 'templates-release',
       path: '/templates/ts-apollo-runtime-backend',
+    }
+  },
+   {
+    name: 'apollo-mongo-runtime-ts',
+    description: 'Apollo GraphQL Server using Graphback runtime API and MongoDB database',
+    repo: {
+      uri: 'https://github.com/aerogear/graphback',
+      // TODO dynamic branching
+      branch: 'templates-release',
+      path: '/templates/ts-apollo-mongodb-runtime-backend',
     }
   }
 ]
