@@ -131,11 +131,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     }
 
     if (result) {
-      const resultsById = ids.map((id: string) => result.filter((data) => {
+      const resultsById = ids.map((id: string) => result.filter((data: any) => {
         if (data[relationField].toString() === id.toString()) {
           return true;
         }
-        
+
         return false;
       }).map((data: any) => {
         return {
