@@ -123,7 +123,10 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       result = await this.db.collection(this.collectionName).find({ _id: { $in: array } }).toArray();
     } else {
       const query: any = {};
-      query[relationField] = { $in: ids };
+      const array = ids.map((value: any) => {
+        return value.toString();
+      });
+      query[relationField] = { $in: array };
       result = await this.db.collection(this.collectionName).find(query).toArray();
     }
 
