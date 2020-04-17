@@ -1,4 +1,7 @@
-""" @model   """
+""" 
+@model   
+@crud.delete: false
+"""
 type Note {
   id: ID!
   title: String!
@@ -10,7 +13,10 @@ type Note {
   comment: [Comment]!
 }
 
-""" @model   """
+""" 
+@model   
+@crud.create: false
+"""
 type Comment {
   id: ID!
   title: String!
