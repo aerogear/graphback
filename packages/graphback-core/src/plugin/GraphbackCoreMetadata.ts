@@ -75,7 +75,7 @@ export class GraphbackCoreMetadata {
     private buildModel(modelType: GraphQLObjectType, relationships: FieldRelationshipMetadata[]): ModelDefinition {
         let crudOptions = parseAnnotations('crud', modelType.description)
         //Merge CRUD options from type with global ones
-        crudOptions = Object.assign(this.supportedCrudMethods, crudOptions)
+        crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
 
         return { graphqlType: modelType, relationships, crudOptions };
     }
