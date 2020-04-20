@@ -36,7 +36,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@graphback/core": 0.12.0,
+    "@graphback/core": "0.12.0",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0",
     "node-fetch": "2.6.0"
