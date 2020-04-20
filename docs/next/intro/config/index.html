@@ -77,8 +77,9 @@ These include <code>create</code>, <code>update</code>, <code>delete</code>, <co
 <span class="hljs-attr">extensions:</span>
   <span class="hljs-comment"># Graphback configuration</span>
   <span class="hljs-attr">graphback:</span>
-    <span class="hljs-comment">##  Location to file that is contains GraphQL schema that will be processed by Graphback</span>
-    <span class="hljs-attr">model:</span> <span class="hljs-string">./model</span>
+    <span class="hljs-comment">##  Path to file that contains GraphQL schema that will be processed by Graphback</span>
+    <span class="hljs-comment">## Can be an array of paths too</span>
+    <span class="hljs-attr">model:</span> <span class="hljs-string">./model/**/*.graphql</span>
     <span class="hljs-comment">## Global flags for CRUD methods that will be used in plugins</span>
     <span class="hljs-attr">crud:</span>
       <span class="hljs-attr">create:</span> <span class="hljs-literal">true</span>
