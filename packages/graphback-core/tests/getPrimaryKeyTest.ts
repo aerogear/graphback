@@ -1,7 +1,8 @@
 //eslint-disable-next-line @typescript-eslint/tslint/config
 import { buildSchema, GraphQLObjectType } from 'graphql';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { getUserTypesFromSchema } from '@graphql-toolkit/common';
 import { getPrimaryKey } from '../src/db/getPrimaryKey'
-import { getModelTypesFromSchema } from '../src/plugin/getModelTypesFromSchema';
 
 test('should get primary from id: ID field', () => {
     const schema = buildSchema(`
@@ -11,7 +12,7 @@ test('should get primary from id: ID field', () => {
         email: String!
     }`);
 
-    const models = getModelTypesFromSchema(schema);
+    const models = getUserTypesFromSchema(schema);
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
@@ -32,7 +33,7 @@ test('should get primary key from @db.primary annotation', () => {
         name: String
     }`);
 
-    const models = getModelTypesFromSchema(schema);
+    const models = getUserTypesFromSchema(schema);
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
@@ -49,7 +50,7 @@ test('should throw an error if no primary key in model', () => {
         name: String!
     }`);
 
-    const models = getModelTypesFromSchema(schema);
+    const models = getUserTypesFromSchema(schema);
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
@@ -71,7 +72,7 @@ test('should throw an error if multiple @db.primary annotations', () => {
         name: String
     }`);
 
-    const models = getModelTypesFromSchema(schema);
+    const models = getUserTypesFromSchema(schema);
 
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 

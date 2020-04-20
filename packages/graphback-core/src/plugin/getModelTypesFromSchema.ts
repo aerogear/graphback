@@ -1,13 +1,14 @@
 import { GraphQLObjectType, GraphQLSchema, GraphQLType, isObjectType } from 'graphql';
 
 /**
- * 
- * Get all GraphQL types from schema without: 
+ *
+ * Get all GraphQL types from schema without:
  *
  * - Query, Mutation, Subscription objects
  * - Internal scalars added by parser
  *
- * @param schema 
+ * @param schema
+ * @deprecated Please use `getUserTypes` from @graphql-toolkit/common
  */
 //FIXME: Swap with https://github.com/ardatan/graphql-toolkit/pull/422
 export const getModelTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectType[] => {
