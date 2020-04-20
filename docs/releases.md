@@ -8,6 +8,31 @@ title: Releases
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.12.0
+
+##### New Features
+
+* Add fragment only mode ([c1297e21](https://github.com/aerogear/graphback/commit/c1297e21a482f7db2e3c987b7623e5fd5cd1fe03)) 
+* **cli:**  add mongodb template option ([ce304da8](https://github.com/aerogear/graphback/commit/ce304da808aa8302d8e8f778a2ac9f18ace31ab3))
+*  add mongo-runtime template ([6b313bf8](https://github.com/aerogear/graphback/commit/6b313bf8c2e96d433cfd48cb5d918ef9b1f5b660))
+
+##### Bug Fixes
+
+*  Print schema with directives ([#1147](https://github.com/aerogear/graphback/pull/1147)) ([2c72ddb0](https://github.com/aerogear/graphback/commit/2c72ddb03058a6b5c478fe28067325aebd172d5e))
+*  Mongo batching for types ([7ea4b6d4](https://github.com/aerogear/graphback/commit/7ea4b6d4297ce6764496095acb937209c3395989))
+*  Mongo batching with string as key ([#1130](https://github.com/aerogear/graphback/pull/1130)) ([e49d03a8](https://github.com/aerogear/graphback/commit/e49d03a8d9bde8ce7b33978bc227afa6a9b73f5a))
+*  Add additional assign for the crud modifiers ([660d2a53](https://github.com/aerogear/graphback/commit/660d2a53b6ca21debb469122044ad7e29d9720b7))
+*  Problem with CRUD config being global ([fc138d27](https://github.com/aerogear/graphback/commit/fc138d27b3b072ca64a34bde61ab935626833589))
+*  check for undefined ID value ([34021a20](https://github.com/aerogear/graphback/commit/34021a203ac1f1a44a5bf98547eed64208400b92))
+*  throw error when no ID is supplied ([1256f71d](https://github.com/aerogear/graphback/commit/1256f71d26f9486f95fbd5b64f9a879db8e25e9d))
+*  accept globs and array of globs for model option in config ([#1067](https://github.com/aerogear/graphback/pull/1067)) ([2756b29a](https://github.com/aerogear/graphback/commit/2756b29adb3696a99b499574299fc9b2f35e0d36))
+*  Fix Pagination in Knex Provider ([df469dc8](https://github.com/aerogear/graphback/commit/df469dc8a73e99cc9b3b40b2330c3de7466b6886))
+*  Fix pagination in MongoDB provider ([7a8618e0](https://github.com/aerogear/graphback/commit/7a8618e08201769fc397562e6f90192123bec743))
+*  Add pagination to findBy queries ([f0b8e1d5](https://github.com/aerogear/graphback/commit/f0b8e1d527c64834d3640dd842a17dc3baa4135b))
+*  Update LayeredRuntimeResolverCreator to use pagination in findall ([b1a22846](https://github.com/aerogear/graphback/commit/b1a228466e3f254e4fbf9044d0f2053ef1939866))
+*  Update CRUD services to use pagination in findall ([33527825](https://github.com/aerogear/graphback/commit/3352782588761dc6cf00a792673a47572129835e))
+* **resolvers:**  export generated code ([eea38a5d](https://github.com/aerogear/graphback/commit/eea38a5df848b310be884039e3e51ac5eb51a81e))
+
 # 0.11.4
 
 ##### Bug Fixes

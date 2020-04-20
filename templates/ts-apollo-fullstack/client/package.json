@@ -1,6 +1,6 @@
 {
   "name": "generator-client-example",
-  "version": "0.11.4",
+  "version": "0.12.0",
   "private": true,
   "devDependencies": {
     "@types/jest": "25.2.1",
