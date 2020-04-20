@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test snapshot config gql 1`] = `
-"\\"\\"\\" @model \\"\\"\\"
+"directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+\\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
   title: String!
@@ -35,7 +37,7 @@ type Mutation {
 \\"\\"\\" @model \\"\\"\\"
 type Note {
   id: ID!
-  title: String!
+  title: String! @test(description: \\"mock directive\\")
   description: String!
 
   \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
@@ -83,12 +85,13 @@ type Test {
 input TestInput {
   id: ID
   name: String
-}
-"
+}"
 `;
 
 exports[`Test snapshot config js 1`] = `
-"\\"\\"\\" @model \\"\\"\\"
+"directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+\\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
   title: String!
@@ -175,7 +178,9 @@ input TestInput {
 `;
 
 exports[`Test snapshot config ts 1`] = `
-"\\"\\"\\" @model \\"\\"\\"
+"directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+\\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
   title: String!

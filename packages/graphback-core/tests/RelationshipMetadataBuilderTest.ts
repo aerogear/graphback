@@ -1,10 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { getModelTypesFromSchema, RelationshipMetadataBuilder } from '../src';
+import { getUserTypesFromSchema } from '@graphql-toolkit/common'
+import { RelationshipMetadataBuilder } from '../src';
 
 const setup = (schemaText: string): { builder: RelationshipMetadataBuilder, schema: GraphQLSchema } => {
     const schema = buildSchema(schemaText);
-    const modelTypes = getModelTypesFromSchema(schema);
+    const modelTypes = getUserTypesFromSchema(schema);
     const builder = new RelationshipMetadataBuilder(modelTypes);
 
     return { builder, schema };
@@ -38,7 +39,7 @@ test('should create many-to-one relationship metadata from one-to-many field', (
         """
         sentMessages: [Message!]!
     }
-    
+
     """@model"""
     type Message {
         id: ID!
@@ -74,7 +75,7 @@ test('should build one-to-one relationship metadata from one-to-one field', () =
         id: ID!
         name: String
     }
-    
+
     """@model"""
     type Address {
         id: ID!
@@ -113,7 +114,7 @@ test('should build one-to-many and many-to-one relationships from both fields', 
         """
         sentMessages: [Message!]!
     }
-    
+
     """@model"""
     type Message {
         id: ID!
@@ -142,7 +143,7 @@ test('should build one-to-many and many-to-one relationships from both fields', 
     expect(messageRelationships[0].relationFieldName).toEqual('sentMessages');
     expect(userRelationships[0].relationForeignKey).toEqual('senderId')
     expect(messageRelationships[0].relationType.name).toEqual('User');
-    
+
     expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
 });
 

@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject, FieldRelationshipMetadata } from '@graphback/core'
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, printSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLArgument } from 'graphql';
+import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, getInputTypeName, buildGeneratedRelationshipsFieldObject, getInputFieldName, isInputField, getInputFieldType, buildModifiedRelationshipsFieldObject, FieldRelationshipMetadata } from '@graphback/core'
+import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLArgument } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 
@@ -30,16 +30,16 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
 
 /**
  * Graphback CRUD operations plugin
- * 
- * Plugins adds additional Queries, Mutations and Subscriptions into the Schema along 
- * with required input types and scalars. Plugin can be used automatically define best 
+ *
+ * Plugins adds additional Queries, Mutations and Subscriptions into the Schema along
+ * with required input types and scalars. Plugin can be used automatically define best
  * patterns for CRUD operations on top of GraphQL Schema
  * Plugin checkes all types annotated with model
- * 
+ *
  * Used graphql metadata:
- * 
+ *
  * - model: marks type to be processed by CRUD generator
- * - crud: controls what types of operations can be generated. 
+ * - crud: controls what types of operations can be generated.
  * For example crud.update: false will disable updates for type
  */
 export class SchemaCRUDPlugin extends GraphbackPlugin {
@@ -83,13 +83,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     /**
-     * Create resolvers function that 
-     * 
-     * @param inputContext 
-     * @param options 
+     * Create resolvers function that
+     *
+     * @param inputContext
+     * @param options
      */
     public transformSchemaToString(schema: GraphQLSchema) {
-        const schemaString = printSchema(schema);
+        const schemaString = printSchemaWithDirectives(schema);
         if (this.pluginConfig) {
             if (this.pluginConfig.format === 'ts') {
                 return tsSchemaFormatter.format(schemaString)
@@ -302,9 +302,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     /**
      * Add relationship fields to GraphQL model types
-     * 
-     * @param schema 
-     * @param models 
+     *
+     * @param schema
+     * @param models
      */
     private buildSchemaModelRelationships(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
         // create or update relationship fields to the model types.

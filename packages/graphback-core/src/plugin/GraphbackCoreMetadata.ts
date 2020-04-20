@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { parseAnnotations, parseMarker } from 'graphql-metadata'
+import { getUserTypesFromSchema } from '@graphql-toolkit/common'
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
-import { getModelTypesFromSchema } from './getModelTypesFromSchema'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
@@ -45,7 +45,7 @@ export class GraphbackCoreMetadata {
     public getModelDefinitions() {
         //Contains map of the models with their underlying CRUD configuration
         this.models = [];
-        //Get actual user types 
+        //Get actual user types
         const modelTypes = this.getGraphQLTypesWithModel();
 
         const relationshipBuilder = new RelationshipMetadataBuilder(modelTypes);
@@ -61,13 +61,13 @@ export class GraphbackCoreMetadata {
 
     /**
      * Helper for plugins to fetch all types that should be processed by Graphback plugins.
-     * To mark type as enabled for graphback generators we need to add `model` annotations over the type. 
-     * 
+     * To mark type as enabled for graphback generators we need to add `model` annotations over the type.
+     *
      * Returns all user types that have @model in description
-     * @param schema 
+     * @param schema
      */
     public getGraphQLTypesWithModel(): GraphQLObjectType[] {
-        const types = getModelTypesFromSchema(this.schema)
+        const types = getUserTypesFromSchema(this.schema)
 
         return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
     }
