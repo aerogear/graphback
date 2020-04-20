@@ -19,10 +19,12 @@ npm install -g graphback-cli
 graphback init <project-name>
 ```
 
-The CLI will ask you to choose from one of two templates:
+The CLI will ask you to choose from one of three templates:
 
 - `apollo-fullstack-ts`: Apollo GraphQL server and React client using TypeScript and PostgreSQL.
-- `apollo-runtime`: Apollo GraphQL server with in-memory Graphback schema and CRUD resolvers.
+- `apollo-postgres-runtime-ts`: Apollo GraphQL Server using Graphback runtime API and PostgreSQL database.
+- `apollo-mongo-runtime-ts`: Apollo GraphQL Server using Graphback runtime API and MongoDB database.
+
 
 In a few seconds you should have an empty GraphQL application.
 
