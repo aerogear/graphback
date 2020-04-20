@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { buildSchema, printSchema } from 'graphql';
-import { GraphbackCoreMetadata } from '@graphback/core';
+import { GraphbackCoreMetadata, printSchemaWithDirectives } from '@graphback/core';
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -23,7 +23,7 @@ test('Test snapshot config gql', async () => {
     crudMethods: defautConfig
   }, buildSchema(schemaText))
   const schema = schemaGenerator.transformSchema(metadata)
-  expect(printSchema(schema)).toMatchSnapshot();
+  expect(printSchemaWithDirectives(schema)).toMatchSnapshot();
 });
 
 
