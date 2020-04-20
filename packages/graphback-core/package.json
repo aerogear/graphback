@@ -38,7 +38,7 @@
   "dependencies": {
     "@graphql-toolkit/common": "0.10.4",
     "glob": "7.1.6",
-    "graphql-compose": "7.14.2",
+    "graphql-compose": "7.14.3",
     "graphql-metadata": "0.5.0",
     "pino": "6.2.0",
     "pluralize": "8.0.0"

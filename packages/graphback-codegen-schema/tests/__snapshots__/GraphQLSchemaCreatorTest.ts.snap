@@ -64,11 +64,6 @@ type Query {
   findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
 }
 
-\\"\\"\\"
-The \`String\` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-\\"\\"\\"
-scalar String
-
 type Subscription {
   newNote(input: NoteInput): Note!
   updatedNote(input: NoteInput): Note!
