@@ -181,13 +181,17 @@
         "title": "Adding Graphback to your Node.js project",
         "sidebar_label": "Add to existing project"
       },
+      "version-0.11.x/intro/version-0.11.x-graphqlserve": {
+        "title": "Running an API without code",
+        "sidebar_label": "API without code"
+      },
       "version-0.11.x/intro/version-0.11.x-quickstart": {
         "title": "Create client and server application from template",
         "sidebar_label": "Create a new app"
       },
       "version-0.11.x/intro/version-0.11.x-serverless": {
-        "title": "Serve GraphQL API without code",
-        "sidebar_label": "In-memory API"
+        "title": "Runtime API",
+        "sidebar_label": "Runtime API"
       },
       "version-0.11.x/intro/version-0.11.x-template": {
         "title": "Create client and server application from template",
@@ -202,7 +206,7 @@
         "sidebar_label": "Migrate To Graphback"
       },
       "version-0.11.x/migrations/version-0.11.x-openapi": {
-        "title": "OpenAPI migrations"
+        "title": "Migrating from REST"
       },
       "version-0.11.x/plugins/version-0.11.x-customplugin": {
         "title": "Creating your own plugin",
@@ -213,7 +217,7 @@
         "sidebar_label": "CRUD Client Queries"
       },
       "version-0.11.x/plugins/version-0.11.x-crud-resolvers": {
-        "title": "Graphback CRUD Resolvers Plugin",
+        "title": "CRUD Resolvers Plugin",
         "sidebar_label": "CRUD Resolvers"
       },
       "version-0.11.x/plugins/version-0.11.x-crud-schema": {
@@ -225,6 +229,28 @@
         "sidebar_label": "Introduction"
       },
       "version-0.11.x/version-0.11.x-releases": {
+        "title": "Releases"
+      },
+      "version-0.12.x/intro/version-0.12.x-config": {
+        "title": "Config"
+      },
+      "version-0.12.x/intro/version-0.12.x-existingproject": {
+        "title": "Adding Graphback to your Node.js project",
+        "sidebar_label": "Add to existing project"
+      },
+      "version-0.12.x/intro/version-0.12.x-quickstart": {
+        "title": "Create client and server application from template",
+        "sidebar_label": "Create a new app"
+      },
+      "version-0.12.x/plugins/version-0.12.x-crud-client": {
+        "title": "Graphback CRUD Client Queries Plugin",
+        "sidebar_label": "CRUD Client Queries"
+      },
+      "version-0.12.x/plugins/version-0.12.x-plugin-intro": {
+        "title": "Graphback Plugins introduction",
+        "sidebar_label": "Introduction"
+      },
+      "version-0.12.x/version-0.12.x-releases": {
         "title": "Releases"
       },
       "version-0.9.x/version-0.9.x-clientqueries": {

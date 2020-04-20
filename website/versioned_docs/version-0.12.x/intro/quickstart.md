@@ -1,7 +1,8 @@
 ---
-id: quickstart
+id: version-0.12.x-quickstart
 title: Create client and server application from template
 sidebar_label: Create a new app
+original_id: quickstart
 ---
 
 You can use the Graphback CLI to generate a new GraphQL project in minutes.
