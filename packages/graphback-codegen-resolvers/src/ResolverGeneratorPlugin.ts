@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core';
 import { OutputFileSystem } from './GeneratorModel';
 import { GeneratorResolversFormat } from './GeneratorResolversFormat';

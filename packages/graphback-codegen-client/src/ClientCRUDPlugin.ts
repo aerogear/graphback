@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core'
 import { writeDocumentsToFilesystem } from './helpers/writeDocuments';
 import { createClientDocumentsGQL, createClientDocumentsGqlComplete, createClientDocumentsTS } from './templates'
