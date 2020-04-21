@@ -4,8 +4,8 @@ import { ApolloServer } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
 import http from "http"
-import { createRuntime } from './runtime'
 import { printSchema } from 'graphql'
+import { createRuntime } from './runtime'
 
 const app = express()
 
@@ -14,16 +14,10 @@ app.use(cors())
 // connect to db
 const { schema, resolvers } = createRuntime();
 
-const apolloConfig = {
+const apolloServer = new ApolloServer({
   typeDefs: printSchema(schema),
-  resolvers,
-  playground: true,
-  resolverValidationOptions: {
-    requireResolversForResolveType: false
-  }
-}
-
-const apolloServer = new ApolloServer(apolloConfig)
+  resolvers
+})
 
 apolloServer.applyMiddleware({ app })
 
