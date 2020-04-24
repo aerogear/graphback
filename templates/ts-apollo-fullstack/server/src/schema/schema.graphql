@@ -10,20 +10,50 @@ type Comment {
   note: Note
 }
 
+input CommentFilterInput {
+  id: IDInput
+  text: StringInput
+  description: StringInput
+  and: [CommentFilterInput]
+  or: [CommentFilterInput]
+  not: [CommentFilterInput]
+}
+
+input CommentFilterUniqueInput {
+  id: ID!
+}
+
 input CommentInput {
   id: ID
   text: String
   description: String
-  noteId: ID
+}
+
+type CommentListResult {
+  items: [Comment]!
+  nextCursor: String
+}
+
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID]
+  contains: ID
+  startsWith: ID
+  endsWith: ID
 }
 
 type Mutation {
-  createNote(input: NoteInput): Note!
-  updateNote(input: NoteInput): Note!
-  deleteNote(input: NoteInput): Note!
-  createComment(input: CommentInput): Comment!
-  updateComment(input: CommentInput): Comment!
-  deleteComment(input: CommentInput): Comment!
+  createNote(input: NoteInput!): Note!
+  updateNote(input: NoteInput!): Note!
+  deleteNote(input: NoteFilterUniqueInput!): Note!
+  createComment(input: CommentInput!): Comment!
+  updateComment(input: CommentInput!): Comment!
+  deleteComment(input: CommentFilterUniqueInput!): Comment!
 }
 
 """ @model """
@@ -33,7 +63,20 @@ type Note {
   description: String
 
   """@oneToMany field: 'note', key: 'noteId'"""
-  comments: [Comment]!
+  comments(filter: CommentFilterInput): [Comment]!
+}
+
+input NoteFilterInput {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  and: [NoteFilterInput]
+  or: [NoteFilterInput]
+  not: [NoteFilterInput]
+}
+
+input NoteFilterUniqueInput {
+  id: ID!
 }
 
 input NoteInput {
@@ -42,19 +85,38 @@ input NoteInput {
   description: String
 }
 
+type NoteListResult {
+  items: [Note]!
+  nextCursor: String
+}
+
 type Query {
-  test: String @deprecated
-  findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
-  findAllComments(limit: Int, offset: Int): [Comment]!
-  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  getNote(filter: NoteFilterUniqueInput!): Note
+  findNotes(filter: NoteFilterInput, limit: Int, offset: Int): NoteListResult!
+  findAllNotes(filter: NoteFilterInput, limit: Int, offset: Int): [Note!]
+  getComment(filter: CommentFilterUniqueInput!): Comment
+  findComments(filter: CommentFilterInput, limit: Int, offset: Int): CommentListResult!
+  findAllComments(filter: CommentFilterInput, limit: Int, offset: Int): [Comment!]
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String]
+  contains: String
+  startsWith: String
+  endsWith: String
 }
 
 type Subscription {
   newNote(input: NoteInput): Note!
   updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
+  deletedNote(input: NoteFilterUniqueInput): Note!
   newComment(input: CommentInput): Comment!
   updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentInput): Comment!
+  deletedComment(input: CommentFilterUniqueInput): Comment!
 }

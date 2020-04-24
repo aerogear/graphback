@@ -1,17 +1,17 @@
 import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql'
 import { ClientTemplate } from './ClientTemplates'
-import { createMutation, deleteMutation, expandedFragment, findAllQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
+import { createMutation, deleteMutation, expandedFragment, findOneQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
 
 const gqlImport = `import gql from "graphql-tag"`
 
-const findAllQueryTS = (t: GraphQLObjectType, imports: string) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL)
+const findOneQueryTS = (t: GraphQLObjectType, imports: string) => {
+  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ONE)
 
   return `${imports}
 
 export const ${fieldName} = gql\`
-  ${findAllQuery(t)}
+  ${findOneQuery(t)}
 
   \$\{${t.name}ExpandedFragment}
 \`
@@ -131,10 +131,10 @@ import { ${t.name}ExpandedFragment } from "../fragments/${t.name}Expanded"`
       })
     }
 
-    if (model.crudOptions.findAll) {
+    if (model.crudOptions.findOne) {
       queries.push({
-        name: getFieldName(t.name, GraphbackOperationType.FIND_ALL),
-        implementation: findAllQueryTS(t, imports)
+        name: getFieldName(t.name, GraphbackOperationType.FIND_ONE),
+        implementation: findOneQueryTS(t, imports)
       })
     }
   })

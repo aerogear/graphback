@@ -1,7 +1,9 @@
 import { AdvancedFilter } from '../data/GraphbackDataProvider';
 import { GraphbackPage } from "../GraphbackPage"
 
-
+export interface ResultList<T = any> {
+  items: T[]
+}
 /**
  * Graphback layered architecture component that can be called
  * from the resolver layer in GraphQL and Middlerware layer in RESTfull approach.
@@ -44,12 +46,19 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     delete(data: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
-     * Implementation for finding all objects
+     * Fetch a single record by its unique attribute(s)
      *
-     * @param id id of the object
-     * @param context context object passed from graphql or rest layer
+     * @param filter - the unique attributes to fetch the record with
+     * @param context context object from GraphQL/REST layer
      */
-    findAll(page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+    findOne(filter: Type, context?: GraphbackContext): Promise<Type>;
+
+    /**
+     * @deprecated
+     * @param page
+     * @param context
+     */
+    findAll(page?: GraphbackPage, context?: any): Promise<Type[]>
 
     /**
      * Implementation for reading objects with filtering capabilities
@@ -57,7 +66,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param filter filter by specific type
      * @param context context object passed from graphql or rest layer
      */
-    findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+    findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<ResultList<Type>>;
 
     /**
      * Subscription for all creation events
@@ -84,14 +93,14 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     subscribeToDelete(filter?: any, context?: GraphbackContext): AsyncIterator<Type> | undefined
 
     /**
-     * Speciallized function that can utilize batching the data basing on 
+     * Speciallized function that can utilize batching the data basing on
      * DataLoader library
-     * 
+     *
      * @param context resolver context object that will be used to apply new loader
      * @param name name of the object we want to load
      * @param relationField - name of the field that will be used to match ids
-     * @param id id of the object we want to load 
+     * @param id id of the object we want to load
      */
-    batchLoadData(relationField: string, id: string | number, context: any);
+    batchLoadData(relationField: string, id: string | number, filter: any, context: any);
 
 }

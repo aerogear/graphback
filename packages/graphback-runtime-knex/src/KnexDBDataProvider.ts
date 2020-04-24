@@ -1,7 +1,8 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '../../graphback-runtime/src';
+import { buildQuery } from './knexQueryMapper';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
@@ -69,9 +70,24 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
       return beforeDelete[0];
     }
     throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(data)}`);
-
   }
 
+  public async findOne(filter: AdvancedFilter): Promise<Type> {
+    let result: Type
+    try {
+      result = await this.db.select().from(this.tableName).where(filter).first();
+    } catch (err) {
+      throw new NoDataError(`Cannot find a result for ${this.tableName} with filter: ${JSON.stringify(filter)}`)
+    }
+
+    return result
+  }
+
+  /**
+   *
+   * @param page
+   * @deprecated
+   */
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
     //tslint:disable-next-line: await-promise
     const query = this.db.select().from(this.tableName);
@@ -82,10 +98,10 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot find all results for ${this.tableName}`);
   }
 
-  public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
-    const { data } = getDatabaseArguments(this.tableMap, filter);
+  public async findBy(filter?: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
+    const query = buildQuery(this.db, filter).from(this.tableName)
+
     //tslint:disable-next-line: await-promise
-    const query = this.db.select().from(this.tableName).where(data);
     const dbResult = await this.usePage(query, page);
     if (dbResult) {
       return dbResult;
@@ -93,10 +109,10 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`No results for ${this.tableName} query and filter: ${JSON.stringify(filter)}`);
   }
 
-  public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
+  public async batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]> {
     //TODO: Use mapping when relationships are done
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).whereIn(relationField, ids);
+    const dbResult = await buildQuery(this.db, filter).from(this.tableName).whereIn(relationField, ids);
 
     if (dbResult) {
 

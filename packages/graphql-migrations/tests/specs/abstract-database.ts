@@ -24,6 +24,7 @@ test('simple type', async () => {
   const schema = buildSchema(`
       """
       A user.
+      @model
       """
       type User {
         id: ID!
@@ -51,6 +52,7 @@ test('skip table', async () => {
   const schema = buildSchema(`
       """
       @db.skip
+      @model
       """
       type User {
         id: ID!
@@ -63,6 +65,9 @@ test('skip table', async () => {
 
 test('skip field', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -82,6 +87,9 @@ test('skip field', async () => {
 
 test('not null', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         name: String!
@@ -99,6 +107,9 @@ test('not null', async () => {
 
 test('default value', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -125,6 +136,9 @@ test('default value', async () => {
 
 test('default primary index', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         """
         This will get a primary index
@@ -143,6 +157,9 @@ test('default primary index', async () => {
 
 test('simple index', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -161,6 +178,9 @@ test('simple index', async () => {
 
 test('multiple indexes', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         """
         @db.index
@@ -183,6 +203,9 @@ test('multiple indexes', async () => {
 
 test('named index', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -206,6 +229,9 @@ test('named index', async () => {
 
 test('object index', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -230,6 +256,9 @@ test('object index', async () => {
 
 test('unique index', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -250,6 +279,7 @@ test('custom name', async () => {
   const schema = buildSchema(`
       """
       @db.name: 'people'
+      @model
       """
       type User {
         id: ID!
@@ -264,6 +294,9 @@ test('custom name', async () => {
 
 test('custom type', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -286,11 +319,17 @@ test('custom type', async () => {
 
 test('foreign key', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         messages: [Message!]!
       }
 
+      """
+      @model
+      """
       type Message {
         id: ID!
         user: User
@@ -313,6 +352,9 @@ test('foreign key', async () => {
 
 test('many to many', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -321,6 +363,9 @@ test('many to many', async () => {
         messages: [Message!]!
       }
 
+      """
+      @model
+      """
       type Message {
         id: ID!
         """
@@ -346,6 +391,9 @@ test('many to many', async () => {
 
 test('many to many on self', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         contacts: [User]
@@ -370,6 +418,9 @@ test('many to many on self', async () => {
 
 test('simple list', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         """
@@ -392,6 +443,9 @@ test('simple list', async () => {
 
 test('custom scalar map', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID
         name: String
@@ -421,6 +475,9 @@ test('custom scalar map', async () => {
 
 test('map lists to json', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type User {
         id: ID!
         names: [String]
@@ -438,6 +495,9 @@ test('map lists to json', async () => {
 
 test('default name transforms', async () => {
   const schema = buildSchema(`
+      """
+      @model
+      """
       type UserTeam {
         id: ID!
         TeamName: String!
@@ -461,6 +521,7 @@ test('sandbox', async () => {
 
       """
       A user.
+      @model
       """
       type User {
         id: ID!
@@ -483,6 +544,9 @@ test('sandbox', async () => {
         contacts: [User]
       }
 
+      """
+      @model
+      """
       type Message {
         id: ID!
         user: User!
