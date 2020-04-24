@@ -20,59 +20,66 @@ export type AdvancedFilter = any;
 //tslint:disable-next-line: no-any
 export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
 
-    /**
-     * Implementation for object creation
-     *
-     * @param name name of the object to create
-     * @param data input data
-     * @param context context object passed from graphql or rest layer
-     */
-    create(data: Type, context?: GraphbackContext): Promise<Type>;
+  /**
+   * Implementation for object creation
+   *
+   * @param name name of the object to create
+   * @param data input data
+   * @param context context object passed from graphql or rest layer
+   */
+  create(data: Type, context?: GraphbackContext): Promise<Type>;
 
-    /**
-     * Implementation for object updates
-     *
-     * @param name name of the object to create
-     * @param data input data
-     * @param context context object passed from graphql or rest layer
-     */
-    update(data: Type, context?: GraphbackContext): Promise<Type>;
+  /**
+   * Implementation for object updates
+   *
+   * @param name name of the object to create
+   * @param data input data
+   * @param context context object passed from graphql or rest layer
+   */
+  update(data: Type, context?: GraphbackContext): Promise<Type>;
 
-    /**
-     * Implementation for object deletes
-     *
-     * @param name name of the object to create
-     * @param data data used for checking consistency
-     * @param context context object passed from graphql or rest layer
-     */
-    delete(data: Type, context?: GraphbackContext): Promise<Type>;
+  /**
+   * Implementation for object deletes
+   *
+   * @param name name of the object to create
+   * @param data data used for checking consistency
+   * @param context context object passed from graphql or rest layer
+   */
+  delete(data: Type, context?: GraphbackContext): Promise<Type>;
 
-    /**
-     * Implementation for finding all objects
-     *
-     * @param name name of the object to create
-     * @param id id of the object
-     * @param context context object passed from graphql or rest layer
-     */
-    findAll(page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+  /**
+   * Implementation for finding all objects
+   *
+   * @param name name of the object to create
+   * @param id id of the object
+   * @param context context object passed from graphql or rest layer
+   * @deprecated Please use `findBy`
+   */
+  findAll(page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+  /**
+   * Implementation for finding a single unique object
+   *
+   * @param filter filter by unique attriburtes
+   * @param context context object passed from graphql or rest layer
+   */
+  findOne(filter: AdvancedFilter, context?: GraphbackContext): Promise<Type>;
+  /**
+   * Implementation for reading objects with filtering capabilities
+   *
+   * @param name name of the object to create
+   * @param filter filter by specific type
+   * @param context context object passed from graphql or rest layer
+   */
+  findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
-    /**
-     * Implementation for reading objects with filtering capabilities
-     *
-     * @param name name of the object to create
-     * @param filter filter by specific type
-     * @param context context object passed from graphql or rest layer
-     */
-    findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
-
-    /**
-     * Read multiple items by their id's (used for lazy data loading purposes)
-     *
-     * @param name
-     * @param relationField - name of the field that will be used to match ids
-     * @param ids array of identifiers that needs to be fetched
-     */
-    batchRead(relationField: string, ids: string[]): Promise<Type[][]>
+  /**
+   * Read multiple items by their id's (used for lazy data loading purposes)
+   *
+   * @param name
+   * @param relationField - name of the field that will be used to match ids
+   * @param ids array of identifiers that needs to be fetched
+   */
+  batchRead(relationField: string, ids: string[], filter?: AdvancedFilter): Promise<Type[][]>
 
 }

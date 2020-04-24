@@ -22,6 +22,16 @@ ${returnFieldsString}
 } `
 }
 
+export const findOneQuery = (t: GraphQLObjectType) => {
+  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ONE)
+
+  return `query ${fieldName}($filter: ${t.name}FilterUniqueInput) {
+    ${fieldName}(filter: $filter) {
+      ...${t.name}ExpandedFields
+    }
+  }`
+}
+
 export const findAllQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL)
 

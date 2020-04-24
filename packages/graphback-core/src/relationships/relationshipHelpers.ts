@@ -1,155 +1,177 @@
 import { parseMarker } from 'graphql-metadata';
+import { getNullableType, GraphQLObjectType, getNamedType } from 'graphql';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
 
 /**
  * Parse relationship metadata string to strongly-typed interface
- * 
+ *
  * @param description field description
  */
 export function parseRelationshipAnnotation(description: string = ''): RelationshipAnnotation | undefined {
-    const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
+  const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
 
-    for (const kind of relationshipKinds) {
-        const annotation: any = parseMarker(kind, description);
+  for (const kind of relationshipKinds) {
+    const annotation: any = parseMarker(kind, description);
 
-        if (!annotation) {
-            continue;
-        }
-
-        if (!annotation.field && kind !== 'oneToOne') {
-            throw new Error(`'field' is required on "${kind}" relationship annotations`);
-        }
-
-        return {
-            kind,
-            ...annotation
-        }
+    if (!annotation) {
+      continue;
     }
 
-    return undefined;
+    if (!annotation.field && kind !== 'oneToOne') {
+      throw new Error(`'field' is required on "${kind}" relationship annotations`);
+    }
+
+    return {
+      kind,
+      ...annotation
+    }
+  }
+
+  return undefined;
 }
 
 /**
  * Creates an object of relationship fields if fields do not already exist on the model type.
- * 
- * @param model 
+ *
+ * @param model
  */
 export function buildGeneratedRelationshipsFieldObject(model: ModelDefinition) {
-    const modelType = model.graphqlType;
-    const modelFields = modelType.getFields();
+  const modelType = model.graphqlType;
+  const modelFields = modelType.getFields();
 
-    const fieldsObj = {};
-    for (const current of model.relationships) {
+  const fieldsObj = {};
+  for (const current of model.relationships) {
+    if (!modelFields[current.ownerField.name]) {
+      const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType
 
-        if (!modelFields[current.ownerField.name]) {
-            fieldsObj[current.ownerField.name] = {
-                type: current.ownerField.type,
-                description: current.ownerField.description
-            };
+      let args
+      if (current.kind === 'oneToMany') {
+        args = {
+          // TODO: Centralize type names
+          filter: current.kind === 'oneToMany' ? `${fieldNamedType.name}FilterInput` : `${fieldNamedType.name}FilterUniqueInput`
         }
-    }
+      }
 
-    return fieldsObj;
+      fieldsObj[current.ownerField.name] = {
+        type: current.ownerField.type,
+        args,
+        description: current.ownerField.description,
+      };
+    }
+  }
+
+  return fieldsObj;
 }
 
 /**
- * Strips all relationship annotations from a string 
- * @param fieldDescription 
+ * Strips all relationship annotations from a string
+ * @param fieldDescription
  */
 export const stripRelationshipAnnotation = (fieldDescription: string = '') => {
-    if (!fieldDescription.includes('\n')) {
-        return '';
-    }
+  if (!fieldDescription.includes('\n')) {
+    return '';
+  }
 
-    const strippedDescription = fieldDescription.split('\n').filter((line: string) => !parseRelationshipAnnotation(line));
+  const strippedDescription = fieldDescription.split('\n').filter((line: string) => !parseRelationshipAnnotation(line));
 
-    return strippedDescription.join('\n');
+  return strippedDescription.join('\n');
 }
 
 /**
- * Strips all non-relationship annotations from a string 
- * 
- * @param fieldDescription 
+ * Strips all non-relationship annotations from a string
+ *
+ * @param fieldDescription
  */
 export const getRelationshipAnnotationString = (fieldDescription: string = '') => {
-    if (!fieldDescription.includes('\n') && !parseRelationshipAnnotation(fieldDescription)) {
-        return '';
-    }
+  if (!fieldDescription.includes('\n') && !parseRelationshipAnnotation(fieldDescription)) {
+    return '';
+  }
 
-    const filteredDescription = fieldDescription.split('\n').filter(parseRelationshipAnnotation);
+  const filteredDescription = fieldDescription.split('\n').filter(parseRelationshipAnnotation);
 
-    return filteredDescription.join('\n').trim();
+  return filteredDescription.join('\n').trim();
 }
 
 /**
  * Helper to merge two description strings which may or may not have a relationship annotation.
  * This helper keeps non-relationship annotations and merges them together.
  * It chooses the relationship annotation with the `key` field when merging.
- * 
- * @param generatedDescription 
- * @param customDescription 
+ *
+ * @param generatedDescription
+ * @param customDescription
  */
 export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription: string, customDescription: string) => {
-    const descriptionLines = [stripRelationshipAnnotation(generatedDescription), stripRelationshipAnnotation(customDescription)];
+  const descriptionLines = [stripRelationshipAnnotation(generatedDescription), stripRelationshipAnnotation(customDescription)];
 
-    for (const description of [customDescription, generatedDescription]) {
-        const relationshipDescription = getRelationshipAnnotationString(description);
-        const parsedAnnotation = parseRelationshipAnnotation(description);
+  for (const description of [customDescription, generatedDescription]) {
+    const relationshipDescription = getRelationshipAnnotationString(description);
+    const parsedAnnotation = parseRelationshipAnnotation(description);
 
-        if (parsedAnnotation && parsedAnnotation.key) {
-            descriptionLines.push(relationshipDescription);
-            break;
-        }
+    if (parsedAnnotation && parsedAnnotation.key) {
+      descriptionLines.push(relationshipDescription);
+      break;
     }
+  }
 
-    return descriptionLines.join('\n').trim();
+  return descriptionLines.join('\n').trim();
 }
 
 /**
  * Creates an object of relationship fields which already exist on a model type.
- * 
- * @param model 
+ *
+ * @param model
  */
 export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
-    const modelType = model.graphqlType;
+  const modelType = model.graphqlType;
 
-    const modelFields = modelType.getFields();
+  const modelFields = modelType.getFields();
 
-    const fieldsObj = {};
-    for (const fieldRelationship of model.relationships) {
+  const fieldsObj = {};
+  for (const current of model.relationships) {
 
-        if (modelFields[fieldRelationship.ownerField.name]) {
-            const modelField = modelFields[fieldRelationship.ownerField.name];
+    if (modelFields[current.ownerField.name]) {
+      const modelField = modelFields[current.ownerField.name];
 
-            fieldsObj[fieldRelationship.ownerField.name] = {
-                type: modelField.type,
-                description: fieldRelationship.ownerField.description
-            };
+      const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType
+
+      let args
+      if (current.kind === 'oneToMany') {
+        args = {
+          // TODO: Centralize type names
+          filter: current.kind === 'oneToMany' ? `${fieldNamedType.name}FilterInput` : `${fieldNamedType.name}FilterUniqueInput`
         }
-    }
+      }
 
-    return fieldsObj;
+      fieldsObj[current.ownerField.name] = {
+        type: modelField.type,
+        args,
+        description: current.ownerField.description
+      };
+    }
+  }
+
+  return fieldsObj;
 }
 
 /**
  * Generic template for relationship annotations
- * 
- * @param relationshipKind 
- * @param fieldName 
- * @param columnKey 
+ *
+ * @param relationshipKind
+ * @param fieldName
+ * @param columnKey
  */
 export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
-    return `@${relationshipKind} field: '${fieldName}', key: '${columnKey}'`;
+  return `@${relationshipKind} field: '${fieldName}', key: '${columnKey}'`;
 }
 
 /**
  * Template for one-to-one relationship annotations
- * 
- * @param relationshipKind 
- * @param fieldName 
- * @param columnKey 
+ *
+ * @param relationshipKind
+ * @param fieldName
+ * @param columnKey
  */
 export const relationshipOneToOneFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', columnKey: string): string => {
-    return `@${relationshipKind} key: '${columnKey}'`;
+  return `@${relationshipKind} key: '${columnKey}'`;
 }

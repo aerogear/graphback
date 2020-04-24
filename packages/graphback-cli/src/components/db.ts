@@ -1,7 +1,7 @@
 import * as execa from 'execa'
 import { GlobSync } from 'glob'
 import { loadConfig } from 'graphql-config';
-import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
+import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter, removeNonModelTypesFromSchema } from 'graphql-migrations';
 import { dbmigrationsExtension, dbMigrationConfigExtension } from '../config/dbmigrationsExtension';
 import { logError, logInfo } from '../utils'
 
@@ -12,7 +12,7 @@ const handleError = (err: { code: string; message: string; }): void => {
     logError(err.message)
   }
   process.exit(0)
-}; 
+};
 
 export const createDBResources = async (cliFlags: { project?: string }): Promise<any> => {
   let databaseOperations: any;
@@ -42,7 +42,8 @@ export const createDBResources = async (cliFlags: { project?: string }): Promise
 
     const migrateOptions: MigrateOptions = {
       //Do not perform delete operations on tables
-      operationFilter: removeNonSafeOperationsFilter
+      operationFilter: removeNonSafeOperationsFilter,
+      schemaTransformer: removeNonModelTypesFromSchema
     };
 
     const schema = await project.getSchema("string");

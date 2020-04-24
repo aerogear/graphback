@@ -67,15 +67,15 @@ export class LayeredRuntimeResolverCreator {
         }
       }
 
-      if (resolverElement.crudOptions.findAll) {
-        const findAllField = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
+      if (resolverElement.crudOptions.findOne) {
+        const findAllField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
         //tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
           if (!this.services[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].findAll(args, context)
+          return this.services[modelName].findOne(args.filter, context)
         }
       }
       if (resolverElement.crudOptions.find) {
@@ -83,8 +83,18 @@ export class LayeredRuntimeResolverCreator {
         //tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           const page = { limit: args.limit, offset: args.offset };
-          
-          return this.services[modelName].findBy(args.fields, page, context)
+
+          return this.services[modelName].findBy(args.filter, page, context)
+        }
+      }
+
+      if (resolverElement.crudOptions.findAll) {
+        const findField = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
+        //tslint:disable-next-line: no-any
+        resolvers.Query[findField] = (parent: any, args: any, context: any) => {
+          const page = { limit: args.limit, offset: args.offset };
+
+          return this.services[modelName].findAll(page, context)
         }
       }
 
@@ -94,6 +104,7 @@ export class LayeredRuntimeResolverCreator {
         resolvers[modelName] = relationResolvers;
       }
 
+      // TODO: Add subscriptions
       this.createSubscriptions(resolverElement, resolvers)
     }
 
@@ -172,7 +183,7 @@ export class LayeredRuntimeResolverCreator {
 
       if (relationship.kind === 'oneToMany') {
         resolverFn = (parent: any, args: any, context: any) => {
-          return this.services[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], context);
+          return this.services[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
         }
       } else {
         resolverFn = (parent: any, args: any, context: any) => {

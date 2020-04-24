@@ -1,6 +1,7 @@
-import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType, GraphQLSchema } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
+import { getUserTypesFromSchema } from '@graphql-toolkit/common';
 import { parseRelationshipAnnotation } from '../relationships/relationshipHelpers';
 import { transformForeignKeyName, getPrimaryKey } from '../db';
 import { GraphbackOperationType } from './GraphbackOperationType';
@@ -22,7 +23,7 @@ export function upperCaseFirstChar(text: string) {
 /**
  * Get name of the field for query and mutation using our crud model.
  * Method trasform specific CRUD operation into compatible name
- * 
+ *
  * Example:
  * ```
  * type Query {
@@ -31,13 +32,13 @@ export function upperCaseFirstChar(text: string) {
  * }
  * ```
  * This method is compatible with Graphback CRUD specification
- * 
- * @param typeName 
- * @param action 
+ *
+ * @param typeName
+ * @param action
  */
 export const getFieldName = (typeName: string, action: GraphbackOperationType): string => {
   let finalName = upperCaseFirstChar(typeName);
-  if (action === GraphbackOperationType.FIND_ALL || action === GraphbackOperationType.FIND) {
+  if (action === GraphbackOperationType.FIND || action === GraphbackOperationType.FIND_ALL) {
     finalName = pluralize(finalName);
   }
 
@@ -59,9 +60,9 @@ export function getInputFieldName(field: GraphQLField<any, any>): string {
 }
 
 /**
- * Provides naming patterns for CRUD subscriptions 
+ * Provides naming patterns for CRUD subscriptions
  */
-export const getSubscriptionName = (typeName: string, action: GraphbackOperationType, ): string => {
+export const getSubscriptionName = (typeName: string, action: GraphbackOperationType): string => {
   const finalName = upperCaseFirstChar(typeName);
   if (action === GraphbackOperationType.CREATE) {
     return `new${finalName}`
@@ -80,8 +81,8 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
 
 /**
  * Provides naming pattern for InputType
- * 
- * @param typeName 
+ *
+ * @param typeName
  */
 export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
@@ -89,6 +90,24 @@ export const getInputTypeName = (typeName: string): string => {
 
 export function isModelType(graphqlType: GraphQLObjectType): boolean {
   return !!parseMarker('model', graphqlType.description);
+}
+
+/**
+ * Get only user types annotated by ```@model```
+ *
+ * @param schema
+ */
+export function filterModelTypes(schema: GraphQLSchema): GraphQLObjectType[] {
+  return getUserTypesFromSchema(schema).filter(isModelType)
+}
+
+/**
+ * Get only user types not annotated by ```@model```
+ *
+ * @param schema
+ */
+export function filterNonModelTypes(schema: GraphQLSchema): GraphQLObjectType[] {
+  return getUserTypesFromSchema(schema).filter((t: GraphQLObjectType) => !isModelType(t))
 }
 
 export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {

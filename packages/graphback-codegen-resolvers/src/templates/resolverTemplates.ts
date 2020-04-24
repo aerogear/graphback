@@ -18,16 +18,21 @@ export const deleteTemplate = (modelName: string): string => {
     }`
 }
 
+export const findOneTemplate = (modelName: string): string => {
+  return `(parent, { filter }, context) => {
+      return context.${modelName}.findOne(filter);
+    }`
+}
+
 export const findAllTemplate = (modelName: string): string => {
-  return `(parent, args, context) => {
-      return context.${modelName}.findAll(args);
+  return `(parent, { page }, context) => {
+      return context.${modelName}.findAll(page);
     }`
 }
 
 export const findTemplate = (modelName: string): string => {
-  return `(parent, args, context) => {
-      const { fields, ...page } = args;
-      return context.${modelName}.findBy(fields, page);
+  return `(parent, { filter, page }, context) => {
+      return context.${modelName}.findBy(filter, page);
     }`
 }
 
@@ -56,8 +61,8 @@ export const deletedSubscriptionTemplate = (modelName: string): string => {
 }
 
 export const oneToManyTemplate = (modelName: string, relationField: string, idField: string) => {
-  return `(parent, args, context) => {
-    return context.${modelName}.batchLoadData('${relationField}', parent.${idField}, context);
+  return `(parent, { filter }, context) => {
+    return context.${modelName}.batchLoadData('${relationField}', parent.${idField}, filter, context);
   }
   `;
 }

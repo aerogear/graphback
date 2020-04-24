@@ -9,8 +9,9 @@ import { ModelDefinition } from './ModelDefinition';
 const defaultCRUDGeneratorConfig = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
+    "findAll": true,
     "delete": true,
     "subCreate": true,
     "subUpdate": true,

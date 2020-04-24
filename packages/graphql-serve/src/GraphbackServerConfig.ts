@@ -24,8 +24,8 @@ export async function getGraphbackServerConfig(overrideopts?: ConfigOverrides): 
             crud: {
                 create: true,
                 update: true,
-                findAll: true,
                 find: true,
+                findOne: true,
                 delete: true,
                 subCreate: true,
                 subUpdate: true,
