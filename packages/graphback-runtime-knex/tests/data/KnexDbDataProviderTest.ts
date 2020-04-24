@@ -1,68 +1,85 @@
+/* eslint-disable no-console */
 //tslint:disable-next-line: match-default-export-name
+import { unlinkSync, existsSync, unlink } from 'fs';
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
+import { filterModelTypes } from '@graphback/core';
 import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
+import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
-const schema = buildSchema(`
+const dbPath = `${__dirname}/db.sqlite`;
+
+afterEach(() => {
+  if (existsSync(dbPath)) {
+    unlinkSync(dbPath)
+  }
+})
+
+const setup = async (schemaStr: string, config: { seedData?: { [tableName: string]: any[] | any } } = {}) => {
+  const schema = buildSchema(schemaStr)
+
+  const dbConfig = {
+    client: 'sqlite3',
+    connection: {
+      filename: dbPath,
+    },
+    useNullAsDefault: true,
+  }
+
+  const db = Knex(dbConfig);
+
+  await migrateDB(dbConfig, schema, {
+    operationFilter: removeNonSafeOperationsFilter
+  })
+
+  if (config.seedData) {
+    for (const [tableName, data] of Object.entries(config.seedData)) {
+      await db(tableName).insert(data)
+    }
+  }
+
+  const providers: { [name: string]: KnexDBDataProvider } = {}
+  const models = filterModelTypes(schema)
+  for (const modelType of models) {
+    providers[modelType.name] = new KnexDBDataProvider(modelType, db);
+  }
+
+  return { schema, providers }
+}
+
+test('batch read Todos', async () => {
+  const seedData = [
+    { text: 'my first default todo' },
+    { text: 'my second todo' },
+    { text: 'my third default todo' }
+  ]
+
+  const { providers } = await setup(`
 """
 @model
 """
-type Todos {
+type Todo {
  id: ID!
- text: String 
-}
-`);
+ text: String
+}`, { seedData: { todo: seedData } })
 
-//tslint:disable: typedef
-interface Context {
-  db: Knex;
-  provider: KnexDBDataProvider;
-}
-
-interface Todo {
-  id: number;
-  text: string;
-}
-
-//tslint:disable-next-line: no-any
-const modelType = schema.getType('Todos') as GraphQLObjectType
-let context: Context;
-
-//Create a new database before each tests so that
-//all tests can run parallel
-beforeEach(async () => {
-  const db = Knex({
-    client: 'sqlite3',
-    connection: {
-      filename: ':memory:',
-    },
-    useNullAsDefault: true,
-  });
-
-  await db.schema.createTable('todos', table => {
-    table.increments(); //id
-    table.string('text');
-  });
-
-  //insert a couple of default data
-  await db('todos').insert({ text: 'my first default todo' });
-  await db('todos').insert({ text: 'the second todo' });
-  await db('todos').insert({ text: 'just another todo' });
-
-  const provider = new KnexDBDataProvider(modelType, db);
-
-  context = { db, provider };
-});
-
-test('batch read Todos', async () => {
-  const todos = await context.provider.batchRead('id', ['1', '2']);
+  const todos = await providers.Todo.batchRead('id', ['1', '2']);
 
   expect(todos[0][0].id).toEqual(1);
   expect(todos[1][0].id).toEqual(2);
 });
 
 test('create Todo', async () => {
-  const todo: Todo = await context.provider.create({
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
+  const todo = await providers.Todo.create({
     text: 'create a todo',
   });
 
@@ -71,7 +88,16 @@ test('create Todo', async () => {
 });
 
 test('update Todo', async () => {
-  const todo: Todo = await context.provider.update({
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`, { seedData: { todo: { text: 'my first Todo' } } })
+
+  const todo = await providers.Todo.update({
     id: '1',
     text: 'my updated first todo',
   });
@@ -81,71 +107,65 @@ test('update Todo', async () => {
 });
 
 test('delete Todo', async () => {
-  const data = await context.provider.delete({ id: '3' });
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`, {
+    seedData: {
+      todo: [{ id: '3', text: 'delete me' }]
+    }
+  })
+
+  const data = await providers.Todo.delete({ id: '3' });
 
   expect(data.id).toEqual(3);
 });
 
-test('find all Todos', async () => {
-  const todos = await context.provider.findAll();
-
-  expect(todos.length).toEqual(3);
-});
-
-test('find first 2 todos', async () => {
-  const todos = await context.provider.findAll({ limit: 2, offset: 0});
-
-  expect(todos.length).toEqual(2);
-
-  expect(todos[0].id).toEqual(1);
-  expect(todos[0].text).toEqual('my first default todo');
-
-  expect(todos[1].id).toEqual(2);
-  expect(todos[1].text).toEqual('the second todo');
-});
-
-test('find first 2 todos excluding first todo', async () => {
-  const todos = await context.provider.findAll({ limit: 2, offset: 1});
-
-  expect(todos.length).toEqual(2);
-
-  expect(todos[0].id).toEqual(2);
-  expect(todos[0].text).toEqual('the second todo');
-
-  expect(todos[1].id).toEqual(3);
-  expect(todos[1].text).toEqual('just another todo');
-});
-
-test('find all offset defaults to zero', async () => {
-  const todos = await context.provider.findAll({ limit: 2 });
-
-  expect(todos.length).toEqual(2);
-
-  expect(todos[0].id).toEqual(1);
-  expect(todos[0].text).toEqual('my first default todo');
-
-  expect(todos[1].id).toEqual(2);
-  expect(todos[1].text).toEqual('the second todo');
-});
-
 test('find all limit defaults to complete set', async () => {
-  for (let i = 0; i < 10; i++) {
-    await context.provider.create({
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
+  for (let i = 0; i < 15; i++) {
+    await providers.Todo.create({
       text: `todo${i}`,
     });
   }
 
-  const todos = await context.provider.findAll({ offset: 1 });
+  const todos = await providers.Todo.findBy();
 
-  expect(todos.length).toEqual(12);
-
-  expect(todos[0].id).toEqual(2);
-  expect(todos[0].text).toEqual('the second todo');
+  expect(todos).toHaveLength(15)
 });
 
 test('find Todo by text', async () => {
-  const todos: Todo[] = await context.provider.findBy({
-    text: 'the second todo',
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`, {
+    seedData:
+    {
+      todo: [
+        { text: 'first todo' },
+        { text: 'second todo' }
+      ]
+    }
+  })
+
+  const todos = await providers.Todo.findBy({
+    text: { eq: 'second todo' },
   });
 
   expect(todos.length).toEqual(1);
@@ -153,31 +173,49 @@ test('find Todo by text', async () => {
 });
 
 test('find first n todos by text', async () => {
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
   const numberOfTodos = 5;
   const text = 'test-todo';
   for (let i = 0; i < numberOfTodos + 1; i++) {
-    await context.provider.create({
+    await providers.Todo.create({
       text,
     });
   }
 
-  const todos: Todo[] = await context.provider.findBy({ text }, { limit: numberOfTodos });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, { limit: numberOfTodos });
 
   expect(todos.length).toEqual(numberOfTodos);
 });
 
 test('Skip n todos and find next m todos by text', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
   const n = 2;
   const m = 3;
   const numberOfTodos = n + m;
   const text = 'test-todo';
   for (let i = 0; i < numberOfTodos; i++) {
-    await context.provider.create({
+    await providers.Todo.create({
       text,
     });
   }
 
-  const todos: Todo[] = await context.provider.findBy({ text }, { 
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, {
     offset: n,
     limit: numberOfTodos
   });
@@ -186,15 +224,24 @@ test('Skip n todos and find next m todos by text', async () => {
 });
 
 test('find todos by text, limit defaults to complete set', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
   const numberOfTodos = 12;
   const text = 'test-todo';
   for (let i = 0; i < numberOfTodos; i++) {
-    await context.provider.create({
-      text,
+    await providers.Todo.create({
+      text
     });
   }
 
-  const todos: Todo[] = await context.provider.findBy({ text });
+  const todos = await providers.Todo.findBy({ text: { eq: text } });
 
   expect(todos.length).toEqual(numberOfTodos);
 });

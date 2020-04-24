@@ -7,34 +7,38 @@
 
 export default {
   Note: {
-    comments: (parent, args, context) => {
-      return context.Comment.batchLoadData("noteId", parent.id, context)
-    }
+    comments: (parent, { filter }, context) => {
+      return context.Comment.batchLoadData("noteId", parent.id, filter, context)
+    },
   },
 
   Comment: {
     note: (parent, args, context) => {
       return context.Note.findBy({ id: parent.noteId }).then(
-        results => results[0]
+        (results) => results[0]
       )
-    }
+    },
   },
 
   Query: {
-    findNotes: (parent, args, context) => {
-      const { fields, ...page } = args
-      return context.Note.findBy(fields, page)
+    getNote: (parent, { filter }, context) => {
+      return context.Note.findOne(filter)
     },
-    findAllNotes: (parent, args, context) => {
-      return context.Note.findAll(args)
+    findNotes: (parent, { filter, page }, context) => {
+      return context.Note.findBy(filter, page)
     },
-    findComments: (parent, args, context) => {
-      const { fields, ...page } = args
-      return context.Comment.findBy(fields, page)
+    findAllNotes: (parent, { page }, context) => {
+      return context.Note.findAll(page)
     },
-    findAllComments: (parent, args, context) => {
-      return context.Comment.findAll(args)
-    }
+    getComment: (parent, { filter }, context) => {
+      return context.Comment.findOne(filter)
+    },
+    findComments: (parent, { filter, page }, context) => {
+      return context.Comment.findBy(filter, page)
+    },
+    findAllComments: (parent, { page }, context) => {
+      return context.Comment.findAll(page)
+    },
   },
 
   Mutation: {
@@ -55,39 +59,39 @@ export default {
     },
     deleteComment: (parent, args, context) => {
       return context.Comment.delete(args.input, context)
-    }
+    },
   },
 
   Subscription: {
     newNote: {
       subscribe: (parent, args, context) => {
         return context.Note.subscribeToCreate(args, context)
-      }
+      },
     },
     updatedNote: {
       subscribe: (parent, args, context) => {
         return context.Note.subscribeToUpdate(args, context)
-      }
+      },
     },
     deletedNote: {
       subscribe: (parent, args, context) => {
         return context.Note.subscribeToDelete(args, context)
-      }
+      },
     },
     newComment: {
       subscribe: (parent, args, context) => {
         return context.Comment.subscribeToCreate(args, context)
-      }
+      },
     },
     updatedComment: {
       subscribe: (parent, args, context) => {
         return context.Comment.subscribeToUpdate(args, context)
-      }
+      },
     },
     deletedComment: {
       subscribe: (parent, args, context) => {
         return context.Comment.subscribeToDelete(args, context)
-      }
-    }
-  }
+      },
+    },
+  },
 }

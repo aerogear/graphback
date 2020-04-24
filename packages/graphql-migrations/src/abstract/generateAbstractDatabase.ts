@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation } from '@graphback/core';
+import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -103,7 +103,7 @@ class AbstractDatabaseBuilder {
     for (const key of Object.keys(this.typeMap)) {
       const type = this.typeMap[key]
       // Tables
-      if (isObjectType(type) && !type.name.startsWith('__') && !ROOT_TYPES.includes(type.name)) {
+      if (isObjectType(type) && !type.name.startsWith('__') && !ROOT_TYPES.includes(type.name) && isModelType(type)) {
         this.buildTable(type)
       }
     }
