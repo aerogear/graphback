@@ -87,27 +87,12 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find all results for ${this.collectionName}`);
   }
 
+  public async findOne(filter: AdvancedFilter): Promise<Type> {
+    throw new Error("Not implemented")
+  }
+
   public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
-    let dbResult;
-    const { idField } = getDatabaseArguments(this.tableMap, filter);
-    // TODO MongoDB should use advanced filter with JSON scalar defined as InputType
-    if (filter[idField.name]) {
-      const query = this.db.collection(this.collectionName).
-        find({ _id: new ObjectId(filter[idField.name]) });
-      dbResult = await this.usePage(query, page);
-    } else {
-      const query = this.db.collection(this.collectionName).find(filter);
-      dbResult = await this.usePage(query, page);
-    }
-    if (dbResult) {
-      return dbResult.map((one: any) => {
-        return {
-          ...one,
-          id: one._id
-        }
-      });
-    }
-    throw new NoDataError(`No results for ${this.collectionName} query and filter: ${JSON.stringify(filter)}`);
+    throw new Error("Not implemented")
   }
 
   public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {

@@ -2,30 +2,38 @@
 import { buildSchema, GraphQLObjectType } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, GraphbackPubSub } from '@graphback/runtime';
+import { CRUDService, GraphbackPubSub } from '../../../graphback-runtime/src';
+import { filterModelTypes } from '../../../graphback-core/src';
 import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
+import { migrateDB } from '../../../graphql-migrations/src';
+import { unlinkSync, existsSync } from 'fs';
+import path from 'path';
 
 //tslint:disable: typedef
 
 interface Context {
   db: Knex;
   provider: KnexDBDataProvider;
-  todoService: CRUDService
+  todoService: CRUDService<Todo>
   userService: CRUDService;
 }
 
 interface Todo {
-  id: number;
+  id?: number;
   text: string;
 }
 
-const schema = buildSchema(`
+interface ResultList<T> {
+  items: T[];
+}
+
+const schemaa = buildSchema(`
 """
 @model
 """
 type Todos {
  id: ID!
- text: String 
+ text: String
 }
 
 """
@@ -40,13 +48,61 @@ type User {
 }
 `);
 
-//tslint:disable-next-line: no-any
-const userModel = schema.getType('User') as GraphQLObjectType
+const dbPath = `${__dirname}/db.sqlite`;
+
+afterEach(() => {
+  if (existsSync(dbPath)) {
+    unlinkSync(dbPath)
+  }
+})
 
 //tslint:disable-next-line: no-any
-const todoModel = schema.getType('Todos') as GraphQLObjectType
+const userModel = schemaa.getType('User') as GraphQLObjectType
+
+//tslint:disable-next-line: no-any
+const todoModel = schemaa.getType('Todos') as GraphQLObjectType
 
 let context: Context;
+
+const setup = async (schemaStr: string, config: { seedData?: { [tableName: string]: any[] } } = {}) => {
+  const dbConfig = {
+    client: 'sqlite3',
+    connection: {
+      filename: dbPath,
+    },
+    useNullAsDefault: true
+  }
+
+  const db = Knex(dbConfig);
+
+  const schema = buildSchema(schemaStr)
+
+  await migrateDB(dbConfig, schema)
+
+  if (config.seedData) {
+    for (const [tableName, data] of Object.entries(config.seedData)) {
+      await db(tableName).insert(data)
+    }
+  }
+
+  const services: { [name: string]: CRUDService } = {}
+  const models = filterModelTypes(schema)
+  for (const modelType of models) {
+    const modelProvider = new KnexDBDataProvider(modelType, db);
+
+    const pubSub = new PubSub();
+    const publishConfig: GraphbackPubSub = {
+      pubSub,
+      publishCreate: true,
+      publishDelete: true,
+      publishUpdate: true
+    }
+
+    services[modelType.name] = new CRUDService(modelType, modelProvider, publishConfig)
+  }
+
+  return { schema, services }
+}
 
 //Create a new database before each tests so that
 //all tests can run parallel
@@ -105,17 +161,25 @@ beforeEach(async () => {
 });
 
 test('create Todo', async () => {
-  const todo: Todo = await context.todoService.create({
+  const { services } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+  const todo: Todo = await services.Todo.create({
     text: 'create a todo',
   });
 
-  expect(todo.id).toEqual(4);
+  expect(todo.id).toEqual(1);
   expect(todo.text).toEqual('create a todo');
 });
 
 test('update Todo', async () => {
   const todo: Todo = await context.todoService.update({
-    id: '1',
+    id: 1,
     text: 'my updated first todo',
   });
 
@@ -125,26 +189,20 @@ test('update Todo', async () => {
 
 test('delete Todo', async () => {
   const data = await context.todoService.delete({
-    id: '3',
+    id: 3,
     text: 'my updated first todo',
   });
 
   expect(data.id).toEqual(3);
 });
 
-test('find all Todos', async () => {
-  const todos = await context.todoService.findAll();
-
-  expect(todos.length).toEqual(3);
-});
-
 test('find Todo by text', async () => {
-  const todos: Todo[] = await context.todoService.findBy({
-    text: 'the second todo',
+  const todoResults: ResultList<Todo> = await context.todoService.findBy({
+    text: { eq: 'the second todo' },
   });
 
-  expect(todos.length).toEqual(1);
-  expect(todos[0].id).toEqual(2);
+  expect(todoResults.items.length).toEqual(1);
+  expect(todoResults.items[0].id).toEqual(2);
 });
 
 test('delete User by custom ID field', async () => {

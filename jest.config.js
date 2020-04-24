@@ -5,8 +5,5 @@ module.exports = {
     "<rootDir>/packages/*/src/**/*.ts"
   ],
   moduleDirectories: ["node_modules"],
-  preset: "ts-jest",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest"]
-  }
+  preset: "ts-jest"
 };

@@ -13,7 +13,7 @@ const schema = buildSchema(`
 """
 type Todos {
  id: ID!
- text: String 
+ text: String
 }
 
 """
@@ -32,6 +32,7 @@ type User {
 test('find Todo by text', async ()  => {
   const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, schema)
   const generator = new LayeredRuntimeResolverCreator(metadata.getModelDefinitions(), {});
+
   expect(generator.generate()).toMatchSnapshot();
 });
 

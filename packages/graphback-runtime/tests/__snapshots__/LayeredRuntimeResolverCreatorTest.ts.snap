@@ -11,8 +11,6 @@ Object {
     "updateUser": [Function],
   },
   "Query": Object {
-    "findAllTodos": [Function],
-    "findAllUsers": [Function],
     "findTodos": [Function],
     "findUsers": [Function],
   },
