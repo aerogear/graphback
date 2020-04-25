@@ -6,8 +6,7 @@
   "groupName": "all",
   "ignoreDeps": [
     "ora",
-    "chalk",
-    "ava"
+    "chalk"
   ],
   "automerge": true,
   "major": {

@@ -26,7 +26,6 @@
     "@types/jest": "25.2.1",
     "@types/node": "12.12.37",
     "@types/prettier": "1.19.1",
-    "ava": "2.4.0",
     "graphql": "14.6.0",
     "jest": "25.4.0",
     "rimraf": "3.0.2",

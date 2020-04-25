@@ -92,16 +92,16 @@ exports[`should build one-to-many and many-to-one relationships from both fields
      \\"value\\": \\"@manyToOne field: 'sentMessages'\\",
      \\"block\\": true,
      \\"loc\\": {
-      \\"start\\": 304,
-      \\"end\\": 360
+      \\"start\\": 300,
+      \\"end\\": 356
      }
     },
     \\"name\\": {
      \\"kind\\": \\"Name\\",
      \\"value\\": \\"sender\\",
      \\"loc\\": {
-      \\"start\\": 369,
-      \\"end\\": 375
+      \\"start\\": 365,
+      \\"end\\": 371
      }
     },
     \\"arguments\\": [],
@@ -111,19 +111,19 @@ exports[`should build one-to-many and many-to-one relationships from both fields
       \\"kind\\": \\"Name\\",
       \\"value\\": \\"User\\",
       \\"loc\\": {
-       \\"start\\": 377,
-       \\"end\\": 381
+       \\"start\\": 373,
+       \\"end\\": 377
       }
      },
      \\"loc\\": {
-      \\"start\\": 377,
-      \\"end\\": 381
+      \\"start\\": 373,
+      \\"end\\": 377
      }
     },
     \\"directives\\": [],
     \\"loc\\": {
-     \\"start\\": 304,
-     \\"end\\": 381
+     \\"start\\": 300,
+     \\"end\\": 377
     }
    },
    \\"name\\": \\"sender\\",
@@ -152,16 +152,16 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
      \\"value\\": \\"@oneToOne\\",
      \\"block\\": true,
      \\"loc\\": {
-      \\"start\\": 180,
-      \\"end\\": 213
+      \\"start\\": 176,
+      \\"end\\": 209
      }
     },
     \\"name\\": {
      \\"kind\\": \\"Name\\",
      \\"value\\": \\"resident\\",
      \\"loc\\": {
-      \\"start\\": 222,
-      \\"end\\": 230
+      \\"start\\": 218,
+      \\"end\\": 226
      }
     },
     \\"arguments\\": [],
@@ -173,24 +173,24 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
        \\"kind\\": \\"Name\\",
        \\"value\\": \\"User\\",
        \\"loc\\": {
-        \\"start\\": 232,
-        \\"end\\": 236
+        \\"start\\": 228,
+        \\"end\\": 232
        }
       },
       \\"loc\\": {
-       \\"start\\": 232,
-       \\"end\\": 236
+       \\"start\\": 228,
+       \\"end\\": 232
       }
      },
      \\"loc\\": {
-      \\"start\\": 232,
-      \\"end\\": 237
+      \\"start\\": 228,
+      \\"end\\": 233
      }
     },
     \\"directives\\": [],
     \\"loc\\": {
-     \\"start\\": 180,
-     \\"end\\": 237
+     \\"start\\": 176,
+     \\"end\\": 233
     }
    },
    \\"name\\": \\"resident\\",
