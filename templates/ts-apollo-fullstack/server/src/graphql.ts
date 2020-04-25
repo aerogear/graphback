@@ -2,7 +2,7 @@ import { ApolloServer, PubSub } from 'apollo-server-express';
 import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 import { loadConfigSync } from 'graphql-config'
 import { models } from './resolvers/models';
-import resolvers from './resolvers/resolvers'
+import graphbackResolvers from './resolvers/graphbackResolvers';
 import { connectDB } from './db';
 
 /**
@@ -26,7 +26,7 @@ export const createApolloServer = () => {
   const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
   const apolloServer = new ApolloServer({
     typeDefs,
-    resolvers,
+    graphbackResolvers,
     context,
     playground: true,
   })
