@@ -34,12 +34,12 @@ let context: Context;
 //all tests can run parallel
 beforeEach(async () => {
   const server = new MongoMemoryServer();
-  const client = new MongoClient(await server.getConnectionString())
+  const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
   await client.connect();
   const db = client.db('test');
   const provider = new MongoDBDataProvider(modelType, db);
 
-  context = { provider, server }
+  context = { provider, server };
 
   await provider.create({
     text: 'todo',
@@ -51,7 +51,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await context.server.stop()
+  await context.server.stop();
 })
 
 test('Test mongo crud', async () => {
