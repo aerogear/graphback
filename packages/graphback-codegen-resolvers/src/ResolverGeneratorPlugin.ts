@@ -18,7 +18,7 @@ export interface ResolverGeneratorPluginConfig {
     outputPath: string
 
     /**
-     * Name of the generated resolvers file (default: resolvers.(format))
+     * Name of the generated resolvers file (default: graphbackResolvers.(format))
      */
     resolversFileName?: string
 
@@ -52,7 +52,7 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         this.pluginConfig = Object.assign({
             format: 'ts',
             layout: "apollo",
-            resolversFileName: 'resolvers',
+            resolversFileName: 'graphbackResolvers',
         }, pluginConfig);
         if (!pluginConfig.outputPath) {
             throw new Error("resolver plugin requires outputPath parameter")

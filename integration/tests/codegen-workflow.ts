@@ -37,7 +37,7 @@ beforeAll(async (done) => {
     await seedDatabase(knex);
 
     const resolvers = loadResolversFiles([
-        path.resolve('./output/resolvers/resolvers.ts'),
+        path.resolve('./output/resolvers/graphbackResolvers.ts'),
         path.resolve('./mocks/resolvers/resolvers.ts')
     ])
 
