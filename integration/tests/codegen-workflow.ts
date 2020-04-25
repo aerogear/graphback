@@ -16,7 +16,7 @@ import { createKnexPGCRUDRuntimeServices } from "../../packages/graphback-runtim
 let client: any;
 let db: Knex;
 
-beforeAll(async (done) => {
+beforeAll(async () => {
     const { projectConfig, graphbackConfig, dbMigrationsConfig } = await getConfig();
 
     const modelText = readFileSync(graphbackConfig.model, 'utf8');
@@ -41,6 +41,7 @@ beforeAll(async (done) => {
         path.resolve('./mocks/resolvers/resolvers.ts')
     ])
 
+    console.log({resolvers})
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { models } = require('../output/resolvers/models');
 
@@ -55,14 +56,11 @@ beforeAll(async (done) => {
 
     client = createTestClient(server);
     db = knex;
-
-    done();
 })
 
-afterAll(async (done) => {
-    rmdirSync(path.resolve('./output'), { recursive: true });
-    await db.destroy();
-    done();
+afterAll(() => {
+   rmdirSync(path.resolve('./output'), { recursive: true });
+   return db.destroy();
 });
 
 async function seedDatabase(db: Knex) {
@@ -133,7 +131,7 @@ async function getDocument(name: string) {
     return documents[0];
 }
 
-test('Find all notes', async (done) => {
+test('Find all notes', async () => {
     const { document } = await getDocument('findAllNotes');
 
     const { data } = await client.query({ query: document });
@@ -164,11 +162,9 @@ test('Find all notes', async (done) => {
             comments: []
         }
     ])
-
-    done();
 })
 
-test('Find all notes except the first', async (done) => {
+test('Find all notes except the first', async () => {
     const { document } = await getDocument('findAllNotes');
 
     const { data } = await client.query({ query: document, variables: { offset: 1 } });
@@ -182,11 +178,9 @@ test('Find all notes except the first', async (done) => {
             comments: []
         }
     ])
-
-    done();
 })
 
-test('Find at most one note', async (done) => {
+test('Find at most one note', async () => {
     const { document } = await getDocument('findAllNotes');
 
     const { data } = await client.query({ query: document, variables: { limit: 1 } });
@@ -211,11 +205,9 @@ test('Find at most one note', async (done) => {
             ]
         },
     ])
-
-    done();
 })
 
-test('Find all comments', async done => {
+test('Find all comments', async () => {
     const { document } = await getDocument('findAllComments');
 
     const { data } = await client.query({ query: document });
@@ -251,11 +243,9 @@ test('Find all comments', async done => {
             }
         }
     ])
-
-    done();
 })
 
-test('Note 1 should be defined', async (done) => {
+test('Note 1 should be defined', async () => {
     const response = await findNote('1', client);
     expect(response.data).toBeDefined();
     const notes = response.data.findNotes;
@@ -276,19 +266,15 @@ test('Note 1 should be defined', async (done) => {
             }
         ]
     }]);
-
-    done();
 })
 
-test('Note 1 Comments exists', async (done) => {
+test('Note 1 Comments exists', async () => {
     const response = await findNoteComments('1', client);
     expect(response.data).toBeDefined()
     expect(response.data.findComments).toHaveLength(2);
-
-    done();
 })
 
-test('Find at most one comment on Note 1', async (done) => {
+test('Find at most one comment on Note 1', async () => {
 
     const { document } = await getDocument('findComments');
 
@@ -313,11 +299,9 @@ test('Find at most one comment on Note 1', async (done) => {
             },
         }
     ])
-
-    done();
 })
 
-test('Find comments on Note 1 except first', async (done) => {
+test('Find comments on Note 1 except first', async () => {
 
     const { document } = await getDocument('findComments');
 
@@ -342,35 +326,27 @@ test('Find comments on Note 1 except first', async (done) => {
             },
         }
     ])
-
-    done();
 })
 
-test('Should update Note 1 title', async (done) => {
+test('Should update Note 1 title', async () => {
     const response = await updateNote({ id: '1', title: 'Note 1 New Title' }, client);
     expect(response.data).toBeDefined();
     expect(response.data.updateNote.title).toBe('Note 1 New Title');
-
-    done();
 });
 
-test('Should create a new Note', async (done) => {
+test('Should create a new Note', async () => {
     const response = await createNote(client, { title: 'New note', description: 'New note description' });
     expect(response.data).toBeDefined();
     expect(response.data.createNote).toEqual({ id: '3', title: 'New note', description: 'New note description' });
-
-    done();
 })
 
-test('Delete Note 1', async done => {
+test('Delete Note 1', async () => {
     const response = await deleteNote(client, { id: '2' });
     expect(response.data).toBeDefined();
     expect(response.data.deleteNote).toEqual({ id: '2', description: 'Note B Description', title: 'Note B' });
-
-    done();
 });
 
-test('Test custom query', async done => {
+test('Test custom query', async () => {
     const document = gql`
         query {
             helloWorld
@@ -379,8 +355,6 @@ test('Test custom query', async done => {
     const response = await client.query({ query: document })
 
     expect(response.data).toEqual({ helloWorld: 'Hello!' });
-
-    done();
 })
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
