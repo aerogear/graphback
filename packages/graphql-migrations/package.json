@@ -33,7 +33,6 @@
     "@types/jest": "25.2.1",
     "@types/lodash": "4.14.150",
     "@types/node": "12.12.37",
-    "ava": "2.4.0",
     "graphql": "14.6.0",
     "graphql-tools": "5.0.0",
     "jest": "25.4.0",
