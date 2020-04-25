@@ -2,7 +2,7 @@ import * as prettier from 'prettier';
 
 export function formatDocumentJS(contents: string) {
     try {
-        return prettier.format(contents, { semi: false, parser: 'babel' });
+        return prettier.format(contents, { semi: false, parser: 'babel', trailingComma: "all" });
     } catch (e) {
         //tslint:disable-next-line: no-console
         console.log("Cannot format resolvers document", e)
@@ -13,7 +13,7 @@ export function formatDocumentJS(contents: string) {
 
 export function formatDocumentTs(contents: string) {
     try {
-        return prettier.format(contents, { semi: false, parser: 'typescript' });
+        return prettier.format(contents, { semi: false, parser: 'typescript', trailingComma: 'all' });
     } catch (e) {
         //tslint:disable-next-line: no-console
         console.log("Cannot format resolvers implementation", e)
