@@ -37,7 +37,7 @@
   "dependencies": {
     "@graphback/core": "0.12.0",
     "@graphback/runtime": "0.12.0",
-    "@types/mongodb": "3.5.13",
+    "@types/mongodb": "3.5.14",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0"
   },
