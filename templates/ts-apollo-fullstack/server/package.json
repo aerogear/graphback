@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/cors": "2.8.6",
     "@types/express": "4.17.6",
-    "@types/node": "13.13.2",
+    "@types/node": "13.13.3",
     "ts-node": "8.9.1",
     "typescript": "3.8.3"
   }
