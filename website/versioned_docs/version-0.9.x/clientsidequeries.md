@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-clientqueries
+
 title: Client-side Queries
-original_id: clientqueries
+id: clientqueries
 ---
 
 Graphback allows users to generate client-side queries based on the data model. All the queries/mutations/subscriptions

@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-commands
+
 title: CLI commands
-original_id: commands
+id: commands
 ---
 
 ## Commands

@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-migrations
+
 title: Migrating to GraphQL
-original_id: migrations
+id: migrations
 ---
 
 Graphback helps with building a GraphQL server from scratch including the database and API,

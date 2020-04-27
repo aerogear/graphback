@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-templates
+
 title: Templates
-original_id: templates
+id: templates
 ---
 ## Templates
 
