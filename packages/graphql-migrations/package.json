@@ -38,7 +38,7 @@
     "jest": "25.4.0",
     "pg": "8.0.3",
     "rimraf": "3.0.2",
-    "sqlite3": "4.1.1",
+    "sqlite3": "4.2.0",
     "ts-node": "8.9.1",
     "tsutils": "3.17.1",
     "typescript": "3.8.3"

@@ -39,7 +39,7 @@
     "pg": "8.0.3",
     "pluralize": "8.0.0",
     "prettier": "2.0.5",
-    "sqlite3": "4.1.1"
+    "sqlite3": "4.2.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
