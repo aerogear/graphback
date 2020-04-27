@@ -1,7 +1,6 @@
 ---
-id: version-0.9.x-database-schema-migrations
 title: Database Schema Migrations
-original_id: database-schema-migrations
+id: database-schema-migrations
 ---
 
 ## Database Schema Migrations

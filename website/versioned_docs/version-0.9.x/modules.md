@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-modules
+
 title: GraphQL Modules
-original_id: modules
+id: modules
 ---
 
 ## GraphQL Modules
