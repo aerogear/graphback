@@ -1,8 +1,7 @@
 ---
-id: version-0.10.x-runtime
 title: Graphback runtime
 sidebar_label: Runtimes
-original_id: runtime
+id: runtime
 ---
 
 Graphback allows you to query any data using reusable concept called runtime. 
