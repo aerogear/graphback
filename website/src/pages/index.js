@@ -11,6 +11,7 @@ import { BlogCards } from '../components/BlogCards';
 function Home() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
+  
   return (
     <Layout
       title={siteConfig.title}
