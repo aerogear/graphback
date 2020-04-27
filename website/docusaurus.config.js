@@ -1,4 +1,5 @@
-// const versions = require('./versions.json');
+/* eslint-disable */
+const versions = require('./versions.json');
 
 module.exports = {
   title: 'Graphback',
@@ -11,7 +12,6 @@ module.exports = {
   themeConfig: {
     disableDarkMode: true,
     prism: {
-      // eslint-disable-next-line
       theme: require('prism-react-renderer/themes/github'),
       // theme: require('prism-react-renderer/themes/dracula'),
       defaultLanguage: 'javascript',
@@ -33,23 +33,23 @@ module.exports = {
               label: '0.12.x',
               to: 'docs/gettingstarted',
             },
-            // ...versions.slice(1).map((version) => ({
-            //   label: version,
-            //   to: `docs/${version}/introduction`,
-            // }))
-            // {
-            //   label: 'Master/Unreleased',
-            //   to: 'docs/next/introduction',
-            // },
+            ...versions.slice(1).map((version) => ({
+              label: version,
+              to: `docs/${version}/gettingstarted`,
+            })),
+            {
+              label: 'Master/Unreleased',
+              to: 'docs/next/gettingstarted',
+            },
           ],
         },
         {
-          to: 'docs/gettingstarted',
+          to: 'versions',
           label: `v0.12.x`,
           position: 'right',
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/aerogear/graphback',
           label: 'GitHub',
           position: 'right',
         },
@@ -113,7 +113,7 @@ module.exports = {
         docs: {
           path: '../docs',
           routeBasePath: 'docs',
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: require.resolve('./sidebars.json'),
           editUrl:
             'https://github.com/aerogear/graphback/edit/master/website/',
         },
