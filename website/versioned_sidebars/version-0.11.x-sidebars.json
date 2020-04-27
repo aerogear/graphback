@@ -1,40 +1,40 @@
 {
-  "version-0.11.x-docs": {
+  "version-0.11.x/": {
     "Introduction": [
-      "version-0.11.x-gettingstarted"
+      "version-0.11.x/gettingstarted"
     ],
     "Getting Started": [
-      "version-0.11.x-intro/quickstart",
-      "version-0.11.x-intro/existingproject",
-      "version-0.11.x-intro/serverless",
-      "version-0.11.x-intro/graphqlserve",
-      "version-0.11.x-intro/datamodel",
-      "version-0.11.x-intro/config"
+      "version-0.11.x/intro/quickstart",
+      "version-0.11.x/intro/existingproject",
+      "version-0.11.x/intro/serverless",
+      "version-0.11.x/intro/graphqlserve",
+      "version-0.11.x/intro/datamodel",
+      "version-0.11.x/intro/config"
     ],
     "CRUD": [
-      "version-0.11.x-crud/crudspec",
-      "version-0.11.x-crud/crudruntime"
+      "version-0.11.x/crud/crudspec",
+      "version-0.11.x/crud/crudruntime"
     ],
     "Generator Plugins": [
-      "version-0.11.x-plugins/plugin-intro",
-      "version-0.11.x-plugins/crud-schema",
-      "version-0.11.x-plugins/crud-resolvers",
-      "version-0.11.x-plugins/crud-client",
-      "version-0.11.x-plugins/customplugin"
+      "version-0.11.x/plugins/plugin-intro",
+      "version-0.11.x/plugins/crud-schema",
+      "version-0.11.x/plugins/crud-resolvers",
+      "version-0.11.x/plugins/crud-client",
+      "version-0.11.x/plugins/customplugin"
     ],
     "Database": [
-      "version-0.11.x-db/dbintroduction",
-      "version-0.11.x-db/datasources",
-      "version-0.11.x-db/dbmigrations"
+      "version-0.11.x/db/dbintroduction",
+      "version-0.11.x/db/datasources",
+      "version-0.11.x/db/dbmigrations"
     ],
     "Migrating to Graphback": [
-      "version-0.11.x-migrations/openapi"
+      "version-0.11.x/migrations/openapi"
     ],
     "Reference": [
-      "version-0.11.x-commands"
+      "version-0.11.x/commands"
     ],
     "Releases": [
-      "version-0.11.x-releases"
+      "version-0.11.x/releases"
     ]
   }
 }
