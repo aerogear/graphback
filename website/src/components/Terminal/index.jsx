@@ -62,6 +62,7 @@ function TerminalText({ phrase }) {
   const toggleReverse = () => {
     reverse = !reverse;
     wait = true;
+    
     return new Promise(resolve => {
       setTimeout(() => {
         wait = false;
