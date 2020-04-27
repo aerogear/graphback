@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-openapi
+
 title: OpenAPI migrations
-original_id: openapi
+id: openapi
 ---
 
 ## OpenAPI spec migration

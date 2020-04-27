@@ -1,7 +1,7 @@
 ---
-id: version-0.9.x-concepts
+
 title: Introduction
-original_id: concepts
+id: concepts
 ---
 
 ## Introduction
