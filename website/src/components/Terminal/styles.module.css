@@ -1,0 +1,47 @@
+/* stylelint-disable docusaurus/copyright-header */
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+ .terminalHeader {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  height: 50vh;
+  /* background: #e535ab; */
+  color: #161e26;
+  font-size: 2.5rem;
+  font-weight: 300;
+}
+
+.terminal { 
+  height: 50vh; 
+  width: 100%; 
+  /* background: #161e26; */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* color: #e535ab; */
+  color: #161e26;
+  font-size: 4rem;
+  font-weight: 600;
+  font-style: 'mono';
+}
+
+.underscore {
+  display: inline-block;
+  position: relative;
+}
+
+@media screen and (max-width: 966px) {
+  .terminalHeader {
+    height: 25vh;
+  }
+  .terminal { 
+    height: 25vh;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+}
