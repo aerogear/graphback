@@ -1,7 +1,6 @@
 ---
-id: version-0.12.x-config
+id: config
 title: Config
-original_id: config
 ---
 
 Graphback can generate source code, migrate your database or start fully functional server basing just on your GraphQL Model.

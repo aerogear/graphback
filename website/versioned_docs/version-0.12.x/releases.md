@@ -1,7 +1,6 @@
 ---
-id: version-0.12.x-releases
+id: releases
 title: Releases
-original_id: releases
 ---
 
 ## What's new in Graphback
