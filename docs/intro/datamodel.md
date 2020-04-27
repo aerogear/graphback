@@ -120,3 +120,41 @@ type Profile {
   user: User!
 }
 ```
+
+### ManyToMany
+
+To create a many-to-many relationship, add a model for your join table and use two one-to-many relationship mappings to create the relationship.
+
+```graphql
+""" 
+@model 
+"""
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  """
+  @oneToMany field: 'note'
+  """
+  authors: [NoteAuthor]
+}
+
+"""
+@model
+"""
+type NoteAuthor {
+  id: ID!
+}
+
+"""
+@model
+"""
+type User {
+  id: ID!
+  name: String
+  """
+  @oneToMany field: 'author'
+  """
+  notes: [NoteAuthor]
+}
+```
