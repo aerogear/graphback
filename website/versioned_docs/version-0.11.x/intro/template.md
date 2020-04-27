@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-template
+
 title: Create client and server application from template
 sidebar_label: Create App from scratch
-original_id: template
+id: template
 ---
 
 ### Start new project using Graphback

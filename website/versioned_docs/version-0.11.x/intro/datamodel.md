@@ -1,7 +1,7 @@
 ---
-id: version-0.11.x-datamodel
+
 title: Data Model
-original_id: datamodel
+id: datamodel
 ---
 
 Graphback processes your data model to generate a server and client side using best patterns for production ready applications and reduces amount of boilerplate code needed to be added by you.

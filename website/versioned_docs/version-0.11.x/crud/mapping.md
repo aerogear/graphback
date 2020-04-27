@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-crudmapping
+
 title: Type to Database mapping
 sidebar_label: Mapping your data
-original_id: crudmapping
+id: crudmapping
 ---
 
 ## Mapping your data

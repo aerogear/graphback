@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-serverless
+
 title: Runtime API
 sidebar_label: Runtime API
-original_id: serverless
+id: serverless
 ---
 
 Graphback allows you to add a GraphQL API to your application without generating any code.

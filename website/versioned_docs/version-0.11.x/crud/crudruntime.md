@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-crudruntime
+
 title: CRUD Runtime Abstraction
 sidebar_label: CRUD Abstraction
-original_id: crudruntime
+id: crudruntime
 ---
 
 A Graphback CRUD abstraction is available as part of the `@graphback/runtime` package, providing a way to programatically define different datasources and configure them without code generation.
