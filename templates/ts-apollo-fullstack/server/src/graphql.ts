@@ -26,9 +26,9 @@ export const createApolloServer = () => {
   const context = createKnexPGCRUDRuntimeServices(models, schema, db, pubSub);
   const apolloServer = new ApolloServer({
     typeDefs,
-    graphbackResolvers,
     context,
     playground: true,
+    resolvers: graphbackResolvers
   })
 
   return apolloServer;
