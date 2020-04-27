@@ -1,0 +1,75 @@
+/* stylelint-disable docusaurus/copyright-header */
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #23246f;
+  --ifm-color-primary-dark: #1e1f5e;
+  --ifm-color-primary-darker: #202064;
+  --ifm-color-primary-darkest: #23246f;
+  --ifm-color-primary-light: #27287a;
+  --ifm-color-primary-lighter: #282980;
+  --ifm-color-primary-lightest: #2e2f90;
+  --ifm-code-font-size: 95%;
+}
+
+#__docusaurus {
+  position: relative;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+.navbar {
+  box-shadow: none;
+}
+
+.button--rounded {
+  border-radius: 2rem;
+}
+
+.hero .hero__title {
+  line-height: 3rem;
+  font-weight: 900;
+  /* font-size: 5rem !important; */
+}
+
+.hero__subtitle {
+  font-size: 3rem;
+  font-weight: 600;
+  /* font-size: 5rem !important; */
+}
+
+.hide-modal {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.card-anchor {
+  color: #222;
+}
+
+.card-ancher:hover {
+  text-decoration: none;
+}
+
+a.card-anchor:hover > .card-demo > .card {
+  border: transparent;
+  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+}
+
+.footer.footer--dark {
+  background: #00003C !important;
+}
