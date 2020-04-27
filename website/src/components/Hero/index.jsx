@@ -26,7 +26,7 @@ export function Hero({ siteConfig }) {
                   'button button--primary button--lg button--rounded',
                   styles.getStarted,
                 )}
-                to={useBaseUrl('docs/doc1')}>
+                to={useBaseUrl('docs/gettingstarted')}>
                 Get Started
                 </Link>
             </div>
