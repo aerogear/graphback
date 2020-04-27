@@ -43,7 +43,6 @@ module.exports = {
             // },
           ],
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
         {
           to: 'docs/gettingstarted',
           label: `v0.12.x`,
