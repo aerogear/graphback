@@ -41,7 +41,7 @@ function TerminalText({ phrase }) {
   const waiting = () => {
     return (
       wait
-      || (lettercount === phrase.length + 1 && !reverse) 
+      || (lettercount === phrase.length + 1 && !reverse)
       || (lettercount === 0 && reverse)
     );
   }
@@ -92,7 +92,7 @@ export function Terminal() {
       </div>
       <div className={styles.terminal}>
         <span>>&nbsp;&nbsp;</span>
-        <TerminalText phrase={'npx graphback init your-app'} />
+        <TerminalText phrase={'npx graphback-cli init your-app'} />
         <Underscore />
       </div>
     </div>
