@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-dbmigrations
+
 title: Database Migrations
 sidebar_label: Migrations
-original_id: dbmigrations
+id: dbmigrations
 ---
 
 Graphback uses [graphql-migrations](https://www.npmjs.com/package/graphql-migrations) to automatically create and update tables from a GraphQL schema.

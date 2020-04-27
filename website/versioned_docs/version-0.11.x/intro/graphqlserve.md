@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-graphqlserve
+
 title: Running an API without code
 sidebar_label: API without code
-original_id: graphqlserve
+id: graphqlserve
 ---
 
 With GraphQL Serve you can have a GraphQL API running in just a few seconds without writing a single line of code - all you need is a data model `.graphql` file.

@@ -1,8 +1,7 @@
 ---
-id: version-0.11.x-plugin-intro
 title: Graphback Plugins introduction
 sidebar_label: Introduction
-original_id: plugin-intro
+id: plugin-intro
 ---
 
 Graphback generator plugins allow developers to define custom set of transformations 

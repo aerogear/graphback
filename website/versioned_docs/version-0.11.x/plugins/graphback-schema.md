@@ -1,8 +1,7 @@
 ---
-id: version-0.11.x-crud-schema
 title: Graphback CRUD Schema Plugin
 sidebar_label: CRUD Schema
-original_id: crud-schema
+id: crud-schema
 ---
 
 ## Graphback CRUD Schema plugin

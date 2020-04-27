@@ -1,7 +1,7 @@
 ---
-id: version-0.11.x-openapi
+
 title: Migrating from REST
-original_id: openapi
+id: openapi
 ---
 
 OpenAPI (Swagger) is a specification for describing RESTful APIs.

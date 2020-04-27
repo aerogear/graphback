@@ -1,8 +1,7 @@
 ---
-id: version-0.11.x-crud-resolvers
 title: CRUD Resolvers Plugin
 sidebar_label: CRUD Resolvers
-original_id: crud-resolvers
+id: crud-resolvers
 ---
 
 The Graphback CRUD Resolvers plugin gives developers an opinionated way to generate a set of Node.js server compatible GraphQL resolvers

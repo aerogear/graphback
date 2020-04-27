@@ -1,8 +1,7 @@
 ---
-id: version-0.11.x-crud-client
 title: Graphback CRUD Client Queries Plugin
 sidebar_label: CRUD Client Queries
-original_id: crud-client
+id: crud-client
 ---
 
 ## Graphback CRUD Client plugin

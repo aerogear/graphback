@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-relationships
+
 title: Model Relationships
 sidebar_label: Model Relationships
-original_id: relationships
+id: relationships
 ---
 
 > NOTE: This document is outdated and needs more work
