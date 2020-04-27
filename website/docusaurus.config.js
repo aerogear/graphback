@@ -67,11 +67,27 @@ module.exports = {
             },
             {
               label: 'Getting started',
-              to: 'docs/intro',
+              to: 'docs/intro/quickstart',
             },
             {
               label: 'CRUD',
-              to: 'docs/crud',
+              to: 'docs/crud/crudspec',
+            },
+            {
+              label: 'Plugins',
+              to: 'docs/plugins/plugin-intro',
+            },
+            {
+              label: 'Migrations',
+              to: 'docs/migrations/openapi',
+            },
+            {
+              label: 'Reference',
+              to: 'docs/commands',
+            },
+            {
+              label: 'Releases',
+              to: 'docs/releases',
             }
           ],
         },
@@ -87,10 +103,10 @@ module.exports = {
         {
           title: 'Social',
           items: [
-            {
-              label: 'Blog',
-              to: 'blog',
-            },
+            // {
+            //   label: 'Blog',
+            //   to: 'blog',
+            // },
             {
               label: 'GitHub',
               href: 'https://github.com/aerogear/graphback',
