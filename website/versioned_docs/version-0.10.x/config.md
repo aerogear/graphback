@@ -1,7 +1,6 @@
 ---
-id: version-0.10.x-config
 title: Graphback CRUD Config
-original_id: config
+id: config
 ---
 
 Graphback takes input model and generates CRUD operations as queries and mutations.

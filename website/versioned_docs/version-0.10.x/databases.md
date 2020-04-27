@@ -1,7 +1,6 @@
 ---
-id: version-0.10.x-datasources
 title: Data Sources
-original_id: datasources
+id: datasources
 ---
 
 ## Data Sources
