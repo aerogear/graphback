@@ -1,7 +1,6 @@
 ---
-id: version-0.10.x-relationships
 title: Relationships
-original_id: relationships
+id: relationships
 ---
 
 ## Database Relationships

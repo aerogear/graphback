@@ -1,7 +1,6 @@
 ---
-id: version-0.10.x-datamodel
 title: Defining your Data Model
-original_id: datamodel
+id: datamodel
 ---
 
 ## Model
