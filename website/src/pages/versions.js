@@ -30,7 +30,7 @@ function Versions() {
                   {/* You are supposed to change this href where appropriate
                         Example: href="<baseUrl>/docs(/:language)/:id" */}
                   <a
-                    href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/gettingstarted`}>
+                    href={`${siteConfig.baseUrl}docs/gettingstarted`}>
                     Documentation
                   </a>
                 </td>
@@ -52,7 +52,7 @@ function Versions() {
                   {/* You are supposed to change this href where appropriate
                         Example: href="<baseUrl>/docs(/:language)/next/:id" */}
                   <a
-                    href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/next/gettingstarted`}>
+                    href={`${siteConfig.baseUrl}docs/next/gettingstarted`}>
                     Documentation
                   </a>
                 </td>
@@ -75,7 +75,7 @@ function Versions() {
                         {/* You are supposed to change this href where appropriate
                         Example: href="<baseUrl>/docs(/:language)/:version/:id" */}
                         <a
-                          href={`${siteConfig.baseUrl}${siteConfig.docsUrl}/${version}/gettingstarted`}>
+                          href={`${siteConfig.baseUrl}docs/${version}/gettingstarted`}>
                           Documentation
                         </a>
                       </td>
