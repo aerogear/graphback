@@ -38,7 +38,7 @@ const features = [
 
 function Feature({imageUrl, title, description}) {
   const imgUrl = useBaseUrl(imageUrl);
-
+  
   return (
     <div className="text--center">
       {imgUrl && (
