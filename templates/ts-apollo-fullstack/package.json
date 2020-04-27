@@ -20,7 +20,7 @@
     "@graphql-codegen/typescript-react-apollo": "1.13.3",
     "graphback-cli": "0.12.0",
     "graphql": "14.6.0",
-    "tslint": "6.1.1",
+    "tslint": "6.1.2",
     "typescript": "3.8.3"
   }
 }
