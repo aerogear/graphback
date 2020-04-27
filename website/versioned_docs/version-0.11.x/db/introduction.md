@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-dbintroduction
+
 title: Database
 sidebar_label: Introduction
-original_id: dbintroduction
+id: dbintroduction
 ---
 
 Graphback provides a rich set of tools and APIs that help you get your database working with your GraphQL application in minutes.

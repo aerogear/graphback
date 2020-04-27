@@ -1,7 +1,6 @@
 ---
-id: version-0.11.x-commands
 title: CLI commands
-original_id: commands
+id: commands
 ---
 
 ## Commands

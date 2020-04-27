@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-customplugin
+
 title: Creating your own plugin
 sidebar_label: Custom plugin
-original_id: customplugin
+id: customplugin
 ---
 
 Graphback allows to create your own plugins that can affect generated schema 

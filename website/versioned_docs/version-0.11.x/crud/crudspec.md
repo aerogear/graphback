@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-crudspec
+
 title: Graphback CRUD Specification
 sidebar_label: CRUD Specification
-original_id: crudspec
+id: crudspec
 ---
 
 GraphQL is a flexible query language supporting many different data access patterns. 

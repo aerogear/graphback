@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-existingproject
+
 title: Adding Graphback to your Node.js project
 sidebar_label: Add to existing project
-original_id: existingproject
+id: existingproject
 ---
 
 ## Adding Graphback to existing project using Graphback CLI

@@ -1,8 +1,7 @@
 ---
-id: version-0.11.x-gettingstarted
 title: Introduction to Graphback
 sidebar_label: What is Graphback
-original_id: gettingstarted
+id: gettingstarted
 ---
 
 Graphback is a package and CLI tool that can help you bootstrap a GraphQL server and client.

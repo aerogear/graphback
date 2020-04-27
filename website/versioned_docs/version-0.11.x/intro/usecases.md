@@ -1,8 +1,8 @@
 ---
-id: version-0.11.x-usecases
+
 title: How to use Graphback
 sidebar_label: Introduction
-original_id: usecases
+id: usecases
 ---
 
 ## How can I start using Graphback
