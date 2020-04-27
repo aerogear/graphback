@@ -129,7 +129,7 @@ module.exports = {
         docs: {
           path: '../docs',
           routeBasePath: 'docs',
-          sidebarPath: require.resolve('./sidebars.json'),
+          sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/aerogear/graphback/edit/master/website/',
         },
