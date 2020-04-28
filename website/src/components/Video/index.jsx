@@ -4,7 +4,6 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
 function VideoModal({ open, close}) {
-  console.log(open);
   return (
     <div className={classnames(styles.modalWindow, { 'hide-modal': !open })}>
       <div className={styles.modalBackground} />
