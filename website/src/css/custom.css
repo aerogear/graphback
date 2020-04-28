@@ -73,3 +73,49 @@ a.card-anchor:hover > .card-demo > .card {
 .footer.footer--dark {
   background: #00003C !important;
 }
+
+.opacity-zero {
+  opacity: 0;
+}
+
+.slideInLeft {
+  -webkit-animation: slideinleft ease-in 0.6s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: slideinleft ease-in 0.6s; /* Firefox < 16 */
+  -ms-animation: slideinleft ease-in 0.6s; /* Internet Explorer */
+  -o-animation: slideinleft ease-in 0.6s; /* Opera < 12.1 */
+  animation: slideinleft ease-in 0.6s;
+}
+
+@keyframes slideinleft {
+  from { 
+    transform: translateX(-50rem);
+  }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes slideinleft {
+  from { 
+    transform: translateX(-50rem);
+  }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes slideinleft {
+  from { 
+    transform: translateX(-50rem);
+  }
+}
+
+/* Internet Explorer */
+@-ms-keyframes slideinleft {
+  from { 
+    transform: translateX(-50rem);
+  }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes slideinleft {
+  from { 
+    transform: translateX(-50rem);
+  }
+}

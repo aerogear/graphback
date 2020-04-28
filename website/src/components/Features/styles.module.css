@@ -37,6 +37,8 @@
   max-width: calc(var(--ifm-container-width)/3);
   margin-left: auto;
   margin-right: auto;
+  /* transform: translateX(-50rem); */
+  /* transition: translate ease-in 1.2ms; */
 }
 
 .rightSplit {

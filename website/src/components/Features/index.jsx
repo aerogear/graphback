@@ -38,6 +38,7 @@ const features = [
 
 function Feature({imageUrl, title, description}) {
   const imgUrl = useBaseUrl(imageUrl);
+
   return (
     <div className="text--center">
       {imgUrl && (
@@ -52,10 +53,25 @@ function Feature({imageUrl, title, description}) {
 }
 
 export function Features () {
+  const target = document.querySelector('#sticky');
+  
+  const observer = new IntersectionObserver((entries) => {
+    const entry = entries[0];
+    if (entry.intersectionRatio > 0) {
+      entry.target.classList.add('slideInLeft');
+      entry.target.classList.remove('opacity-zero');
+      observer.unobserve(entry.target);
+    }
+  });
+
+  if (target) {
+    observer.observe(target);
+  }
+  
   return (
     <div className={styles.splitContainer}>
       <div className={classnames(styles.leftSplit, styles.featureSticky)}>
-        <div className={styles.stickyContent}>
+        <div id="sticky" className={classnames(styles.stickyContent, 'opacity-zero')}>
           <h2 className="hero__subtitle">Graphback Workflow</h2>
           <p>Graphback provides command line client for generating fully functional GraphQL enabled Node.js server and client side applications. Graphback will generate production-ready application based on your GraphQL types in seconds.</p>
         </div>
