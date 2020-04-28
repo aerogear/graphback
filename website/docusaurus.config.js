@@ -13,7 +13,7 @@ module.exports = {
     disableDarkMode: true,
     prism: {
       theme: require('prism-react-renderer/themes/github'),
-      // theme: require('prism-react-renderer/themes/dracula'),
+      // darkTheme: require('prism-react-renderer/themes/dracula'),
       defaultLanguage: 'javascript',
     },
     navbar: {
@@ -95,21 +95,12 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/mJ7j84m',
-            },
-          ],
-        },
-        {
-          title: 'Social',
-          items: [
-            // {
-            //   label: 'Blog',
-            //   to: 'blog',
-            // },
-            {
               label: 'GitHub',
               href: 'https://github.com/aerogear/graphback',
+            },
+            {
+              label: 'Discord',
+              href: 'https://discordapp.com/invite/mJ7j84m',
             },
           ],
         },
