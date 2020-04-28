@@ -39,7 +39,7 @@
     "@graphback/runtime": "0.12.0",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0",
-    "knex": "0.21.0"
+    "knex": "0.21.1"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
