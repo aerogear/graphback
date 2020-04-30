@@ -39,7 +39,8 @@
     "@graphback/runtime": "0.12.0",
     "@types/mongodb": "3.5.14",
     "dataloader": "2.0.0",
-    "graphql-subscriptions": "1.1.0"
+    "graphql-subscriptions": "1.1.0",
+    "mquery": "^3.2.2"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
