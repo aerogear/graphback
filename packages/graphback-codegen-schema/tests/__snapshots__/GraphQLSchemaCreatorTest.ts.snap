@@ -1,5 +1,98 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Test one side relationship schema query type generation 1`] = `
+"directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+\\"\\"\\" @model \\"\\"\\"
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments: [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+"
+`;
+
+exports[`Test one side relationship schema query type generation 2`] = `
+"directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+\\"\\"\\" @model \\"\\"\\"
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  noteComment: Note
+}
+
+input CommentInput {
+  id: ID
+  title: String
+  description: String
+  note_id: ID
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments: [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
+input NoteInput {
+  id: ID
+  title: String
+  description: String
+  test_id: ID
+}
+
+type Query {
+  findAllNotes(limit: Int, offset: Int): [Note]!
+  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  findAllComments(limit: Int, offset: Int): [Comment]!
+  findComments(fields: CommentInput, limit: Int, offset: Int): [Comment]!
+  findAllTests(limit: Int, offset: Int): [Test]!
+  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+
+input TestInput {
+  id: ID
+  name: String
+}
+"
+`;
+
 exports[`Test snapshot config gql 1`] = `
 "directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
 

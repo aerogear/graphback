@@ -4,6 +4,7 @@ import { GraphbackCoreMetadata, printSchemaWithDirectives } from '@graphback/cor
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
+const oneSidedRelSchemaText = readFileSync(`${__dirname}/mock-with-one-sided-relationship.graphql`, 'utf8');
 
 test('Test snapshot config gql', async () => {
   const defautConfig = {
@@ -68,4 +69,29 @@ test('Test snapshot config js', async () => {
   }, buildSchema(schemaText))
   const schema = schemaGenerator.transformSchema(metadata)
   expect(printSchema(schema)).toMatchSnapshot();
+});
+
+test('Test one side relationship schema query type generation', async () => {
+  const defautConfig = {
+    "create": false,
+    "update": false,
+    "findAll": true,
+    "find": true,
+    "delete": false,
+    "subCreate": false,
+    "subUpdate": false,
+    "subDelete": false
+  }
+
+  const oneSidedSchema = buildSchema(oneSidedRelSchemaText)
+  // confirm the absence of one side of the relationship
+  expect(printSchema(oneSidedSchema)).toMatchSnapshot()
+
+  const schemaGenerator = new SchemaCRUDPlugin({ format: 'graphql', outputPath: './tmp' })
+  const metadata = new GraphbackCoreMetadata({
+    crudMethods: defautConfig
+  }, oneSidedSchema)
+
+  const transformedSchema = schemaGenerator.transformSchema(metadata)
+  expect(printSchema(transformedSchema)).toMatchSnapshot()
 });

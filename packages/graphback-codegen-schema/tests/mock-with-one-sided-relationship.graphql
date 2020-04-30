@@ -1,0 +1,31 @@
+directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+""" @model """
+type Note {
+  id: ID!
+  title: String! @test(description: "mock directive")
+  description: String!
+  """
+  @oneToMany field: 'noteComment', key: 'note_id'
+  """
+  comments: [Comment]!
+  """
+  @oneToOne key: 'test_id'
+  """
+  test: Test
+}
+
+"""
+@model
+"""
+type Test {
+  id: ID!
+  name: String
+}
+
+""" @model """
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+}
