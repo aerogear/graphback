@@ -1,5 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
+import * as mquery from "mquery";
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
@@ -41,9 +42,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
 
-    const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
+    const result = await mquery(this.db.collection(this.collectionName)).updateOne({ _id: new ObjectId(idField.value) }, data);
     if (result) {
-      const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
+      const queryResult = await mquery(this.db.collection(this.collectionName)).find({ _id: new ObjectId(idField.value) });
       if (queryResult && queryResult[0]) {
         queryResult[0][idField.name] = queryResult[0]._id;
 
@@ -60,9 +61,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
     }
 
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) });
+    const queryResult = await mquery(this.db.collection(this.collectionName)).findOne({ _id: new ObjectId(idField.value) });
     if (queryResult) {
-      const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
+      const result = await mquery(this.db.collection(this.collectionName)).deleteOne({ _id: new ObjectId(idField.value) });
       if (result.result.ok) {
         queryResult[idField.name] = queryResult._id;
 
@@ -73,7 +74,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    const query = this.db.collection(this.collectionName).find({});
+    const query = mquery(this.db.collection(this.collectionName)).find({});
     const data = await this.usePage(query, page);
 
     if (data) {
@@ -105,14 +106,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await this.db.collection(this.collectionName).find({ _id: { $in: array } }).toArray();
+      result = await mquery(this.db.collection(this.collectionName)).where('_id').in(array);
     } else {
-      const query: any = {};
       const array = ids.map((value: any) => {
         return value.toString();
       });
-      query[relationField] = { $in: array };
-      result = await this.db.collection(this.collectionName).find(query).toArray();
+
+      result = await mquery(this.db.collection(this.collectionName)).where(relationField).in(array);
     }
 
     if (result) {
@@ -139,7 +139,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   }
 
-  private usePage(query: Cursor<any>, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
+  private usePage(query: any, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
     if (page) {
       if (!(page.hasOwnProperty("offset"))) {
         // If no offset is supplied
@@ -150,7 +150,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
         }
       }
       query = query.skip(page.offset)
-      // console.log('page desu: ', page)
       if (page.hasOwnProperty("limit")) {
         if (page.limit <= 0) {
           throw new Error("Please use a limit of greater than 0 in queries")
@@ -159,7 +158,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       }
     }
 
-    return query.toArray();
+    return query;
   }
 
 }
