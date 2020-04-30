@@ -62,7 +62,7 @@ export class GraphbackRuntime {
     }, []);
   }
 
-  public getMetaData() {
+  public getMetadata() {
     return this.metadata;
   }
 }

@@ -4,13 +4,21 @@ import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
 import { GraphbackPlugin } from './GraphbackPlugin';
 
 /**
+ * options for the GraphbackPluginEngine
+ */
+export interface GraphBackPluginEngineOptions {
+    schema: GraphQLSchema | string
+    config: GraphbackGlobalConfig
+    plugins: GraphbackPlugin[]
+}
+/**
  * Allows to execute chain of plugins that create resources. 
  * Common use case is to decorate GraphQL schema with additional 
  * actions and generate files like resolvers and database access logic
  * 
  * Usage:
  * ```js
- * const engine = GraphbackPluginEngine(schema);
+ * const engine = GraphbackPluginEngine({ schema });
  * engine.registerPlugin(plugin);
  * printSchema(engine.createResources());
  * ```
@@ -20,8 +28,8 @@ export class GraphbackPluginEngine {
     private plugins: GraphbackPlugin[]
     private metadata: GraphbackCoreMetadata;
 
-    public constructor(schema: GraphQLSchema | string, config: GraphbackGlobalConfig) {
-        this.plugins = [];
+    public constructor({ schema, config, plugins }: GraphBackPluginEngineOptions) {
+        this.plugins = plugins || [];
         if (!schema) {
             throw new Error("Plugin engine requires schema");
         }
