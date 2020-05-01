@@ -13,5 +13,6 @@ export * from "./service/GraphbackPubSub"
 export * from "./resolvers/LayeredRuntimeResolverCreator"
 export * from "./resolvers/RuntimeResolversDefinition"
 
-export * from "./GraphbackPubSubModel"
+export * from "./GraphbackModelConfig"
 export * from "./GraphbackPage"
+export * from "./createRuntimeServices"

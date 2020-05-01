@@ -1,5 +1,5 @@
 import { GraphbackPluginEngine, ModelDefinition, GraphbackCoreMetadata } from '@graphback/core';
-import { GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackPubSubModel } from '@graphback/runtime';
+import { GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackModelConfig } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
 import { loadPlugins } from './loadPlugins';
 import { GraphbackConfig } from './GraphbackConfig';
@@ -14,6 +14,7 @@ export class GraphbackRuntime {
   protected config: GraphbackConfig;
   protected schema: string | GraphQLSchema;
   protected metadata: GraphbackCoreMetadata;
+  protected modelConfigs: GraphbackModelConfig[];
 
   public constructor(schema: GraphQLSchema | string, config: GraphbackConfig) {
     this.schema = schema;
@@ -26,6 +27,18 @@ export class GraphbackRuntime {
       config: { crudMethods: this.config.crud }
     });
     this.metadata = pluginEngine.createSchema();
+
+    const models = this.metadata.getModelDefinitions();
+    this.modelConfigs = models.map((model: ModelDefinition) => {
+      return {
+        name: model.graphqlType.name,
+        pubSub: {
+          publishCreate: model.crudOptions.subCreate,
+          publishUpdate: model.crudOptions.subDelete,
+          publishDelete: model.crudOptions.subUpdate
+        }
+      } as GraphbackModelConfig;
+    })
   }
 
   /**
@@ -45,21 +58,7 @@ export class GraphbackRuntime {
    * Get models for creation of the datasource
    */
   public getDataSourceModels() {
-    const models = this.metadata.getModelDefinitions();
-
-    return models.reduce((pubSubModels: any, model: ModelDefinition) => {
-      const pubSubModel: GraphbackPubSubModel = {
-        name: model.graphqlType.name,
-        pubSub: {
-          publishCreate: model.crudOptions.subCreate,
-          publishUpdate: model.crudOptions.subDelete,
-          publishDelete: model.crudOptions.subUpdate
-        }
-      }
-      pubSubModels.push(pubSubModel)
-      
-      return pubSubModels;
-    }, []);
+    return this.modelConfigs;
   }
 
   public getMetadata() {

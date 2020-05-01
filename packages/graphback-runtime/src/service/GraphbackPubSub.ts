@@ -1,5 +1,5 @@
 import { PubSubEngine } from "graphql-subscriptions";
-import { PubSubConfig } from '../GraphbackPubSubModel';
+import { PubSubConfig } from '../GraphbackModelConfig';
 
 /**
  * PubSub configuration that is passed to the 
