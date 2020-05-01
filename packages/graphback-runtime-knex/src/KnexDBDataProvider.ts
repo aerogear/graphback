@@ -72,12 +72,12 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(data)}`);
   }
 
-  public async findOne(filter: AdvancedFilter): Promise<Type> {
+  public async findOne(args: any): Promise<Type> {
     let result: Type
     try {
-      result = await this.db.select().from(this.tableName).where(filter).first();
+      result = await this.db.select().from(this.tableName).where(args).first();
     } catch (err) {
-      throw new NoDataError(`Cannot find a result for ${this.tableName} with filter: ${JSON.stringify(filter)}`)
+      throw new NoDataError(`Cannot find a result for ${this.tableName} with filter: ${JSON.stringify(args)}`)
     }
 
     return result

@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, getNullableType, GraphQLField, getNamedType, isInputType, GraphQLInputField, GraphQLFieldMap, isScalarType } from "graphql";
+import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, getNullableType, GraphQLField, getNamedType, isInputType, GraphQLInputField, GraphQLFieldMap, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLInputFieldConfig } from "graphql";
 import { getPrimaryKey, isInputField } from '@graphback/core';
 
 // scalar input names
@@ -11,7 +11,7 @@ const IDScalarInputTypeName = 'IDInput'
 const SortDirectionEnumName = 'SortDirection';
 
 export interface ModelInputTypeMap {
-  filterUniqueInput?: GraphQLInputObjectType
+  findOneQueryFields?: GraphQLInputFieldMap
   filterInput?: GraphQLInputObjectType
   createMutationInput?: GraphQLInputObjectType
   updateMutationInput?: GraphQLInputObjectType
@@ -117,6 +117,20 @@ export const createFilterUniqueInputType = (modelType: GraphQLObjectType) => {
       }
     }
   })
+}
+
+export function getFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInputFieldMap {
+  const idField = getPrimaryKey(modelType)
+  const idFieldType = getNamedType(idField.type) as GraphQLScalarType
+
+  return {
+    [idField.name]: {
+      name: idField.name,
+      type: GraphQLNonNull(idFieldType),
+      description: undefined,
+      extensions: undefined
+    }
+  }
 }
 
 function mapScalarFieldInputs(scalarFields: GraphQLField<any, any>[]) {
