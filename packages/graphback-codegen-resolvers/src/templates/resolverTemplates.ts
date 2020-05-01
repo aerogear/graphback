@@ -19,8 +19,8 @@ export const deleteTemplate = (modelName: string): string => {
 }
 
 export const findOneTemplate = (modelName: string): string => {
-  return `(parent, { filter }, context) => {
-      return context.${modelName}.findOne(filter);
+  return `(parent, args, context) => {
+      return context.${modelName}.findOne(args);
     }`
 }
 

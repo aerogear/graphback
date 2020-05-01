@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType, GraphQLSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType, GraphQLSchema, BREAK } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
@@ -37,12 +37,18 @@ export function upperCaseFirstChar(text: string) {
  * @param action
  */
 export const getFieldName = (typeName: string, action: GraphbackOperationType): string => {
-  let finalName = upperCaseFirstChar(typeName);
-  if (action === GraphbackOperationType.FIND || action === GraphbackOperationType.FIND_ALL) {
-    finalName = pluralize(finalName);
-  }
+  const finalName = upperCaseFirstChar(typeName);
 
-  return `${action}${finalName}`
+  switch (action) {
+    case GraphbackOperationType.FIND_ONE:
+      return `get${typeName}`
+    case GraphbackOperationType.FIND:
+      return `find${pluralize(finalName)}`
+    case GraphbackOperationType.FIND_ALL:
+      return `findAll${pluralize(finalName)}`
+    default:
+      return `${action}${finalName}`
+  }
 }
 
 export function getInputFieldName(field: GraphQLField<any, any>): string {

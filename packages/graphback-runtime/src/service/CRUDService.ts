@@ -75,10 +75,10 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return result;
   }
 
-  public findOne(filter: any, context?: any): Promise<T> {
-    this.logger.log(`fetching single object ${this.modelName} with filter ${JSON.stringify(filter)}`)
+  public findOne(args: any, context?: any): Promise<T> {
+    this.logger.log(`fetching single object ${this.modelName} with args ${JSON.stringify(args)}`)
 
-    return this.db.findOne(filter, context)
+    return this.db.findOne(args, context)
   }
 
   //tslint:disable-next-line: no-any

@@ -5,7 +5,7 @@ import { getFieldName, printSchemaWithDirectives, getSubscriptionName, Graphback
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLArgument, GraphQLString } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { createFilterUniqueInputType, createFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, createMutationInputType } from './definitions/typeDefinitions';
+import { createFilterUniqueInputType, createFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, createMutationInputType, getFindOneFieldMap } from './definitions/typeDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -135,16 +135,16 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   protected createModelInputTypeMap(model: ModelDefinition): ModelInputTypeMap {
-    const filterUniqueInput = createFilterUniqueInputType(model.graphqlType);
+    const findUniqueArguments = getFindOneFieldMap(model.graphqlType);
     const filterInput = createFilterInputType(model.graphqlType);
     const mutationInput = createMutationInputType(model.graphqlType)
 
     return {
-      filterUniqueInput,
+      findOneQueryFields: findUniqueArguments,
       filterInput,
       createMutationInput: mutationInput,
       updateMutationInput: mutationInput,
-      deleteMutationInput: filterUniqueInput
+      deleteMutationInput: mutationInput
     }
   }
 
@@ -262,9 +262,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryTypes[operation] = {
         type: model.graphqlType,
-        args: {
-          filter: GraphQLNonNull(modelInputTypeMap.filterUniqueInput)
-        },
+        args: modelInputTypeMap.findOneQueryFields
       };
     }
     if (model.crudOptions.find) {
