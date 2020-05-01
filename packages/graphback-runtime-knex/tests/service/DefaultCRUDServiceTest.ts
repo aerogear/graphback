@@ -1,52 +1,12 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { buildSchema, GraphQLObjectType } from 'graphql';
+import { unlinkSync, existsSync } from 'fs';
+import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
 import { CRUDService, GraphbackPubSub } from '../../../graphback-runtime/src';
 import { filterModelTypes } from '../../../graphback-core/src';
 import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
-import { migrateDB } from '../../../graphql-migrations/src';
-import { unlinkSync, existsSync } from 'fs';
-import path from 'path';
-
-//tslint:disable: typedef
-
-interface Context {
-  db: Knex;
-  provider: KnexDBDataProvider;
-  todoService: CRUDService<Todo>
-  userService: CRUDService;
-}
-
-interface Todo {
-  id?: number;
-  text: string;
-}
-
-interface ResultList<T> {
-  items: T[];
-}
-
-const schemaa = buildSchema(`
-"""
-@model
-"""
-type Todos {
- id: ID!
- text: String
-}
-
-"""
-@model
-"""
-type User {
-  name: String
-  """
-  @db.primary
-  """
-  username: String
-}
-`);
+import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
@@ -56,15 +16,18 @@ afterEach(() => {
   }
 })
 
-//tslint:disable-next-line: no-any
-const userModel = schemaa.getType('User') as GraphQLObjectType
+const setup = async ({ schemaSDL, seedData }: { schemaSDL?: string, seedData?: { [tableName: string]: any | any[] } } = {}) => {
+  if (!schemaSDL) {
+    schemaSDL =
+      `"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`
+  }
 
-//tslint:disable-next-line: no-any
-const todoModel = schemaa.getType('Todos') as GraphQLObjectType
-
-let context: Context;
-
-const setup = async (schemaStr: string, config: { seedData?: { [tableName: string]: any[] } } = {}) => {
   const dbConfig = {
     client: 'sqlite3',
     connection: {
@@ -75,12 +38,14 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
 
   const db = Knex(dbConfig);
 
-  const schema = buildSchema(schemaStr)
+  const schema = buildSchema(schemaSDL)
 
-  await migrateDB(dbConfig, schema)
+  await migrateDB(dbConfig, schema, {
+    operationFilter: removeNonSafeOperationsFilter
+  })
 
-  if (config.seedData) {
-    for (const [tableName, data] of Object.entries(config.seedData)) {
+  if (seedData) {
+    for (const [tableName, data] of Object.entries(seedData)) {
       await db(tableName).insert(data)
     }
   }
@@ -104,72 +69,9 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
   return { schema, services }
 }
 
-//Create a new database before each tests so that
-//all tests can run parallel
-beforeEach(async () => {
-  const db = Knex({
-    client: 'sqlite3',
-    connection: {
-      filename: ':memory:',
-    },
-    useNullAsDefault: true,
-  });
-
-  //tslint:disable-next-line: await-promise
-  await db.schema.createTable('todos', table => {
-    table.increments(); //id
-    table.string('text');
-  });
-
-  //tslint:disable-next-line: await-promise
-  await db.schema.createTable('user', table => {
-    table.string('name');
-    table.string('username').primary();
-  });
-
-  //insert a couple of default data
-  //tslint:disable-next-line: await-promise
-  await db('todos').insert({ text: 'my first default todo' });
-  //tslint:disable-next-line: await-promise
-  await db('todos').insert({ text: 'the second todo' });
-  //tslint:disable-next-line: await-promise
-  await db('todos').insert({ text: 'just another todo' });
-
-  //insert a user
-  //tslint:disable-next-line: await-promise
-  await db('user').insert({ name: 'John Doe', username: 'johndoe123' });
-  //tslint:disable-next-line: await-promise
-  await db('user').insert({ name: 'Sam Wicks', username: 'samwicks' });
-
-
-  const todoProvider = new KnexDBDataProvider(todoModel, db);
-  const userProvider = new KnexDBDataProvider(userModel, db);
-
-  const pubSub = new PubSub();
-
-  const publishConfig: GraphbackPubSub = {
-    pubSub,
-    publishCreate: true,
-    publishDelete: true,
-    publishUpdate: true
-  }
-
-  const todoService = new CRUDService(todoModel, todoProvider, publishConfig)
-  const userService = new CRUDService(userModel, userProvider, publishConfig);
-
-  context = { db, provider: todoProvider, todoService, userService };
-});
-
 test('create Todo', async () => {
-  const { services } = await setup(
-    `"""
-@model
-"""
-type Todo {
- id: ID!
- text: String
-}`)
-  const todo: Todo = await services.Todo.create({
+  const { services } = await setup()
+  const todo = await services.Todo.create({
     text: 'create a todo',
   });
 
@@ -178,7 +80,8 @@ type Todo {
 });
 
 test('update Todo', async () => {
-  const todo: Todo = await context.todoService.update({
+  const { services } = await setup({ seedData: { todo: { text: 'my first todo' } } })
+  const todo = await services.Todo.update({
     id: 1,
     text: 'my updated first todo',
   });
@@ -188,16 +91,19 @@ test('update Todo', async () => {
 });
 
 test('delete Todo', async () => {
-  const data = await context.todoService.delete({
-    id: 3,
-    text: 'my updated first todo',
+  const { services } = await setup({ seedData: { todo: [{ text: 'my first todo' }, { text: 'my second todo' }] } })
+  const data = await services.Todo.delete({
+    id: 2,
+    text: 'my second todo',
   });
 
-  expect(data.id).toEqual(3);
+  expect(data.id).toEqual(2);
 });
 
 test('find Todo by text', async () => {
-  const todoResults: ResultList<Todo> = await context.todoService.findBy({
+  const { services } = await setup({ seedData: { todo: [{ text: 'my first todo' }, { text: 'the second todo' }] } })
+
+  const todoResults = await services.Todo.findBy({
     text: { eq: 'the second todo' },
   });
 
@@ -206,18 +112,47 @@ test('find Todo by text', async () => {
 });
 
 test('delete User by custom ID field', async () => {
-  const result = await context.userService.delete({
-    username: 'johndoe123'
-  });
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      """
+      @db.primary
+      """
+      email: String
+      name: String
+    }
+    `,
+    seedData: { user: [{ email: 'johndoe@email.com' }, { email: 'test@test.com' }] }
+  })
 
-  expect(result.username).toEqual('johndoe123')
+  const result = await services.User.delete({ email: 'test@test.com' })
+
+  expect(result.email).toEqual('test@test.com')
 });
 
 test('update User by custom ID field', async () => {
-  const user = await context.userService.update({
-    username: 'johndoe123',
-    name: 'Johnny Doe'
-  });
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      """
+      @db.primary
+      """
+      email: String
+      name: String
+    }
+    `,
+    seedData: { user: [{ email: 'johndoe@email.com' }] }
+  })
 
-  expect(user.name).toEqual('Johnny Doe');
+  const result = await services.User.update({ email: 'johndoe@email.com', name: 'John Doe' })
+
+  expect(result.name).toEqual('John Doe')
 });
