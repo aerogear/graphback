@@ -1,7 +1,8 @@
-import { GraphbackPluginEngine, ModelDefinition } from '@graphback/core';
+import { GraphbackPluginEngine, ModelDefinition, GraphbackCoreMetadata } from '@graphback/core';
 import { GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackPubSubModel } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
-import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerator';
+import { loadPlugins } from './loadPlugins';
+import { GraphbackConfig } from './GraphbackConfig';
 
 /**
  * GraphbackRuntime
@@ -9,9 +10,22 @@ import { GraphbackGenerator, GraphbackGeneratorConfig } from './GraphbackGenerat
  * Automatically generate your database structure resolvers and queries from graphql types.
  * See README for examples
  */
-export class GraphbackRuntime extends GraphbackGenerator {
-  public constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
-    super(schema, config);
+export class GraphbackRuntime {
+  protected config: GraphbackConfig;
+  protected schema: string | GraphQLSchema;
+  protected metadata: GraphbackCoreMetadata;
+
+  public constructor(schema: GraphQLSchema | string, config: GraphbackConfig) {
+    this.schema = schema;
+    this.config = config;
+
+    const plugins = loadPlugins(this.config.plugins);
+    const pluginEngine = new GraphbackPluginEngine({
+      schema: this.schema, 
+      plugins,
+      config: { crudMethods: this.config.crud }
+    });
+    this.metadata = pluginEngine.createSchema();
   }
 
   /**
@@ -21,19 +35,17 @@ export class GraphbackRuntime extends GraphbackGenerator {
    * You can use one of the datasource helpers to create services
    */
   public buildRuntime(services: { [key: string]: GraphbackCRUDService } = {}) {
-    const metadata = this.getMetadata();
-    const models = metadata.getModelDefinitions();
+    const models = this.metadata.getModelDefinitions();
     const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models, services);
 
-    return { schema: metadata.getSchema(), resolvers: runtimeResolversCreator.generate() }
+    return { schema: this.metadata.getSchema(), resolvers: runtimeResolversCreator.generate() }
   }
 
   /**
    * Get models for creation of the datasource
    */
   public getDataSourceModels() {
-    const metadata = this.getMetadata();
-    const models = metadata.getModelDefinitions();
+    const models = this.metadata.getModelDefinitions();
 
     return models.reduce((pubSubModels: any, model: ModelDefinition) => {
       const pubSubModel: GraphbackPubSubModel = {
@@ -50,13 +62,7 @@ export class GraphbackRuntime extends GraphbackGenerator {
     }, []);
   }
 
-
   public getMetadata() {
-    const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
-
-    this.initializePlugins(pluginEngine)
-    const metadata = pluginEngine.createSchema();
-
-    return metadata
+    return this.metadata;
   }
 }

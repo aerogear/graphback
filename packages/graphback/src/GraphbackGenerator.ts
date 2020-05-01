@@ -1,21 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { ClientGeneratorPluginConfig } from '@graphback/codegen-client';
-import { ResolverGeneratorPluginConfig } from "@graphback/codegen-resolvers"
-import { SchemaCRUDPluginConfig } from '@graphback/codegen-schema';
-import { GraphbackCRUDGeneratorConfig, GraphbackPluginEngine } from '@graphback/core';
+import { GraphbackPluginEngine } from '@graphback/core';
 import { GraphQLSchema } from 'graphql';
-/**
- * Global configuration for Graphback ecosystem that represents each plugin 
- */
-export interface GraphbackGeneratorConfig {
-  crud?: GraphbackCRUDGeneratorConfig
-  //Plugins configuration
-  plugins?: {
-    ResolversCRUD?: ResolverGeneratorPluginConfig
-    SchemaCRUD?: SchemaCRUDPluginConfig
-    ClientCRUD?: ClientGeneratorPluginConfig
-  } | any
-}
+import { loadPlugins } from './loadPlugins';
+import { GraphbackConfig } from './GraphbackConfig';
 
 /**
  * GraphbackGenerator
@@ -24,10 +10,10 @@ export interface GraphbackGeneratorConfig {
  * See README for examples
  */
 export class GraphbackGenerator {
-  protected config: GraphbackGeneratorConfig;
+  protected config: GraphbackConfig;
   protected schema: string | GraphQLSchema;
 
-  public constructor(schema: GraphQLSchema | string, config: GraphbackGeneratorConfig) {
+  public constructor(schema: GraphQLSchema | string, config: GraphbackConfig) {
     this.schema = schema;
     this.config = config;
   }
@@ -36,40 +22,15 @@ export class GraphbackGenerator {
    * Create backend with all related resources
    */
   public generateSourceCode() {
-    const pluginEngine = new GraphbackPluginEngine(this.schema, { crudMethods: this.config.crud })
-    this.initializePlugins(pluginEngine);
+    const plugins = loadPlugins(this.config.plugins);
+    const pluginEngine = new GraphbackPluginEngine({
+      schema: this.schema,
+      plugins,
+      config: { crudMethods: this.config.crud },
+    })
 
     pluginEngine.createResources();
-  }
-
-  protected initializePlugins(pluginEngine: GraphbackPluginEngine) {
-    for (const pluginLabel of Object.keys(this.config.plugins)) {
-      let pluginName;
-      if (pluginLabel.startsWith('graphback-')) {
-        // Internal graphback plugins needs rename
-        pluginName = pluginLabel.replace('graphback-', '@graphback/codegen-');
-      }
-      else {
-        pluginName = pluginLabel;
-      }
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const plugin = require(pluginName);
-        if (plugin.Plugin) {
-          const config = this.config.plugins[pluginLabel];
-          pluginEngine.registerPlugin(new plugin.Plugin(config));
-        }
-        else {
-          //tslint:disable-next-line: no-console
-          console.log(`${pluginName} plugin is not exporting 'Plugin' class`);
-        }
-      }
-      catch (e) {
-        //tslint:disable-next-line: no-console
-        console.log(`${pluginName} plugin missing in package.json`, e);
-      }
-    }
-  }
+  }  
 }
 
 
