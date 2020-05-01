@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, GraphbackPubSubModel } from "@graphback/runtime";
+import { CRUDService, GraphbackModelConfig } from "@graphback/runtime";
 import { PgKnexDBDataProvider } from './PgKnexDBDataProvider';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 
@@ -14,14 +14,14 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
  * @param pubSub 
  */
 export const createKnexPGCRUDRuntimeServices = (
-  models: GraphbackPubSubModel[], schema: GraphQLSchema,
+  models: GraphbackModelConfig[], schema: GraphQLSchema,
   db: Knex, pubSub: PubSubEngine
 ) => {
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
 
-  return models.reduce((services: any, model: GraphbackPubSubModel) => {
+  return models.reduce((services: any, model: GraphbackModelConfig) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
       throw new Error(`
@@ -50,14 +50,14 @@ export const createKnexPGCRUDRuntimeServices = (
  * @param pubSub 
  */
 export const createKnexCRUDRuntimeServices = (
-  models: GraphbackPubSubModel[], schema: GraphQLSchema,
+  models: GraphbackModelConfig[], schema: GraphQLSchema,
   db: Knex, pubSub: PubSubEngine
 ) => {
   if (!models || models.length === 0) {
     throw new Error(`No models provided`)
   }
 
-  return models.reduce((services: any, model: GraphbackPubSubModel) => {
+  return models.reduce((services: any, model: GraphbackModelConfig) => {
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
       throw new Error(`
