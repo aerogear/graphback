@@ -34,7 +34,7 @@ export function graphback<Provider extends GraphbackDataProvider, Service extend
 
   const runtimeEngine = new GraphbackRuntime(model, graphbackConfig);
   const models = runtimeEngine.getDataSourceModels();
-  const services = createRuntimeServices({
+  const services = createRuntimeServices<Provider, Service>({
     schema: model,
     db,
     models,

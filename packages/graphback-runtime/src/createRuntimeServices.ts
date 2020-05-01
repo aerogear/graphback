@@ -21,8 +21,8 @@ export type RuntimeServicesOptions<Provider extends GraphbackDataProvider, Servi
  * @param db 
  * @param pubSub 
  */
-export function createRuntimeServices<Proider extends GraphbackDataProvider, Service extends CRUDService> 
-  (servicesConfig: RuntimeServicesOptions<Proider, Service>) {
+export function createRuntimeServices<Provider extends GraphbackDataProvider, Service extends CRUDService> 
+  (servicesConfig: RuntimeServicesOptions<Provider, Service>) {
 
   const { models, schema, db, pubSub, provider, service } = servicesConfig
   if (!models || models.length === 0) {
