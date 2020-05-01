@@ -19,10 +19,6 @@ input CommentFilterInput {
   not: [CommentFilterInput]
 }
 
-input CommentFilterUniqueInput {
-  id: ID!
-}
-
 input CommentInput {
   id: ID
   text: String
@@ -50,10 +46,10 @@ input IDInput {
 type Mutation {
   createNote(input: NoteInput!): Note!
   updateNote(input: NoteInput!): Note!
-  deleteNote(input: NoteFilterUniqueInput!): Note!
+  deleteNote(input: NoteInput!): Note!
   createComment(input: CommentInput!): Comment!
   updateComment(input: CommentInput!): Comment!
-  deleteComment(input: CommentFilterUniqueInput!): Comment!
+  deleteComment(input: CommentInput!): Comment!
 }
 
 """ @model """
@@ -75,10 +71,6 @@ input NoteFilterInput {
   not: [NoteFilterInput]
 }
 
-input NoteFilterUniqueInput {
-  id: ID!
-}
-
 input NoteInput {
   id: ID
   title: String
@@ -91,10 +83,10 @@ type NoteListResult {
 }
 
 type Query {
-  getNote(filter: NoteFilterUniqueInput!): Note
+  getNote(id: ID!): Note
   findNotes(filter: NoteFilterInput, limit: Int, offset: Int): NoteListResult!
   findAllNotes(filter: NoteFilterInput, limit: Int, offset: Int): [Note!]
-  getComment(filter: CommentFilterUniqueInput!): Comment
+  getComment(id: ID!): Comment
   findComments(filter: CommentFilterInput, limit: Int, offset: Int): CommentListResult!
   findAllComments(filter: CommentFilterInput, limit: Int, offset: Int): [Comment!]
 }
@@ -115,8 +107,8 @@ input StringInput {
 type Subscription {
   newNote(input: NoteInput): Note!
   updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteFilterUniqueInput): Note!
+  deletedNote(input: NoteInput): Note!
   newComment(input: CommentInput): Comment!
   updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentFilterUniqueInput): Comment!
+  deletedComment(input: CommentInput): Comment!
 }

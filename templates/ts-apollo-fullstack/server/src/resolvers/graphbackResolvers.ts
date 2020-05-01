@@ -15,14 +15,14 @@ export default {
   Comment: {
     note: (parent, args, context) => {
       return context.Note.findBy({ id: parent.noteId }).then(
-        (results) => results[0]
+        (results) => results[0],
       )
     },
   },
 
   Query: {
-    getNote: (parent, { filter }, context) => {
-      return context.Note.findOne(filter)
+    getNote: (parent, args, context) => {
+      return context.Note.findOne(args)
     },
     findNotes: (parent, { filter, page }, context) => {
       return context.Note.findBy(filter, page)
@@ -30,8 +30,8 @@ export default {
     findAllNotes: (parent, { page }, context) => {
       return context.Note.findAll(page)
     },
-    getComment: (parent, { filter }, context) => {
-      return context.Comment.findOne(filter)
+    getComment: (parent, args, context) => {
+      return context.Comment.findOne(args)
     },
     findComments: (parent, { filter, page }, context) => {
       return context.Comment.findBy(filter, page)

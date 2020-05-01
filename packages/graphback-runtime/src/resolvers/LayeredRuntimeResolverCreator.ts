@@ -75,7 +75,7 @@ export class LayeredRuntimeResolverCreator {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].findOne(args.filter, context)
+          return this.services[modelName].findOne(args, context)
         }
       }
       if (resolverElement.crudOptions.find) {
