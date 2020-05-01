@@ -156,3 +156,300 @@ test('update User by custom ID field', async () => {
 
   expect(result.name).toEqual('John Doe')
 });
+
+test('find users where name starts with "John"', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John Doe' },
+        { name: 'Johnny Doe' },
+        { name: 'James Doe' }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ name: { startsWith: 'John' } })
+
+  expect(result.items).toHaveLength(2)
+})
+
+test('find users where name ends with "Jones"', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John Doe' },
+        { name: 'Johnny Jones' },
+        { name: 'James Doe' }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ name: { endsWith: 'Jones' } })
+
+  expect(result.items).toHaveLength(1)
+})
+
+test('find users where name ends with "Jones"', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John Doe' },
+        { name: 'Johnny Jones' },
+        { name: 'James Doe' }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ name: { endsWith: 'Jones' } })
+
+  expect(result.items).toHaveLength(1)
+})
+
+test('find users where name not eq "John"', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John' },
+        { name: 'John' },
+        { name: 'James' }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ name: { ne: 'John' } })
+
+  expect(result.items).toHaveLength(1)
+  expect(result.items[0].name).toBe('James')
+})
+
+test('find users where name in array', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John' },
+        { name: 'Sarah' },
+        { name: 'James' }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ name: { in: ['Sarah', 'John'] } })
+
+  expect(result.items).toHaveLength(2)
+})
+
+test('find users where name contains "John"', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'Mr. John Jones' },
+        { name: 'Ms. Sarah Johnson' },
+        { name: 'Ms. Sarah Jones' },
+        { name: 'Mr. James Johnston' }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ name: { contains: 'John' } })
+
+  expect(result.items).toHaveLength(3)
+})
+
+test('find users where friends == 1', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+      friends: Int
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John', friends: 1 },
+        { name: 'Sarah', friends: 20 },
+        { name: 'Sandra', friends: 30 },
+        { name: 'Enda', friends: 50 },
+        { name: 'Eamon', friends: 0 },
+        { name: 'Isabelle', friends: 100 }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ friends: { eq: 1 } })
+
+  expect(result.items).toHaveLength(1)
+})
+
+test('find users where friends < 1', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+      friends: Int
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John', friends: 1 },
+        { name: 'Sarah', friends: 20 },
+        { name: 'Sandra', friends: 30 },
+        { name: 'Enda', friends: 50 },
+        { name: 'Eamon', friends: 0 },
+        { name: 'Isabelle', friends: 100 }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ friends: { lt: 20 } })
+
+  expect(result.items).toHaveLength(2)
+})
+
+test('find users where friends <= 1', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+      friends: Int
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John', friends: 1 },
+        { name: 'Sarah', friends: 20 },
+        { name: 'Sandra', friends: 30 },
+        { name: 'Enda', friends: 50 },
+        { name: 'Eamon', friends: 0 },
+        { name: 'Isabelle', friends: 100 }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ friends: { le: 1 } })
+
+  expect(result.items).toHaveLength(2)
+})
+
+test('find users where friends > 30', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+      friends: Int
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John', friends: 1 },
+        { name: 'Sarah', friends: 20 },
+        { name: 'Sandra', friends: 30 },
+        { name: 'Enda', friends: 50 },
+        { name: 'Eamon', friends: 0 },
+        { name: 'Isabelle', friends: 100 }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ friends: { gt: 30 } })
+
+  expect(result.items).toHaveLength(2)
+})
+
+test('find users where friends >= 50', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+      friends: Int
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John', friends: 1 },
+        { name: 'Sarah', friends: 20 },
+        { name: 'Sandra', friends: 30 },
+        { name: 'Enda', friends: 50 },
+        { name: 'Eamon', friends: 0 },
+        { name: 'Isabelle', friends: 100 }
+      ]
+    }
+  })
+
+  const result = await services.User.findBy({ friends: { ge: 50 } })
+
+  expect(result.items).toHaveLength(2)
+})
