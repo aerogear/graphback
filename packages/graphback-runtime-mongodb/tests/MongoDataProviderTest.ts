@@ -113,7 +113,9 @@ test('find first 1 todo(s) excluding first todo', async () => {
 test('find Todo by text', async () => {
   const all = await context.provider.findAll();
   const todos: Todo[] = await context.provider.findBy({
-    text: all[0].text,
+    text: {
+      eq: all[0].text
+    },
   });
   expect(todos.length).toBeGreaterThan(0);
 });
@@ -125,7 +127,7 @@ test('find Todo by text, limit defaults to complete set', async () => {
       text,
     });
   }
-  const todos: Todo[] = await context.provider.findBy({ text }, { offset: 0 });
+  const todos: Todo[] = await context.provider.findBy({ text: { eq: text } }, { offset: 0 });
   expect(todos.length).toEqual(11);
 });
 
@@ -136,7 +138,7 @@ test('find by text offset defaults to 0', async () => {
       text,
     });
   }
-  const todos = await context.provider.findBy({ text }, { limit: 1 });
+  const todos = await context.provider.findBy({ text: { eq: text } }, { limit: 1 });
   expect(todos[0].text).toEqual(text);
 });
 
@@ -148,7 +150,7 @@ test('find first 1 todos by text', async () => {
     });
   }
 
-  const todos = await context.provider.findBy({ text } , { limit: 1, offset: 0});
+  const todos = await context.provider.findBy({ text: { eq: text } } , { limit: 1, offset: 0});
   expect(todos.length).toEqual(1);
   expect(todos[0].text).toEqual(text);
 });

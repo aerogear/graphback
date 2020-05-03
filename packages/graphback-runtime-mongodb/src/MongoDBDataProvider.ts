@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import * as mquery from "mquery";
+import { buildQuery } from "./buildQuery";
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
 
@@ -11,11 +12,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   protected db: Db;
   protected collectionName: string;
   protected tableMap: ModelTableMap;
+  protected mcollection: any;
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
     this.tableMap = buildModelTableMap(baseType);
     this.collectionName = this.tableMap.tableName;
+    this.mcollection = mquery(this.db.collection(this.collectionName));
   }
 
   public async create(data: any): Promise<Type> {
@@ -42,9 +45,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
 
-    const result = await mquery(this.db.collection(this.collectionName)).updateOne({ _id: new ObjectId(idField.value) }, data);
+    const result = await this.mcollection.updateOne({ _id: new ObjectId(idField.value) }, data);
     if (result) {
-      const queryResult = await mquery(this.db.collection(this.collectionName)).find({ _id: new ObjectId(idField.value) });
+      const queryResult = await this.mcollection.find({ _id: new ObjectId(idField.value) });
       if (queryResult && queryResult[0]) {
         queryResult[0][idField.name] = queryResult[0]._id;
 
@@ -61,9 +64,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
     }
 
-    const queryResult = await mquery(this.db.collection(this.collectionName)).findOne({ _id: new ObjectId(idField.value) });
+    const queryResult = await this.mcollection.findOne({ _id: new ObjectId(idField.value) });
     if (queryResult) {
-      const result = await mquery(this.db.collection(this.collectionName)).deleteOne({ _id: new ObjectId(idField.value) });
+      const result = await this.mcollection.deleteOne({ _id: new ObjectId(idField.value) });
       if (result.result.ok) {
         queryResult[idField.name] = queryResult._id;
 
@@ -74,7 +77,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    const query = mquery(this.db.collection(this.collectionName)).find({});
+    const query = this.mcollection.find({});
     const data = await this.usePage(query, page);
 
     if (data) {
@@ -89,11 +92,15 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findOne(filter: AdvancedFilter): Promise<Type> {
-    throw new Error("Not implemented")
+    const query = this.mcollection.where(filter);
+    const res = await query.find();
+    return res
   }
 
   public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
-    throw new Error("Not implemented")
+    const query = this.initQuery(filter);
+    const res = await this.usePage(query.find(), page);
+    return res;
   }
 
   public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
@@ -106,13 +113,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await mquery(this.db.collection(this.collectionName)).where('_id').in(array);
+      result = await this.mcollection.where('_id').in(array);
     } else {
       const array = ids.map((value: any) => {
         return value.toString();
       });
 
-      result = await mquery(this.db.collection(this.collectionName)).where(relationField).in(array);
+      result = await this.mcollection.where(relationField).in(array);
     }
 
     if (result) {
@@ -158,6 +165,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       }
     }
 
+    return query;
+  }
+
+  private initQuery(filter: AdvancedFilter): any {
+    const query = buildQuery(this.db.collection(this.collectionName), filter);
     return query;
   }
 
