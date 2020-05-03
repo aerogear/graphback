@@ -137,7 +137,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
         }
       }
       query = query.offset(page.offset)
-      // console.log('page desu: ', page)
+
       if (page.hasOwnProperty("limit")) {
         if (page.limit <= 0) {
           throw new Error("Please use a limit of greater than 0 in queries")

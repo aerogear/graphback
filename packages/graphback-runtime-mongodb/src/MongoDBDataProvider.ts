@@ -76,6 +76,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
+  /**
+   * @deprecated
+   */
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
     const query = this.mcollection.find({});
     const data = await this.usePage(query, page);
@@ -93,19 +96,26 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   public async findOne(filter: AdvancedFilter): Promise<Type> {
     const query = this.mcollection.where(filter);
-    const res = await query.find();
-    return res
+    try{
+      const res:Type = await query.find();
+      return res[0];
+    } catch(err) {
+      throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`)
+    }
   }
 
   public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
     const query = this.initQuery(filter);
     const res = await this.usePage(query.find(), page);
-    return res;
+    if (res) {
+      return res;
+    }
+    throw new NoDataError(`No results for ${this.collectionName} query and filter: ${JSON.stringify(filter)}`);
   }
 
-  public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
+  public async batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]> {
     let result: any;
-
+    const query = this.initQuery(filter);
     const { idField } = getDatabaseArguments(this.tableMap);
 
     if (relationField === idField.name) {
@@ -113,13 +123,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await this.mcollection.where('_id').in(array);
+      result = await query.find().where('_id').in(array);
     } else {
       const array = ids.map((value: any) => {
         return value.toString();
       });
 
-      result = await this.mcollection.where(relationField).in(array);
+      result = await query.find().where(relationField).in(array);
     }
 
     if (result) {
