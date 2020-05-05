@@ -13,7 +13,7 @@ import { Template } from './templateMetadata'
 export const allTemplates: Template[] = [
   {
     name: 'apollo-fullstack-react-postgres-ts',
-    description: 'Apollo GraphQL Server connecting to Postgres database and React Client using TypeScript',
+    description: 'Apollo GraphQL Server connecting to Postgres database and React client using TypeScript',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-0.14.0',
@@ -23,10 +23,42 @@ export const allTemplates: Template[] = [
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-0.14.0',
       path: '/templates/ts-react-apollo-client',
-      mountpath: "./client"
+      mountpath: "client"
     }]
   },
-
+  {
+    name: 'apollo-fullstack-react-mongo-ts',
+    description: 'Apollo GraphQL Server connecting to Mongo database and React client using TypeScript',
+    repos: [{
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-0.14.0',
+      path: '/templates/ts-apollo-mongo-backend',
+    },
+    {
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-0.14.0',
+      path: '/templates/ts-react-apollo-client',
+      mountpath: "client"
+    }]
+  },
+  {
+    name: 'apollo-mongo-server-ts',
+    description: 'Apollo GraphQL Server connecting to Mongo database using TypeScript',
+    repos: [{
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-0.14.0',
+      path: '/templates/ts-apollo-mongo-backend',
+    }]
+  },
+  {
+    name: 'apollo-postgres-server-ts',
+    description: 'Apollo GraphQL Server connecting to Postgres database using TypeScript',
+    repos: [{
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-0.14.0',
+      path: '/templates/ts-apollo-postgres-backend',
+    }]
+  }
 ]
 
 /**
