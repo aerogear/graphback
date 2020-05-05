@@ -1,5 +1,5 @@
 {
-  "name": "generator-client-example",
+  "name": "react-client-example",
   "version": "0.12.0",
   "private": true,
   "devDependencies": {
