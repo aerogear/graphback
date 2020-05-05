@@ -30,7 +30,7 @@ const add:{ [x: string]: (op: string) => AddMethod }= {
             op = mopify(op);
             return (builder, field, value) => {
                 let q = {};
-                q[field] = { op: value};
+                q[field] = { [op]: value};
                 return builder.or(q);
             }
         } else {
