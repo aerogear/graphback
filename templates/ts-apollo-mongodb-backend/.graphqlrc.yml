@@ -18,7 +18,3 @@ extensions:
       graphback-schema:
         format: graphql
         outputPath: ./src/schema
-      graphback-resolvers:
-        format: ts
-        outputPath: ./src/resolvers
-
