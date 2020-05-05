@@ -29,18 +29,18 @@
         "DB_PORT": "55432"
       },
       "args": [
-        "${workspaceRoot}/templates/ts-apollo-fullstack/server/src/index.ts"
+        "${workspaceRoot}/templates/ts-apollo-postgres-backend/server/src/index.ts"
       ],
       "runtimeArgs": [
         "-r",
         "ts-node/register"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack/server",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend/server",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
-      "name": "Runtime template app",
+      "name": "Template app Postgres",
       "type": "node",
       "request": "launch",
       "env": {
@@ -52,13 +52,13 @@
         "DB_PORT": "55432"
       },
       "args": [
-        "${workspaceRoot}/templates/ts-apollo-runtime-backend/src/index.ts"
+        "${workspaceRoot}/templates//src/index.ts"
       ],
       "runtimeArgs": [
         "-r",
         "ts-node/register"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-runtime-backend",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
@@ -78,7 +78,7 @@
       "args": [
         "config"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
     {
       "type": "node",
@@ -95,7 +95,7 @@
       "args": [
         "generate"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
     {
       "type": "node",
@@ -112,7 +112,7 @@
       "args": [
         "openapi"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
     {
       "type": "node",
@@ -129,7 +129,7 @@
       "args": [
         "db"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
     {
       "type": "node",
@@ -147,7 +147,7 @@
         "serve",
         "port=8080"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-fullstack",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
     {
       "type": "node",

@@ -121,24 +121,3 @@ Graphback can migrate your database structure using your GraphQL schema.
 
 > Note: Full database migration support is currently only supported for PostgreSQL databases. See [Database Compatibility](../db/dbintroduction#compatibility).
 
-To enable migrations to work, add the `dbmigrations` extension to your `.graphqlrc.yml` file:
-
-```yaml
-...
-extensions:
-  # Graphback configuration
-  graphback:
-    ...
-  ## graphql-migration config that can be also used in application
-  ## Please do not connect it to shared database as Graphback will automatically 
-  ## execute dlls statements that can affect other applications.
-  dbmigrations:
-    ## See knex.js for db specific config format
-    client: pg
-    connection:
-      user: postgresql
-      password: postgres
-      database: users
-      host: localhost
-      port: 55432
-```
