@@ -89,10 +89,6 @@ export const createConfig = async (database: string, client: boolean) => {
           "graphback-schema": {
             "format": "graphql",
             "outputPath": "./src/schema"
-          },
-          "graphback-resolvers": {
-            "format": "ts",
-            "outputPath": "./src/resolvers"
           }
         }
       }
