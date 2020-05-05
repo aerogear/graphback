@@ -43,19 +43,14 @@ export const createRuntime = async (graphbackServerConfig: GraphbackServerConfig
 
   const models = runtimeEngine.getDataSourceModels();
 
-  const { dbmigrations } = graphbackServerConfig;
 
-  let services;
 
-  if (dbmigrations) {
-    const db = Knex(dbmigrations);
-    services = createKnexPGCRUDRuntimeServices(models, schema, db as any, pubSub);
-  } else {
-    const db = await createMongoDBConnection();
-    services = createMongoCRUDRuntimeContext(models, schema, db, pubSub);
-  }
 
-  
+  const db = await createMongoDBConnection();
+  const services = createMongoCRUDRuntimeContext(models, schema, db, pubSub);
+
+
+
   const runtime = runtimeEngine.buildRuntime(services);
 
   return runtime;

@@ -7,8 +7,7 @@ export interface GraphbackConfig {
     plugins: any
 }
 export interface GraphbackServerConfig {
-    graphback: GraphbackConfig,
-    dbmigrations?: any
+    graphback: GraphbackConfig
 }
 
 export interface ConfigOverrides {
@@ -39,17 +38,17 @@ export async function getGraphbackServerConfig(overrideopts?: ConfigOverrides): 
                 'graphback-client': {
                     format: 'graphql',
                     outputPath: './client/src/graphql'
-                
+
+                }
             }
-        },
-        dbmigrations: null
+        }
     }
 
     try {
         // Try to load the local config
 
         const configLoaderOpts = {
-            extensions: [() => ({ name: 'graphback' }), () => ({ name: 'dbmigrations' })],
+            extensions: [() => ({ name: 'graphback' })],
             throwOnMissing: true,
             throwOnEmpty: true,
         }
@@ -68,12 +67,6 @@ export async function getGraphbackServerConfig(overrideopts?: ConfigOverrides): 
         // Use model from config if specified
         if (localGraphbackConfig.model) {
             graphbackServerConfig.graphback.model = localGraphbackConfig.model;
-        }
-
-        // If config has db options, use those
-        const localdbmigrations = localGraphQLConfig.getDefault().extension('dbmigrations')
-        if (localdbmigrations) {
-            graphbackServerConfig.dbmigrations = localdbmigrations;
         }
     } catch (e) {
         console.log('Could not read graphql config, trying default config options.');

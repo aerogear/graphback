@@ -8,7 +8,7 @@ Graphback provides a rich set of tools and APIs that help you get your database 
 
 Graphback has a [CRUD abstraction](../crud/crudruntime) with a number of out-of-the-box implementations for different datasources (see [Data sources](./datasources)).
 
-Graphback integrates with [`graphql-migrations`](https://www.npmjs.com/package/graphql-migrations) so that you can migrate your database using your GraphQL schema. `graphql-migrations` can be used with the `graphback db` subcommand or programatically from your application code using the `migrateDB` API. For more see [Database Migrations](./dbmigrations).
+Graphback integrates with [`graphql-migrations`](https://www.npmjs.com/package/graphql-migrations) so that you can migrate your database using your GraphQL schema. `graphql-migrations` can be used programatically from your application code using the `migrateDB` API. For more see [Database Migrations](./dbmigrations).
 
 ## Compatibility
 

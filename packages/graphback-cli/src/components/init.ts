@@ -94,11 +94,11 @@ function buildTemplateFromGithub(templateUrl: string) {
   return {
     name: "Users Github template",
     description: "User provided template",
-    repo: {
+    repos: [{
       uri: url[0],
       branch: url[1] || "master",
       path: "/"
-    }
+    }]
   };
 }
 

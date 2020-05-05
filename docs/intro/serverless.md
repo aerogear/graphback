@@ -59,7 +59,7 @@ See our [TypeScript Apollo Runtime](https://github.com/aerogear/graphback/blob/m
 
 3. Graphback provides a number of different data sources which can be configured at application runtime. See [Data Sources](../db/datasources).
 
-4. You can migrate your database to match your schema by running `graphback db`. See [Database Migrations](../db/migrations.md) for more.*
+4. You can migrate your database to match your schema. See [Database Migrations](../db/migrations.md) for more.*
 
 4. Run your application! 🚀
 
