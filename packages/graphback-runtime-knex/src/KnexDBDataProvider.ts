@@ -10,7 +10,7 @@ import { buildQuery } from './knexQueryMapper';
  *
  * - Sqlite
  * - MySQL (MariaDB)
- * - Postgress (by `PgKnexDBDataProvider`)
+ * - Postgres (by `PgKnexDBDataProvider`)
  *
  * NOTE: For Postgres use dedicated `PgKnexDBDataProvider` that implements more performant creation method.
  */

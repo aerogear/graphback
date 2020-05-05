@@ -29,15 +29,6 @@ help you to manage data migrations by specifying GraphQL queries.
 
   Generate command will execute generation process that will gener GraphQL server based on your data model.
 
-### Database
-
-  ```bash
-  graphback db
-  ```
-
-  This command creates a database or updates an existing one, based on your data model. Currently supports PostgreSQL and sqlite3.
-
-
 ## OpenAPI
 
  ```bash

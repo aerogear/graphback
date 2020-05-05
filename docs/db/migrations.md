@@ -13,14 +13,6 @@ Graphback uses [graphql-migrations](https://www.npmjs.com/package/graphql-migrat
 
 ## Usage
 
-### CLI
-
-To create or update your database from the CLI, run:
-
-```sh
-graphback db
-```
-
 ### API
 
 The `migrateDB` method creates and updates your tables and columns to match your GraphQL schema.

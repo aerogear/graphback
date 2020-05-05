@@ -4,16 +4,21 @@
 export interface Template {
   name: string
   description: string
-  repo: TemplateRepository
+  repos: TemplateRepository[]
 }
 
 /**
  * Github Repository information, uri, branch and path
  */
 export interface TemplateRepository {
+  // Repository uri
   uri: string
+  // Git branch
   branch: string
+  // Path within git repository 
   path: string
+  // Location to mount specific template (`./` by default)
+  mountpath?: string
 }
 
 /**
