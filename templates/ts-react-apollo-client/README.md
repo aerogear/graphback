@@ -13,12 +13,6 @@ Run the project using the following steps:
 yarn install
 ```
 
-- Generate resources(schema and resolvers) and create database
-
-```sh
-yarn graphback generate
-```
-
 - Generate React components
 ```
 yarn codegen:client
