@@ -22,6 +22,9 @@ extensions:
         graphback-schema:
           format: 'graphql'
           outputPath: ./server/src/schema
+        graphback-client:
+          format: 'graphql'
+          outputPath: ./client/src/graphql
   ## Knex DB Migration config
   dbmigrations:
     ## See knex.js for db specific config format

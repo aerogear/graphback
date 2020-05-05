@@ -41,3 +41,5 @@ yarn develop
 ```
 
 For more on customising your Graphback application, check out [our docs](https://graphback.dev/docs/gettingstarted)
+
+If your project contains client application please follow `./client/README.md` for running client side application
