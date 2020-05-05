@@ -2,14 +2,9 @@
   "name": "graphback-templates-react-",
   "version": "0.12.0",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "start:server": "cd server/ && yarn start",
-    "start:client": "cd client/ && yarn start",
-    "codegen:client": "graphql-codegen"
+    "start": "cd client/ && yarn start",
+    "codegen": "graphql-codegen"
   },
   "license": "MIT",
   "devDependencies": {
