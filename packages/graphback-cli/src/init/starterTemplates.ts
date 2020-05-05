@@ -5,7 +5,7 @@ import * as github from 'parse-github-url'
 import * as request from 'request'
 import * as tar from 'tar'
 import * as tmp from 'tmp'
-import { Template } from './templateMetadata'
+import { Template, TemplateRepository } from './templateMetadata'
 
 /**
  * available templates
@@ -74,17 +74,17 @@ interface TemplateRepositoryTarInformation {
  * @param template template information provided
  */
 function getTemplateRepositoryTarInformation(
-  template: Template,
+  repo: TemplateRepository,
 ): TemplateRepositoryTarInformation {
-  const meta = github(template.repo.uri)
+  const meta = github(repo.uri)
   const uri = [
     `https://api.github.com/repos`,
     meta.repo,
     'tarball',
-    template.repo.branch,
+    repo.branch,
   ].join('/')
 
-  return { uri, files: template.repo.path }
+  return { uri, files: repo.path }
 }
 
 /**
@@ -146,8 +146,13 @@ async function extractStarterFromRepository(
  * @param name name of project folder
  */
 export async function extractTemplate(template: Template, name: string) {
-  const tarInfo = getTemplateRepositoryTarInformation(template)
-  const file = await downloadRepository(tarInfo)
-  const output = `${process.cwd()}/${name}`
-  await extractStarterFromRepository(file, tarInfo, output)
+  for (const repo of template.repos) {
+    const tarInfo = getTemplateRepositoryTarInformation(repo)
+    const file = await downloadRepository(tarInfo)
+    repo.mountpath = repo.mountpath || "";
+    const output = `${process.cwd()}/${name}/${repo.mountpath}`
+    await extractStarterFromRepository(file, tarInfo, output)
+  }
+
+
 }
