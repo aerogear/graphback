@@ -16,7 +16,7 @@
     "apollo-boost": "0.4.7",
     "apollo-server": "2.13.0",
     "apollo-server-testing": "2.13.0",
-    "jest": "26.0.0",
+    "jest": "26.0.1",
     "knex": "0.21.1",
     "node-fetch": "2.6.0"
   },
