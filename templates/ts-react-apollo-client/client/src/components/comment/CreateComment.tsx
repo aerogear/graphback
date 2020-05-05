@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCreateCommentMutation } from '../../generated-types';
 import { Card, TextField, Button } from '@material-ui/core';
-import './../notes/Note.css';
+import '../notes/Note.css';
 
 
 type createCommentProps = {
