@@ -54,9 +54,6 @@ extensions:
         graphback-client:
           format: 'graphql'
           outputPath: ./client/src/graphql
-        graphback-resolvers:
-          format: ts
-          outputPath: ./server/src/resolvers
 ```
 Changing `crud` flags and running `graphback generate` will update the `schema` and `resolvers` using the latest config.
 
