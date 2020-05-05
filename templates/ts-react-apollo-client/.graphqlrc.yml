@@ -21,17 +21,7 @@ extensions:
     plugins:
         graphback-schema:
           format: 'graphql'
-          outputPath: ./server/src/schema
+          outputPath: ./schema
         graphback-client:
           format: 'graphql'
           outputPath: ./client/src/graphql
-  ## Knex DB Migration config
-  dbmigrations:
-    ## See knex.js for db specific config format
-    client: pg
-    connection:
-      user: postgresql
-      password: postgres
-      database: users
-      host: localhost
-      port: 55432
