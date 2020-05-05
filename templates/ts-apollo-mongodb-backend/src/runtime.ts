@@ -1,9 +1,9 @@
+import path from 'path';
 import { GraphbackRuntime } from 'graphback'
 import { createMongoCRUDRuntimeContext } from '@graphback/runtime-mongo'
 import { PubSub } from 'graphql-subscriptions';
-import { connectDB } from './db'
-import path from 'path';
 import { loadConfigSync } from 'graphql-config';
+import { connectDB } from './db'
 
 /**
  * Method used to create runtime schema
@@ -14,7 +14,6 @@ export const createRuntime = async () => {
   const projectConfig = loadConfigSync({
     extensions: [
       () => ({ name: 'graphback' }),
-      () => ({ name: 'dbmigrations' })
     ]
   }).getDefault()
 

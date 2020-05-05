@@ -8,6 +8,18 @@ title: Releases
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.14.0
+
+TODO extend
+
+- Removed `graphback db` cmd. Database migrations can be only executed from the codebase
+- Removed codegen template. Resolver plugin is no longer used
+- Extended number of the templates for runtime mongo and postgress
+
+# 0.13.0
+
+Invalid release
+
 # 0.12.0
 
 ##### New Features
