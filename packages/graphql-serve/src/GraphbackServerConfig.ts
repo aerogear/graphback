@@ -39,11 +39,7 @@ export async function getGraphbackServerConfig(overrideopts?: ConfigOverrides): 
                 'graphback-client': {
                     format: 'graphql',
                     outputPath: './client/src/graphql'
-                },
-                'graphback-resolvers': {
-                    format: 'ts',
-                    outputPath: './server/src/resolvers'
-                }
+                
             }
         },
         dbmigrations: null

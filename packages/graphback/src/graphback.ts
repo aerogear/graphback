@@ -5,8 +5,8 @@ import {
   GraphbackDataProvider,
   createRuntimeServices,
 } from '@graphback/runtime';
-import { GraphbackRuntime } from './GraphbackRuntime';
 import { PubSubEngine } from 'graphql-subscriptions';
+import { GraphbackRuntime } from './GraphbackRuntime';
 
 export interface GraphbackOptions<Provider extends GraphbackDataProvider, Service extends CRUDService> {
   db: any
