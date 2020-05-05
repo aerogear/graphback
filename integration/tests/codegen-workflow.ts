@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable import/no-extraneous-dependencies */
 import { readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
@@ -17,7 +19,7 @@ let client: any;
 let db: Knex;
 
 beforeAll(async () => {
-    const { projectConfig, graphbackConfig, dbMigrationsConfig } = await getConfig();
+    const { projectConfig, graphbackConfig } = await getConfig();
 
     const modelText = readFileSync(graphbackConfig.model, 'utf8');
     const generator = new GraphbackGenerator(modelText, graphbackConfig);
@@ -26,6 +28,16 @@ beforeAll(async () => {
     const schemaString = await projectConfig.getSchema('string');
     expect(schemaString).toMatchSnapshot();
 
+    const dbMigrationsConfig = {
+        client: "pg",
+        connection: {
+            user: "postgresql",
+            password: "postgres",
+            database: "users",
+            host: "localhost",
+            port: 55432
+        }
+    }
     const knex = Knex(dbMigrationsConfig);
     await knex.schema.dropTableIfExists('comment').dropTableIfExists('commentmetadata').dropTableIfExists('note')
 
@@ -41,7 +53,7 @@ beforeAll(async () => {
         path.resolve('./mocks/resolvers/resolvers.ts')
     ])
 
-    console.log({resolvers})
+    console.log({ resolvers })
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { models } = require('../output/resolvers/models');
 
@@ -59,8 +71,8 @@ beforeAll(async () => {
 })
 
 afterAll(() => {
-   rmdirSync(path.resolve('./output'), { recursive: true });
-   return db.destroy();
+    rmdirSync(path.resolve('./output'), { recursive: true });
+    return db.destroy();
 });
 
 async function seedDatabase(db: Knex) {
@@ -104,16 +116,14 @@ const getConfig = async () => {
     const config = await loadConfig({
         rootDir: process.cwd(),
         extensions: [
-            () => ({ name: 'graphback' }),
-            () => ({ name: 'dbmigrations' })
+            () => ({ name: 'graphback' })
         ]
     });
 
     const projectConfig = config.getDefault();
     const graphbackConfig = projectConfig.extension('graphback');
-    const dbMigrationsConfig = projectConfig.extension('dbmigrations');
 
-    return { projectConfig, graphbackConfig, dbMigrationsConfig };
+    return { projectConfig, graphbackConfig };
 }
 
 /**
@@ -279,7 +289,7 @@ test('Find at most one comment on Note 1', async () => {
     const { document } = await getDocument('findComments');
 
     const response = await client.query({ query: document, variables: { fields: { noteId: 1 }, limit: 1 } });
-    
+
     expect(response.data).toBeDefined()
     const notes = response.data.findComments
     expect(notes).toHaveLength(1);
@@ -306,7 +316,7 @@ test('Find comments on Note 1 except first', async () => {
     const { document } = await getDocument('findComments');
 
     const response = await client.query({ query: document, variables: { fields: { noteId: 1 }, offset: 1 } });
-    
+
     expect(response.data).toBeDefined()
     const notes = response.data.findComments
     expect(notes).toHaveLength(1);

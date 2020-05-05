@@ -28,6 +28,6 @@ Graphback will do the following:
 
 3. Graphback provides a number of different data sources which can be configured at application runtime. See [Data Sources](../db/datasources).
 
-4. If you are using a PostgreSQL datasource you can migrate your database to match your schema by running `graphback db`. See [Database Migrations](../db/migrations.md) for more.
+4. If you are using a PostgreSQL datasource you can migrate your database to match your schema. See [Database Migrations](../db/migrations.md) for more.
 
 5. Run your application! 🚀
