@@ -69,9 +69,6 @@ Each plugin should have its own configuration embedded as follows:
         graphback-client:
           format: 'graphql'
           outputPath: ./client/src/graphql
-        graphback-resolvers:
-          format: ts
-          outputPath: ./server/src/resolvers
 
 ```
 
