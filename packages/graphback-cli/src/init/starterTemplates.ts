@@ -1,4 +1,4 @@
-import { createWriteStream } from 'fs'
+import { createWriteStream, mkdirSync, existsSync } from 'fs'
 import chalk from 'chalk';
 import ora from 'ora'
 import * as github from 'parse-github-url'
@@ -151,6 +151,9 @@ export async function extractTemplate(template: Template, name: string) {
     const file = await downloadRepository(tarInfo)
     repo.mountpath = repo.mountpath || "";
     const output = `${process.cwd()}/${name}/${repo.mountpath}`
+    if(!existsSync(output)){
+      mkdirSync(output)
+    }
     await extractStarterFromRepository(file, tarInfo, output)
   }
 
