@@ -10,11 +10,18 @@ Please follow individual releases for more information.
 
 # 0.14.0
 
-TODO extend
+## Breaking
+- Removed `graphback db` command. Database migrations can be only executed from the codebase when application is started.
+For more information please refer to https://graphback.dev/docs/db/dbmigrations
+- Graphback resolver plugin is no longer used. Code generator plugin is deprecated.
+- GraphbackPluginEngine accepts now object instead of arguments.
+`new GraphbackPluginEngine({schema})`
 
-- Removed `graphback db` cmd. Database migrations can be only executed from the codebase
-- Removed codegen template. Resolver plugin is no longer used
-- Extended number of the templates for runtime mongo and postgress
+##### New Features
+
+- Added new templates to graphback init commands. All templates now giving ability to add client side application.
+
+
 
 # 0.13.0
 
