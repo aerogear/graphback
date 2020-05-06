@@ -18,3 +18,7 @@ extensions:
       graphback-schema:
         format: graphql
         outputPath: ./src/schema
+      graphback-client:
+          format: 'graphql'
+          outputPath: ./client/src/graphql
+ 
