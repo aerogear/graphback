@@ -17,29 +17,6 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
-      "name": "Generator template app",
-      "type": "node",
-      "request": "launch",
-      "env": {
-        "DB_CLIENT": "pg",
-        "DB_USER": "postgresql",
-        "DB_PASSWORD": "postgres",
-        "DB_DATABASE": "users",
-        "DB_HOST": "localhost",
-        "DB_PORT": "55432"
-      },
-      "args": [
-        "${workspaceRoot}/templates/ts-apollo-postgres-backend/server/src/index.ts"
-      ],
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register"
-      ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend/server",
-      "protocol": "inspector",
-      "internalConsoleOptions": "openOnSessionStart"
-    },
-    {
       "name": "Template app Postgres",
       "type": "node",
       "request": "launch",
@@ -51,9 +28,6 @@
         "DB_HOST": "localhost",
         "DB_PORT": "55432"
       },
-      "args": [
-        "${workspaceRoot}/templates//src/index.ts"
-      ],
       "runtimeArgs": [
         "-r",
         "ts-node/register"
@@ -94,40 +68,6 @@
       "protocol": "inspector",
       "args": [
         "generate"
-      ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "CLI openapi",
-      "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": [
-        "--nolazy",
-        "-r",
-        "ts-node/register"
-      ],
-      "sourceMaps": true,
-      "protocol": "inspector",
-      "args": [
-        "openapi"
-      ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "CLI db",
-      "program": "${workspaceRoot}/packages/graphback-cli/dist/index.js",
-      "runtimeArgs": [
-        "--nolazy",
-        "-r",
-        "ts-node/register"
-      ],
-      "sourceMaps": true,
-      "protocol": "inspector",
-      "args": [
-        "db"
       ],
       "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
