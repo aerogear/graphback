@@ -1,9 +1,4 @@
 import { GraphbackRuntime } from 'graphback'
-import { createKnexPGCRUDRuntimeServices } from '@graphback/runtime-knex'
-import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
-import { PubSub } from 'graphql-subscriptions';
-import { connectDB } from './db'
-import path from 'path';
 import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
 import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { PubSub } from 'graphql-subscriptions';
@@ -18,8 +13,7 @@ export const createRuntime = () => {
 
   const projectConfig = loadConfigSync({
     extensions: [
-      () => ({ name: 'graphback' }),
-      () => ({ name: 'dbmigrations' })
+      () => ({ name: 'graphback' })
     ]
   }).getDefault()
 
@@ -39,7 +33,7 @@ export const createRuntime = () => {
 
   migrateDB(getConnectionDetails(), runtime.schema, migrateOptions)
     .then((ops) => {
-      console.log("Migrated database", ops);
+      console.log("Migrated database");
     });
 
   return runtime;
