@@ -8,8 +8,8 @@ import { GraphbackPlugin } from './GraphbackPlugin';
  */
 export interface GraphBackPluginEngineOptions {
     schema: GraphQLSchema | string
-    config: GraphbackGlobalConfig
-    plugins: GraphbackPlugin[]
+    config?: GraphbackGlobalConfig
+    plugins?: GraphbackPlugin[]
 }
 /**
  * Allows to execute chain of plugins that create resources. 
