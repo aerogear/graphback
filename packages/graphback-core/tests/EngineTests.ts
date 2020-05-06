@@ -44,7 +44,7 @@ const context = {
 };
 
 test('Test plugin engine', async () => {
-  
+
   const crudMethods = {
     "create": true,
     "update": true,
@@ -53,8 +53,8 @@ test('Test plugin engine', async () => {
     "delete": true,
   }
 
-  let engine = new GraphbackPluginEngine(schemaText, { crudMethods: {} });
-  engine = new GraphbackPluginEngine(buildSchema(schemaText), { crudMethods: crudMethods });
+  let engine = new GraphbackPluginEngine({ schema: schemaText });
+  engine = new GraphbackPluginEngine({ schema: buildSchema(schemaText), config: { crudMethods } });
 
   expect.assertions(6);
 
@@ -67,7 +67,7 @@ test('Test plugin engine', async () => {
 
   engine.registerPlugin(plugin, plugin, plugin)
   const model = engine.createResources();
-  
+
   const printedModels = model.getModelDefinitions().map((element: any) => print(element.graphqlType.astNode))
   expect(printedModels).toMatchSnapshot();
   expect(model.getSchema().getQueryType().description === 'test').toBe(true);

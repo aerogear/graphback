@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { join, resolve } from 'path';
-import { createDB, generateUsingPlugins, initConfig } from '../src';
+import { generateUsingPlugins, initConfig } from '../src';
 
 const model = {
   modelName: "testSchema",
@@ -30,9 +30,6 @@ test('Test cli workflow', async () => {
   await initConfig({ model, database: "sqlite3", client: true, skipInstall: true });
   await generateUsingPlugins({});
 
-  await createDB();
-
-  expect(existsSync(join(basePath, "db.sqlite"))).toBe(true);
   expect(existsSync(join(basePath, "client/src/graphql/fragments/Note.graphql"))).toBe(true);
   expect(
     existsSync(join(basePath, "client/src/graphql/fragments/NoteExpanded.graphql"))
