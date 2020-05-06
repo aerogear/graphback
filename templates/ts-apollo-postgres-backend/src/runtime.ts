@@ -4,8 +4,12 @@ import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphq
 import { PubSub } from 'graphql-subscriptions';
 import { connectDB } from './db'
 import path from 'path';
+import { createKnexPGCRUDRuntimeServices } from "@graphback/runtime-knex"
+import { migrateDB, MigrateOptions, removeNonSafeOperationsFilter } from 'graphql-migrations';
+import { PubSub } from 'graphql-subscriptions';
+import { connectDB, getConnectionDetails } from './db'
 import { loadConfigSync } from 'graphql-config';
-
+import path from 'path';
 /**
  * Method used to create runtime schema
  */
@@ -21,11 +25,10 @@ export const createRuntime = () => {
 
   // const projectConfig = getProjectConfig();
   const graphbackConfig = projectConfig.extension('graphback');
-  const dbMigrationsConfig = projectConfig.extension('dbmigrations');
   const model = projectConfig.loadSchemaSync(path.resolve(graphbackConfig.model));
 
   const migrateOptions: MigrateOptions = {
-    //Do not perform delete operations on tables
+    // Do not perform delete operations on tables
     operationFilter: removeNonSafeOperationsFilter
   };
 
@@ -35,18 +38,7 @@ export const createRuntime = () => {
   const services = createKnexPGCRUDRuntimeServices(models, model, db, pubSub);
   const runtime = runtimeEngine.buildRuntime(services);
 
-  // NOTE: For SQLite db should be always recreated
-  // TODO
-  migrateDB({
-    client: "pg",
-    "connection": {
-      user: "postgresql",
-      password: "postgres",
-      database: "users",
-      host: "localhost",
-      port: 55432
-    }
-  }, runtime.schema, migrateOptions)
+  migrateDB(getConnectionDetails(), runtime.schema, migrateOptions)
     .then((ops) => {
       console.log("Migrated database", ops);
     });

@@ -17,7 +17,6 @@ export const createRuntime = async () => {
     ]
   }).getDefault()
 
-  // const projectConfig = getProjectConfig();
   const graphbackConfig = projectConfig.extension('graphback');
   const model = projectConfig.loadSchemaSync(path.resolve(graphbackConfig.model));
 
