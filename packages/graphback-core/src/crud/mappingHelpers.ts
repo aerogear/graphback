@@ -51,20 +51,6 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
   }
 }
 
-export function getInputFieldName(field: GraphQLField<any, any>): string {
-  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
-
-  if (!relationshipAnnotation) {
-    return field.name;
-  }
-
-  if (relationshipAnnotation.kind === 'oneToMany') {
-    throw new Error('Not inputtable field!');
-  }
-
-  return relationshipAnnotation.key || transformForeignKeyName(field.name);
-}
-
 /**
  * Provides naming patterns for CRUD subscriptions
  */
@@ -89,6 +75,8 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
  * Provides naming pattern for InputType
  *
  * @param typeName
+ * @deprecated
+ * @todo remove usages of this
  */
 export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
@@ -114,45 +102,4 @@ export function filterModelTypes(schema: GraphQLSchema): GraphQLObjectType[] {
  */
 export function filterNonModelTypes(schema: GraphQLSchema): GraphQLObjectType[] {
   return getUserTypesFromSchema(schema).filter((t: GraphQLObjectType) => !isModelType(t))
-}
-
-export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
-  return modelTypes.filter(isModelType);
-}
-
-export function isInputField(field: GraphQLField<any, any>): boolean {
-  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
-
-  return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
-}
-
-//tslint:disable-next-line: no-reserved-keywords
-export function getRelationFieldName(field: any, type: any) {
-  let fieldName: string;
-  if (field.annotations.OneToOne) {
-    fieldName = field.annotations.OneToOne.field;
-  }
-  else if (field.annotations.ManyToOne) {
-    fieldName = field.annotations.ManyToOne.field;
-  }
-  else if (field.annotations.OneToMany) {
-    fieldName = field.annotations.OneToMany.field;
-  }
-  else {
-    fieldName = type.name;
-  }
-
-  return fieldName;
-}
-
-
-export function getInputFieldType(field: GraphQLField<any, any>): GraphQLNamedType {
-  let fieldType = getNamedType(field.type);
-
-  if (isObjectType(fieldType) && isModelType(fieldType)) {
-    const idField = getPrimaryKey(fieldType);
-    fieldType = getNamedType(idField.type);
-  }
-
-  return getNullableType(fieldType);
 }
