@@ -1,5 +1,5 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType } from '@graphback/core'
 import { GraphQLSchema, buildSchema } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 
@@ -29,7 +29,7 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "OffixPlugin";
 
 /**
  * Ofix plugin
- * 
+ *
  * Plugin is enabled by """ @datasync """ annotation
  * It will add version field to the schema and also generate diffQueries
  */
@@ -62,8 +62,9 @@ export class OffixPlugin extends GraphbackPlugin {
                 version: 'Int'
             });
 
+            // TODO: Add version to all input types
             try {
-                const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name))
+                const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
                 if (inputType) {
                     inputType.addFields({
                         version: 'Int'
