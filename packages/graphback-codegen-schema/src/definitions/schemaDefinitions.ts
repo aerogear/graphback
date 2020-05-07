@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, getNullableType, GraphQLField, getNamedType, isInputType, GraphQLInputField, GraphQLFieldMap, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLInputFieldConfig } from "graphql";
-import { getPrimaryKey, isInputField } from '@graphback/core';
+import { getPrimaryKey } from '@graphback/core';
 
 // scalar input names
 const FloatScalarInputTypeName = 'FloatInput'
