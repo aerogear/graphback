@@ -5,7 +5,7 @@ import { getFieldName, printSchemaWithDirectives, getSubscriptionName, Graphback
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { createFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, createMutationInputType, getFindOneFieldMap } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, buildCreateMutationInputType, buildFindOneFieldMap, buildUpdateMutationInputType, buildDeleteMutationInputType } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -135,16 +135,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   protected createModelInputTypeMap(model: ModelDefinition): ModelInputTypeMap {
-    const findUniqueArguments = getFindOneFieldMap(model.graphqlType);
-    const filterInput = createFilterInputType(model.graphqlType);
-    const mutationInput = createMutationInputType(model.graphqlType)
-
     return {
-      findOneQueryFields: findUniqueArguments,
-      filterInput,
-      createMutationInput: mutationInput,
-      updateMutationInput: mutationInput,
-      deleteMutationInput: mutationInput
+      findOneQueryFields: buildFindOneFieldMap(model.graphqlType),
+      filterInput: buildFilterInputType(model.graphqlType),
+      createMutationInput: buildCreateMutationInputType(model.graphqlType),
+      updateMutationInput: buildUpdateMutationInputType(model.graphqlType),
+      deleteMutationInput: buildDeleteMutationInputType(model.graphqlType)
     }
   }
 

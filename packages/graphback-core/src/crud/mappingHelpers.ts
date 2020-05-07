@@ -1,9 +1,7 @@
-import { GraphQLObjectType, GraphQLField, GraphQLNamedType, isObjectType, getNullableType, getNamedType, GraphQLSchema, BREAK } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
-import { parseRelationshipAnnotation } from '../relationships/relationshipHelpers';
-import { transformForeignKeyName, getPrimaryKey } from '../db';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO is is esential to document this element
@@ -52,6 +50,26 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
 }
 
 /**
+ * Returns the input type assocatiated with a CRUD operation
+ * @param typeName
+ * @param action
+ */
+export const getInputTypeName = (typeName: string, action: GraphbackOperationType): string => {
+  switch (action) {
+    case GraphbackOperationType.FIND:
+      return `${typeName}FilterInput`
+    case GraphbackOperationType.CREATE:
+      return `Create${typeName}Input`
+    case GraphbackOperationType.UPDATE:
+      return `Update${typeName}Input`
+    case GraphbackOperationType.DELETE:
+      return `Delete${typeName}Input`
+    default:
+      return ''
+  }
+}
+
+/**
  * Provides naming patterns for CRUD subscriptions
  */
 export const getSubscriptionName = (typeName: string, action: GraphbackOperationType): string => {
@@ -69,17 +87,6 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
   }
 
   return "";
-}
-
-/**
- * Provides naming pattern for InputType
- *
- * @param typeName
- * @deprecated
- * @todo remove usages of this
- */
-export const getInputTypeName = (typeName: string): string => {
-  return `${typeName}Input`;
 }
 
 export function isModelType(graphqlType: GraphQLObjectType): boolean {
