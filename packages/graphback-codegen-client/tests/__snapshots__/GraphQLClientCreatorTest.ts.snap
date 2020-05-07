@@ -343,8 +343,8 @@ fragment NoteExpandedFields on Note {
     Object {
       "implementation": "
 
-query findNote($filter: NoteFilterUniqueInput) {
-    findNote(filter: $filter) {
+query getNote($filter: NoteFilterUniqueInput) {
+    getNote(filter: $filter) {
       ...NoteExpandedFields
     }
   }
@@ -361,7 +361,7 @@ fragment NoteExpandedFields on Note {
 } 
 
 ",
-      "name": "findNote",
+      "name": "getNote",
     },
     Object {
       "implementation": "
@@ -389,8 +389,8 @@ fragment CommentExpandedFields on Comment {
     Object {
       "implementation": "
 
-query findComment($filter: CommentFilterUniqueInput) {
-    findComment(filter: $filter) {
+query getComment($filter: CommentFilterUniqueInput) {
+    getComment(filter: $filter) {
       ...CommentExpandedFields
     }
   }
@@ -407,7 +407,7 @@ fragment CommentExpandedFields on Comment {
 } 
 
 ",
-      "name": "findComment",
+      "name": "getComment",
     },
   ],
   "subscriptions": Array [
@@ -722,9 +722,9 @@ export const findNotes = gql\`
       "implementation": "import gql from \\"graphql-tag\\"
 import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
 
-export const findNote = gql\`
-  query findNote($filter: NoteFilterUniqueInput) {
-    findNote(filter: $filter) {
+export const getNote = gql\`
+  query getNote($filter: NoteFilterUniqueInput) {
+    getNote(filter: $filter) {
       ...NoteExpandedFields
     }
   }
@@ -732,7 +732,7 @@ export const findNote = gql\`
   \${NoteExpandedFragment}
 \`
 ",
-      "name": "findNote",
+      "name": "getNote",
     },
     Object {
       "implementation": "import gql from \\"graphql-tag\\"
@@ -754,9 +754,9 @@ export const findComments = gql\`
       "implementation": "import gql from \\"graphql-tag\\"
 import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
 
-export const findComment = gql\`
-  query findComment($filter: CommentFilterUniqueInput) {
-    findComment(filter: $filter) {
+export const getComment = gql\`
+  query getComment($filter: CommentFilterUniqueInput) {
+    getComment(filter: $filter) {
       ...CommentExpandedFields
     }
   }
@@ -764,7 +764,7 @@ export const findComment = gql\`
   \${CommentExpandedFragment}
 \`
 ",
-      "name": "findComment",
+      "name": "getComment",
     },
   ],
   "subscriptions": Array [
