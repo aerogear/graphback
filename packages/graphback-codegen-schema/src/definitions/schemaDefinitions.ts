@@ -148,7 +148,7 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
         type: `[${inputTypeName}]`
       },
       or: {
-        type: `[${inputTypeName}]`
+        type: `${inputTypeName}`
       },
       not: {
         type: `[${inputTypeName}]`
