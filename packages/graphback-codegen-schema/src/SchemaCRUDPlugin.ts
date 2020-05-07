@@ -5,7 +5,7 @@ import { getFieldName, printSchemaWithDirectives, getSubscriptionName, Graphback
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLInt, buildSchema, GraphQLArgument, GraphQLString } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { createFilterUniqueInputType, createFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, createMutationInputType, getFindOneFieldMap } from './definitions/typeDefinitions';
+import { createFilterUniqueInputType, createFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, createMutationInputType, getFindOneFieldMap } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
