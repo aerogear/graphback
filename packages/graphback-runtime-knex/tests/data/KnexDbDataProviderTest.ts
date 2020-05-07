@@ -245,3 +245,131 @@ type Todo {
 
   expect(todos.length).toEqual(numberOfTodos);
 });
+
+test('or clause as object', async () => {
+  const seedData = [
+    { title: 'one', description: 'one description' },
+    { title: 'two', description: '' },
+    { title: 'three', description: 'three description' }
+  ]
+
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ title: String
+ description: String
+}`, { seedData: { todo: seedData } })
+
+  const todos = await providers.Todo.findBy({
+    "title": {
+      "eq": "one"
+    },
+    "or": {
+      "title": {
+        "eq": "three"
+      }
+    }
+  })
+
+  expect(todos).toHaveLength(2)
+});
+
+test('or clause as array', async () => {
+  const seedData = [
+    { title: 'one', description: 'one description' },
+    { title: 'two', description: '' },
+    { title: 'three', description: 'three description' }
+  ]
+
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ title: String
+ description: String
+}`, { seedData: { todo: seedData } })
+
+  const todos = await providers.Todo.findBy({
+    "title": {
+      "eq": "one"
+    },
+    "or": [
+      {
+        "title": {
+          "eq": "three"
+        }
+      },
+      {
+        "description": {
+          "eq": ""
+        }
+      }
+    ]
+  })
+
+  expect(todos).toHaveLength(3)
+});
+
+test('and clause', async () => {
+  const seedData = [
+    { title: 'one', description: 'one description' },
+    { title: 'two', description: '' },
+    { title: 'three', description: 'three description' }
+  ]
+
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ title: String
+ description: String
+}`, { seedData: { todo: seedData } })
+
+  const todos = await providers.Todo.findBy({
+    "title": {
+      "eq": "two"
+    },
+    "and": {
+      "description": {
+        "eq": " "
+      }
+    }
+  })
+
+  expect(todos).toHaveLength(1)
+});
+
+test('not clause', async () => {
+  const seedData = [
+    { title: 'one', description: 'one description' },
+    { title: 'two', description: '' },
+    { title: 'three', description: 'three description' }
+  ]
+
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ title: String
+ description: String
+}`, { seedData: { todo: seedData } })
+
+  const todos = await providers.Todo.findBy({
+    "not": {
+      "description": {
+        "eq": ""
+      }
+    }
+  })
+
+  expect(todos).toHaveLength(2)
+});

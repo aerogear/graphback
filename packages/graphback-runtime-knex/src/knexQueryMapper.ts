@@ -63,12 +63,14 @@ function where(builder: Knex.QueryBuilder, filter: any, clause?: string) {
   }
 
   // eslint-disable-next-line @typescript-eslint/tslint/config
-  Object.entries(filter).forEach(([key, expr]) => {
+  Object.entries(filter).forEach(([key, expr]: [string, any]) => {
     if ([AND_FIELD, OR_FIELD, NOT_FIELD].includes(key)) {
       if (Array.isArray(expr)) {
         for (const e of expr) {
           builder = where(builder, e, key)
         }
+      } else {
+        builder = where(builder, expr, key)
       }
 
       return
