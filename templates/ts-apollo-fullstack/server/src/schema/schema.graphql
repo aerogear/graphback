@@ -15,19 +15,33 @@ input CommentFilterInput {
   text: StringInput
   description: StringInput
   and: [CommentFilterInput]
-  or: [CommentFilterInput]
+  or: CommentFilterInput
   not: [CommentFilterInput]
 }
 
-input CommentInput {
+type CommentResultList {
+  items: [Comment]!
+  nextCursor: String
+}
+
+input CreateCommentInput {
   id: ID
   text: String
   description: String
 }
 
-type CommentListResult {
-  items: [Comment]!
-  nextCursor: String
+input CreateNoteInput {
+  id: ID
+  title: String!
+  description: String
+}
+
+input DeleteCommentInput {
+  id: ID!
+}
+
+input DeleteNoteInput {
+  id: ID!
 }
 
 input IDInput {
@@ -44,12 +58,12 @@ input IDInput {
 }
 
 type Mutation {
-  createNote(input: NoteInput!): Note!
-  updateNote(input: NoteInput!): Note!
-  deleteNote(input: NoteInput!): Note!
-  createComment(input: CommentInput!): Comment!
-  updateComment(input: CommentInput!): Comment!
-  deleteComment(input: CommentInput!): Comment!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: UpdateNoteInput!): Note!
+  deleteNote(input: DeleteNoteInput!): Note!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(input: DeleteCommentInput!): Comment!
 }
 
 """ @model """
@@ -67,28 +81,30 @@ input NoteFilterInput {
   title: StringInput
   description: StringInput
   and: [NoteFilterInput]
-  or: [NoteFilterInput]
+  or: NoteFilterInput
   not: [NoteFilterInput]
 }
 
-input NoteInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type NoteListResult {
+type NoteResultList {
   items: [Note]!
   nextCursor: String
 }
 
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
 type Query {
   getNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, limit: Int, offset: Int): NoteListResult!
-  findAllNotes(filter: NoteFilterInput, limit: Int, offset: Int): [Note!]
+  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
   getComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, limit: Int, offset: Int): CommentListResult!
-  findAllComments(filter: CommentFilterInput, limit: Int, offset: Int): [Comment!]
+  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
 }
 
 input StringInput {
@@ -105,10 +121,22 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
-  newComment(input: CommentInput): Comment!
-  updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentInput): Comment!
+  newNote(input: CreateNoteInput): Note!
+  updatedNote(input: UpdateNoteInput): Note!
+  deletedNote(input: DeleteNoteInput): Note!
+  newComment(input: CreateCommentInput): Comment!
+  updatedComment(input: UpdateCommentInput): Comment!
+  deletedComment(input: DeleteCommentInput): Comment!
+}
+
+input UpdateCommentInput {
+  id: ID!
+  text: String
+  description: String
+}
+
+input UpdateNoteInput {
+  id: ID!
+  title: String
+  description: String
 }

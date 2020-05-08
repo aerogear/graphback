@@ -24,20 +24,14 @@ export default {
     getNote: (parent, args, context) => {
       return context.Note.findOne(args)
     },
-    findNotes: (parent, { filter, page }, context) => {
-      return context.Note.findBy(filter, page)
-    },
-    findAllNotes: (parent, { page }, context) => {
-      return context.Note.findAll(page)
+    findNotes: (parent, { filter, orderBy, page }, context) => {
+      return context.Note.findBy(filter, orderBy, page)
     },
     getComment: (parent, args, context) => {
       return context.Comment.findOne(args)
     },
-    findComments: (parent, { filter, page }, context) => {
-      return context.Comment.findBy(filter, page)
-    },
-    findAllComments: (parent, { page }, context) => {
-      return context.Comment.findAll(page)
+    findComments: (parent, { filter, orderBy, page }, context) => {
+      return context.Comment.findBy(filter, orderBy, page)
     },
   },
 
