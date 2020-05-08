@@ -84,7 +84,7 @@ export class LayeredRuntimeResolverCreator {
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           const page = { limit: args.limit, offset: args.offset };
 
-          return this.services[modelName].findBy(args.filter, page, context)
+          return this.services[modelName].findBy(args.filter, args.orderBy, page, context)
         }
       }
 
@@ -94,7 +94,6 @@ export class LayeredRuntimeResolverCreator {
         resolvers[modelName] = relationResolvers;
       }
 
-      // TODO: Add subscriptions
       this.createSubscriptions(resolverElement, resolvers)
     }
 

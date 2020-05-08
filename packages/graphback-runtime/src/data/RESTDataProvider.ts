@@ -2,6 +2,7 @@ import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphb
 import { GraphQLObjectType } from 'graphql';
 import fetch from 'node-fetch';
 import { GraphbackPage } from '../GraphbackPage';
+import { GraphbackOrderBy } from '../GraphbackOrderBy';
 import { GraphbackDataProvider, AdvancedFilter } from './GraphbackDataProvider';
 
 /**
@@ -102,7 +103,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
 
   /**
    * TODO: Test this
-   * 
+   *
    * @param filter
    * @param context
    */
@@ -157,7 +158,7 @@ export class RESTDataProvider<Type = any, GraphbackContext = any> implements Gra
    *
    *      url = www.jboss.com/api/v2/users/id/se006575
    */
-  public async findBy(filter: any, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]> {
+  public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]> {
     // eslint-disable-next-line prefer-template
     const url = this.baseUrl + `/${this.baseType.name.toLocaleLowerCase()}` + `/${filter.type}` + `/${filter.value}`
     const res = await fetch(url)
