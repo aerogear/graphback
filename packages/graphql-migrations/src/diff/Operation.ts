@@ -42,7 +42,7 @@ export interface TableRenameOperation extends Operation {
 export interface TableCommentSetOperation extends Operation {
   type: 'table.comment.set'
   table: string
-  comment: string | null
+  comment: string | undefined
 }
 
 export interface TableDropOperation extends Operation {
@@ -54,15 +54,15 @@ export interface TableIndexCreateOperation extends Operation {
   type: 'table.index.create'
   table: string
   columns: string[]
-  indexName: string | null
-  indexType: string | null
+  indexName: string | undefined
+  indexType: string | undefined
 }
 
 export interface TableIndexDropOperation extends Operation {
   type: 'table.index.drop'
   table: string
   columns: string[]
-  indexName: string | null
+  indexName: string | undefined
 }
 
 export interface TablePrimarySetOperation extends Operation {
@@ -76,14 +76,14 @@ export interface TableUniqueCreateOperation extends Operation {
   type: 'table.unique.create'
   table: string
   columns: string[]
-  indexName: string | null
+  indexName: string | undefined
 }
 
 export interface TableUniqueDropOperation extends Operation {
   type: 'table.unique.drop'
   table: string
   columns: string[]
-  indexName: string | null
+  indexName: string | undefined
 }
 
 export interface TableForeignCreateOperation extends Operation {
@@ -106,7 +106,7 @@ export interface ColumnCreateOperation extends Operation {
   column: string
   columnType: string
   args: any[]
-  comment: string | null
+  comment: string | undefined
   nullable: boolean
   defaultValue: any
 }
@@ -117,7 +117,7 @@ export interface ColumnAlterOperation extends Operation {
   column: string
   columnType: string
   args: any[]
-  comment: string | null
+  comment: string | undefined
   nullable: boolean
   defaultValue: any
 }

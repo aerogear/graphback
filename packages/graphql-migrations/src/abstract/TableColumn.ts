@@ -17,19 +17,19 @@ export type TableColumnType =
   'uuid'
 
 export interface ForeignKey {
-  type: string | null
-  field: string | null
-  tableName: string | null
-  columnName: string | null
+  type: string | undefined
+  field: string | undefined
+  tableName: string | undefined
+  columnName: string | undefined
 }
 
 export interface TableColumn {
   name: string
-  comment: string | null
+  comment: string | undefined
   annotations: any
   type: string
   args: any[]
   nullable: boolean
-  foreign: ForeignKey | null
+  foreign: ForeignKey | undefined
   defaultValue: any
 }
