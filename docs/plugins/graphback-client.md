@@ -28,9 +28,6 @@ apolloClient.mutate(createUserQuery)
 
 Plugin allows to create files in many formats to suit the needs of your application.
 
-Please refer to ts-apollo-fullstack app for fully functional example:
-https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
-
 ## Plugin Config
 
 ```ts

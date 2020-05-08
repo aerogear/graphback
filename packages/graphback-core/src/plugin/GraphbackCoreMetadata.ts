@@ -28,7 +28,7 @@ export class GraphbackCoreMetadata {
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
-        this.supportedCrudMethods = Object.assign({}, defaultCRUDGeneratorConfig, globalConfig.crudMethods)
+        this.supportedCrudMethods = Object.assign({}, defaultCRUDGeneratorConfig, globalConfig?.crudMethods)
     }
 
     public getSchema() {

@@ -25,7 +25,7 @@ const model = {
 };
 
 test('Test cli workflow', async () => {
-  const basePath = resolve(`${__dirname}/../../../templates/ts-apollo-fullstack`);
+  const basePath = resolve(`${__dirname}/../../../templates/ts-apollo-postgres-backend`);
   process.chdir(basePath);
   await initConfig({ model, database: "sqlite3", client: true, skipInstall: true });
   await generateUsingPlugins({});
@@ -55,18 +55,11 @@ test('Test cli workflow', async () => {
     existsSync(join(basePath, "client/src/graphql/mutations/createComment.graphql"))
   ).toBe(true);
   expect(
-    existsSync(join(basePath, "client/src/graphql/mutations/deleteComment.graphql"))
-  ).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/mutations/deleteNote.graphql"))
-  ).toBe(true);
-  expect(
     existsSync(join(basePath, "client/src/graphql/mutations/updateComment.graphql"))
   ).toBe(true);
   expect(
     existsSync(join(basePath, "client/src/graphql/mutations/updateNote.graphql"))
   ).toBe(true);
   expect(existsSync(join(basePath, "src/schema/schema.graphql"))).toBe(true);
-  expect(existsSync(join(basePath, "src/resolvers/resolvers.ts"))).toBe(true);
 });
 
