@@ -1,4 +1,5 @@
 import { GraphbackPage } from "../GraphbackPage"
+import { GraphbackOrderBy } from '../GraphbackOrderBy';
 
 //If we come with Union on client we might use some complex JSON for describing rules
 //and single key for type for simple use cases
@@ -62,15 +63,16 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param filter filter by unique attriburtes
    * @param context context object passed from graphql or rest layer
    */
-  findOne(filter: AdvancedFilter, context?: GraphbackContext): Promise<Type>;
+  findOne(args: Partial<Type>, context?: GraphbackContext): Promise<Type>;
   /**
    * Implementation for reading objects with filtering capabilities
    *
-   * @param name name of the object to create
+   * @param name name of the object to search
+   * @param orderBy gives the ability to order the results based on a field in ascending or descending order
    * @param filter filter by specific type
    * @param context context object passed from graphql or rest layer
    */
-  findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+  findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
 
   /**

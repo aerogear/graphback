@@ -31,8 +31,8 @@ export const findAllTemplate = (modelName: string): string => {
 }
 
 export const findTemplate = (modelName: string): string => {
-  return `(parent, { filter, page }, context) => {
-      return context.${modelName}.findBy(filter, page);
+  return `(parent, { filter, orderBy, page }, context) => {
+      return context.${modelName}.findBy(filter, orderBy, page);
     }`
 }
 
