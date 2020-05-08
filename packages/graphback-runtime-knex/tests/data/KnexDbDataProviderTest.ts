@@ -190,7 +190,7 @@ type Todo {
     });
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, { limit: numberOfTodos });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, undefined, { limit: numberOfTodos });
 
   expect(todos.length).toEqual(numberOfTodos);
 });
@@ -215,7 +215,7 @@ type Todo {
     });
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, {
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, undefined, {
     offset: n,
     limit: numberOfTodos
   });
@@ -372,4 +372,50 @@ type Todo {
   })
 
   expect(todos).toHaveLength(2)
+});
+
+test('order todos by ID in descending order', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
+  const numberOfTodos = 12;
+  const text = 'test-todo';
+  for (let i = 0; i < numberOfTodos; i++) {
+    await providers.Todo.create({
+      text
+    });
+  }
+
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, { order: 'desc', field: 'id' });
+
+  expect(todos[0].id).toEqual(12);
+});
+
+test('order todos by ID in ascending order using default order value', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`)
+
+  const numberOfTodos = 12;
+  const text = 'test-todo';
+  for (let i = 0; i < numberOfTodos; i++) {
+    await providers.Todo.create({
+      text
+    });
+  }
+
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, { field: 'id' });
+
+  expect(todos[0].id).toEqual(1);
 });
