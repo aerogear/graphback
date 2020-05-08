@@ -4,6 +4,6 @@ type SortDirection = 'asc' | 'desc'
  * @todo move this into a common file
  */
 export interface GraphbackOrderBy {
-  direction?: SortDirection
+  order?: SortDirection
   field: string
 }
