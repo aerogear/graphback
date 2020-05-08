@@ -16,13 +16,6 @@ Plugin will only process GraphQL Types annotated with `@model`.
 npm install @graphback/codegen-schema
 ```
 
-## Usage
-
-Generated graphql schema file can be used to create GraphQL Server.
-
-Please reffer to ts-apollo-fullstack app for fully functional example:
-https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-fullstack
-
 ## Plugin Config
 
 ```ts
