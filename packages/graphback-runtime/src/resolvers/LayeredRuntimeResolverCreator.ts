@@ -88,16 +88,6 @@ export class LayeredRuntimeResolverCreator {
         }
       }
 
-      if (resolverElement.crudOptions.findAll) {
-        const findField = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
-        //tslint:disable-next-line: no-any
-        resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          const page = { limit: args.limit, offset: args.offset };
-
-          return this.services[modelName].findAll(page, context)
-        }
-      }
-
       const relationResolvers = this.createRelations(resolverElement.relationships);
 
       if (relationResolvers) {

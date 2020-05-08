@@ -60,10 +60,6 @@ export function createQueries(modelType: GraphQLObjectType, crudOptions: Graphba
     const fieldName = getFieldName(modelName, GraphbackOperationType.FIND);
     queries[fieldName] = findTemplate(modelName);
   }
-  if (crudOptions.findAll) {
-    const fieldName = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
-    queries[fieldName] = findAllTemplate(modelName);
-  }
 
   return queries;
 }
