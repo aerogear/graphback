@@ -1,17 +1,17 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql"
 import { PubSubEngine } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, GraphbackPubSubModel } from "@graphback/runtime";
+import { CRUDService, GraphbackPubSubModel } from "@graphback/runtime"
 import { PgKnexDBDataProvider } from './PgKnexDBDataProvider';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 
 /**
- * Helper function for creating array of datasources based on the model files that will 
+ * Helper function for creating array of datasources based on the model files that will
  * be able to connect to Postgress database using knex
- * 
- * @param schema 
- * @param db 
- * @param pubSub 
+ *
+ * @param schema
+ * @param db
+ * @param pubSub
  */
 export const createKnexPGCRUDRuntimeServices = (
   models: GraphbackPubSubModel[], schema: GraphQLSchema,
@@ -25,7 +25,7 @@ export const createKnexPGCRUDRuntimeServices = (
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
       throw new Error(`
-      Schema is missing provided type. 
+      Schema is missing provided type.
       Please make sure that you pass the right schema to createCRUDRuntimeContext`)
     }
 
@@ -42,12 +42,12 @@ export const createKnexPGCRUDRuntimeServices = (
 
 
 /**
- * Helper function for creating array of datasources based on the model files that will 
+ * Helper function for creating array of datasources based on the model files that will
  * be able to connect to MySQL database using knex
- * 
- * @param schema 
- * @param db 
- * @param pubSub 
+ *
+ * @param schema
+ * @param db
+ * @param pubSub
  */
 export const createKnexCRUDRuntimeServices = (
   models: GraphbackPubSubModel[], schema: GraphQLSchema,
@@ -61,7 +61,7 @@ export const createKnexCRUDRuntimeServices = (
     const modelType = schema.getType(model.name) as GraphQLObjectType
     if (modelType === undefined) {
       throw new Error(`
-      Schema is missing provided type. 
+      Schema is missing provided type.
       Please make sure that you pass the right schema to createCRUDRuntimeContext`)
     }
 

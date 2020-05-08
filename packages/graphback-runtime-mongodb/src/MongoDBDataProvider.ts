@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter, GraphbackOrderBy } from '@graphback/runtime';
 
 /**
  * Graphback provider that connnects to the MongoDB database
@@ -91,7 +91,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new Error("Not implemented")
   }
 
-  public async findBy(filter: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     throw new Error("Not implemented")
   }
 
