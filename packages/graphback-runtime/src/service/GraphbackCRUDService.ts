@@ -64,9 +64,11 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * Implementation for reading objects with filtering capabilities
      *
      * @param filter filter by specific type
+     * @param orderBy optionally sort the results by a column
+     * @param page pagination options
      * @param context context object passed from graphql or rest layer
      */
-    findBy(filter: Type | AdvancedFilter, page?: GraphbackPage, context?: GraphbackContext): Promise<ResultList<Type>>;
+    findBy(filter: AdvancedFilter, orderBy?: any, page?: GraphbackPage, context?: GraphbackContext): Promise<ResultList<Type>>;
 
     /**
      * Subscription for all creation events

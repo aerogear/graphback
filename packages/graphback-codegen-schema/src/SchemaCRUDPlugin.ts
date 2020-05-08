@@ -5,7 +5,7 @@ import { getFieldName, printSchemaWithDirectives, getSubscriptionName, Graphback
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, buildCreateMutationInputType, buildFindOneFieldMap, buildUpdateMutationInputType, buildDeleteMutationInputType } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, buildCreateMutationInputType, buildFindOneFieldMap, buildUpdateMutationInputType, buildDeleteMutationInputType, OrderByInputType } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -253,8 +253,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
   protected createQueries(model: ModelDefinition, queryTypes: any, modelInputTypeMap: ModelInputTypeMap) {
     const name = model.graphqlType.name;
-    if (model.crudOptions.findOne) {
 
+    if (model.crudOptions.findOne) {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryTypes[operation] = {
         type: model.graphqlType,
@@ -270,6 +270,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
           filter: {
             type: modelInputTypeMap.filterInput
           },
+          orderBy: {
+            type: OrderByInputType
+          },
           limit: {
             type: GraphQLInt,
           },
@@ -278,23 +281,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
           },
         }
       };
-    }
-    if (model.crudOptions.findAll) {
-      const operation = getFieldName(name, GraphbackOperationType.FIND_ALL)
-      queryTypes[operation] = {
-        type: GraphQLList(GraphQLNonNull(model.graphqlType)),
-        args: {
-          filter: {
-            type: modelInputTypeMap.filterInput,
-          },
-          limit: {
-            type: GraphQLInt,
-          },
-          offset: {
-            type: GraphQLInt,
-          },
-        }
-      }
     }
 
     return queryTypes;
