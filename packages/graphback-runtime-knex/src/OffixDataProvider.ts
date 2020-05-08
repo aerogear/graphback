@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments } from '@graphback/core';
-import { PgKnexDBDataProvider, NoDataError } from './index';
+import { NoDataError } from '@graphback/runtime'
+import { PgKnexDBDataProvider } from './PgKnexDBDataProvider';
 
 
 /**
@@ -13,7 +14,7 @@ export class OffixDataProvider extends PgKnexDBDataProvider {
     }
 
     /**
-     * @param data 
+     * @param data
      */
     public async update(data: any): Promise<any> {
         const { idField, data: updateData } = getDatabaseArguments(this.tableMap, data);

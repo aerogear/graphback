@@ -1,7 +1,7 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter } from '../../graphback-runtime/src';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter, GraphbackOrderBy } from '@graphback/runtime';
 import { buildQuery } from './knexQueryMapper';
 
 /**
@@ -86,7 +86,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   /**
    *
    * @param page
-   * @deprecated
+   * @deprecated Please use findBy
    */
   public async findAll(page?: GraphbackPage): Promise<Type[]> {
     //tslint:disable-next-line: await-promise
@@ -98,8 +98,12 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot find all results for ${this.tableName}`);
   }
 
-  public async findBy(filter?: Type | AdvancedFilter, page?: GraphbackPage): Promise<Type[]> {
-    const query = buildQuery(this.db, filter).from(this.tableName)
+  public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+    let query = buildQuery(this.db, filter).from(this.tableName)
+
+    if (orderBy) {
+      query = query.orderBy(orderBy.field, orderBy.direction)
+    }
 
     //tslint:disable-next-line: await-promise
     const dbResult = await this.usePage(query, page);
