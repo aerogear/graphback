@@ -2,7 +2,7 @@ import { TableColumn } from './TableColumn'
 
 export interface Table {
   name: string
-  comment: string | null
+  comment: string | undefined
   annotations: any
   columns: TableColumn[]
   columnMap: Map<string, TableColumn>
@@ -13,16 +13,16 @@ export interface Table {
 
 export interface TableIndex {
   columns: string[]
-  name: string | null
-  type: string | null
+  name: string | undefined
+  type: string | undefined
 }
 
 export interface TablePrimary {
   columns: string[]
-  name: string | null
+  name: string | undefined
 }
 
 export interface TableUnique {
   columns: string[]
-  name: string | null
+  name: string | undefined
 }

@@ -35,11 +35,12 @@ order by
   }),
 }
 
+// eslint-disable-next-line import/no-default-export
 export default async function(
   knex: Knex,
   tableName: string,
   schemaName: string,
-): Promise<{ indexName: string, columnNames: string[], type: string | null }[]> {
+): Promise<{ indexName: string, columnNames: string[], type: string | undefined }[]> {
   const query = queries[knex.client.config.client]
   if (!query) {
     console.warn(`${knex.client.config.client} column index not supported`)

@@ -426,8 +426,7 @@ class AbstractDatabaseBuilder {
       args: args || [],
       nullable: !notNull,
       foreign,
-      // eslint-disable-next-line no-null/no-null
-      defaultValue: annotations.default !== null ? annotations.default : null,
+      defaultValue: annotations.default,
     }
   }
 
