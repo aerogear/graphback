@@ -8,15 +8,15 @@ const StringScalarInputTypeName = 'StringInput'
 const BooleanScalarInputTypeName = 'BooleanInput'
 const IDScalarInputTypeName = 'IDInput'
 
-const SortDirectionEnumName = 'SortDirection';
+const SortDirectionEnumName = 'SortDirectionEnum';
+const OrderByInputTypeName = 'OrderByInput';
 
 export interface ModelInputTypeMap {
-  findOneQueryFields?: GraphQLInputFieldMap
-  filterInput?: GraphQLInputObjectType
-  createMutationInput?: GraphQLInputObjectType
-  updateMutationInput?: GraphQLInputObjectType
-  deleteMutationInput?: GraphQLInputObjectType
-  orderByInput?: GraphQLInputObjectType
+  findOneQueryFields: GraphQLInputFieldMap
+  filterInput: GraphQLInputObjectType
+  createMutationInput: GraphQLInputObjectType
+  updateMutationInput: GraphQLInputObjectType
+  deleteMutationInput: GraphQLInputObjectType
 }
 
 export const FloatScalarInputType = new GraphQLInputObjectType({
@@ -101,8 +101,16 @@ export const IDScalarInputType = new GraphQLInputObjectType({
 export const SortDirectionEnum = new GraphQLEnumType({
   name: SortDirectionEnumName,
   values: {
-    DESC: { value: 'descending' },
-    ASC: { value: 'ascending' }
+    DESC: { value: 'desc' },
+    ASC: { value: 'asc' }
+  }
+})
+
+export const OrderByInputType = new GraphQLInputObjectType({
+  name: OrderByInputTypeName,
+  fields: {
+    field: { type: GraphQLNonNull(GraphQLString) },
+    order: { type: SortDirectionEnum, defaultValue: 'asc' }
   }
 })
 
