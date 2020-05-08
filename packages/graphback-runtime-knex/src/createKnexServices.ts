@@ -7,7 +7,7 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
 
 /**
  * Helper function for creating array of datasources based on the model files that will 
- * be able to connect to Postgres database using knex
+ * be able to connect to Postgress database using knex
  * 
  * @param schema 
  * @param db 
