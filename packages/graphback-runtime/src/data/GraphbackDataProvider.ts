@@ -72,7 +72,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param filter filter by specific type
    * @param context context object passed from graphql or rest layer
    */
-  findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+  findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
 
   /**
