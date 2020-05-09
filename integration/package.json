@@ -13,7 +13,7 @@
     "pretest": "yarn build"
   },
   "dependencies": {
-    "apollo-boost": "0.4.7",
+    "apollo-boost": "0.4.8",
     "apollo-server": "2.13.0",
     "apollo-server-testing": "2.13.0",
     "jest": "26.0.1",
