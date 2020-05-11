@@ -222,6 +222,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       ]
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for(const post of posts) {
       expect(post.text).toEqual('post');
       expect(post.likes).toEqual(300);
@@ -240,7 +241,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
         }
       ]
     });
-
+    expect(posts.length).toEqual(2);
     for(const post of posts) {
       expect((post.text === 'post2') || (post.likes === 300));
     }
@@ -258,6 +259,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       ]
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for(const post of posts) {
       expect(post.text).not.toEqual('post2');
       expect(post.likes).not.toEqual(300);
@@ -269,6 +271,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
           likes: { between: [250, 350] }
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect(post.likes).toBeLessThanOrEqual(350);
       expect(post.likes).toBeGreaterThanOrEqual(250);
@@ -280,11 +283,14 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       likes: { nbetween: [250, 350] }
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect((post.likes < 250) || (post.likes > 350));
     }
   });
-
+  Object.defineProperty(RegExp.prototype, "toJSON", {
+    value: RegExp.prototype.toString
+  });
   it('can use nested filters', async () => {
     const posts :Post[] = await context.providers.Post.findBy({
       and: [
@@ -296,13 +302,15 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
         },
         {
           or: [
-            { title: { eq: 'post' } },
-            { title: { eq: 'post2' } }
+            { text: { eq: 'post' } },
+            { text: { eq: 'post2' } }
           ]
         }
       ]
     });
 
+    console.log(JSON.stringify(posts,null,4))
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect(
         (
@@ -327,28 +335,31 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       text: { contains: 'post' }
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect(post.text).toEqual(expect.stringContaining('post'))
     }
 
   });
 
-  it('can use startswith operator', async () => {
+  it('can use startsWith operator', async () => {
     const posts: Post[] = await context.providers.Post.findBy({
-      text: { startswith: 'post' }
+      text: { startsWith: 'post' }
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect(post.text).toEqual(expect.stringMatching(/^post/g))
     }
 
   });
 
-  it('can use endswith operator', async () => {
+  it('can use endsWith operator', async () => {
     const posts: Post[] = await context.providers.Post.findBy({
-      text: { endswith: 'post' }
+      text: { endsWith: 'post' }
     });
 
+    expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect(post.text).toEqual(expect.stringMatching(/post$/g))
     }
