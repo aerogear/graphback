@@ -338,7 +338,7 @@ type Todo {
     },
     "and": {
       "description": {
-        "eq": " "
+        "eq": ""
       }
     }
   })
@@ -418,4 +418,94 @@ type Todo {
   const todos = await providers.Todo.findBy({ text: { eq: text } }, { field: 'id' });
 
   expect(todos[0].id).toEqual(1);
+});
+
+test('get todos with field value in a range', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ items: Int
+}`, {
+    seedData: {
+      todo: [
+        {
+          items: 1,
+        },
+        {
+          items: 2,
+        },
+        {
+          items: 3
+        },
+        {
+          items: 4
+        },
+        {
+          items: 5
+        },
+        {
+          items: 6
+        },
+        {
+          items: 8
+        }
+      ]
+    }
+  })
+
+  const todos = await providers.Todo.findBy({ items: { between: [2, 6] } });
+
+  expect(todos).toHaveLength(5);
+
+  const todoItems = todos.map((t: any) => t.items)
+
+  expect(todoItems).toEqual([2, 3, 4, 5, 6])
+});
+
+test('get todos with field value not in a range', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ items: Int
+}`, {
+    seedData: {
+      todo: [
+        {
+          items: 1,
+        },
+        {
+          items: 2,
+        },
+        {
+          items: 3
+        },
+        {
+          items: 4
+        },
+        {
+          items: 5
+        },
+        {
+          items: 6
+        },
+        {
+          items: 8
+        }
+      ]
+    }
+  })
+
+  const todos = await providers.Todo.findBy({ not: { items: { between: [2, 6] } } });
+
+  expect(todos).toHaveLength(2);
+
+  const todoItems = todos.map((t: any) => t.items)
+
+  expect(todoItems).toEqual([1, 8])
 });

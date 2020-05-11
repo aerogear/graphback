@@ -14,10 +14,15 @@ interface OperatorMap {
 
 const methodMapping = {
   in: 'whereIn',
-  nin: 'whereNotIn',
   between: 'whereBetween',
-  nbetween: 'whereNotBetween',
   default: 'where'
+}
+
+const notMethodMap = {
+  where: 'whereNot',
+  whereNull: 'whereNotNull',
+  between: 'whereNotBetween',
+  in: 'whereNotIn'
 }
 
 const AND_FIELD = 'and';
@@ -46,59 +51,84 @@ function mapOperator(operator: any) {
   return operatorMap[oprLower]
 }
 
-function builderMethod(method: string, clause?: string) {
-  switch (clause) {
-    case 'not':
-      return `${method}Not`;
-    case 'or':
-      return `${clause}${method.charAt(0).toUpperCase()}${method.slice(1)}`;
-    default:
-      return method;
+function builderMethod(method: string, or?: boolean, not?: boolean) {
+  if (!not && methodMapping[method]) {
+    method = methodMapping[method]
+  } else if (not && notMethodMap[method]) {
+    method = notMethodMap[method]
   }
+
+  if (or) {
+    return `or${method.charAt(0).toUpperCase()}${method.slice(1)}`
+  }
+
+  return method
 }
 
-function where(builder: Knex.QueryBuilder, filter: any, clause?: string) {
+function where(builder: Knex.QueryBuilder, filter: any, or: boolean = false, not: boolean = false) {
   if (!filter) {
     return builder
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
-  Object.entries(filter).forEach(([key, expr]: [string, any]) => {
-    if ([AND_FIELD, OR_FIELD, NOT_FIELD].includes(key)) {
-      if (Array.isArray(expr)) {
-        for (const e of expr) {
-          builder = where(builder, e, key)
-        }
-      } else {
-        builder = where(builder, expr, key)
-      }
+  const andQueries = []
+  const orQueries = []
+  const notQueries = []
+  for (const entry of Object.entries(filter)) {
+    const col = entry[0]
+    const expr = entry[1] as any
 
-      return
+    // collect all AND condition filters
+    if (col === AND_FIELD) {
+      const andExpressions = Array.isArray(expr) ? expr : [expr]
+      andQueries.push(...andExpressions)
+      continue
     }
 
-    // eslint-disable-next-line @typescript-eslint/tslint/config
-    // eslint-disable-next-line no-shadow
-    Object.entries(expr).forEach((exprEntry: [any, any]) => {
-      if (Object.keys(methodMapping).includes(exprEntry[0])) {
-        const method = methodMapping[exprEntry[0]]
-        builder = builder[method](key, exprEntry[1])
-      }
-      else if (exprEntry[0] === 'contains') {
-        // const method = !orWhere ? 'where' : 'orWhere'
-        builder = builder[builderMethod('where', clause)](key, mapOperator(exprEntry[0]), `%${exprEntry[1]}%`)
-      } else if (exprEntry[0] === 'startsWith') {
-        // const method = !orWhere ? 'where' : 'orWhere'
-        builder = builder[builderMethod('where', clause)](key, mapOperator(exprEntry[0]), `${exprEntry[1]}%`)
-      } else if (exprEntry[0] === 'endsWith') {
-        // const method = !orWhere ? 'where' : 'orWhere'
-        builder = builder[builderMethod('where', clause)](key, mapOperator(exprEntry[0]), `%${exprEntry[1]}`)
-      }
-      else {
-        // const method = !orWhere ? 'where' : 'orWhere'
-        builder = builder[builderMethod('where', clause)](key, mapOperator(exprEntry[0]), exprEntry[1])
-      }
-    })
-  });
+    // collect all OR condition filters
+    if (col === OR_FIELD) {
+      const orExpressions = Array.isArray(expr) ? expr : [expr]
+      orQueries.push(...orExpressions)
+      continue
+    }
+
+    // collect all NOT condition filters
+    if (col === NOT_FIELD) {
+      notQueries.push(expr)
+      continue
+    }
+
+    const exprEntry = Object.entries(expr)[0]
+
+    // eslint-disable-next-line no-null/no-null
+    if (exprEntry[1] === null) {
+      builder = builder[builderMethod('whereNull', or, not)](col)
+    } else if (Object.keys(methodMapping).includes(exprEntry[0])) {
+      builder = builder[builderMethod(exprEntry[0], or, not)](col, exprEntry[1])
+    } else if (exprEntry[0] === 'contains') {
+      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), `%${exprEntry[1]}%`)
+    } else if (exprEntry[0] === 'startsWith') {
+      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), `${exprEntry[1]}%`)
+    } else if (exprEntry[0] === 'endsWith') {
+      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), `%${exprEntry[1]}`)
+    } else {
+      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), exprEntry[1])
+    }
+  }
+
+  // build AND queries
+  for (const andFilter of andQueries) {
+    builder = where(builder, andFilter, false, not)
+  }
+
+  // build OR queries
+  for (const orFilter of orQueries) {
+    builder = where(builder, orFilter, true, not)
+  }
+
+  // build NOT queries
+  for (const notFilter of notQueries) {
+    builder = where(builder, notFilter, or, true)
+  }
 
   return builder
 }
