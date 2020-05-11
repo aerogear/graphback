@@ -83,7 +83,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   //tslint:disable-next-line: no-any
-  public async findBy(filter: AdvancedFilter, orderBy: GraphbackOrderBy, page: GraphbackPage, context?: any): Promise<ResultList<T>> {
+  public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: any): Promise<ResultList<T>> {
     this.logger.log(`querying object ${this.modelName} with filter ${JSON.stringify(filter)}`)
 
     const items = await this.db.findBy(filter, orderBy, page, context);
