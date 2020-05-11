@@ -2,6 +2,7 @@ import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter, GraphbackOrderBy } from '@graphback/runtime';
+import {buildQuery} from './queryBuilder'
 
 /**
  * Graphback provider that connnects to the MongoDB database
@@ -88,14 +89,34 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findOne(filter: AdvancedFilter): Promise<Type> {
-    throw new Error("Not implemented")
+    const query = this.db.collection(this.collectionName).findOne(filter);
+    const data = await query;
+
+    if (data) {
+      return {
+        ...data,
+        id: data._id
+      }
+    }
+    throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
   public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
-    throw new Error("Not implemented")
+    const query = this.db.collection(this.collectionName).find(buildQuery(filter));
+    const data = await this.usePage(query, page);
+
+    if (data) {
+      return data.map((one: any) => {
+        return {
+          ...one,
+          id: one._id
+        }
+      });
+    }
+    throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async batchRead(relationField: string, ids: string[]): Promise<Type[][]> {
+  public async batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]> {
     let result: any;
 
     const { idField } = getDatabaseArguments(this.tableMap);
@@ -105,14 +126,17 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await this.db.collection(this.collectionName).find({ _id: { $in: array } }).toArray();
+      result = await this.db.collection(this.collectionName).find(buildQuery({ _id: { $in: array }, ...filter })).toArray();
     } else {
-      const query: any = {};
+      let query: any = {};
       const array = ids.map((value: any) => {
         return value.toString();
       });
+      query = {
+        ...filter
+      }
       query[relationField] = { $in: array };
-      result = await this.db.collection(this.collectionName).find(query).toArray();
+      result = await this.db.collection(this.collectionName).find(buildQuery(query)).toArray();
     }
 
     if (result) {
@@ -133,7 +157,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       return resultsById as [Type[]];
     }
 
-    throw new NoDataError(`No results for ${this.collectionName} query and batch read`);
+    throw new NoDataError(`No results for ${this.collectionName} query and batch read with filter: ${JSON.stringify(filter)}`);
 
 
 
