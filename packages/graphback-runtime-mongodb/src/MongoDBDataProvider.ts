@@ -141,7 +141,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   private usePage(query: Cursor<any>, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
     if (page) {
-      if (!(page.hasOwnProperty("offset"))) {
+      if (!(page.hasOwnProperty("offset")) || (page.offset === undefined)) {
         // If no offset is supplied
         page.offset = defaultOffset
       } else {
@@ -150,8 +150,8 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
         }
       }
       query = query.skip(page.offset)
-      // console.log('page desu: ', page)
-      if (page.hasOwnProperty("limit")) {
+
+      if (page.hasOwnProperty("limit") && !(page.limit === undefined)) {
         if (page.limit <= 0) {
           throw new Error("Please use a limit of greater than 0 in queries")
         }
