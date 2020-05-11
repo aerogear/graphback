@@ -44,7 +44,7 @@ test('should get primary key from @db.primary annotation', () => {
 
 test('should throw an error if no primary key in model', () => {
     const schema = buildSchema(`
-    """ @db.model """
+    """ @model """
     type User {
         email: ID!
         name: String!
@@ -59,7 +59,7 @@ test('should throw an error if no primary key in model', () => {
 
 test('should throw an error if multiple @db.primary annotations', () => {
     const schema = buildSchema(`
-    """ @db.model """
+    """ @model """
     type User {
         id: ID!
         """
