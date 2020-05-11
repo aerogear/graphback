@@ -54,17 +54,17 @@ const operatorTransform: {
     },
     contains: (value: string): OperatorTransform => {
         return [
-            [operatorMap.eq, new RegExp(value, 'g')]
+            ['$regex', new RegExp(value, 'g')]
         ]
     },
-    startswith: (value: string): OperatorTransform => {
+    startsWith: (value: string): OperatorTransform => {
         return [
-            [operatorMap.eq, new RegExp(`^${value}`, 'g')]
+            ['$regex', new RegExp(`^${value}`, 'g')]
         ]
     },
-    endswith: (value: string): OperatorTransform => {
+    endsWith: (value: string): OperatorTransform => {
         return [
-            [operatorMap.eq, new RegExp(`${value}$`, 'g')]
+            ['$regex', new RegExp(`${value}$`, 'g')]
         ]
     },
 }
@@ -78,7 +78,7 @@ function isPrimitive(test: any): boolean {
 function traverse(filter: any): any {
 
     Object.keys(filter).forEach((key: string) => {
-        if (filter.hasOwnProperty(key)) {
+
             // Transform the operators to mongodb operators
 
             // Check if it can be directly substituted
@@ -102,12 +102,10 @@ function traverse(filter: any): any {
                     filter[operator] = value;
                 });
             }
-        }
     });
 
     // If there is nesting, recursively transform all operators
     Object.keys(filter).forEach((key: string) => {
-        if (filter.hasOwnProperty(key)) {
             if (['$and', '$or', '$nor'].includes(key)) {
 
                 // If AND, OR, NOT do not have an array as their contents
@@ -122,7 +120,6 @@ function traverse(filter: any): any {
             if (!isPrimitive(filter[key])) {
                 filter[key] = traverse(filter[key]);
             }
-        }
     });
 
     return filter
@@ -132,6 +129,5 @@ export function buildQuery(filter: AdvancedFilter) {
     let query = {};
     if (filter)
         {query = traverse(filter);}
-
     return query;
 }
