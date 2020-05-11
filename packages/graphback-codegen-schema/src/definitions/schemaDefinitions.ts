@@ -29,8 +29,7 @@ export const FloatScalarInputType = new GraphQLInputObjectType({
     ge: { type: GraphQLFloat },
     gt: { type: GraphQLFloat },
     in: { type: GraphQLList(GraphQLFloat) },
-    between: { type: GraphQLList(GraphQLFloat) },
-    // exists: { type: GraphQLBoolean }
+    between: { type: GraphQLList(GraphQLFloat) }
   }
 })
 
@@ -44,8 +43,7 @@ export const IntScalarInputType = new GraphQLInputObjectType({
     ge: { type: GraphQLInt },
     gt: { type: GraphQLInt },
     in: { type: GraphQLList(GraphQLInt) },
-    between: { type: GraphQLList(GraphQLInt) },
-    // exists: { type: GraphQLBoolean }
+    between: { type: GraphQLList(GraphQLInt) }
   }
 })
 
@@ -62,8 +60,6 @@ export const StringScalarInputType = new GraphQLInputObjectType({
     contains: { type: GraphQLString },
     startsWith: { type: GraphQLString },
     endsWith: { type: GraphQLString }
-    // exists: { type: GraphQLBoolean }
-    // TODO: size
   }
 })
 
@@ -71,9 +67,7 @@ export const BooleanScalarInputType = new GraphQLInputObjectType({
   name: BooleanScalarInputTypeName,
   fields: {
     ne: { type: GraphQLBoolean },
-    eq: { type: GraphQLBoolean },
-    // exists: { type: GraphQLBoolean }
-    // TODO: Where not null
+    eq: { type: GraphQLBoolean }
   }
 })
 
@@ -90,8 +84,6 @@ export const IDScalarInputType = new GraphQLInputObjectType({
     contains: { type: GraphQLID },
     startsWith: { type: GraphQLID },
     endsWith: { type: GraphQLID }
-    // exists: { type: GraphQLBoolean }
-    // TODO: size
   }
 })
 
@@ -156,10 +148,10 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
         type: `[${inputTypeName}]`
       },
       or: {
-        type: `${inputTypeName}`
+        type: `[${inputTypeName}]`
       },
       not: {
-        type: `[${inputTypeName}]`
+        type: `${inputTypeName}`
       }
     }
   });
