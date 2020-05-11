@@ -60,7 +60,8 @@
   },
   "workspaces": [
     "packages/*",
-    "templates/**"
+    "templates/**",
+    "integration"
   ],
   "repository": {
     "type": "git",
