@@ -353,17 +353,6 @@ test('Delete Note 1', async () => {
     expect(response.data.deleteNote).toEqual({ id: '2', description: 'Note B Description', title: 'Note B' });
 });
 
-test('Test custom query', async () => {
-    const document = gql`
-        query {
-            helloWorld
-        }
-    `;
-    const response = await client.query({ query: document })
-
-    expect(response.data).toEqual({ helloWorld: 'Hello!' });
-})
-
 async function updateNote(input: any, client: ApolloServerTestClient) {
     const { document } = await getDocument('updateNote');
 
