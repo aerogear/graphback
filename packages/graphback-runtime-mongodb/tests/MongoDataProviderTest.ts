@@ -133,7 +133,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
         text,
       });
     }
-    const todos: Todo[] = await context.providers.Todos.findBy({ text: { eq: text } }, { offset: 0 });
+    const todos: Todo[] = await context.providers.Todos.findBy({ text: { eq: text } }, null, { offset: 0 });
     expect(todos.length).toEqual(11);
   });
 
@@ -144,7 +144,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
         text,
       });
     }
-    const todos = await context.providers.Todos.findBy({ text: { eq: text } }, { limit: 1 });
+    const todos = await context.providers.Todos.findBy({ text: { eq: text } }, null,{ limit: 1 });
     expect(todos[0].text).toEqual(text);
   });
 
@@ -156,7 +156,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       });
     }
 
-    const todos = await context.providers.Todos.findBy({ text: { eq: text } }, { limit: 1, offset: 0 });
+    const todos = await context.providers.Todos.findBy({ text: { eq: text } }, null, { limit: 1, offset: 0 });
     expect(todos.length).toEqual(1);
     expect(todos[0].text).toEqual(text);
   });
