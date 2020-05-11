@@ -288,9 +288,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       expect((post.likes < 250) || (post.likes > 350));
     }
   });
-  Object.defineProperty(RegExp.prototype, "toJSON", {
-    value: RegExp.prototype.toString
-  });
+
   it('can use nested filters', async () => {
     const posts :Post[] = await context.providers.Post.findBy({
       and: [
@@ -309,7 +307,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       ]
     });
 
-    console.log(JSON.stringify(posts,null,4))
+
     expect(posts.length).toBeGreaterThanOrEqual(1);
     for (const post of posts) {
       expect(
