@@ -2,7 +2,7 @@ import { GraphbackOperationType, upperCaseFirstChar } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
-import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
+import { GraphbackDataProvider, AdvancedFilter } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackPage } from "../GraphbackPage"
 import { GraphbackCRUDService, ResultList } from "./GraphbackCRUDService";
@@ -82,7 +82,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   //tslint:disable-next-line: no-any
-  public async findBy(filter: any, page?: GraphbackPage, context?: any): Promise<ResultList<T>> {
+  public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: any): Promise<ResultList<T>> {
     this.logger.log(`querying object ${this.modelName} with filter ${JSON.stringify(filter)}`)
 
     const items = await this.db.findBy(filter, page, context);
