@@ -17,7 +17,7 @@ export function applyAuthToResolvers(resolversMap: any, models: ModelAuthConfigs
   for (const operationType of Object.keys(resolversAuthConfig)) {
     for (const operationName of Object.keys(resolversAuthConfig[operationType])) {
       const authConfig = resolversAuthConfig[operationType][operationName]
-      if (operationType === 'Query' || operationName === 'Mutation') {
+      if (operationType === 'Query' || operationType === 'Mutation') {
         if (resolversMap[operationType] && resolversMap[operationType][operationName]) {
           console.log(`wrapping resolver ${operationName} with auth`, authConfig)
           resolversMap[operationType][operationName] = authResolverWrapper(authConfig, resolversMap[operationType][operationName])
