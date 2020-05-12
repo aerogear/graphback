@@ -1,7 +1,9 @@
 
 import { 
   checkIsAuthorizedByRole,
-  isACreateResolver
+  isACreateResolver,
+  isMutation,
+  isQuery
 } from './utils';
 
 /**
@@ -25,12 +27,11 @@ export function authResolverWrapper(resolverAuthInfo: any, resolveFn: any): any 
     if (resolverAuthInfo.roles && resolverAuthInfo.roles.length > 0) {
       isAuthorizedByRole = checkIsAuthorizedByRole(resolverAuthInfo.roles, context)
     }
+
     // perform the owner auth checks
-    if (resolverAuthInfo.ownerAuth) {
+    if (resolverAuthInfo.ownerAuth && isMutation(info)) {
       const ownerField = resolverAuthInfo.ownerField
       const modelName = resolverAuthInfo.modelName
-
-      // if we're in a create type resolver then the user is allowed to proceed
       if (isACreateResolver(info, modelName)) {
         isAuthorizedOwner = true
         // set the owner field as the currently logged in user's ID
@@ -48,10 +49,13 @@ export function authResolverWrapper(resolverAuthInfo: any, resolveFn: any): any 
           isAuthorizedOwner = true
         }
       }
+    } else if (isQuery(info)) {
+      isAuthorizedOwner = true;
     }
+
     console.log(`resolvername: ${info.fieldName}, is authorized by role: ${isAuthorizedByRole}, is an authorized owner: ${isAuthorizedOwner}`)
     // if either one is true then the user can proceed
-    if (isAuthorizedByRole || isAuthorizedOwner) {
+    if (isAuthorizedByRole || (resolverAuthInfo.ownerAuth && isAuthorizedOwner)) {
       return resolveFn(obj, args, context, info)
     }
     // throw generic unauthorized error - good for security
