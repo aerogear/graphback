@@ -129,5 +129,6 @@ export function buildQuery(filter: AdvancedFilter) {
     let query = {};
     if (filter)
         {query = traverse(filter);}
+
     return query;
 }
