@@ -102,7 +102,19 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
-    const query = this.db.collection(this.collectionName).find(buildQuery(filter));
+    const sortOrder: { [fieldName: string]: 1 | -1 } = {};
+    if (orderBy) {
+      if (orderBy.field) {
+        sortOrder[orderBy.field] = 1;
+      }
+      if (orderBy.order) {
+        if (orderBy.order.toLowerCase() === 'desc') {
+          sortOrder[orderBy.field] = -1;
+        }
+      }
+      console.log('sortorder: ', JSON.stringify(sortOrder));
+    }
+    const query = this.db.collection(this.collectionName).find(buildQuery(filter)).sort(sortOrder);
     const data = await this.usePage(query, page);
 
     if (data) {
