@@ -1,6 +1,6 @@
 {
   "name": "@graphback/keycloak-authz",
-  "version": "0.1.0-dev4",
+  "version": "0.1.0-dev5",
   "description": "Add Keycloak auth to Graphback runtime applications",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
