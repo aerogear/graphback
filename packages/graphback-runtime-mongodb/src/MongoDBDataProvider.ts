@@ -106,9 +106,8 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
-    const sortOrder = this.getSortOrder(orderBy);
-    const query = this.db.collection(this.collectionName).find(buildQuery(filter)).sort(sortOrder);
-    const data = await this.usePage(query, page);
+    const query = this.db.collection(this.collectionName).find(buildQuery(filter));
+    const data = await this.usePage(this.sortQuery(query, orderBy), page);
 
     if (data) {
       return data.map((one: any) => {
@@ -121,7 +120,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  private getSortOrder(orderBy: GraphbackOrderBy): SortOrder {
+  private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
     const sortOrder: SortOrder = {};
     if (orderBy) {
       if (orderBy.field) {
@@ -134,7 +133,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       }
       console.log('sortorder: ', JSON.stringify(sortOrder));
     }
-    return sortOrder;
+    return query.sort(sortOrder);
   }
 
   public async batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]> {
