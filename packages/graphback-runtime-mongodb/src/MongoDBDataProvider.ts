@@ -4,6 +4,10 @@ import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphb
 import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter, GraphbackOrderBy } from '@graphback/runtime';
 import {buildQuery} from './queryBuilder'
 
+interface SortOrder {
+  [fieldName: string]: 1 | -1;
+}
+
 /**
  * Graphback provider that connnects to the MongoDB database
  */
@@ -102,18 +106,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
-    const sortOrder: { [fieldName: string]: 1 | -1 } = {};
-    if (orderBy) {
-      if (orderBy.field) {
-        sortOrder[orderBy.field] = 1;
-      }
-      if (orderBy.order) {
-        if (orderBy.order.toLowerCase() === 'desc') {
-          sortOrder[orderBy.field] = -1;
-        }
-      }
-      console.log('sortorder: ', JSON.stringify(sortOrder));
-    }
+    const sortOrder = this.getSortOrder(orderBy);
     const query = this.db.collection(this.collectionName).find(buildQuery(filter)).sort(sortOrder);
     const data = await this.usePage(query, page);
 
@@ -126,6 +119,22 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       });
     }
     throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
+  }
+
+  private getSortOrder(orderBy: GraphbackOrderBy): SortOrder {
+    const sortOrder: SortOrder = {};
+    if (orderBy) {
+      if (orderBy.field) {
+        sortOrder[orderBy.field] = 1;
+      }
+      if (orderBy.order) {
+        if (orderBy.order.toLowerCase() === 'desc') {
+          sortOrder[orderBy.field] = -1;
+        }
+      }
+      console.log('sortorder: ', JSON.stringify(sortOrder));
+    }
+    return sortOrder;
   }
 
   public async batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]> {
