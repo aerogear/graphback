@@ -11,11 +11,10 @@ Object {
     "updateUser": [Function],
   },
   "Query": Object {
-    "findAllTodos": [Function],
-    "findAllUsers": [Function],
     "findTodos": [Function],
-    "findUser": [Function],
     "findUsers": [Function],
+    "getTodos": [Function],
+    "getUser": [Function],
   },
   "Subscription": Object {
     "deletedTodos": Object {
