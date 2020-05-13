@@ -15,8 +15,8 @@ For every model object in your schema we can provide the folowing operations:
 - UPDATE
 - DELETE
 - READ
-- FIND_ALL (all dataset - flavours with Pagination, Delta etc.)
-- FIND (filtering - flavours with Pagination, Delta etc.)
+- FINDONE (single object in dataset)
+- FIND (Way to fetch data with filtering pagination etc)
 - SUBSCRIBE TO CREATE
 - SUBSCRIBE TO UPDATE
 - SUBSCRIBE TO DELETE
@@ -24,6 +24,30 @@ For every model object in your schema we can provide the folowing operations:
 Target of Graphback is to prevent anemic mutations and locking developers into CRUD model. 
 That is why we provide only basic filtering on the GraphQL level as we believe that business model 
 needs to be implemented and hidden behind resolvers. 
+
+Boolean operations we support in filtering:
+- AND
+- NOT
+- OR
+
+Operators we support:
+- Not Equals: '<>',
+- Equals: '=',
+- Less or Equals: '<=',
+- Less: '<',
+- Greather Equals: '>=',
+- Greather: '>',
+- Contains: 'like',
+- Startswith: 'like',
+- Endswith: 'like',
+
+Each features are mapped differently depending on the underlying database.
+
+Capabilities we do not support:
+
+- Sorting by multiple fields
+- Batch updates, deletes
+- Grouping and Having like statements
 
 That is why every Query or Mutation included in the schema will be ignored by Graphback, but also supplied in the result schema giving developers flexibility to provide their own implementations on the server. Graphback tries to avoid adding extra types to your schema that you might not use in your application.
 
@@ -50,20 +74,20 @@ input NoteInput {
 }
 
 type Query {
-  findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
+  getNote(id: ID!): Note
+ findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
 } 
 
 type Mutation {
-  createNote(input: NoteInput): Note!
-  updateNote(input: NoteInput): Note!
-  deleteNote(input: NoteInput): Note!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: UpdateNoteInput!): Note!
+  deleteNote(input: DeleteNoteInput!): Note!
 } 
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
+  newNote(input: CreateNoteInput): Note!
+  updatedNote(input: UpdateNoteInput): Note!
+  deletedNote(input: DeleteNoteInput): Note!
 } 
 ```
 

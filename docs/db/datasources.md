@@ -180,7 +180,7 @@ const apolloServer = new ApolloServer({
 Your data sources are attached to the application context and can be accessed in every resolver function:
 
 ```js
-findAllComments: (parent, args, context) => {
-    return context.Comment.findAll();
+findComments: (parent, args, context) => {
+    return context.Comment.find();
 };
 ```

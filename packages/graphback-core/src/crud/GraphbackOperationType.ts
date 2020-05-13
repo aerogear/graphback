@@ -8,6 +8,5 @@ export enum GraphbackOperationType {
     UPDATE = 'update',
     FIND = 'find',
     FIND_ONE = 'findOne',
-    FIND_ALL = 'findAll',
     DELETE = 'delete',
 }

@@ -114,12 +114,12 @@ Object {
       "name": "findNotes",
     },
     Object {
-      "implementation": "query findAllNotes($limit: Int, $offset: Int) {
-    findAllNotes(limit: $limit, offset: $offset) {
+      "implementation": "query getNote($filter: NoteFilterUniqueInput) {
+    getNote(filter: $filter) {
       ...NoteExpandedFields
     }
   }",
-      "name": "findAllNotes",
+      "name": "getNote",
     },
     Object {
       "implementation": "query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
@@ -130,12 +130,12 @@ Object {
       "name": "findComments",
     },
     Object {
-      "implementation": "query findAllComments($limit: Int, $offset: Int) {
-    findAllComments(limit: $limit, offset: $offset) {
+      "implementation": "query getComment($filter: CommentFilterUniqueInput) {
+    getComment(filter: $filter) {
       ...CommentExpandedFields
     }
   }",
-      "name": "findAllComments",
+      "name": "getComment",
     },
   ],
   "subscriptions": Array [

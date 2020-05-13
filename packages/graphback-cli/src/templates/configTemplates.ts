@@ -78,7 +78,7 @@ export const createConfig = async (database: string, client: boolean) => {
         "crud": {
           "create": true,
           "update": true,
-          "findAll": true,
+          "findOne": true,
           "find": true,
           "delete": false,
           "subCreate": false,

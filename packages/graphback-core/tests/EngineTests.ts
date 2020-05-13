@@ -48,7 +48,7 @@ test('Test plugin engine', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
   }

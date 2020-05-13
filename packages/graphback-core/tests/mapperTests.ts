@@ -4,9 +4,9 @@ import { getFieldName, getSubscriptionName, GraphbackOperationType } from '../sr
 
 test('Test plugin engine', async () => {
 
-    const fieldName = getFieldName('unicorn', GraphbackOperationType.FIND_ALL);
+    const fieldName = getFieldName('unicorn', GraphbackOperationType.FIND_ONE);
 
-    expect(fieldName).toEqual('findAllUnicorns');
+    expect(fieldName).toEqual('getUnicorn');
 
     const sub = getSubscriptionName('unicorn', GraphbackOperationType.CREATE);
 

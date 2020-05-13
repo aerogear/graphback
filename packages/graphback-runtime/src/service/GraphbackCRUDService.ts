@@ -54,13 +54,6 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
     findOne(filter: Type, context?: GraphbackContext): Promise<Type>;
 
     /**
-     * @deprecated
-     * @param page
-     * @param context
-     */
-    findAll(page?: GraphbackPage, context?: any): Promise<Type[]>
-
-    /**
      * Implementation for reading objects with filtering capabilities
      *
      * @param filter filter by specific type

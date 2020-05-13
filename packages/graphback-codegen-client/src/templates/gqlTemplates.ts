@@ -31,17 +31,7 @@ export const findOneQuery = (t: GraphQLObjectType) => {
     }
   }`
 }
-
-export const findAllQuery = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ALL)
-
-  return `query ${fieldName}($limit: Int, $offset: Int) {
-    ${fieldName}(limit: $limit, offset: $offset) {
-      ...${t.name}ExpandedFields
-    }
-  }`
-}
-
+ 
 export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
 
@@ -121,10 +111,10 @@ export const createQueries = (types: ModelDefinition[]) => {
       })
     }
 
-    if (t.crudOptions.findAll) {
+    if (t.crudOptions.findOne) {
       queries.push({
-        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ALL),
-        implementation: findAllQuery(t.graphqlType)
+        name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ONE),
+        implementation: findOneQuery(t.graphqlType)
       })
     }
   })

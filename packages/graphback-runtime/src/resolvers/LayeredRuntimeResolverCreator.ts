@@ -68,9 +68,9 @@ export class LayeredRuntimeResolverCreator {
       }
 
       if (resolverElement.crudOptions.findOne) {
-        const findAllField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
+        const findOneField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
         //tslint:disable-next-line: no-any
-        resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
+        resolvers.Query[findOneField] = (parent: any, args: any, context: any) => {
           if (!this.services[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
