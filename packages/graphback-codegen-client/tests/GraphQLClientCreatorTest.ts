@@ -10,7 +10,7 @@ test('Test plugin engine ts', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
   }
@@ -25,7 +25,7 @@ test('Test plugin engine gql', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
   }
@@ -40,7 +40,7 @@ test('Test plugin engine gqlfragments', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
   }

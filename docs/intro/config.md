@@ -13,7 +13,7 @@ The Core of Graphback will take your GraphQL Schema types annotated by `model` a
 - InMemory GraphQL API. 
 
 All those operations could be controlled by `crud` flags that enable or disable various data access methods in plugins and runtime. 
-These include `create`, `update`, `delete`, `find` and `findAll`.
+These include `create`, `update`, `delete`, `find` and `findOne`.
 
 ## Configuration
 
@@ -40,7 +40,7 @@ extensions:
     crud:
       create: true
       update: true
-      findAll: true
+      findOne: true
       find: true
       delete: true
       subCreate: true
@@ -94,7 +94,7 @@ All config options can be replicated by specifying the `@crud.` prefix
 @crud.update: true
 @crud.delete: true
 @crud.find: true
-@crud.findAll: true
+@crud.findOne: true
 @crud.subCreate: true
 @crud.subUpdate: true
 @crud.subDelete: true

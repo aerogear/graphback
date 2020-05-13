@@ -1,5 +1,5 @@
 /**
- * Interface represents GraphbackPage type used for findAll queries
+ * Interface represents GraphbackPage type
  */
 export interface GraphbackPage {
     limit?: number,

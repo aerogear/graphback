@@ -2,7 +2,6 @@
 import { readFileSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '../src'
-import { existedOperationTypeMessage } from 'graphql/validation/rules/UniqueOperationTypes';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
@@ -11,7 +10,7 @@ test('Test metadata', async () => {
   const crudMethods = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": false,
     "delete": true,
   }
@@ -20,7 +19,7 @@ test('Test metadata', async () => {
   metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
   const models = metadata.getModelDefinitions();
   const crudModels = models.map((model: any) => {
-    expect(model.crudOptions.findAll).toEqual(true);
+    expect(model.crudOptions.findOne).toEqual(true);
     expect(model.crudOptions.find).toEqual(false);
 
     return model.crudOptions;

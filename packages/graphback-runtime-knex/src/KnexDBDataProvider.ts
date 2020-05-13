@@ -83,22 +83,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     return result
   }
 
-  /**
-   *
-   * @param page
-   * @deprecated Please use findBy
-   */
-  public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    //tslint:disable-next-line: await-promise
-    const query = this.db.select().from(this.tableName);
-    const dbResult = await this.usePage(query, page);
-    if (dbResult) {
-      return dbResult;
-    }
-    throw new NoDataError(`Cannot find all results for ${this.tableName}`);
-  }
-
-   public async findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     let query = buildQuery(this.db, filter).from(this.tableName)
 
     if (orderBy) {

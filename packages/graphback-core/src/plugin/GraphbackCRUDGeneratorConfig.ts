@@ -10,7 +10,6 @@ export interface GraphbackCRUDGeneratorConfig {
   delete?: boolean;
   //Generate findOne method
   findOne?: boolean;
-  findAll?: boolean;
   //Generate find method
   find?: boolean;
   //Generate subscription for create operation

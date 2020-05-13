@@ -57,6 +57,9 @@ export class ResolverGeneratorPlugin extends GraphbackPlugin {
         if (!pluginConfig.outputPath) {
             throw new Error("resolver plugin requires outputPath parameter")
         }
+
+        // eslint-disable-next-line no-console
+        console.error("Resolvers plugin will not work with the latest CRUD spec. Please follow https://graphback.dev/docs/releases guide to migrate to runtime approach")
     }
 
     public getPluginName() {
