@@ -1,27 +1,71 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test one side relationship schema query type generation 1`] = `
-"\\"\\"\\" @model \\"\\"\\"
+"input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID]
+  contains: ID
+  startsWith: ID
+  endsWith: ID
+}
+
+\\"\\"\\" @model \\"\\"\\"
 type Note {
   id: ID!
   title: String!
   description: String!
 
   \\"\\"\\"@oneToMany field: 'note', key: 'test_id'\\"\\"\\"
-  tests: [Test]!
+  tests(filter: TestFilterInput): [Test]!
 }
 
-input NoteInput {
-  id: ID
-  title: String
-  description: String
+input NoteFilterInput {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  and: [NoteFilterInput]
+  or: [NoteFilterInput]
+  not: NoteFilterInput
+}
+
+type NoteResultList {
+  items: [Note]!
+  nextCursor: String
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
 }
 
 type Query {
-  findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
-  findAllTests(limit: Int, offset: Int): [Test]!
-  findTests(fields: TestInput, limit: Int, offset: Int): [Test]!
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String]
+  contains: String
+  startsWith: String
+  endsWith: String
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -33,10 +77,17 @@ type Test {
   note: Note
 }
 
-input TestInput {
-  id: ID
-  name: String
-  test_id: ID
+input TestFilterInput {
+  id: IDInput
+  name: StringInput
+  and: [TestFilterInput]
+  or: [TestFilterInput]
+  not: TestFilterInput
+}
+
+type TestResultList {
+  items: [Test]!
+  nextCursor: String
 }
 "
 `;
@@ -60,18 +111,41 @@ input CommentFilterInput {
   description: StringInput
   and: [CommentFilterInput]
   or: [CommentFilterInput]
-  not: [CommentFilterInput]
+  not: CommentFilterInput
 }
 
-input CommentInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type CommentListResult {
+type CommentResultList {
   items: [Comment]!
   nextCursor: String
+}
+
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input CreateNoteInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input CreateTestInput {
+  id: ID
+  name: String
+}
+
+input DeleteCommentInput {
+  id: ID!
+}
+
+input DeleteNoteInput {
+  id: ID!
+}
+
+input DeleteTestInput {
+  id: ID!
 }
 
 input IDInput {
@@ -89,15 +163,15 @@ input IDInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: NoteInput!): Note!
-  updateNote(input: NoteInput!): Note!
-  deleteNote(input: NoteInput!): Note!
-  createComment(input: CommentInput!): Comment!
-  updateComment(input: CommentInput!): Comment!
-  deleteComment(input: CommentInput!): Comment!
-  createTest(input: TestInput!): Test!
-  updateTest(input: TestInput!): Test!
-  deleteTest(input: TestInput!): Test!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: UpdateNoteInput!): Note!
+  deleteNote(input: DeleteNoteInput!): Note!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(input: DeleteCommentInput!): Comment!
+  createTest(input: CreateTestInput!): Test!
+  updateTest(input: UpdateTestInput!): Test!
+  deleteTest(input: DeleteTestInput!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -119,31 +193,32 @@ input NoteFilterInput {
   description: StringInput
   and: [NoteFilterInput]
   or: [NoteFilterInput]
-  not: [NoteFilterInput]
+  not: NoteFilterInput
 }
 
-input NoteInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type NoteListResult {
+type NoteResultList {
   items: [Note]!
   nextCursor: String
 }
 
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  findNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, limit: Int, offset: Int): NoteListResult!
-  findAllNotes(filter: NoteFilterInput, limit: Int, offset: Int): [Note!]
-  findComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, limit: Int, offset: Int): CommentListResult!
-  findAllComments(filter: CommentFilterInput, limit: Int, offset: Int): [Comment!]
-  findTest(id: ID!): Test
-  findTests(filter: TestFilterInput, limit: Int, offset: Int): TestListResult!
-  findAllTests(filter: TestFilterInput, limit: Int, offset: Int): [Test!]
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
 }
 
 input StringInput {
@@ -160,15 +235,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
-  newComment(input: CommentInput): Comment!
-  updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentInput): Comment!
-  newTest(input: TestInput): Test!
-  updatedTest(input: TestInput): Test!
-  deletedTest(input: TestInput): Test!
+  newNote(input: CreateNoteInput): Note!
+  updatedNote(input: UpdateNoteInput): Note!
+  deletedNote(input: DeleteNoteInput): Note!
+  newComment(input: CreateCommentInput): Comment!
+  updatedComment(input: UpdateCommentInput): Comment!
+  deletedComment(input: DeleteCommentInput): Comment!
+  newTest(input: CreateTestInput): Test!
+  updatedTest(input: UpdateTestInput): Test!
+  deletedTest(input: DeleteTestInput): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -182,17 +257,29 @@ input TestFilterInput {
   name: StringInput
   and: [TestFilterInput]
   or: [TestFilterInput]
-  not: [TestFilterInput]
+  not: TestFilterInput
 }
 
-input TestInput {
-  id: ID
-  name: String
-}
-
-type TestListResult {
+type TestResultList {
   items: [Test]!
   nextCursor: String
+}
+
+input UpdateCommentInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+input UpdateNoteInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+input UpdateTestInput {
+  id: ID!
+  name: String
 }"
 `;
 
@@ -215,18 +302,41 @@ input CommentFilterInput {
   description: StringInput
   and: [CommentFilterInput]
   or: [CommentFilterInput]
-  not: [CommentFilterInput]
+  not: CommentFilterInput
 }
 
-input CommentInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type CommentListResult {
+type CommentResultList {
   items: [Comment]!
   nextCursor: String
+}
+
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input CreateNoteInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input CreateTestInput {
+  id: ID
+  name: String
+}
+
+input DeleteCommentInput {
+  id: ID!
+}
+
+input DeleteNoteInput {
+  id: ID!
+}
+
+input DeleteTestInput {
+  id: ID!
 }
 
 input IDInput {
@@ -244,15 +354,15 @@ input IDInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: NoteInput!): Note!
-  updateNote(input: NoteInput!): Note!
-  deleteNote(input: NoteInput!): Note!
-  createComment(input: CommentInput!): Comment!
-  updateComment(input: CommentInput!): Comment!
-  deleteComment(input: CommentInput!): Comment!
-  createTest(input: TestInput!): Test!
-  updateTest(input: TestInput!): Test!
-  deleteTest(input: TestInput!): Test!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: UpdateNoteInput!): Note!
+  deleteNote(input: DeleteNoteInput!): Note!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(input: DeleteCommentInput!): Comment!
+  createTest(input: CreateTestInput!): Test!
+  updateTest(input: UpdateTestInput!): Test!
+  deleteTest(input: DeleteTestInput!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -274,31 +384,32 @@ input NoteFilterInput {
   description: StringInput
   and: [NoteFilterInput]
   or: [NoteFilterInput]
-  not: [NoteFilterInput]
+  not: NoteFilterInput
 }
 
-input NoteInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type NoteListResult {
+type NoteResultList {
   items: [Note]!
   nextCursor: String
 }
 
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  findNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, limit: Int, offset: Int): NoteListResult!
-  findAllNotes(filter: NoteFilterInput, limit: Int, offset: Int): [Note!]
-  findComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, limit: Int, offset: Int): CommentListResult!
-  findAllComments(filter: CommentFilterInput, limit: Int, offset: Int): [Comment!]
-  findTest(id: ID!): Test
-  findTests(filter: TestFilterInput, limit: Int, offset: Int): TestListResult!
-  findAllTests(filter: TestFilterInput, limit: Int, offset: Int): [Test!]
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
 }
 
 input StringInput {
@@ -315,15 +426,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
-  newComment(input: CommentInput): Comment!
-  updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentInput): Comment!
-  newTest(input: TestInput): Test!
-  updatedTest(input: TestInput): Test!
-  deletedTest(input: TestInput): Test!
+  newNote(input: CreateNoteInput): Note!
+  updatedNote(input: UpdateNoteInput): Note!
+  deletedNote(input: DeleteNoteInput): Note!
+  newComment(input: CreateCommentInput): Comment!
+  updatedComment(input: UpdateCommentInput): Comment!
+  deletedComment(input: DeleteCommentInput): Comment!
+  newTest(input: CreateTestInput): Test!
+  updatedTest(input: UpdateTestInput): Test!
+  deletedTest(input: DeleteTestInput): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -337,17 +448,29 @@ input TestFilterInput {
   name: StringInput
   and: [TestFilterInput]
   or: [TestFilterInput]
-  not: [TestFilterInput]
+  not: TestFilterInput
 }
 
-input TestInput {
-  id: ID
-  name: String
-}
-
-type TestListResult {
+type TestResultList {
   items: [Test]!
   nextCursor: String
+}
+
+input UpdateCommentInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+input UpdateNoteInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+input UpdateTestInput {
+  id: ID!
+  name: String
 }
 "
 `;
@@ -371,18 +494,41 @@ input CommentFilterInput {
   description: StringInput
   and: [CommentFilterInput]
   or: [CommentFilterInput]
-  not: [CommentFilterInput]
+  not: CommentFilterInput
 }
 
-input CommentInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type CommentListResult {
+type CommentResultList {
   items: [Comment]!
   nextCursor: String
+}
+
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input CreateNoteInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input CreateTestInput {
+  id: ID
+  name: String
+}
+
+input DeleteCommentInput {
+  id: ID!
+}
+
+input DeleteNoteInput {
+  id: ID!
+}
+
+input DeleteTestInput {
+  id: ID!
 }
 
 input IDInput {
@@ -400,15 +546,15 @@ input IDInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: NoteInput!): Note!
-  updateNote(input: NoteInput!): Note!
-  deleteNote(input: NoteInput!): Note!
-  createComment(input: CommentInput!): Comment!
-  updateComment(input: CommentInput!): Comment!
-  deleteComment(input: CommentInput!): Comment!
-  createTest(input: TestInput!): Test!
-  updateTest(input: TestInput!): Test!
-  deleteTest(input: TestInput!): Test!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: UpdateNoteInput!): Note!
+  deleteNote(input: DeleteNoteInput!): Note!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(input: DeleteCommentInput!): Comment!
+  createTest(input: CreateTestInput!): Test!
+  updateTest(input: UpdateTestInput!): Test!
+  deleteTest(input: DeleteTestInput!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -430,31 +576,32 @@ input NoteFilterInput {
   description: StringInput
   and: [NoteFilterInput]
   or: [NoteFilterInput]
-  not: [NoteFilterInput]
+  not: NoteFilterInput
 }
 
-input NoteInput {
-  id: ID
-  title: String
-  description: String
-}
-
-type NoteListResult {
+type NoteResultList {
   items: [Note]!
   nextCursor: String
 }
 
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  findNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, limit: Int, offset: Int): NoteListResult!
-  findAllNotes(filter: NoteFilterInput, limit: Int, offset: Int): [Note!]
-  findComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, limit: Int, offset: Int): CommentListResult!
-  findAllComments(filter: CommentFilterInput, limit: Int, offset: Int): [Comment!]
-  findTest(id: ID!): Test
-  findTests(filter: TestFilterInput, limit: Int, offset: Int): TestListResult!
-  findAllTests(filter: TestFilterInput, limit: Int, offset: Int): [Test!]
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
 }
 
 input StringInput {
@@ -471,15 +618,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
-  newComment(input: CommentInput): Comment!
-  updatedComment(input: CommentInput): Comment!
-  deletedComment(input: CommentInput): Comment!
-  newTest(input: TestInput): Test!
-  updatedTest(input: TestInput): Test!
-  deletedTest(input: TestInput): Test!
+  newNote(input: CreateNoteInput): Note!
+  updatedNote(input: UpdateNoteInput): Note!
+  deletedNote(input: DeleteNoteInput): Note!
+  newComment(input: CreateCommentInput): Comment!
+  updatedComment(input: UpdateCommentInput): Comment!
+  deletedComment(input: DeleteCommentInput): Comment!
+  newTest(input: CreateTestInput): Test!
+  updatedTest(input: UpdateTestInput): Test!
+  deletedTest(input: DeleteTestInput): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -493,17 +640,29 @@ input TestFilterInput {
   name: StringInput
   and: [TestFilterInput]
   or: [TestFilterInput]
-  not: [TestFilterInput]
+  not: TestFilterInput
 }
 
-input TestInput {
-  id: ID
-  name: String
-}
-
-type TestListResult {
+type TestResultList {
   items: [Test]!
   nextCursor: String
+}
+
+input UpdateCommentInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+input UpdateNoteInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+input UpdateTestInput {
+  id: ID!
+  name: String
 }
 "
 `;
