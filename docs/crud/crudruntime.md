@@ -37,7 +37,7 @@ Developers can append their custom resolvers to resolver array to extend runtime
 ## How Runtime relates to the resolvers 
 
 Graphback resolver generator plugin generates resolvers that utilize one of the preconfigured `GraphbackCRUDService` implementations.
-`z` implementation is using `GraphbackDataProvider`.
+`GraphbackCRUDService` implementation is using `GraphbackDataProvider`.
 
 ![](/img/runtime.png)
 
