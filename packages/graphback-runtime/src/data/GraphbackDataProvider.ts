@@ -1,10 +1,8 @@
 import { GraphbackPage } from "../GraphbackPage"
 import { GraphbackOrderBy } from '../GraphbackOrderBy';
 
-//If we come with Union on client we might use some complex JSON for describing rules
-//and single key for type for simple use cases
 //tslint:disable-next-line: no-any
-export type AdvancedFilter = any;
+export type any = any;
 
 /**
  * Graphback layered architecture component that can be called
@@ -63,8 +61,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param filter filter by specific type
    * @param context context object passed from graphql or rest layer
    */
-   findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
-
+  findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
 
 
   /**
@@ -74,6 +71,6 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param relationField - name of the field that will be used to match ids
    * @param ids array of identifiers that needs to be fetched
    */
-  batchRead(relationField: string, ids: string[], filter?: AdvancedFilter): Promise<Type[][]>
+  batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]>
 
 }
