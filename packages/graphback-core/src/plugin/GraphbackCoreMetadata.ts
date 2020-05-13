@@ -11,7 +11,6 @@ const defaultCRUDGeneratorConfig = {
     "update": true,
     "findOne": true,
     "find": true,
-    "findAll": true,
     "delete": true,
     "subCreate": true,
     "subUpdate": true,

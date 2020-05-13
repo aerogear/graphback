@@ -9,7 +9,7 @@ test('Test snapshot config gql', async () => {
   const defautConfig = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
     "subCreate": true,
@@ -31,7 +31,7 @@ test('Test snapshot config ts', async () => {
   const defautConfig = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
     "subCreate": true,
@@ -53,7 +53,7 @@ test('Test snapshot config js', async () => {
   const defautConfig = {
     "create": true,
     "update": true,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": true,
     "subCreate": true,
@@ -74,7 +74,7 @@ test('Test one side relationship schema query type generation', async () => {
   const defautConfig = {
     "create": false,
     "update": false,
-    "findAll": true,
+    "findOne": true,
     "find": true,
     "delete": false,
     "subCreate": false,

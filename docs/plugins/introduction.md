@@ -27,7 +27,7 @@ Example configuration:
     crud:
       create: true
       update: true
-      findAll: true
+      findOne: true
       find: true
       delete: true
       subCreate: true

@@ -235,7 +235,9 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
       items: {
         type: GraphQLNonNull(GraphQLList(modelType))
       },
-      nextCursor: { type: GraphQLString }
+      offset: { type: GraphQLInt },
+      limit: { type: GraphQLInt },
+      total: { type: GraphQLInt }
     }
   })
 }

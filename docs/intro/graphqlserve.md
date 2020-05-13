@@ -66,40 +66,6 @@ GraphQL Serve allows you to print the resulting schema in your terminal with the
 
 ```gql
 $ gqlserve print-schema ./path/to/models
-
-Generated schema:
-
-type Mutation {
-  createNote(input: NoteInput): Note!
-  updateNote(input: NoteInput): Note!
-  deleteNote(input: NoteInput): Note!
-}
-
-""" @model """
-type Note {
-  id: ID!
-  title: String!
-  description: String
-  likes: Int
-}
-
-input NoteInput {
-  id: ID
-  title: String
-  description: String
-  likes: Int
-}
-
-type Query {
-  findAllNotes(limit: Int, offset: Int): [Note]!
-  findNotes(fields: NoteInput, limit: Int, offset: Int): [Note]!
-}
-
-type Subscription {
-  newNote(input: NoteInput): Note!
-  updatedNote(input: NoteInput): Note!
-  deletedNote(input: NoteInput): Note!
-}
 ```
 
 ### Customising your server configuration

@@ -10,7 +10,18 @@ Please follow individual releases for more information.
 
 # 0.14.0
 
+## Migrating to 0.14.0
+
+Version 0.14.0 removed support codegeneration for resolvers. 
+If you used one of the Codegen templates you will need to migrate 
+
+1. Remove your generated resolvers and model file. They are not longer needed as resolvers are generated at runtime.
+Check configuration of the resolvers plugin to see where they are located.
+2. Remove @graphback/codegen-resolvers from your package and the config.
+3. Use Graphback runtime Getting Started Guide 
+
 ## Breaking
+
 - Removed `graphback db` command. Database migrations can be only executed from the codebase when application is started.
 For more information please refer to https://graphback.dev/docs/db/dbmigrations
 - Graphback resolver plugin is no longer used. Code generator plugin is deprecated.

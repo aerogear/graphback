@@ -77,21 +77,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async findAll(page?: GraphbackPage): Promise<Type[]> {
-    const query = this.db.collection(this.collectionName).find({});
-    const data = await this.usePage(query, page);
-
-    if (data) {
-      return data.map((one: any) => {
-        return {
-          ...one,
-          id: one._id
-        }
-      });
-    }
-    throw new NoDataError(`Cannot find all results for ${this.collectionName}`);
-  }
-
   public async findOne(filter: AdvancedFilter): Promise<Type> {
     const query = this.db.collection(this.collectionName).findOne(filter);
     const data = await query;
@@ -105,7 +90,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     const query = this.db.collection(this.collectionName).find(buildQuery(filter));
     const data = await this.usePage(this.sortQuery(query, orderBy), page);
 

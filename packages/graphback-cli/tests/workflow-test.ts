@@ -39,13 +39,13 @@ test('Test cli workflow', async () => {
     existsSync(join(basePath, "client/src/graphql/fragments/CommentExpanded.graphql"))
   ).toBe(true)
   expect(
-    existsSync(join(basePath, "client/src/graphql/queries/findAllNotes.graphql"))
+    existsSync(join(basePath, "client/src/graphql/queries/getNote.graphql"))
   ).toBe(true);
   expect(
     existsSync(join(basePath, "client/src/graphql/queries/findComments.graphql"))
   ).toBe(true);
   expect(
-    existsSync(join(basePath, "client/src/graphql/queries/findAllComments.graphql"))
+    existsSync(join(basePath, "client/src/graphql/queries/getComment.graphql"))
   ).toBe(true);
   expect(existsSync(join(basePath, "client/src/graphql/queries/findNotes.graphql"))).toBe(true);
   expect(

@@ -25,8 +25,7 @@ export function upperCaseFirstChar(text: string) {
  * Example:
  * ```
  * type Query {
- *   findAllNotes
- *   findBy()
+ *   getUser()
  * }
  * ```
  * This method is compatible with Graphback CRUD specification
@@ -42,8 +41,6 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
       return `get${typeName}`
     case GraphbackOperationType.FIND:
       return `find${pluralize(finalName)}`
-    case GraphbackOperationType.FIND_ALL:
-      return `findAll${pluralize(finalName)}`
     default:
       return `${action}${finalName}`
   }

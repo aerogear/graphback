@@ -139,12 +139,12 @@ async function getDocument(name: string) {
 }
 
 test('Find all notes', async () => {
-    const { document } = await getDocument('findAllNotes');
+    const { document } = await getDocument('findNotes');
 
     const { data } = await client.query({ query: document });
 
     expect(data).toBeDefined();
-    expect(data.findAllNotes).toEqual([
+    expect(data.findNotes).toEqual([
         {
             id: '1',
             title: 'Note A',
@@ -172,12 +172,12 @@ test('Find all notes', async () => {
 })
 
 test('Find all notes except the first', async () => {
-    const { document } = await getDocument('findAllNotes');
+    const { document } = await getDocument('findNotes');
 
     const { data } = await client.query({ query: document, variables: { offset: 1 } });
 
     expect(data).toBeDefined();
-    expect(data.findAllNotes).toEqual([
+    expect(data.findNotes).toEqual([
         {
             id: '2',
             title: 'Note B',
@@ -188,12 +188,12 @@ test('Find all notes except the first', async () => {
 })
 
 test('Find at most one note', async () => {
-    const { document } = await getDocument('findAllNotes');
+    const { document } = await getDocument('findNotes');
 
     const { data } = await client.query({ query: document, variables: { limit: 1 } });
 
     expect(data).toBeDefined();
-    expect(data.findAllNotes).toEqual([
+    expect(data.findNotes).toEqual([
         {
             id: '1',
             title: 'Note A',
@@ -215,12 +215,12 @@ test('Find at most one note', async () => {
 })
 
 test('Find all comments', async () => {
-    const { document } = await getDocument('findAllComments');
+    const { document } = await getDocument('findComments');
 
     const { data } = await client.query({ query: document });
 
     expect(data).toBeDefined();
-    expect(data.findAllComments).toEqual([
+    expect(data.findComments).toEqual([
         {
             id: '1',
             text: 'Note A Comment',

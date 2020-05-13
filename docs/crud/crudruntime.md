@@ -37,16 +37,16 @@ Developers can append their custom resolvers to resolver array to extend runtime
 ## How Runtime relates to the resolvers 
 
 Graphback resolver generator plugin generates resolvers that utilize one of the preconfigured `GraphbackCRUDService` implementations.
-`GraphbackCRUDService` implementation is using `GraphbackDataProvider`.
+`z` implementation is using `GraphbackDataProvider`.
 
 ![](/img/runtime.png)
 
 Instances need to be added to `context` object in resolver for example:
 
 ```js
-findAllComments: (parent, args, context) => {
+findComments: (parent, args, context) => {
   // Comment is an implementation of `GraphbackCRUDService` 
-  return context.Comment.findAll();
+  return context.Comment.find();
 };
 ```
 

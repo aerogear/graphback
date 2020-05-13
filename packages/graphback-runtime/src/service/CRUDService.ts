@@ -93,12 +93,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     }
   }
 
-  public findAll(page?: GraphbackPage, context?: any): Promise<T[]> {
-    this.logger.log(`querying object ${this.modelName}`)
-
-    return this.db.findAll(page, context);
-  }
-
   public subscribeToCreate(filter: any, context?: any): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
       this.logger.log(`Cannot subscribe to events for ${this.modelName}`)

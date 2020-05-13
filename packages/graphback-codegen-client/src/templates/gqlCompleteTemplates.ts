@@ -2,7 +2,7 @@ import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinit
 import { GraphQLObjectType } from 'graphql';
 import { createMutation, deleteMutation, expandedFragment, findOneQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates';
 
-export const findAllQueryComplete = (t: GraphQLObjectType) => {
+export const findOneQueryComplete = (t: GraphQLObjectType) => {
   return `
 
 ${findOneQuery(t)}
@@ -80,7 +80,7 @@ export const createQueries = (types: ModelDefinition[]) => {
     if (t.crudOptions.findOne) {
       queries.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ONE),
-        implementation: findAllQueryComplete(t.graphqlType)
+        implementation: findOneQueryComplete(t.graphqlType)
       })
     }
   })
