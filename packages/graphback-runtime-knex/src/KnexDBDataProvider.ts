@@ -1,7 +1,7 @@
 import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter, GraphbackOrderBy } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
 import { buildQuery } from './knexQueryMapper';
 
 /**
@@ -83,7 +83,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     return result
   }
 
-  public async findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     let query = buildQuery(this.db, filter).from(this.tableName)
 
     if (orderBy) {

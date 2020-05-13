@@ -1,4 +1,3 @@
-import {AdvancedFilter} from '@graphback/runtime';
 
 const AND_FIELD = 'and';
 const OR_FIELD = 'or';
@@ -125,7 +124,7 @@ function traverse(filter: any): any {
     return filter
 }
 
-export function buildQuery(filter: AdvancedFilter) {
+export function buildQuery(filter: any) {
     let query = {};
     if (filter)
         {query = traverse(filter);}
