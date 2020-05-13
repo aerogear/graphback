@@ -46,7 +46,7 @@ export const findQuery = (t: GraphQLObjectType) => {
 export const createMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.CREATE)
 
-  return `mutation ${fieldName}($input: ${t.name}Input!) {
+  return `mutation ${fieldName}($input: Create${t.name}Input!) {
   ${ fieldName}(input: $input) {
       ...${ t.name}Fields
   }
@@ -57,7 +57,7 @@ export const createMutation = (t: GraphQLObjectType) => {
 export const updateMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.UPDATE)
 
-  return `mutation ${fieldName}($input: ${t.name}Input!) {
+  return `mutation ${fieldName}($input: Update${t.name}Input!) {
   ${ fieldName}(input: $input) {
       ...${ t.name}Fields
   }
@@ -68,7 +68,7 @@ export const updateMutation = (t: GraphQLObjectType) => {
 export const deleteMutation = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.DELETE)
 
-  return `mutation ${fieldName}($input: ${t.name}Input!) {
+  return `mutation ${fieldName}($input: Delete${t.name}Input!) {
   ${fieldName}(input: $input) {
       ...${t.name}Fields
   }
