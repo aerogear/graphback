@@ -38,7 +38,7 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
 
   switch (action) {
     case GraphbackOperationType.FIND_ONE:
-      return `get${typeName}`
+      return `get${finalName}`
     case GraphbackOperationType.FIND:
       return `find${pluralize(finalName)}`
     default:
