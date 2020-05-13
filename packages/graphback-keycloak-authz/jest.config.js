@@ -1,6 +1,6 @@
 /* eslint-disable */
 const baseConfig = require("../../jest.config");
-const packageName = 'graphback-keycloak-auth';
+const packageName = 'graphback-keycloak-authz';
 
 module.exports = {
   ...baseConfig,
