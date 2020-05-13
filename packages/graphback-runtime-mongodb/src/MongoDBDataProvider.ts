@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, AdvancedFilter, GraphbackOrderBy } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
 import { buildQuery } from './queryBuilder'
 
 interface SortOrder {
@@ -77,7 +77,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async findOne(filter: AdvancedFilter): Promise<Type> {
+  public async findOne(filter: any): Promise<Type> {
     const query = this.db.collection(this.collectionName).findOne(filter);
     const data = await query;
 
@@ -90,7 +90,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter?: AdvancedFilter, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     const query = this.db.collection(this.collectionName).find(buildQuery(filter));
     const data = await this.usePage(this.sortQuery(query, orderBy), page);
 

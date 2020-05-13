@@ -1,4 +1,3 @@
-import { AdvancedFilter } from '../data/GraphbackDataProvider';
 import { GraphbackPage } from "../GraphbackPage"
 
 export interface ResultList<T = any> {
@@ -61,7 +60,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
      * @param page pagination options
      * @param context context object passed from graphql or rest layer
      */
-    findBy(filter: AdvancedFilter, orderBy?: any, page?: GraphbackPage, context?: GraphbackContext): Promise<ResultList<Type>>;
+    findBy(filter: any, orderBy?: any, page?: GraphbackPage, context?: GraphbackContext): Promise<ResultList<Type>>;
 
     /**
      * Subscription for all creation events
