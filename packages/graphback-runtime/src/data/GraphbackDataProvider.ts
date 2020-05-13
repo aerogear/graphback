@@ -1,9 +1,6 @@
 import { GraphbackPage } from "../GraphbackPage"
 import { GraphbackOrderBy } from '../GraphbackOrderBy';
 
-//tslint:disable-next-line: no-any
-export type any = any;
-
 /**
  * Graphback layered architecture component that can be called
  * from the service layer in both RESTFULL and GraphQL middlewares.
