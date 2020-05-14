@@ -29,7 +29,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
   }
 
   public async create(data: T, context?: any): Promise<T> {
-    if (this.authConfig.create.roles.length > 0) {
+    if (this.authConfig.create && this.authConfig.create.roles && this.authConfig.create.roles.length > 0) {
       const { roles } = this.authConfig.create;
       if (!isAuthorizedByRole(roles, context)) {
         throw new Error(`User is not authorized.`);
@@ -40,7 +40,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
   }
 
   public async update(data: T, context?: any): Promise<T> {
-    if (this.authConfig.update.roles.length > 0) {
+    if (this.authConfig.update && this.authConfig.update.roles && this.authConfig.update.roles.length > 0) {
       const { roles } = this.authConfig.update;
       if (!isAuthorizedByRole(roles, context)) {
         throw new Error(`User is not authorized.`);
@@ -51,7 +51,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
   }
 
   public async delete(data: T, context?: any): Promise<T> { 
-    if (this.authConfig.delete.roles.length > 0) {
+    if (this.authConfig.delete && this.authConfig.delete.roles && this.authConfig.delete.roles.length > 0) {
       const { roles } = this.authConfig.delete;
       if (!isAuthorizedByRole(roles, context)) {
         throw new Error(`User is not authorized.`);
@@ -62,7 +62,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
   }
 
   public findAll(context?: any): Promise<T[]> {
-    if (this.authConfig.read.roles.length > 0) {
+    if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
         throw new Error(`User is not authorized.`);
@@ -73,7 +73,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
   }
 
   public findBy(filter: any, context?: any): Promise<T[]> {
-    if (this.authConfig.read.roles.length > 0) {
+    if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
         throw new Error(`User is not authorized.`);
