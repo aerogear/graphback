@@ -3,10 +3,10 @@ export type CrudOperationAuthConfig = {
 };
 
 export type CrudServiceAuthConfig = {
-  create: CrudOperationAuthConfig,
-  read: CrudOperationAuthConfig,
-  update: CrudOperationAuthConfig,
-  delete: CrudOperationAuthConfig,
+  create?: CrudOperationAuthConfig,
+  read?: CrudOperationAuthConfig,
+  update?: CrudOperationAuthConfig,
+  delete?: CrudOperationAuthConfig,
 };
 
 export type CrudServicesAuthConfig = {
