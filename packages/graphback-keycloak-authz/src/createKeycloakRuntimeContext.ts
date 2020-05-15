@@ -1,6 +1,6 @@
 import { GraphbackPubSubModel, GraphbackDataProvider, CRUDService } from '@graphback/runtime'
 import { GraphQLSchema, GraphQLObjectType } from 'graphql'
-import { PubSubEngine } from 'apollo-server-express'
+import { PubSubEngine } from 'graphql-subscriptions'
 import { CrudServicesAuthConfig } from './definitions'
 import { KeycloakCrudService } from './KeycloakCrudService'
 

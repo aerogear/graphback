@@ -25,10 +25,9 @@
     "@types/jest": "25.2.1",
     "@types/node": "12.12.37",
     "graphql": "14.6.0",
-    "graphql-subscriptions": "^1.1.0",
     "jest": "26.0.1",
-    "keycloak-connect": "^10.0.1",
-    "keycloak-connect-graphql": "^0.4.0",
+    "keycloak-connect": "10.0.1",
+    "keycloak-connect-graphql": "0.4.0",
     "rimraf": "3.0.2",
     "ts-jest": "25.4.0",
     "ts-node": "8.9.1",
@@ -36,7 +35,8 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@graphback/runtime": "0.12.0"
+    "@graphback/runtime": "0.12.0",
+    "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
