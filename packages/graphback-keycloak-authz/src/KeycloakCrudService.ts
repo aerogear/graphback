@@ -1,7 +1,8 @@
 import { CRUDService, GraphbackDataProvider, GraphbackPubSub } from "@graphback/runtime";
 import { GraphQLObjectType } from 'graphql'
 import { CrudServiceAuthConfig } from './definitions';
-import { getEmptyServiceConfig, isAuthorizedByRole } from "./utils";
+import { getEmptyServiceConfig } from "./utils";
+import { isAuthorizedByRole } from "keycloak-connect-graphql";
 
 /**
  * options object for the KeycloakCrudService
