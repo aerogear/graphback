@@ -127,7 +127,7 @@ The above example shows runtime set up using the KnexDbDataProvider, but other d
 
 ## Extending the KeycloakCrudService
 
-Under the hood, the `createKeycloakRuntimeContext` initializes `KeycloakCrudService` instances. The `KeycloakCrudService` is extends the standard `CrudService` in Graphback and adds additional checks for various auth rules.
+Under the hood, the `createKeycloakRuntimeContext` initializes `KeycloakCrudService` instances. The `KeycloakCrudService` extends the standard `CrudService` in Graphback and adds additional checks for various auth rules.
 
 It is possible to create a custom CrudService that extends the KeycloakCrudService and pass it to `createKeycloakRuntimeContext`.
 
