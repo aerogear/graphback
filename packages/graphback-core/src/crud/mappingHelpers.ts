@@ -52,15 +52,16 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
  * @param action
  */
 export const getInputTypeName = (typeName: string, action: GraphbackOperationType): string => {
+  const finalName = upperCaseFirstChar(typeName);
   switch (action) {
     case GraphbackOperationType.FIND:
-      return `${typeName}FilterInput`
+      return `${finalName}Filter`
     case GraphbackOperationType.CREATE:
-      return `Create${typeName}Input`
-    case GraphbackOperationType.UPDATE:
-      return `Update${typeName}Input`
-    case GraphbackOperationType.DELETE:
-      return `Delete${typeName}Input`
+      return `${finalName}CreationInput`
+    case GraphbackOperationType.UPDATE || GraphbackOperationType.DELETE:
+      return `${finalName}MutationInput`
+    case GraphbackOperationType.SUBSCRIPTION_CREATE || GraphbackOperationType.SUBSCRIPTION_UPDATE || GraphbackOperationType.SUBSCRIPTION_DELETE:
+      return `${finalName}SubscriptionFilter`
     default:
       return ''
   }
