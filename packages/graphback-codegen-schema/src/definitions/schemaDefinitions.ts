@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, getNullableType, GraphQLField, getNamedType, isInputType, GraphQLInputField, GraphQLFieldMap, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLInputFieldConfig, GraphQLInputType, GraphQLOutputType, GraphQLNamedType } from "graphql";
-import { getPrimaryKey, getInputTypeName, GraphbackOperationType, ModelDefinition, FieldRelationshipMetadata } from '@graphback/core';
+import { getPrimaryKey, getInputTypeName, GraphbackOperationType, ModelDefinition, FieldRelationshipMetadata, getInputFieldType, getInputFieldName} from '@graphback/core';
 
 // scalar input names
 const FloatScalarInputTypeName = 'FloatInput'
@@ -154,7 +154,13 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
 const getAllModelFields = (modelType: GraphQLObjectType<any, any, { [key: string]: any; }>, model: ModelDefinition) => {
   const modelFields = Object.values(modelType.getFields());
   const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)));
-  const relationshipFields = model.relationships.map((relationship: FieldRelationshipMetadata) => relationship.ownerField);
+  const relationshipFields = model.relationships.map((relationship: FieldRelationshipMetadata) => {
+    return {
+      name: getInputFieldName(relationship.ownerField),
+      type: getInputFieldType(relationship.ownerField),
+      description: undefined
+    }
+  })
   const allModelFields = [...scalarFields, ...relationshipFields];
 
   return allModelFields;

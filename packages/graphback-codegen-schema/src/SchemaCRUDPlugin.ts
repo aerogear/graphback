@@ -132,18 +132,18 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       schemaComposer.Subscription.addFields(subscriptionTypes);
     }
   }
- 
+
 
   protected createSubscriptions(model: ModelDefinition, subscriptionTypes: any) {
     const name = model.graphqlType.name
-    const subFilterInputType =  buildSubscriptionFilterType(model);
+    const subFilterInputType = buildSubscriptionFilterType(model);
     if (model.crudOptions.subCreate && model.crudOptions.create) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
       subscriptionTypes[operation] = {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type:  subFilterInputType,
+            type: subFilterInputType,
           },
         }
       };
@@ -154,7 +154,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type:  subFilterInputType,
+            type: subFilterInputType,
           },
         }
       };
@@ -216,28 +216,28 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
       };
     }
-    if (model.crudOptions.update) {
-      const operation = getFieldName(name, GraphbackOperationType.UPDATE)
-      mutationTypes[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
-        args: {
-          input: {
-            type: GraphQLNonNull( buildUpdateMutationInputType(model))
-          },
-        }
-      };
-    }
-    if (model.crudOptions.delete) {
-      const operation = getFieldName(name, GraphbackOperationType.DELETE)
-      mutationTypes[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
-        args: {
-          input: {
-            type: GraphQLNonNull(buildUpdateMutationInputType(model))
-          }
-        }
-      };
-    }
+    // if (model.crudOptions.update) {
+    //   const operation = getFieldName(name, GraphbackOperationType.UPDATE)
+    //   mutationTypes[operation] = {
+    //     type: GraphQLNonNull(model.graphqlType),
+    //     args: {
+    //       input: {
+    //         type: GraphQLNonNull(buildUpdateMutationInputType(model))
+    //       },
+    //     }
+    //   };
+    // }
+    // if (model.crudOptions.delete) {
+    //   const operation = getFieldName(name, GraphbackOperationType.DELETE)
+    //   mutationTypes[operation] = {
+    //     type: GraphQLNonNull(model.graphqlType),
+    //     args: {
+    //       input: {
+    //         type: GraphQLNonNull(buildUpdateMutationInputType(model))
+    //       }
+    //     }
+    //   };
+    // }
 
     return mutationTypes;
   }
