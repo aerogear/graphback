@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, getNullableType, GraphQLField, getNamedType, isInputType, GraphQLInputField, GraphQLFieldMap, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLInputFieldConfig, GraphQLInputType, GraphQLOutputType, GraphQLNamedType } from "graphql";
-import { getPrimaryKey, getInputTypeName, GraphbackOperationType } from '@graphback/core';
+import { getPrimaryKey, getInputTypeName, GraphbackOperationType, ModelDefinition, FieldRelationshipMetadata } from '@graphback/core';
 
 // scalar input names
 const FloatScalarInputTypeName = 'FloatInput'
@@ -11,13 +11,6 @@ const IDScalarInputTypeName = 'IDInput'
 const SortDirectionEnumName = 'SortDirectionEnum';
 const OrderByInputTypeName = 'OrderByInput';
 
-export interface ModelInputTypeMap {
-  findOneQueryFields: GraphQLInputFieldMap
-  filterInput: GraphQLInputObjectType
-  createMutationInput: GraphQLInputObjectType
-  updateMutationInput: GraphQLInputObjectType
-  deleteMutationInput: GraphQLInputObjectType
-}
 
 export const FloatScalarInputType = new GraphQLInputObjectType({
   name: FloatScalarInputTypeName,
@@ -157,18 +150,29 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
   });
 }
 
-export const buildCreateMutationInputType = (modelType: GraphQLObjectType) => {
+// Fetching all fields required for input type including relationships
+const getAllModelFields = (modelType: GraphQLObjectType<any, any, { [key: string]: any; }>, model: ModelDefinition) => {
+  const modelFields = Object.values(modelType.getFields());
+  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)));
+  const relationshipFields = model.relationships.map((relationship: FieldRelationshipMetadata) => relationship.ownerField);
+  const allModelFields = [...scalarFields, ...relationshipFields];
+
+  return allModelFields;
+}
+
+export const buildCreateMutationInputType = (model: ModelDefinition) => {
+  const modelType = model.graphqlType;
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.CREATE);
 
-  const modelFields = Object.values(modelType.getFields())
   const idField = getPrimaryKey(modelType)
-  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)))
+  const allModelFields = getAllModelFields(modelType, model);
 
   return new GraphQLInputObjectType({
     name: inputTypeName,
-    fields: () => scalarFields
+    fields: () => allModelFields
       .map(({ name, type }: GraphQLField<any, any>) => {
         let fieldType: GraphQLNamedType
+        // Remove required from ID
         if (name === idField.name) {
           fieldType = getNamedType(type)
         }
@@ -186,16 +190,43 @@ export const buildCreateMutationInputType = (modelType: GraphQLObjectType) => {
   });
 }
 
-export const buildUpdateMutationInputType = (modelType: GraphQLObjectType) => {
-  const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.UPDATE);
-
-  const modelFields = Object.values(modelType.getFields())
-  const idField = getPrimaryKey(modelType)
-  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)))
+export const buildSubscriptionFilterType = (model: ModelDefinition) => {
+  const modelType = model.graphqlType;
+  const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.CREATE);
+  const modelFields = Object.values(modelType.getFields());
+  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)));
 
   return new GraphQLInputObjectType({
     name: inputTypeName,
     fields: () => scalarFields
+      .map(({ name, type }: GraphQLField<any, any>) => {
+        const fieldType: GraphQLNamedType = getNamedType(type)
+
+        return {
+          name,
+          type: fieldType || type,
+          description: undefined
+        }
+      }).reduce((fieldObj: any, { name, type, description }: any) => {
+        fieldObj[name] = { type, description }
+
+        return fieldObj;
+      }, {})
+  });
+}
+
+
+
+export const buildUpdateMutationInputType = (model: ModelDefinition) => {
+  const modelType = model.graphqlType;
+  const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.UPDATE);
+
+  const idField = getPrimaryKey(modelType)
+  const allModelFields = getAllModelFields(modelType, model);
+
+  return new GraphQLInputObjectType({
+    name: inputTypeName,
+    fields: () => allModelFields
       .map(({ name, type }: GraphQLField<any, any>) => {
         let fieldType: GraphQLNamedType
         if (name !== idField.name) {
@@ -215,18 +246,6 @@ export const buildUpdateMutationInputType = (modelType: GraphQLObjectType) => {
   });
 }
 
-export const buildDeleteMutationInputType = (modelType: GraphQLObjectType) => {
-  const idField = getPrimaryKey(modelType)
-
-  return new GraphQLInputObjectType({
-    name: getInputTypeName(modelType.name, GraphbackOperationType.DELETE),
-    fields: {
-      [idField.name]: {
-        type: GraphQLNonNull(getNullableType(idField.type))
-      }
-    }
-  })
-}
 
 export const createModelListResultType = (modelType: GraphQLObjectType) => {
   return new GraphQLObjectType({
@@ -241,3 +260,4 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
     }
   })
 }
+

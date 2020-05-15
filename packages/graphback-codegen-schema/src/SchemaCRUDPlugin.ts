@@ -2,10 +2,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject } from '@graphback/core'
-import { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, ModelInputTypeMap, IDScalarInputType, buildCreateMutationInputType, buildFindOneFieldMap, buildUpdateMutationInputType, buildDeleteMutationInputType, OrderByInputType } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildUpdateMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -117,10 +117,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     this.createStandardTypes(schemaComposer)
 
     for (const model of Object.values(models)) {
-      const modelInputTypeMap = this.createModelInputTypeMap(model)
-      queryTypes = this.createQueries(model, queryTypes, modelInputTypeMap);
-      mutationTypes = this.createMutations(model, mutationTypes, modelInputTypeMap);
-      subscriptionTypes = this.createSubscriptions(model, subscriptionTypes, modelInputTypeMap);
+      queryTypes = this.createQueries(model, queryTypes);
+      mutationTypes = this.createMutations(model, mutationTypes);
+      subscriptionTypes = this.createSubscriptions(model, subscriptionTypes);
     }
 
     if (Object.keys(queryTypes).length) {
@@ -133,26 +132,18 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       schemaComposer.Subscription.addFields(subscriptionTypes);
     }
   }
+ 
 
-  protected createModelInputTypeMap(model: ModelDefinition): ModelInputTypeMap {
-    return {
-      findOneQueryFields: buildFindOneFieldMap(model.graphqlType),
-      filterInput: buildFilterInputType(model.graphqlType),
-      createMutationInput: buildCreateMutationInputType(model.graphqlType),
-      updateMutationInput: buildUpdateMutationInputType(model.graphqlType),
-      deleteMutationInput: buildDeleteMutationInputType(model.graphqlType)
-    }
-  }
-
-  protected createSubscriptions(model: ModelDefinition, subscriptionTypes: any, modelInputTypeMap: ModelInputTypeMap) {
+  protected createSubscriptions(model: ModelDefinition, subscriptionTypes: any) {
     const name = model.graphqlType.name
+    const subFilterInputType =  buildSubscriptionFilterType(model);
     if (model.crudOptions.subCreate && model.crudOptions.create) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
       subscriptionTypes[operation] = {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: modelInputTypeMap.createMutationInput,
+            type:  subFilterInputType,
           },
         }
       };
@@ -163,7 +154,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: modelInputTypeMap.updateMutationInput,
+            type:  subFilterInputType,
           },
         }
       };
@@ -174,7 +165,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: modelInputTypeMap.deleteMutationInput,
+            type: subFilterInputType,
           },
         }
       };
@@ -212,7 +203,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     });
   }
 
-  protected createMutations(model: ModelDefinition, mutationTypes: any, modelInputTypeMap: ModelInputTypeMap) {
+  protected createMutations(model: ModelDefinition, mutationTypes: any) {
     const name = model.graphqlType.name
     if (model.crudOptions.create) {
       const operation = getFieldName(name, GraphbackOperationType.CREATE)
@@ -220,7 +211,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: GraphQLNonNull(modelInputTypeMap.createMutationInput)
+            type: GraphQLNonNull(buildCreateMutationInputType(model))
           },
         }
       };
@@ -231,7 +222,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: GraphQLNonNull(modelInputTypeMap.updateMutationInput)
+            type: GraphQLNonNull( buildUpdateMutationInputType(model))
           },
         }
       };
@@ -242,7 +233,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: GraphQLNonNull(modelInputTypeMap.deleteMutationInput)
+            type: GraphQLNonNull(buildUpdateMutationInputType(model))
           }
         }
       };
@@ -251,14 +242,14 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     return mutationTypes;
   }
 
-  protected createQueries(model: ModelDefinition, queryTypes: any, modelInputTypeMap: ModelInputTypeMap) {
+  protected createQueries(model: ModelDefinition, queryTypes: any) {
     const name = model.graphqlType.name;
 
     if (model.crudOptions.findOne) {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryTypes[operation] = {
         type: model.graphqlType,
-        args: modelInputTypeMap.findOneQueryFields
+        args: buildFindOneFieldMap(model.graphqlType)
       };
     }
     if (model.crudOptions.find) {
@@ -268,7 +259,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(resultListType),
         args: {
           filter: {
-            type: modelInputTypeMap.filterInput
+            type: buildFilterInputType(model.graphqlType)
           },
           orderBy: {
             type: OrderByInputType
