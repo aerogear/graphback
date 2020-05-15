@@ -28,7 +28,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     this.authConfig = authConfig || getEmptyServiceConfig();
   }
 
-  public async create(data: T, context?: any): Promise<T> {
+  public create(data: T, context?: any): Promise<T> {
     if (this.authConfig.create && this.authConfig.create.roles && this.authConfig.create.roles.length > 0) {
       const { roles } = this.authConfig.create;
       if (!isAuthorizedByRole(roles, context)) {
@@ -39,7 +39,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     return super.create(data, context);
   }
 
-  public async update(data: T, context?: any): Promise<T> {
+  public update(data: T, context?: any): Promise<T> {
     if (this.authConfig.update && this.authConfig.update.roles && this.authConfig.update.roles.length > 0) {
       const { roles } = this.authConfig.update;
       if (!isAuthorizedByRole(roles, context)) {
@@ -50,7 +50,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     return super.update(data, context);
   }
 
-  public async delete(data: T, context?: any): Promise<T> { 
+  public delete(data: T, context?: any): Promise<T> { 
     if (this.authConfig.delete && this.authConfig.delete.roles && this.authConfig.delete.roles.length > 0) {
       const { roles } = this.authConfig.delete;
       if (!isAuthorizedByRole(roles, context)) {

@@ -20,7 +20,7 @@ module.exports = {
   collectCoverageFrom: [
     `<rootDir>/packages/${packageName}/src/**/*`,
   ],
-  testRegex: '(/tests/.*)\\.(tsx?)$',
+  testRegex: '(/tests/.*)\\.test.(tsx?)$',
   testURL: 'http://localhost/',
   moduleDirectories: [
       'node_modules',
