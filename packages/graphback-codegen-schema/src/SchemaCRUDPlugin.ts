@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject } from '@graphback/core'
+import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterField } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -66,9 +66,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     const schemaComposer = new SchemaComposer(schema)
 
-    this.buildSchemaForModels(schemaComposer, models);
-
     this.buildSchemaModelRelationships(schemaComposer, models);
+
+    // update model definitions with generated relationship fields
+    metadata.setSchema(schemaComposer.buildSchema())
+
+    this.buildSchemaForModels(schemaComposer, models);
 
     return schemaComposer.buildSchema()
   }
@@ -120,6 +123,16 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       queryTypes = this.createQueries(model, queryTypes);
       mutationTypes = this.createMutations(model, mutationTypes);
       subscriptionTypes = this.createSubscriptions(model, subscriptionTypes);
+
+      const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
+      const modelRelationshipFilterFields = buildRelationshipFilterField(model);
+
+      // TODO: Fix error "Error: Type with name "CommentFilter" does not exists"
+      // update existing model fields
+      for (const [fieldName, fieldConfig] of Object.entries(modelRelationshipFilterFields)) {
+        modifiedType.removeField(fieldName);
+        modifiedType.addFields({ [fieldName]: fieldConfig as any });
+      }
     }
 
     if (Object.keys(queryTypes).length) {
@@ -216,28 +229,28 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
       };
     }
-    // if (model.crudOptions.update) {
-    //   const operation = getFieldName(name, GraphbackOperationType.UPDATE)
-    //   mutationTypes[operation] = {
-    //     type: GraphQLNonNull(model.graphqlType),
-    //     args: {
-    //       input: {
-    //         type: GraphQLNonNull(buildUpdateMutationInputType(model))
-    //       },
-    //     }
-    //   };
-    // }
-    // if (model.crudOptions.delete) {
-    //   const operation = getFieldName(name, GraphbackOperationType.DELETE)
-    //   mutationTypes[operation] = {
-    //     type: GraphQLNonNull(model.graphqlType),
-    //     args: {
-    //       input: {
-    //         type: GraphQLNonNull(buildUpdateMutationInputType(model))
-    //       }
-    //     }
-    //   };
-    // }
+    if (model.crudOptions.update) {
+      const operation = getFieldName(name, GraphbackOperationType.UPDATE)
+      mutationTypes[operation] = {
+        type: GraphQLNonNull(model.graphqlType),
+        args: {
+          input: {
+            type: GraphQLNonNull(buildUpdateMutationInputType(model))
+          },
+        }
+      };
+    }
+    if (model.crudOptions.delete) {
+      const operation = getFieldName(name, GraphbackOperationType.DELETE)
+      mutationTypes[operation] = {
+        type: GraphQLNonNull(model.graphqlType),
+        args: {
+          input: {
+            type: GraphQLNonNull(buildUpdateMutationInputType(model))
+          }
+        }
+      };
+    }
 
     return mutationTypes;
   }

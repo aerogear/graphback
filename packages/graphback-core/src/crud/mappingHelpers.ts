@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
@@ -110,56 +110,60 @@ export function filterNonModelTypes(schema: GraphQLSchema): GraphQLObjectType[] 
   return getUserTypesFromSchema(schema).filter((t: GraphQLObjectType) => !isModelType(t))
 }
 
-export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {	
-  return modelTypes.filter(isModelType);	
-}	
+export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
+  return modelTypes.filter(isModelType);
+}
 
-export function isInputField(field: GraphQLField<any, any>): boolean {	
-  const relationshipAnnotation = parseRelationshipAnnotation(field.description);	
+export function isInputField(field: GraphQLField<any, any>): boolean {
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
-  return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';	
-}	
+  return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
+}
 
-//tslint:disable-next-line: no-reserved-keywords	
-export function getRelationFieldName(field: any, type: any) {	
-  let fieldName: string;	
-  if (field.annotations.OneToOne) {	
-    fieldName = field.annotations.OneToOne.field;	
-  }	
-  else if (field.annotations.ManyToOne) {	
-    fieldName = field.annotations.ManyToOne.field;	
-  }	
-  else if (field.annotations.OneToMany) {	
-    fieldName = field.annotations.OneToMany.field;	
-  }	
-  else {	
-    fieldName = type.name;	
-  }	
+//tslint:disable-next-line: no-reserved-keywords
+export function getRelationFieldName(field: any, type: any) {
+  let fieldName: string;
+  if (field.annotations.OneToOne) {
+    fieldName = field.annotations.OneToOne.field;
+  }
+  else if (field.annotations.ManyToOne) {
+    fieldName = field.annotations.ManyToOne.field;
+  }
+  else if (field.annotations.OneToMany) {
+    fieldName = field.annotations.OneToMany.field;
+  }
+  else {
+    fieldName = type.name;
+  }
 
-  return fieldName;	
-}	
+  return fieldName;
+}
 
-export function getInputFieldName(field: GraphQLField<any, any>): string {	
-  const relationshipAnnotation = parseRelationshipAnnotation(field.description);	
+export function getInputFieldName(field: GraphQLField<any, any>): string {
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
-  if (!relationshipAnnotation) {	
-    return field.name;	
-  }	
+  if (!relationshipAnnotation) {
+    return field.name;
+  }
 
-  if (relationshipAnnotation.kind === 'oneToMany') {	
-    throw new Error('Not inputtable field!');	
-  }	
+  if (relationshipAnnotation.kind === 'oneToMany') {
+    throw new Error('Not inputtable field!');
+  }
 
-  return relationshipAnnotation.key || transformForeignKeyName(field.name);	
-}	
+  return relationshipAnnotation.key || transformForeignKeyName(field.name);
+}
 
-export function getInputFieldType(field: GraphQLField<any, any>): GraphQLNamedType {	
-  let fieldType = getNamedType(field.type);	
+export function getInputFieldType(field: GraphQLField<any, any>): GraphQLScalarType {
+  let fieldType = getNamedType(field.type);
 
-  if (isObjectType(fieldType) && isModelType(fieldType)) {	
-    const idField = getPrimaryKey(fieldType);	
-    fieldType = getNamedType(idField.type);	
-  }	
+  if (isObjectType(fieldType) && isModelType(fieldType)) {
+    const idField = getPrimaryKey(fieldType);
+    fieldType = getNamedType(idField.type);
+  }
 
-  return getNullableType(fieldType);	
+  if (isScalarType(fieldType)) {
+    return fieldType
+  }
+
+  return undefined;
 }
