@@ -6,6 +6,7 @@ const FloatScalarInputTypeName = 'FloatInput'
 const IntScalarInputTypeName = 'IntInput';
 const StringScalarInputTypeName = 'StringInput'
 const BooleanScalarInputTypeName = 'BooleanInput'
+const PageRequestTypeName = 'PageRequest';
 const IDScalarInputTypeName = 'IDInput'
 
 const SortDirectionEnumName = 'SortDirectionEnum';
@@ -63,6 +64,21 @@ export const BooleanScalarInputType = new GraphQLInputObjectType({
     eq: { type: GraphQLBoolean }
   }
 })
+
+export const PageRequest = new GraphQLInputObjectType({
+  name: PageRequestTypeName,
+  fields: {
+    limit: {
+      type: GraphQLInt
+    },
+    offset: {
+      type: GraphQLInt
+    }
+  }
+})
+
+
+
 
 export const IDScalarInputType = new GraphQLInputObjectType({
   name: IDScalarInputTypeName,
