@@ -5,7 +5,7 @@ import { getFieldName, printSchemaWithDirectives, getSubscriptionName, Graphback
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildUpdateMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, IntScalarInputType, FloatScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -207,6 +207,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   protected createMutations(model: ModelDefinition, schemaComposer: SchemaComposer<any>) {
     const name = model.graphqlType.name
 
+    const mutationInput = buildMutationInputType(model)
+
     const mutationFields = {}
     if (model.crudOptions.create) {
       const operation = getFieldName(name, GraphbackOperationType.CREATE)
@@ -225,7 +227,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: GraphQLNonNull(buildUpdateMutationInputType(model))
+            type: GraphQLNonNull(mutationInput)
           },
         }
       };
@@ -236,7 +238,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: GraphQLNonNull(buildUpdateMutationInputType(model))
+            type: GraphQLNonNull(mutationInput)
           }
         }
       };

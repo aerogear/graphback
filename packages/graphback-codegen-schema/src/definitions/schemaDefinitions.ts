@@ -236,7 +236,7 @@ export const buildSubscriptionFilterType = (model: ModelDefinition) => {
 
 
 
-export const buildUpdateMutationInputType = (model: ModelDefinition) => {
+export const buildMutationInputType = (model: ModelDefinition) => {
   const modelType = model.graphqlType;
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.UPDATE);
 
