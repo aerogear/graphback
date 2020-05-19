@@ -113,36 +113,22 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   protected buildSchemaForModels(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
-    let queryTypes = {};
-    let mutationTypes = {};
-    let subscriptionTypes = {};
-
     this.createStandardTypes(schemaComposer)
 
     for (const model of Object.values(models)) {
-      queryTypes = this.createQueries(model, queryTypes);
-      mutationTypes = this.createMutations(model, mutationTypes);
-      subscriptionTypes = this.createSubscriptions(model, subscriptionTypes);
+      this.createQueries(model, schemaComposer);
+      this.createMutations(model, schemaComposer);
+      this.createSubscriptions(model, schemaComposer);
+    }
 
+    for (const model of Object.values(models)) {
       const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
-      const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model);
+      const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model, schemaComposer);
 
-      // TODO: Fix error "Error: Type with name "CommentFilter" does not exists"
       // update existing model fields
       for (const [fieldName, fieldConfig] of Object.entries(modelRelationshipFilterFields)) {
-        modifiedType.removeField(fieldName);
         modifiedType.addFields({ [fieldName]: fieldConfig as any });
       }
-    }
-
-    if (Object.keys(queryTypes).length) {
-      schemaComposer.Query.addFields(queryTypes);
-    }
-    if (Object.keys(mutationTypes).length) {
-      schemaComposer.Mutation.addFields(mutationTypes);
-    }
-    if (Object.keys(subscriptionTypes).length) {
-      schemaComposer.Subscription.addFields(subscriptionTypes);
     }
   }
 
@@ -216,8 +202,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     });
   }
 
-  protected createMutations(model: ModelDefinition, mutationTypes: any) {
+  protected createMutations(model: ModelDefinition, schemaComposer: SchemaComposer<any>) {
     const name = model.graphqlType.name
+
+    const mutationTypes = {}
     if (model.crudOptions.create) {
       const operation = getFieldName(name, GraphbackOperationType.CREATE)
       mutationTypes[operation] = {
@@ -252,12 +240,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       };
     }
 
-    return mutationTypes;
+    schemaComposer.Mutation.addFields(mutationTypes);
   }
 
-  protected createQueries(model: ModelDefinition, queryTypes: any) {
+  protected createQueries(model: ModelDefinition, schemaComposer: SchemaComposer<any>) {
     const name = model.graphqlType.name;
 
+    const queryTypes = {}
     if (model.crudOptions.findOne) {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryTypes[operation] = {
@@ -274,7 +263,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
           filter: {
             type: buildFilterInputType(model.graphqlType)
           },
-          page:{
+          page: {
             type: PageRequest
           },
           orderBy: {
@@ -284,7 +273,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       };
     }
 
-    return queryTypes;
+    schemaComposer.Query.addFields(queryTypes)
   }
 
   protected createStandardTypes(schemaComposer: SchemaComposer<any>) {
