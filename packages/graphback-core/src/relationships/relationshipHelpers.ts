@@ -1,5 +1,5 @@
 import { parseMarker } from 'graphql-metadata';
-import { GraphQLObjectType, getNamedType } from 'graphql';
+import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { getInputTypeName, GraphbackOperationType } from '../crud';
 import { RelationshipAnnotation, FieldRelationshipMetadata } from './RelationshipMetadataBuilder';
@@ -106,11 +106,12 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
  *
  * @param model
  */
-export function buildRelationshipFilterField(model: ModelDefinition) {
+export function buildRelationshipFilterFieldMap(model: ModelDefinition) {
   const modelType = model.graphqlType;
   const modelFields = modelType.getFields();
 
   const fieldsObj = {};
+
   for (const current of model.relationships) {
     if (modelFields[current.ownerField.name]) {
       const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType

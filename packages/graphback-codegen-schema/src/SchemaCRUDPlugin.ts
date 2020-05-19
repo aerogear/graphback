@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterField } from '@graphback/core'
+import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -125,7 +125,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       subscriptionTypes = this.createSubscriptions(model, subscriptionTypes);
 
       const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
-      const modelRelationshipFilterFields = buildRelationshipFilterField(model);
+      const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model);
 
       // TODO: Fix error "Error: Type with name "CommentFilter" does not exists"
       // update existing model fields
