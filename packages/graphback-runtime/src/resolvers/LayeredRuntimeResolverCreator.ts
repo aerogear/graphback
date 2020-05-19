@@ -174,7 +174,7 @@ export class LayeredRuntimeResolverCreator {
         }
       } else {
         resolverFn = (parent: any, args: any, context: any) => {
-          return this.services[modelName].findBy({ [relationIdField.name]: parent[relationship.relationForeignKey] }).then((results: any) => results[0])
+          return this.services[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
         }
       }
 
