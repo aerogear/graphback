@@ -38,14 +38,10 @@ export function parseRelationshipAnnotation(description: string = ''): Relations
  * @param fieldName
  * @param relationships
  */
-export function isOneToManyField(fieldName: string, relationships: FieldRelationshipMetadata[]): boolean {
-  const relationshipMetadata = relationships.find((f: FieldRelationshipMetadata) => f.ownerField.name === fieldName)
+export function isOneToManyField(field: GraphQLField<any, any>): boolean {
+  const oneToManyAnnotation: any = parseMarker('oneToMany', field.description)
 
-  if (relationshipMetadata && relationshipMetadata.kind === 'oneToMany') {
-    return true;
-  }
-
-  return false;
+  return !!oneToManyAnnotation
 }
 
 /**

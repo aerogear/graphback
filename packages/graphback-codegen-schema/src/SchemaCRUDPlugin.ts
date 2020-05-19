@@ -68,9 +68,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     this.buildSchemaModelRelationships(schemaComposer, models);
 
-    // update model definitions with generated relationship fields
-    metadata.setSchema(schemaComposer.buildSchema())
-
     this.buildSchemaForModels(schemaComposer, models);
 
     return schemaComposer.buildSchema()
@@ -123,7 +120,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     for (const model of Object.values(models)) {
       const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
-      const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model, schemaComposer);
+      const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model);
 
       // update existing model fields
       for (const [fieldName, fieldConfig] of Object.entries(modelRelationshipFilterFields)) {
@@ -135,13 +132,16 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
   protected createSubscriptions(model: ModelDefinition, schemaComposer: SchemaComposer<any>) {
     const name = model.graphqlType.name
-    const subFilterInputType = buildSubscriptionFilterType(model);
+    const modelTC = schemaComposer.getOTC(name)
+    const modelType = modelTC.getType()
+
+    const subFilterInputType = buildSubscriptionFilterType(modelType);
 
     const subscriptionFields = {}
     if (model.crudOptions.subCreate && model.crudOptions.create) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
       subscriptionFields[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
+        type: GraphQLNonNull(modelType),
         args: {
           filter: {
             type: subFilterInputType,
@@ -152,7 +152,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     if (model.crudOptions.subUpdate && model.crudOptions.update) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
       subscriptionFields[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
+        type: GraphQLNonNull(modelType),
         args: {
           filter: {
             type: subFilterInputType,
@@ -163,7 +163,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     if (model.crudOptions.subDelete && model.crudOptions.delete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
       subscriptionFields[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
+        type: GraphQLNonNull(modelType),
         args: {
           filter: {
             type: subFilterInputType,
@@ -206,8 +206,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
   protected createMutations(model: ModelDefinition, schemaComposer: SchemaComposer<any>) {
     const name = model.graphqlType.name
+    const modelTC = schemaComposer.getOTC(name)
+    const modelType = modelTC.getType()
 
-    const mutationInput = buildMutationInputType(model)
+    const mutationInput = buildMutationInputType(modelType)
 
     const mutationFields = {}
     if (model.crudOptions.create) {
@@ -216,7 +218,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(model.graphqlType),
         args: {
           input: {
-            type: GraphQLNonNull(buildCreateMutationInputType(model))
+            type: GraphQLNonNull(buildCreateMutationInputType(modelType))
           },
         }
       };
@@ -224,7 +226,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     if (model.crudOptions.update) {
       const operation = getFieldName(name, GraphbackOperationType.UPDATE)
       mutationFields[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
+        type: GraphQLNonNull(modelType),
         args: {
           input: {
             type: GraphQLNonNull(mutationInput)
@@ -249,23 +251,25 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
   protected createQueries(model: ModelDefinition, schemaComposer: SchemaComposer<any>) {
     const name = model.graphqlType.name;
+    const modelTC = schemaComposer.getOTC(name)
+    const modelType = modelTC.getType()
 
     const queryFields = {}
     if (model.crudOptions.findOne) {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryFields[operation] = {
         type: model.graphqlType,
-        args: buildFindOneFieldMap(model.graphqlType)
+        args: buildFindOneFieldMap(modelType)
       };
     }
     if (model.crudOptions.find) {
       const operation = getFieldName(name, GraphbackOperationType.FIND)
-      const resultListType = createModelListResultType(model.graphqlType)
+      const resultListType = createModelListResultType(modelType)
       queryFields[operation] = {
         type: GraphQLNonNull(resultListType),
         args: {
           filter: {
-            type: buildFilterInputType(model.graphqlType)
+            type: buildFilterInputType(modelType)
           },
           page: {
             type: PageRequest
