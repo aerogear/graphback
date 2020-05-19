@@ -21,16 +21,16 @@ type Note {
   description: String!
 
   \\"\\"\\"@oneToMany field: 'note', key: 'test_id'\\"\\"\\"
-  tests(filter: TestFilterInput): [Test]!
+  tests(filter: TestFilter): [Test]!
 }
 
-input NoteFilterInput {
+input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [NoteFilterInput]
-  or: [NoteFilterInput]
-  not: NoteFilterInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
 }
 
 type NoteResultList {
@@ -45,11 +45,16 @@ input OrderByInput {
   order: SortDirectionEnum = ASC
 }
 
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
 type Query {
   getNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getTest(id: ID!): Test
-  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
 }
 
 enum SortDirectionEnum {
@@ -79,12 +84,12 @@ type Test {
   note: Note
 }
 
-input TestFilterInput {
+input TestFilter {
   id: IDInput
   name: StringInput
-  and: [TestFilterInput]
-  or: [TestFilterInput]
-  not: TestFilterInput
+  and: [TestFilter]
+  or: [TestFilter]
+  not: TestFilter
 }
 
 type TestResultList {
@@ -109,13 +114,27 @@ type Comment {
   noteComment: Note!
 }
 
-input CommentFilterInput {
+input CommentCreationInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
+}
+
+input CommentFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [CommentFilterInput]
-  or: [CommentFilterInput]
-  not: CommentFilterInput
+  and: [CommentFilter]
+  or: [CommentFilter]
+  not: CommentFilter
+}
+
+input CommentMutationInput {
+  id: ID!
+  title: String
+  description: String
+  note_id: ID
 }
 
 type CommentResultList {
@@ -125,33 +144,10 @@ type CommentResultList {
   total: Int
 }
 
-input CreateCommentInput {
+input CommentSubscriptionFilter {
   id: ID
-  title: String!
-  description: String!
-}
-
-input CreateNoteInput {
-  id: ID
-  title: String!
-  description: String!
-}
-
-input CreateTestInput {
-  id: ID
-  name: String
-}
-
-input DeleteCommentInput {
-  id: ID!
-}
-
-input DeleteNoteInput {
-  id: ID!
-}
-
-input DeleteTestInput {
-  id: ID!
+  title: String
+  description: String
 }
 
 input IDInput {
@@ -169,15 +165,15 @@ input IDInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: UpdateNoteInput!): Note!
-  deleteNote(input: DeleteNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: UpdateCommentInput!): Comment!
-  deleteComment(input: DeleteCommentInput!): Comment!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: UpdateTestInput!): Test!
-  deleteTest(input: DeleteTestInput!): Test!
+  createNote(input: NoteCreationInput!): Note!
+  updateNote(input: NoteMutationInput!): Note!
+  deleteNote(input: NoteMutationInput!): Note!
+  createComment(input: CommentCreationInput!): Comment!
+  updateComment(input: CommentMutationInput!): Comment!
+  deleteComment(input: CommentMutationInput!): Comment!
+  createTest(input: TestCreationInput!): Test!
+  updateTest(input: TestMutationInput!): Test!
+  deleteTest(input: TestMutationInput!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -187,19 +183,33 @@ type Note {
   description: String!
 
   \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
-  comments(filter: CommentFilterInput): [Comment]!
+  comments(filter: CommentFilter): [Comment]!
 
   \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
   test: Test
 }
 
-input NoteFilterInput {
+input NoteCreationInput {
+  id: ID
+  title: String!
+  description: String!
+  test_id: ID
+}
+
+input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [NoteFilterInput]
-  or: [NoteFilterInput]
-  not: NoteFilterInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+}
+
+input NoteMutationInput {
+  id: ID!
+  title: String
+  description: String
+  test_id: ID
 }
 
 type NoteResultList {
@@ -209,19 +219,30 @@ type NoteResultList {
   total: Int
 }
 
+input NoteSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
+}
+
 input OrderByInput {
   field: String!
   order: SortDirectionEnum = ASC
 }
 
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   getNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
-  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
 }
 
 enum SortDirectionEnum {
@@ -243,15 +264,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: CreateNoteInput): Note!
-  updatedNote(input: UpdateNoteInput): Note!
-  deletedNote(input: DeleteNoteInput): Note!
-  newComment(input: CreateCommentInput): Comment!
-  updatedComment(input: UpdateCommentInput): Comment!
-  deletedComment(input: DeleteCommentInput): Comment!
-  newTest(input: CreateTestInput): Test!
-  updatedTest(input: UpdateTestInput): Test!
-  deletedTest(input: DeleteTestInput): Test!
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newTest(filter: TestSubscriptionFilter): Test!
+  updatedTest(filter: TestSubscriptionFilter): Test!
+  deletedTest(filter: TestSubscriptionFilter): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -260,12 +281,22 @@ type Test {
   name: String
 }
 
-input TestFilterInput {
+input TestCreationInput {
+  id: ID
+  name: String
+}
+
+input TestFilter {
   id: IDInput
   name: StringInput
-  and: [TestFilterInput]
-  or: [TestFilterInput]
-  not: TestFilterInput
+  and: [TestFilter]
+  or: [TestFilter]
+  not: TestFilter
+}
+
+input TestMutationInput {
+  id: ID!
+  name: String
 }
 
 type TestResultList {
@@ -275,20 +306,8 @@ type TestResultList {
   total: Int
 }
 
-input UpdateCommentInput {
-  id: ID!
-  title: String
-  description: String
-}
-
-input UpdateNoteInput {
-  id: ID!
-  title: String
-  description: String
-}
-
-input UpdateTestInput {
-  id: ID!
+input TestSubscriptionFilter {
+  id: ID
   name: String
 }"
 `;
@@ -306,13 +325,27 @@ type Comment {
   noteComment: Note!
 }
 
-input CommentFilterInput {
+input CommentCreationInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
+}
+
+input CommentFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [CommentFilterInput]
-  or: [CommentFilterInput]
-  not: CommentFilterInput
+  and: [CommentFilter]
+  or: [CommentFilter]
+  not: CommentFilter
+}
+
+input CommentMutationInput {
+  id: ID!
+  title: String
+  description: String
+  note_id: ID
 }
 
 type CommentResultList {
@@ -322,33 +355,10 @@ type CommentResultList {
   total: Int
 }
 
-input CreateCommentInput {
+input CommentSubscriptionFilter {
   id: ID
-  title: String!
-  description: String!
-}
-
-input CreateNoteInput {
-  id: ID
-  title: String!
-  description: String!
-}
-
-input CreateTestInput {
-  id: ID
-  name: String
-}
-
-input DeleteCommentInput {
-  id: ID!
-}
-
-input DeleteNoteInput {
-  id: ID!
-}
-
-input DeleteTestInput {
-  id: ID!
+  title: String
+  description: String
 }
 
 input IDInput {
@@ -366,15 +376,15 @@ input IDInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: UpdateNoteInput!): Note!
-  deleteNote(input: DeleteNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: UpdateCommentInput!): Comment!
-  deleteComment(input: DeleteCommentInput!): Comment!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: UpdateTestInput!): Test!
-  deleteTest(input: DeleteTestInput!): Test!
+  createNote(input: NoteCreationInput!): Note!
+  updateNote(input: NoteMutationInput!): Note!
+  deleteNote(input: NoteMutationInput!): Note!
+  createComment(input: CommentCreationInput!): Comment!
+  updateComment(input: CommentMutationInput!): Comment!
+  deleteComment(input: CommentMutationInput!): Comment!
+  createTest(input: TestCreationInput!): Test!
+  updateTest(input: TestMutationInput!): Test!
+  deleteTest(input: TestMutationInput!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -384,19 +394,33 @@ type Note {
   description: String!
 
   \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
-  comments(filter: CommentFilterInput): [Comment]!
+  comments(filter: CommentFilter): [Comment]!
 
   \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
   test: Test
 }
 
-input NoteFilterInput {
+input NoteCreationInput {
+  id: ID
+  title: String!
+  description: String!
+  test_id: ID
+}
+
+input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [NoteFilterInput]
-  or: [NoteFilterInput]
-  not: NoteFilterInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+}
+
+input NoteMutationInput {
+  id: ID!
+  title: String
+  description: String
+  test_id: ID
 }
 
 type NoteResultList {
@@ -406,19 +430,30 @@ type NoteResultList {
   total: Int
 }
 
+input NoteSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
+}
+
 input OrderByInput {
   field: String!
   order: SortDirectionEnum = ASC
 }
 
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   getNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
-  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
 }
 
 enum SortDirectionEnum {
@@ -440,15 +475,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: CreateNoteInput): Note!
-  updatedNote(input: UpdateNoteInput): Note!
-  deletedNote(input: DeleteNoteInput): Note!
-  newComment(input: CreateCommentInput): Comment!
-  updatedComment(input: UpdateCommentInput): Comment!
-  deletedComment(input: DeleteCommentInput): Comment!
-  newTest(input: CreateTestInput): Test!
-  updatedTest(input: UpdateTestInput): Test!
-  deletedTest(input: DeleteTestInput): Test!
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newTest(filter: TestSubscriptionFilter): Test!
+  updatedTest(filter: TestSubscriptionFilter): Test!
+  deletedTest(filter: TestSubscriptionFilter): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -457,12 +492,22 @@ type Test {
   name: String
 }
 
-input TestFilterInput {
+input TestCreationInput {
+  id: ID
+  name: String
+}
+
+input TestFilter {
   id: IDInput
   name: StringInput
-  and: [TestFilterInput]
-  or: [TestFilterInput]
-  not: TestFilterInput
+  and: [TestFilter]
+  or: [TestFilter]
+  not: TestFilter
+}
+
+input TestMutationInput {
+  id: ID!
+  name: String
 }
 
 type TestResultList {
@@ -472,20 +517,8 @@ type TestResultList {
   total: Int
 }
 
-input UpdateCommentInput {
-  id: ID!
-  title: String
-  description: String
-}
-
-input UpdateNoteInput {
-  id: ID!
-  title: String
-  description: String
-}
-
-input UpdateTestInput {
-  id: ID!
+input TestSubscriptionFilter {
+  id: ID
   name: String
 }
 "
@@ -504,13 +537,27 @@ type Comment {
   noteComment: Note!
 }
 
-input CommentFilterInput {
+input CommentCreationInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
+}
+
+input CommentFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [CommentFilterInput]
-  or: [CommentFilterInput]
-  not: CommentFilterInput
+  and: [CommentFilter]
+  or: [CommentFilter]
+  not: CommentFilter
+}
+
+input CommentMutationInput {
+  id: ID!
+  title: String
+  description: String
+  note_id: ID
 }
 
 type CommentResultList {
@@ -520,33 +567,10 @@ type CommentResultList {
   total: Int
 }
 
-input CreateCommentInput {
+input CommentSubscriptionFilter {
   id: ID
-  title: String!
-  description: String!
-}
-
-input CreateNoteInput {
-  id: ID
-  title: String!
-  description: String!
-}
-
-input CreateTestInput {
-  id: ID
-  name: String
-}
-
-input DeleteCommentInput {
-  id: ID!
-}
-
-input DeleteNoteInput {
-  id: ID!
-}
-
-input DeleteTestInput {
-  id: ID!
+  title: String
+  description: String
 }
 
 input IDInput {
@@ -564,15 +588,15 @@ input IDInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: UpdateNoteInput!): Note!
-  deleteNote(input: DeleteNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: UpdateCommentInput!): Comment!
-  deleteComment(input: DeleteCommentInput!): Comment!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: UpdateTestInput!): Test!
-  deleteTest(input: DeleteTestInput!): Test!
+  createNote(input: NoteCreationInput!): Note!
+  updateNote(input: NoteMutationInput!): Note!
+  deleteNote(input: NoteMutationInput!): Note!
+  createComment(input: CommentCreationInput!): Comment!
+  updateComment(input: CommentMutationInput!): Comment!
+  deleteComment(input: CommentMutationInput!): Comment!
+  createTest(input: TestCreationInput!): Test!
+  updateTest(input: TestMutationInput!): Test!
+  deleteTest(input: TestMutationInput!): Test!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -582,19 +606,33 @@ type Note {
   description: String!
 
   \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
-  comments(filter: CommentFilterInput): [Comment]!
+  comments(filter: CommentFilter): [Comment]!
 
   \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
   test: Test
 }
 
-input NoteFilterInput {
+input NoteCreationInput {
+  id: ID
+  title: String!
+  description: String!
+  test_id: ID
+}
+
+input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [NoteFilterInput]
-  or: [NoteFilterInput]
-  not: NoteFilterInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+}
+
+input NoteMutationInput {
+  id: ID!
+  title: String
+  description: String
+  test_id: ID
 }
 
 type NoteResultList {
@@ -604,19 +642,30 @@ type NoteResultList {
   total: Int
 }
 
+input NoteSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
+}
+
 input OrderByInput {
   field: String!
   order: SortDirectionEnum = ASC
 }
 
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   getNote(id: ID!): Note
-  findNotes(filter: NoteFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): NoteResultList!
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment
-  findComments(filter: CommentFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): CommentResultList!
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
-  findTests(filter: TestFilterInput, orderBy: OrderByInput, limit: Int, offset: Int): TestResultList!
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
 }
 
 enum SortDirectionEnum {
@@ -638,15 +687,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(input: CreateNoteInput): Note!
-  updatedNote(input: UpdateNoteInput): Note!
-  deletedNote(input: DeleteNoteInput): Note!
-  newComment(input: CreateCommentInput): Comment!
-  updatedComment(input: UpdateCommentInput): Comment!
-  deletedComment(input: DeleteCommentInput): Comment!
-  newTest(input: CreateTestInput): Test!
-  updatedTest(input: UpdateTestInput): Test!
-  deletedTest(input: DeleteTestInput): Test!
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newTest(filter: TestSubscriptionFilter): Test!
+  updatedTest(filter: TestSubscriptionFilter): Test!
+  deletedTest(filter: TestSubscriptionFilter): Test!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -655,12 +704,22 @@ type Test {
   name: String
 }
 
-input TestFilterInput {
+input TestCreationInput {
+  id: ID
+  name: String
+}
+
+input TestFilter {
   id: IDInput
   name: StringInput
-  and: [TestFilterInput]
-  or: [TestFilterInput]
-  not: TestFilterInput
+  and: [TestFilter]
+  or: [TestFilter]
+  not: TestFilter
+}
+
+input TestMutationInput {
+  id: ID!
+  name: String
 }
 
 type TestResultList {
@@ -670,20 +729,8 @@ type TestResultList {
   total: Int
 }
 
-input UpdateCommentInput {
-  id: ID!
-  title: String
-  description: String
-}
-
-input UpdateNoteInput {
-  id: ID!
-  title: String
-  description: String
-}
-
-input UpdateTestInput {
-  id: ID!
+input TestSubscriptionFilter {
+  id: ID
   name: String
 }
 "
