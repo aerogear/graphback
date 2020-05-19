@@ -1,8 +1,8 @@
 import { parseMarker } from 'graphql-metadata';
-import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
+import { GraphQLObjectType, getNamedType } from 'graphql';
 import { ModelDefinition } from '../plugin/ModelDefinition';
-import { RelationshipAnnotation, FieldRelationshipMetadata } from './RelationshipMetadataBuilder';
 import { getInputTypeName, GraphbackOperationType } from '../crud';
+import { RelationshipAnnotation, FieldRelationshipMetadata } from './RelationshipMetadataBuilder';
 
 /**
  * Parse relationship metadata string to strongly-typed interface
