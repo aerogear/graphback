@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType, isNullableType, GraphQLNonNull, GraphQLInputType, isNonNullType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
@@ -156,7 +156,7 @@ export function getInputFieldName(field: GraphQLField<any, any>): string {
   return relationshipAnnotation.key || transformForeignKeyName(field.name);
 }
 
-export function getInputFieldType(field: GraphQLField<any, any>): GraphQLScalarType {
+export function getInputFieldType(field: GraphQLField<any, any>): GraphQLInputType {
   let fieldType = getNamedType(field.type);
 
   if (isObjectType(fieldType) && isModelType(fieldType)) {
@@ -165,7 +165,7 @@ export function getInputFieldType(field: GraphQLField<any, any>): GraphQLScalarT
   }
 
   if (isScalarType(fieldType)) {
-    return fieldType
+    return isNonNullType(field.type) ? GraphQLNonNull(fieldType) : fieldType
   }
 
   return undefined;
