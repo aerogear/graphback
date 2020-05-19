@@ -206,7 +206,7 @@ export const buildCreateMutationInputType = (modelType: GraphQLObjectType) => {
 }
 
 export const buildSubscriptionFilterType = (modelType: GraphQLObjectType) => {
-  const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.CREATE);
+  const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.SUBSCRIPTION_CREATE);
   const modelFields = Object.values(modelType.getFields());
   const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)));
 
