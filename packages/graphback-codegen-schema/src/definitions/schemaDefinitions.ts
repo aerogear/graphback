@@ -1,20 +1,20 @@
-import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField } from "graphql";
-import { getPrimaryKey, GraphbackOperationType, ModelDefinition, FieldRelationshipMetadata, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField } from '@graphback/core';
+import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType } from "graphql";
+import { getPrimaryKey, GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField } from '@graphback/core';
 
-// scalar input names
-const FloatScalarInputTypeName = 'FloatInput'
-const IntScalarInputTypeName = 'IntInput';
-const StringScalarInputTypeName = 'StringInput'
-const BooleanScalarInputTypeName = 'BooleanInput'
 const PageRequestTypeName = 'PageRequest';
-const IDScalarInputTypeName = 'IDInput'
-
 const SortDirectionEnumName = 'SortDirectionEnum';
 const OrderByInputTypeName = 'OrderByInput';
 
+const getScalarInputName = (type: GraphQLNamedType) => {
+  if (isSpecifiedScalarType(type)) {
+    return `${type.name}Input`;
+  }
+
+  return 'StringInput';
+}
 
 export const FloatScalarInputType = new GraphQLInputObjectType({
-  name: FloatScalarInputTypeName,
+  name: getScalarInputName(GraphQLFloat),
   fields: {
     ne: { type: GraphQLFloat },
     eq: { type: GraphQLFloat },
@@ -28,7 +28,7 @@ export const FloatScalarInputType = new GraphQLInputObjectType({
 })
 
 export const IntScalarInputType = new GraphQLInputObjectType({
-  name: IntScalarInputTypeName,
+  name: getScalarInputName(GraphQLInt),
   fields: {
     ne: { type: GraphQLInt },
     eq: { type: GraphQLInt },
@@ -42,7 +42,7 @@ export const IntScalarInputType = new GraphQLInputObjectType({
 })
 
 export const StringScalarInputType = new GraphQLInputObjectType({
-  name: StringScalarInputTypeName,
+  name: getScalarInputName(GraphQLString),
   fields: {
     ne: { type: GraphQLString },
     eq: { type: GraphQLString },
@@ -58,7 +58,7 @@ export const StringScalarInputType = new GraphQLInputObjectType({
 })
 
 export const BooleanScalarInputType = new GraphQLInputObjectType({
-  name: BooleanScalarInputTypeName,
+  name: getScalarInputName(GraphQLBoolean),
   fields: {
     ne: { type: GraphQLBoolean },
     eq: { type: GraphQLBoolean }
@@ -78,7 +78,7 @@ export const PageRequest = new GraphQLInputObjectType({
 })
 
 export const IDScalarInputType = new GraphQLInputObjectType({
-  name: IDScalarInputTypeName,
+  name: getScalarInputName(GraphQLID),
   fields: {
     ne: { type: GraphQLID },
     eq: { type: GraphQLID },
@@ -137,7 +137,7 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
     .map(({ name, type }: GraphQLField<any, any>) => {
       return {
         name,
-        type: `${getNamedType(type)}Input`,
+        type: getScalarInputName(getNamedType(type)),
         description: undefined
       }
     }).reduce((fieldObj: any, { name, type, description }: any) => {
@@ -273,4 +273,3 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
     }
   })
 }
-
