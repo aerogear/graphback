@@ -122,10 +122,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
       const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model);
 
-      // update existing model fields
-      for (const [fieldName, fieldConfig] of Object.entries(modelRelationshipFilterFields)) {
-        modifiedType.addFields({ [fieldName]: fieldConfig as any });
-      }
+      modifiedType.addFields(modelRelationshipFilterFields)
     }
   }
 
