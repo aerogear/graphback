@@ -77,9 +77,6 @@ export const PageRequest = new GraphQLInputObjectType({
   }
 })
 
-
-
-
 export const IDScalarInputType = new GraphQLInputObjectType({
   name: IDScalarInputTypeName,
   fields: {
@@ -166,9 +163,9 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
   });
 }
 
-function getModelInputFields(model: ModelDefinition): GraphQLInputField[] {
-  return Object.values(model.graphqlType.getFields())
-    .filter((f: GraphQLField<any, any, { [key: string]: any; }>) => !isOneToManyField(f.name, model.relationships))
+function getModelInputFields(modelType: GraphQLObjectType): GraphQLInputField[] {
+  return Object.values(modelType.getFields())
+    .filter((f: GraphQLField<any, any>) => !isOneToManyField(f))
     .map((f: GraphQLField<any, any>) => {
       return {
         name: getInputFieldName(f),
@@ -179,12 +176,11 @@ function getModelInputFields(model: ModelDefinition): GraphQLInputField[] {
     })
 }
 
-export const buildCreateMutationInputType = (model: ModelDefinition) => {
-  const modelType = model.graphqlType;
+export const buildCreateMutationInputType = (modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.CREATE);
 
   const idField = getPrimaryKey(modelType)
-  const allModelFields = getModelInputFields(model);
+  const allModelFields = getModelInputFields(modelType);
 
   return new GraphQLInputObjectType({
     name: inputTypeName,
@@ -209,8 +205,7 @@ export const buildCreateMutationInputType = (model: ModelDefinition) => {
   });
 }
 
-export const buildSubscriptionFilterType = (model: ModelDefinition) => {
-  const modelType = model.graphqlType;
+export const buildSubscriptionFilterType = (modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.CREATE);
   const modelFields = Object.values(modelType.getFields());
   const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)));
@@ -236,12 +231,11 @@ export const buildSubscriptionFilterType = (model: ModelDefinition) => {
 
 
 
-export const buildMutationInputType = (model: ModelDefinition) => {
-  const modelType = model.graphqlType;
+export const buildMutationInputType = (modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.UPDATE);
 
   const idField = getPrimaryKey(modelType)
-  const allModelFields = getModelInputFields(model);
+  const allModelFields = getModelInputFields(modelType);
 
   return new GraphQLInputObjectType({
     name: inputTypeName,
