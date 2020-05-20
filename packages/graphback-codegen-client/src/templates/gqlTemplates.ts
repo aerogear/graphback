@@ -23,10 +23,9 @@ ${returnFieldsString}
 
 export const findOneQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ONE)
-  const key = getPrimaryKey(t);
 
-  return `query ${fieldName}($${key.name}: ${key.type.toString()}) {
-    ${fieldName}(filter: $filter) {
+  return `query ${fieldName}($id: ID!}) {
+    ${fieldName}(id: $id) {
       ...${t.name}ExpandedFields
     }
   }`
