@@ -108,7 +108,11 @@ Object {
     Object {
       "implementation": "query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...NoteExpandedFields
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
     }
   }",
       "name": "findNotes",
@@ -124,7 +128,11 @@ Object {
     Object {
       "implementation": "query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...CommentExpandedFields
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
     }
   }",
       "name": "findComments",
@@ -322,7 +330,11 @@ fragment CommentFields on Comment {
 
 query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...NoteExpandedFields
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -368,7 +380,11 @@ fragment NoteExpandedFields on Note {
 
 query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...CommentExpandedFields
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -709,7 +725,11 @@ import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
 export const findNotes = gql\`
   query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...NoteExpandedFields
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -741,7 +761,11 @@ import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
 export const findComments = gql\`
   query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...CommentExpandedFields
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
     }
   }
 
