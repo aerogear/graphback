@@ -115,27 +115,27 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`No results for ${this.tableName} and id: ${JSON.stringify(ids)}`);
   }
 
-  private usePage(query: Knex.QueryBuilder, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
-    if (page) {
-      if (!(page.hasOwnProperty("offset"))) {
-        // If no offset is supplied
-        page.offset = defaultOffset
-      } else {
-        if (page.offset < 0) {
-          throw new Error("Please use an offset of greater than or equal to 0 in queries")
-        }
-      }
-      query = query.offset(page.offset)
-      // console.log('page desu: ', page)
-      if (page.hasOwnProperty("limit")) {
-        if (page.limit <= 0) {
-          throw new Error("Please use a limit of greater than 0 in queries")
-        }
-        query = query.limit(page.limit)
-      }
+  private usePage(query: Knex.QueryBuilder, page?: GraphbackPage, defaultLimit: number | undefined = undefined, defaultOffset: number = 0) {
+    if (!page) {
+      return query
+    }
+
+    const { offset = defaultOffset, limit = defaultLimit } = page
+
+    if (offset < 0) {
+      throw new Error("Please use an offset of greater than or equal to 0 in queries")
+    }
+
+    query = query.offset(offset)
+
+    if (limit <= 0) {
+      throw new Error("Please use a limit of greater than 0 in queries")
+    }
+
+    if (limit) {
+      query = query.limit(limit)
     }
 
     return query;
   }
-
 }
