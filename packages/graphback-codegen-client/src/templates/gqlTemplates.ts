@@ -38,7 +38,11 @@ export const findQuery = (t: GraphQLObjectType) => {
 
   return `query ${fieldName}($filter: ${inputTypeField}!, $page: PageRequest, $orderBy: OrderByInput) {
     ${fieldName}(filter: $filter, page: $page, orderBy: $orderBy) {
-      ...${ t.name}ExpandedFields
+      items {
+        ...${ t.name}ExpandedFields
+      }
+      offset
+      limit
     }
   }`
 }
@@ -163,7 +167,7 @@ const createSubscriptions = (types: ModelDefinition[]) => {
 
   types.forEach((t: ModelDefinition) => {
     const name = t.graphqlType.name;
-    
+
     if (t.crudOptions.create && t.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
       const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_CREATE)
