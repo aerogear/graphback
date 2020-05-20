@@ -24,7 +24,7 @@ ${returnFieldsString}
 export const findOneQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ONE)
 
-  return `query ${fieldName}($id: ID!}) {
+  return `query ${fieldName}($id: ID!) {
     ${fieldName}(id: $id) {
       ...${t.name}ExpandedFields
     }
@@ -85,8 +85,8 @@ export const deleteMutation = (t: GraphQLObjectType) => {
 
 export const subscription = (t: GraphQLObjectType, fieldName: string, inputTypeField: string) => {
 
-  return `subscription ${fieldName} {
-  ${fieldName}(filter: ${inputTypeField}) {
+  return `subscription ${fieldName}($filter: ${inputTypeField}) {
+  ${fieldName}(filter: $filter) {
       ...${t.name}Fields
   }
 } `
