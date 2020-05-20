@@ -269,7 +269,7 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
       },
       offset: { type: GraphQLInt },
       limit: { type: GraphQLInt },
-      total: { type: GraphQLInt }
+      count: { type: GraphQLInt }
     }
   })
 }

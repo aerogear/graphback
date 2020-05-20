@@ -89,7 +89,8 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     const items = await this.db.findBy(filter, orderBy, page, context);
 
     return {
-      items
+      items,
+      ...page
     }
   }
 
