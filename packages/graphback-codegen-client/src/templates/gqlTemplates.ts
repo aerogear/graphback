@@ -35,7 +35,7 @@ export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
   const inputTypeField = getInputTypeName(t.name, GraphbackOperationType.FIND)
 
-  return `query ${fieldName}($filter: ${inputTypeField}!, $page: PageRequest, $orderBy: OrderByInput) {
+  return `query ${fieldName}($filter: ${inputTypeField}, $page: PageRequest, $orderBy: OrderByInput) {
     ${fieldName}(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...${ t.name}ExpandedFields
