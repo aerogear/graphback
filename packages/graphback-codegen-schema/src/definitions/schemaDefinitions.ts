@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField, getPrimaryKey } from '@graphback/core';
 
 const PageRequestTypeName = 'PageRequest';
 const SortDirectionEnumName = 'SortDirectionEnum';
