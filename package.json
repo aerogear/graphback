@@ -60,7 +60,9 @@
   },
   "workspaces": [
     "packages/*",
-    "templates/**",
+    "templates/ts-apollo-mongodb-backend",
+    "templates/ts-apollo-postgres-backend",
+    "templates/ts-react-apollo-client",
     "integration"
   ],
   "repository": {
