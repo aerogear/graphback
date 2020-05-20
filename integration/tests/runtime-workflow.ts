@@ -32,7 +32,7 @@ beforeAll(async () => {
         password: "postgres",
         database: "users",
         host: "localhost",
-        port: 55432
+        port: 5432
       }
     }
     const knex = Knex(dbMigrationsConfig);
