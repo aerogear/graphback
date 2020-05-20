@@ -58,10 +58,10 @@ export const getInputTypeName = (typeName: string, action: GraphbackOperationTyp
     case GraphbackOperationType.FIND:
       return `${finalName}Filter`
     case GraphbackOperationType.CREATE:
-      return `${finalName}CreationInput`
+      return `Create${finalName}Input`
     case GraphbackOperationType.UPDATE:
     case GraphbackOperationType.DELETE:
-      return `${finalName}MutationInput`
+      return `Mutate${finalName}Input`
     case GraphbackOperationType.SUBSCRIPTION_CREATE:
     case GraphbackOperationType.SUBSCRIPTION_UPDATE:
     case GraphbackOperationType.SUBSCRIPTION_DELETE:

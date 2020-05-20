@@ -50,7 +50,7 @@ Object {
   ],
   "mutations": Array [
     Object {
-      "implementation": "mutation createNote($input: NoteCreationInput!) {
+      "implementation": "mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
       ...NoteFields
   }
@@ -59,7 +59,7 @@ Object {
       "name": "createNote",
     },
     Object {
-      "implementation": "mutation updateNote($input: NoteMutationInput!) {
+      "implementation": "mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
   }
@@ -68,7 +68,7 @@ Object {
       "name": "updateNote",
     },
     Object {
-      "implementation": "mutation deleteNote($input: NoteMutationInput!) {
+      "implementation": "mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
   }
@@ -77,7 +77,7 @@ Object {
       "name": "deleteNote",
     },
     Object {
-      "implementation": "mutation createComment($input: CommentCreationInput!) {
+      "implementation": "mutation createComment($input: CreateCommentInput!) {
   createComment(input: $input) {
       ...CommentFields
   }
@@ -86,7 +86,7 @@ Object {
       "name": "createComment",
     },
     Object {
-      "implementation": "mutation updateComment($input: CommentMutationInput!) {
+      "implementation": "mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
   }
@@ -95,7 +95,7 @@ Object {
       "name": "updateComment",
     },
     Object {
-      "implementation": "mutation deleteComment($input: CommentMutationInput!) {
+      "implementation": "mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
   }
@@ -198,7 +198,7 @@ Object {
     Object {
       "implementation": "
 
-mutation createNote($input: NoteCreationInput!) {
+mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
       ...NoteFields
   }
@@ -218,7 +218,7 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-mutation updateNote($input: NoteMutationInput!) {
+mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
   }
@@ -238,7 +238,7 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-mutation deleteNote($input: NoteMutationInput!) {
+mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
   }
@@ -258,7 +258,7 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-mutation createComment($input: CommentCreationInput!) {
+mutation createComment($input: CreateCommentInput!) {
   createComment(input: $input) {
       ...CommentFields
   }
@@ -278,7 +278,7 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-mutation updateComment($input: CommentMutationInput!) {
+mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
   }
@@ -298,7 +298,7 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-mutation deleteComment($input: CommentMutationInput!) {
+mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
   }
@@ -603,7 +603,7 @@ export const CommentExpandedFragment = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const createNote = gql\`
-  mutation createNote($input: NoteCreationInput!) {
+  mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
       ...NoteFields
   }
@@ -620,7 +620,7 @@ export const createNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const updateNote = gql\`
-  mutation updateNote($input: NoteMutationInput!) {
+  mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
   }
@@ -637,7 +637,7 @@ export const updateNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const deleteNote = gql\`
-  mutation deleteNote($input: NoteMutationInput!) {
+  mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
   }
@@ -654,7 +654,7 @@ export const deleteNote = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const createComment = gql\`
-  mutation createComment($input: CommentCreationInput!) {
+  mutation createComment($input: CreateCommentInput!) {
   createComment(input: $input) {
       ...CommentFields
   }
@@ -671,7 +671,7 @@ export const createComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const updateComment = gql\`
-  mutation updateComment($input: CommentMutationInput!) {
+  mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
   }
@@ -688,7 +688,7 @@ export const updateComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const deleteComment = gql\`
-  mutation deleteComment($input: CommentMutationInput!) {
+  mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
   }
