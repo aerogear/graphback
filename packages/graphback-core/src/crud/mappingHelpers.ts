@@ -1,7 +1,8 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType, isNullableType, GraphQLNonNull, GraphQLInputType, isNonNullType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
+import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO is is esential to document this element
@@ -52,15 +53,19 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
  * @param action
  */
 export const getInputTypeName = (typeName: string, action: GraphbackOperationType): string => {
+  const finalName = upperCaseFirstChar(typeName);
   switch (action) {
     case GraphbackOperationType.FIND:
-      return `${typeName}FilterInput`
+      return `${finalName}Filter`
     case GraphbackOperationType.CREATE:
-      return `Create${typeName}Input`
+      return `Create${finalName}Input`
     case GraphbackOperationType.UPDATE:
-      return `Update${typeName}Input`
     case GraphbackOperationType.DELETE:
-      return `Delete${typeName}Input`
+      return `Mutate${finalName}Input`
+    case GraphbackOperationType.SUBSCRIPTION_CREATE:
+    case GraphbackOperationType.SUBSCRIPTION_UPDATE:
+    case GraphbackOperationType.SUBSCRIPTION_DELETE:
+      return `${finalName}SubscriptionFilter`
     default:
       return ''
   }
@@ -106,4 +111,62 @@ export function filterModelTypes(schema: GraphQLSchema): GraphQLObjectType[] {
  */
 export function filterNonModelTypes(schema: GraphQLSchema): GraphQLObjectType[] {
   return getUserTypesFromSchema(schema).filter((t: GraphQLObjectType) => !isModelType(t))
+}
+
+export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
+  return modelTypes.filter(isModelType);
+}
+
+export function isInputField(field: GraphQLField<any, any>): boolean {
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
+
+  return !relationshipAnnotation || relationshipAnnotation.kind !== 'oneToMany';
+}
+
+//tslint:disable-next-line: no-reserved-keywords
+export function getRelationFieldName(field: any, type: any) {
+  let fieldName: string;
+  if (field.annotations.OneToOne) {
+    fieldName = field.annotations.OneToOne.field;
+  }
+  else if (field.annotations.ManyToOne) {
+    fieldName = field.annotations.ManyToOne.field;
+  }
+  else if (field.annotations.OneToMany) {
+    fieldName = field.annotations.OneToMany.field;
+  }
+  else {
+    fieldName = type.name;
+  }
+
+  return fieldName;
+}
+
+export function getInputFieldName(field: GraphQLField<any, any>): string {
+  const relationshipAnnotation = parseRelationshipAnnotation(field.description);
+
+  if (!relationshipAnnotation) {
+    return field.name;
+  }
+
+  if (relationshipAnnotation.kind === 'oneToMany') {
+    throw new Error('Not inputtable field!');
+  }
+
+  return relationshipAnnotation.key || transformForeignKeyName(field.name);
+}
+
+export function getInputFieldType(field: GraphQLField<any, any>): GraphQLInputType {
+  let fieldType = getNamedType(field.type);
+
+  if (isObjectType(fieldType) && isModelType(fieldType)) {
+    const idField = getPrimaryKey(fieldType);
+    fieldType = getNamedType(idField.type);
+  }
+
+  if (isScalarType(fieldType)) {
+    return isNonNullType(field.type) ? GraphQLNonNull(fieldType) : fieldType
+  }
+
+  return undefined;
 }

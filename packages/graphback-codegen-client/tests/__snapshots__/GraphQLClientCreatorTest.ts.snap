@@ -59,7 +59,7 @@ Object {
       "name": "createNote",
     },
     Object {
-      "implementation": "mutation updateNote($input: UpdateNoteInput!) {
+      "implementation": "mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
   }
@@ -68,7 +68,7 @@ Object {
       "name": "updateNote",
     },
     Object {
-      "implementation": "mutation deleteNote($input: DeleteNoteInput!) {
+      "implementation": "mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
   }
@@ -86,7 +86,7 @@ Object {
       "name": "createComment",
     },
     Object {
-      "implementation": "mutation updateComment($input: UpdateCommentInput!) {
+      "implementation": "mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
   }
@@ -95,7 +95,7 @@ Object {
       "name": "updateComment",
     },
     Object {
-      "implementation": "mutation deleteComment($input: DeleteCommentInput!) {
+      "implementation": "mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
   }
@@ -106,32 +106,40 @@ Object {
   ],
   "queries": Array [
     Object {
-      "implementation": "query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
-    findNotes(fields: $fields, limit: $limit, offset: $offset) {
-      ...NoteExpandedFields
+      "implementation": "query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
     }
   }",
       "name": "findNotes",
     },
     Object {
-      "implementation": "query getNote($filter: NoteFilterUniqueInput) {
-    getNote(filter: $filter) {
+      "implementation": "query getNote($id: ID!) {
+    getNote(id: $id) {
       ...NoteExpandedFields
     }
   }",
       "name": "getNote",
     },
     Object {
-      "implementation": "query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
-    findComments(fields: $fields, limit: $limit, offset: $offset) {
-      ...CommentExpandedFields
+      "implementation": "query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
     }
   }",
       "name": "findComments",
     },
     Object {
-      "implementation": "query getComment($filter: CommentFilterUniqueInput) {
-    getComment(filter: $filter) {
+      "implementation": "query getComment($id: ID!) {
+    getComment(id: $id) {
       ...CommentExpandedFields
     }
   }",
@@ -140,48 +148,48 @@ Object {
   ],
   "subscriptions": Array [
     Object {
-      "implementation": "subscription newNote {
-  newNote {
+      "implementation": "subscription newNote($filter: NoteSubscriptionFilter) {
+  newNote(filter: $filter) {
       ...NoteFields
   }
 } ",
       "name": "newNote",
     },
     Object {
-      "implementation": "subscription updatedNote {
-  updatedNote {
+      "implementation": "subscription updatedNote($filter: NoteSubscriptionFilter) {
+  updatedNote(filter: $filter) {
       ...NoteFields
   }
 } ",
       "name": "updatedNote",
     },
     Object {
-      "implementation": "subscription deletedNote {
-  deletedNote {
+      "implementation": "subscription deletedNote($filter: NoteSubscriptionFilter) {
+  deletedNote(filter: $filter) {
       ...NoteFields
   }
 } ",
       "name": "deletedNote",
     },
     Object {
-      "implementation": "subscription newComment {
-  newComment {
+      "implementation": "subscription newComment($filter: CommentSubscriptionFilter) {
+  newComment(filter: $filter) {
       ...CommentFields
   }
 } ",
       "name": "newComment",
     },
     Object {
-      "implementation": "subscription updatedComment {
-  updatedComment {
+      "implementation": "subscription updatedComment($filter: CommentSubscriptionFilter) {
+  updatedComment(filter: $filter) {
       ...CommentFields
   }
 } ",
       "name": "updatedComment",
     },
     Object {
-      "implementation": "subscription deletedComment {
-  deletedComment {
+      "implementation": "subscription deletedComment($filter: CommentSubscriptionFilter) {
+  deletedComment(filter: $filter) {
       ...CommentFields
   }
 } ",
@@ -218,7 +226,7 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-mutation updateNote($input: UpdateNoteInput!) {
+mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
   }
@@ -238,7 +246,7 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-mutation deleteNote($input: DeleteNoteInput!) {
+mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
   }
@@ -278,7 +286,7 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-mutation updateComment($input: UpdateCommentInput!) {
+mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
   }
@@ -298,7 +306,7 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-mutation deleteComment($input: DeleteCommentInput!) {
+mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
   }
@@ -320,9 +328,13 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
-    findNotes(fields: $fields, limit: $limit, offset: $offset) {
-      ...NoteExpandedFields
+query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -343,8 +355,8 @@ fragment NoteExpandedFields on Note {
     Object {
       "implementation": "
 
-query getNote($filter: NoteFilterUniqueInput) {
-    getNote(filter: $filter) {
+query getNote($id: ID!) {
+    getNote(id: $id) {
       ...NoteExpandedFields
     }
   }
@@ -366,9 +378,13 @@ fragment NoteExpandedFields on Note {
     Object {
       "implementation": "
 
-query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
-    findComments(fields: $fields, limit: $limit, offset: $offset) {
-      ...CommentExpandedFields
+query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -389,8 +405,8 @@ fragment CommentExpandedFields on Comment {
     Object {
       "implementation": "
 
-query getComment($filter: CommentFilterUniqueInput) {
-    getComment(filter: $filter) {
+query getComment($id: ID!) {
+    getComment(id: $id) {
       ...CommentExpandedFields
     }
   }
@@ -414,8 +430,8 @@ fragment CommentExpandedFields on Comment {
     Object {
       "implementation": "
 
-subscription newNote {
-  newNote {
+subscription newNote($filter: NoteSubscriptionFilter) {
+  newNote(filter: $filter) {
       ...NoteFields
   }
 } 
@@ -433,8 +449,8 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-subscription updatedNote {
-  updatedNote {
+subscription updatedNote($filter: NoteSubscriptionFilter) {
+  updatedNote(filter: $filter) {
       ...NoteFields
   }
 } 
@@ -452,8 +468,8 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-subscription deletedNote {
-  deletedNote {
+subscription deletedNote($filter: NoteSubscriptionFilter) {
+  deletedNote(filter: $filter) {
       ...NoteFields
   }
 } 
@@ -471,8 +487,8 @@ fragment NoteFields on Note {
     Object {
       "implementation": "
 
-subscription newComment {
-  newComment {
+subscription newComment($filter: CommentSubscriptionFilter) {
+  newComment(filter: $filter) {
       ...CommentFields
   }
 } 
@@ -490,8 +506,8 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-subscription updatedComment {
-  updatedComment {
+subscription updatedComment($filter: CommentSubscriptionFilter) {
+  updatedComment(filter: $filter) {
       ...CommentFields
   }
 } 
@@ -509,8 +525,8 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-subscription deletedComment {
-  deletedComment {
+subscription deletedComment($filter: CommentSubscriptionFilter) {
+  deletedComment(filter: $filter) {
       ...CommentFields
   }
 } 
@@ -620,7 +636,7 @@ export const createNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const updateNote = gql\`
-  mutation updateNote($input: UpdateNoteInput!) {
+  mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
   }
@@ -637,7 +653,7 @@ export const updateNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const deleteNote = gql\`
-  mutation deleteNote($input: DeleteNoteInput!) {
+  mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
   }
@@ -671,7 +687,7 @@ export const createComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const updateComment = gql\`
-  mutation updateComment($input: UpdateCommentInput!) {
+  mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
   }
@@ -688,7 +704,7 @@ export const updateComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const deleteComment = gql\`
-  mutation deleteComment($input: DeleteCommentInput!) {
+  mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
   }
@@ -707,9 +723,13 @@ export const deleteComment = gql\`
 import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
 
 export const findNotes = gql\`
-  query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
-    findNotes(fields: $fields, limit: $limit, offset: $offset) {
-      ...NoteExpandedFields
+  query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -723,8 +743,8 @@ export const findNotes = gql\`
 import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
 
 export const getNote = gql\`
-  query getNote($filter: NoteFilterUniqueInput) {
-    getNote(filter: $filter) {
+  query getNote($id: ID!) {
+    getNote(id: $id) {
       ...NoteExpandedFields
     }
   }
@@ -739,9 +759,13 @@ export const getNote = gql\`
 import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
 
 export const findComments = gql\`
-  query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
-    findComments(fields: $fields, limit: $limit, offset: $offset) {
-      ...CommentExpandedFields
+  query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
     }
   }
 
@@ -755,8 +779,8 @@ export const findComments = gql\`
 import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
 
 export const getComment = gql\`
-  query getComment($filter: CommentFilterUniqueInput) {
-    getComment(filter: $filter) {
+  query getComment($id: ID!) {
+    getComment(id: $id) {
       ...CommentExpandedFields
     }
   }
@@ -773,8 +797,8 @@ export const getComment = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const newNote = gql\`
-  subscription newNote {
-  newNote {
+  subscription newNote($filter: NoteSubscriptionFilter) {
+  newNote(filter: $filter) {
       ...NoteFields
   }
 } 
@@ -789,8 +813,8 @@ export const newNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const updatedNote = gql\`
-  subscription updatedNote {
-  updatedNote {
+  subscription updatedNote($filter: NoteSubscriptionFilter) {
+  updatedNote(filter: $filter) {
       ...NoteFields
   }
 } 
@@ -805,8 +829,8 @@ export const updatedNote = gql\`
 import { NoteFragment } from \\"../fragments/Note\\"
 
 export const deletedNote = gql\`
-  subscription deletedNote {
-  deletedNote {
+  subscription deletedNote($filter: NoteSubscriptionFilter) {
+  deletedNote(filter: $filter) {
       ...NoteFields
   }
 } 
@@ -821,8 +845,8 @@ export const deletedNote = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const newComment = gql\`
-  subscription newComment {
-  newComment {
+  subscription newComment($filter: CommentSubscriptionFilter) {
+  newComment(filter: $filter) {
       ...CommentFields
   }
 } 
@@ -837,8 +861,8 @@ export const newComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const updatedComment = gql\`
-  subscription updatedComment {
-  updatedComment {
+  subscription updatedComment($filter: CommentSubscriptionFilter) {
+  updatedComment(filter: $filter) {
       ...CommentFields
   }
 } 
@@ -853,8 +877,8 @@ export const updatedComment = gql\`
 import { CommentFragment } from \\"../fragments/Comment\\"
 
 export const deletedComment = gql\`
-  subscription deletedComment {
-  deletedComment {
+  subscription deletedComment($filter: CommentSubscriptionFilter) {
+  deletedComment(filter: $filter) {
       ...CommentFields
   }
 } 

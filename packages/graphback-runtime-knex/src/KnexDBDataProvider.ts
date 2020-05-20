@@ -72,7 +72,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(data)}`);
   }
 
-  public async findOne(args: any): Promise<Type> {
+  public async findOne(args: Partial<Type>): Promise<Type> {
     let result: Type
     try {
       result = await this.db.select().from(this.tableName).where(args).first();

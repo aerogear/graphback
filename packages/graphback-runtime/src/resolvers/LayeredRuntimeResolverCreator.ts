@@ -69,22 +69,21 @@ export class LayeredRuntimeResolverCreator {
 
       if (resolverElement.crudOptions.findOne) {
         const findOneField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
+        const primaryKeyLabel = getPrimaryKey(resolverElement.graphqlType).name;
         //tslint:disable-next-line: no-any
         resolvers.Query[findOneField] = (parent: any, args: any, context: any) => {
           if (!this.services[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return this.services[modelName].findOne(args, context)
+          return this.services[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
         }
       }
       if (resolverElement.crudOptions.find) {
         const findField = getFieldName(modelName, GraphbackOperationType.FIND);
         //tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
-          const page = { limit: args.limit, offset: args.offset };
-
-          return this.services[modelName].findBy(args.filter, args.orderBy, page, context)
+          return this.services[modelName].findBy(args.filter, args.orderBy, args.page, context)
         }
       }
 
@@ -176,7 +175,7 @@ export class LayeredRuntimeResolverCreator {
         }
       } else {
         resolverFn = (parent: any, args: any, context: any) => {
-          return this.services[modelName].findBy({ [relationIdField.name]: parent[relationship.relationForeignKey] }).then((results: any) => results[0])
+          return this.services[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
         }
       }
 

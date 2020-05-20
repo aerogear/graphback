@@ -1,7 +1,8 @@
 import { parseMarker } from 'graphql-metadata';
-import { getNullableType, GraphQLObjectType, getNamedType } from 'graphql';
+import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
 import { ModelDefinition } from '../plugin/ModelDefinition';
-import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
+import { getInputTypeName, GraphbackOperationType } from '../crud';
+import { RelationshipAnnotation, FieldRelationshipMetadata } from './RelationshipMetadataBuilder';
 
 /**
  * Parse relationship metadata string to strongly-typed interface
@@ -18,6 +19,7 @@ export function parseRelationshipAnnotation(description: string = ''): Relations
       continue;
     }
 
+    // TODO: Should not throw error here
     if (!annotation.field && kind !== 'oneToOne') {
       throw new Error(`'field' is required on "${kind}" relationship annotations`);
     }
@@ -32,36 +34,14 @@ export function parseRelationshipAnnotation(description: string = ''): Relations
 }
 
 /**
- * Creates an object of relationship fields if fields do not already exist on the model type.
- *
- * @param model
+ * Helper to check if a field is a oneToMany
+ * @param fieldName
+ * @param relationships
  */
-export function buildGeneratedRelationshipsFieldObject(model: ModelDefinition) {
-  const modelType = model.graphqlType;
-  const modelFields = modelType.getFields();
+export function isOneToManyField(field: GraphQLField<any, any>): boolean {
+  const oneToManyAnnotation: any = parseMarker('oneToMany', field.description)
 
-  const fieldsObj = {};
-  for (const current of model.relationships) {
-    if (!modelFields[current.ownerField.name]) {
-      const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType
-
-      let args
-      if (current.kind === 'oneToMany') {
-        args = {
-          // TODO: Centralize type names
-          filter: current.kind === 'oneToMany' ? `${fieldNamedType.name}FilterInput` : `${fieldNamedType.name}FilterUniqueInput`
-        }
-      }
-
-      fieldsObj[current.ownerField.name] = {
-        type: current.ownerField.type,
-        args,
-        description: current.ownerField.description,
-      };
-    }
-  }
-
-  return fieldsObj;
+  return !!oneToManyAnnotation
 }
 
 /**
@@ -118,35 +98,30 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
 }
 
 /**
- * Creates an object of relationship fields which already exist on a model type.
+ * Creates an object of relationship fields if fields do not already exist on the model type.
  *
  * @param model
  */
-export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
+export function buildRelationshipFilterFieldMap(model: ModelDefinition) {
   const modelType = model.graphqlType;
-
   const modelFields = modelType.getFields();
 
   const fieldsObj = {};
+
   for (const current of model.relationships) {
-
     if (modelFields[current.ownerField.name]) {
-      const modelField = modelFields[current.ownerField.name];
-
       const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType
 
-      let args
-      if (current.kind === 'oneToMany') {
-        args = {
-          // TODO: Centralize type names
-          filter: current.kind === 'oneToMany' ? `${fieldNamedType.name}FilterInput` : `${fieldNamedType.name}FilterUniqueInput`
-        }
+      if (current.kind !== 'oneToMany') {
+        continue
       }
 
       fieldsObj[current.ownerField.name] = {
-        type: modelField.type,
-        args,
-        description: current.ownerField.description
+        type: current.ownerField.type,
+        args: {
+          filter: getInputTypeName(fieldNamedType.name, GraphbackOperationType.FIND)
+        },
+        description: current.ownerField.description,
       };
     }
   }
@@ -174,4 +149,53 @@ export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne
  */
 export const relationshipOneToOneFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', columnKey: string): string => {
   return `@${relationshipKind} key: '${columnKey}'`;
+}
+
+/**
+ * Creates an object of relationship fields if fields do not already exist on the model type.
+ *
+ * @param model
+ */
+export function buildGeneratedRelationshipsFieldObject(model: ModelDefinition) {
+  const modelType = model.graphqlType;
+  const modelFields = modelType.getFields();
+
+  const fieldsObj = {};
+  for (const current of model.relationships) {
+
+    if (!modelFields[current.ownerField.name]) {
+      fieldsObj[current.ownerField.name] = {
+        type: current.ownerField.type,
+        description: current.ownerField.description
+      };
+    }
+  }
+
+  return fieldsObj;
+}
+
+/**
+ * Creates an object of relationship fields which already exist on a model type.
+ *
+ * @param model
+ */
+export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
+  const modelType = model.graphqlType;
+
+  const modelFields = modelType.getFields();
+
+  const fieldsObj = {};
+  for (const fieldRelationship of model.relationships) {
+
+    if (modelFields[fieldRelationship.ownerField.name]) {
+      const modelField = modelFields[fieldRelationship.ownerField.name];
+
+      fieldsObj[fieldRelationship.ownerField.name] = {
+        type: modelField.type,
+        description: fieldRelationship.ownerField.description
+      };
+    }
+  }
+
+  return fieldsObj;
 }

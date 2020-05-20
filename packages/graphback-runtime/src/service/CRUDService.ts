@@ -76,7 +76,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return result;
   }
 
-  public findOne(args: any, context?: any): Promise<T> {
+  public findOne(args: Partial<T>, context?: any): Promise<T> {
     this.logger.log(`fetching single object ${this.modelName} with args ${JSON.stringify(args)}`)
 
     return this.db.findOne(args, context)
@@ -89,7 +89,8 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     const items = await this.db.findBy(filter, orderBy, page, context);
 
     return {
-      items
+      items,
+      ...page
     }
   }
 

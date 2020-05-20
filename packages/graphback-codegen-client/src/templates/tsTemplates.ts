@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getInputTypeName } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql'
 import { ClientTemplate } from './ClientTemplates'
 import { createMutation, deleteMutation, expandedFragment, findOneQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
@@ -71,11 +71,11 @@ export const ${fieldName} = gql\`
 `
 }
 
-const subscriptionTS = (t: GraphQLObjectType, imports: string, subscriptionName: string) => {
+const subscriptionTS = (t: GraphQLObjectType, imports: string, subscriptionName: string, inputField: string) => {
   return `${imports}
 
 export const ${subscriptionName} = gql\`
-  ${subscription(t, subscriptionName)}
+  ${subscription(t, subscriptionName, inputField)}
 
   \$\{${t.name}Fragment}
 \`
@@ -186,25 +186,28 @@ import { ${t.name}Fragment } from "../fragments/${t.name}"`
 
     if (model.crudOptions.create && model.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
+      const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_CREATE)
       subscriptions.push({
         name: operation,
-        implementation: subscriptionTS(t, imports, operation)
+        implementation: subscriptionTS(t, imports, operation, inputTypeField)
       })
     }
 
     if (model.crudOptions.update && model.crudOptions.subUpdate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE);
+      const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
       subscriptions.push({
         name: operation,
-        implementation: subscriptionTS(t, imports, operation)
+        implementation: subscriptionTS(t, imports, operation, inputTypeField)
       })
     }
 
     if (model.crudOptions.delete && model.crudOptions.subDelete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE);
+      const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_DELETE)
       subscriptions.push({
         name: operation,
-        implementation: subscriptionTS(t, imports, operation)
+        implementation: subscriptionTS(t, imports, operation, inputTypeField)
       })
     }
   })

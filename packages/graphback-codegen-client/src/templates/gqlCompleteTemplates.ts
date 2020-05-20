@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getInputTypeName } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
 import { createMutation, deleteMutation, expandedFragment, findOneQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates';
 
@@ -55,10 +55,10 @@ ${fragment(t)}
 `
 }
 
-export const subscriptionComplete = (t: GraphQLObjectType, subscriptionName: string) => {
+export const subscriptionComplete = (t: GraphQLObjectType, subscriptionName: string, inputType: string) => {
   return `
 
-${subscription(t, subscriptionName)}
+${subscription(t, subscriptionName, inputType)}
 
 ${fragment(t)}
 
@@ -124,25 +124,28 @@ const createSubscriptions = (types: ModelDefinition[]) => {
     const name = t.graphqlType.name;
     if (t.crudOptions.create && t.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
+      const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_CREATE)
       subscriptions.push({
         name: operation,
-        implementation: subscriptionComplete(t.graphqlType, operation)
+        implementation: subscriptionComplete(t.graphqlType, operation, inputTypeField)
       })
     }
 
     if (t.crudOptions.update && t.crudOptions.subUpdate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE);
+      const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
       subscriptions.push({
         name: operation,
-        implementation: subscriptionComplete(t.graphqlType, operation)
+        implementation: subscriptionComplete(t.graphqlType, operation, inputTypeField)
       })
     }
 
     if (t.crudOptions.delete && t.crudOptions.subDelete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE);
+      const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_DELETE)
       subscriptions.push({
         name: operation,
-        implementation: subscriptionComplete(t.graphqlType, operation)
+        implementation: subscriptionComplete(t.graphqlType, operation, inputTypeField)
       })
     }
   })
