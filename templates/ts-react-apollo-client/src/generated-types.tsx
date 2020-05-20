@@ -18,16 +18,76 @@ export type Comment = {
    __typename?: 'Comment';
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  /**  @manyToOne field: 'comments', key: 'noteId'  */
-  note?: Maybe<Note>;
+  description: Scalars['String'];
+  title: Scalars['String'];
+  /** @manyToOne field: 'comments', key: 'noteCommentId' */
+  noteComment?: Maybe<Note>;
 };
 
-export type CommentInput = {
+export type CommentFilter = {
+  id?: Maybe<IdInput>;
+  text?: Maybe<StringInput>;
+  description?: Maybe<StringInput>;
+  title?: Maybe<StringInput>;
+  and?: Maybe<Array<Maybe<CommentFilter>>>;
+  or?: Maybe<Array<Maybe<CommentFilter>>>;
+  not?: Maybe<CommentFilter>;
+};
+
+export type CommentResultList = {
+   __typename?: 'CommentResultList';
+  items: Array<Maybe<Comment>>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  total?: Maybe<Scalars['Int']>;
+};
+
+export type CommentSubscriptionFilter = {
   id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  noteId?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+};
+
+export type CreateCommentInput = {
+  id?: Maybe<Scalars['ID']>;
+  text?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
+  title: Scalars['String'];
+  noteCommentId?: Maybe<Scalars['ID']>;
+};
+
+export type CreateNoteInput = {
+  id?: Maybe<Scalars['ID']>;
+  title: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type IdInput = {
+  ne?: Maybe<Scalars['ID']>;
+  eq?: Maybe<Scalars['ID']>;
+  le?: Maybe<Scalars['ID']>;
+  lt?: Maybe<Scalars['ID']>;
+  ge?: Maybe<Scalars['ID']>;
+  gt?: Maybe<Scalars['ID']>;
+  in?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  contains?: Maybe<Scalars['ID']>;
+  startsWith?: Maybe<Scalars['ID']>;
+  endsWith?: Maybe<Scalars['ID']>;
+};
+
+export type MutateCommentInput = {
+  id: Scalars['ID'];
+  text?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  noteCommentId?: Maybe<Scalars['ID']>;
+};
+
+export type MutateNoteInput = {
+  id: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -42,32 +102,32 @@ export type Mutation = {
 
 
 export type MutationCreateNoteArgs = {
-  input?: Maybe<NoteInput>;
+  input: CreateNoteInput;
 };
 
 
 export type MutationUpdateNoteArgs = {
-  input?: Maybe<NoteInput>;
+  input: MutateNoteInput;
 };
 
 
 export type MutationDeleteNoteArgs = {
-  input?: Maybe<NoteInput>;
+  input: MutateNoteInput;
 };
 
 
 export type MutationCreateCommentArgs = {
-  input?: Maybe<CommentInput>;
+  input: CreateCommentInput;
 };
 
 
 export type MutationUpdateCommentArgs = {
-  input?: Maybe<CommentInput>;
+  input: MutateCommentInput;
 };
 
 
 export type MutationDeleteCommentArgs = {
-  input?: Maybe<CommentInput>;
+  input: MutateCommentInput;
 };
 
 /**  @model  */
@@ -75,49 +135,98 @@ export type Note = {
    __typename?: 'Note';
   id: Scalars['ID'];
   title: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  /** @oneToMany field: 'note', key: 'noteId' */
+  description: Scalars['String'];
+  /** @oneToMany field: 'noteComment', key: 'noteCommentId' */
   comments: Array<Maybe<Comment>>;
 };
 
-export type NoteInput = {
+
+/**  @model  */
+export type NoteCommentsArgs = {
+  filter?: Maybe<CommentFilter>;
+};
+
+export type NoteFilter = {
+  id?: Maybe<IdInput>;
+  title?: Maybe<StringInput>;
+  description?: Maybe<StringInput>;
+  and?: Maybe<Array<Maybe<NoteFilter>>>;
+  or?: Maybe<Array<Maybe<NoteFilter>>>;
+  not?: Maybe<NoteFilter>;
+};
+
+export type NoteResultList = {
+   __typename?: 'NoteResultList';
+  items: Array<Maybe<Note>>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  total?: Maybe<Scalars['Int']>;
+};
+
+export type NoteSubscriptionFilter = {
   id?: Maybe<Scalars['ID']>;
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
 
+export type OrderByInput = {
+  field: Scalars['String'];
+  order?: Maybe<SortDirectionEnum>;
+};
+
+export type PageRequest = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
 export type Query = {
    __typename?: 'Query';
-  findAllNotes: Array<Maybe<Note>>;
-  findNotes: Array<Maybe<Note>>;
-  findAllComments: Array<Maybe<Comment>>;
-  findComments: Array<Maybe<Comment>>;
+  getNote?: Maybe<Note>;
+  findNotes: NoteResultList;
+  getComment?: Maybe<Comment>;
+  findComments: CommentResultList;
 };
 
 
-export type QueryFindAllNotesArgs = {
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+export type QueryGetNoteArgs = {
+  id: Scalars['ID'];
 };
 
 
 export type QueryFindNotesArgs = {
-  fields?: Maybe<NoteInput>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+  filter?: Maybe<NoteFilter>;
+  page?: Maybe<PageRequest>;
+  orderBy?: Maybe<OrderByInput>;
 };
 
 
-export type QueryFindAllCommentsArgs = {
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+export type QueryGetCommentArgs = {
+  id: Scalars['ID'];
 };
 
 
 export type QueryFindCommentsArgs = {
-  fields?: Maybe<CommentInput>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+  filter?: Maybe<CommentFilter>;
+  page?: Maybe<PageRequest>;
+  orderBy?: Maybe<OrderByInput>;
+};
+
+export enum SortDirectionEnum {
+  Desc = 'DESC',
+  Asc = 'ASC'
+}
+
+export type StringInput = {
+  ne?: Maybe<Scalars['String']>;
+  eq?: Maybe<Scalars['String']>;
+  le?: Maybe<Scalars['String']>;
+  lt?: Maybe<Scalars['String']>;
+  ge?: Maybe<Scalars['String']>;
+  gt?: Maybe<Scalars['String']>;
+  in?: Maybe<Array<Maybe<Scalars['String']>>>;
+  contains?: Maybe<Scalars['String']>;
+  startsWith?: Maybe<Scalars['String']>;
+  endsWith?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -132,43 +241,43 @@ export type Subscription = {
 
 
 export type SubscriptionNewNoteArgs = {
-  input?: Maybe<NoteInput>;
+  filter?: Maybe<NoteSubscriptionFilter>;
 };
 
 
 export type SubscriptionUpdatedNoteArgs = {
-  input?: Maybe<NoteInput>;
+  filter?: Maybe<NoteSubscriptionFilter>;
 };
 
 
 export type SubscriptionDeletedNoteArgs = {
-  input?: Maybe<NoteInput>;
+  filter?: Maybe<NoteSubscriptionFilter>;
 };
 
 
 export type SubscriptionNewCommentArgs = {
-  input?: Maybe<CommentInput>;
+  filter?: Maybe<CommentSubscriptionFilter>;
 };
 
 
 export type SubscriptionUpdatedCommentArgs = {
-  input?: Maybe<CommentInput>;
+  filter?: Maybe<CommentSubscriptionFilter>;
 };
 
 
 export type SubscriptionDeletedCommentArgs = {
-  input?: Maybe<CommentInput>;
+  filter?: Maybe<CommentSubscriptionFilter>;
 };
 
 export type CommentFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description'>
+  & Pick<Comment, 'id' | 'text' | 'description' | 'title'>
 );
 
 export type CommentExpandedFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description'>
-  & { note: Maybe<(
+  & Pick<Comment, 'id' | 'text' | 'description' | 'title'>
+  & { noteComment?: Maybe<(
     { __typename?: 'Note' }
     & Pick<Note, 'id' | 'title' | 'description'>
   )> }
@@ -184,12 +293,12 @@ export type NoteExpandedFieldsFragment = (
   & Pick<Note, 'id' | 'title' | 'description'>
   & { comments: Array<Maybe<(
     { __typename?: 'Comment' }
-    & Pick<Comment, 'id' | 'text' | 'description'>
+    & Pick<Comment, 'id' | 'text' | 'description' | 'title'>
   )>> }
 );
 
 export type CreateCommentMutationVariables = {
-  input: CommentInput;
+  input: CreateCommentInput;
 };
 
 
@@ -202,7 +311,7 @@ export type CreateCommentMutation = (
 );
 
 export type CreateNoteMutationVariables = {
-  input: NoteInput;
+  input: CreateNoteInput;
 };
 
 
@@ -215,7 +324,7 @@ export type CreateNoteMutation = (
 );
 
 export type DeleteCommentMutationVariables = {
-  input: CommentInput;
+  input: MutateCommentInput;
 };
 
 
@@ -228,7 +337,7 @@ export type DeleteCommentMutation = (
 );
 
 export type DeleteNoteMutationVariables = {
-  input: NoteInput;
+  input: MutateNoteInput;
 };
 
 
@@ -241,7 +350,7 @@ export type DeleteNoteMutation = (
 );
 
 export type UpdateCommentMutationVariables = {
-  input: CommentInput;
+  input: MutateCommentInput;
 };
 
 
@@ -254,7 +363,7 @@ export type UpdateCommentMutation = (
 );
 
 export type UpdateNoteMutationVariables = {
-  input: NoteInput;
+  input: MutateNoteInput;
 };
 
 
@@ -266,65 +375,73 @@ export type UpdateNoteMutation = (
   ) }
 );
 
-export type FindAllCommentsQueryVariables = {
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-};
-
-
-export type FindAllCommentsQuery = (
-  { __typename?: 'Query' }
-  & { findAllComments: Array<Maybe<(
-    { __typename?: 'Comment' }
-    & CommentExpandedFieldsFragment
-  )>> }
-);
-
-export type FindAllNotesQueryVariables = {
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-};
-
-
-export type FindAllNotesQuery = (
-  { __typename?: 'Query' }
-  & { findAllNotes: Array<Maybe<(
-    { __typename?: 'Note' }
-    & NoteExpandedFieldsFragment
-  )>> }
-);
-
 export type FindCommentsQueryVariables = {
-  fields: CommentInput;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+  filter: CommentFilter;
+  page?: Maybe<PageRequest>;
+  orderBy?: Maybe<OrderByInput>;
 };
 
 
 export type FindCommentsQuery = (
   { __typename?: 'Query' }
-  & { findComments: Array<Maybe<(
-    { __typename?: 'Comment' }
-    & CommentExpandedFieldsFragment
-  )>> }
+  & { findComments: (
+    { __typename?: 'CommentResultList' }
+    & Pick<CommentResultList, 'offset' | 'limit'>
+    & { items: Array<Maybe<(
+      { __typename?: 'Comment' }
+      & CommentExpandedFieldsFragment
+    )>> }
+  ) }
 );
 
 export type FindNotesQueryVariables = {
-  fields: NoteInput;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+  filter: NoteFilter;
+  page?: Maybe<PageRequest>;
+  orderBy?: Maybe<OrderByInput>;
 };
 
 
 export type FindNotesQuery = (
   { __typename?: 'Query' }
-  & { findNotes: Array<Maybe<(
-    { __typename?: 'Note' }
-    & NoteExpandedFieldsFragment
-  )>> }
+  & { findNotes: (
+    { __typename?: 'NoteResultList' }
+    & Pick<NoteResultList, 'offset' | 'limit'>
+    & { items: Array<Maybe<(
+      { __typename?: 'Note' }
+      & NoteExpandedFieldsFragment
+    )>> }
+  ) }
 );
 
-export type DeletedCommentSubscriptionVariables = {};
+export type GetCommentQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetCommentQuery = (
+  { __typename?: 'Query' }
+  & { getComment?: Maybe<(
+    { __typename?: 'Comment' }
+    & CommentExpandedFieldsFragment
+  )> }
+);
+
+export type GetNoteQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetNoteQuery = (
+  { __typename?: 'Query' }
+  & { getNote?: Maybe<(
+    { __typename?: 'Note' }
+    & NoteExpandedFieldsFragment
+  )> }
+);
+
+export type DeletedCommentSubscriptionVariables = {
+  filter?: Maybe<CommentSubscriptionFilter>;
+};
 
 
 export type DeletedCommentSubscription = (
@@ -335,7 +452,9 @@ export type DeletedCommentSubscription = (
   ) }
 );
 
-export type DeletedNoteSubscriptionVariables = {};
+export type DeletedNoteSubscriptionVariables = {
+  filter?: Maybe<NoteSubscriptionFilter>;
+};
 
 
 export type DeletedNoteSubscription = (
@@ -346,7 +465,9 @@ export type DeletedNoteSubscription = (
   ) }
 );
 
-export type NewCommentSubscriptionVariables = {};
+export type NewCommentSubscriptionVariables = {
+  filter?: Maybe<CommentSubscriptionFilter>;
+};
 
 
 export type NewCommentSubscription = (
@@ -357,7 +478,9 @@ export type NewCommentSubscription = (
   ) }
 );
 
-export type NewNoteSubscriptionVariables = {};
+export type NewNoteSubscriptionVariables = {
+  filter?: Maybe<NoteSubscriptionFilter>;
+};
 
 
 export type NewNoteSubscription = (
@@ -368,7 +491,9 @@ export type NewNoteSubscription = (
   ) }
 );
 
-export type UpdatedCommentSubscriptionVariables = {};
+export type UpdatedCommentSubscriptionVariables = {
+  filter?: Maybe<CommentSubscriptionFilter>;
+};
 
 
 export type UpdatedCommentSubscription = (
@@ -379,7 +504,9 @@ export type UpdatedCommentSubscription = (
   ) }
 );
 
-export type UpdatedNoteSubscriptionVariables = {};
+export type UpdatedNoteSubscriptionVariables = {
+  filter?: Maybe<NoteSubscriptionFilter>;
+};
 
 
 export type UpdatedNoteSubscription = (
@@ -395,6 +522,7 @@ export const CommentFieldsFragmentDoc = gql`
   id
   text
   description
+  title
 }
     `;
 export const CommentExpandedFieldsFragmentDoc = gql`
@@ -402,7 +530,8 @@ export const CommentExpandedFieldsFragmentDoc = gql`
   id
   text
   description
-  note {
+  title
+  noteComment {
     id
     title
     description
@@ -425,11 +554,12 @@ export const NoteExpandedFieldsFragmentDoc = gql`
     id
     text
     description
+    title
   }
 }
     `;
 export const CreateCommentDocument = gql`
-    mutation createComment($input: CommentInput!) {
+    mutation createComment($input: CreateCommentInput!) {
   createComment(input: $input) {
     ...CommentFields
   }
@@ -461,7 +591,7 @@ export type CreateCommentMutationHookResult = ReturnType<typeof useCreateComment
 export type CreateCommentMutationResult = ApolloReactCommon.MutationResult<CreateCommentMutation>;
 export type CreateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateNoteDocument = gql`
-    mutation createNote($input: NoteInput!) {
+    mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
     ...NoteFields
   }
@@ -493,7 +623,7 @@ export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutati
 export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
 export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
 export const DeleteCommentDocument = gql`
-    mutation deleteComment($input: CommentInput!) {
+    mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
     ...CommentFields
   }
@@ -525,7 +655,7 @@ export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteComment
 export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
 export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const DeleteNoteDocument = gql`
-    mutation deleteNote($input: NoteInput!) {
+    mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
     ...NoteFields
   }
@@ -557,7 +687,7 @@ export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutati
 export type DeleteNoteMutationResult = ApolloReactCommon.MutationResult<DeleteNoteMutation>;
 export type DeleteNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
 export const UpdateCommentDocument = gql`
-    mutation updateComment($input: CommentInput!) {
+    mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
     ...CommentFields
   }
@@ -589,7 +719,7 @@ export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateComment
 export type UpdateCommentMutationResult = ApolloReactCommon.MutationResult<UpdateCommentMutation>;
 export type UpdateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
 export const UpdateNoteDocument = gql`
-    mutation updateNote($input: NoteInput!) {
+    mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
     ...NoteFields
   }
@@ -620,78 +750,14 @@ export function useUpdateNoteMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutation>;
 export type UpdateNoteMutationResult = ApolloReactCommon.MutationResult<UpdateNoteMutation>;
 export type UpdateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
-export const FindAllCommentsDocument = gql`
-    query findAllComments($limit: Int, $offset: Int) {
-  findAllComments(limit: $limit, offset: $offset) {
-    ...CommentExpandedFields
-  }
-}
-    ${CommentExpandedFieldsFragmentDoc}`;
-
-/**
- * __useFindAllCommentsQuery__
- *
- * To run a query within a React component, call `useFindAllCommentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindAllCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFindAllCommentsQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
- *   },
- * });
- */
-export function useFindAllCommentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindAllCommentsQuery, FindAllCommentsQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindAllCommentsQuery, FindAllCommentsQueryVariables>(FindAllCommentsDocument, baseOptions);
-      }
-export function useFindAllCommentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindAllCommentsQuery, FindAllCommentsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindAllCommentsQuery, FindAllCommentsQueryVariables>(FindAllCommentsDocument, baseOptions);
-        }
-export type FindAllCommentsQueryHookResult = ReturnType<typeof useFindAllCommentsQuery>;
-export type FindAllCommentsLazyQueryHookResult = ReturnType<typeof useFindAllCommentsLazyQuery>;
-export type FindAllCommentsQueryResult = ApolloReactCommon.QueryResult<FindAllCommentsQuery, FindAllCommentsQueryVariables>;
-export const FindAllNotesDocument = gql`
-    query findAllNotes($limit: Int, $offset: Int) {
-  findAllNotes(limit: $limit, offset: $offset) {
-    ...NoteExpandedFields
-  }
-}
-    ${NoteExpandedFieldsFragmentDoc}`;
-
-/**
- * __useFindAllNotesQuery__
- *
- * To run a query within a React component, call `useFindAllNotesQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindAllNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFindAllNotesQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
- *   },
- * });
- */
-export function useFindAllNotesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindAllNotesQuery, FindAllNotesQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindAllNotesQuery, FindAllNotesQueryVariables>(FindAllNotesDocument, baseOptions);
-      }
-export function useFindAllNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindAllNotesQuery, FindAllNotesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindAllNotesQuery, FindAllNotesQueryVariables>(FindAllNotesDocument, baseOptions);
-        }
-export type FindAllNotesQueryHookResult = ReturnType<typeof useFindAllNotesQuery>;
-export type FindAllNotesLazyQueryHookResult = ReturnType<typeof useFindAllNotesLazyQuery>;
-export type FindAllNotesQueryResult = ApolloReactCommon.QueryResult<FindAllNotesQuery, FindAllNotesQueryVariables>;
 export const FindCommentsDocument = gql`
-    query findComments($fields: CommentInput!, $limit: Int, $offset: Int) {
-  findComments(fields: $fields, limit: $limit, offset: $offset) {
-    ...CommentExpandedFields
+    query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+  findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+    items {
+      ...CommentExpandedFields
+    }
+    offset
+    limit
   }
 }
     ${CommentExpandedFieldsFragmentDoc}`;
@@ -700,7 +766,7 @@ export const FindCommentsDocument = gql`
  * __useFindCommentsQuery__
  *
  * To run a query within a React component, call `useFindCommentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useFindCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -708,9 +774,9 @@ export const FindCommentsDocument = gql`
  * @example
  * const { data, loading, error } = useFindCommentsQuery({
  *   variables: {
- *      fields: // value for 'fields'
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
+ *      filter: // value for 'filter'
+ *      page: // value for 'page'
+ *      orderBy: // value for 'orderBy'
  *   },
  * });
  */
@@ -724,9 +790,13 @@ export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery
 export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
 export type FindCommentsQueryResult = ApolloReactCommon.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
 export const FindNotesDocument = gql`
-    query findNotes($fields: NoteInput!, $limit: Int, $offset: Int) {
-  findNotes(fields: $fields, limit: $limit, offset: $offset) {
-    ...NoteExpandedFields
+    query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+  findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+    items {
+      ...NoteExpandedFields
+    }
+    offset
+    limit
   }
 }
     ${NoteExpandedFieldsFragmentDoc}`;
@@ -735,7 +805,7 @@ export const FindNotesDocument = gql`
  * __useFindNotesQuery__
  *
  * To run a query within a React component, call `useFindNotesQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useFindNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -743,9 +813,9 @@ export const FindNotesDocument = gql`
  * @example
  * const { data, loading, error } = useFindNotesQuery({
  *   variables: {
- *      fields: // value for 'fields'
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
+ *      filter: // value for 'filter'
+ *      page: // value for 'page'
+ *      orderBy: // value for 'orderBy'
  *   },
  * });
  */
@@ -758,9 +828,75 @@ export function useFindNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
 export type FindNotesLazyQueryHookResult = ReturnType<typeof useFindNotesLazyQuery>;
 export type FindNotesQueryResult = ApolloReactCommon.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
+export const GetCommentDocument = gql`
+    query getComment($id: ID!) {
+  getComment(id: $id) {
+    ...CommentExpandedFields
+  }
+}
+    ${CommentExpandedFieldsFragmentDoc}`;
+
+/**
+ * __useGetCommentQuery__
+ *
+ * To run a query within a React component, call `useGetCommentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCommentQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
+      }
+export function useGetCommentLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
+        }
+export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
+export type GetCommentLazyQueryHookResult = ReturnType<typeof useGetCommentLazyQuery>;
+export type GetCommentQueryResult = ApolloReactCommon.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
+export const GetNoteDocument = gql`
+    query getNote($id: ID!) {
+  getNote(id: $id) {
+    ...NoteExpandedFields
+  }
+}
+    ${NoteExpandedFieldsFragmentDoc}`;
+
+/**
+ * __useGetNoteQuery__
+ *
+ * To run a query within a React component, call `useGetNoteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNoteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNoteQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetNoteQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
+      }
+export function useGetNoteLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
+        }
+export type GetNoteQueryHookResult = ReturnType<typeof useGetNoteQuery>;
+export type GetNoteLazyQueryHookResult = ReturnType<typeof useGetNoteLazyQuery>;
+export type GetNoteQueryResult = ApolloReactCommon.QueryResult<GetNoteQuery, GetNoteQueryVariables>;
 export const DeletedCommentDocument = gql`
-    subscription deletedComment {
-  deletedComment {
+    subscription deletedComment($filter: CommentSubscriptionFilter) {
+  deletedComment(filter: $filter) {
     ...CommentFields
   }
 }
@@ -770,7 +906,7 @@ export const DeletedCommentDocument = gql`
  * __useDeletedCommentSubscription__
  *
  * To run a query within a React component, call `useDeletedCommentSubscription` and pass it any options that fit your needs.
- * When your component renders, `useDeletedCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useDeletedCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -778,6 +914,7 @@ export const DeletedCommentDocument = gql`
  * @example
  * const { data, loading, error } = useDeletedCommentSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -787,8 +924,8 @@ export function useDeletedCommentSubscription(baseOptions?: ApolloReactHooks.Sub
 export type DeletedCommentSubscriptionHookResult = ReturnType<typeof useDeletedCommentSubscription>;
 export type DeletedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<DeletedCommentSubscription>;
 export const DeletedNoteDocument = gql`
-    subscription deletedNote {
-  deletedNote {
+    subscription deletedNote($filter: NoteSubscriptionFilter) {
+  deletedNote(filter: $filter) {
     ...NoteFields
   }
 }
@@ -798,7 +935,7 @@ export const DeletedNoteDocument = gql`
  * __useDeletedNoteSubscription__
  *
  * To run a query within a React component, call `useDeletedNoteSubscription` and pass it any options that fit your needs.
- * When your component renders, `useDeletedNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useDeletedNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -806,6 +943,7 @@ export const DeletedNoteDocument = gql`
  * @example
  * const { data, loading, error } = useDeletedNoteSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -815,8 +953,8 @@ export function useDeletedNoteSubscription(baseOptions?: ApolloReactHooks.Subscr
 export type DeletedNoteSubscriptionHookResult = ReturnType<typeof useDeletedNoteSubscription>;
 export type DeletedNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<DeletedNoteSubscription>;
 export const NewCommentDocument = gql`
-    subscription newComment {
-  newComment {
+    subscription newComment($filter: CommentSubscriptionFilter) {
+  newComment(filter: $filter) {
     ...CommentFields
   }
 }
@@ -826,7 +964,7 @@ export const NewCommentDocument = gql`
  * __useNewCommentSubscription__
  *
  * To run a query within a React component, call `useNewCommentSubscription` and pass it any options that fit your needs.
- * When your component renders, `useNewCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useNewCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -834,6 +972,7 @@ export const NewCommentDocument = gql`
  * @example
  * const { data, loading, error } = useNewCommentSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -843,8 +982,8 @@ export function useNewCommentSubscription(baseOptions?: ApolloReactHooks.Subscri
 export type NewCommentSubscriptionHookResult = ReturnType<typeof useNewCommentSubscription>;
 export type NewCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewCommentSubscription>;
 export const NewNoteDocument = gql`
-    subscription newNote {
-  newNote {
+    subscription newNote($filter: NoteSubscriptionFilter) {
+  newNote(filter: $filter) {
     ...NoteFields
   }
 }
@@ -854,7 +993,7 @@ export const NewNoteDocument = gql`
  * __useNewNoteSubscription__
  *
  * To run a query within a React component, call `useNewNoteSubscription` and pass it any options that fit your needs.
- * When your component renders, `useNewNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useNewNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -862,6 +1001,7 @@ export const NewNoteDocument = gql`
  * @example
  * const { data, loading, error } = useNewNoteSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -871,8 +1011,8 @@ export function useNewNoteSubscription(baseOptions?: ApolloReactHooks.Subscripti
 export type NewNoteSubscriptionHookResult = ReturnType<typeof useNewNoteSubscription>;
 export type NewNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNoteSubscription>;
 export const UpdatedCommentDocument = gql`
-    subscription updatedComment {
-  updatedComment {
+    subscription updatedComment($filter: CommentSubscriptionFilter) {
+  updatedComment(filter: $filter) {
     ...CommentFields
   }
 }
@@ -882,7 +1022,7 @@ export const UpdatedCommentDocument = gql`
  * __useUpdatedCommentSubscription__
  *
  * To run a query within a React component, call `useUpdatedCommentSubscription` and pass it any options that fit your needs.
- * When your component renders, `useUpdatedCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useUpdatedCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -890,6 +1030,7 @@ export const UpdatedCommentDocument = gql`
  * @example
  * const { data, loading, error } = useUpdatedCommentSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -899,8 +1040,8 @@ export function useUpdatedCommentSubscription(baseOptions?: ApolloReactHooks.Sub
 export type UpdatedCommentSubscriptionHookResult = ReturnType<typeof useUpdatedCommentSubscription>;
 export type UpdatedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<UpdatedCommentSubscription>;
 export const UpdatedNoteDocument = gql`
-    subscription updatedNote {
-  updatedNote {
+    subscription updatedNote($filter: NoteSubscriptionFilter) {
+  updatedNote(filter: $filter) {
     ...NoteFields
   }
 }
@@ -910,7 +1051,7 @@ export const UpdatedNoteDocument = gql`
  * __useUpdatedNoteSubscription__
  *
  * To run a query within a React component, call `useUpdatedNoteSubscription` and pass it any options that fit your needs.
- * When your component renders, `useUpdatedNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useUpdatedNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -918,6 +1059,7 @@ export const UpdatedNoteDocument = gql`
  * @example
  * const { data, loading, error } = useUpdatedNoteSubscription({
  *   variables: {
+ *      filter: // value for 'filter'
  *   },
  * });
  */
