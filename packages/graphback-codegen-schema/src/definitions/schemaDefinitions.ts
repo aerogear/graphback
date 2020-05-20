@@ -112,9 +112,22 @@ export const OrderByInputType = new GraphQLInputObjectType({
   }
 })
 
+function getModelInputFields(modelType: GraphQLObjectType): GraphQLInputField[] {
+  return Object.values(modelType.getFields())
+    .filter((f: GraphQLField<any, any>) => !isOneToManyField(f))
+    .map((f: GraphQLField<any, any>) => {
+      return {
+        name: getInputFieldName(f),
+        type: getInputFieldType(f),
+        description: undefined,
+        extensions: []
+      }
+    })
+}
+
 export function buildFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInputFieldMap {
   return {
-    "id": {
+    id: {
       name: "id",
       type: GraphQLNonNull(GraphQLID),
       description: undefined,
@@ -126,12 +139,10 @@ export function buildFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInput
 export const buildFilterInputType = (modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.FIND);
 
-  const modelFields = Object.values(modelType.getFields())
+  const inputFields = getModelInputFields(modelType);
 
-  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)))
-
-  const scalarInputFields = scalarFields
-    .map(({ name, type }: GraphQLField<any, any>) => {
+  const scalarInputFields = inputFields
+    .map(({ name, type }: GraphQLInputField) => {
       return {
         name,
         type: getScalarInputName(getNamedType(type)),
@@ -158,19 +169,6 @@ export const buildFilterInputType = (modelType: GraphQLObjectType) => {
       }
     }
   });
-}
-
-function getModelInputFields(modelType: GraphQLObjectType): GraphQLInputField[] {
-  return Object.values(modelType.getFields())
-    .filter((f: GraphQLField<any, any>) => !isOneToManyField(f))
-    .map((f: GraphQLField<any, any>) => {
-      return {
-        name: getInputFieldName(f),
-        type: getInputFieldType(f),
-        description: undefined,
-        extensions: []
-      }
-    })
 }
 
 export const buildCreateMutationInputType = (modelType: GraphQLObjectType) => {
