@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType } from "graphql";
-import { getPrimaryKey, GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField } from '@graphback/core';
 
 const PageRequestTypeName = 'PageRequest';
 const SortDirectionEnumName = 'SortDirectionEnum';
@@ -113,13 +113,10 @@ export const OrderByInputType = new GraphQLInputObjectType({
 })
 
 export function buildFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInputFieldMap {
-  const idField = getPrimaryKey(modelType)
-  const idFieldType = getNamedType(idField.type) as GraphQLScalarType
-
   return {
-    [idField.name]: {
-      name: idField.name,
-      type: GraphQLNonNull(idFieldType),
+    "id": {
+      name: "id",
+      type: GraphQLNonNull(GraphQLID),
       description: undefined,
       extensions: undefined
     }
