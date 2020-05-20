@@ -106,7 +106,7 @@ Object {
   ],
   "queries": Array [
     Object {
-      "implementation": "query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+      "implementation": "query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...NoteExpandedFields
@@ -126,7 +126,7 @@ Object {
       "name": "getNote",
     },
     Object {
-      "implementation": "query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+      "implementation": "query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...CommentExpandedFields
@@ -328,7 +328,7 @@ fragment CommentFields on Comment {
     Object {
       "implementation": "
 
-query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...NoteExpandedFields
@@ -378,7 +378,7 @@ fragment NoteExpandedFields on Note {
     Object {
       "implementation": "
 
-query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...CommentExpandedFields
@@ -723,7 +723,7 @@ export const deleteComment = gql\`
 import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
 
 export const findNotes = gql\`
-  query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+  query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...NoteExpandedFields
@@ -759,7 +759,7 @@ export const getNote = gql\`
 import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
 
 export const findComments = gql\`
-  query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+  query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
         ...CommentExpandedFields

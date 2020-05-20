@@ -87,6 +87,7 @@ type Test {
 input TestFilter {
   id: IDInput
   name: StringInput
+  test_id: IDInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -118,6 +119,7 @@ input CommentFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  note_id: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -217,6 +219,7 @@ input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  test_id: IDInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -329,6 +332,7 @@ input CommentFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  note_id: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -428,6 +432,7 @@ input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  test_id: IDInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -541,6 +546,7 @@ input CommentFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  note_id: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -640,6 +646,7 @@ input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  test_id: IDInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
