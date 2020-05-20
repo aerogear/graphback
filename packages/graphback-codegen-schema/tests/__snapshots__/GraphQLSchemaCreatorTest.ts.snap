@@ -37,7 +37,7 @@ type NoteResultList {
   items: [Note]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input OrderByInput {
@@ -96,7 +96,7 @@ type TestResultList {
   items: [Test]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 "
 `;
@@ -127,7 +127,7 @@ type CommentResultList {
   items: [Comment]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input CommentSubscriptionFilter {
@@ -226,7 +226,7 @@ type NoteResultList {
   items: [Note]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input NoteSubscriptionFilter {
@@ -303,7 +303,7 @@ type TestResultList {
   items: [Test]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input TestSubscriptionFilter {
@@ -338,7 +338,7 @@ type CommentResultList {
   items: [Comment]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input CommentSubscriptionFilter {
@@ -437,7 +437,7 @@ type NoteResultList {
   items: [Note]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input NoteSubscriptionFilter {
@@ -514,7 +514,7 @@ type TestResultList {
   items: [Test]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input TestSubscriptionFilter {
@@ -550,7 +550,7 @@ type CommentResultList {
   items: [Comment]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input CommentSubscriptionFilter {
@@ -649,7 +649,7 @@ type NoteResultList {
   items: [Note]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input NoteSubscriptionFilter {
@@ -726,7 +726,7 @@ type TestResultList {
   items: [Test]!
   offset: Int
   limit: Int
-  total: Int
+  count: Int
 }
 
 input TestSubscriptionFilter {
