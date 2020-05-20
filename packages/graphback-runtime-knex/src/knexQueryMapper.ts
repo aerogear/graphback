@@ -120,14 +120,14 @@ function where(builder: Knex.QueryBuilder, filter: any, or: boolean = false, not
     builder = where(builder, andFilter, false, not)
   }
 
-  // build OR queries
-  for (const orFilter of orQueries) {
-    builder = where(builder, orFilter, true, not)
-  }
-
   // build NOT queries
   for (const notFilter of notQueries) {
     builder = where(builder, notFilter, or, true)
+  }
+
+  // build OR queries
+  for (const orFilter of orQueries) {
+    builder = where(builder, orFilter, true, not)
   }
 
   return builder
