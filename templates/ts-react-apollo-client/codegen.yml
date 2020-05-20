@@ -1,7 +1,7 @@
 schema: ../src/schema/schema.graphql
 documents: ./src/graphql/**/**.graphql
 generates:
-  ./client/src/generated-types.tsx:
+  ./src/generated-types.tsx:
     plugins:
       - add: '/* tslint:disable */'
       - typescript
