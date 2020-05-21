@@ -78,6 +78,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   public async findOne(filter: any): Promise<Type> {
+    if (filter.id) {
+      filter = { _id: new ObjectId(filter.id) }
+    }
     const query = this.db.collection(this.collectionName).findOne(filter);
     const data = await query;
 
@@ -148,8 +151,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
     throw new NoDataError(`No results for ${this.collectionName} query and batch read with filter: ${JSON.stringify(filter)}`);
 
-
-
   }
 
   private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
@@ -170,23 +171,25 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   private usePage(query: Cursor<any>, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
-    if (page) {
-      if (!(page.hasOwnProperty("offset")) || (page.offset === undefined)) {
-        // If no offset is supplied
-        page.offset = defaultOffset
-      } else {
-        if (page.offset < 0) {
-          throw new Error("Please use an offset of greater than or equal to 0 in queries")
-        }
-      }
-      query = query.skip(page.offset)
+    if (!page) {
+      return query.toArray();
+    }
 
-      if (page.hasOwnProperty("limit") && !(page.limit === undefined)) {
-        if (page.limit <= 0) {
-          throw new Error("Please use a limit of greater than 0 in queries")
-        }
-        query = query.limit(page.limit)
-      }
+    const { offset, limit } = page
+
+    if (offset < 0) {
+      throw new Error("Invalid offset value. Please use an offset of greater than or equal to 0 in queries")
+    }
+
+    if (limit <= 1) {
+      throw new Error("Invalid limit value. Please use a limit of greater than 1 in queries")
+    }
+
+    if (limit) {
+      query = query.limit(limit)
+    }
+    if (offset) {
+      query = query.skip(offset)
     }
 
     return query.toArray();

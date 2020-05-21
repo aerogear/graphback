@@ -123,19 +123,18 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     const { offset, limit } = page
 
     if (offset < 0) {
-      throw new Error("Please use an offset of greater than or equal to 0 in queries")
+      throw new Error("Invalid offset value. Please use an offset of greater than or equal to 0 in queries")
     }
 
-    if (offset) {
-      query = query.offset(offset)
-    }
-
-    if (limit <= 0) {
-      throw new Error("Please use a limit of greater than 0 in queries")
+    if (limit <= 1) {
+      throw new Error("Invalid limit value. Please use a limit of greater than 1 in queries")
     }
 
     if (limit) {
       query = query.limit(limit)
+    }
+    if (offset) {
+      query = query.offset(offset)
     }
 
     return query;
