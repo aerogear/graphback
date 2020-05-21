@@ -170,7 +170,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     return query.sort(sortOrder);
   }
 
-  private usePage(query: Cursor<any>, page?: GraphbackPage, defaultLimit: number = 10, defaultOffset: number = 0) {
+  private usePage(query: Cursor<any>, page?: GraphbackPage) {
     if (!page) {
       return query.toArray();
     }
@@ -181,7 +181,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new Error("Invalid offset value. Please use an offset of greater than or equal to 0 in queries")
     }
 
-    if (limit <= 1) {
+    if (limit < 1) {
       throw new Error("Invalid limit value. Please use a limit of greater than 1 in queries")
     }
 
