@@ -23,15 +23,15 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/jest": "25.2.1",
-    "@types/node": "12.12.37",
+    "@types/jest": "25.2.3",
+    "@types/node": "12.12.41",
     "graphql": "14.6.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
-    "ts-jest": "25.4.0",
-    "ts-node": "8.9.1",
+    "ts-jest": "25.5.1",
+    "ts-node": "8.10.1",
     "tsutils": "3.17.1",
-    "typescript": "3.8.3"
+    "typescript": "3.9.3"
   },
   "dependencies": {
     "@graphback/core": "0.12.0",

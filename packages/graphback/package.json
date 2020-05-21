@@ -19,16 +19,16 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/jest": "25.2.1",
-    "@types/node": "12.12.37",
+    "@types/jest": "25.2.3",
+    "@types/node": "12.12.41",
     "@types/pino": "5.20.0",
     "graphql": "14.6.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
-    "ts-jest": "25.4.0",
-    "ts-node": "8.9.1",
+    "ts-jest": "25.5.1",
+    "ts-node": "8.10.1",
     "tsutils": "3.17.1",
-    "typescript": "3.8.3"
+    "typescript": "3.9.3"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -39,10 +39,10 @@
     "@graphql-inspector/core": "1.30.4",
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
-    "pg": "8.0.3",
+    "pg": "8.2.1",
     "pino": "6.2.1",
     "sqlite3": "4.2.0",
-    "tslib": "1.11.1"
+    "tslib": "1.13.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

@@ -20,16 +20,16 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/jest": "25.2.1",
-    "@types/node": "12.12.37",
+    "@types/jest": "25.2.3",
+    "@types/node": "12.12.41",
     "@types/pino": "5.20.0",
     "graphql": "14.6.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
-    "ts-jest": "25.4.0",
-    "ts-node": "8.9.1",
+    "ts-jest": "25.5.1",
+    "ts-node": "8.10.1",
     "tslint": "6.1.2",
-    "typescript": "3.8.3"
+    "typescript": "3.9.3"
   },
   "license": "Apache-2.0",
   "publishConfig": {
@@ -38,7 +38,7 @@
   "dependencies": {
     "@graphql-toolkit/common": "0.10.7",
     "glob": "7.1.6",
-    "graphql-compose": "7.14.4",
+    "graphql-compose": "7.15.0",
     "graphql-metadata": "0.5.0",
     "pino": "6.2.1",
     "pluralize": "8.0.0"
