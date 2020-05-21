@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/jest": "25.2.3",
-    "@types/node": "12.12.41",
+    "@types/node": "12.12.42",
     "@types/prettier": "1.19.1",
     "graphql": "14.6.0",
     "jest": "26.0.1",
