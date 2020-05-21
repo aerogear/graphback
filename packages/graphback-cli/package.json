@@ -1,6 +1,6 @@
 {
   "name": "graphback-cli",
-  "version": "0.12.0",
+  "version": "0.14.0-dev1",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "bin": {
@@ -49,10 +49,10 @@
     "execa": "4.0.1",
     "figlet": "1.4.0",
     "glob": "7.1.6",
-    "graphback": "0.12.0",
+    "graphback": "0.14.0-dev1",
     "graphql": "^14.6.0",
     "graphql-config": "3.0.2",
-    "graphql-migrations": "0.12.0",
+    "graphql-migrations": "0.14.0-dev1",
     "inquirer": "7.1.0",
     "js-yaml": "3.13.1",
     "node-emoji": "1.10.0",
