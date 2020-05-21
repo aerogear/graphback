@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
-import { ObjectId, Db, Cursor } from "mongodb"
 import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy, getFieldTransformations, FieldTransform, TransformType, FieldTransformMap } from '@graphback/runtime';
+import { ObjectId, Db, Cursor, MongoError } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments, parseRelationshipAnnotation } from '@graphback/core';
 import { parseAnnotations } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
@@ -29,11 +29,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       if (relationshipData?.kind && ['manyToOne', 'manyToMany'].includes(relationshipData.kind)) {
         this.db.collection(this.collectionName).createIndex({
           [relationshipData.key]: 1
-        }, (e:any, r:any) => {
-          if (e) {
-            console.error(e);
+        }, (err: MongoError, res: any) => {
+          if (err) {
+            console.error(err);
           } else {
-            console.log(JSON.stringify(r,undefined,4))
+            console.log(JSON.stringify(res,undefined,4))
           }
         });
       }
@@ -42,11 +42,11 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       if (otherAnnotations?.index) {
         this.db.collection(this.collectionName).createIndex({
           [baseType.getFields()[k].name]: 1
-        }, (e: any, r: any) => {
-          if (e) {
-            console.error(e);
+        }, (err: MongoError, res: any) => {
+          if (err) {
+            console.error(err);
           } else {
-            console.log(JSON.stringify(r,undefined,4))
+            console.log(JSON.stringify(res,undefined,4))
           }
         });
       }
