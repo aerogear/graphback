@@ -172,7 +172,7 @@ test('Find all notes', async () => {
       }
     ],
     limit: null,
-    offiset: 0
+    offset: 0
   })
 })
 
