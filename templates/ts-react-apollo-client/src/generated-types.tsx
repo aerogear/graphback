@@ -18,17 +18,16 @@ export type Comment = {
    __typename?: 'Comment';
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
-  description: Scalars['String'];
-  title: Scalars['String'];
-  /** @manyToOne field: 'comments', key: 'noteCommentId' */
-  noteComment?: Maybe<Note>;
+  description?: Maybe<Scalars['String']>;
+  /** @manyToOne field: 'comments', key: 'noteId' */
+  note?: Maybe<Note>;
 };
 
 export type CommentFilter = {
   id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
-  title?: Maybe<StringInput>;
+  noteId?: Maybe<IdInput>;
   and?: Maybe<Array<Maybe<CommentFilter>>>;
   or?: Maybe<Array<Maybe<CommentFilter>>>;
   not?: Maybe<CommentFilter>;
@@ -39,28 +38,26 @@ export type CommentResultList = {
   items: Array<Maybe<Comment>>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
-  total?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
 };
 
 export type CommentSubscriptionFilter = {
   id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
 };
 
 export type CreateCommentInput = {
   id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
-  description: Scalars['String'];
-  title: Scalars['String'];
-  noteCommentId?: Maybe<Scalars['ID']>;
+  description?: Maybe<Scalars['String']>;
+  noteId?: Maybe<Scalars['ID']>;
 };
 
 export type CreateNoteInput = {
   id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
 };
 
 export type IdInput = {
@@ -80,8 +77,7 @@ export type MutateCommentInput = {
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  noteCommentId?: Maybe<Scalars['ID']>;
+  noteId?: Maybe<Scalars['ID']>;
 };
 
 export type MutateNoteInput = {
@@ -135,8 +131,8 @@ export type Note = {
    __typename?: 'Note';
   id: Scalars['ID'];
   title: Scalars['String'];
-  description: Scalars['String'];
-  /** @oneToMany field: 'noteComment', key: 'noteCommentId' */
+  description?: Maybe<Scalars['String']>;
+  /** @oneToMany field: 'note', key: 'noteId' */
   comments: Array<Maybe<Comment>>;
 };
 
@@ -160,7 +156,7 @@ export type NoteResultList = {
   items: Array<Maybe<Note>>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
-  total?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
 };
 
 export type NoteSubscriptionFilter = {
@@ -271,13 +267,13 @@ export type SubscriptionDeletedCommentArgs = {
 
 export type CommentFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description' | 'title'>
+  & Pick<Comment, 'id' | 'text' | 'description'>
 );
 
 export type CommentExpandedFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description' | 'title'>
-  & { noteComment?: Maybe<(
+  & Pick<Comment, 'id' | 'text' | 'description'>
+  & { note?: Maybe<(
     { __typename?: 'Note' }
     & Pick<Note, 'id' | 'title' | 'description'>
   )> }
@@ -293,7 +289,7 @@ export type NoteExpandedFieldsFragment = (
   & Pick<Note, 'id' | 'title' | 'description'>
   & { comments: Array<Maybe<(
     { __typename?: 'Comment' }
-    & Pick<Comment, 'id' | 'text' | 'description' | 'title'>
+    & Pick<Comment, 'id' | 'text' | 'description'>
   )>> }
 );
 
@@ -376,7 +372,7 @@ export type UpdateNoteMutation = (
 );
 
 export type FindCommentsQueryVariables = {
-  filter: CommentFilter;
+  filter?: Maybe<CommentFilter>;
   page?: Maybe<PageRequest>;
   orderBy?: Maybe<OrderByInput>;
 };
@@ -395,7 +391,7 @@ export type FindCommentsQuery = (
 );
 
 export type FindNotesQueryVariables = {
-  filter: NoteFilter;
+  filter?: Maybe<NoteFilter>;
   page?: Maybe<PageRequest>;
   orderBy?: Maybe<OrderByInput>;
 };
@@ -522,7 +518,6 @@ export const CommentFieldsFragmentDoc = gql`
   id
   text
   description
-  title
 }
     `;
 export const CommentExpandedFieldsFragmentDoc = gql`
@@ -530,8 +525,7 @@ export const CommentExpandedFieldsFragmentDoc = gql`
   id
   text
   description
-  title
-  noteComment {
+  note {
     id
     title
     description
@@ -554,7 +548,6 @@ export const NoteExpandedFieldsFragmentDoc = gql`
     id
     text
     description
-    title
   }
 }
     `;
@@ -751,7 +744,7 @@ export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutati
 export type UpdateNoteMutationResult = ApolloReactCommon.MutationResult<UpdateNoteMutation>;
 export type UpdateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
 export const FindCommentsDocument = gql`
-    query findComments($filter: CommentFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+    query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
   findComments(filter: $filter, page: $page, orderBy: $orderBy) {
     items {
       ...CommentExpandedFields
@@ -790,7 +783,7 @@ export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery
 export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
 export type FindCommentsQueryResult = ApolloReactCommon.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
 export const FindNotesDocument = gql`
-    query findNotes($filter: NoteFilter!, $page: PageRequest, $orderBy: OrderByInput) {
+    query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
   findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
     items {
       ...NoteExpandedFields
