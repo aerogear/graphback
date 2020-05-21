@@ -9,7 +9,7 @@ import {
 import { GraphQLObjectType } from 'graphql';
 import { isAuthorizedByRole } from "keycloak-connect-graphql";
 import { CrudServiceAuthConfig } from './definitions';
-import { getEmptyServiceConfig } from "./utils";
+import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 
 /**
  * options object for the KeycloakCrudService
@@ -40,7 +40,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     if (this.authConfig.create && this.authConfig.create.roles && this.authConfig.create.roles.length > 0) {
       const { roles } = this.authConfig.create;
       if (!isAuthorizedByRole(roles, context)) {
-        throw new Error(`User is not authorized.`);
+        throw new UnauthorizedError()
       }
     }
 
@@ -51,7 +51,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     if (this.authConfig.update && this.authConfig.update.roles && this.authConfig.update.roles.length > 0) {
       const { roles } = this.authConfig.update;
       if (!isAuthorizedByRole(roles, context)) {
-        throw new Error(`User is not authorized.`);
+        throw new UnauthorizedError()
       }
     }
 
@@ -62,7 +62,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     if (this.authConfig.delete && this.authConfig.delete.roles && this.authConfig.delete.roles.length > 0) {
       const { roles } = this.authConfig.delete;
       if (!isAuthorizedByRole(roles, context)) {
-        throw new Error(`User is not authorized.`);
+        throw new UnauthorizedError()
       }
     }
 
@@ -73,7 +73,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
-        throw new Error(`User is not authorized.`);
+        throw new UnauthorizedError()
       }
     }
 
@@ -84,7 +84,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
-        throw new Error(`User is not authorized.`);
+        throw new UnauthorizedError()
       }
     }
 

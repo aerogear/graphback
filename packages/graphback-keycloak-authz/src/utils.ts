@@ -11,3 +11,16 @@ export function getEmptyServiceConfig() {
 
   return serviceConfig;
 }
+
+/**
+ * Custom Error class. The code property will be propagated back to the client side
+ * for proper error handling
+ */
+export class UnauthorizedError extends Error {
+  public code: string;
+
+  constructor(message = "User is not authorized.") {
+    super(message);
+    this.code = 'FORBIDDEN';
+  }
+}
