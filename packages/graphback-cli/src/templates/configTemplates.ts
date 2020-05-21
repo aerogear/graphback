@@ -1,6 +1,5 @@
 //tslint:disable: no-string-literal
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { IGraphQLConfig } from 'graphql-config';
 import { prompt as ask } from 'inquirer'
 import { safeDump } from 'js-yaml'
 import { logInfo } from '../utils';
@@ -69,7 +68,7 @@ export const createConfig = async (database: string, client: boolean) => {
   const dockerComposePath = `${process.cwd()}/docker-compose.yml`;
   const [dbConfig, dockerCompose] = getConfig(database);
 
-  const graphqlConfig: IGraphQLConfig = {
+  const graphqlConfig = {
     schema: './src/schema/*.graphql',
     documents: './client/src/graphql/**/*.graphql',
     extensions: {
