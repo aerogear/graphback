@@ -1,0 +1,9 @@
+query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
+    }
+  }

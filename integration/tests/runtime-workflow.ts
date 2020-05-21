@@ -1,3 +1,4 @@
+/* eslint-disable no-null/no-null */
 /* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -171,7 +172,7 @@ test('Find all notes', async () => {
       }
     ],
     limit: null,
-    offset: null
+    offiset: 0
   })
 })
 
@@ -264,7 +265,7 @@ test('Find all comments', async () => {
       }
     ],
     limit: null,
-    offset: null
+    offset: 0
   })
 })
 
