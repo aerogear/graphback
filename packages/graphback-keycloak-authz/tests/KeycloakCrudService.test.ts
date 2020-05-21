@@ -13,6 +13,12 @@ const subscriptionConfig = {
   pubSub: new PubSub()
 }
 
+// returned from CRUDService.findBy
+// if tests ever start failing because of this,
+// something probably changed in the CRUDService implementation
+// around paging
+const emptyPageValue = {items: [], offset: 0}
+
 test('unauthorized tokens will result in unauthorized errors', async () => {
   
   const modelType = buildSchema(`
@@ -56,20 +62,20 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
   const dbUpdateSpy = jest.spyOn(db, "update")
   const dbDeleteSpy = jest.spyOn(db, "delete")
   const dbfindBySpy = jest.spyOn(db, "findBy")
-  const dbFindAllSpy = jest.spyOn(db, "findAll")
+  const dbFindOneSpy = jest.spyOn(db, "findOne")
 
   expect(() => service.create(val, unauthorizedContext)).toThrowError('User is not authorized.')
   expect(() => service.update(val, unauthorizedContext)).toThrowError('User is not authorized.')
   expect(() => service.delete(val, unauthorizedContext)).toThrowError('User is not authorized.')
-  expect(() => service.findBy(val, unauthorizedContext)).toThrowError('User is not authorized.')
-  expect(() => service.findAll(unauthorizedContext)).toThrowError('User is not authorized.')
+  expect(() => service.findBy(val, null, null, unauthorizedContext)).toThrowError('User is not authorized.')
+  expect(() => service.findOne(val, unauthorizedContext)).toThrowError('User is not authorized.')
 
   // verify that no calls to the underlying data provider were made
   expect(dbCreateSpy).not.toHaveBeenCalled()
   expect(dbUpdateSpy).not.toHaveBeenCalled()
   expect(dbDeleteSpy).not.toHaveBeenCalled()
   expect(dbfindBySpy).not.toHaveBeenCalled()
-  expect(dbFindAllSpy).not.toHaveBeenCalled()
+  expect(dbFindOneSpy).not.toHaveBeenCalled()
 });
 
 test('authorized tokens will not throw an error and will get a result', async () => {
@@ -114,22 +120,22 @@ test('authorized tokens will not throw an error and will get a result', async ()
   const dbUpdateSpy = jest.spyOn(db, "update")
   const dbDeleteSpy = jest.spyOn(db, "delete")
   const dbfindBySpy = jest.spyOn(db, "findBy")
-  const dbFindAllSpy = jest.spyOn(db, "findAll")
+  const dbFindOneSpy = jest.spyOn(db, "findOne")
 
   const val = {test: 'value'}
 
   await expect(service.create(val, authorizedContext)).resolves.toEqual(val)
   await expect(service.update(val, authorizedContext)).resolves.toEqual(val)
   await expect(service.delete(val, authorizedContext)).resolves.toEqual(val)
-  await expect(service.findBy(val, authorizedContext)).resolves.toEqual([])
-  await expect(service.findAll(authorizedContext)).resolves.toEqual([])
+  await expect(service.findBy(val, null, null, authorizedContext)).resolves.toEqual(emptyPageValue)
+  await expect(service.findOne(val, authorizedContext)).resolves.toEqual(val)
 
   // verify that the calls to the underlying data provider were made
   expect(dbCreateSpy).toHaveBeenCalled()
   expect(dbUpdateSpy).toHaveBeenCalled()
   expect(dbDeleteSpy).toHaveBeenCalled()
   expect(dbfindBySpy).toHaveBeenCalled()
-  expect(dbFindAllSpy).toHaveBeenCalled()
+  expect(dbFindOneSpy).toHaveBeenCalled()
 });
 
 
@@ -160,8 +166,8 @@ test('passing no authConfig will result in all operations being allowed', async 
   await expect(service.create(val, context)).resolves.toEqual(val)
   await expect(service.update(val, context)).resolves.toEqual(val)
   await expect(service.delete(val, context)).resolves.toEqual(val)
-  await expect(service.findBy(val, context)).resolves.toEqual([])
-  await expect(service.findAll(context)).resolves.toEqual([])
+  await expect(service.findBy(val, null, null, context)).resolves.toEqual(emptyPageValue)
+  await expect(service.findOne(val, context)).resolves.toEqual(val)
 });
 
 test('multiple roles can be applied to each operation', async () => {
@@ -204,6 +210,6 @@ test('multiple roles can be applied to each operation', async () => {
   await expect(service.create(val, context)).resolves.toEqual(val)
   expect(() => service.update(val, context)).toThrowError('User is not authorized.')
   expect(() => service.delete(val, context)).toThrowError('User is not authorized.')
-  await expect(service.findBy(val, context)).resolves.toEqual([])
-  await expect(service.findAll(context)).resolves.toEqual([])
+  await expect(service.findBy(val, null, null, context)).resolves.toEqual(emptyPageValue)
+  await expect(service.findOne(val, context)).resolves.toEqual(val)
 });
