@@ -19,7 +19,7 @@ export function getEmptyServiceConfig() {
 export class UnauthorizedError extends Error {
   public code: string;
 
-  constructor(message = "User is not authorized.") {
+  public constructor(message: string = "User is not authorized.") {
     super(message);
     this.code = 'FORBIDDEN';
   }
