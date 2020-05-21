@@ -9,8 +9,6 @@ services:
           - MONGO_INITDB_DATABASE=users
           - MONGO_INITDB_ROOT_USERNAME=mongodb
           - MONGO_INITDB_ROOT_PASSWORD=mongo
-        volumes:
-          - ./data/db:/data/db
         ports:
             - 27017:27017
         command: mongod
