@@ -1,4 +1,11 @@
-import { CRUDService, GraphbackDataProvider, GraphbackPubSub } from "@graphback/runtime";
+import { 
+  CRUDService,
+  GraphbackDataProvider,
+  GraphbackPubSub,
+  GraphbackPage,
+  ResultList,
+  GraphbackOrderBy
+} from "@graphback/runtime";
 import { GraphQLObjectType } from 'graphql';
 import { isAuthorizedByRole } from "keycloak-connect-graphql";
 import { CrudServiceAuthConfig } from './definitions';
@@ -62,7 +69,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     return super.delete(data, context);
   }
 
-  public findAll(context?: any): Promise<T[]> {
+  public findOne(args: any, context?: any): Promise<T> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
@@ -70,10 +77,10 @@ export class KeycloakCrudService<T = any> extends CRUDService {
       }
     }
 
-    return super.findAll(context);
+    return super.findOne(args, context);
   }
 
-  public findBy(filter: any, context?: any): Promise<T[]> {
+  public findBy(filter: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: any): Promise<ResultList<T>> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
@@ -81,6 +88,6 @@ export class KeycloakCrudService<T = any> extends CRUDService {
       }
     }
 
-    return super.findBy(filter, context);
+    return super.findBy(filter, orderBy, page, context);
   }
 }
