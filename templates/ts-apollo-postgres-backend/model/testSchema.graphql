@@ -1,0 +1,18 @@
+
+  """ @model """
+  type Note {
+    id: ID!
+    title: String!
+    description: String!
+    """
+    @oneToMany field: 'noteComment'
+    """
+    comments: [Comment]!
+  }
+
+  """ @model """
+  type Comment {
+    id: ID!
+    title: String!
+    description: String!
+  }

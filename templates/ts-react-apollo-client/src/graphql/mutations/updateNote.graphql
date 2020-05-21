@@ -1,0 +1,5 @@
+mutation updateNote($input: MutateNoteInput!) {
+  updateNote(input: $input) {
+      ...NoteFields
+  }
+}
