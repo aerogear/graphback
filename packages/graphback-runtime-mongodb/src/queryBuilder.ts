@@ -1,3 +1,4 @@
+import * as escapeRegex from "escape-string-regexp";
 
 const AND_FIELD = 'and';
 const OR_FIELD = 'or';
@@ -53,17 +54,17 @@ const operatorTransform: {
     },
     contains: (value: string): OperatorTransform => {
         return [
-            ['$regex', new RegExp(value, 'g')]
+            ['$regex', new RegExp(escapeRegex(value), 'g')]
         ]
     },
     startsWith: (value: string): OperatorTransform => {
         return [
-            ['$regex', new RegExp(`^${value}`, 'g')]
+            ['$regex', new RegExp(`^${escapeRegex(value)}`, 'g')]
         ]
     },
     endsWith: (value: string): OperatorTransform => {
         return [
-            ['$regex', new RegExp(`${value}$`, 'g')]
+            ['$regex', new RegExp(`${escapeRegex(value)}$`, 'g')]
         ]
     },
 }

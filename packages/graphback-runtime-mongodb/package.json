@@ -39,6 +39,7 @@
     "@graphback/runtime": "0.14.0-dev2",
     "@types/mongodb": "3.5.18",
     "dataloader": "2.0.0",
+    "escape-string-regexp": "^4.0.0",
     "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
