@@ -1,5 +1,0 @@
-query getComment($id: ID!) {
-    getComment(id: $id) {
-      ...CommentExpandedFields
-    }
-  }

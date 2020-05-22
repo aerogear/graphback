@@ -1,0 +1,103 @@
+# fragments
+
+fragment NoteFields on Note {
+   id
+   title
+   description
+
+} 
+
+fragment NoteExpandedFields on Note {
+   id
+   title
+   description
+   comments {
+      id
+      text
+      description
+   }
+} 
+
+fragment CommentFields on Comment {
+   id
+   text
+   description
+
+} 
+
+fragment CommentExpandedFields on Comment {
+   id
+   text
+   description
+   note {
+      id
+      title
+      description
+   }
+} 
+
+# queries
+
+query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
+    }
+  }
+
+query getNote($id: ID!) {
+    getNote(id: $id) {
+      ...NoteExpandedFields
+    }
+  }
+
+query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
+    }
+  }
+
+query getComment($id: ID!) {
+    getComment(id: $id) {
+      ...CommentExpandedFields
+    }
+  }
+
+# mutations
+
+mutation createNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+mutation updateNote($input: MutateNoteInput!) {
+  updateNote(input: $input) {
+      ...NoteFields
+  }
+}
+
+
+mutation createComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+mutation updateComment($input: MutateCommentInput!) {
+  updateComment(input: $input) {
+      ...CommentFields
+  }
+}
+
+
+# subscriptions

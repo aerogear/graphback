@@ -1,5 +1,0 @@
-query getNote($id: ID!) {
-    getNote(id: $id) {
-      ...NoteExpandedFields
-    }
-  }

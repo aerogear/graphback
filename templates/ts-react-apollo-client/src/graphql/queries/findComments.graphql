@@ -1,9 +1,0 @@
-query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
-    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-      items {
-        ...CommentExpandedFields
-      }
-      offset
-      limit
-    }
-  }
