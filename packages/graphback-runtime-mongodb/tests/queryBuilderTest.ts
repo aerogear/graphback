@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectID } from 'mongodb';
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
-import { createTestingContext, Context } from "./__util__";
+import { createTestingContext, Context } from "./MongoDataProviderTest";
 
 describe('MongoDBDataProvider Advanced Filtering', () => {
 
