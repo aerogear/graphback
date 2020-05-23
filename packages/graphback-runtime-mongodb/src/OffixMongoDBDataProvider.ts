@@ -22,14 +22,14 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       console.log('field directive: ',JSON.stringify(baseType.getFields()[k]?.extensions?.directives || "nodir", null, 4));
       baseType.getFields()[k]?.extensions?.directives.forEach(directive => {
         if (directive?.name === "createdAt") {
-          if (this.createdAtField !== undefined) {
+          if (this.createdAtField === undefined) {
             this.createdAtField = baseType.getFields()[k]?.name;
           } else {
             throw Error("Cannot have more than one field with createdAt directive");
           }
         }
         if (directive?.name === "updatedAt") {
-          if (this.updatedAtField !== undefined) {
+          if (this.updatedAtField === undefined) {
             this.updatedAtField = baseType.getFields()[k]?.name;
           } else {
             throw Error("Cannot have more than one field with updatedAt directive");
@@ -43,13 +43,15 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
     if (!data.version) {
       data.version = 1;
     }
-    if (this.createdAtField) {
-      data[this.createdAtField] = new Date();
-      if (this.updatedAtField) {
-        data[this.updatedAtField] = data[this.createdAtField];
-      }
+    const o = await super.create(data);
+    let res = o as any;
+    if (this.updatedAtField) {
+      res = await super.update({
+        ...res,
+        [this.updatedAtField]: (new ObjectId(res.id)).getTimestamp()
+      })
     }
-    return super.create(data);
+    return res;
   }
 
 
@@ -77,10 +79,18 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       // TODO use findOneAndUpdate to check consistency afterwards
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
       if (result.result?.ok) {
-        return data;
+        return this.mapFields(data);
       }
     }
 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
+  }
+
+  protected mapFields(document: any): any {
+    document = super.mapFields(document);
+    if (this.createdAtField) {
+      document[this.createdAtField] = new ObjectId(document.id).getTimestamp();
+    }
+    return document;
   }
 }
