@@ -10,16 +10,45 @@ import { MongoDBDataProvider } from './MongoDBDataProvider';
  * https://offix.dev/docs/conflict-server#structure-of-the-conflict-error
  */
 export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> {
+  protected updatedAtField: string;
+  protected createdAtField: string;
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
+    this.createdAtField = undefined;
+    this.updatedAtField = undefined;
+
+    Object.keys(baseType.getFields()).forEach((k: string) => {
+      console.log('field directive: ',JSON.stringify(baseType.getFields()[k]?.extensions?.directives || "nodir", null, 4));
+      baseType.getFields()[k]?.extensions?.directives.forEach(directive => {
+        if (directive?.name === "createdAt") {
+          if (this.createdAtField !== undefined) {
+            this.createdAtField = baseType.getFields()[k]?.name;
+          } else {
+            throw Error("Cannot have more than one field with createdAt directive");
+          }
+        }
+        if (directive?.name === "updatedAt") {
+          if (this.updatedAtField !== undefined) {
+            this.updatedAtField = baseType.getFields()[k]?.name;
+          } else {
+            throw Error("Cannot have more than one field with updatedAt directive");
+          }
+        }
+      });
+    });
   }
 
   public async create(data: any): Promise<Type> {
     if (!data.version) {
       data.version = 1;
     }
-
+    if (this.createdAtField) {
+      data[this.createdAtField] = new Date();
+      if (this.updatedAtField) {
+        data[this.updatedAtField] = data[this.createdAtField];
+      }
+    }
     return super.create(data);
   }
 
@@ -42,6 +71,9 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       }
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       data.version = data.version + 1;
+      if (this.updatedAtField) {
+        data[this.updatedAtField] = new Date();
+      }
       // TODO use findOneAndUpdate to check consistency afterwards
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
       if (result.result?.ok) {
