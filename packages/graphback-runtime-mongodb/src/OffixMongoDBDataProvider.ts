@@ -19,23 +19,24 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
     this.updatedAtField = undefined;
 
     Object.keys(baseType.getFields()).forEach((k: string) => {
-      console.log('field directive: ',JSON.stringify(baseType.getFields()[k]?.extensions?.directives || "nodir", null, 4));
-      baseType.getFields()[k]?.extensions?.directives.forEach(directive => {
-        if (directive?.name === "createdAt") {
-          if (this.createdAtField === undefined) {
-            this.createdAtField = baseType.getFields()[k]?.name;
-          } else {
-            throw Error("Cannot have more than one field with createdAt directive");
+      if (baseType.getFields()[k]?.extensions?.directives) {
+        baseType.getFields()[k].extensions.directives.forEach((directive: any) => {
+          if (directive?.name === "createdAt") {
+            if (this.createdAtField === undefined) {
+              this.createdAtField = baseType.getFields()[k]?.name;
+            } else {
+              throw Error("Cannot have more than one field with createdAt directive");
+            }
           }
-        }
-        if (directive?.name === "updatedAt") {
-          if (this.updatedAtField === undefined) {
-            this.updatedAtField = baseType.getFields()[k]?.name;
-          } else {
-            throw Error("Cannot have more than one field with updatedAt directive");
+          if (directive?.name === "updatedAt") {
+            if (this.updatedAtField === undefined) {
+              this.updatedAtField = baseType.getFields()[k]?.name;
+            } else {
+              throw Error("Cannot have more than one field with updatedAt directive");
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 
@@ -51,6 +52,7 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
         [this.updatedAtField]: (new ObjectId(res.id)).getTimestamp()
       })
     }
+
     return res;
   }
 
@@ -91,6 +93,7 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
     if (this.createdAtField) {
       document[this.createdAtField] = new ObjectId(document.id).getTimestamp();
     }
+
     return document;
   }
 }

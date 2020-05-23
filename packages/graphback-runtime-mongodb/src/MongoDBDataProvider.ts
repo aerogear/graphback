@@ -147,6 +147,14 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     throw new NoDataError(`No results for ${this.collectionName} query and batch read with filter: ${JSON.stringify(filter)}`);
 
   }
+  
+  protected mapFields(document: any): any {
+    if (document?._id) {
+      document.id = document._id;
+    }
+
+    return document;
+  }
 
   private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
     const sortOrder: SortOrder = {};
@@ -164,6 +172,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
     return query.sort(sortOrder);
   }
+
 
   private usePage(query: Cursor<any>, page?: GraphbackPage) {
     if (!page) {
@@ -188,13 +197,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     }
 
     return query.toArray();
-  }
-
-  protected mapFields(document: any): any {
-    if (document?._id) {
-      document.id = document._id;
-    }
-    return document;
   }
 
 }
