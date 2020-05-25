@@ -32,7 +32,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
-      // result.ops[0][idField.name] = result.ops[0]._id;
 
       return this.mapFields(result.ops[0]);
     }
@@ -50,7 +49,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (result) {
       const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
       if (queryResult && queryResult[0]) {
-        // queryResult[0][idField.name] = queryResult[0]._id;
 
         return this.mapFields(queryResult[0]);
       }
@@ -69,7 +67,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
       if (result.result.ok) {
-        // queryResult[idField.name] = queryResult._id;
 
         return this.mapFields(queryResult);
       }
@@ -130,10 +127,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
         const objectsForId: any = [];
         for (const data of result) {
           if (data[relationField].toString() === objId.toString()) {
-            // objectsForId.push({
-            //   id: data._id.toString(),
-            //   ...data,
-            // });
             objectsForId.push(this.mapFields(data));
           }
         }
