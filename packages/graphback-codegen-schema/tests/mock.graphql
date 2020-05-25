@@ -38,3 +38,20 @@ type Query {
 type Mutation {
   likeNote(id: ID!): Note!
 }
+
+"""
+Model added to test schema generation using enum. 
+See issue https://github.com/aerogear/graphback/issues/1299
+
+@model
+"""
+type  Issue {
+  id: ID!
+  category: IssueCategory
+}
+
+enum IssueCategory {
+ BUG
+ QUESTION
+ FEATURE_REQUEST
+}

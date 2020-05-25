@@ -145,6 +145,11 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateIssueInput {
+  id: ID
+  category: IssueCategory
+}
+
 input CreateNoteInput {
   id: ID
   title: String!
@@ -170,11 +175,53 @@ input IDInput {
   endsWith: ID
 }
 
+\\"\\"\\"
+Model added to test schema generation using enum. 
+See issue https://github.com/aerogear/graphback/issues/1299
+
+@model
+\\"\\"\\"
+type Issue {
+  id: ID!
+  category: IssueCategory
+}
+
+enum IssueCategory {
+  BUG
+  QUESTION
+  FEATURE_REQUEST
+}
+
+input IssueFilter {
+  id: IDInput
+  category: StringInput
+  and: [IssueFilter]
+  or: [IssueFilter]
+  not: IssueFilter
+}
+
+type IssueResultList {
+  items: [Issue]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input IssueSubscriptionFilter {
+  id: ID
+  category: IssueCategory
+}
+
 input MutateCommentInput {
   id: ID!
   title: String
   description: String
   note_id: ID
+}
+
+input MutateIssueInput {
+  id: ID!
+  category: IssueCategory
 }
 
 input MutateNoteInput {
@@ -200,6 +247,9 @@ type Mutation {
   createTest(input: CreateTestInput!): Test!
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
+  createIssue(input: CreateIssueInput!): Issue!
+  updateIssue(input: MutateIssueInput!): Issue!
+  deleteIssue(input: MutateIssueInput!): Issue!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -256,6 +306,8 @@ type Query {
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
+  getIssue(id: ID!): Issue
+  findIssues(filter: IssueFilter, page: PageRequest, orderBy: OrderByInput): IssueResultList!
 }
 
 enum SortDirectionEnum {
@@ -286,6 +338,9 @@ type Subscription {
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
+  newIssue(filter: IssueSubscriptionFilter): Issue!
+  updatedIssue(filter: IssueSubscriptionFilter): Issue!
+  deletedIssue(filter: IssueSubscriptionFilter): Issue!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -358,6 +413,11 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateIssueInput {
+  id: ID
+  category: IssueCategory
+}
+
 input CreateNoteInput {
   id: ID
   title: String!
@@ -383,11 +443,53 @@ input IDInput {
   endsWith: ID
 }
 
+\\"\\"\\"
+Model added to test schema generation using enum. 
+See issue https://github.com/aerogear/graphback/issues/1299
+
+@model
+\\"\\"\\"
+type Issue {
+  id: ID!
+  category: IssueCategory
+}
+
+enum IssueCategory {
+  BUG
+  QUESTION
+  FEATURE_REQUEST
+}
+
+input IssueFilter {
+  id: IDInput
+  category: StringInput
+  and: [IssueFilter]
+  or: [IssueFilter]
+  not: IssueFilter
+}
+
+type IssueResultList {
+  items: [Issue]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input IssueSubscriptionFilter {
+  id: ID
+  category: IssueCategory
+}
+
 input MutateCommentInput {
   id: ID!
   title: String
   description: String
   note_id: ID
+}
+
+input MutateIssueInput {
+  id: ID!
+  category: IssueCategory
 }
 
 input MutateNoteInput {
@@ -413,6 +515,9 @@ type Mutation {
   createTest(input: CreateTestInput!): Test!
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
+  createIssue(input: CreateIssueInput!): Issue!
+  updateIssue(input: MutateIssueInput!): Issue!
+  deleteIssue(input: MutateIssueInput!): Issue!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -469,6 +574,8 @@ type Query {
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
+  getIssue(id: ID!): Issue
+  findIssues(filter: IssueFilter, page: PageRequest, orderBy: OrderByInput): IssueResultList!
 }
 
 enum SortDirectionEnum {
@@ -499,6 +606,9 @@ type Subscription {
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
+  newIssue(filter: IssueSubscriptionFilter): Issue!
+  updatedIssue(filter: IssueSubscriptionFilter): Issue!
+  deletedIssue(filter: IssueSubscriptionFilter): Issue!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -572,6 +682,11 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateIssueInput {
+  id: ID
+  category: IssueCategory
+}
+
 input CreateNoteInput {
   id: ID
   title: String!
@@ -597,11 +712,53 @@ input IDInput {
   endsWith: ID
 }
 
+\\"\\"\\"
+Model added to test schema generation using enum. 
+See issue https://github.com/aerogear/graphback/issues/1299
+
+@model
+\\"\\"\\"
+type Issue {
+  id: ID!
+  category: IssueCategory
+}
+
+enum IssueCategory {
+  BUG
+  QUESTION
+  FEATURE_REQUEST
+}
+
+input IssueFilter {
+  id: IDInput
+  category: StringInput
+  and: [IssueFilter]
+  or: [IssueFilter]
+  not: IssueFilter
+}
+
+type IssueResultList {
+  items: [Issue]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input IssueSubscriptionFilter {
+  id: ID
+  category: IssueCategory
+}
+
 input MutateCommentInput {
   id: ID!
   title: String
   description: String
   note_id: ID
+}
+
+input MutateIssueInput {
+  id: ID!
+  category: IssueCategory
 }
 
 input MutateNoteInput {
@@ -627,6 +784,9 @@ type Mutation {
   createTest(input: CreateTestInput!): Test!
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
+  createIssue(input: CreateIssueInput!): Issue!
+  updateIssue(input: MutateIssueInput!): Issue!
+  deleteIssue(input: MutateIssueInput!): Issue!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -683,6 +843,8 @@ type Query {
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
+  getIssue(id: ID!): Issue
+  findIssues(filter: IssueFilter, page: PageRequest, orderBy: OrderByInput): IssueResultList!
 }
 
 enum SortDirectionEnum {
@@ -713,6 +875,9 @@ type Subscription {
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
+  newIssue(filter: IssueSubscriptionFilter): Issue!
+  updatedIssue(filter: IssueSubscriptionFilter): Issue!
+  deletedIssue(filter: IssueSubscriptionFilter): Issue!
 }
 
 \\"\\"\\"@model\\"\\"\\"

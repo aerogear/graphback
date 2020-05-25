@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType } from "graphql";
+import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType, isEnumType } from "graphql";
 import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField, getPrimaryKey } from '@graphback/core';
 
 const PageRequestTypeName = 'PageRequest';
@@ -203,19 +203,23 @@ export const buildCreateMutationInputType = (modelType: GraphQLObjectType) => {
 export const buildSubscriptionFilterType = (modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.SUBSCRIPTION_CREATE);
   const modelFields = Object.values(modelType.getFields());
-  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => isScalarType(getNamedType(f.type)));
+  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => {
+    const namedType = getNamedType(f.type);
+
+    return isScalarType(namedType) || isEnumType(namedType);
+  });
 
   return new GraphQLInputObjectType({
     name: inputTypeName,
     fields: () => scalarFields
       .map(({ name, type }: GraphQLField<any, any>) => {
-        const fieldType: GraphQLNamedType = getNamedType(type)
+        const fieldType: GraphQLNamedType = getNamedType(type);
 
         return {
           name,
           type: fieldType || type,
           description: undefined
-        }
+        };
       }).reduce((fieldObj: any, { name, type, description }: any) => {
         fieldObj[name] = { type, description }
 
