@@ -167,7 +167,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
           sortOrder[orderBy.field] = -1;
         }
       }
-      console.log('sortorder: ', JSON.stringify(sortOrder));
+
     }
 
     return query.sort(sortOrder);
