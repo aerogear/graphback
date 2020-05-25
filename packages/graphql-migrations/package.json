@@ -26,7 +26,7 @@
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
-    "pino": "6.2.1",
+    "pino": "6.3.0",
     "ts-jest": "25.5.1"
   },
   "devDependencies": {
