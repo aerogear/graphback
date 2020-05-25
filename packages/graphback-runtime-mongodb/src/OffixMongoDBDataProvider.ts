@@ -49,11 +49,12 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
     if (this.updatedAtField) {
       res = await super.update({
         ...res,
+        id: res.id,
         [this.updatedAtField]: (new ObjectId(res.id)).getTimestamp()
-      })
+      });
     }
 
-    return res;
+    return this.mapFields(res);
   }
 
 
