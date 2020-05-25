@@ -1,11 +1,11 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType, isNullableType, GraphQLNonNull, GraphQLInputType, isNonNullType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType, isNullableType, GraphQLNonNull, GraphQLInputType, isNonNullType, isEnumType } from 'graphql';
 import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
 import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
-//TODO is is esential to document this element
+//TODO it is esential to document this element
 
 /**
  * Graphback CRUD Mapping helpers
@@ -164,7 +164,7 @@ export function getInputFieldType(field: GraphQLField<any, any>): GraphQLInputTy
     fieldType = getNamedType(idField.type);
   }
 
-  if (isScalarType(fieldType)) {
+  if (isScalarType(fieldType) || isEnumType(fieldType)) {
     return isNonNullType(field.type) ? GraphQLNonNull(fieldType) : fieldType
   }
 
