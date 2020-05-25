@@ -67,9 +67,7 @@ type Note {
         }
     ]
 
-    afterEach(async () => {
-        await context.server.stop();
-    });
+    afterEach(() => context.server.stop());
 
     it.only('can maintain createdAt timestamp', async () => {
         context = await createOffixTestingContext(noteSchema);
