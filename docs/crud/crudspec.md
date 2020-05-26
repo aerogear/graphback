@@ -31,15 +31,15 @@ Boolean operations we support in filtering:
 - OR
 
 Operators we support:
-- Not Equals: '<>',
-- Equals: '=',
-- Less or Equals: '<=',
-- Less: '<',
-- Greather Equals: '>=',
-- Greather: '>',
-- Contains: 'like',
-- Startswith: 'like',
-- Endswith: 'like',
+- Not Equals: '&#60;&#62;'
+- Equals: '='
+- Less or Equals: '<='
+- Less: '<'
+- Greater Equals: '>=
+- Greater: '>'
+- Contains: 'like'
+- Startswith: 'like'
+- Endswith: 'like'
 
 Each features are mapped differently depending on the underlying database.
 

@@ -10,16 +10,16 @@ function VideoModal({ open, close}) {
       <a href='#video' className={styles.close} onClick={close}>close</a>
       <div className={styles.modalContent}>
         <div className={styles.youtubeWrapper}>
-          <iframe 
-            className={styles.youtubeIFrame} 
-            frameBorder="0" 
-            width="560" 
-            height="310" scrolling="no" 
-            marginHeight="0" 
-            marginWidth="0" 
-            src="https://www.youtube.com/embed/wmpEiffqxy8" 
-            frameBorder="0" 
-            allowFullScreen 
+          <iframe
+            className={styles.youtubeIFrame}
+            frameBorder="0"
+            width="560"
+            height="310" scrolling="no"
+            marginHeight="0"
+            marginWidth="0"
+            src="https://www.youtube.com/embed/z3hUF5egjT4"
+            frameBorder="0"
+            allowFullScreen
             align="middle"
           />
         </div>
