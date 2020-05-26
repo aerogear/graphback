@@ -3,8 +3,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectID, MongoClient } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { filterModelTypes } from '@graphback/core';
+import { advanceTo, advanceBy } from "jest-date-mock";
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
-
 
 
 export interface Context {
@@ -213,4 +213,59 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       expect(todos[t].text).toEqual(`todo${5 - t}`);
     }
   });
+
+  test('createdAt', async () => {
+    context = await createTestingContext(`
+    """@model"""
+    type Note {
+      id: ID!
+      text: String
+      """
+      @createdAt
+      """
+      created: String
+      """
+      @updatedAt
+      """
+      lastModified: String
+    }
+    `);
+    const cDate = new Date(2020, 5, 26, 18, 29, 23);
+    advanceTo(cDate);
+
+    const res = await context.providers.Note.create({ text: 'asdf' });
+    expect(res.created).toEqual(cDate.getTime());
+  })
+
+  test('updatedAt', async () => {
+    context = await createTestingContext(`
+    """@model"""
+    type Note {
+      id: ID!
+      text: String
+      """
+      @createdAt
+      """
+      created: Int
+      """
+      @updatedAt
+      """
+      lastModified: Int
+    }
+    `);
+    let cDate = new Date(2020, 5, 26, 18, 29, 23);
+    advanceTo(cDate);
+
+    const res = await context.providers.Note.create({ text: 'asdf' });
+    expect(res.lastModified).toEqual(cDate.getTime());
+
+    advanceBy(3000);
+    const next = await context.providers.Note.update({
+      ...res,
+      text: 'asdftrains'
+    });
+
+    cDate = new Date();
+    expect(next.lastModified).toEqual(cDate.getTime());
+  })
 });
