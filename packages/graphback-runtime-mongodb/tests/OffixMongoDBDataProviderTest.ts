@@ -45,16 +45,13 @@ describe('OffixMongoDBDataProvider', () => {
     let context: Context;
 
     const noteSchema = `
-directive @createdAt on FIELD_DEFINITION
-directive @updatedAt on FIELD_DEFINITION
-
-"""@model"""
+"""
+@model
+"""
 type Note {
   id: ID!
   text: String
-  created: String @createdAt
-  lastModified: String @updatedAt
-  version: Int 
+  version: Int
 }
       `;
 
@@ -69,27 +66,5 @@ type Note {
 
     afterEach(() => context.server.stop());
 
-    it.only('can maintain createdAt timestamp', async () => {
-        context = await createOffixTestingContext(noteSchema);
-        const res = await context.providers.Note.create({ text: "asdfxyz"});
-        
-        expect(res.text).toEqual('asdfxyz');
-        expect(res.created.getTime()).toBeGreaterThanOrEqual(0);
-    });
-
-    it.only('can maintain createdAt timestamp', async () => {
-        context = await createOffixTestingContext(noteSchema);
-        const res = await context.providers.Note.create({ text: "asdfxyz"});
-        
-        expect(res.lastModified.getTime()).toBeGreaterThanOrEqual(0);
-        expect(res.lastModified.getTime()).toEqual(res.created.getTime());
-
-        const mRes = await context.providers.Note.update({
-            id: res.id,
-            text: "asdfsoap",
-            version: 1
-        });
-
-        expect(mRes.lastModified.getTime()).toBeGreaterThan(mRes.created.getTime());
-    });
+    test.todo('maintains version field')
 });
