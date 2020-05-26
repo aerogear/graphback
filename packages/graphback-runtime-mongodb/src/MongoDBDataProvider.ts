@@ -3,6 +3,7 @@ import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
 import { buildQuery } from './queryBuilder'
+import { getFieldTransformations, FieldTransform, TransformType } from "./fieldTransformHelpers";
 
 interface SortOrder {
   [fieldName: string]: 1 | -1;
@@ -15,11 +16,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   protected db: Db;
   protected collectionName: string;
   protected tableMap: ModelTableMap;
+  protected fieldTransforms: FieldTransform[];
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
     this.tableMap = buildModelTableMap(baseType);
     this.collectionName = this.tableMap.tableName;
+    this.fieldTransforms = getFieldTransformations(baseType);
   }
 
   public async create(data: any): Promise<Type> {
@@ -29,6 +32,12 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       // eslint-disable-next-line @typescript-eslint/tslint/config
       delete data[idField.name];
     }
+
+    this.fieldTransforms
+      .filter((t: FieldTransform) => t.transformType === TransformType.CREATE)
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform(f.fieldName);
+      });
 
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
@@ -44,6 +53,12 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (!idField.value) {
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
+
+    this.fieldTransforms
+      .filter((t: FieldTransform) => t.transformType === TransformType.UPDATE)
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform(f.fieldName);
+      });
 
     const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
     if (result) {

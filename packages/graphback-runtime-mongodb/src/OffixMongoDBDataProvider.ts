@@ -3,6 +3,7 @@ import { NoDataError } from '@graphback/runtime';
 import { getDatabaseArguments } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider } from './MongoDBDataProvider';
+import { getFieldTransformations, FieldTransform, TransformType } from "./fieldTransformHelpers";
 
 /**
  * Mongo provider that contains special handlers for offix conflict resolution format:
@@ -10,50 +11,17 @@ import { MongoDBDataProvider } from './MongoDBDataProvider';
  * https://offix.dev/docs/conflict-server#structure-of-the-conflict-error
  */
 export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> {
-  protected updatedAtField: string;
-  protected createdAtField: string;
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
-    this.createdAtField = undefined;
-    this.updatedAtField = undefined;
-    Object.keys(baseType.getFields()).forEach((k: string) => {
-      if (baseType.getFields()[k]?.astNode?.directives) {
-        baseType.getFields()[k].astNode.directives.forEach((directive: any) => {
-          if (directive?.name?.value === "createdAt") {
-            if (this.createdAtField === undefined) {
-              this.createdAtField = baseType.getFields()[k]?.name;
-            } else {
-              throw Error("Cannot have more than one field with createdAt directive");
-            }
-          }
-          if (directive?.name?.value === "updatedAt") {
-            if (this.updatedAtField === undefined) {
-              this.updatedAtField = baseType.getFields()[k]?.name;
-            } else {
-              throw Error("Cannot have more than one field with updatedAt directive");
-            }
-          }
-        });
-      }
-    });
   }
 
   public async create(data: any): Promise<Type> {
     if (!data.version) {
       data.version = 1;
     }
-    const o = await super.create(data);
-    let res = o as any;
-    if (this.updatedAtField) {
-      res = await super.update({
-        ...res,
-        id: res.id,
-        [this.updatedAtField]: (new ObjectId(res.id)).getTimestamp()
-      });
-    }
 
-    return this.mapFields(res);
+    return super.create(data);
   }
 
 
@@ -75,25 +43,20 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       }
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       data.version = data.version + 1;
-      if (this.updatedAtField) {
-        data[this.updatedAtField] = new Date();
-      }
+
+      this.fieldTransforms
+      .filter((t: FieldTransform) => t.transformType === TransformType.UPDATE)
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform(f.fieldName);
+      });
+
       // TODO use findOneAndUpdate to check consistency afterwards
       const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
       if (result.result?.ok) {
-        return this.mapFields(data);
+        return data;
       }
     }
 
     throw new NoDataError(`Cannot update ${this.collectionName}`);
-  }
-
-  protected mapFields(document: any): any {
-    document = super.mapFields(document);
-    if (this.createdAtField) {
-      document[this.createdAtField] = new ObjectId(document.id).getTimestamp();
-    }
-
-    return document;
   }
 }
