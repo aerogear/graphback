@@ -1,6 +1,6 @@
 import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core'
 import { writeDocumentsToFilesystem } from './helpers/writeDocuments';
-import { createClientDocumentsGQL, createClientDocumentsGqlComplete, createClientDocumentsTS } from './templates'
+import { createClientDocumentsGQL, createClientDocumentsTS } from './templates'
 import { ClientTemplates } from './templates/ClientTemplates'
 
 /**
@@ -13,9 +13,8 @@ export interface ClientGeneratorPluginConfig {
      *
      * - ts - typescript file output (backwards compatibility)
      * - graphql - .graphql file
-     * - gqlwithfragment - complete graphql queries containing fragments for redundancy
      */
-    format: 'ts' | 'graphql' | 'gqlwithfragment'
+    format: 'ts' | 'graphql'
 
     /**
      * Generate only fragments and skip query, mutation and subscription elements
@@ -58,7 +57,7 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
     public createResources(metadata: GraphbackCoreMetadata): void {
         const documents = this.getDocuments(metadata)
-        const outputFormat = this.pluginConfig.format === 'gqlwithfragment' ? 'graphql' : this.pluginConfig.format;
+        const outputFormat = this.pluginConfig.format;
 
         writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
     }
@@ -80,9 +79,6 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         }
         else if (this.pluginConfig.format === 'graphql') {
             documents = createClientDocumentsGQL(models);
-        }
-        else if (this.pluginConfig.format === 'gqlwithfragment') {
-            documents = createClientDocumentsGqlComplete(models);
         } else {
             throw new Error("Invalid output format for client plugin");
         }
