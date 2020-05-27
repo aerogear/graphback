@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test one side relationship schema query type generation 1`] = `
-"input IDInput {
+"input IDFilterInput {
   ne: ID
   eq: ID
   le: ID
@@ -9,9 +9,6 @@ exports[`Test one side relationship schema query type generation 1`] = `
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -25,9 +22,9 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -62,7 +59,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringInput {
+input StringFilterInput {
   ne: String
   eq: String
   le: String
@@ -85,9 +82,9 @@ type Test {
 }
 
 input TestFilter {
-  id: IDInput
-  name: StringInput
-  test_id: IDInput
+  id: IDFilterInput
+  name: StringFilterInput
+  test_id: IDFilterInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -116,10 +113,10 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  note_id: IDInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  note_id: IDFilterInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -148,6 +145,7 @@ input CreateCommentInput {
 input CreateIssueInput {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input CreateNoteInput {
@@ -162,7 +160,20 @@ input CreateTestInput {
   name: String
 }
 
-input IDInput {
+scalar DateTime
+
+input DateTimeFilterInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
+}
+
+input IDFilterInput {
   ne: ID
   eq: ID
   le: ID
@@ -170,9 +181,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\"
@@ -184,6 +192,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -193,8 +202,9 @@ enum IssueCategory {
 }
 
 input IssueFilter {
-  id: IDInput
-  category: StringInput
+  id: IDFilterInput
+  category: StringFilterInput
+  createdAt: DateTimeFilterInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -210,6 +220,7 @@ type IssueResultList {
 input IssueSubscriptionFilter {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -222,6 +233,7 @@ input MutateCommentInput {
 input MutateIssueInput {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -266,10 +278,10 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  test_id: IDInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  test_id: IDFilterInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -315,7 +327,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringInput {
+input StringFilterInput {
   ne: String
   eq: String
   le: String
@@ -350,8 +362,8 @@ type Test {
 }
 
 input TestFilter {
-  id: IDInput
-  name: StringInput
+  id: IDFilterInput
+  name: StringFilterInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -384,10 +396,10 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  note_id: IDInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  note_id: IDFilterInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -416,6 +428,7 @@ input CreateCommentInput {
 input CreateIssueInput {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input CreateNoteInput {
@@ -430,7 +443,20 @@ input CreateTestInput {
   name: String
 }
 
-input IDInput {
+scalar DateTime
+
+input DateTimeFilterInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
+}
+
+input IDFilterInput {
   ne: ID
   eq: ID
   le: ID
@@ -438,9 +464,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\"
@@ -452,6 +475,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -461,8 +485,9 @@ enum IssueCategory {
 }
 
 input IssueFilter {
-  id: IDInput
-  category: StringInput
+  id: IDFilterInput
+  category: StringFilterInput
+  createdAt: DateTimeFilterInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -478,6 +503,7 @@ type IssueResultList {
 input IssueSubscriptionFilter {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -490,6 +516,7 @@ input MutateCommentInput {
 input MutateIssueInput {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -534,10 +561,10 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  test_id: IDInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  test_id: IDFilterInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -583,7 +610,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringInput {
+input StringFilterInput {
   ne: String
   eq: String
   le: String
@@ -618,8 +645,8 @@ type Test {
 }
 
 input TestFilter {
-  id: IDInput
-  name: StringInput
+  id: IDFilterInput
+  name: StringFilterInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -653,10 +680,10 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  note_id: IDInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  note_id: IDFilterInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -685,6 +712,7 @@ input CreateCommentInput {
 input CreateIssueInput {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input CreateNoteInput {
@@ -699,7 +727,20 @@ input CreateTestInput {
   name: String
 }
 
-input IDInput {
+scalar DateTime
+
+input DateTimeFilterInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
+}
+
+input IDFilterInput {
   ne: ID
   eq: ID
   le: ID
@@ -707,9 +748,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\"
@@ -721,6 +759,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -730,8 +769,9 @@ enum IssueCategory {
 }
 
 input IssueFilter {
-  id: IDInput
-  category: StringInput
+  id: IDFilterInput
+  category: StringFilterInput
+  createdAt: DateTimeFilterInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -747,6 +787,7 @@ type IssueResultList {
 input IssueSubscriptionFilter {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -759,6 +800,7 @@ input MutateCommentInput {
 input MutateIssueInput {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -803,10 +845,10 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  test_id: IDInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
+  test_id: IDFilterInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -852,7 +894,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringInput {
+input StringFilterInput {
   ne: String
   eq: String
   le: String
@@ -887,8 +929,8 @@ type Test {
 }
 
 input TestFilter {
-  id: IDInput
-  name: StringInput
+  id: IDFilterInput
+  name: StringFilterInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter

@@ -12,11 +12,11 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDInput
-  text: StringInput
-  description: StringInput
-  title: StringInput
-  noteCommentId: IDInput
+  id: IDFilterInput
+  text: StringFilterInput
+  description: StringFilterInput
+  title: StringFilterInput
+  noteCommentId: IDFilterInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -43,7 +43,7 @@ input CreateNoteInput {
   description: String!
 }
 
-input IDInput {
+input IDFilterInput {
   ne: ID
   eq: ID
   le: ID
@@ -51,9 +51,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 input MutateCommentInput {
@@ -88,9 +85,9 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
+  id: IDFilterInput
+  title: StringFilterInput
+  description: StringFilterInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -125,7 +122,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringInput {
+input StringFilterInput {
   ne: String
   eq: String
   le: String

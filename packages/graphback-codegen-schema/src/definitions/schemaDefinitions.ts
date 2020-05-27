@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLFloat, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType, isEnumType } from "graphql";
+import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType, isEnumType } from "graphql";
 import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField, getPrimaryKey } from '@graphback/core';
 
 const PageRequestTypeName = 'PageRequest';
@@ -6,40 +6,50 @@ const SortDirectionEnumName = 'SortDirectionEnum';
 const OrderByInputTypeName = 'OrderByInput';
 
 const getScalarInputName = (type: GraphQLNamedType) => {
-  if (isSpecifiedScalarType(type)) {
-    return `${type.name}Input`;
+  if (isEnumType(type)) {
+    return `StringFilterInput`
   }
-
-  return 'StringInput';
+  
+  return `${type.name}FilterInput`
 }
 
-export const FloatScalarInputType = new GraphQLInputObjectType({
-  name: getScalarInputName(GraphQLFloat),
-  fields: {
-    ne: { type: GraphQLFloat },
-    eq: { type: GraphQLFloat },
-    le: { type: GraphQLFloat },
-    lt: { type: GraphQLFloat },
-    ge: { type: GraphQLFloat },
-    gt: { type: GraphQLFloat },
-    in: { type: GraphQLList(GraphQLFloat) },
-    between: { type: GraphQLList(GraphQLFloat) }
-  }
-})
 
-export const IntScalarInputType = new GraphQLInputObjectType({
-  name: getScalarInputName(GraphQLInt),
-  fields: {
-    ne: { type: GraphQLInt },
-    eq: { type: GraphQLInt },
-    le: { type: GraphQLInt },
-    lt: { type: GraphQLInt },
-    ge: { type: GraphQLInt },
-    gt: { type: GraphQLInt },
-    in: { type: GraphQLList(GraphQLInt) },
-    between: { type: GraphQLList(GraphQLInt) }
-  }
-})
+
+export const createInputTypeForCustomScalar = (scalarType: GraphQLScalarType) => {
+  const newInput = new GraphQLInputObjectType({
+    name: getScalarInputName(scalarType),
+    fields: {
+      ne: { type: scalarType },
+      eq: { type: scalarType },
+      le: { type: scalarType },
+      lt: { type: scalarType },
+      ge: { type: scalarType },
+      gt: { type: scalarType },
+      in: { type: GraphQLList(scalarType) },
+      between: { type: GraphQLList(scalarType) }
+    }
+  })
+
+  return newInput;
+}
+
+export const createInputTypeForEnum = (scalarType: GraphQLScalarType) => {
+  const newInput = new GraphQLInputObjectType({
+    name: getScalarInputName(scalarType),
+    fields: {
+      ne: { type: scalarType },
+      eq: { type: scalarType },
+      le: { type: scalarType },
+      lt: { type: scalarType },
+      ge: { type: scalarType },
+      gt: { type: scalarType },
+      in: { type: GraphQLList(scalarType) },
+      between: { type: GraphQLList(scalarType) }
+    }
+  })
+
+  return newInput;
+}
 
 export const StringScalarInputType = new GraphQLInputObjectType({
   name: getScalarInputName(GraphQLString),
@@ -54,6 +64,19 @@ export const StringScalarInputType = new GraphQLInputObjectType({
     contains: { type: GraphQLString },
     startsWith: { type: GraphQLString },
     endsWith: { type: GraphQLString }
+  }
+})
+
+export const IDScalarInputType = new GraphQLInputObjectType({
+  name: getScalarInputName(GraphQLID),
+  fields: {
+    ne: { type: GraphQLID },
+    eq: { type: GraphQLID },
+    le: { type: GraphQLID },
+    lt: { type: GraphQLID },
+    ge: { type: GraphQLID },
+    gt: { type: GraphQLID },
+    in: { type: GraphQLList(GraphQLID) },
   }
 })
 
@@ -76,25 +99,6 @@ export const PageRequest = new GraphQLInputObjectType({
     }
   }
 })
-
-export const IDScalarInputType = new GraphQLInputObjectType({
-  name: getScalarInputName(GraphQLID),
-  fields: {
-    ne: { type: GraphQLID },
-    eq: { type: GraphQLID },
-    le: { type: GraphQLID },
-    lt: { type: GraphQLID },
-    ge: { type: GraphQLID },
-    gt: { type: GraphQLID },
-    in: { type: GraphQLList(GraphQLID) },
-    contains: { type: GraphQLID },
-    startsWith: { type: GraphQLID },
-    endsWith: { type: GraphQLID }
-  }
-})
-
-
-// TODO: Add Date, DateTime scalar inputs
 
 export const SortDirectionEnum = new GraphQLEnumType({
   name: SortDirectionEnumName,
