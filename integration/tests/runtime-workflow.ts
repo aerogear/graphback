@@ -11,7 +11,7 @@ import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
 import { GraphbackRuntime, GraphbackGenerator } from "graphback/src";
-import { buildSchema, printSchema, GraphQLSchema } from 'graphql';
+import { buildSchema, printSchema, GraphQLSchema, DocumentNode } from 'graphql';
 import { migrateDB } from '../../packages/graphql-migrations/src';
 import { createKnexPGCRUDRuntimeServices } from "../../packages/graphback-runtime-knex/src"
 
@@ -22,7 +22,7 @@ let modelSchema: GraphQLSchema;
 let client: ApolloServerTestClient;
 let runtimeEngine: GraphbackRuntime;
 
-const documentsCache = {};
+let documents: DocumentNode;
 
 beforeAll(async () => {
   try {
@@ -55,6 +55,12 @@ beforeAll(async () => {
     modelSchema = buildSchema(modelText);
    
     db = knex;
+    const source = await loadDocuments(path.resolve(`./output/client/**/*.graphql`), {
+      loaders: [
+        new GraphQLFileLoader()
+      ]
+    });
+    documents = source[0].document;
   } catch (e) {
     console.log(e);
     throw e;
@@ -132,30 +138,8 @@ const getConfig = async () => {
   return { projectConfig, graphbackConfig };
 }
 
-/**
- * Helper to load a client document from a file
- *
- * @param name Client document name
- */
-async function getDocument(name: string) {
-  if (documentsCache[name]) {
-    return documentsCache[name];
-  }
-
-  const loadedDocuments = await loadDocuments(path.resolve(`./output/client/**/${name}.graphql`), {
-    loaders: [
-      new GraphQLFileLoader()
-    ]
-  });
-
-  documentsCache[name] = loadedDocuments[0];
-  return documentsCache[name];
-}
-
 test('Find all notes', async () => {
-  const { document } = await getDocument('findNotes');
-
-  const { data } = await client.query({ query: document });
+  const { data } = await client.query({ operationName: 'findNotes', query: documents });
 
   expect(data).toBeDefined();
   expect(data.findNotes).toEqual({
@@ -190,9 +174,11 @@ test('Find all notes', async () => {
 })
 
 test('Find all notes except the first', async () => {
-  const { document } = await getDocument('findNotes');
-
-  const { data } = await client.query({ query: document, variables: { page: { offset: 1 } } });
+  const { data, errors } = await client.query({
+    operationName: 'findNotes',
+    query: documents,
+    variables: { page: { offset: 1 } }
+  });
 
   expect(data).toBeDefined();
   expect(data.findNotes).toEqual({
@@ -210,9 +196,11 @@ test('Find all notes except the first', async () => {
 })
 
 test('Find at most one note', async () => {
-  const { document } = await getDocument('findNotes');
-
-  const { data } = await client.query({ query: document, variables: { page: { limit: 1 } } });
+  const { data } = await client.query({
+    operationName: 'findNotes',
+    query: documents,
+    variables: { page: { limit: 1 } }
+  });
 
   expect(data).toBeDefined();
   expect(data.findNotes).toEqual({
@@ -241,9 +229,7 @@ test('Find at most one note', async () => {
 })
 
 test('Find all comments', async () => {
-  const { document } = await getDocument('findComments');
-
-  const { data } = await client.query({ query: document });
+  const { data } = await client.query({ operationName: "findComments", query: documents });
 
   expect(data).toBeDefined();
   expect(data.findComments).toEqual({
@@ -306,9 +292,11 @@ test('Note 1 should be defined', async () => {
 })
 
 test('Find at most one comment on Note 1', async () => {
-  const { document } = await getDocument('findComments');
-
-  const response = await client.query({ query: document, variables: { filter: { noteId: { eq: 1 } }, page: { limit: 1 } } });
+  const response = await client.query({
+    operationName: "findComments",
+    query: documents,
+    variables: { filter: { noteId: { eq: 1 } }, page: { limit: 1 } }
+  });
 
   expect(response.data).toBeDefined()
   const comments = response.data.findComments
@@ -332,9 +320,11 @@ test('Find at most one comment on Note 1', async () => {
 })
 
 test('Find comments on Note 1 except first', async () => {
-  const { document } = await getDocument('findComments');
-
-  const response = await client.query({ query: document, variables: { filter: { noteId: { eq: 1 } }, page: { offset: 1 } } });
+  const response = await client.query({
+    operationName: "findComments",
+    query: documents,
+    variables: { filter: { noteId: { eq: 1 } }, page: { offset: 1 } }
+  });
 
   expect(response.data).toBeDefined()
   const notes = response.data.findComments
@@ -380,41 +370,50 @@ test('Delete Note 1', async () => {
 });
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
-  const { document } = await getDocument('updateNote');
-
-  const response = await client.mutate({ mutation: document, variables: { input } });
+  const response = await client.mutate({
+    operationName: "updateNote",
+    mutation: documents,
+    variables: { input }
+  });
 
   return response;
 }
 
 async function createNote(client: ApolloServerTestClient, input: any) {
-  const { document } = await getDocument('createNote');
-
-  const response = await client.mutate({ mutation: document, variables: { input } });
+  const response = await client.mutate({
+    operationName: "createNote",
+    mutation: documents, variables: { input }
+  });
 
   return response;
 }
 
 async function deleteNote(client: ApolloServerTestClient, id: string | number) {
-  const { document } = await getDocument('deleteNote');
-
-  const response = await client.mutate({ mutation: document, variables: { input: { id } } });
+  const response = await client.mutate({
+    operationName: "deleteNote",
+    mutation: documents,
+    variables: { input: { id } }
+  });
 
   return response;
 }
 
 async function getNote(id: string | number, client: ApolloServerTestClient) {
-  const { document } = await getDocument('getNote');
-
-  const response = await client.query({ query: document, variables: { id } });
+  const response = await client.query({
+    operationName: "getNote",
+    query: documents,
+    variables: { id }
+  });
 
   return response;
 }
 
 async function findNoteComments(noteId: string, client: ApolloServerTestClient) {
-  const { document } = await getDocument('findComments');
-
-  const response = await client.query({ query: document, variables: { filter: { noteId } } });
+  const response = await client.query({
+    operationName: "findComments",
+    query: documents,
+    variables: { filter: { noteId } }
+  });
 
   return response;
 }
