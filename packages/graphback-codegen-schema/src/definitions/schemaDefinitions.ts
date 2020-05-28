@@ -13,9 +13,7 @@ const getScalarInputName = (type: GraphQLNamedType) => {
   return `${type.name}Input`
 }
 
-
-
-export const createInputTypeForCustomScalar = (scalarType: GraphQLScalarType) => {
+export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
   const newInput = new GraphQLInputObjectType({
     name: getScalarInputName(scalarType),
     fields: {
@@ -28,25 +26,7 @@ export const createInputTypeForCustomScalar = (scalarType: GraphQLScalarType) =>
       in: { type: GraphQLList(scalarType) },
       between: { type: GraphQLList(scalarType) }
     }
-  })
-
-  return newInput;
-}
-
-export const createInputTypeForEnum = (scalarType: GraphQLScalarType) => {
-  const newInput = new GraphQLInputObjectType({
-    name: getScalarInputName(scalarType),
-    fields: {
-      ne: { type: scalarType },
-      eq: { type: scalarType },
-      le: { type: scalarType },
-      lt: { type: scalarType },
-      ge: { type: scalarType },
-      gt: { type: scalarType },
-      in: { type: GraphQLList(scalarType) },
-      between: { type: GraphQLList(scalarType) }
-    }
-  })
+  });
 
   return newInput;
 }

@@ -3,9 +3,9 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
-import { SchemaComposer } from 'graphql-compose';
+import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForCustomScalar } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -69,7 +69,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     this.buildSchemaModelRelationships(schemaComposer, models);
 
-    this.buildSchemaForModels(schemaComposer, models, schema);
+    this.buildSchemaForModels(schemaComposer, models);
 
     return schemaComposer.buildSchema()
   }
@@ -110,8 +110,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     return SCHEMA_CRUD_PLUGIN_NAME;
   }
 
-  protected buildSchemaForModels(schemaComposer: SchemaComposer<any>, models: ModelDefinition[], schema: GraphQLSchema) {
-    this.createStandardInputTypes(schemaComposer, schema);
+  protected buildSchemaForModels(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
+    this.createSchemaCRUDTypes(schemaComposer);
 
     for (const model of Object.values(models)) {
       this.createQueries(model, schemaComposer);
@@ -281,21 +281,21 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     schemaComposer.Query.addFields(queryFields)
   }
 
-  private createStandardInputTypes(schemaComposer: SchemaComposer<any>, schema: GraphQLSchema) {
+  private createSchemaCRUDTypes(schemaComposer: SchemaComposer<any>) {
     schemaComposer.add(PageRequest);
     schemaComposer.add(IDScalarInputType);
     schemaComposer.add(SortDirectionEnum);
     schemaComposer.add(StringScalarInputType);
     schemaComposer.add(BooleanScalarInputType);
-    schemaComposer.add(createInputTypeForCustomScalar(GraphQLInt));
-    schemaComposer.add(createInputTypeForCustomScalar(GraphQLFloat));
+    schemaComposer.add(createInputTypeForScalar(GraphQLInt));
+    schemaComposer.add(createInputTypeForScalar(GraphQLFloat));
     
-    const schemaTypes = Object.values(schema.getTypeMap());
-    for (const schemaType of schemaTypes) {
-      if (isScalarType(schemaType) && !isSpecifiedScalarType(schemaType)) {
-        schemaComposer.add(createInputTypeForCustomScalar(schemaType));
+    schemaComposer.forEach((tc: NamedTypeComposer<any>) => {
+      const namedType = tc.getType();
+      if (isScalarType(namedType) && !isSpecifiedScalarType(namedType)) {
+        schemaComposer.add(createInputTypeForScalar(namedType));
       }
-    }
+    });
   }
 
   /**
