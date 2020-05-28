@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test one side relationship schema query type generation 1`] = `
-"input IDFilterInput {
+"input IDInput {
   ne: ID
   eq: ID
   le: ID
@@ -22,9 +22,9 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -59,7 +59,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringFilterInput {
+input StringInput {
   ne: String
   eq: String
   le: String
@@ -82,9 +82,9 @@ type Test {
 }
 
 input TestFilter {
-  id: IDFilterInput
-  name: StringFilterInput
-  test_id: IDFilterInput
+  id: IDInput
+  name: StringInput
+  test_id: IDInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -113,10 +113,10 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  note_id: IDFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  note_id: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -162,7 +162,7 @@ input CreateTestInput {
 
 scalar DateTime
 
-input DateTimeFilterInput {
+input DateTimeInput {
   ne: DateTime
   eq: DateTime
   le: DateTime
@@ -173,7 +173,7 @@ input DateTimeFilterInput {
   between: [DateTime]
 }
 
-input IDFilterInput {
+input IDInput {
   ne: ID
   eq: ID
   le: ID
@@ -202,9 +202,9 @@ enum IssueCategory {
 }
 
 input IssueFilter {
-  id: IDFilterInput
-  category: StringFilterInput
-  createdAt: DateTimeFilterInput
+  id: IDInput
+  category: StringInput
+  createdAt: DateTimeInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -278,10 +278,10 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  test_id: IDFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  test_id: IDInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -327,7 +327,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringFilterInput {
+input StringInput {
   ne: String
   eq: String
   le: String
@@ -362,8 +362,8 @@ type Test {
 }
 
 input TestFilter {
-  id: IDFilterInput
-  name: StringFilterInput
+  id: IDInput
+  name: StringInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -396,10 +396,10 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  note_id: IDFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  note_id: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -445,7 +445,7 @@ input CreateTestInput {
 
 scalar DateTime
 
-input DateTimeFilterInput {
+input DateTimeInput {
   ne: DateTime
   eq: DateTime
   le: DateTime
@@ -456,7 +456,7 @@ input DateTimeFilterInput {
   between: [DateTime]
 }
 
-input IDFilterInput {
+input IDInput {
   ne: ID
   eq: ID
   le: ID
@@ -485,9 +485,9 @@ enum IssueCategory {
 }
 
 input IssueFilter {
-  id: IDFilterInput
-  category: StringFilterInput
-  createdAt: DateTimeFilterInput
+  id: IDInput
+  category: StringInput
+  createdAt: DateTimeInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -561,10 +561,10 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  test_id: IDFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  test_id: IDInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -610,7 +610,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringFilterInput {
+input StringInput {
   ne: String
   eq: String
   le: String
@@ -645,8 +645,8 @@ type Test {
 }
 
 input TestFilter {
-  id: IDFilterInput
-  name: StringFilterInput
+  id: IDInput
+  name: StringInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter
@@ -680,10 +680,10 @@ type Comment {
 }
 
 input CommentFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  note_id: IDFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  note_id: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -729,7 +729,7 @@ input CreateTestInput {
 
 scalar DateTime
 
-input DateTimeFilterInput {
+input DateTimeInput {
   ne: DateTime
   eq: DateTime
   le: DateTime
@@ -740,7 +740,7 @@ input DateTimeFilterInput {
   between: [DateTime]
 }
 
-input IDFilterInput {
+input IDInput {
   ne: ID
   eq: ID
   le: ID
@@ -769,9 +769,9 @@ enum IssueCategory {
 }
 
 input IssueFilter {
-  id: IDFilterInput
-  category: StringFilterInput
-  createdAt: DateTimeFilterInput
+  id: IDInput
+  category: StringInput
+  createdAt: DateTimeInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -845,10 +845,10 @@ type Note {
 }
 
 input NoteFilter {
-  id: IDFilterInput
-  title: StringFilterInput
-  description: StringFilterInput
-  test_id: IDFilterInput
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  test_id: IDInput
   and: [NoteFilter]
   or: [NoteFilter]
   not: NoteFilter
@@ -894,7 +894,7 @@ enum SortDirectionEnum {
   ASC
 }
 
-input StringFilterInput {
+input StringInput {
   ne: String
   eq: String
   le: String
@@ -929,8 +929,8 @@ type Test {
 }
 
 input TestFilter {
-  id: IDFilterInput
-  name: StringFilterInput
+  id: IDInput
+  name: StringInput
   and: [TestFilter]
   or: [TestFilter]
   not: TestFilter

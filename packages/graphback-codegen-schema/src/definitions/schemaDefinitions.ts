@@ -7,10 +7,10 @@ const OrderByInputTypeName = 'OrderByInput';
 
 const getScalarInputName = (type: GraphQLNamedType) => {
   if (isEnumType(type)) {
-    return `StringFilterInput`
+    return `StringInput`
   }
   
-  return `${type.name}FilterInput`
+  return `${type.name}Input`
 }
 
 
