@@ -11,13 +11,18 @@ import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
 import { GraphbackRuntime, GraphbackGenerator } from "graphback/src";
-import { buildSchema, printSchema } from 'graphql';
+import { buildSchema, printSchema, GraphQLSchema } from 'graphql';
 import { migrateDB } from '../../packages/graphql-migrations/src';
 import { createKnexPGCRUDRuntimeServices } from "../../packages/graphback-runtime-knex/src"
 
 /** global config */
-let client: ApolloServerTestClient;
 let db: Knex;
+let server: ApolloServer; 
+let modelSchema: GraphQLSchema;
+let client: ApolloServerTestClient;
+let runtimeEngine: GraphbackRuntime;
+
+const documentsCache = {};
 
 beforeAll(async () => {
   try {
@@ -45,27 +50,30 @@ beforeAll(async () => {
     expect(newDB).toMatchSnapshot();
 
     await seedDatabase(knex);
-
-    const pubSub = new PubSub();
-    const runtimeEngine = new GraphbackRuntime(modelText, graphbackConfig);
-    const models = runtimeEngine.getDataSourceModels();
-    const modelSchema = buildSchema(modelText);
-    const services = createKnexPGCRUDRuntimeServices(models, modelSchema, knex, pubSub);
-    const runtime = runtimeEngine.buildRuntime(services);
-
-    const server = new ApolloServer({
-      typeDefs: printSchema(runtime.schema),
-      resolvers: runtime.resolvers,
-      context: services
-    });
-
-    client = createTestClient(server);
+    
+    runtimeEngine = new GraphbackRuntime(modelText, graphbackConfig);
+    modelSchema = buildSchema(modelText);
+   
     db = knex;
   } catch (e) {
     console.log(e);
     throw e;
   }
 })
+
+beforeEach(() => {
+  const services = createKnexPGCRUDRuntimeServices(runtimeEngine.getDataSourceModels(), modelSchema, db, new PubSub());
+  const runtime = runtimeEngine.buildRuntime(services);
+  server = new ApolloServer({
+    typeDefs: printSchema(runtime.schema),
+    resolvers: runtime.resolvers,
+    context: services
+  });
+
+  client = createTestClient(server);
+})
+
+afterEach(() => server.stop())
 
 afterAll(() => {
   rmdirSync(path.resolve('./output'), { recursive: true });
@@ -130,13 +138,18 @@ const getConfig = async () => {
  * @param name Client document name
  */
 async function getDocument(name: string) {
-  const documents = await loadDocuments(path.resolve(`./output/client/**/${name}.graphql`), {
+  if (documentsCache[name]) {
+    return documentsCache[name];
+  }
+
+  const loadedDocuments = await loadDocuments(path.resolve(`./output/client/**/${name}.graphql`), {
     loaders: [
       new GraphQLFileLoader()
     ]
   });
 
-  return documents[0];
+  documentsCache[name] = loadedDocuments[0];
+  return documentsCache[name];
 }
 
 test('Find all notes', async () => {
@@ -179,7 +192,7 @@ test('Find all notes', async () => {
 test('Find all notes except the first', async () => {
   const { document } = await getDocument('findNotes');
 
-  const { data, errors } = await client.query({ query: document, variables: { page: { offset: 1 } } });
+  const { data } = await client.query({ query: document, variables: { page: { offset: 1 } } });
 
   expect(data).toBeDefined();
   expect(data.findNotes).toEqual({
