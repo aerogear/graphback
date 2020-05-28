@@ -48,6 +48,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type  Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -55,3 +56,5 @@ enum IssueCategory {
  QUESTION
  FEATURE_REQUEST
 }
+
+scalar DateTime

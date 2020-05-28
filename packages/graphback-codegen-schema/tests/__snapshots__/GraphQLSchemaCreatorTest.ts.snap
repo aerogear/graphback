@@ -9,9 +9,6 @@ exports[`Test one side relationship schema query type generation 1`] = `
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -148,6 +145,7 @@ input CreateCommentInput {
 input CreateIssueInput {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input CreateNoteInput {
@@ -162,6 +160,19 @@ input CreateTestInput {
   name: String
 }
 
+scalar DateTime
+
+input DateTimeInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -170,9 +181,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\"
@@ -184,6 +192,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -195,6 +204,7 @@ enum IssueCategory {
 input IssueFilter {
   id: IDInput
   category: StringInput
+  createdAt: DateTimeInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -210,6 +220,7 @@ type IssueResultList {
 input IssueSubscriptionFilter {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -222,6 +233,7 @@ input MutateCommentInput {
 input MutateIssueInput {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -416,6 +428,7 @@ input CreateCommentInput {
 input CreateIssueInput {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input CreateNoteInput {
@@ -430,6 +443,19 @@ input CreateTestInput {
   name: String
 }
 
+scalar DateTime
+
+input DateTimeInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -438,9 +464,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\"
@@ -452,6 +475,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -463,6 +487,7 @@ enum IssueCategory {
 input IssueFilter {
   id: IDInput
   category: StringInput
+  createdAt: DateTimeInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -478,6 +503,7 @@ type IssueResultList {
 input IssueSubscriptionFilter {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -490,6 +516,7 @@ input MutateCommentInput {
 input MutateIssueInput {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -685,6 +712,7 @@ input CreateCommentInput {
 input CreateIssueInput {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input CreateNoteInput {
@@ -699,6 +727,19 @@ input CreateTestInput {
   name: String
 }
 
+scalar DateTime
+
+input DateTimeInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -707,9 +748,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 \\"\\"\\"
@@ -721,6 +759,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type Issue {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 enum IssueCategory {
@@ -732,6 +771,7 @@ enum IssueCategory {
 input IssueFilter {
   id: IDInput
   category: StringInput
+  createdAt: DateTimeInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
@@ -747,6 +787,7 @@ type IssueResultList {
 input IssueSubscriptionFilter {
   id: ID
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -759,6 +800,7 @@ input MutateCommentInput {
 input MutateIssueInput {
   id: ID!
   category: IssueCategory
+  createdAt: DateTime
 }
 
 input MutateNoteInput {

@@ -51,9 +51,6 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 input MutateCommentInput {
