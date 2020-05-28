@@ -115,7 +115,12 @@ function traverse(filter: any): any {
                     filter[key] = [filter[key]];
                 }
             }
-
+            if (["createdAt", "updatedAt"].includes(key)) {
+                const entries = Object.entries(filter[key]).map((entry: [string, string])=> {
+                    return [entry[0], parseInt(entry[1], 10)]
+                })
+                filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({[k]: v}) ));
+            }
             // Recursive step
             if (!isPrimitive(filter[key])) {
                 filter[key] = traverse(filter[key]);
