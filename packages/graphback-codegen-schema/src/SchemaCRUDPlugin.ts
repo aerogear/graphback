@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
+import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName } from '@graphback/core'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
@@ -68,8 +68,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const schemaComposer = new SchemaComposer(schema)
 
     this.buildSchemaModelRelationships(schemaComposer, models);
-
+    
     this.buildSchemaForModels(schemaComposer, models);
+    this.addMetaFields(schemaComposer, models);
 
     return schemaComposer.buildSchema()
   }
@@ -279,6 +280,41 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     schemaComposer.Query.addFields(queryFields)
+  }
+
+  protected addMetaFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
+    models.forEach((model: ModelDefinition, index: number)=> {
+      const name = model.graphqlType.name; 
+      const modelTC = schemaComposer.getOTC(name);
+      const desc = model.graphqlType.description;
+      if (desc.includes("@versioned") || desc.includes("@deltasync")) {
+        // metadata fields needed for both @deltasync and @versioned
+
+        modelTC.addFields({
+          "createdAt": {
+            type: GraphQLString,
+            description: "@createdAt\n@db.type: 'timestamp'"
+          },
+          "updatedAt": {
+            type: GraphQLString,
+            description: "@updatedAt\n@db.type: 'timestamp'"
+          }
+        });
+
+        const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
+        if (inputType) {
+            inputType.addFields({
+              "createdAt": {
+                type: StringScalarInputType
+              },
+              "updatedAt": {
+                type: StringScalarInputType
+              }
+            });
+        }
+      }
+
+    });
   }
 
   private createSchemaCRUDTypes(schemaComposer: SchemaComposer<any>) {
