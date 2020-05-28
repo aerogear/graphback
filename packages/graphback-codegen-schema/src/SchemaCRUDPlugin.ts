@@ -287,7 +287,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const name = model.graphqlType.name; 
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
-      if (desc.includes("@versioned") || desc.includes("@deltasync")) {
+      if (desc.includes("@versioned") || desc.includes("@delta")) {
         // metadata fields needed for both @deltasync and @versioned
 
         modelTC.addFields({
