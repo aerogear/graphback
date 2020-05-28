@@ -29,7 +29,7 @@
     "@types/glob": "7.1.1",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.7",
-    "ts-node": "8.10.1",
+    "ts-node": "8.10.2",
     "tslint": "6.1.2",
     "typescript": "3.9.3"
   }
