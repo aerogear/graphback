@@ -59,7 +59,8 @@
     "runtime-knex-workspace": "yarn workspace @graphback/runtime-knex",
     "runtime-mongo-workspace": "yarn workspace @graphback/runtime-mongo",
     "graphql-migrations-workspace": "yarn workspace graphql-migrations",
-    "graphql-serve-workspace": "yarn workspace graphql-serve"
+    "graphql-serve-workspace": "yarn workspace graphql-serve",
+    "keycloak-authz-workspace": "yarn workspace @graphback/keycloak-authz"
   },
   "workspaces": [
     "packages/*",

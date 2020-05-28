@@ -1,5 +1,5 @@
 import { GraphbackPluginEngine, ModelDefinition, GraphbackCoreMetadata } from '@graphback/core';
-import { GraphbackCRUDService, LayeredRuntimeResolverCreator, GraphbackPubSubModel } from '@graphback/runtime';
+import { LayeredRuntimeResolverCreator, GraphbackPubSubModel } from '@graphback/runtime';
 import { GraphQLSchema } from 'graphql';
 import { loadPlugins } from './loadPlugins';
 import { GraphbackConfig } from './GraphbackConfig';
@@ -21,7 +21,7 @@ export class GraphbackRuntime {
 
     const plugins = loadPlugins(this.config.plugins);
     const pluginEngine = new GraphbackPluginEngine({
-      schema: this.schema, 
+      schema: this.schema,
       plugins,
       config: { crudMethods: this.config.crud }
     });
@@ -30,13 +30,13 @@ export class GraphbackRuntime {
 
   /**
    * Create backend with all related resources
-   * 
+   *
    * @param services - contains object that provides custom CRUD services that will overide default ones
    * You can use one of the datasource helpers to create services
    */
-  public buildRuntime(services: { [key: string]: GraphbackCRUDService } = {}) {
+  public buildRuntime() {
     const models = this.metadata.getModelDefinitions();
-    const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models, services);
+    const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models);
 
     return { schema: this.metadata.getSchema(), resolvers: runtimeResolversCreator.generate() }
   }

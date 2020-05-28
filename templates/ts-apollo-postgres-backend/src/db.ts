@@ -1,10 +1,6 @@
 import Knex from 'knex'
 
-export function connectDB() {
-  return Knex(getConnectionDetails())
-}
-
-export function getConnectionDetails() {
+export function loadDBConfig() {
   let port;
   if (process.env.DB_PORT) {
     port = parseInt(process.env.DB_PORT, 10)
@@ -19,4 +15,11 @@ export function getConnectionDetails() {
       port: port && !isNaN(port) ? port : 5432
     }
   };
+}
+
+export function connectDB() {
+  const dbConfig = loadDBConfig()
+  const db = Knex(dbConfig)
+
+  return db
 }

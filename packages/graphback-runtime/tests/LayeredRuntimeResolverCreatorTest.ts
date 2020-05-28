@@ -31,7 +31,7 @@ type User {
 
 test('find Todo by text', async ()  => {
   const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, schema)
-  const generator = new LayeredRuntimeResolverCreator(metadata.getModelDefinitions(), {});
+  const generator = new LayeredRuntimeResolverCreator(metadata.getModelDefinitions());
 
   expect(generator.generate()).toMatchSnapshot();
 });

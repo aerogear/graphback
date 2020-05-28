@@ -12,37 +12,104 @@ Please follow individual releases for more information.
 
 ## Migrating to 0.14.0
 
-Version 0.14.0 removed support code generation for resolvers. 
-If you used one of the Codegen templates you will need to migrate 
+### Breaking Changes
 
-1. Remove your generated resolvers and model file. They are not longer needed as resolvers are generated at runtime.
-Check configuration of the resolvers plugin to see where they are located.
-2. Remove @graphback/codegen-resolvers from your package and the config.
-3. Use Graphback runtime Getting Started Guide 
-4. Change your client output format from `gqlwithfragment` to `graphql`
-5. Replace `outputPath` with `outputFile` in your client config 
-6. The `outputFile` specifies the output path of the generated file
-7. Change your documents path in graphback config to match new `outputFile`
-8. Delete previously generated client documents and rerun generate command
+Graphback 0.14 contains a lot of breaking changes that will improve and simplify your application code.
+
+#### API code generation is no longer supported
+
+In 0.14.0 Graphback now supports runtime generation of your schema, resolvers and services. 
+
+Please manually remove your generated schema and resolver files.
+
+Remove `@graphback/codegen-resolvers` from your `package.json`.
+
+To use our runtime API, refer to the [Runtime API](./intro/serverless) documentation.
+
+#### New runtime API
+
+We have removed the complicated multi-step runtime API so that you can create your Graphback API in a couple of lines.
+
+If you were already using the runtime API, replace this:
+
+```ts
+const runtimeEngine = new GraphbackRuntime(model, graphbackConfig);
+const models = runtimeEngine.getDataSourceModels();
+const services = createKnexPGCRUDRuntimeServices(models, model, db, pubSub);
+const runtime = runtimeEngine.buildRuntime(services);
+```
+
+With this:
+
+```ts
+import { buildGraphbackAPI } from 'graphback'
+import { createKnexDbProvider, createCRUDService } from '@graphback/runtime-knex'
+import { PubSub } from 'graphql-subscriptions'
+
+const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  serviceCreator: createCRUDService({
+    pubSub: new PubSub()
+  }),
+  dataProviderCreator: createKnexDbProvider(dbConfig)
+});
+```
+
+For more advanced usage, refer to the [Runtime API](./intro/serverless) documentation.
+
+#### Client code generation now generates all GraphQL documents into one file
+
+1. Change your client output format from `gqlwithfragment` to `graphql`
+2. Replace `outputPath` with `outputFile` in your client config 
+3. Delete previously generated client documents and rerun generate command
 9. Be sure to correct your documents path in your codegen config if you use GraphQL-Code-Generator
 
-## Breaking
+#### `@db.primary` is removed, use `@id` instead
 
-- Removed `graphback db` command. Database migrations can be only executed from the codebase when application is started.
-For more information please refer to https://graphback.dev/docs/db/dbmigrations
-- Graphback resolver plugin is no longer used. Code generator plugin is deprecated.
-- GraphbackPluginEngine accepts now object instead of arguments.
-`new GraphbackPluginEngine({schema})`
-- Removed `gqlwithfragment` format in client
-- `@db.primary` is removed, use `@id` instead.
+We have replaced the `@db.primary` annotation with `@id`.
+
+#### Removed `graphback db` CLI command to migrate database
+
+We have removed the `graphback db` command. Database migrations can be only executed from the codebase when application is started.
+
+See [Database Migrations](./db/migrations#API) on how to use the code-based migrations in your API.
+
+#### Removed helper method to create CRUD services
+
+Previously you would have done this to create your context and a CRUD service for every model:
+
+```ts
+const context = createMongoCRUDRuntimeContext(models, schema, db, pubSub)
+```
+
+Now you can create your services and data providers with like this:
+
+```ts
+import { buildGraphbackAPI } from 'graphback'
+import { createKnexDbProvider, createCRUDService } from '@graphback/runtime-knex'
+import { PubSub } from 'graphql-subscriptions'
+
+const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  serviceCreator: createCRUDService({
+    pubSub: new PubSub()
+  }),
+  dataProviderCreator: createKnexDbProvider(dbConfig)
+});
+```
+
+For more advanced usage, refer to the [Runtime API](./intro/serverless) documentation.
+
+### Deprecated
+
+- `PgKnexDBDataProvider` has been deprecated in favour of `KnexDBDataProvider`.
 
 ##### New Features
 
 - All client documents are now generated in a single file. The file's path is specified by the `outputFile` field in client config
 - `outputPath` in client config has been removed
 - Added new templates to graphback init commands. All templates now giving ability to add client side application.
-
-
+- Added a new, simpler runtime API
+- GraphbackPluginEngine accepts now object instead of arguments.
+`new GraphbackPluginEngine({schema})`
 
 # 0.13.0
 

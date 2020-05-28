@@ -1,14 +1,29 @@
-import { GraphbackOperationType, upperCaseFirstChar } from "@graphback/core"
+import { GraphbackOperationType, upperCaseFirstChar, GraphbackCRUDGeneratorConfig } from "@graphback/core"
 import * as DataLoader from "dataloader";
-import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
 import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 import { GraphbackPage } from "../GraphbackPage"
 import { GraphbackOrderBy } from '../GraphbackOrderBy';
 import { GraphbackCRUDService, ResultList } from "./GraphbackCRUDService";
-import { GraphbackPubSub } from "./GraphbackPubSub"
 
+/**
+ * Configurations necessary to create a CRUDService
+ */
+export interface CRUDServiceConfig {
+  /**
+   * PubSub implementation for creating subscriptions
+   */
+  pubSub?: PubSubEngine
+  /**
+   * Optional logging service
+   */
+  logger?: GraphbackMessageLogger
+  /**
+   * Model-specific CRUD configuration
+   */
+  crudOptions: GraphbackCRUDGeneratorConfig
+}
 /**
  * Default implementation of the CRUD service offering following capabilities:
  *
@@ -20,15 +35,15 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   protected db: GraphbackDataProvider;
   private logger: GraphbackMessageLogger;
   private pubSub: PubSubEngine;
-  private publishConfig: GraphbackPubSub;
   private modelName: string;
+  private crudOptions: GraphbackCRUDGeneratorConfig;
 
-  public constructor(modelType: GraphQLObjectType, db: GraphbackDataProvider, subscriptionConfig: GraphbackPubSub, logger?: GraphbackMessageLogger) {
+  public constructor(modelName: string, db: GraphbackDataProvider, config: CRUDServiceConfig) {
+    this.modelName = modelName;
+    this.crudOptions = config.crudOptions;
     this.db = db;
-    this.pubSub = subscriptionConfig.pubSub;
-    this.logger = logger || defaultLogger;
-    this.publishConfig = subscriptionConfig;
-    this.modelName = modelType.name;
+    this.pubSub = config.pubSub;
+    this.logger = config.logger || defaultLogger;
   }
 
   public async create(data: T, context?: any): Promise<T> {
@@ -36,7 +51,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
     const result = await this.db.create(data, context);
 
-    if (this.pubSub && this.publishConfig.publishCreate) {
+    if (this.pubSub && this.crudOptions.subCreate) {
       const topic = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
       //TODO use subscription name mapping
       const payload = this.buildEventPayload('new', result);
@@ -51,7 +66,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
     const result = await this.db.update(data, context);
 
-    if (this.pubSub && this.publishConfig.publishUpdate) {
+    if (this.pubSub && this.crudOptions.subUpdate) {
       const topic = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
       //TODO use subscription name mapping
       const payload = this.buildEventPayload('updated', result);
@@ -67,7 +82,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
     const result = await this.db.delete(data, context);
 
-    if (this.pubSub && this.publishConfig.publishUpdate) {
+    if (this.pubSub && this.crudOptions.subDelete) {
       const topic = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
       const payload = this.buildEventPayload('deleted', result);
       await this.pubSub.publish(topic, payload);
@@ -146,7 +161,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
     return context[keyName].load(id);
   }
-
 
   /**
    * Provides way to map runtime topics for subscriptions for specific types and object names

@@ -1,13 +1,14 @@
-import { 
+import {
   CRUDService,
   GraphbackDataProvider,
-  GraphbackPubSub,
   GraphbackPage,
   ResultList,
   GraphbackOrderBy
 } from "@graphback/runtime";
 import { GraphQLObjectType } from 'graphql';
 import { isAuthorizedByRole } from "keycloak-connect-graphql";
+import { GraphbackCRUDGeneratorConfig } from '@graphback/core';
+import { PubSubEngine } from 'graphql-subscriptions';
 import { CrudServiceAuthConfig } from './definitions';
 import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 
@@ -17,22 +18,23 @@ import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 export type KeycloakCrudServiceOptions = {
   modelType: GraphQLObjectType,
   db: GraphbackDataProvider,
-  subscriptionConfig: GraphbackPubSub,
+  pubSub: PubSubEngine
+  crudOptions: GraphbackCRUDGeneratorConfig,
   authConfig: CrudServiceAuthConfig,
 };
 
 /**
  * This custom CRUD Service shows another potential way to add auth
- * 
+ *
  * This is actually quite nice and clean but it does not allow for field level auth.
  * It's still a possibility that we could go with though!
  */
-export class KeycloakCrudService<T = any> extends CRUDService {
+export class KeycloakCrudService<T = any> extends CRUDService<T> {
 
   private authConfig: CrudServiceAuthConfig;
 
-  public constructor({ modelType, db, subscriptionConfig, authConfig }: KeycloakCrudServiceOptions) {
-    super(modelType, db, subscriptionConfig);
+  public constructor({ modelType, db, crudOptions, authConfig, pubSub }: KeycloakCrudServiceOptions) {
+    super(modelType.name, db, { pubSub, crudOptions });
     this.authConfig = authConfig || getEmptyServiceConfig();
   }
 
@@ -58,7 +60,7 @@ export class KeycloakCrudService<T = any> extends CRUDService {
     return super.update(data, context);
   }
 
-  public delete(data: T, context?: any): Promise<T> { 
+  public delete(data: T, context?: any): Promise<T> {
     if (this.authConfig.delete && this.authConfig.delete.roles && this.authConfig.delete.roles.length > 0) {
       const { roles } = this.authConfig.delete;
       if (!isAuthorizedByRole(roles, context)) {

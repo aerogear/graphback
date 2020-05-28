@@ -1,13 +1,10 @@
 
-import { GraphbackRuntime } from 'graphback'
-import { createKnexPGCRUDRuntimeServices } from '@graphback/runtime-knex'
-import { createMongoCRUDRuntimeContext } from '@graphback/runtime-mongo'
+import { GraphbackAPI, buildGraphbackAPI } from 'graphback'
+import { createMongoDbProvider } from '@graphback/runtime-mongo'
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient } from 'mongodb';
-import { PubSub } from 'graphql-subscriptions';
 import { loadSchema } from './loadSchema';
 import { GraphQLSchema } from 'graphql';
-import Knex from 'knex';
 import { GraphbackServerConfig } from "./GraphbackServerConfig";
 
 
@@ -32,26 +29,15 @@ export const createMongoDBConnection = async () => {
  * Method used to create runtime schema
  * It will be part of the integration tests
  */
-export const createRuntime = async (graphbackServerConfig: GraphbackServerConfig): Promise<Runtime> => {
+export const createRuntime = async (graphbackServerConfig: GraphbackServerConfig): Promise<GraphbackAPI> => {
   const graphbackConfig = graphbackServerConfig.graphback;
   const schemaText = loadSchema(graphbackConfig.model);
 
-  const pubSub = new PubSub();
-  const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
-
-  const schema = runtimeEngine.getMetadata().getSchema();
-
-  const models = runtimeEngine.getDataSourceModels();
-
-
-
-
   const db = await createMongoDBConnection();
-  const services = createMongoCRUDRuntimeContext(models, schema, db, pubSub);
 
+  const graphbackAPI = buildGraphbackAPI(schemaText, {
+    dataProviderCreator: createMongoDbProvider(db)
+  })
 
-
-  const runtime = runtimeEngine.buildRuntime(services);
-
-  return runtime;
+  return graphbackAPI;
 }
