@@ -2,8 +2,9 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectID, MongoClient } from 'mongodb';
 import { buildSchema } from 'graphql';
-import { filterModelTypes } from '@graphback/core';
+import { filterModelTypes, GraphbackCoreMetadata } from '@graphback/core';
 import { advanceTo, advanceBy } from "jest-date-mock";
+import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 
 
@@ -14,12 +15,29 @@ export interface Context {
 
 export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
     // Setup graphback
-    const schema = buildSchema(schemaStr);
+    let schema = buildSchema(schemaStr);
   
     const server = new MongoMemoryServer();
     const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
     await client.connect();
     const db = client.db('test');
+
+    const defautConfig = {
+      "create": true,
+      "update": true,
+      "findOne": true,
+      "find": true,
+      "delete": true,
+      "subCreate": true,
+      "subUpdate": true,
+      "subDelete": true
+    }
+  
+    const schemaGenerator = new SchemaCRUDPlugin({ outputPath: './tmp', format: 'graphql'})
+    const metadata = new GraphbackCoreMetadata({
+      crudMethods: defautConfig
+    }, schema)
+    schema = schemaGenerator.transformSchema(metadata)
   
     const providers: { [name: string]: MongoDBDataProvider } = {}
     const models = filterModelTypes(schema)
@@ -216,48 +234,38 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
   test('createdAt', async () => {
     context = await createTestingContext(`
-    """@model"""
+    """
+    @model
+    @versioned
+    """
     type Note {
       id: ID!
       text: String
-      """
-      @createdAt
-      """
-      created: String
-      """
-      @updatedAt
-      """
-      lastModified: String
     }
     `);
     const cDate = new Date(2020, 5, 26, 18, 29, 23);
     advanceTo(cDate);
 
     const res = await context.providers.Note.create({ text: 'asdf' });
-    expect(res.created).toEqual(cDate.getTime());
+    expect(res.createdAt).toEqual(cDate.getTime());
   })
 
   test('updatedAt', async () => {
     context = await createTestingContext(`
-    """@model"""
+    """
+    @model
+    @versioned
+    """
     type Note {
       id: ID!
       text: String
-      """
-      @createdAt
-      """
-      created: Int
-      """
-      @updatedAt
-      """
-      lastModified: Int
     }
     `);
     let cDate = new Date(2020, 5, 26, 18, 29, 23);
     advanceTo(cDate);
 
     const res = await context.providers.Note.create({ text: 'asdf' });
-    expect(res.lastModified).toEqual(cDate.getTime());
+    expect(res.updatedAt).toEqual(cDate.getTime());
 
     advanceBy(3000);
     const next = await context.providers.Note.update({
@@ -266,6 +274,6 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     });
 
     cDate = new Date();
-    expect(next.lastModified).toEqual(cDate.getTime());
+    expect(next.updatedAt).toEqual(cDate.getTime());
   })
 });
