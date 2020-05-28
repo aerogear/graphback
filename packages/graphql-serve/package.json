@@ -42,7 +42,7 @@
     "@graphback/runtime": "0.14.0-alpha1",
     "@graphback/runtime-knex": "0.14.0-alpha1",
     "@graphback/runtime-mongo": "0.14.0-alpha1",
-    "apollo-server-express": "2.14.0",
+    "apollo-server-express": "2.14.1",
     "cors": "2.8.5",
     "express": "4.17.1",
     "get-port": "5.1.1",
