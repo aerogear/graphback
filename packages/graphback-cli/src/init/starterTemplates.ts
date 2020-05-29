@@ -28,11 +28,11 @@ export const allTemplates: Template[] = [
   },
   {
     name: 'apollo-fullstack-react-mongo-ts',
-    description: 'Apollo GraphQL Server connecting to Mongo database and React client using TypeScript',
+    description: 'Apollo GraphQL Server connecting to MongoDB database and React client using TypeScript',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-0.14.0',
-      path: '/templates/ts-apollo-mongo-backend',
+      path: '/templates/ts-apollo-mongodb-backend',
     },
     {
       uri: 'https://github.com/aerogear/graphback',
@@ -43,11 +43,11 @@ export const allTemplates: Template[] = [
   },
   {
     name: 'apollo-mongo-server-ts',
-    description: 'Apollo GraphQL Server connecting to Mongo database using TypeScript',
+    description: 'Apollo GraphQL Server connecting to MongoDB database using TypeScript',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-0.14.0',
-      path: '/templates/ts-apollo-mongo-backend',
+      path: '/templates/ts-apollo-mongodb-backend',
     }]
   },
   {
