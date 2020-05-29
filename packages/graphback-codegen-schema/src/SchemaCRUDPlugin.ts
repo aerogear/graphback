@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
+import { parseMarker } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
 
@@ -287,17 +288,19 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const name = model.graphqlType.name; 
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
-      if (desc.includes("@versioned") || desc.includes("@delta")) {
-        // metadata fields needed for both @deltasync and @versioned
+      if (parseMarker("versioned", desc) || parseMarker("delta", desc)) {
+        // metadata fields needed for both @delta and @versioned
 
         modelTC.addFields({
           "createdAt": {
             type: GraphQLString,
-            description: "@createdAt\n@db.type: 'timestamp'"
+            description: `@createdAt
+            @db.type: 'timestamp'`
           },
           "updatedAt": {
             type: GraphQLString,
-            description: "@updatedAt\n@db.type: 'timestamp'"
+            description: `@updatedAt
+            @db.type: 'timestamp'`
           }
         });
 
