@@ -1,9 +1,8 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy, getFieldTransformations, FieldTransform, TransformType, FieldTransformMap } from '@graphback/runtime';
 import { buildQuery } from './queryBuilder'
-import { getFieldTransformations, FieldTransform, TransformType } from "./fieldTransformHelpers";
 
 interface SortOrder {
   [fieldName: string]: 1 | -1;
@@ -16,13 +15,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   protected db: Db;
   protected collectionName: string;
   protected tableMap: ModelTableMap;
-  protected fieldTransforms: FieldTransform[];
+  protected fieldTransformMap: FieldTransformMap;
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
     this.tableMap = buildModelTableMap(baseType);
     this.collectionName = this.tableMap.tableName;
-    this.fieldTransforms = getFieldTransformations(baseType);
+    this.fieldTransformMap = getFieldTransformations(baseType);
   }
 
   public async create(data: any): Promise<Type> {
@@ -33,8 +32,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       delete data[idField.name];
     }
 
-    this.fieldTransforms
-      .filter((t: FieldTransform) => t.transformType === TransformType.CREATE)
+    this.fieldTransformMap[TransformType.CREATE]
       .forEach((f: FieldTransform) => {
         data[f.fieldName] = f.transform(f.fieldName);
       });
@@ -54,8 +52,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
 
-    this.fieldTransforms
-      .filter((t: FieldTransform) => t.transformType === TransformType.UPDATE)
+    this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
         data[f.fieldName] = f.transform(f.fieldName);
       });

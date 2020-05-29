@@ -118,9 +118,7 @@ function traverse(filter: any): any {
 
             // If the field is one of 'createdAt' or 'updatedAt',
             // try to coerce the values passed directly or to 
-            // operators on these fields to Integers so they
-            // can be compared with timestamps stored in the
-            // documents
+            // operators on these fields to Integers
             if (["createdAt", "updatedAt"].includes(key)) {
                 if (isPrimitive(filter[key])) {
                     filter[key] = parseInt(filter[key], 10);
