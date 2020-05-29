@@ -35,7 +35,7 @@
     "@types/node": "12.12.42",
     "graphql": "14.6.0",
     "graphql-compose": "7.16.1",
-    "graphql-tools": "5.0.0",
+    "graphql-tools": "6.0.3",
     "jest": "26.0.1",
     "pg": "8.2.1",
     "rimraf": "3.0.2",
