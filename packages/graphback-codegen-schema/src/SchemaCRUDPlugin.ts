@@ -290,7 +290,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       if (desc.includes("@versioned") || desc.includes("@delta")) {
         // metadata fields needed for both @deltasync and @versioned
 
-        modelTC.setDescription(desc.replace("@versioned", ''));
         modelTC.addFields({
           "createdAt": {
             type: GraphQLString,
