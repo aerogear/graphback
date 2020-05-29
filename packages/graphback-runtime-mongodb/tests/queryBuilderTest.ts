@@ -292,7 +292,7 @@ describe('queryBuilder scalar filtering', () => {
     await Promise.all(
 
       ["hi guys", "not yet", "bye guys"]
-        .map(async (postTitle: string) => {
+        .map((postTitle: string) => {
           advanceBy(3000);
 
           return context.providers.Post.create({ text: postTitle })
