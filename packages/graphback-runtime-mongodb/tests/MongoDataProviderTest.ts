@@ -248,6 +248,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
     const res = await context.providers.Note.create({ text: 'asdf' });
     expect(res.createdAt).toEqual(cDate.getTime());
+    expect(res.createdAt).toEqual(res.updatedAt);
   })
 
   test('updatedAt', async () => {
@@ -261,11 +262,11 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       text: String
     }
     `);
-    let cDate = new Date(2020, 5, 26, 18, 29, 23);
-    advanceTo(cDate);
+    const createDate = new Date(2020, 5, 26, 18, 29, 23);
+    advanceTo(createDate);
 
     const res = await context.providers.Note.create({ text: 'asdf' });
-    expect(res.updatedAt).toEqual(cDate.getTime());
+    expect(res.updatedAt).toEqual(createDate.getTime());
 
     advanceBy(3000);
     const next = await context.providers.Note.update({
@@ -273,7 +274,8 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       text: 'asdftrains'
     });
 
-    cDate = new Date();
-    expect(next.updatedAt).toEqual(cDate.getTime());
+    const updateDate = new Date();
+    expect(next.updatedAt).toEqual(updateDate.getTime());
+    expect(next.createdAt).toEqual(createDate.getTime())
   })
 });
