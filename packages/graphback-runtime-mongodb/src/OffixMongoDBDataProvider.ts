@@ -1,9 +1,8 @@
 import { GraphQLObjectType } from 'graphql';
-import { NoDataError } from '@graphback/runtime';
+import { NoDataError, FieldTransform, TransformType } from '@graphback/runtime';
 import { getDatabaseArguments } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider } from './MongoDBDataProvider';
-import { getFieldTransformations, FieldTransform, TransformType } from "./fieldTransformHelpers";
 
 /**
  * Mongo provider that contains special handlers for offix conflict resolution format:
@@ -44,19 +43,11 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       data.version = data.version + 1;
 
-      this.fieldTransforms
-      .filter((t: FieldTransform) => t.transformType === TransformType.UPDATE)
-      .forEach((f: FieldTransform) => {
-        data[f.fieldName] = f.transform(f.fieldName);
-      });
 
       // TODO use findOneAndUpdate to check consistency afterwards
-      const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
-      if (result.result?.ok) {
-        return data;
-      }
+      return super.update(data);
     }
 
-    throw new NoDataError(`Cannot update ${this.collectionName}`);
+    throw new NoDataError(`Could not find document to update in ${this.collectionName}`);
   }
 }
