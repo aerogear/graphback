@@ -30,36 +30,7 @@ test('Test cli workflow', async () => {
   await initConfig({ model, database: "sqlite3", client: true, skipInstall: true });
   await generateUsingPlugins({});
 
-  expect(existsSync(join(basePath, "client/src/graphql/fragments/Note.graphql"))).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/fragments/NoteExpanded.graphql"))
-  ).toBe(true)
-  expect(existsSync(join(basePath, "client/src/graphql/fragments/Comment.graphql"))).toBe(true)
-  expect(
-    existsSync(join(basePath, "client/src/graphql/fragments/CommentExpanded.graphql"))
-  ).toBe(true)
-  expect(
-    existsSync(join(basePath, "client/src/graphql/queries/getNote.graphql"))
-  ).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/queries/findComments.graphql"))
-  ).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/queries/getComment.graphql"))
-  ).toBe(true);
-  expect(existsSync(join(basePath, "client/src/graphql/queries/findNotes.graphql"))).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/mutations/createNote.graphql"))
-  ).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/mutations/createComment.graphql"))
-  ).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/mutations/updateComment.graphql"))
-  ).toBe(true);
-  expect(
-    existsSync(join(basePath, "client/src/graphql/mutations/updateNote.graphql"))
-  ).toBe(true);
+  expect(existsSync(join(basePath, "client/src/graphql/graphback.graphql"))).toBe(true);
   expect(existsSync(join(basePath, "src/schema/schema.graphql"))).toBe(true);
 });
 

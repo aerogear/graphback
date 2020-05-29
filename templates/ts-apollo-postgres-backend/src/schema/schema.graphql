@@ -4,19 +4,17 @@
 type Comment {
   id: ID!
   text: String
-  description: String!
-  title: String!
+  description: String
 
-  """@manyToOne field: 'comments', key: 'noteCommentId'"""
-  noteComment: Note
+  """@manyToOne field: 'comments', key: 'noteId'"""
+  note: Note
 }
 
 input CommentFilter {
   id: IDInput
   text: StringInput
   description: StringInput
-  title: StringInput
-  noteCommentId: IDInput
+  noteId: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -29,18 +27,23 @@ type CommentResultList {
   count: Int
 }
 
+input CommentSubscriptionFilter {
+  id: ID
+  text: String
+  description: String
+}
+
 input CreateCommentInput {
   id: ID
   text: String
-  description: String!
-  title: String!
-  noteCommentId: ID
+  description: String
+  noteId: ID
 }
 
 input CreateNoteInput {
   id: ID
   title: String!
-  description: String!
+  description: String
 }
 
 input IDInput {
@@ -57,8 +60,7 @@ input MutateCommentInput {
   id: ID!
   text: String
   description: String
-  title: String
-  noteCommentId: ID
+  noteId: ID
 }
 
 input MutateNoteInput {
@@ -70,17 +72,19 @@ input MutateNoteInput {
 type Mutation {
   createNote(input: CreateNoteInput!): Note!
   updateNote(input: MutateNoteInput!): Note!
+  deleteNote(input: MutateNoteInput!): Note!
   createComment(input: CreateCommentInput!): Comment!
   updateComment(input: MutateCommentInput!): Comment!
+  deleteComment(input: MutateCommentInput!): Comment!
 }
 
 """ @model """
 type Note {
   id: ID!
   title: String!
-  description: String!
+  description: String
 
-  """@oneToMany field: 'noteComment', key: 'noteCommentId'"""
+  """@oneToMany field: 'note', key: 'noteId'"""
   comments(filter: CommentFilter): [Comment]!
 }
 
@@ -98,6 +102,12 @@ type NoteResultList {
   offset: Int
   limit: Int
   count: Int
+}
+
+input NoteSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
 }
 
 input OrderByInput {
@@ -133,4 +143,13 @@ input StringInput {
   contains: String
   startsWith: String
   endsWith: String
+}
+
+type Subscription {
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
 }

@@ -34,18 +34,3 @@ test('Test plugin engine gql', async () => {
   const plugin = new ClientCRUDPlugin({ format: 'graphql', outputPath: './tmp', fragmentOnly: false });
   expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
-
-
-test('Test plugin engine gqlfragments', async () => {
-  const crudMethods = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-  }
-
-  const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
-  const plugin = new ClientCRUDPlugin({ format: 'gqlwithfragment', outputPath: './tmp', fragmentOnly: false });
-  expect(plugin.getDocuments(metadata)).toMatchSnapshot();
-});

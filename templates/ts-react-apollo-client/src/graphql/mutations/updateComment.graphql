@@ -1,5 +1,0 @@
-mutation updateComment($input: MutateCommentInput!) {
-  updateComment(input: $input) {
-      ...CommentFields
-  }
-}

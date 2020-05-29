@@ -19,6 +19,7 @@ If you used one of the Codegen templates you will need to migrate
 Check configuration of the resolvers plugin to see where they are located.
 2. Remove @graphback/codegen-resolvers from your package and the config.
 3. Use Graphback runtime Getting Started Guide 
+4. Change your client output format from `gqlwithfragment` to `graphql`
 
 ## Breaking
 
@@ -27,9 +28,11 @@ For more information please refer to https://graphback.dev/docs/db/dbmigrations
 - Graphback resolver plugin is no longer used. Code generator plugin is deprecated.
 - GraphbackPluginEngine accepts now object instead of arguments.
 `new GraphbackPluginEngine({schema})`
+- Removed `gqlwithfragment` format in client
 
 ##### New Features
 
+- All client documents are now generated in a single file
 - Added new templates to graphback init commands. All templates now giving ability to add client side application.
 
 

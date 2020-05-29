@@ -199,352 +199,6 @@ Object {
 }
 `;
 
-exports[`Test plugin engine gqlfragments 1`] = `
-Object {
-  "fragments": Array [],
-  "mutations": Array [
-    Object {
-      "implementation": "
-
-mutation createNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-      ...NoteFields
-  }
-}
-
-
-fragment NoteFields on Note {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "createNote",
-    },
-    Object {
-      "implementation": "
-
-mutation updateNote($input: MutateNoteInput!) {
-  updateNote(input: $input) {
-      ...NoteFields
-  }
-}
-
-
-fragment NoteFields on Note {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "updateNote",
-    },
-    Object {
-      "implementation": "
-
-mutation deleteNote($input: MutateNoteInput!) {
-  deleteNote(input: $input) {
-      ...NoteFields
-  }
-}
-
-
-fragment NoteFields on Note {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "deleteNote",
-    },
-    Object {
-      "implementation": "
-
-mutation createComment($input: CreateCommentInput!) {
-  createComment(input: $input) {
-      ...CommentFields
-  }
-}
-
-
-fragment CommentFields on Comment {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "createComment",
-    },
-    Object {
-      "implementation": "
-
-mutation updateComment($input: MutateCommentInput!) {
-  updateComment(input: $input) {
-      ...CommentFields
-  }
-}
-
-
-fragment CommentFields on Comment {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "updateComment",
-    },
-    Object {
-      "implementation": "
-
-mutation deleteComment($input: MutateCommentInput!) {
-  deleteComment(input: $input) {
-      ...CommentFields
-  }
-}
-
-
-fragment CommentFields on Comment {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "deleteComment",
-    },
-  ],
-  "queries": Array [
-    Object {
-      "implementation": "
-
-query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
-    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
-      items {
-        ...NoteExpandedFields
-      }
-      offset
-      limit
-    }
-  }
-
-fragment NoteExpandedFields on Note {
-   id
-   title
-   description
-   comments {
-      id
-      title
-      description
-   }
-} 
-
-",
-      "name": "findNotes",
-    },
-    Object {
-      "implementation": "
-
-query getNote($id: ID!) {
-    getNote(id: $id) {
-      ...NoteExpandedFields
-    }
-  }
-
-fragment NoteExpandedFields on Note {
-   id
-   title
-   description
-   comments {
-      id
-      title
-      description
-   }
-} 
-
-",
-      "name": "getNote",
-    },
-    Object {
-      "implementation": "
-
-query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
-    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-      items {
-        ...CommentExpandedFields
-      }
-      offset
-      limit
-    }
-  }
-
-fragment CommentExpandedFields on Comment {
-   id
-   title
-   description
-   noteComment {
-      id
-      title
-      description
-   }
-} 
-
-",
-      "name": "findComments",
-    },
-    Object {
-      "implementation": "
-
-query getComment($id: ID!) {
-    getComment(id: $id) {
-      ...CommentExpandedFields
-    }
-  }
-
-fragment CommentExpandedFields on Comment {
-   id
-   title
-   description
-   noteComment {
-      id
-      title
-      description
-   }
-} 
-
-",
-      "name": "getComment",
-    },
-  ],
-  "subscriptions": Array [
-    Object {
-      "implementation": "
-
-subscription newNote($filter: NoteSubscriptionFilter) {
-  newNote(filter: $filter) {
-      ...NoteFields
-  }
-} 
-
-fragment NoteFields on Note {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "newNote",
-    },
-    Object {
-      "implementation": "
-
-subscription updatedNote($filter: NoteSubscriptionFilter) {
-  updatedNote(filter: $filter) {
-      ...NoteFields
-  }
-} 
-
-fragment NoteFields on Note {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "updatedNote",
-    },
-    Object {
-      "implementation": "
-
-subscription deletedNote($filter: NoteSubscriptionFilter) {
-  deletedNote(filter: $filter) {
-      ...NoteFields
-  }
-} 
-
-fragment NoteFields on Note {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "deletedNote",
-    },
-    Object {
-      "implementation": "
-
-subscription newComment($filter: CommentSubscriptionFilter) {
-  newComment(filter: $filter) {
-      ...CommentFields
-  }
-} 
-
-fragment CommentFields on Comment {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "newComment",
-    },
-    Object {
-      "implementation": "
-
-subscription updatedComment($filter: CommentSubscriptionFilter) {
-  updatedComment(filter: $filter) {
-      ...CommentFields
-  }
-} 
-
-fragment CommentFields on Comment {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "updatedComment",
-    },
-    Object {
-      "implementation": "
-
-subscription deletedComment($filter: CommentSubscriptionFilter) {
-  deletedComment(filter: $filter) {
-      ...CommentFields
-  }
-} 
-
-fragment CommentFields on Comment {
-   id
-   title
-   description
-
-} 
-
-",
-      "name": "deletedComment",
-    },
-  ],
-}
-`;
-
 exports[`Test plugin engine ts 1`] = `
 Object {
   "fragments": Array [
@@ -563,9 +217,7 @@ export const NoteFragment = gql\`
       "name": "Note",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-
-export const NoteExpandedFragment = gql\`
+      "implementation": "export const NoteExpandedFragment = gql\`
   fragment NoteExpandedFields on Note {
    id
    title
@@ -581,7 +233,7 @@ export const NoteExpandedFragment = gql\`
       "name": "NoteExpanded",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
+      "implementation": "
 
 export const CommentFragment = gql\`
   fragment CommentFields on Comment {
@@ -595,9 +247,7 @@ export const CommentFragment = gql\`
       "name": "Comment",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-
-export const CommentExpandedFragment = gql\`
+      "implementation": "export const CommentExpandedFragment = gql\`
   fragment CommentExpandedFields on Comment {
    id
    title
@@ -615,10 +265,7 @@ export const CommentExpandedFragment = gql\`
   ],
   "mutations": Array [
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteFragment } from \\"../fragments/Note\\"
-
-export const createNote = gql\`
+      "implementation": "export const createNote = gql\`
   mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
       ...NoteFields
@@ -632,10 +279,7 @@ export const createNote = gql\`
       "name": "createNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteFragment } from \\"../fragments/Note\\"
-
-export const updateNote = gql\`
+      "implementation": "export const updateNote = gql\`
   mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
       ...NoteFields
@@ -649,10 +293,7 @@ export const updateNote = gql\`
       "name": "updateNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteFragment } from \\"../fragments/Note\\"
-
-export const deleteNote = gql\`
+      "implementation": "export const deleteNote = gql\`
   mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
       ...NoteFields
@@ -666,10 +307,7 @@ export const deleteNote = gql\`
       "name": "deleteNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentFragment } from \\"../fragments/Comment\\"
-
-export const createComment = gql\`
+      "implementation": "export const createComment = gql\`
   mutation createComment($input: CreateCommentInput!) {
   createComment(input: $input) {
       ...CommentFields
@@ -683,10 +321,7 @@ export const createComment = gql\`
       "name": "createComment",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentFragment } from \\"../fragments/Comment\\"
-
-export const updateComment = gql\`
+      "implementation": "export const updateComment = gql\`
   mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
       ...CommentFields
@@ -700,10 +335,7 @@ export const updateComment = gql\`
       "name": "updateComment",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentFragment } from \\"../fragments/Comment\\"
-
-export const deleteComment = gql\`
+      "implementation": "export const deleteComment = gql\`
   mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
       ...CommentFields
@@ -719,10 +351,7 @@ export const deleteComment = gql\`
   ],
   "queries": Array [
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
-
-export const findNotes = gql\`
+      "implementation": "export const findNotes = gql\`
   query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
@@ -739,10 +368,7 @@ export const findNotes = gql\`
       "name": "findNotes",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteExpandedFragment } from \\"../fragments/NoteExpanded\\"
-
-export const getNote = gql\`
+      "implementation": "export const getNote = gql\`
   query getNote($id: ID!) {
     getNote(id: $id) {
       ...NoteExpandedFields
@@ -755,10 +381,7 @@ export const getNote = gql\`
       "name": "getNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
-
-export const findComments = gql\`
+      "implementation": "export const findComments = gql\`
   query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
       items {
@@ -775,10 +398,7 @@ export const findComments = gql\`
       "name": "findComments",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentExpandedFragment } from \\"../fragments/CommentExpanded\\"
-
-export const getComment = gql\`
+      "implementation": "export const getComment = gql\`
   query getComment($id: ID!) {
     getComment(id: $id) {
       ...CommentExpandedFields
@@ -793,10 +413,7 @@ export const getComment = gql\`
   ],
   "subscriptions": Array [
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteFragment } from \\"../fragments/Note\\"
-
-export const newNote = gql\`
+      "implementation": "export const newNote = gql\`
   subscription newNote($filter: NoteSubscriptionFilter) {
   newNote(filter: $filter) {
       ...NoteFields
@@ -809,10 +426,7 @@ export const newNote = gql\`
       "name": "newNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteFragment } from \\"../fragments/Note\\"
-
-export const updatedNote = gql\`
+      "implementation": "export const updatedNote = gql\`
   subscription updatedNote($filter: NoteSubscriptionFilter) {
   updatedNote(filter: $filter) {
       ...NoteFields
@@ -825,10 +439,7 @@ export const updatedNote = gql\`
       "name": "updatedNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { NoteFragment } from \\"../fragments/Note\\"
-
-export const deletedNote = gql\`
+      "implementation": "export const deletedNote = gql\`
   subscription deletedNote($filter: NoteSubscriptionFilter) {
   deletedNote(filter: $filter) {
       ...NoteFields
@@ -841,10 +452,7 @@ export const deletedNote = gql\`
       "name": "deletedNote",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentFragment } from \\"../fragments/Comment\\"
-
-export const newComment = gql\`
+      "implementation": "export const newComment = gql\`
   subscription newComment($filter: CommentSubscriptionFilter) {
   newComment(filter: $filter) {
       ...CommentFields
@@ -857,10 +465,7 @@ export const newComment = gql\`
       "name": "newComment",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentFragment } from \\"../fragments/Comment\\"
-
-export const updatedComment = gql\`
+      "implementation": "export const updatedComment = gql\`
   subscription updatedComment($filter: CommentSubscriptionFilter) {
   updatedComment(filter: $filter) {
       ...CommentFields
@@ -873,10 +478,7 @@ export const updatedComment = gql\`
       "name": "updatedComment",
     },
     Object {
-      "implementation": "import gql from \\"graphql-tag\\"
-import { CommentFragment } from \\"../fragments/Comment\\"
-
-export const deletedComment = gql\`
+      "implementation": "export const deletedComment = gql\`
   subscription deletedComment($filter: CommentSubscriptionFilter) {
   deletedComment(filter: $filter) {
       ...CommentFields

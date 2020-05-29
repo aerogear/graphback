@@ -15,7 +15,7 @@ export type Scalars = {
 
 /**  @model  */
 export type Comment = {
-   __typename?: 'Comment';
+  __typename?: 'Comment';
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -34,7 +34,7 @@ export type CommentFilter = {
 };
 
 export type CommentResultList = {
-   __typename?: 'CommentResultList';
+  __typename?: 'CommentResultList';
   items: Array<Maybe<Comment>>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
@@ -87,7 +87,7 @@ export type MutateNoteInput = {
 };
 
 export type Mutation = {
-   __typename?: 'Mutation';
+  __typename?: 'Mutation';
   createNote: Note;
   updateNote: Note;
   deleteNote: Note;
@@ -128,7 +128,7 @@ export type MutationDeleteCommentArgs = {
 
 /**  @model  */
 export type Note = {
-   __typename?: 'Note';
+  __typename?: 'Note';
   id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -152,7 +152,7 @@ export type NoteFilter = {
 };
 
 export type NoteResultList = {
-   __typename?: 'NoteResultList';
+  __typename?: 'NoteResultList';
   items: Array<Maybe<Note>>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
@@ -176,7 +176,7 @@ export type PageRequest = {
 };
 
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   getNote?: Maybe<Note>;
   findNotes: NoteResultList;
   getComment?: Maybe<Comment>;
@@ -226,7 +226,7 @@ export type StringInput = {
 };
 
 export type Subscription = {
-   __typename?: 'Subscription';
+  __typename?: 'Subscription';
   newNote: Note;
   updatedNote: Note;
   deletedNote: Note;
@@ -265,20 +265,6 @@ export type SubscriptionDeletedCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
 
-export type CommentFieldsFragment = (
-  { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description'>
-);
-
-export type CommentExpandedFieldsFragment = (
-  { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description'>
-  & { note?: Maybe<(
-    { __typename?: 'Note' }
-    & Pick<Note, 'id' | 'title' | 'description'>
-  )> }
-);
-
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
   & Pick<Note, 'id' | 'title' | 'description'>
@@ -293,101 +279,18 @@ export type NoteExpandedFieldsFragment = (
   )>> }
 );
 
-export type CreateCommentMutationVariables = {
-  input: CreateCommentInput;
-};
-
-
-export type CreateCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { createComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
+export type CommentFieldsFragment = (
+  { __typename?: 'Comment' }
+  & Pick<Comment, 'id' | 'text' | 'description'>
 );
 
-export type CreateNoteMutationVariables = {
-  input: CreateNoteInput;
-};
-
-
-export type CreateNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { createNote: (
+export type CommentExpandedFieldsFragment = (
+  { __typename?: 'Comment' }
+  & Pick<Comment, 'id' | 'text' | 'description'>
+  & { note?: Maybe<(
     { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
-
-export type DeleteCommentMutationVariables = {
-  input: MutateCommentInput;
-};
-
-
-export type DeleteCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
-);
-
-export type DeleteNoteMutationVariables = {
-  input: MutateNoteInput;
-};
-
-
-export type DeleteNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
-
-export type UpdateCommentMutationVariables = {
-  input: MutateCommentInput;
-};
-
-
-export type UpdateCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { updateComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
-);
-
-export type UpdateNoteMutationVariables = {
-  input: MutateNoteInput;
-};
-
-
-export type UpdateNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { updateNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
-
-export type FindCommentsQueryVariables = {
-  filter?: Maybe<CommentFilter>;
-  page?: Maybe<PageRequest>;
-  orderBy?: Maybe<OrderByInput>;
-};
-
-
-export type FindCommentsQuery = (
-  { __typename?: 'Query' }
-  & { findComments: (
-    { __typename?: 'CommentResultList' }
-    & Pick<CommentResultList, 'offset' | 'limit'>
-    & { items: Array<Maybe<(
-      { __typename?: 'Comment' }
-      & CommentExpandedFieldsFragment
-    )>> }
-  ) }
+    & Pick<Note, 'id' | 'title' | 'description'>
+  )> }
 );
 
 export type FindNotesQueryVariables = {
@@ -409,19 +312,6 @@ export type FindNotesQuery = (
   ) }
 );
 
-export type GetCommentQueryVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type GetCommentQuery = (
-  { __typename?: 'Query' }
-  & { getComment?: Maybe<(
-    { __typename?: 'Comment' }
-    & CommentExpandedFieldsFragment
-  )> }
-);
-
 export type GetNoteQueryVariables = {
   id: Scalars['ID'];
 };
@@ -435,16 +325,139 @@ export type GetNoteQuery = (
   )> }
 );
 
-export type DeletedCommentSubscriptionVariables = {
-  filter?: Maybe<CommentSubscriptionFilter>;
+export type FindCommentsQueryVariables = {
+  filter?: Maybe<CommentFilter>;
+  page?: Maybe<PageRequest>;
+  orderBy?: Maybe<OrderByInput>;
 };
 
 
-export type DeletedCommentSubscription = (
-  { __typename?: 'Subscription' }
-  & { deletedComment: (
+export type FindCommentsQuery = (
+  { __typename?: 'Query' }
+  & { findComments: (
+    { __typename?: 'CommentResultList' }
+    & Pick<CommentResultList, 'offset' | 'limit'>
+    & { items: Array<Maybe<(
+      { __typename?: 'Comment' }
+      & CommentExpandedFieldsFragment
+    )>> }
+  ) }
+);
+
+export type GetCommentQueryVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type GetCommentQuery = (
+  { __typename?: 'Query' }
+  & { getComment?: Maybe<(
+    { __typename?: 'Comment' }
+    & CommentExpandedFieldsFragment
+  )> }
+);
+
+export type CreateNoteMutationVariables = {
+  input: CreateNoteInput;
+};
+
+
+export type CreateNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { createNote: (
+    { __typename?: 'Note' }
+    & NoteFieldsFragment
+  ) }
+);
+
+export type UpdateNoteMutationVariables = {
+  input: MutateNoteInput;
+};
+
+
+export type UpdateNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { updateNote: (
+    { __typename?: 'Note' }
+    & NoteFieldsFragment
+  ) }
+);
+
+export type DeleteNoteMutationVariables = {
+  input: MutateNoteInput;
+};
+
+
+export type DeleteNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteNote: (
+    { __typename?: 'Note' }
+    & NoteFieldsFragment
+  ) }
+);
+
+export type CreateCommentMutationVariables = {
+  input: CreateCommentInput;
+};
+
+
+export type CreateCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { createComment: (
     { __typename?: 'Comment' }
     & CommentFieldsFragment
+  ) }
+);
+
+export type UpdateCommentMutationVariables = {
+  input: MutateCommentInput;
+};
+
+
+export type UpdateCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { updateComment: (
+    { __typename?: 'Comment' }
+    & CommentFieldsFragment
+  ) }
+);
+
+export type DeleteCommentMutationVariables = {
+  input: MutateCommentInput;
+};
+
+
+export type DeleteCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteComment: (
+    { __typename?: 'Comment' }
+    & CommentFieldsFragment
+  ) }
+);
+
+export type NewNoteSubscriptionVariables = {
+  filter?: Maybe<NoteSubscriptionFilter>;
+};
+
+
+export type NewNoteSubscription = (
+  { __typename?: 'Subscription' }
+  & { newNote: (
+    { __typename?: 'Note' }
+    & NoteFieldsFragment
+  ) }
+);
+
+export type UpdatedNoteSubscriptionVariables = {
+  filter?: Maybe<NoteSubscriptionFilter>;
+};
+
+
+export type UpdatedNoteSubscription = (
+  { __typename?: 'Subscription' }
+  & { updatedNote: (
+    { __typename?: 'Note' }
+    & NoteFieldsFragment
   ) }
 );
 
@@ -474,19 +487,6 @@ export type NewCommentSubscription = (
   ) }
 );
 
-export type NewNoteSubscriptionVariables = {
-  filter?: Maybe<NoteSubscriptionFilter>;
-};
-
-
-export type NewNoteSubscription = (
-  { __typename?: 'Subscription' }
-  & { newNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
-
 export type UpdatedCommentSubscriptionVariables = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
@@ -500,38 +500,19 @@ export type UpdatedCommentSubscription = (
   ) }
 );
 
-export type UpdatedNoteSubscriptionVariables = {
-  filter?: Maybe<NoteSubscriptionFilter>;
+export type DeletedCommentSubscriptionVariables = {
+  filter?: Maybe<CommentSubscriptionFilter>;
 };
 
 
-export type UpdatedNoteSubscription = (
+export type DeletedCommentSubscription = (
   { __typename?: 'Subscription' }
-  & { updatedNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
+  & { deletedComment: (
+    { __typename?: 'Comment' }
+    & CommentFieldsFragment
   ) }
 );
 
-export const CommentFieldsFragmentDoc = gql`
-    fragment CommentFields on Comment {
-  id
-  text
-  description
-}
-    `;
-export const CommentExpandedFieldsFragmentDoc = gql`
-    fragment CommentExpandedFields on Comment {
-  id
-  text
-  description
-  note {
-    id
-    title
-    description
-  }
-}
-    `;
 export const NoteFieldsFragmentDoc = gql`
     fragment NoteFields on Note {
   id
@@ -551,237 +532,25 @@ export const NoteExpandedFieldsFragmentDoc = gql`
   }
 }
     `;
-export const CreateCommentDocument = gql`
-    mutation createComment($input: CreateCommentInput!) {
-  createComment(input: $input) {
-    ...CommentFields
+export const CommentFieldsFragmentDoc = gql`
+    fragment CommentFields on Comment {
+  id
+  text
+  description
+}
+    `;
+export const CommentExpandedFieldsFragmentDoc = gql`
+    fragment CommentExpandedFields on Comment {
+  id
+  text
+  description
+  note {
+    id
+    title
+    description
   }
 }
-    ${CommentFieldsFragmentDoc}`;
-export type CreateCommentMutationFn = ApolloReactCommon.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
-
-/**
- * __useCreateCommentMutation__
- *
- * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
-      }
-export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
-export type CreateCommentMutationResult = ApolloReactCommon.MutationResult<CreateCommentMutation>;
-export type CreateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
-export const CreateNoteDocument = gql`
-    mutation createNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    ...NoteFields
-  }
-}
-    ${NoteFieldsFragmentDoc}`;
-export type CreateNoteMutationFn = ApolloReactCommon.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
-
-/**
- * __useCreateNoteMutation__
- *
- * To run a mutation, you first call `useCreateNoteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateNoteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createNoteMutation, { data, loading, error }] = useCreateNoteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
-      }
-export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
-export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
-export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
-export const DeleteCommentDocument = gql`
-    mutation deleteComment($input: MutateCommentInput!) {
-  deleteComment(input: $input) {
-    ...CommentFields
-  }
-}
-    ${CommentFieldsFragmentDoc}`;
-export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
-
-/**
- * __useDeleteCommentMutation__
- *
- * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
-      }
-export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
-export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
-export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
-export const DeleteNoteDocument = gql`
-    mutation deleteNote($input: MutateNoteInput!) {
-  deleteNote(input: $input) {
-    ...NoteFields
-  }
-}
-    ${NoteFieldsFragmentDoc}`;
-export type DeleteNoteMutationFn = ApolloReactCommon.MutationFunction<DeleteNoteMutation, DeleteNoteMutationVariables>;
-
-/**
- * __useDeleteNoteMutation__
- *
- * To run a mutation, you first call `useDeleteNoteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteNoteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteNoteMutation, { data, loading, error }] = useDeleteNoteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteNoteMutation, DeleteNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, baseOptions);
-      }
-export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
-export type DeleteNoteMutationResult = ApolloReactCommon.MutationResult<DeleteNoteMutation>;
-export type DeleteNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
-export const UpdateCommentDocument = gql`
-    mutation updateComment($input: MutateCommentInput!) {
-  updateComment(input: $input) {
-    ...CommentFields
-  }
-}
-    ${CommentFieldsFragmentDoc}`;
-export type UpdateCommentMutationFn = ApolloReactCommon.MutationFunction<UpdateCommentMutation, UpdateCommentMutationVariables>;
-
-/**
- * __useUpdateCommentMutation__
- *
- * To run a mutation, you first call `useUpdateCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCommentMutation, { data, loading, error }] = useUpdateCommentMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCommentMutation, UpdateCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
-      }
-export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateCommentMutation>;
-export type UpdateCommentMutationResult = ApolloReactCommon.MutationResult<UpdateCommentMutation>;
-export type UpdateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
-export const UpdateNoteDocument = gql`
-    mutation updateNote($input: MutateNoteInput!) {
-  updateNote(input: $input) {
-    ...NoteFields
-  }
-}
-    ${NoteFieldsFragmentDoc}`;
-export type UpdateNoteMutationFn = ApolloReactCommon.MutationFunction<UpdateNoteMutation, UpdateNoteMutationVariables>;
-
-/**
- * __useUpdateNoteMutation__
- *
- * To run a mutation, you first call `useUpdateNoteMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateNoteMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateNoteMutation, { data, loading, error }] = useUpdateNoteMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateNoteMutation, UpdateNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
-      }
-export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutation>;
-export type UpdateNoteMutationResult = ApolloReactCommon.MutationResult<UpdateNoteMutation>;
-export type UpdateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
-export const FindCommentsDocument = gql`
-    query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
-  findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-    items {
-      ...CommentExpandedFields
-    }
-    offset
-    limit
-  }
-}
-    ${CommentExpandedFieldsFragmentDoc}`;
-
-/**
- * __useFindCommentsQuery__
- *
- * To run a query within a React component, call `useFindCommentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFindCommentsQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *      page: // value for 'page'
- *      orderBy: // value for 'orderBy'
- *   },
- * });
- */
-export function useFindCommentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
-      }
-export function useFindCommentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
-        }
-export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery>;
-export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
-export type FindCommentsQueryResult = ApolloReactCommon.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
+    `;
 export const FindNotesDocument = gql`
     query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
   findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
@@ -821,39 +590,6 @@ export function useFindNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
 export type FindNotesLazyQueryHookResult = ReturnType<typeof useFindNotesLazyQuery>;
 export type FindNotesQueryResult = ApolloReactCommon.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
-export const GetCommentDocument = gql`
-    query getComment($id: ID!) {
-  getComment(id: $id) {
-    ...CommentExpandedFields
-  }
-}
-    ${CommentExpandedFieldsFragmentDoc}`;
-
-/**
- * __useGetCommentQuery__
- *
- * To run a query within a React component, call `useGetCommentQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCommentQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCommentQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetCommentQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
-      }
-export function useGetCommentLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
-        }
-export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
-export type GetCommentLazyQueryHookResult = ReturnType<typeof useGetCommentLazyQuery>;
-export type GetCommentQueryResult = ApolloReactCommon.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
 export const GetNoteDocument = gql`
     query getNote($id: ID!) {
   getNote(id: $id) {
@@ -887,35 +623,328 @@ export function useGetNoteLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type GetNoteQueryHookResult = ReturnType<typeof useGetNoteQuery>;
 export type GetNoteLazyQueryHookResult = ReturnType<typeof useGetNoteLazyQuery>;
 export type GetNoteQueryResult = ApolloReactCommon.QueryResult<GetNoteQuery, GetNoteQueryVariables>;
-export const DeletedCommentDocument = gql`
-    subscription deletedComment($filter: CommentSubscriptionFilter) {
-  deletedComment(filter: $filter) {
+export const FindCommentsDocument = gql`
+    query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
+  findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+    items {
+      ...CommentExpandedFields
+    }
+    offset
+    limit
+  }
+}
+    ${CommentExpandedFieldsFragmentDoc}`;
+
+/**
+ * __useFindCommentsQuery__
+ *
+ * To run a query within a React component, call `useFindCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindCommentsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      page: // value for 'page'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useFindCommentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
+        return ApolloReactHooks.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
+      }
+export function useFindCommentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
+        }
+export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery>;
+export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
+export type FindCommentsQueryResult = ApolloReactCommon.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
+export const GetCommentDocument = gql`
+    query getComment($id: ID!) {
+  getComment(id: $id) {
+    ...CommentExpandedFields
+  }
+}
+    ${CommentExpandedFieldsFragmentDoc}`;
+
+/**
+ * __useGetCommentQuery__
+ *
+ * To run a query within a React component, call `useGetCommentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCommentQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
+      }
+export function useGetCommentLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
+        }
+export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
+export type GetCommentLazyQueryHookResult = ReturnType<typeof useGetCommentLazyQuery>;
+export type GetCommentQueryResult = ApolloReactCommon.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
+export const CreateNoteDocument = gql`
+    mutation createNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    ...NoteFields
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
+export type CreateNoteMutationFn = ApolloReactCommon.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
+
+/**
+ * __useCreateNoteMutation__
+ *
+ * To run a mutation, you first call `useCreateNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNoteMutation, { data, loading, error }] = useCreateNoteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
+      }
+export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
+export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
+export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
+export const UpdateNoteDocument = gql`
+    mutation updateNote($input: MutateNoteInput!) {
+  updateNote(input: $input) {
+    ...NoteFields
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
+export type UpdateNoteMutationFn = ApolloReactCommon.MutationFunction<UpdateNoteMutation, UpdateNoteMutationVariables>;
+
+/**
+ * __useUpdateNoteMutation__
+ *
+ * To run a mutation, you first call `useUpdateNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNoteMutation, { data, loading, error }] = useUpdateNoteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateNoteMutation, UpdateNoteMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
+      }
+export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutation>;
+export type UpdateNoteMutationResult = ApolloReactCommon.MutationResult<UpdateNoteMutation>;
+export type UpdateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
+export const DeleteNoteDocument = gql`
+    mutation deleteNote($input: MutateNoteInput!) {
+  deleteNote(input: $input) {
+    ...NoteFields
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
+export type DeleteNoteMutationFn = ApolloReactCommon.MutationFunction<DeleteNoteMutation, DeleteNoteMutationVariables>;
+
+/**
+ * __useDeleteNoteMutation__
+ *
+ * To run a mutation, you first call `useDeleteNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteNoteMutation, { data, loading, error }] = useDeleteNoteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteNoteMutation, DeleteNoteMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, baseOptions);
+      }
+export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
+export type DeleteNoteMutationResult = ApolloReactCommon.MutationResult<DeleteNoteMutation>;
+export type DeleteNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
+export const CreateCommentDocument = gql`
+    mutation createComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
     ...CommentFields
   }
 }
     ${CommentFieldsFragmentDoc}`;
+export type CreateCommentMutationFn = ApolloReactCommon.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
 
 /**
- * __useDeletedCommentSubscription__
+ * __useCreateCommentMutation__
  *
- * To run a query within a React component, call `useDeletedCommentSubscription` and pass it any options that fit your needs.
- * When your component renders, `useDeletedCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = ApolloReactCommon.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
+export const UpdateCommentDocument = gql`
+    mutation updateComment($input: MutateCommentInput!) {
+  updateComment(input: $input) {
+    ...CommentFields
+  }
+}
+    ${CommentFieldsFragmentDoc}`;
+export type UpdateCommentMutationFn = ApolloReactCommon.MutationFunction<UpdateCommentMutation, UpdateCommentMutationVariables>;
+
+/**
+ * __useUpdateCommentMutation__
+ *
+ * To run a mutation, you first call `useUpdateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCommentMutation, { data, loading, error }] = useUpdateCommentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCommentMutation, UpdateCommentMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
+      }
+export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateCommentMutation>;
+export type UpdateCommentMutationResult = ApolloReactCommon.MutationResult<UpdateCommentMutation>;
+export type UpdateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
+export const DeleteCommentDocument = gql`
+    mutation deleteComment($input: MutateCommentInput!) {
+  deleteComment(input: $input) {
+    ...CommentFields
+  }
+}
+    ${CommentFieldsFragmentDoc}`;
+export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
+export const NewNoteDocument = gql`
+    subscription newNote($filter: NoteSubscriptionFilter) {
+  newNote(filter: $filter) {
+    ...NoteFields
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
+
+/**
+ * __useNewNoteSubscription__
+ *
+ * To run a query within a React component, call `useNewNoteSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useDeletedCommentSubscription({
+ * const { data, loading, error } = useNewNoteSubscription({
  *   variables: {
  *      filter: // value for 'filter'
  *   },
  * });
  */
-export function useDeletedCommentSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>(DeletedCommentDocument, baseOptions);
+export function useNewNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewNoteSubscription, NewNoteSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<NewNoteSubscription, NewNoteSubscriptionVariables>(NewNoteDocument, baseOptions);
       }
-export type DeletedCommentSubscriptionHookResult = ReturnType<typeof useDeletedCommentSubscription>;
-export type DeletedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<DeletedCommentSubscription>;
+export type NewNoteSubscriptionHookResult = ReturnType<typeof useNewNoteSubscription>;
+export type NewNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNoteSubscription>;
+export const UpdatedNoteDocument = gql`
+    subscription updatedNote($filter: NoteSubscriptionFilter) {
+  updatedNote(filter: $filter) {
+    ...NoteFields
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
+
+/**
+ * __useUpdatedNoteSubscription__
+ *
+ * To run a query within a React component, call `useUpdatedNoteSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useUpdatedNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUpdatedNoteSubscription({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useUpdatedNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>(UpdatedNoteDocument, baseOptions);
+      }
+export type UpdatedNoteSubscriptionHookResult = ReturnType<typeof useUpdatedNoteSubscription>;
+export type UpdatedNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<UpdatedNoteSubscription>;
 export const DeletedNoteDocument = gql`
     subscription deletedNote($filter: NoteSubscriptionFilter) {
   deletedNote(filter: $filter) {
@@ -974,35 +1003,6 @@ export function useNewCommentSubscription(baseOptions?: ApolloReactHooks.Subscri
       }
 export type NewCommentSubscriptionHookResult = ReturnType<typeof useNewCommentSubscription>;
 export type NewCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewCommentSubscription>;
-export const NewNoteDocument = gql`
-    subscription newNote($filter: NoteSubscriptionFilter) {
-  newNote(filter: $filter) {
-    ...NoteFields
-  }
-}
-    ${NoteFieldsFragmentDoc}`;
-
-/**
- * __useNewNoteSubscription__
- *
- * To run a query within a React component, call `useNewNoteSubscription` and pass it any options that fit your needs.
- * When your component renders, `useNewNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useNewNoteSubscription({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useNewNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewNoteSubscription, NewNoteSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<NewNoteSubscription, NewNoteSubscriptionVariables>(NewNoteDocument, baseOptions);
-      }
-export type NewNoteSubscriptionHookResult = ReturnType<typeof useNewNoteSubscription>;
-export type NewNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNoteSubscription>;
 export const UpdatedCommentDocument = gql`
     subscription updatedComment($filter: CommentSubscriptionFilter) {
   updatedComment(filter: $filter) {
@@ -1032,32 +1032,32 @@ export function useUpdatedCommentSubscription(baseOptions?: ApolloReactHooks.Sub
       }
 export type UpdatedCommentSubscriptionHookResult = ReturnType<typeof useUpdatedCommentSubscription>;
 export type UpdatedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<UpdatedCommentSubscription>;
-export const UpdatedNoteDocument = gql`
-    subscription updatedNote($filter: NoteSubscriptionFilter) {
-  updatedNote(filter: $filter) {
-    ...NoteFields
+export const DeletedCommentDocument = gql`
+    subscription deletedComment($filter: CommentSubscriptionFilter) {
+  deletedComment(filter: $filter) {
+    ...CommentFields
   }
 }
-    ${NoteFieldsFragmentDoc}`;
+    ${CommentFieldsFragmentDoc}`;
 
 /**
- * __useUpdatedNoteSubscription__
+ * __useDeletedCommentSubscription__
  *
- * To run a query within a React component, call `useUpdatedNoteSubscription` and pass it any options that fit your needs.
- * When your component renders, `useUpdatedNoteSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDeletedCommentSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useDeletedCommentSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUpdatedNoteSubscription({
+ * const { data, loading, error } = useDeletedCommentSubscription({
  *   variables: {
  *      filter: // value for 'filter'
  *   },
  * });
  */
-export function useUpdatedNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>(UpdatedNoteDocument, baseOptions);
+export function useDeletedCommentSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>(DeletedCommentDocument, baseOptions);
       }
-export type UpdatedNoteSubscriptionHookResult = ReturnType<typeof useUpdatedNoteSubscription>;
-export type UpdatedNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<UpdatedNoteSubscription>;
+export type DeletedCommentSubscriptionHookResult = ReturnType<typeof useDeletedCommentSubscription>;
+export type DeletedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<DeletedCommentSubscription>;
