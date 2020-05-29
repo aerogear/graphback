@@ -115,11 +115,21 @@ function traverse(filter: any): any {
                     filter[key] = [filter[key]];
                 }
             }
+
+            // If the field is one of 'createdAt' or 'updatedAt',
+            // try to coerce the values passed directly or to 
+            // operators on these fields to Integers so they
+            // can be compared with timestamps stored in the
+            // documents
             if (["createdAt", "updatedAt"].includes(key)) {
-                const entries = Object.entries(filter[key]).map((entry: [string, string])=> {
-                    return [entry[0], parseInt(entry[1], 10)]
-                })
-                filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({[k]: v}) ));
+                if (isPrimitive(filter[key])) {
+                    filter[key] = parseInt(filter[key], 10);
+                } else {
+                    const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
+                        return [entry[0], parseInt(entry[1], 10)];
+                    });
+                    filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({[k]: v}) ));
+                }
             }
             // Recursive step
             if (!isPrimitive(filter[key])) {
