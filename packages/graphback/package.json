@@ -40,7 +40,7 @@
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
     "pg": "8.2.1",
-    "pino": "6.3.0",
+    "pino": "6.3.1",
     "sqlite3": "4.2.0",
     "tslib": "1.13.0"
   },
