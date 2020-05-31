@@ -37,10 +37,10 @@ See [contribution guidelines](./CONTRIBUTING.md) file for more information
 Licensed under the APLv2.
 
 [ts-badge]: https://img.shields.io/badge/TypeScript-3.0-blue.svg
-[nodejs-badge]: https://img.shields.io/badge/Node.js->=%208.9-blue.svg
+[nodejs-badge]: https://img.shields.io/badge/Node.js-%3E=%2010.15.3-blue.svg
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
 [license-badge]: https://img.shields.io/badge/license-APLv2-blue.svg
 [typescript-30]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html
-[nodejs]: https://nodejs.org/dist/latest-v8.x/docs/api/
+[nodejs]: https://nodejs.org/dist/latest-v10.x/docs/api/
 [license]: ./LICENSE
 [prs]: ./CONTRIBUTING.md
