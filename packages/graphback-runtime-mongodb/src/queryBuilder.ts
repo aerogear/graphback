@@ -75,6 +75,24 @@ function isPrimitive(test: any): boolean {
 };
 
 
+function dangerousHack(filter: any, key: string): any {
+    // If the field is one of 'createdAt' or 'updatedAt',
+    // try to coerce the values passed directly or to 
+    // operators on these fields to Integers
+    if (["createdAt", "updatedAt"].includes(key)) {
+        if (isPrimitive(filter[key])) {
+            filter[key] = parseInt(filter[key], 10);
+        } else {
+            const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
+                return [entry[0], parseInt(entry[1], 10)];
+            });
+            filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
+        }
+    }
+
+    return filter;
+}
+
 function traverse(filter: any): any {
 
     Object.keys(filter).forEach((key: string) => {
@@ -116,19 +134,8 @@ function traverse(filter: any): any {
                 }
             }
 
-            // If the field is one of 'createdAt' or 'updatedAt',
-            // try to coerce the values passed directly or to 
-            // operators on these fields to Integers
-            if (["createdAt", "updatedAt"].includes(key)) {
-                if (isPrimitive(filter[key])) {
-                    filter[key] = parseInt(filter[key], 10);
-                } else {
-                    const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
-                        return [entry[0], parseInt(entry[1], 10)];
-                    });
-                    filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({[k]: v}) ));
-                }
-            }
+            filter = dangerousHack(filter, key)
+
             // Recursive step
             if (!isPrimitive(filter[key])) {
                 filter[key] = traverse(filter[key]);
