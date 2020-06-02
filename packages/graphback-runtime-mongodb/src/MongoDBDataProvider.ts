@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments } from '@graphback/core';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
+import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy, getFieldTransformations, FieldTransform, TransformType, FieldTransformMap } from '@graphback/runtime';
 import { buildQuery } from './queryBuilder'
 
 interface SortOrder {
@@ -15,11 +15,13 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   protected db: Db;
   protected collectionName: string;
   protected tableMap: ModelTableMap;
+  protected fieldTransformMap: FieldTransformMap;
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
     this.tableMap = buildModelTableMap(baseType);
     this.collectionName = this.tableMap.tableName;
+    this.fieldTransformMap = getFieldTransformations(baseType);
   }
 
   public async create(data: any): Promise<Type> {
@@ -30,11 +32,15 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       delete data[idField.name];
     }
 
+    this.fieldTransformMap[TransformType.CREATE]
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform(f.fieldName);
+      });
+
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
-      result.ops[0][idField.name] = result.ops[0]._id;
 
-      return result.ops[0];
+      return this.mapFields(result.ops[0]);
     }
     throw new NoDataError(`Cannot create ${this.collectionName}`);
   }
@@ -46,13 +52,17 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
 
+    this.fieldTransformMap[TransformType.UPDATE]
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform(f.fieldName);
+      });
+
     const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
     if (result) {
       const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
       if (queryResult && queryResult[0]) {
-        queryResult[0][idField.name] = queryResult[0]._id;
 
-        return queryResult[0];
+        return this.mapFields(queryResult[0]);
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -69,9 +79,8 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: new ObjectId(idField.value) });
       if (result.result.ok) {
-        queryResult[idField.name] = queryResult._id;
 
-        return queryResult;
+        return this.mapFields(queryResult);
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -85,10 +94,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     const data = await query;
 
     if (data) {
-      return {
-        ...data,
-        id: data._id
-      }
+      return this.mapFields(data);
     }
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
@@ -99,10 +105,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
     if (data) {
       return data.map((one: any) => {
-        return {
-          ...one,
-          id: one._id
-        }
+        return this.mapFields(one);
       });
     }
     throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
@@ -136,10 +139,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
         const objectsForId: any = [];
         for (const data of result) {
           if (data[relationField].toString() === objId.toString()) {
-            objectsForId.push({
-              id: data._id.toString(),
-              ...data,
-            });
+            objectsForId.push(this.mapFields(data));
           }
         }
 
@@ -151,6 +151,14 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
     throw new NoDataError(`No results for ${this.collectionName} query and batch read with filter: ${JSON.stringify(filter)}`);
 
+  }
+  
+  protected mapFields(document: any): any {
+    if (document?._id) {
+      document.id = document._id;
+    }
+
+    return document;
   }
 
   private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
@@ -164,11 +172,12 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
           sortOrder[orderBy.field] = -1;
         }
       }
-      console.log('sortorder: ', JSON.stringify(sortOrder));
+
     }
 
     return query.sort(sortOrder);
   }
+
 
   private usePage(query: Cursor<any>, page?: GraphbackPage) {
     if (!page) {

@@ -1,5 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectID } from 'mongodb';
+import { advanceTo, advanceBy } from "jest-date-mock";
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 import { createTestingContext, Context } from "./MongoDataProviderTest";
 
@@ -266,4 +267,45 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
   
     });
   
-  })
+  });
+
+describe('queryBuilder scalar filtering', () => {
+  let context: Context;
+
+  afterEach(() => context.server.stop());
+
+  it('can filter @versioned metadata fields', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @versioned
+    """
+    type Post {
+    id: ID!
+    text: String
+    }
+    `)
+    const startTime = 1590679886048;
+    advanceTo(startTime);
+
+    // Create some posts
+    await Promise.all(
+
+      ["hi guys", "not yet", "bye guys"]
+        .map((postTitle: string) => {
+          advanceBy(3000);
+
+          return context.providers.Post.create({ text: postTitle })
+        }));
+
+    // Get all posts created since startTime
+    const posts = await context.providers.Post.findBy({ createdAt: { gt: startTime } });
+    expect(posts.length).toEqual(3);
+    expect(posts.map((post: any) => post.text)).toEqual(["hi guys", "not yet", "bye guys"]);
+
+    // Get all posts created after the first post
+    const newPosts = await context.providers.Post.findBy({ createdAt: { gt: posts[0].createdAt } });
+    expect(newPosts.length).toEqual(2);
+    expect(newPosts.map((post: any) => post.text)).toEqual(["not yet", "bye guys"]);
+  });
+})

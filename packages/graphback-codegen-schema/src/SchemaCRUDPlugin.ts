@@ -1,11 +1,13 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
+import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName } from '@graphback/core'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
+import { parseMarker } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
+import { markers, fieldNames } from "./metadataAnnotations";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -68,8 +70,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const schemaComposer = new SchemaComposer(schema)
 
     this.buildSchemaModelRelationships(schemaComposer, models);
-
+    
     this.buildSchemaForModels(schemaComposer, models);
+    this.addMetaFields(schemaComposer, models);
 
     return schemaComposer.buildSchema()
   }
@@ -279,6 +282,43 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     }
 
     schemaComposer.Query.addFields(queryFields)
+  }
+
+  protected addMetaFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
+    models.forEach((model: ModelDefinition, index: number)=> {
+      const name = model.graphqlType.name; 
+      const modelTC = schemaComposer.getOTC(name);
+      const desc = model.graphqlType.description;
+      if (parseMarker(markers.versioned, desc)) {
+        // metadata fields needed for @versioned
+
+        modelTC.addFields({
+          [fieldNames.createdAt]: {
+            type: GraphQLString,
+            description: `@${markers.createdAt}
+            @db.type: 'timestamp'`
+          },
+          [fieldNames.updatedAt]: {
+            type: GraphQLString,
+            description: `@${markers.updatedAt}
+            @db.type: 'timestamp'`
+          }
+        });
+
+        const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
+        if (inputType) {
+            inputType.addFields({
+              [fieldNames.createdAt]: {
+                type: StringScalarInputType
+              },
+              [fieldNames.updatedAt]: {
+                type: StringScalarInputType
+              }
+            });
+        }
+      }
+
+    });
   }
 
   private createSchemaCRUDTypes(schemaComposer: SchemaComposer<any>) {

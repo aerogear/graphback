@@ -1,5 +1,5 @@
 import { GraphQLObjectType } from 'graphql';
-import { NoDataError } from '@graphback/runtime';
+import { NoDataError, FieldTransform, TransformType } from '@graphback/runtime';
 import { getDatabaseArguments } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider } from './MongoDBDataProvider';
@@ -42,13 +42,12 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
       }
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       data.version = data.version + 1;
+
+
       // TODO use findOneAndUpdate to check consistency afterwards
-      const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value) }, { $set: data });
-      if (result.result?.ok) {
-        return data;
-      }
+      return super.update(data);
     }
 
-    throw new NoDataError(`Cannot update ${this.collectionName}`);
+    throw new NoDataError(`Could not find document to update in ${this.collectionName}`);
   }
 }
