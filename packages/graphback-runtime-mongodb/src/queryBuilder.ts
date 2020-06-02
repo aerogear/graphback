@@ -74,8 +74,14 @@ function isPrimitive(test: any): boolean {
     return ((test instanceof RegExp) || (test !== Object(test)));
 };
 
-
-function dangerousHack(filter: any, key: string): any {
+/**
+ * This function is a temporary hack that converts createdAt, updatedAt fields
+ * (both passed as string) in a findBy query to Integers so they can be used
+ * for advanced filtering
+ * @param filter filter object
+ * @param key keys of filter object to be converted
+ */
+function stringTimestampsToInt(filter: any, key: string): any {
     // If the field is one of 'createdAt' or 'updatedAt',
     // try to coerce the values passed directly or to 
     // operators on these fields to Integers
@@ -134,7 +140,7 @@ function traverse(filter: any): any {
                 }
             }
 
-            filter = dangerousHack(filter, key)
+            filter = stringTimestampsToInt(filter, key)
 
             // Recursive step
             if (!isPrimitive(filter[key])) {
