@@ -1,8 +1,7 @@
 export const markers = {
     createdAt: "createdAt",
     updatedAt: "updatedAt",
-    versioned: "versioned",
-    delta: "delta"
+    versioned: "versioned"
 }
 
 export const fieldNames = {
