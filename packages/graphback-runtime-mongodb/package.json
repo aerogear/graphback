@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/jest": "25.2.3",
-    "@types/node": "12.12.42",
+    "@types/node": "12.12.43",
     "graphql": "14.6.0",
     "jest": "26.0.1",
     "mongodb-memory-server": "6.6.1",
