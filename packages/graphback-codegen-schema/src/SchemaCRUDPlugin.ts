@@ -7,6 +7,7 @@ import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { parseMarker } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
+import { markers, fieldNames } from "./metadataAnnotations";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -288,18 +289,18 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const name = model.graphqlType.name; 
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
-      if (parseMarker("versioned", desc) || parseMarker("delta", desc)) {
+      if (parseMarker(markers.versioned, desc) || parseMarker(markers.delta, desc)) {
         // metadata fields needed for both @delta and @versioned
 
         modelTC.addFields({
-          "createdAt": {
+          [fieldNames.createdAt]: {
             type: GraphQLString,
-            description: `@createdAt
+            description: `@${markers.createdAt}
             @db.type: 'timestamp'`
           },
-          "updatedAt": {
+          [fieldNames.updatedAt]: {
             type: GraphQLString,
-            description: `@updatedAt
+            description: `@${markers.updatedAt}
             @db.type: 'timestamp'`
           }
         });
@@ -307,10 +308,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
         if (inputType) {
             inputType.addFields({
-              "createdAt": {
+              [fieldNames.createdAt]: {
                 type: StringScalarInputType
               },
-              "updatedAt": {
+              [fieldNames.updatedAt]: {
                 type: StringScalarInputType
               }
             });
