@@ -32,7 +32,7 @@ export const allTemplates: Template[] = [
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-0.14.0',
-      path: '/templates/ts-apollo-mongo-backend',
+      path: '/templates/ts-apollo-mongodb-backend',
     },
     {
       uri: 'https://github.com/aerogear/graphback',
@@ -47,7 +47,7 @@ export const allTemplates: Template[] = [
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-0.14.0',
-      path: '/templates/ts-apollo-mongo-backend',
+      path: '/templates/ts-apollo-mongodb-backend',
     }]
   },
   {
