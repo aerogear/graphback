@@ -79,7 +79,7 @@ function isPrimitive(test: any): boolean {
  * (both passed as string) in a findBy query to Integers so they can be used
  * for advanced filtering
  * @param filter filter object
- * @param key keys of filter object to be converted
+ * @param key field of filter object to be checked
  */
 function stringTimestampsToInt(filter: any, key: string): any {
     // If the field is one of 'createdAt' or 'updatedAt',
