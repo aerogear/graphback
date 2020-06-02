@@ -34,7 +34,7 @@
     "typescript": "3.9.3"
   },
   "dependencies": {
-    "@graphback/core": "^0.14.0-alpha2",
+    "@graphback/core": "0.14.0-alpha2",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {

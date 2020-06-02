@@ -35,8 +35,8 @@
     "typescript": "3.9.3"
   },
   "dependencies": {
-    "@graphback/core": "^0.14.0-alpha2",
-    "@graphback/runtime": "^0.14.0-alpha2",
+    "@graphback/core": "0.14.0-alpha2",
+    "@graphback/runtime": "0.14.0-alpha2",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0",
     "knex": "0.21.1"

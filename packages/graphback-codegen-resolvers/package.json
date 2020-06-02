@@ -35,7 +35,7 @@
     "typescript": "3.9.3"
   },
   "dependencies": {
-    "@graphback/core": "^0.14.0-alpha2",
+    "@graphback/core": "0.14.0-alpha2",
     "pg": "8.2.1",
     "pluralize": "8.0.0",
     "prettier": "2.0.5",
