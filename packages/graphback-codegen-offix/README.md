@@ -14,4 +14,4 @@
 
 Offix Code Generator. 
 
-> NOTE: This package is an early alpha and not officially supported by Graphback
+### NOTE: This package is now *deprecated* and will not be receiving any further updates. Please see [this](https://github.com/aerogear/graphback/issues/1358) for details.
