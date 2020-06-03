@@ -24,9 +24,9 @@ export interface ClientGeneratorPluginConfig {
     fragmentOnly?: boolean
 
     /**
-     * RelativePath for the output files created by generator
+     * RelativePath for the output file created by generator
      */
-    outputPath: string
+    outputFile: string
 }
 
 export const CLIENT_CRUD_PLUGIN = "ClientCRUDPlugin";
@@ -50,8 +50,8 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
     public constructor(pluginConfig?: ClientGeneratorPluginConfig) {
         super()
         this.pluginConfig = Object.assign({ format: 'graphql' }, pluginConfig);
-        if (!pluginConfig.outputPath) {
-            throw new Error("client plugin requires outputPath parameter")
+        if (!pluginConfig.outputFile) {
+            throw new Error("client plugin requires outputFile parameter")
         }
     }
 
@@ -59,7 +59,7 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
         const documents = this.getDocuments(metadata)
         const outputFormat = this.pluginConfig.format;
 
-        writeDocumentsToFilesystem(this.pluginConfig.outputPath, documents, outputFormat);
+        writeDocumentsToFilesystem(this.pluginConfig.outputFile, documents, outputFormat);
     }
 
     public getPluginName(): string {

@@ -16,7 +16,7 @@ test('Test plugin engine ts', async () => {
   }
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
-  const plugin = new ClientCRUDPlugin({ format: 'ts', outputPath: './tmp', fragmentOnly: false });
+  const plugin = new ClientCRUDPlugin({ format: 'ts', outputFile: './tmp/generated', fragmentOnly: false });
   expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
 
@@ -31,6 +31,6 @@ test('Test plugin engine gql', async () => {
   }
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
-  const plugin = new ClientCRUDPlugin({ format: 'graphql', outputPath: './tmp', fragmentOnly: false });
+  const plugin = new ClientCRUDPlugin({ format: 'graphql', outputFile: './tmp/generated', fragmentOnly: false });
   expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
