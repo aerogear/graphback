@@ -41,7 +41,7 @@
     "@graphback/runtime-mongo": "0.14.0-alpha2",
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
-    "graphql-compose": "7.18.0",
+    "graphql-compose": "7.18.1",
     "graphql-metadata": "0.6.2",
     "mongodb": "3.5.8",
     "pluralize": "8.0.0"
