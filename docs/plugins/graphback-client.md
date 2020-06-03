@@ -37,9 +37,8 @@ Plugin allows to create files in many formats to suit the needs of your applicat
    *
    * - ts - typescript file output (backwards compatibility)
    * - graphql - .graphql file
-   * - gqlwithfragment - complete graphql queries containing fragments for redundancy
    */
-  format: 'ts' | 'graphql' | 'gqlwithfragment'
+  format: 'ts' | 'graphql'
 
   /**
    * Generate only fragments and skip query, mutation and subscription elements
@@ -49,9 +48,9 @@ Plugin allows to create files in many formats to suit the needs of your applicat
   fragmentOnly?: boolean
 
   /**
-   * RelativePath for the output files created by generator
+   * RelativePath for the output file created by generator
    */
-  outputPath: string
+  outputFile: string
 ```
 
 Example plugin configuration in YAML: 
@@ -59,7 +58,7 @@ Example plugin configuration in YAML:
  plugins:
   graphback-client:
     format: 'graphql'
-    outputPath: ./client/src/graphql
+    outputFile: ./client/src/graphql/graphback.graphql
 ```
 
 > Note: Plugin require `crud` configuration specified as part of the `graphback` extension 

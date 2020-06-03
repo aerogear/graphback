@@ -20,6 +20,11 @@ Check configuration of the resolvers plugin to see where they are located.
 2. Remove @graphback/codegen-resolvers from your package and the config.
 3. Use Graphback runtime Getting Started Guide 
 4. Change your client output format from `gqlwithfragment` to `graphql`
+5. Replace `outputPath` with `outputFile` in your client config 
+5. The `outputFile` specifies the output path of the generated file
+6. Change your documents path in graphback config to match new `outputFile`
+7. Delete previously generated client documents and rerun generate command
+8. Be sure to correct your documents path in your codegen config if you use GraphQL-Code-Generator
 
 ## Breaking
 
@@ -32,7 +37,8 @@ For more information please refer to https://graphback.dev/docs/db/dbmigrations
 
 ##### New Features
 
-- All client documents are now generated in a single file
+- All client documents are now generated in a single file. The file's path is specified by the `outputFile` field in client config
+- `outputPath` in client config has been removed
 - Added new templates to graphback init commands. All templates now giving ability to add client side application.
 
 
