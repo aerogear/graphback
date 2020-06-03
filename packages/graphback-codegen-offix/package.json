@@ -38,7 +38,7 @@
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
     "graphql-compose": "7.18.0",
-    "graphql-metadata": "0.6.1",
+    "graphql-metadata": "0.6.2",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
