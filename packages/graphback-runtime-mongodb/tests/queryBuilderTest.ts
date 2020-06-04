@@ -34,9 +34,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
     //Create a new database before each tests so that
     //all tests can run parallel
   
-    afterEach(async () => {
-      await context.server.stop();
-    });
+    afterEach(() => context.server.stop());
   
     it('can filter using AND', async () => {
       context = await createTestingContext(postSchema, {
@@ -289,14 +287,10 @@ describe('queryBuilder scalar filtering', () => {
     advanceTo(startTime);
 
     // Create some posts
-    await Promise.all(
-
-      ["hi guys", "not yet", "bye guys"]
-        .map((postTitle: string) => {
-          advanceBy(3000);
-
-          return context.providers.Post.create({ text: postTitle })
-        }));
+    for (const postTitle of ["hi guys", "not yet", "bye guys"]) {
+      advanceBy(3000);
+      await context.providers.Post.create({ text: postTitle });
+    }
 
     // Get all posts created since startTime
     const posts = await context.providers.Post.findBy({ createdAt: { gt: startTime } });
