@@ -76,7 +76,11 @@ export class GraphbackCoreMetadata {
         let crudOptions = parseAnnotations('crud', modelType.description)
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
+        // Whether to add delta queries
+        const deltaSync = parseMetadata('delta', modelType);
 
-        return { graphqlType: modelType, relationships, crudOptions };
+        return { graphqlType: modelType, relationships, crudOptions, config: {
+            deltaSync
+        }};
     }
 }
