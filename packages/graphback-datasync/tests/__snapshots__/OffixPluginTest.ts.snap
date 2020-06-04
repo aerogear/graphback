@@ -45,8 +45,8 @@ type NoteDeltaList {
 
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  syncNote(lastSync: String!): NoteDeltaList!
-  syncComment(lastSync: String!): CommentDeltaList!
+  syncNotes(lastSync: String!): NoteDeltaList!
+  syncComments(lastSync: String!): CommentDeltaList!
 }
 "
 `;
