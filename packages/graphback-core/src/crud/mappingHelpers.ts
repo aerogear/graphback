@@ -170,3 +170,11 @@ export function getInputFieldType(field: GraphQLField<any, any>): GraphQLInputTy
 
   return undefined;
 }
+
+/**
+ * Get the name of delta query for a model
+ * @param typeName Name of the model
+ */
+export function getDeltaQuery(typeName: string) {
+  return `sync${pluralize(typeName)}`;
+}
