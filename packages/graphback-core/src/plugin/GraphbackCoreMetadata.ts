@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
-import { parseAnnotations, parseMarker } from 'graphql-metadata'
+import { parseAnnotations, parseMarker, parseMetadata } from 'graphql-metadata'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common'
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
