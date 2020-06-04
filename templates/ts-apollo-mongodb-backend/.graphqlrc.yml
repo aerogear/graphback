@@ -20,5 +20,5 @@ extensions:
         outputPath: ./src/schema
       graphback-client:
           format: 'graphql'
-          outputPath: ./client/src/graphql
+          outputFile: ./client/src/graphql/graphback.graphql
  

@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable import/no-extraneous-dependencies */
-import { readFileSync, rmdirSync } from 'fs';
+import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer, PubSub, gql } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
@@ -28,6 +28,8 @@ beforeAll(async () => {
   try {
     const { projectConfig, graphbackConfig } = await getConfig();
     const modelText = readFileSync(graphbackConfig.model, 'utf8');
+    mkdirSync("./output");
+    mkdirSync("./output/client")
     const generator = new GraphbackGenerator(modelText, graphbackConfig);
     generator.generateSourceCode();
 
