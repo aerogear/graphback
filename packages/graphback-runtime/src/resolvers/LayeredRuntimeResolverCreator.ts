@@ -1,4 +1,5 @@
 import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata } from '@graphback/core';
+import { parseMarker } from "graphql-metadata";
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -84,6 +85,20 @@ export class LayeredRuntimeResolverCreator {
         //tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           return this.services[modelName].findBy(args.filter, args.orderBy, args.page, context)
+        }
+      }
+
+      // If delta marker is encountered, add resolver for `delta` query
+      if (parseMarker('delta', resolverElement.graphqlType.description)) {
+        const diffQuery = `get${resolverElement.graphqlType.name}Delta`
+
+        resolvers.Query[diffQuery] = (parent: any, args: any, context: any) => {
+          const filter: any = {};
+          if (args?.lastSync) {
+            filter.updatedAt = { gt: args.lastSync};
+          }
+          
+          return this.services[modelName].findBy(filter, undefined, undefined, context);
         }
       }
 

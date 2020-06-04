@@ -1,4 +1,8 @@
-""" @model """
+"""
+@model
+@versioned
+@delta
+"""
 type Note {
   id: ID!
   title: String!
@@ -9,7 +13,11 @@ type Note {
   comments: [Comment]!
 }
 
-""" @model """
+"""
+@model
+@versioned
+@delta
+"""
 type Comment {
   id: ID!
   title: String!
