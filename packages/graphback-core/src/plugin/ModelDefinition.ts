@@ -8,5 +8,9 @@ import { GraphbackCRUDGeneratorConfig } from "./GraphbackCRUDGeneratorConfig"
 export type ModelDefinition = {
     graphqlType: GraphQLObjectType,
     relationships: FieldRelationshipMetadata[]
-    crudOptions: GraphbackCRUDGeneratorConfig
+    crudOptions: GraphbackCRUDGeneratorConfig,
+    config: {
+        // Whether to add delta queries; requires datasync package
+        deltaSync: boolean
+    }
 };
