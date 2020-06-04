@@ -29,7 +29,7 @@
     "ts-jest": "25.5.1",
     "ts-node": "8.10.2",
     "tslint": "6.1.2",
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   },
   "license": "Apache-2.0",
   "publishConfig": {
