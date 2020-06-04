@@ -1,6 +1,6 @@
 {
   "name": "graphback-templates-fullstack",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "private": true,
   "workspaces": [
     "client",
@@ -18,7 +18,7 @@
     "@graphql-codegen/typescript": "1.13.3",
     "@graphql-codegen/typescript-operations": "1.13.3",
     "@graphql-codegen/typescript-react-apollo": "1.13.3",
-    "graphback-cli": "0.12.0",
+    "graphback-cli": "0.12.1",
     "graphql": "14.6.0",
     "tslint": "6.1.1",
     "typescript": "3.8.3"

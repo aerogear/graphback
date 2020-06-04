@@ -8,6 +8,13 @@ title: Releases
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.12.1
+
+##### Bug Fixes
+
+*  Fix subscription configuration mixup ([#1375](https://github.com/aerogear/graphback/pull/1375)) ([2c72ddb0](https://github.com/aerogear/graphback/commit/2c72ddb03058a6b5c478fe28067325aebd172d5e))
+
+
 # 0.12.0
 
 ##### New Features
