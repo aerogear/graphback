@@ -38,7 +38,7 @@
     "ts-jest": "25.5.1",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
-    "typescript": "3.9.3",
+    "typescript": "3.9.5",
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {

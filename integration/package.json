@@ -29,7 +29,7 @@
     "sqlite3": "4.2.0",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   },
   "license": "Apache-2.0"
 }
