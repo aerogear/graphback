@@ -13,7 +13,11 @@ type Comment {
 
   \\"\\"\\"@manyToOne field: 'comments', key: 'noteId'\\"\\"\\"
   noteComment: Note!
-  version: Int
+}
+
+type CommentDeltaList {
+  items: [Comment]
+  lastSync: String
 }
 
 type Mutation {
@@ -32,13 +36,17 @@ type Note {
 
   \\"\\"\\"@oneToMany field: 'noteComment', key: 'noteId'\\"\\"\\"
   comments: [Comment]!
-  version: Int
+}
+
+type NoteDeltaList {
+  items: [Note]
+  lastSync: String
 }
 
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  getNoteDelta(lastSync: String): [Note]
-  getCommentDelta(lastSync: String): [Comment]
+  syncNote(lastSync: String!): NoteDeltaList!
+  syncComment(lastSync: String!): CommentDeltaList!
 }
 "
 `;
