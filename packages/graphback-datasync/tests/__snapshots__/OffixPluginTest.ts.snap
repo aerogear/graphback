@@ -1,7 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test snapshot config gql 1`] = `
-"\\"\\"\\" @model \\"\\"\\"
+"\\"\\"\\"
+@model
+@versioned
+@delta
+\\"\\"\\"
 type Comment {
   id: ID!
   title: String!
@@ -16,7 +20,11 @@ type Mutation {
   likeNote(id: ID!): Note!
 }
 
-\\"\\"\\" @model \\"\\"\\"
+\\"\\"\\"
+@model
+@versioned
+@delta
+\\"\\"\\"
 type Note {
   id: ID!
   title: String!
@@ -29,8 +37,8 @@ type Note {
 
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  NoteDelta(lastSync: String!): [Note]!
-  CommentDelta(lastSync: String!): [Comment]!
+  getNoteDelta(lastSync: String): [Note]
+  getCommentDelta(lastSync: String): [Comment]
 }
 "
 `;

@@ -1,6 +1,7 @@
 
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType } from '@graphback/core'
-import { GraphQLSchema, buildSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema } from 'graphql';
+import { parseMarker } from "graphql-metadata";
 import { SchemaComposer } from 'graphql-compose';
 
 /**
@@ -76,13 +77,13 @@ export class DatasyncPlugin extends GraphbackPlugin {
 
 
             // Diff queries
-            if (this.pluginConfig.generateDeltaQueries) {
-                const diffQuery = `${model.graphqlType.name}Delta`
+            if (parseMarker('delta', model.graphqlType.description)) {
+                const diffQuery = `get${model.graphqlType.name}Delta`
                 schemaComposer.Query.addFields({
-                    [diffQuery]: `[${model.graphqlType.name}]!`
-                })
+                    [diffQuery]: `[${model.graphqlType.name}]`
+                });
                 schemaComposer.Query.addFieldArgs(diffQuery, {
-                    lastSync: 'String!'
+                    lastSync: 'String'
                 })
             }
         })
@@ -100,4 +101,5 @@ export class DatasyncPlugin extends GraphbackPlugin {
     public getPluginName() {
         return SCHEMA_CRUD_PLUGIN_NAME;
     }
+
 }
