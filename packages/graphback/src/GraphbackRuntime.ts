@@ -47,19 +47,18 @@ export class GraphbackRuntime {
   public getDataSourceModels() {
     const models = this.metadata.getModelDefinitions();
 
-    return models.reduce((pubSubModels: any, model: ModelDefinition) => {
+    return models.map((model: ModelDefinition) => {
       const pubSubModel: GraphbackPubSubModel = {
         name: model.graphqlType.name,
         pubSub: {
           publishCreate: model.crudOptions.subCreate,
-          publishUpdate: model.crudOptions.subDelete,
-          publishDelete: model.crudOptions.subUpdate
+          publishUpdate: model.crudOptions.subUpdate,
+          publishDelete: model.crudOptions.subDelete
         }
       }
-      pubSubModels.push(pubSubModel)
-      
-      return pubSubModels;
-    }, []);
+
+      return pubSubModel;
+    });
   }
 
   public getMetadata() {
