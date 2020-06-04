@@ -12,7 +12,7 @@ Please follow individual releases for more information.
 
 ## Migrating to 0.14.0
 
-Version 0.14.0 removed support codegeneration for resolvers. 
+Version 0.14.0 removed support code generation for resolvers. 
 If you used one of the Codegen templates you will need to migrate 
 
 1. Remove your generated resolvers and model file. They are not longer needed as resolvers are generated at runtime.
@@ -21,10 +21,10 @@ Check configuration of the resolvers plugin to see where they are located.
 3. Use Graphback runtime Getting Started Guide 
 4. Change your client output format from `gqlwithfragment` to `graphql`
 5. Replace `outputPath` with `outputFile` in your client config 
-5. The `outputFile` specifies the output path of the generated file
-6. Change your documents path in graphback config to match new `outputFile`
-7. Delete previously generated client documents and rerun generate command
-8. Be sure to correct your documents path in your codegen config if you use GraphQL-Code-Generator
+6. The `outputFile` specifies the output path of the generated file
+7. Change your documents path in graphback config to match new `outputFile`
+8. Delete previously generated client documents and rerun generate command
+9. Be sure to correct your documents path in your codegen config if you use GraphQL-Code-Generator
 
 ## Breaking
 
