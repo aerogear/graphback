@@ -1,7 +1,7 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType } from '@graphback/core'
-import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema } from 'graphql';
-import { parseMarker } from "graphql-metadata";
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, getDeltaQuery } from '@graphback/core'
+import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString } from 'graphql';
+import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer } from 'graphql-compose';
 
 /**
@@ -57,33 +57,25 @@ export class DatasyncPlugin extends GraphbackPlugin {
         }
 
         models.forEach((model: ModelDefinition) => {
-            // TODO use `versioned` marker to check if we should add version
-            const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
-            modifiedType.addFields({
-                version: 'Int'
-            });
-
-            // TODO: Add version to all input types
-            try {
-                const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
-                if (inputType) {
-                    inputType.addFields({
-                        version: 'Int'
-                    });
+            const SyncResultList = new GraphQLObjectType({
+                name: `${model.graphqlType.name}DeltaList`,
+                fields: {
+                    items: { type: GraphQLList(model.graphqlType)},
+                    lastSync: { type: GraphQLString}
                 }
-            } catch (e) {
-                // ignore as we are not guaranteed to have this input type
-            }
-
+            })
 
             // Diff queries
-            if (parseMarker('delta', model.graphqlType.description)) {
-                const diffQuery = `get${model.graphqlType.name}Delta`
+            if (parseMetadata('delta', model.graphqlType)) {
+                
+                const deltaQuery = getDeltaQuery(model.graphqlType.name)
                 schemaComposer.Query.addFields({
-                    [diffQuery]: `[${model.graphqlType.name}]`
+                    [deltaQuery]: {
+                        type: GraphQLNonNull(SyncResultList)
+                    }
                 });
-                schemaComposer.Query.addFieldArgs(diffQuery, {
-                    lastSync: 'String'
+                schemaComposer.Query.addFieldArgs(deltaQuery, {
+                    lastSync: 'String!'
                 })
             }
         })
