@@ -27,6 +27,11 @@ apolloClient.mutate(createUserQuery)
 ```
 
 Plugin allows to create files in many formats to suit the needs of your application.
+The client documents for graphql format are generated in a single file and this should be used by generators, like;
+[GraphQL Code Generator](https://graphql-code-generator.com/)
+[Apollo Generator](https://github.com/apollographql/apollo-tooling#code-generation)
+
+You can also generate the client documents in typescript for direct use if you are not use a generator
 
 ## Plugin Config
 
