@@ -31,7 +31,7 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "DatasyncPlugin";
 /**
  * DataSync plugin
  *
- * Plugin is enabled by """ @ddelta """ annotation
+ * Plugin is enabled by """ @delta """ annotation
  * It will generate diffQueries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
