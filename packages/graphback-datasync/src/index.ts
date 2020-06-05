@@ -1,5 +1,5 @@
-export * from './DatasyncPlugin'
+export * from './DataSyncPlugin'
 export * from './providers';
 
 //Required for plugins
-export { DatasyncPlugin as Plugin } from './DatasyncPlugin'
+export { DataSyncPlugin as Plugin } from './DataSyncPlugin'
