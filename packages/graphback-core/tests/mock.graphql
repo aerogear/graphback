@@ -1,5 +1,7 @@
 """ 
-@model   
+@model
+@versioned
+@delta   
 @crud.delete: false
 """
 type Note {
