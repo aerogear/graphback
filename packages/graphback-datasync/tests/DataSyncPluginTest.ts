@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { buildSchema, printSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
-import { DatasyncPlugin } from '../src/DatasyncPlugin';
+import { DataSyncPlugin } from '../src/DataSyncPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
@@ -17,7 +17,7 @@ test('Test snapshot config gql', async () => {
     "subDelete": true
   }
 
-  const schemaGenerator = new DatasyncPlugin({ outputPath: './tmp', generateDeltaQueries: true })
+  const schemaGenerator = new DataSyncPlugin({ outputPath: './tmp', generateDeltaQueries: true })
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))

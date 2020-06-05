@@ -29,12 +29,12 @@ export interface DatasyncPluginConfig {
 export const SCHEMA_CRUD_PLUGIN_NAME = "DatasyncPlugin";
 
 /**
- * Ofix plugin
+ * DataSync plugin
  *
- * Plugin is enabled by """ @datasync """ annotation
- * It will add version field to the schema and also generate diffQueries
+ * Plugin is enabled by """ @ddelta """ annotation
+ * It will generate diffQueries
  */
-export class DatasyncPlugin extends GraphbackPlugin {
+export class DataSyncPlugin extends GraphbackPlugin {
 
     private pluginConfig: DatasyncPluginConfig;
 
