@@ -3,7 +3,9 @@
 exports[`Test plugin engine 1`] = `
 Array [
   "\\"\\"\\"
-@model   
+@model
+@versioned
+@delta   
 @crud.delete: false
 \\"\\"\\"
 type Note {

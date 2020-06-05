@@ -26,6 +26,7 @@ test('Test metadata', async () => {
   })
 
   expect(models[0].crudOptions.delete).toEqual(false)
+  expect(models[0].config.deltaSync).toEqual(true)
   expect(models[1].crudOptions.create).toEqual(false)
   expect(models[1].crudOptions.delete).toEqual(true)
   expect(crudModels).toMatchSnapshot()
