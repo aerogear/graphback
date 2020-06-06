@@ -15,6 +15,7 @@ const operatorMap = {
     lt: '$lt',
     ge: '$gte',
     gt: '$gt',
+    in: '$in',
 }
 
 type OperatorTransform = [string, any][];
