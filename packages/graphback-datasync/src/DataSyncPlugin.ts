@@ -1,8 +1,8 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, getDeltaQuery } from '@graphback/core'
-import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, getDeltaQuery, getDeltaType, getDeltaListType, parseRelationshipAnnotation } from '@graphback/core'
+import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
 import { parseMetadata } from "graphql-metadata";
-import { SchemaComposer } from 'graphql-compose';
+import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -55,24 +55,34 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
             return schema;
         }
-
         models.forEach((model: ModelDefinition) => {
-            const SyncResultList = new GraphQLObjectType({
-                name: `${model.graphqlType.name}DeltaList`,
-                fields: {
-                    items: { type: GraphQLList(model.graphqlType)},
-                    lastSync: { type: GraphQLString}
-                }
+            
+            const modelName = model.graphqlType.name;
+            const modifiedType = schemaComposer.getOTC(modelName);
+            const entries = Object.entries(modifiedType.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
+                return parseRelationshipAnnotation(e[1].description) === undefined
             })
 
+            const fields = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
+
+            schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
+                ...fields,
+                deleted: 'Boolean',
+            })            
+
+            schemaComposer.createObjectTC({
+                name: getDeltaListType(modelName),
+                fields: {
+                    items: `[${getDeltaType(modelName)}]!`,
+                    lastSync: `String`
+                }
+            })
             // Diff queries
             if (parseMetadata('delta', model.graphqlType)) {
                 
                 const deltaQuery = getDeltaQuery(model.graphqlType.name)
                 schemaComposer.Query.addFields({
-                    [deltaQuery]: {
-                        type: GraphQLNonNull(SyncResultList)
-                    }
+                    [deltaQuery]: `${getDeltaListType(modelName)}!`
                 });
                 schemaComposer.Query.addFieldArgs(deltaQuery, {
                     lastSync: 'String!'
