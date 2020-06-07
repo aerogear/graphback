@@ -11,15 +11,14 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
-
-    // Mark any created items with 'deleted' flag set to false
-    this.fieldTransformMap[TransformType.CREATE].push({
-      fieldName: 'deleted',
-      transform: () => false
-    });
   }
 
-//remindme create service creator method
+  public async create(data: any): Promise<Type> {
+    data._deleted = false;
+
+    return super.create(data);
+  }
+
   public async update(data: any): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
 
@@ -28,7 +27,7 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     }
 
     // TODO Can be improved by conditional updates
-    const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value), deleted: false }).toArray();
+    const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value), _deleted: false }).toArray();
     if (queryResult && queryResult[0]) {
       queryResult[0][idField.name] = queryResult[0]._id;
       if (data.updatedAt !== queryResult[0].updatedAt) {
@@ -46,10 +45,10 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
   }
 
   public async delete(data: Type): Promise<Type> {
-    // Only mark items as deleted: true
+    // Only mark items as _deleted: true
     return super.update({
       ...data,
-      deleted: true
+      _deleted: true
     });
   }
 
@@ -73,7 +72,7 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
       filter = {};
     }
     if (filter.deleted === undefined) {
-      filter.deleted = false;
+      filter._deleted = false;
     }
 
     return filter;

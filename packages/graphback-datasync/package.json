@@ -1,6 +1,7 @@
 {
   "name": "@graphback/datasync",
   "version": "0.14.0-alpha2",
+  "private": true,
   "description": "Datasync Plugin for Graphback",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -25,6 +26,9 @@
   "devDependencies": {
     "@types/jest": "25.2.3",
     "@types/node": "12.12.44",
+    "jest-date-mock": "1.0.8",
+    "mongodb-memory-server": "6.6.1",
+    "@graphback/codegen-schema": "0.14.0-alpha2",
     "graphql": "14.6.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
@@ -42,7 +46,7 @@
     "@graphql-toolkit/core": "0.10.7",
     "graphql-compose": "7.18.1",
     "graphql-metadata": "0.6.2",
-    "graphql-subscriptions": "^1.1.0",
+    "graphql-subscriptions": "1.1.0",
     "mongodb": "3.5.8",
     "pluralize": "8.0.0"
   },
