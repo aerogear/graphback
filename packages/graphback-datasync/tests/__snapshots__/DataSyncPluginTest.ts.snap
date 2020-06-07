@@ -19,7 +19,7 @@ type CommentDelta {
   id: ID!
   title: String!
   description: String!
-  deleted: Boolean
+  _deleted: Boolean
 }
 
 type CommentDeltaList {
@@ -49,7 +49,7 @@ type NoteDelta {
   id: ID!
   title: String!
   description: String!
-  deleted: Boolean
+  _deleted: Boolean
 }
 
 type NoteDeltaList {

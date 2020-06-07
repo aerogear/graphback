@@ -178,11 +178,3 @@ export function getInputFieldType(field: GraphQLField<any, any>): GraphQLInputTy
 export function getDeltaQuery(typeName: string) {
   return `sync${pluralize(typeName)}`;
 }
-
-export function getDeltaListType(typeName: string): string {
-  return `${typeName}DeltaList`;
-}
-
-export function getDeltaType(typeName: string) {
-  return `${typeName}Delta`;
-}

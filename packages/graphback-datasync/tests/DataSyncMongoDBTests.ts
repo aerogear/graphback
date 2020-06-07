@@ -79,7 +79,7 @@ describe('Soft deletion test', () => {
     const { Post }  = context.providers;
 
     const first = await Post.create({ text: 'TestPost' });
-    expect(first.deleted).toEqual(false)
+    expect(first._deleted).toEqual(false)
   })
 
   it('sets deleted to true on deletion', async () => {
@@ -102,7 +102,7 @@ describe('Soft deletion test', () => {
     const { id } = await Post.create({ text: 'TestPost' });
     advanceTo(deleteTime);
     const deletedPost = await Post.delete({ id });
-    expect(deletedPost.deleted).toEqual(true);
+    expect(deletedPost._deleted).toEqual(true);
     expect(deletedPost.updatedAt).toEqual(deleteTime);
   })
 })

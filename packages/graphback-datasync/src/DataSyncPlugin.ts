@@ -1,8 +1,9 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, getDeltaQuery, getDeltaType, getDeltaListType, parseRelationshipAnnotation } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, getDeltaQuery } from '@graphback/core'
 import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
+import { getDeltaType, getDeltaListType } from "./deltaMappingHelper";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -60,6 +61,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
             const modelName = model.graphqlType.name;
             const modifiedType = schemaComposer.getOTC(modelName);
             const entries = Object.entries(modifiedType.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
+                // Remove relationship fields from delta Types
                 return parseRelationshipAnnotation(e[1].description) === undefined
             })
 
@@ -67,7 +69,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
             schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
                 ...fields,
-                deleted: 'Boolean',
+                _deleted: 'Boolean',
             })            
 
             schemaComposer.createObjectTC({
