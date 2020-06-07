@@ -71,7 +71,7 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     if (filter === undefined) {
       filter = {};
     }
-    if (filter.deleted === undefined) {
+    if (filter._deleted === undefined) {
       filter._deleted = false;
     }
 
