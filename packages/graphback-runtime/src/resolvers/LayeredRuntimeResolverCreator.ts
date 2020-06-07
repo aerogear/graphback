@@ -92,7 +92,7 @@ export class LayeredRuntimeResolverCreator {
         const deltaQuery = getDeltaQuery(resolverElement.graphqlType.name)
 
         resolvers.Query[deltaQuery] = async (parent: any, args: any, context: any) => {
-          const res = await this.services[modelName].findBy({ updatedAt:{ gt: args.lastSync }}, undefined, undefined, context);
+          const res = await this.services[modelName].findBy({ updatedAt:{ gt: args.lastSync }, deleted: { in: [true, false]}}, undefined, undefined, context);
           
           return {
             ...res,

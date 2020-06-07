@@ -15,8 +15,15 @@ type Comment {
   noteComment: Note!
 }
 
+type CommentDelta {
+  id: ID!
+  title: String!
+  description: String!
+  deleted: Boolean
+}
+
 type CommentDeltaList {
-  items: [Comment]
+  items: [CommentDelta]!
   lastSync: String
 }
 
@@ -38,8 +45,15 @@ type Note {
   comments: [Comment]!
 }
 
+type NoteDelta {
+  id: ID!
+  title: String!
+  description: String!
+  deleted: Boolean
+}
+
 type NoteDeltaList {
-  items: [Note]
+  items: [NoteDelta]!
   lastSync: String
 }
 
