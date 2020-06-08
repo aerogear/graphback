@@ -22,7 +22,7 @@ type Todos {
 type User {
   name: String
   """
-  @db.primary
+  @id
   """
   username: String
 }

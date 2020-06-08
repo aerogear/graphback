@@ -38,7 +38,7 @@ test('should map to default custom ID field from annotations', () => {
         id: ID!
         name: String
         """
-        @db.primary
+        @id
         """
         email: String
     }`);

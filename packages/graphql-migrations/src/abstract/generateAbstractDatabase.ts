@@ -13,7 +13,7 @@ import {
   isScalarType,
   GraphQLEnumValue,
 } from 'graphql'
-import { parseAnnotations, stripAnnotations } from 'graphql-metadata';
+import { parseAnnotations, stripAnnotations, parseMetadata } from 'graphql-metadata';
 // eslint-disable-next-line import/no-internal-modules
 import { TypeMap } from 'graphql/type/schema'
 import { escapeComment } from '../util/comments'
@@ -27,7 +27,14 @@ import { ForeignKey, TableColumn } from './TableColumn'
 
 const ROOT_TYPES = ['Query', 'Mutation', 'Subscription']
 
-const INDEX_TYPES = [
+const ID_TYPE = {
+  list: 'primaries',
+  default: (name: string, type: string) => name === 'id' && type === 'ID',
+  max: 1,
+  defaultName: (table: string) => `${table}_pkey`,
+};
+
+const INDEX_UNIQUE_TYPES = [
   {
     annotation: 'index',
     list: 'indexes',
@@ -35,18 +42,11 @@ const INDEX_TYPES = [
     defaultName: (table: string, column: string) => `${table}_${column}_index`,
   },
   {
-    annotation: 'primary',
-    list: 'primaries',
-    default: (name: string, type: string) => name === 'id' && type === 'ID',
-    max: 1,
-    defaultName: (table: string) => `${table}_pkey`,
-  },
-  {
     annotation: 'unique',
     list: 'uniques',
     defaultName: (table: string, column: string) => `${table}_${column}_unique`,
-  },
-]
+  }
+];
 
 export type ScalarMap = (
   field: GraphQLField<any, any>,
@@ -375,13 +375,26 @@ class AbstractDatabaseBuilder {
       return undefined
     }
 
-    //Index
-    for (const indexTypeDef of INDEX_TYPES) {
+
+    // Handle Primary Key
+    const isPrimaryKey = parseMetadata("id", field) || (isScalarType(fieldType) && ID_TYPE.default(field.name, fieldType.name));
+    if (this.currentTable && isPrimaryKey) {
+      const indexName = ID_TYPE.defaultName(this.currentTable.name).substr(0, 63);
+      const list: any[] = this.currentTable[ID_TYPE.list] || [];
+      if(list.length === ID_TYPE.max) {
+        list.splice(0, ID_TYPE.max); // TODO - should this be an error? Multiple primary keys for table 
+     }
+
+     list.push({
+      name: indexName,
+      columns: [columnName] 
+    });
+    }
+
+    //Handle Index and Unique
+    for (const indexTypeDef of INDEX_UNIQUE_TYPES) {
       const annotation = annotations[indexTypeDef.annotation]
-      if (this.currentTable && (annotation ||
-        (indexTypeDef.default && isScalarType(fieldType) &&
-          indexTypeDef.default(field.name, fieldType.name) && annotation !== false))
-      ) {
+      if (this.currentTable && annotation) {
         let indexName: string | undefined
         let indexType: string | undefined
         if (typeof annotation === 'string') {
@@ -402,9 +415,6 @@ class AbstractDatabaseBuilder {
               name: indexName,
               columns: [],
             }
-          if (indexTypeDef.max && list.length === indexTypeDef.max) {
-            list.splice(0, 1)
-          }
           list.push(index)
         }
         index.columns.push(columnName)
