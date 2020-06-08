@@ -1,5 +1,3 @@
-import * as pluralize from 'pluralize'
-
 export function getDeltaListType(typeName: string): string {
   return `${typeName}DeltaList`;
 }
