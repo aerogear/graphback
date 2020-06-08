@@ -104,5 +104,8 @@ describe('Soft deletion test', () => {
     const deletedPost = await Post.delete({ id });
     expect(deletedPost._deleted).toEqual(true);
     expect(deletedPost.updatedAt).toEqual(deleteTime);
+
+    // Tests that we cannot find it anymore
+    expect(Post.findOne({id})).rejects.toThrow();
   })
 })

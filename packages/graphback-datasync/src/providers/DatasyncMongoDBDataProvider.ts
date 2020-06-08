@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments } from '@graphback/core';
 import { ObjectId } from 'mongodb';
-import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage } from '@graphback/runtime-mongo'; 
+import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType } from '@graphback/runtime-mongo'; 
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
@@ -46,21 +46,54 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
 
   public async delete(data: any): Promise<Type> {
 
-    // Only mark items as _deleted: true
-    return super.update({
-      ...data,
-      _deleted: true
-    });
+    const { idField } = getDatabaseArguments(this.tableMap, data);
+
+    if (!idField.value) {
+      throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
+    }
+
+    data = {};
+
+    this.fieldTransformMap[TransformType.UPDATE]
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform();
+      });
+
+    data._deleted = true;
+
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value), _deleted: false }, { $set: data });
+    if (result.result.nModified === 1) {
+      const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
+      if (queryResult && queryResult[0]) {
+
+        return this.mapFields(queryResult[0]);
+      }
+    }
+    throw new NoDataError(`Could not delete from ${this.collectionName}`);
   }
 
   public async findOne(filter: any): Promise<Type> {
-    filter = this.mapDeletedField(filter);
+    if (filter.id) {
+      filter = { _id: new ObjectId(filter.id) }
+    }
+    const query = this.db.collection(this.collectionName).findOne({
+      ...filter,
+      _deleted: false
+    });
+    const data = await query;
 
-    return super.findOne(filter);
+    if (data) {
+      return this.mapFields(data);
+    }
+    throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
   public async findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
-    filter = this.mapDeletedField(filter);
+    if (filter === undefined) {
+      filter = {};
+    }
+
+    filter._deleted = false
 
     return super.findBy(filter, orderBy, page);
   }
@@ -73,15 +106,5 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     };
 
     return super.findBy(filter, undefined, undefined);
-  }
-
-  private mapDeletedField(filter: any) {
-    if (filter === undefined) {
-      filter = {};
-    }
-
-    filter._deleted = false
-
-    return filter;
   }
 }
