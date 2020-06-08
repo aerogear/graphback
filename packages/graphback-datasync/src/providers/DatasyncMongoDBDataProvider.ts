@@ -1,13 +1,13 @@
 import { GraphQLObjectType } from 'graphql';
-import { NoDataError, TransformType, GraphbackOrderBy, GraphbackPage } from '@graphback/runtime';
 import { getDatabaseArguments } from '@graphback/core';
 import { ObjectId } from 'mongodb';
-import { MongoDBDataProvider } from '@graphback/runtime-mongo';
+import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage } from '@graphback/runtime-mongo'; 
+import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
-export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> {
+export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> implements DataSyncProvider {
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
@@ -44,7 +44,8 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     throw new NoDataError(`Could not find document to update in ${this.collectionName}`);
   }
 
-  public async delete(data: Type): Promise<Type> {
+  public async delete(data: any): Promise<Type> {
+
     // Only mark items as _deleted: true
     return super.update({
       ...data,
@@ -53,9 +54,6 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
   }
 
   public async findOne(filter: any): Promise<Type> {
-    // This step is used to check if a deleted check is already given
-    // It will enable us to check for deleted items in a sync Query
-    // without having to modify the API
     filter = this.mapDeletedField(filter);
 
     return super.findOne(filter);
@@ -67,13 +65,22 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     return super.findBy(filter, orderBy, page);
   }
 
+  public sync(lastSync: string): Promise<Type[]> {
+    const filter = {
+      updatedAt: {
+        gt: lastSync
+      },
+    };
+
+    return super.findBy(filter, undefined, undefined);
+  }
+
   private mapDeletedField(filter: any) {
     if (filter === undefined) {
       filter = {};
     }
-    if (filter._deleted === undefined) {
-      filter._deleted = false;
-    }
+
+    filter._deleted = false
 
     return filter;
   }

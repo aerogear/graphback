@@ -17,7 +17,7 @@ import { GraphbackPubSub } from "./GraphbackPubSub"
  */
 //tslint:disable-next-line: no-any
 export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
-  private db: GraphbackDataProvider;
+  protected db: GraphbackDataProvider;
   private logger: GraphbackMessageLogger;
   private pubSub: PubSubEngine;
   private publishConfig: GraphbackPubSub;

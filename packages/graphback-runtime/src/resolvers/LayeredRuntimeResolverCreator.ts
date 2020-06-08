@@ -91,13 +91,14 @@ export class LayeredRuntimeResolverCreator {
       if (resolverElement.config.deltaSync) {
         const deltaQuery = getDeltaQuery(resolverElement.graphqlType.name)
 
+        const dataSyncService = this.services[modelName] as any;
+
+        if (dataSyncService.sync === undefined) {
+          throw Error("Please use DataSync provider for delta queries");
+        }
+
         resolvers.Query[deltaQuery] = async (parent: any, args: any, context: any) => {
-          const res = await this.services[modelName].findBy({ updatedAt:{ gt: args.lastSync }, _deleted: { in: [true, false]}}, undefined, undefined, context);
-          
-          return {
-            ...res,
-            lastSync: Date.now()
-          }
+          return dataSyncService.sync(args.lastSync);
         }
       }
 
