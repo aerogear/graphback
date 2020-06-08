@@ -146,10 +146,6 @@ class AbstractDatabaseBuilder {
 
     const fields = type.getFields()
 
-    if (!fields.id) {
-      throw new Error(`Required type ${this.currentType}.id not found`);
-    }
-
     for (const key of Object.keys(fields)) {
       const field = fields[key]
 
