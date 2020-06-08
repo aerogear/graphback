@@ -97,7 +97,7 @@ describe('Soft deletion test', () => {
 
     const { Post }  = context.providers;
     const startTime = 1590679886048;
-    const deleteTime = 1590679886048;
+    const deleteTime = 1590679887032;
     advanceTo(startTime);
     const { id } = await Post.create({ text: 'TestPost' });
     advanceTo(deleteTime);
