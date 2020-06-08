@@ -21,13 +21,13 @@ test('should get primary from id: ID field', () => {
     expect(primaryKey.name).toEqual('id');
 });
 
-test('should get primary key from @db.primary annotation', () => {
+test('should get primary key from @id annotation', () => {
     const schema = buildSchema(`
     """ @model """
     type User {
         id: ID!
         """
-        @db.primary
+        @id
         """
         email: String!
         name: String
@@ -57,17 +57,17 @@ test('should throw an error if no primary key in model', () => {
     expect(() => getPrimaryKey(userModel)).toThrowError('User type has no primary field.')
 });
 
-test('should throw an error if multiple @db.primary annotations', () => {
+test('should throw an error if multiple @id annotations', () => {
     const schema = buildSchema(`
     """ @model """
     type User {
         id: ID!
         """
-        @db.primary
+        @id
         """
         email: String!
         """
-        @db.primary
+        @id
         """
         name: String
     }`);

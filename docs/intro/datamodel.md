@@ -36,7 +36,7 @@ type Note {
 }
 ```
 
-You can set a custom primary key field using the `@db.primary` field annotation.
+You can set a custom primary key field using the `@id` field annotation.
 
 ```graphql
 """
@@ -45,7 +45,7 @@ You can set a custom primary key field using the `@db.primary` field annotation.
 type Note {
   id: ID!
   """
-  @db.primary
+  @id
   """
   email: String
 }

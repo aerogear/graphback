@@ -34,6 +34,7 @@ For more information please refer to https://graphback.dev/docs/db/dbmigrations
 - GraphbackPluginEngine accepts now object instead of arguments.
 `new GraphbackPluginEngine({schema})`
 - Removed `gqlwithfragment` format in client
+- `@db.primary` is removed, use `@id` instead.
 
 ##### New Features
 

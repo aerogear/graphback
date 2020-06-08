@@ -120,7 +120,7 @@ test('delete User by custom ID field', async () => {
     type User {
       id: ID
       """
-      @db.primary
+      @id
       """
       email: String
       name: String
@@ -143,7 +143,7 @@ test('update User by custom ID field', async () => {
     type User {
       id: ID
       """
-      @db.primary
+      @id
       """
       email: String
       name: String

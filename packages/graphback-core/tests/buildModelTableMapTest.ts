@@ -80,7 +80,7 @@ test('should use custom ID field from annotation', () => {
     type User {
         id: ID!
         """
-        @db.primary
+        @id
         @db.name: 'user_email'
         """
         email: String!

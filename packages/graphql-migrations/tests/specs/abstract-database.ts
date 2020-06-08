@@ -155,6 +155,27 @@ test('default primary index', async () => {
   expect(id.columns).toEqual(['id'])
 })
 
+test('primary key with the @id annotation', async () => {
+  const schema = buildSchema(`
+      """
+      @model
+      """
+      type User {
+        """
+        @id
+        This will be the primary key
+        """
+        email: String!
+      }
+    `)
+  const adb = await generateAbstractDatabase(schema)
+  expect(adb.tables.length).toEqual(1);
+  const [User] = adb.tables
+  expect(User.primaries.length).toEqual(1);
+  const [id] = User.primaries
+  expect(id.columns).toEqual(['email'])
+})
+
 test('simple index', async () => {
   const schema = buildSchema(`
       """
