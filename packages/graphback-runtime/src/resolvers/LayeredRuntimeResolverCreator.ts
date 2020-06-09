@@ -89,7 +89,7 @@ export class LayeredRuntimeResolverCreator {
         const deltaQuery = getDeltaQuery(resolverElement.graphqlType.name)
 
         resolvers.Query[deltaQuery] = async (parent: any, args: any, context: any) => {
-          const dataSyncService = context[modelName];
+          const dataSyncService = context.services[modelName];
 
           if (dataSyncService.sync === undefined) {
             throw Error("Please use DataSync provider for delta queries");
