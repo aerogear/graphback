@@ -56,6 +56,7 @@
     "codegen-client-workspace": "yarn workspace @graphback/codegen-client",
     "codegen-schema-workspace": "yarn workspace @graphback/codegen-schema",
     "runtime-workspace": "yarn workspace @graphback/runtime",
+    "datasync-workspace": "yarn workspace @graphback/datasync",
     "runtime-knex-workspace": "yarn workspace @graphback/runtime-knex",
     "runtime-mongo-workspace": "yarn workspace @graphback/runtime-mongo",
     "graphql-migrations-workspace": "yarn workspace graphql-migrations",

@@ -1,2 +1,2 @@
-export * from './createDataSyncServices';
+export * from './createDataSyncService'
 export * from './DataSyncCRUDService'
