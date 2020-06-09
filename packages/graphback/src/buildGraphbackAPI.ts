@@ -1,7 +1,7 @@
 import { GraphQLSchema } from 'graphql';
 import { GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition } from '@graphback/core';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
-import { LayeredRuntimeResolverCreator, GraphbackCRUDService, createCRUDService, GraphbackDataProvider } from '@graphback/runtime';
+import { LayeredRuntimeResolverCreator, GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap } from '@graphback/runtime';
 import { PubSub } from 'graphql-subscriptions';
 
 export interface GraphbackAPIConfig {
@@ -23,10 +23,6 @@ export interface GraphbackAPIConfig {
   dataProviderCreator(...args: any): GraphbackDataProvider;
 }
 
-interface GraphbackServices {
-  [modelName: string]: GraphbackCRUDService
-}
-
 /**
  * Defines the individual components created in the Graphback API
  */
@@ -46,20 +42,20 @@ export interface GraphbackAPI {
   /**
    * Model:Service map of CRUD services for every data model
    */
-  services: GraphbackServices
+  services: GraphbackServiceConfigMap
 }
 
 function createServices(models: ModelDefinition[], createService: Function, createProvider: Function) {
-  const serviceMap: GraphbackServices = {}
+  const services: GraphbackServiceConfigMap = {}
 
   for (const model of models) {
     const modelType = model.graphqlType;
     const modelProvider = createProvider(model)
     const modelService = createService(model, modelProvider)
-    serviceMap[modelType.name] = modelService
+    services[modelType.name] = modelService
   }
 
-  return serviceMap
+  return services
 }
 
 /**
