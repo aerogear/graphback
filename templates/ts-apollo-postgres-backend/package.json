@@ -13,6 +13,8 @@
   "license": "Apache 2.0",
   "dependencies": {
     "@graphback/runtime-knex": "0.14.0-alpha3",
+    "@graphql-tools/load": "6.0.9",
+    "@graphql-tools/graphql-file-loader": "6.0.9",
     "apollo-server-express": "2.14.3",
     "cors": "2.8.5",
     "dotenv": "8.2.0",
