@@ -1,23 +1,40 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config()
+import path from 'path'
 import { ApolloServer } from "apollo-server-express"
+import { buildGraphbackAPI } from 'graphback'
+import { loadSchemaSync } from '@graphql-tools/load'
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
+import { createMongoDbProvider } from '@graphback/runtime-mongo'
 import cors from "cors"
 import express from "express"
 import http from "http"
-import { printSchema } from 'graphql'
-import { createRuntime } from './runtime'
+import { connectDB } from './db'
 
 async function start() {
   const app = express()
 
   app.use(cors())
 
-  // connect to db
-  const { schema, resolvers } = await createRuntime();
+  const modelDefs = loadSchemaSync(path.resolve('./model/*.graphql'), {
+    loaders: [
+      new GraphQLFileLoader()
+    ]
+  })
+
+  const db = await connectDB()
+
+  const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+    dataProviderCreator: createMongoDbProvider(db)
+  });
 
   const apolloServer = new ApolloServer({
-    typeDefs: printSchema(schema),
-    resolvers
+    typeDefs,
+    resolvers,
+    context: (context: any) => ({
+      ...context,
+      services
+    })
   })
 
   apolloServer.applyMiddleware({ app })

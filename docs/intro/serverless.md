@@ -10,46 +10,77 @@ Schema and resolvers are created in-code and are passed to an Apollo GraphQL or 
 
 ## Adding runtime layer to your application
 
-To create GraphQL Layer at runtime developers need to initialize `GraphbackRuntime` instance as follows:
+The `buildGraphbackAPI` method creates a schema, resolvers and CRUD services at runtime using your data model and some minimal configuration. The example below shows how you can use Graphback with Apollo and a Postgres database.
 
 ```ts
+import { ApolloServer } from "apollo-server-express"
+import { buildGraphbackAPI } from 'graphback'
+import Knex from 'knex'
+import { createKnexDbProvider } from '@graphback/runtime-knex'
 
-    import { GraphbackRuntime, ModelDefinition, PgKnexDBDataProvider } from 'graphback'
-    import { PubSub } from 'graphql-subscriptions';
+const typeDefs = `
+"""
+@model
+"""
+type User {
+  id: ID
+  name: String
+}
+`
 
-    // Create provider using knex
-    class PostgreSQLRuntime extends GraphbackRuntime {
-      db: Knex<any, any[]>;
+const db = Knex(...)
 
-      constructor(schema: string, config: GraphbackGeneratorConfig, db: Knex) {
-        super(schema, config);
-        this.db = db;
-      }
+// Creates in memory type definitions, resolvers and CRUD services
+const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  dataProviderCreator: createKnexDbProvider(db)
+});
 
-      protected createDBProvider(model: ModelDefinition) {
-        return new PgKnexDBDataProvider(model.graphqlType, this.db);
-      }
-    }
-
-    const client = new Knex(...);
-    const graphbackOptions = {...}
-    const schemaText = `type Test ...`
-
-    const pubSub = new PubSub();
-    const serviceOverrides = {}
-    const runtimeEngine = new PostgreSQLRuntime(schemaText, graphbackConfig, client);
-    const runtime = runtimeEngine.buildRuntime(pubSub, {});
-
-  const executableSchema = makeExecutableSchema({
-    typeDefs: printSchema(runtime.schema),
-    resolvers: runtime.resolvers,
-    resolverValidationOptions: {
-      requireResolversForResolveType: false
-    }
-  });
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: (context) => ({
+    ...context,
+    services
+  })
+});
 ```
 
-See our [TypeScript Apollo Runtime](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-runtime-backend/src/runtime.ts) template for a fully functional example.
+If you prefer to use MongoDb:
+
+```ts
+import { createMongoDbProvider } from '@graphback/runtime-mongo'
+
+const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  dataProviderCreator: createMongoDbProvider(db)
+});
+```
+
+By default, Graphback will create a CRUDService with default configuration for each model. You can customise at runtime:
+
+```ts
+import { createMongoDbProvider, createCRUDService } from '@graphback/runtime-mongo'
+import { MyCustomLogger } from './util'
+
+const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  serviceCreator: createCRUDService({
+    pubSub: new PubSub(),
+    logger: MyCustomLogger
+  }),
+  dataProviderCreator: createMongoDbProvider(db)
+});
+```
+
+### buildGraphbackAPI(model, config) ⇒ <code>GraphbackAPI</code>
+
+`buildGraphbackAPI`
+
+| Param | Type | Description |
+| --- | --- | --- |
+| model | <code>GraphQLSchema</code> \| <code>string</code> | Data model as a string or GraphQL schema. Used to generate the Graphback API resolvers, services and database |
+| [config.serviceCreator] | <code>function</code> | Creator class specifying which default CRUD service should be created for each model. |
+| config.dataProviderCreator | <code>function</code> | Creator class specifying which default database provider should be created for each model. |
+| [config.crud] | <code>GraphbackCRUDGeneratorConfig</code> | Global CRUD configuration for the Graphback API. |
+| [config.plugins] | <code>Array.&lt;GraphbackPlugin&gt;</code> | Schema plugins to perform automatic changes to the generated schema |
 
 ## Next steps
 

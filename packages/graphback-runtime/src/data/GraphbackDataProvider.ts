@@ -1,3 +1,4 @@
+import { GraphQLObjectType } from 'graphql';
 import { GraphbackPage } from "../GraphbackPage"
 import { GraphbackOrderBy } from '../GraphbackOrderBy';
 

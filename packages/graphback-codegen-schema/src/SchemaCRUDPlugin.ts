@@ -21,7 +21,7 @@ export interface SchemaCRUDPluginConfig {
   /**
    * RelativePath for the output files created by generator
    */
-  outputPath: string
+  outputPath?: string
 
   /**
    * Name of the output file (by default `schema`)
@@ -51,9 +51,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
   public constructor(pluginConfig?: SchemaCRUDPluginConfig) {
     super()
-    this.pluginConfig = Object.assign({ format: 'graphql', outputFileName: 'schema' }, pluginConfig);
-    if (!pluginConfig.outputPath) {
-      throw new Error("schema plugin requires outputPath parameter")
+    this.pluginConfig = {
+      format: 'graphql',
+      outputFileName: 'schema',
+      ...pluginConfig
     }
   }
 
@@ -70,7 +71,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const schemaComposer = new SchemaComposer(schema)
 
     this.buildSchemaModelRelationships(schemaComposer, models);
-    
+
     this.buildSchemaForModels(schemaComposer, models);
     this.addMetaFields(schemaComposer, models);
 
@@ -78,6 +79,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   public createResources(metadata: GraphbackCoreMetadata): void {
+    if (!this.pluginConfig.outputPath) {
+      return
+    }
+
     const schemaString = this.transformSchemaToString(metadata.getSchema());
     if (!existsSync(this.pluginConfig.outputPath)) {
       mkdirSync(this.pluginConfig.outputPath, { recursive: true });
@@ -285,8 +290,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   protected addMetaFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
-    models.forEach((model: ModelDefinition, index: number)=> {
-      const name = model.graphqlType.name; 
+    models.forEach((model: ModelDefinition, index: number) => {
+      const name = model.graphqlType.name;
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
       if (parseMarker(markers.versioned, desc)) {
@@ -307,14 +312,14 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
         if (inputType) {
-            inputType.addFields({
-              [fieldNames.createdAt]: {
-                type: StringScalarInputType
-              },
-              [fieldNames.updatedAt]: {
-                type: StringScalarInputType
-              }
-            });
+          inputType.addFields({
+            [fieldNames.createdAt]: {
+              type: StringScalarInputType
+            },
+            [fieldNames.updatedAt]: {
+              type: StringScalarInputType
+            }
+          });
         }
       }
 
@@ -329,7 +334,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     schemaComposer.add(BooleanScalarInputType);
     schemaComposer.add(createInputTypeForScalar(GraphQLInt));
     schemaComposer.add(createInputTypeForScalar(GraphQLFloat));
-    
+
     schemaComposer.forEach((tc: NamedTypeComposer<any>) => {
       const namedType = tc.getType();
       if (isScalarType(namedType) && !isSpecifiedScalarType(namedType)) {

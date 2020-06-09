@@ -1,26 +1,27 @@
 
 import Keycloak from 'keycloak-connect'
 import { KeycloakContextBase } from 'keycloak-connect-graphql'
-import { KeycloakCrudService } from '../src'
-import { MockDataProvider } from './mocks/MockDataProvider'
 import { PubSub } from 'graphql-subscriptions'
 import { buildSchema, GraphQLObjectType } from 'graphql'
+import { KeycloakCrudService } from '../src'
+import { MockDataProvider } from './mocks/MockDataProvider'
 
 const subscriptionConfig = {
-  publishCreate: true,
-  publishUpdate: true,
-  publishDelete: true,
-  pubSub: new PubSub()
+  subCreate: true,
+  subUpdate: true,
+  subDelete: true
 }
+
+const pubSub = new PubSub()
 
 // returned from CRUDService.findBy
 // if tests ever start failing because of this,
 // something probably changed in the CRUDService implementation
 // around paging
-const emptyPageValue = {items: [], offset: 0}
+const emptyPageValue = { items: [], offset: 0 }
 
 test('unauthorized tokens will result in unauthorized errors', async () => {
-  
+
   const modelType = buildSchema(`
     type Task {
       id: ID
@@ -28,7 +29,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
       description: String
     }
   `).getType('Task') as GraphQLObjectType
-  
+
   const authConfig = {
     create: { roles: ['admin'] },
     read: { roles: ['admin'] },
@@ -41,7 +42,8 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
   const service = new KeycloakCrudService({
     db,
     authConfig,
-    subscriptionConfig,
+    pubSub,
+    crudOptions: subscriptionConfig,
     modelType
   })
 
@@ -56,7 +58,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
 
   const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken) }
 
-  const val = {test: 'value'}
+  const val = { test: 'value' }
 
   const dbCreateSpy = jest.spyOn(db, "create")
   const dbUpdateSpy = jest.spyOn(db, "update")
@@ -79,7 +81,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
 });
 
 test('authorized tokens will not throw an error and will get a result', async () => {
-  
+
   const modelType = buildSchema(`
     type Task {
       id: ID
@@ -87,7 +89,7 @@ test('authorized tokens will not throw an error and will get a result', async ()
       description: String
     }
   `).getType('Task') as GraphQLObjectType
-  
+
   const authConfig = {
     create: { roles: ['admin'] },
     read: { roles: ['admin'] },
@@ -100,7 +102,8 @@ test('authorized tokens will not throw an error and will get a result', async ()
   const service = new KeycloakCrudService({
     db,
     authConfig,
-    subscriptionConfig,
+    pubSub,
+    crudOptions: subscriptionConfig,
     modelType
   })
 
@@ -122,7 +125,7 @@ test('authorized tokens will not throw an error and will get a result', async ()
   const dbfindBySpy = jest.spyOn(db, "findBy")
   const dbFindOneSpy = jest.spyOn(db, "findOne")
 
-  const val = {test: 'value'}
+  const val = { test: 'value' }
 
   await expect(service.create(val, authorizedContext)).resolves.toEqual(val)
   await expect(service.update(val, authorizedContext)).resolves.toEqual(val)
@@ -140,7 +143,7 @@ test('authorized tokens will not throw an error and will get a result', async ()
 
 
 test('passing no authConfig will result in all operations being allowed', async () => {
-  
+
   const modelType = buildSchema(`
     type Task {
       id: ID
@@ -148,7 +151,7 @@ test('passing no authConfig will result in all operations being allowed', async 
       description: String
     }
   `).getType('Task') as GraphQLObjectType
-  
+
   const authConfig = undefined
 
   const db = new MockDataProvider()
@@ -156,12 +159,13 @@ test('passing no authConfig will result in all operations being allowed', async 
   const service = new KeycloakCrudService({
     db,
     authConfig,
-    subscriptionConfig,
+    pubSub,
+    crudOptions: subscriptionConfig,
     modelType
   })
 
   const context = { kauth: {} }
-  const val = {test: 'value'}
+  const val = { test: 'value' }
 
   await expect(service.create(val, context)).resolves.toEqual(val)
   await expect(service.update(val, context)).resolves.toEqual(val)
@@ -171,7 +175,7 @@ test('passing no authConfig will result in all operations being allowed', async 
 });
 
 test('multiple roles can be applied to each operation', async () => {
-  
+
   const modelType = buildSchema(`
     type Task {
       id: ID
@@ -179,7 +183,7 @@ test('multiple roles can be applied to each operation', async () => {
       description: String
     }
   `).getType('Task') as GraphQLObjectType
-  
+
   const authConfig = {
     create: { roles: ['admin', 'developer', 'user'] },
     read: { roles: ['admin', 'developer', 'user'] },
@@ -190,7 +194,8 @@ test('multiple roles can be applied to each operation', async () => {
   const service = new KeycloakCrudService({
     db: new MockDataProvider(),
     authConfig,
-    subscriptionConfig,
+    pubSub,
+    crudOptions: subscriptionConfig,
     modelType
   })
 
@@ -205,7 +210,7 @@ test('multiple roles can be applied to each operation', async () => {
 
   const context = { kauth: new KeycloakContextBase(Token) }
 
-  const val = {test: 'value'}
+  const val = { test: 'value' }
 
   await expect(service.create(val, context)).resolves.toEqual(val)
   expect(() => service.update(val, context)).toThrowError('User is not authorized.')

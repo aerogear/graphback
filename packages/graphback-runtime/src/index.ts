@@ -5,6 +5,7 @@ export * from "./data/NoDataError"
 
 // Service
 export * from "./service/CRUDService"
+export * from './service/createCRUDService'
 export * from "./service/GraphbackCRUDService"
 export * from "./service/GraphbackPubSub"
 

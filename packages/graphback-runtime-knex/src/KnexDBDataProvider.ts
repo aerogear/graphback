@@ -1,4 +1,4 @@
-import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap, isModelType } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
@@ -16,7 +16,6 @@ import { buildQuery } from './knexQueryMapper';
  */
 //tslint:disable-next-line: no-any
 export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<Type, GraphbackContext>{
-
   protected db: Knex;
   protected baseType: GraphQLObjectType;
   protected tableName: string;
@@ -24,19 +23,16 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   public constructor(baseType: GraphQLObjectType, db: Knex) {
     this.db = db;
-    this.baseType = baseType;
-    //TODO build and use mapping here
     this.tableMap = buildModelTableMap(baseType);
     this.tableName = this.tableMap.tableName;
+    this.baseType = baseType;
   }
 
   public async create(data: Type): Promise<Type> {
     const { data: createData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
-    const [id] = await this.db(this.tableName).insert(createData);
-    //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).where(this.tableMap.idField, '=', id)
+    const dbResult = await this.db(this.tableName).insert(createData).returning('*');
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

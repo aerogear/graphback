@@ -26,12 +26,11 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
     useNullAsDefault: true,
   }
 
-  const db = Knex(dbConfig);
-
   await migrateDB(dbConfig, schema, {
     operationFilter: removeNonSafeOperationsFilter
   })
 
+  const db = Knex(dbConfig);
   if (config.seedData) {
     for (const [tableName, data] of Object.entries(config.seedData)) {
       await db(tableName).insert(data)

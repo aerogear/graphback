@@ -7,11 +7,10 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
 /**
  * Knex.js database data provider exposing basic CRUD operations.
  *
- * NOTE: This class implements Postgres specific implementaion that provides more performant object creation than generic `KnexDBDataProvider`
- * that works with the rest of the databases.
+ * NOTE: This class implements SQLite specific implementaion
  */
 //tslint:disable-next-line: no-any
-export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends KnexDBDataProvider<Type, GraphbackContext>{
+export class SQLiteKnexDBDataProvider<Type = any, GraphbackContext = any> extends KnexDBDataProvider<Type, GraphbackContext>{
 
   public constructor(baseType: GraphQLObjectType, db: Knex) {
     super(baseType, db);
@@ -21,7 +20,9 @@ export class PgKnexDBDataProvider<Type = any, GraphbackContext = any> extends Kn
     const { data: createData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db(this.tableName).insert(createData).returning('*');
+    const [id] = await this.db(this.tableName).insert(createData);
+    //tslint:disable-next-line: await-promise
+    const dbResult = await this.db.select().from(this.tableName).where(this.tableMap.idField, '=', id)
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

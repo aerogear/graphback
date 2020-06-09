@@ -35,6 +35,7 @@
     "typescript": "3.9.5"
   },
   "dependencies": {
+    "@graphback/core": "0.14.0-alpha2",
     "@graphback/runtime": "0.14.0-alpha2",
     "graphql-subscriptions": "1.1.0"
   },

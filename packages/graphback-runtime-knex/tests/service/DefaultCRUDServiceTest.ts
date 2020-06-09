@@ -3,9 +3,9 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, GraphbackPubSub } from '../../../graphback-runtime/src';
+import { CRUDService } from '../../../graphback-runtime/src';
 import { filterModelTypes } from '../../../graphback-core/src';
-import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
+import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
 const dbPath = `${__dirname}/db.sqlite`;
@@ -28,7 +28,7 @@ type Todo {
 }`
   }
 
-  const dbConfig = {
+  const dbConfig: Knex.Config = {
     client: 'sqlite3',
     connection: {
       filename: dbPath,
@@ -36,14 +36,13 @@ type Todo {
     useNullAsDefault: true
   }
 
-  const db = Knex(dbConfig);
-
   const schema = buildSchema(schemaSDL)
 
   await migrateDB(dbConfig, schema, {
     operationFilter: removeNonSafeOperationsFilter
   })
 
+  const db = Knex(dbConfig)
   if (seedData) {
     for (const [tableName, data] of Object.entries(seedData)) {
       await db(tableName).insert(data)
@@ -53,17 +52,16 @@ type Todo {
   const services: { [name: string]: CRUDService } = {}
   const models = filterModelTypes(schema)
   for (const modelType of models) {
-    const modelProvider = new KnexDBDataProvider(modelType, db);
+    const modelProvider = new SQLiteKnexDBDataProvider(modelType, db);
 
     const pubSub = new PubSub();
-    const publishConfig: GraphbackPubSub = {
-      pubSub,
-      publishCreate: true,
-      publishDelete: true,
-      publishUpdate: true
+    const publishConfig = {
+      subCreate: true,
+      subDelete: true,
+      subUpdate: true
     }
 
-    services[modelType.name] = new CRUDService(modelType, modelProvider, publishConfig)
+    services[modelType.name] = new CRUDService(modelType.name, modelProvider, { pubSub, crudOptions: publishConfig })
   }
 
   return { schema, services }

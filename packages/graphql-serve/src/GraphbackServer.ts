@@ -100,11 +100,15 @@ export async function buildGraphbackServer(graphbackServerConfig: GraphbackServe
   app.use(cors());
 
 
-  const runtime = await createRuntime(graphbackServerConfig);
+  const { typeDefs, resolvers, services } = await createRuntime(graphbackServerConfig);
 
   const apolloConfig = {
-    typeDefs: printSchema(runtime.schema),
-    resolvers: runtime.resolvers,
+    typeDefs,
+    resolvers,
+    context: (context: any) => ({
+      ...context,
+      services
+    }),
     playground: true,
     resolverValidationOptions: {
       requireResolversForResolveType: false
@@ -118,5 +122,5 @@ export async function buildGraphbackServer(graphbackServerConfig: GraphbackServe
   const httpServer = http.createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);
 
-  return new GraphbackServer(httpServer, printSchema(runtime.schema));
+  return new GraphbackServer(httpServer, typeDefs);
 }

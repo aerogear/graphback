@@ -10,17 +10,17 @@ import { loadConfig } from 'graphql-config';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
-import { GraphbackRuntime, GraphbackGenerator } from "graphback/src";
-import { buildSchema, printSchema, GraphQLSchema, DocumentNode } from 'graphql';
+import { GraphbackGenerator, buildGraphbackAPI, GraphbackAPI } from "graphback/src";
+import { printSchema, GraphQLSchema, DocumentNode } from 'graphql';
 import { migrateDB } from '../../packages/graphql-migrations/src';
-import { createKnexPGCRUDRuntimeServices } from "../../packages/graphback-runtime-knex/src"
+import { createKnexDbProvider } from "../../packages/graphback-runtime-knex/src"
 
 /** global config */
 let db: Knex;
-let server: ApolloServer; 
+let server: ApolloServer;
 let modelSchema: GraphQLSchema;
 let client: ApolloServerTestClient;
-let runtimeEngine: GraphbackRuntime;
+let graphbackApi: GraphbackAPI;
 
 let documents: DocumentNode;
 
@@ -52,10 +52,11 @@ beforeAll(async () => {
     expect(newDB).toMatchSnapshot();
 
     await seedDatabase(knex);
-    
-    runtimeEngine = new GraphbackRuntime(modelText, graphbackConfig);
-    modelSchema = buildSchema(modelText);
-   
+
+    graphbackApi = buildGraphbackAPI(modelText, {
+      dataProviderCreator: createKnexDbProvider(knex)
+    });
+
     db = knex;
     const source = await loadDocuments(path.resolve(`./output/client/**/*.graphql`), {
       loaders: [
@@ -70,12 +71,14 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  const services = createKnexPGCRUDRuntimeServices(runtimeEngine.getDataSourceModels(), modelSchema, db, new PubSub());
-  const runtime = runtimeEngine.buildRuntime(services);
+  const { typeDefs, resolvers, services } = graphbackApi;
   server = new ApolloServer({
-    typeDefs: printSchema(runtime.schema),
-    resolvers: runtime.resolvers,
-    context: services
+    typeDefs,
+    resolvers,
+    context: (context: any) => ({
+      ...context,
+      services
+    })
   });
 
   client = createTestClient(server);

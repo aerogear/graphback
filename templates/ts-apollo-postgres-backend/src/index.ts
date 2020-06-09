@@ -4,19 +4,44 @@ import { ApolloServer } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
 import http from "http"
-import { printSchema } from 'graphql'
-import { createRuntime } from './runtime'
+import { buildGraphbackAPI } from 'graphback'
+import { loadSchemaSync } from '@graphql-tools/load'
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
+import path from 'path'
+import { loadDBConfig, connectDB } from './db'
+import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations'
+import { createKnexDbProvider } from '@graphback/runtime-knex'
 
 const app = express()
 
 app.use(cors())
 
-// connect to db
-const { schema, resolvers } = createRuntime();
+const modelDefs = loadSchemaSync(path.resolve('./model/*.graphql'), {
+  loaders: [
+    new GraphQLFileLoader()
+  ]
+})
+
+const db = connectDB()
+const dbConfig = loadDBConfig()
+
+const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  dataProviderCreator: createKnexDbProvider(db)
+});
+
+migrateDB(dbConfig, typeDefs, {
+  operationFilter: removeNonSafeOperationsFilter
+}).then(() => {
+  console.log("Migrated database");
+});
 
 const apolloServer = new ApolloServer({
-  typeDefs: printSchema(schema),
-  resolvers
+  typeDefs,
+  resolvers,
+  context: (context) => ({
+    ...context,
+    services
+  })
 })
 
 apolloServer.applyMiddleware({ app })

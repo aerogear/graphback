@@ -1,24 +1,24 @@
 import { buildSchema } from 'graphql';
+import { GraphbackPubSubModel } from '@graphback/runtime';
 import { GraphbackConfig } from '../src/GraphbackConfig';
 import { GraphbackRuntime } from '../src/GraphbackRuntime';
-import { GraphbackPubSubModel } from '@graphback/runtime';
 
 describe('GraphbackRuntime', () => {
   const schema = `
     """
       @model
-      @crud.subCreate: true 
-      @crud.subUpdate: false 
-      @crud.subDelete: true 
+      @crud.subCreate: true
+      @crud.subUpdate: false
+      @crud.subDelete: true
       """
       type FirstModel {
       id: ID!
       }
-    
+
       """
       @model
-      @crud.subCreate: false 
-      @crud.subUpdate: true 
+      @crud.subCreate: false
+      @crud.subUpdate: true
       """
       type FirstSecond {
       id: ID!
@@ -86,18 +86,18 @@ describe('GraphbackRuntime', () => {
     const expectedPubSubModels: GraphbackPubSubModel[] = [
       {
         name: 'FirstModel',
-        pubSub: { 
-          publishCreate: true, 
-          publishUpdate: false, 
-          publishDelete: true 
+        pubSub: {
+          publishCreate: true,
+          publishUpdate: false,
+          publishDelete: true
         }
       },
       {
         name: 'FirstSecond',
-        pubSub: { 
-          publishCreate: false, 
-          publishUpdate: true, 
-          publishDelete: true 
+        pubSub: {
+          publishCreate: false,
+          publishUpdate: true,
+          publishDelete: true
         }}
       ];
 
