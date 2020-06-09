@@ -1,7 +1,6 @@
 {
   "name": "@graphback/datasync",
   "version": "0.14.0-alpha3",
-  "private": true,
   "description": "Datasync Plugin for Graphback",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
