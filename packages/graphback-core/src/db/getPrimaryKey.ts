@@ -11,6 +11,7 @@ import { parseMetadata } from 'graphql-metadata';
 export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any, any> {
   const fields = Object.values(graphqlType.getFields());
 
+  let primaryKeyFromScalarID: GraphQLField<any, any>;
   let primaryKey: GraphQLField<any, any>;
   let primariesCount = 0;
   for (const field of fields) {
@@ -21,13 +22,15 @@ export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any,
       primaryKey = field;
       primariesCount += 1;
     } else if (field.name === 'id' && baseType.name === 'ID') {
-      primaryKey = field;
+      primaryKeyFromScalarID = field;
     }
   }
   
   if (primariesCount > 1) {
     throw new Error(`${graphqlType.name} type should not have multiple '@id' annotations.`)
   }
+
+  primaryKey = primaryKey || primaryKeyFromScalarID;
 
   if (!primaryKey) {
     throw new Error(`${graphqlType.name} type has no primary field.`)

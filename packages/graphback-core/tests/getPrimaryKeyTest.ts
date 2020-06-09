@@ -31,16 +31,25 @@ test('should get primary key from @id annotation', () => {
         """
         email: String!
         name: String
-    }`);
+    }
+    
+    """ @model """
+    type Note {
+        """
+        @id
+        """
+        reference: String!
+        id: ID!
+    }
+    `);
 
     const models = getUserTypesFromSchema(schema);
 
-    const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
+    const primaryKeys = models.map(userModel => getPrimaryKey(userModel).name);
 
-    const primaryKey = getPrimaryKey(userModel);
-
-    expect(primaryKey.name).toEqual('email');
+    expect(primaryKeys).toEqual(['email', 'reference']);
 });
+
 
 test('should throw an error if no primary key in model', () => {
     const schema = buildSchema(`
