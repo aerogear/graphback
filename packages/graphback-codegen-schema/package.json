@@ -39,7 +39,7 @@
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-toolkit/schema-merging": "0.10.7",
     "graphql-compose": "7.18.1",
-    "graphql-metadata": "0.6.2",
+    "graphql-metadata": "0.6.3",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
