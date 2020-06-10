@@ -1,6 +1,7 @@
 import { Operation, OperationType } from '../diff/Operation'
 
 const priority: OperationType[] = [
+  'table.primary.drop',
   'table.foreign.drop',
   'table.unique.drop',
   'table.index.drop',

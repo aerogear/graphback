@@ -150,9 +150,9 @@ test('default primary index', async () => {
   const adb = await generateAbstractDatabase(schema)
   expect(adb.tables.length).toEqual(1);
   const [User] = adb.tables
-  expect(User.primaries.length).toEqual(1);
-  const [id] = User.primaries
-  expect(id.columns).toEqual(['id'])
+  const primaries = User.columns.filter((column) => column.isPrimaryKey);
+  expect(primaries.length).toEqual(1);
+  expect(primaries[0].name).toEqual('id')
 })
 
 test('primary key with the @id annotation', async () => {
@@ -171,9 +171,9 @@ test('primary key with the @id annotation', async () => {
   const adb = await generateAbstractDatabase(schema)
   expect(adb.tables.length).toEqual(1);
   const [User] = adb.tables
-  expect(User.primaries.length).toEqual(1);
-  const [id] = User.primaries
-  expect(id.columns).toEqual(['email'])
+  const primaries = User.columns.filter((column) => column.isPrimaryKey);
+  expect(primaries.length).toEqual(1);
+  expect(primaries[0].name).toEqual('email')
 })
 
 test('simple index', async () => {

@@ -133,6 +133,7 @@ export async function migrateDB(
   if (finalOptions.debug) {
     console.log('OPERATIONS', ops)
   }
+  
   //Write back to DB
   await write(
     ops,

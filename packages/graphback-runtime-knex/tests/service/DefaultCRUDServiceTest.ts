@@ -116,7 +116,6 @@ test('delete User by custom ID field', async () => {
     @model
     """
     type User {
-      id: ID
       """
       @id
       """
@@ -132,6 +131,32 @@ test('delete User by custom ID field', async () => {
   expect(result.email).toEqual('test@test.com')
 });
 
+test('insertion of User with same custom ID field more than once should fail', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      """
+      @id
+      """
+      email: String
+      name: String
+    }
+    `,
+    seedData: { user: [{ email: 'johndoe@email.com', name: 'John Doe' }] }
+  });
+
+  try {
+    const result = await services.User.create({ email: 'johndoe@email.com', name: 'John doe' });
+    expect(result).toBeFalsy(); // should not reach here because an error should have been thrown by line above
+  } catch (e) {
+     expect(e.code).toBe("SQLITE_CONSTRAINT"); 
+     expect(e.message).toBe("insert into `user` (`email`, `name`) values ('johndoe@email.com', 'John doe') - SQLITE_CONSTRAINT: UNIQUE constraint failed: user.email");
+  }
+});
+
 test('update User by custom ID field', async () => {
   const { services } = await setup({
     schemaSDL: `
@@ -139,7 +164,6 @@ test('update User by custom ID field', async () => {
     @model
     """
     type User {
-      id: ID
       """
       @id
       """
