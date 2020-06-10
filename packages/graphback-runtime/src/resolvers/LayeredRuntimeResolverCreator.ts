@@ -96,6 +96,7 @@ export class LayeredRuntimeResolverCreator {
             throw Error("Please use DataSync provider for delta queries");
           }
 
+          return dataSyncService.sync(args.lastSync);
         }
       }
 
