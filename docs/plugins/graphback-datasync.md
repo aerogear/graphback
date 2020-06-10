@@ -87,10 +87,13 @@ type Query {
   ...
   syncComments(lastSync: String): CommentDeltaList!
 }
+```
+
+This allows you to get all the changes(updates and deletes) to your data that happened since the `lastSync` timestamp.
 
 - ### Use the plugin and the data sources
 
-Pass the plugin and the data sources to the `buildGraphbackAPI` method:
+In order to get this functionality, you also need to pass the plugin and the data sources to the `buildGraphbackAPI` method:
 
 ```typescript
 import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin } from '@graphback/datasync'
