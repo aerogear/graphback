@@ -32,7 +32,7 @@ export interface Context {
       }
 
       const schemaGenerator = new SchemaCRUDPlugin({ outputPath: './tmp', format: 'graphql'})
-      const DataSyncGenerator = new DataSyncPlugin({ outputPath: './tmp' })
+      const DataSyncGenerator = new DataSyncPlugin()
       const metadata = new GraphbackCoreMetadata({
         crudMethods: defautConfig
       }, schema)
