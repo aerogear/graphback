@@ -48,6 +48,46 @@ type Comment {
 
 The `versioned` marker ensures consistency of your data and `delta` marker gives you delta queries. Note that while `versioned` marker can be used w/o the `@graphback/datasync` package, both `versioned` and `delta` are required for implementing data synchronization on a given type.
 
+This transforms your schema to the following:
+
+```graphql
+""" 
+@model
+@versioned
+@delta 
+"""
+type Comment {
+  id: ID!
+  text: String
+  description: String
+  createdAt: String
+  updatedAt: String
+}
+
+
+type CommentDelta {
+  id: ID!
+  text: String
+  description: String
+  createdAt: String
+  updatedAt: String
+  _deleted: Boolean
+}
+
+type CommentDeltaList {
+  items: [CommentDelta]!
+  lastSync: String
+}
+```
+
+It also adds a `sync` query or a delta query:
+
+```graphql
+type Query {
+  ...
+  syncComments(lastSync: String): CommentDeltaList!
+}
+
 - ### Use the plugin and the data sources
 
 Pass the plugin and the data sources to the `buildGraphbackAPI` method:
