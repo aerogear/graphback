@@ -27,7 +27,7 @@ Currently the supported strategies are:
 
 - Soft deletes with delta queries for MongoDB
 
-## Soft Deletes w/ delta queries
+## Soft Deletes with delta queries
 
 - ### Sprinkle metadata on your schema
 
@@ -46,7 +46,7 @@ type Comment {
 }
 ```
 
-The `versioned` marker ensures consistency of your data and `delta` marker gives you delta queries. Note that while `versioned` marker can be used w/o the `@graphback/datasync` package, both `versioned` and `delta` are required for implementing data synchronization on a given type.
+The `versioned` marker ensures consistency of your data and `delta` marker gives you delta queries. Note that while `versioned` marker can be used without the `@graphback/datasync` package, both `versioned` and `delta` are required for implementing data synchronization on a given type.
 
 This transforms your schema to the following:
 
