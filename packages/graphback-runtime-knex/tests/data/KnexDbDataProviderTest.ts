@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 //tslint:disable-next-line: match-default-export-name
-import { unlinkSync, existsSync, unlink } from 'fs';
-import { buildSchema, GraphQLObjectType } from 'graphql';
+import { unlinkSync, existsSync } from 'fs';
+import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
 import { filterModelTypes } from '@graphback/core';
-import { KnexDBDataProvider } from '../../src/KnexDBDataProvider';
+import { GraphbackDataProvider } from '@graphback/runtime';
+import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
 const dbPath = `${__dirname}/db.sqlite`;
@@ -37,10 +38,10 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
     }
   }
 
-  const providers: { [name: string]: KnexDBDataProvider } = {}
+  const providers: { [name: string]: GraphbackDataProvider } = {}
   const models = filterModelTypes(schema)
   for (const modelType of models) {
-    providers[modelType.name] = new KnexDBDataProvider(modelType, db);
+    providers[modelType.name] = new SQLiteKnexDBDataProvider(modelType, db);
   }
 
   return { schema, providers }
