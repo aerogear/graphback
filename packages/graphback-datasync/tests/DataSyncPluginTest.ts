@@ -17,7 +17,7 @@ test('Test snapshot config gql', async () => {
     "subDelete": true
   }
 
-  const schemaGenerator = new DataSyncPlugin({ outputPath: './tmp', generateDeltaQueries: true })
+  const schemaGenerator = new DataSyncPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))

@@ -8,24 +8,7 @@ import { getDeltaType, getDeltaListType } from "./deltaMappingHelper";
 /**
  * Configuration for Schema generator CRUD plugin
  */
-export interface DatasyncPluginConfig {
 
-    /**
-     * RelativePath for the output resolvers created by generator
-     */
-    outputPath: string
-
-    /**
-     * Delta resolvers format
-     */
-    deltaResolverFormat?: 'ts' | 'js' | 'graphql',
-
-    /*
-     * RelativePath for the output files created by generator
-     */
-    generateDeltaQueries?: boolean
-
-}
 
 export const SCHEMA_CRUD_PLUGIN_NAME = "DatasyncPlugin";
 
@@ -36,16 +19,6 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "DatasyncPlugin";
  * It will generate diffQueries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
-
-    private pluginConfig: DatasyncPluginConfig;
-
-    public constructor(pluginConfig?: DatasyncPluginConfig) {
-        super()
-        this.pluginConfig = Object.assign({ format: 'graphql', outputFileName: 'schema' }, pluginConfig);
-        if (!pluginConfig.outputPath) {
-            throw new Error("schema plugin requires outputPath parameter")
-        }
-    }
 
     public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
         const schema = metadata.getSchema()

@@ -197,7 +197,7 @@ describe('buildGraphbackAPI', () => {
     const { schema } = buildGraphbackAPI(model, {
       dataProviderCreator: createKnexDbProvider(db),
       plugins: [
-        new DataSyncPlugin({ outputPath: './tmp', generateDeltaQueries: true })
+        new DataSyncPlugin()
       ]
     })
 
