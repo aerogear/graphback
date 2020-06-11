@@ -162,3 +162,64 @@ The response is a list of the latest versions of the changed  documents along wi
 
 In the example response, we get that the "First!" comment has been deleted, while a new comment "Second!" has been created.
 
+Note that there is no support for querying relationships through a delta query, all relationship fields are removed when constructing a delta Type, for example:
+
+```graphql
+""" @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]!
+}
+
+""" 
+@model
+@versioned
+@delta 
+"""
+type Comment {
+  id: ID!
+  text: String
+  description: String
+}
+```
+Gives us
+```graphql
+type Comment {
+  id: ID!
+  text: String
+  description: String
+  note: Note
+  createdAt: String
+  updatedAt: String
+}
+
+type CommentDelta {
+  id: ID!
+  text: String
+  description: String
+  createdAt: String
+  updatedAt: String
+  _deleted: Boolean
+}
+
+type CommentDeltaList {
+  items: [CommentDelta]!
+  lastSync: String
+}
+
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  comments(filter: CommentFilter): [Comment]!
+}
+
+""" Plus graphback types for CRUD """
+```
+
+Note that there are is no relationship field in the `CommentDelta` type.
