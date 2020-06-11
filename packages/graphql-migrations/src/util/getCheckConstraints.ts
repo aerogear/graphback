@@ -5,7 +5,7 @@ const queries: any = {
     sql: `select
     c.conname as "indexName",
     array_to_string(array_agg(a.attname), ',') as "columnNames",
-    c.consrc as "expression"
+    pg_get_constraintdef(c.oid) as "expression"
   from
     pg_class t,
     pg_constraint c,
@@ -22,7 +22,7 @@ const queries: any = {
   group by
     t.relname,
     c.conname,
-    c.consrc;`,
+    pg_get_constraintdef(c.oid);`,
     bindings: [tableName, schemaName],
     output: (resp: any) => resp.rows.map((row: any) => {
       let values: any;
