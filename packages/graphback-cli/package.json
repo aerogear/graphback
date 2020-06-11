@@ -35,7 +35,7 @@
     "lint-staged": "10.2.9",
     "ncp": "2.0.0",
     "rimraf": "3.0.2",
-    "ts-jest": "26.0.1",
+    "ts-jest": "26.1.0",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
     "typescript": "3.9.5",

@@ -4,17 +4,19 @@
 type Comment {
   id: ID!
   text: String
-  description: String
+  description: String!
+  title: String!
 
-  """@manyToOne field: 'comments', key: 'noteId'"""
-  note: Note
+  """@manyToOne field: 'comments', key: 'noteCommentId'"""
+  noteComment: Note
 }
 
 input CommentFilter {
   id: IDInput
   text: StringInput
   description: StringInput
-  noteId: IDInput
+  title: StringInput
+  noteCommentId: IDInput
   and: [CommentFilter]
   or: [CommentFilter]
   not: CommentFilter
@@ -27,23 +29,18 @@ type CommentResultList {
   count: Int
 }
 
-input CommentSubscriptionFilter {
-  id: ID
-  text: String
-  description: String
-}
-
 input CreateCommentInput {
   id: ID
   text: String
-  description: String
-  noteId: ID
+  description: String!
+  title: String!
+  noteCommentId: ID
 }
 
 input CreateNoteInput {
   id: ID
   title: String!
-  description: String
+  description: String!
 }
 
 input IDInput {
@@ -54,16 +51,14 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID]
-  contains: ID
-  startsWith: ID
-  endsWith: ID
 }
 
 input MutateCommentInput {
   id: ID!
   text: String
   description: String
-  noteId: ID
+  title: String
+  noteCommentId: ID
 }
 
 input MutateNoteInput {
@@ -75,19 +70,17 @@ input MutateNoteInput {
 type Mutation {
   createNote(input: CreateNoteInput!): Note!
   updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
   createComment(input: CreateCommentInput!): Comment!
   updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
 }
 
 """ @model """
 type Note {
   id: ID!
   title: String!
-  description: String
+  description: String!
 
-  """@oneToMany field: 'note', key: 'noteId'"""
+  """@oneToMany field: 'noteComment', key: 'noteCommentId'"""
   comments(filter: CommentFilter): [Comment]!
 }
 
@@ -105,12 +98,6 @@ type NoteResultList {
   offset: Int
   limit: Int
   count: Int
-}
-
-input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
 }
 
 input OrderByInput {
@@ -146,13 +133,4 @@ input StringInput {
   contains: String
   startsWith: String
   endsWith: String
-}
-
-type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
 }
