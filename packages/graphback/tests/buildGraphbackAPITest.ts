@@ -49,9 +49,7 @@ describe('buildGraphbackAPI', () => {
 
     const model = `
     """
-    @model
-    @crud.findOne: false
-    @crud.delete: false
+    @model(findOne: false, delete: false)
     """
     type Note {
       id: ID!
@@ -60,8 +58,7 @@ describe('buildGraphbackAPI', () => {
     }
 
     """
-    @model
-    @crud.find: false
+    @model(find: false)
     """
     type Comment {
       id: ID!

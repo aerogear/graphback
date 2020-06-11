@@ -66,8 +66,7 @@ Graphback allows you to change these for any single type using annotations.
 
 ```graphql
 """
-@model
-@crud.create: false
+@model(create: false)
 """
 type User {
   ....
@@ -78,7 +77,7 @@ or to enable it:
 
 ```graphql
 """
-@crud.create
+@model(create: true)
 """
 type User {
   ....
@@ -87,25 +86,26 @@ type User {
  
 #### Available Options
 
-All config options can be replicated by specifying the `@crud.` prefix
+All config options can be added to the `@model` annotation.
 
-```
-@crud.create: true
-@crud.update: true
-@crud.delete: true
-@crud.find: true
-@crud.findOne: true
-@crud.subCreate: true
-@crud.subUpdate: true
-@crud.subDelete: true
+```graphql
+@model(
+  create: true,
+  update: true,
+  delete: true,
+  find: true,
+  findOne: true,
+  subCreate: true,
+  subUpdate: true,
+  subDelete: true
+)
 ```
 
 You can use these annotations to have more control over individual elements. For example:
 
-```
+```graphql
 """
-@model
-@crud.delete
+@model(delete: true)
 """
 type Note {
   ...

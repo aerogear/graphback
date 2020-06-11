@@ -3,10 +3,9 @@
 exports[`Test plugin engine 1`] = `
 Array [
   "\\"\\"\\"
-@model
+@model(delete: false)
 @versioned
-@delta   
-@crud.delete: false
+@delta
 \\"\\"\\"
 type Note {
   id: ID!
@@ -15,10 +14,7 @@ type Note {
   \\"\\"\\"@oneToMany field: 'noteComment'\\"\\"\\"
   comment: [Comment]!
 }",
-  "\\"\\"\\"
-@model   
-@crud.create: false
-\\"\\"\\"
+  "\\"\\"\\"@model(create: false)\\"\\"\\"
 type Comment {
   id: ID!
   title: String!

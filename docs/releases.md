@@ -16,6 +16,27 @@ Please follow individual releases for more information.
 
 Graphback 0.14 contains a lot of breaking changes that will improve and simplify your application code.
 
+#### Removed `@crud` annotation
+
+The `@crud` model annotation has been removed. To specify CRUD configuration on your model use the `@model` annotation.
+
+```
+"""
+@model
+@crud.delete: false
+@crud.update: true
+"""
+```
+
+becomes:
+
+```
+"""
+@model(delete: false, update: true)
+"""
+```
+
+
 #### API code generation is no longer supported
 
 In 0.14.0 Graphback now supports runtime generation of your schema, resolvers and services. 

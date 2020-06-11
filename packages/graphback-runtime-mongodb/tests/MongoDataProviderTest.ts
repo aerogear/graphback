@@ -89,7 +89,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
   //all tests can run parallel
 
 
-  afterAll(async () => {
+  afterEach(async () => {
     await context.server.stop();
   })
 

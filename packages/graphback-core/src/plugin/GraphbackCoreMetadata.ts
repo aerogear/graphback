@@ -69,11 +69,11 @@ export class GraphbackCoreMetadata {
     public getGraphQLTypesWithModel(): GraphQLObjectType[] {
         const types = getUserTypesFromSchema(this.schema)
 
-        return types.filter((modelType: GraphQLObjectType) => parseMarker('model', modelType.description))
+        return types.filter((modelType: GraphQLObjectType) => parseMetadata('model', modelType))
     }
 
     private buildModel(modelType: GraphQLObjectType, relationships: FieldRelationshipMetadata[]): ModelDefinition {
-        let crudOptions = parseAnnotations('crud', modelType.description)
+        let crudOptions = parseMetadata('model', modelType)
         //Merge CRUD options from type with global ones
         crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
         // Whether to add delta queries
