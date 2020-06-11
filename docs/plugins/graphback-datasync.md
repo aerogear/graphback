@@ -6,7 +6,7 @@ sidebar_label: Data Synchronization plugin
 
 # Graphback Data Synchronization plugin
 
-The Graphback Data Synchronization package consisting of the Data Synchronization Schema plugin, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev).
+The Graphback Data Synchronization package consisting of the Data Synchronization Schema plugin, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). Currently this plugin **only** supports MongoDB data source, with support for other data sources coming in a future release.
 
 # Installation
 
@@ -29,7 +29,7 @@ Currently the supported strategies are:
 
 ## Soft Deletes with delta queries
 
-- ### Sprinkle metadata on your schema
+1. ### Sprinkle metadata on your schema
 
 Add the `versioned` and `delta` markers to your model(s) in your GraphQL SDL:
 
@@ -80,7 +80,9 @@ type CommentDeltaList {
 }
 ```
 
-It also adds a `sync` query or a delta query:
+It also adds a `sync` query or a delta query as shown below. This allows you to get all the changes(updates and deletes) to your data that happened since the `lastSync` timestamp. 
+
+Internally this uses the `updatedAt` timestamp to check if any documents in the database have been modified since the `lastSync` timestamp. Note that however this strategy can only get you the latest version of changed documents ignoring any in-between states that may have transpired between `lastSync` and now.
 
 ```graphql
 type Query {
@@ -89,9 +91,7 @@ type Query {
 }
 ```
 
-This allows you to get all the changes(updates and deletes) to your data that happened since the `lastSync` timestamp.
-
-- ### Use the plugin and the data sources
+2. ### Use the plugin and the data sources
 
 In order to get this functionality, you also need to pass the plugin and the data sources to the `buildGraphbackAPI` method:
 
@@ -110,3 +110,55 @@ const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
 ```
 
 Done! You now have data synchronization!
+
+## Example
+
+As an example consider the usecase when your application has stayed offline for a while. You can then use the `syncX` query to get only the changed documents rather than having to refetch all of the documents.
+
+```graphql
+query {
+  syncComments(lastSync: "1590679886048") {
+      id
+      text
+      description
+      createdAt
+      updatedAt
+      _deleted
+  }
+}
+```
+
+As an example response you might get:
+
+```json
+{
+  "data": {
+    "syncComments": {
+      "items": [
+        {
+          "id": "5ee0a1da7f1f39313744185a",
+          "text": "First!",
+          "description": null,
+          "createdAt": "1591779802551",
+          "updatedAt": "1591852693075",
+          "_deleted": true
+        },
+        {
+          "id": "5ee0a67345beff3862220be4",
+          "text": "Second!",
+          "description": null,
+          "createdAt": "1591780979988",
+          "updatedAt": "1591780979988",
+          "_deleted": false
+        }
+      ],
+      "lastSync": "1591852700920"
+    }
+  }
+}
+```
+
+The response is a list of the latest versions of the changed  documents along with a `_deleted` flag that is set to `true` if the document has been deleted since `lastSync` and `false` otherwise. The response also contains a `lastSync` timestamp which can be used in the next `syncX` query.
+
+In the example response, we get that the "First!" comment has been deleted, while a new comment "Second!" has been created.
+
