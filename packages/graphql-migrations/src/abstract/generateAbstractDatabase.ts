@@ -229,7 +229,7 @@ class AbstractDatabaseBuilder {
       args = [fieldType.getValues().map((v: GraphQLEnumValue) => v.name)]
 
       // Object
-    } else if (isObjectType(fieldType)) {
+    } else if (isObjectType(fieldType) && isModelType(fieldType)) {
       columnName = relationshipMarker?.key || annotations.name || `${field.name}Id`
       const foreignType = this.typeMap[fieldType.name]
       if (!foreignType) {
@@ -269,7 +269,7 @@ class AbstractDatabaseBuilder {
     } else if (isListType(fieldType) && this.currentTable) {
       let ofType = fieldType.ofType
       ofType = isNonNullType(ofType) ? ofType.ofType : ofType
-      if (isObjectType(ofType)) {
+      if (isObjectType(ofType) && isModelType(ofType)) {
         //Foreign Type
         const onSameType = this.currentType === ofType.name
         const foreignType = this.typeMap[ofType.name]
@@ -365,8 +365,15 @@ class AbstractDatabaseBuilder {
       }
       //Unsupported
     } else {
+      const stringifiedType = fieldType ? fieldType.toString() : '*unknown*';
       //tslint:disable-next-line max-line-length
-      console.warn(`Field ${this.currentType}.${field.name} of type ${fieldType ? fieldType.toString() : '*unknown*'} not supported. Consider specifying column type with:
+      console.warn(`
+      Field ${this.currentType}.${field.name} of type ${stringifiedType} not supported.
+      Consider specifying the type ${stringifiedType} with:
+      """
+      @model 
+      """
+      as a type comment or specifying column type with:
       """
       @db.type: "text"
       """
@@ -450,7 +457,7 @@ class AbstractDatabaseBuilder {
 
     const table = this.getRelationTableFromOneToMany(oneToManyRelationship)
 
-    if (!this.hasColumn(table, field)) {
+    if (table && !this.hasColumn(table, field)) {
       this.buildColumn(table, field);
     }
   }
@@ -479,7 +486,7 @@ class AbstractDatabaseBuilder {
   private hasColumn(table: Table, field: GraphQLField<any, any>) {
     const columnDescriptor = this.getFieldDescriptor(field);
 
-    const column = table.columns.find((tc: TableColumn) => tc.name === columnDescriptor.name);
+    const column = columnDescriptor && table.columns.find((tc: TableColumn) => tc.name === columnDescriptor.name);
 
     return !!column;
   }
