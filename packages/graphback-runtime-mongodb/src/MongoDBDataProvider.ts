@@ -2,7 +2,7 @@ import { GraphQLObjectType, GraphQLField } from 'graphql';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy, getFieldTransformations, FieldTransform, TransformType, FieldTransformMap } from '@graphback/runtime';
 import { ObjectId, Db, Cursor, MongoError, IndexSpecification } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments, parseRelationshipAnnotation } from '@graphback/core';
-import { parseAnnotations } from "graphql-metadata";
+import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
 
 interface SortOrder {
@@ -205,7 +205,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   private getCustomIndex(field: GraphQLField<any, any>): IndexSpecification {
-    const otherAnnotations = parseAnnotations('db', field.description) as any;
+    const otherAnnotations = parseMetadata('db', field.description) as any;
       if (otherAnnotations?.index) {
         return {
           key: {
