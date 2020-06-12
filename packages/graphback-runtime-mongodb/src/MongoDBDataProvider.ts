@@ -1,6 +1,6 @@
-import { GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLField } from 'graphql';
 import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy, getFieldTransformations, FieldTransform, TransformType, FieldTransformMap } from '@graphback/runtime';
-import { ObjectId, Db, Cursor, MongoError } from "mongodb"
+import { ObjectId, Db, Cursor, MongoError, IndexSpecification } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments, parseRelationshipAnnotation } from '@graphback/core';
 import { parseAnnotations } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
@@ -17,6 +17,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   protected collectionName: string;
   protected tableMap: ModelTableMap;
   protected fieldTransformMap: FieldTransformMap;
+  protected indexes: IndexSpecification[];
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
@@ -24,33 +25,15 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     this.collectionName = this.tableMap.tableName;
     this.fieldTransformMap = getFieldTransformations(baseType);
 
-    Object.keys(baseType.getFields()).forEach((k: string) => {
-      const relationshipData = parseRelationshipAnnotation(baseType.getFields()[k].description)
-      if (relationshipData?.kind && ['manyToOne', 'manyToMany'].includes(relationshipData.kind)) {
-        this.db.collection(this.collectionName).createIndex({
-          [relationshipData.key]: 1
-        }, (err: MongoError, res: any) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(JSON.stringify(res,undefined,4))
-          }
-        });
-      }
+    // Get a list of all indexes
+    this.indexes = this.getIndexFields(baseType);
 
-      const otherAnnotations = parseAnnotations('db', baseType.getFields()[k].description) as any;
-      if (otherAnnotations?.index) {
-        this.db.collection(this.collectionName).createIndex({
-          [baseType.getFields()[k].name]: 1
-        }, (err: MongoError, res: any) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(JSON.stringify(res,undefined,4))
-          }
-        });
-      }
-    })
+    if (this.indexes.length > 0) {
+      // Apply indexes
+      this.db.collection(this.collectionName).createIndexes(this.indexes).catch((err: any) => {
+        throw Error(err)
+      });
+    }
   }
   
   public setBaseType(baseType: GraphQLObjectType<any, any, { [key: string]: any; }>): void {
@@ -193,6 +176,57 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     }
 
     return document;
+  }
+
+  protected getIndexFields(baseType: GraphQLObjectType): IndexSpecification[] {
+    const res: IndexSpecification[] = [];
+
+    Object.keys(baseType.getFields()).forEach((k: string) => {
+      const field = baseType.getFields()[k];
+
+      // Add Index on relation fields
+      const relationIndex = this.getRelationIndex(field);
+      if (relationIndex !== undefined) {
+        res.push(relationIndex);
+      }
+
+      // Add custom Index if found e.g. @db(index: 1)
+      const customIndex = this.getCustomIndex(field);
+      if (customIndex !== undefined) {
+        res.push(customIndex)
+      }
+
+    })
+    
+    return res;
+  }
+
+  private getCustomIndex(field: GraphQLField<any, any>): IndexSpecification {
+    const otherAnnotations = parseAnnotations('db', field.description) as any;
+      if (otherAnnotations?.index) {
+        return {
+          key: {
+            [field.name]: 1
+          },
+          name: `graphback_custom_index_${field.name}_on_${this.collectionName}`
+        }
+      } else {
+        return undefined;
+      }
+  }
+
+  private getRelationIndex(field: GraphQLField<any, any>): IndexSpecification {
+    const relationshipData = parseRelationshipAnnotation(field.description)
+    if (relationshipData?.kind && ['manyToOne', 'manyToMany'].includes(relationshipData.kind)) {
+      return {
+        key: {
+          [relationshipData.key]: 1
+        },
+        name: `graphback_relation_index_${relationshipData.key}_on_${this.collectionName}`
+      }
+    } else {
+      return undefined;
+    }
   }
 
   private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
