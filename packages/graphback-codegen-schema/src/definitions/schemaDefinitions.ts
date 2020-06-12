@@ -97,16 +97,33 @@ export const OrderByInputType = new GraphQLInputObjectType({
 })
 
 function getModelInputFields(modelType: GraphQLObjectType): GraphQLInputField[] {
-  return Object.values(modelType.getFields())
-    .filter((f: GraphQLField<any, any>) => !isOneToManyField(f))
-    .map((f: GraphQLField<any, any>) => {
-      return {
-        name: getInputFieldName(f),
-        type: getInputFieldType(f),
-        description: undefined,
-        extensions: []
-      }
-    })
+  const inputFields: GraphQLInputField[] = [];
+  const fields: GraphQLField<any, any>[] = Object.values(modelType.getFields());
+
+  for (const field of fields) {
+    if (isOneToManyField(field)) {
+        continue;
+    }
+
+    const type = getInputFieldType(field);
+
+    if (!type) {
+      continue;
+    }
+
+    const name = getInputFieldName(field);
+
+    const inputField: GraphQLInputField = {
+      name,
+      type,
+      description: undefined,
+      extensions: []
+    }
+
+    inputFields.push(inputField);
+  }
+
+  return inputFields;
 }
 
 export function buildFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInputFieldMap {

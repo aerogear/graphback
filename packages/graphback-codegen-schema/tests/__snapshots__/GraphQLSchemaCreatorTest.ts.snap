@@ -160,6 +160,10 @@ input CreateTestInput {
   name: String
 }
 
+type CustomType {
+  issue1432: String
+}
+
 scalar DateTime
 
 input DateTimeInput {
@@ -193,6 +197,12 @@ type Issue {
   id: ID!
   category: IssueCategory
   createdAt: DateTime
+
+  \\"\\"\\"
+  Field with custom type added as a fix for https://github.com/aerogear/graphback/issues/1432
+  This shows that a custom type can be added without breaking Graphback schema generation
+  \\"\\"\\"
+  custom: CustomType
 }
 
 enum IssueCategory {
@@ -443,6 +453,10 @@ input CreateTestInput {
   name: String
 }
 
+type CustomType {
+  issue1432: String
+}
+
 scalar DateTime
 
 input DateTimeInput {
@@ -476,6 +490,12 @@ type Issue {
   id: ID!
   category: IssueCategory
   createdAt: DateTime
+
+  \\"\\"\\"
+  Field with custom type added as a fix for https://github.com/aerogear/graphback/issues/1432
+  This shows that a custom type can be added without breaking Graphback schema generation
+  \\"\\"\\"
+  custom: CustomType
 }
 
 enum IssueCategory {
@@ -727,6 +747,10 @@ input CreateTestInput {
   name: String
 }
 
+type CustomType {
+  issue1432: String
+}
+
 scalar DateTime
 
 input DateTimeInput {
@@ -760,6 +784,12 @@ type Issue {
   id: ID!
   category: IssueCategory
   createdAt: DateTime
+
+  \\"\\"\\"
+  Field with custom type added as a fix for https://github.com/aerogear/graphback/issues/1432
+  This shows that a custom type can be added without breaking Graphback schema generation
+  \\"\\"\\"
+  custom: CustomType
 }
 
 enum IssueCategory {

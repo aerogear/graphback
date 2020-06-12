@@ -48,13 +48,22 @@ See issue https://github.com/aerogear/graphback/issues/1299
 type  Issue {
   id: ID!
   category: IssueCategory
-  createdAt: DateTime
+  createdAt: DateTime,
+  """
+  Field with custom type added as a fix for https://github.com/aerogear/graphback/issues/1432
+  This shows that a custom type can be added without breaking Graphback schema generation
+  """
+  custom: CustomType
 }
 
 enum IssueCategory {
  BUG
  QUESTION
  FEATURE_REQUEST
+}
+
+type CustomType {
+  issue1432: String
 }
 
 scalar DateTime

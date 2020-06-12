@@ -51,6 +51,34 @@ type Note {
 }
 ```
 
+Your data models can also contain custom types that are not Graphback models as shown below. 
+However, it is expected that you provide the custom resolvers for your custom type as Graphback will not generate one for you.
+```graphql
+"""
+@model
+"""
+type Note {
+  id: ID!
+  """
+  @id
+  """
+  email: String
+
+  """
+  Field from a custom type that is not a Graphback model
+  """
+  comments: [Comment]
+}
+
+"""
+A custom type
+"""
+type Comment {
+  id: ID!
+  text: String
+}
+```
+
 ## Relationships
 
 Graphback provides support for one-to-many and one-to-one relationships.
