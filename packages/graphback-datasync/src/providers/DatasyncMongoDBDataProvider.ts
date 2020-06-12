@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments } from '@graphback/core';
-import { ObjectId } from 'mongodb';
+import { ObjectId, MongoError } from 'mongodb';
 import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType } from '@graphback/runtime-mongo'; 
 import { DataSyncProvider } from "./DataSyncProvider";
 
@@ -11,6 +11,15 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
+    this.db.collection(this.collectionName).createIndex({
+      _deleted: 1
+    }, (err: MongoError, res: any) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(JSON.stringify(res,undefined,4))
+      }
+    });
   }
 
   public async create(data: any): Promise<Type> {
