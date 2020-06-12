@@ -25,7 +25,7 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     this.collectionName = this.tableMap.tableName;
     this.fieldTransformMap = getFieldTransformations(baseType);
 
-    // Get a list of all indexes
+    // Get a list of all required indexes
     this.indexes = this.getIndexFields(baseType);
 
     if (this.indexes.length > 0) {
@@ -180,23 +180,23 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   protected getIndexFields(baseType: GraphQLObjectType): IndexSpecification[] {
     const res: IndexSpecification[] = [];
-
-    Object.keys(baseType.getFields()).forEach((k: string) => {
-      const field = baseType.getFields()[k];
-
-      // Add Index on relation fields
-      const relationIndex = this.getRelationIndex(field);
-      if (relationIndex !== undefined) {
-        res.push(relationIndex);
-
-        // To prevent adding mutliple index on same field
-        return;
-      }
+    const fields = baseType.getFields();
+    Object.keys(fields).forEach((k: string) => {
+      const field = fields[k];
 
       // Add custom Index if found e.g. @db(index: 1)
       const customIndex = this.getCustomIndex(field);
       if (customIndex !== undefined) {
         res.push(customIndex);
+
+        // To prevent adding mutliple index on same field
+        return;
+      }
+      
+      // Add Index on relation fields
+      const relationIndex = this.getRelationIndex(field);
+      if (relationIndex !== undefined) {
+        res.push(relationIndex);
       }
 
     })
