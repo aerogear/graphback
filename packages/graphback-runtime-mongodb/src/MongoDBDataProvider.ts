@@ -188,12 +188,15 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
       const relationIndex = this.getRelationIndex(field);
       if (relationIndex !== undefined) {
         res.push(relationIndex);
+
+        // To prevent adding mutliple index on same field
+        return;
       }
 
       // Add custom Index if found e.g. @db(index: 1)
       const customIndex = this.getCustomIndex(field);
       if (customIndex !== undefined) {
-        res.push(customIndex)
+        res.push(customIndex);
       }
 
     })
