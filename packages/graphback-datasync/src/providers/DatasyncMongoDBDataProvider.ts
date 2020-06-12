@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments } from '@graphback/core';
-import { ObjectId, MongoError } from 'mongodb';
+import { ObjectId, IndexSpecification } from 'mongodb';
 import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType } from '@graphback/runtime-mongo'; 
 import { DataSyncProvider } from "./DataSyncProvider";
 
@@ -11,15 +11,6 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
-    this.db.collection(this.collectionName).createIndex({
-      _deleted: 1
-    }, (err: MongoError, res: any) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(JSON.stringify(res,undefined,4))
-      }
-    });
   }
 
   public async create(data: any): Promise<Type> {
@@ -115,5 +106,21 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     };
 
     return super.findBy(filter, undefined, undefined);
+  }
+
+  protected getIndexFields(baseType: GraphQLObjectType): IndexSpecification[] {
+    const res = super.getIndexFields(baseType)
+
+    return [
+      ...res,
+      {
+        key: {
+          // Add Index on deleted field
+          _deleted: 1
+        },
+        name: 'graphback_datasync_softdeletion_index'
+      }
+    ]
+    // TODO: Add TTL after DateTime scalars added
   }
 }
