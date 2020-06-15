@@ -1,6 +1,6 @@
 {
   "name": "@graphback/keycloak-authz",
-  "version": "0.14.0-alpha3",
+  "version": "0.14.0-alpha4",
   "description": "Add Keycloak auth to Graphback runtime applications",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -35,8 +35,8 @@
     "typescript": "3.9.5"
   },
   "dependencies": {
-    "@graphback/core": "0.14.0-alpha3",
-    "@graphback/runtime": "0.14.0-alpha3",
+    "@graphback/core": "0.14.0-alpha4",
+    "@graphback/runtime": "0.14.0-alpha4",
     "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
