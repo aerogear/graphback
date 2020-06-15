@@ -98,7 +98,7 @@ class Reader {
           const column: TableColumn = {
             name: columnName,
             isPrimaryKey,
-            autoIncrementable: type === "increments", // TODO
+            autoIncrementable: type === "increments" || type === "bigIncrements", // TODO
             comment: this.getComment(columnComments, key),
             annotations: {},
             args,
