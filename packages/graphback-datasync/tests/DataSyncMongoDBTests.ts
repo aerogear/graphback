@@ -136,7 +136,7 @@ describe('Soft deletion test', () => {
       }
     });
 
-    expect(deltaPosts.length).toBeGreaterThanOrEqual(1);
+    expect(deltaPosts.length).toEqual(2));
 
     for (const p of deltaPosts) {
       expect(p.text).toMatch(/^post/g);
