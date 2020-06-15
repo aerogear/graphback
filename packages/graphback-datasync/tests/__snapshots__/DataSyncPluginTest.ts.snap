@@ -13,12 +13,36 @@ type Comment {
 
   \\"\\"\\"@manyToOne field: 'comments', key: 'noteId'\\"\\"\\"
   noteComment: Note!
+
+  \\"\\"\\"
+  @createdAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  createdAt: String
+
+  \\"\\"\\"
+  @updatedAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  updatedAt: String
 }
 
 type CommentDelta {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"
+  @createdAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  createdAt: String
+
+  \\"\\"\\"
+  @updatedAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  updatedAt: String
   _deleted: Boolean
 }
 
@@ -27,8 +51,75 @@ type CommentDeltaList {
   lastSync: String
 }
 
+input CommentFilter {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  noteId: IDInput
+  and: [CommentFilter]
+  or: [CommentFilter]
+  not: CommentFilter
+  createdAt: StringInput
+  updatedAt: StringInput
+}
+
+type CommentResultList {
+  items: [Comment]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input CommentSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
+}
+
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+  noteId: ID!
+}
+
+input CreateNoteInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID]
+}
+
+input MutateCommentInput {
+  id: ID!
+  title: String
+  description: String
+  noteId: ID
+}
+
+input MutateNoteInput {
+  id: ID!
+  title: String
+  description: String
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: MutateNoteInput!): Note!
+  deleteNote(input: MutateNoteInput!): Note!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: MutateCommentInput!): Comment!
+  deleteComment(input: MutateCommentInput!): Comment!
 }
 
 \\"\\"\\"
@@ -42,13 +133,37 @@ type Note {
   description: String!
 
   \\"\\"\\"@oneToMany field: 'noteComment', key: 'noteId'\\"\\"\\"
-  comments: [Comment]!
+  comments(filter: CommentFilter): [Comment]!
+
+  \\"\\"\\"
+  @createdAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  createdAt: String
+
+  \\"\\"\\"
+  @updatedAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  updatedAt: String
 }
 
 type NoteDelta {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"
+  @createdAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  createdAt: String
+
+  \\"\\"\\"
+  @updatedAt
+              @db.type: 'timestamp'
+  \\"\\"\\"
+  updatedAt: String
   _deleted: Boolean
 }
 
@@ -57,10 +172,75 @@ type NoteDeltaList {
   lastSync: String
 }
 
+input NoteFilter {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+  createdAt: StringInput
+  updatedAt: StringInput
+}
+
+type NoteResultList {
+  items: [Note]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input NoteSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
-  syncNotes(lastSync: String!): NoteDeltaList!
-  syncComments(lastSync: String!): CommentDeltaList!
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+  syncNotes(lastSync: String!, filter: NoteFilter): NoteDeltaList!
+  syncComments(lastSync: String!, filter: CommentFilter): CommentDeltaList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String]
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type Subscription {
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
 }
 "
 `;
