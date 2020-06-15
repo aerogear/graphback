@@ -93,10 +93,10 @@ export class LayeredRuntimeResolverCreator {
           const dataSyncService: any = context.graphback[modelName];
 
           if (dataSyncService.sync === undefined) {
-            throw Error("Please use DataSync provider for delta queries");
+            throw Error("Please use DataSync service for delta queries");
           }
 
-          return dataSyncService.sync(args.lastSync);
+          return dataSyncService.sync(args.lastSync, args.filter);
         }
       }
 

@@ -300,13 +300,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         modelTC.addFields({
           [fieldNames.createdAt]: {
             type: GraphQLString,
-            description: `@${markers.createdAt}
-            @db.type: 'timestamp'`
+            description: `@${markers.createdAt}\n@db.type: 'timestamp'`
           },
           [fieldNames.updatedAt]: {
             type: GraphQLString,
-            description: `@${markers.updatedAt}
-            @db.type: 'timestamp'`
+            description: `@${markers.updatedAt}\n@db.type: 'timestamp'`
           }
         });
 
