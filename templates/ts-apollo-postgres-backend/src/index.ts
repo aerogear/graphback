@@ -25,7 +25,7 @@ const modelDefs = loadSchemaSync(path.resolve(__dirname, '../model/*.graphql'), 
 const db = connectDB()
 const dbConfig = loadDBConfig()
 
-const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
   dataProviderCreator: createKnexDbProvider(db)
 });
 
@@ -38,10 +38,7 @@ migrateDB(dbConfig, typeDefs, {
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
-  context: (context) => ({
-    ...context,
-    services
-  })
+  context: contextCreator
 })
 
 apolloServer.applyMiddleware({ app })

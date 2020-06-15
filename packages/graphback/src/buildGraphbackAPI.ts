@@ -47,7 +47,7 @@ export interface GraphbackAPI {
   /**
    * Creates context to be attached to the running server
    */
-  contextCreator(): GraphbackContext
+  contextCreator(context?: any): GraphbackContext
 }
 
 function createServices(models: ModelDefinition[], createService: Function, createProvider: Function) {
@@ -94,8 +94,11 @@ export function buildGraphbackAPI(model: string | GraphQLSchema, config: Graphba
   const serviceCreator = config.serviceCreator || createCRUDService({ pubSub: new PubSub() })
 
   const services = createServices(models, serviceCreator, config.dataProviderCreator)
-  const contextCreator = () => {
-    return { graphback: services }
+  const contextCreator = (context: any) => {
+    return {
+      ...context,
+      graphback: services
+    }
   }
   const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models);
   const resolvers = runtimeResolversCreator.generate()
