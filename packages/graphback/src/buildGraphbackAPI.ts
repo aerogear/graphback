@@ -1,7 +1,7 @@
 import { GraphQLSchema } from 'graphql';
 import { GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition } from '@graphback/core';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
-import { LayeredRuntimeResolverCreator, GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap } from '@graphback/runtime';
+import { LayeredRuntimeResolverCreator, GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap, GraphbackContext } from '@graphback/runtime';
 import { PubSub } from 'graphql-subscriptions';
 
 export interface GraphbackAPIConfig {
@@ -43,6 +43,11 @@ export interface GraphbackAPI {
    * Model:Service map of CRUD services for every data model
    */
   services: GraphbackServiceConfigMap
+
+  /**
+   * Creates context to be attached to the running server
+   */
+  contextCreator(): GraphbackContext
 }
 
 function createServices(models: ModelDefinition[], createService: Function, createProvider: Function) {
@@ -89,7 +94,9 @@ export function buildGraphbackAPI(model: string | GraphQLSchema, config: Graphba
   const serviceCreator = config.serviceCreator || createCRUDService({ pubSub: new PubSub() })
 
   const services = createServices(models, serviceCreator, config.dataProviderCreator)
-
+  const contextCreator = () => {
+    return { graphback: services }
+  }
   const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models);
   const resolvers = runtimeResolversCreator.generate()
 
@@ -100,6 +107,7 @@ export function buildGraphbackAPI(model: string | GraphQLSchema, config: Graphba
     schema,
     typeDefs,
     resolvers,
-    services
+    services,
+    contextCreator
   }
 }
