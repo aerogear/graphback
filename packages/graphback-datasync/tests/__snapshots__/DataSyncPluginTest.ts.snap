@@ -16,13 +16,13 @@ type Comment {
 
   \\"\\"\\"
   @createdAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   updatedAt: String
 }
@@ -34,13 +34,13 @@ type CommentDelta {
 
   \\"\\"\\"
   @createdAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   updatedAt: String
   _deleted: Boolean
@@ -137,13 +137,13 @@ type Note {
 
   \\"\\"\\"
   @createdAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   updatedAt: String
 }
@@ -155,13 +155,13 @@ type NoteDelta {
 
   \\"\\"\\"
   @createdAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-              @db.type: 'timestamp'
+  @db.type: 'timestamp'
   \\"\\"\\"
   updatedAt: String
   _deleted: Boolean
