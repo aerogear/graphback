@@ -258,7 +258,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const name = model.graphqlType.name;
     const modelTC = schemaComposer.getOTC(name)
     const modelType = modelTC.getType()
-
+    const filterInputType = buildFilterInputType(modelType);
+    schemaComposer.add(filterInputType);
     const queryFields = {}
     if (model.crudOptions.findOne) {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
@@ -274,7 +275,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         type: GraphQLNonNull(resultListType),
         args: {
           filter: {
-            type: buildFilterInputType(modelType)
+            type: filterInputType
           },
           page: {
             type: PageRequest

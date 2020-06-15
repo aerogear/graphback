@@ -43,7 +43,16 @@ type Mutation {
 Model added to test schema generation using enum. 
 See issue https://github.com/aerogear/graphback/issues/1299
 
-@model
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
 """
 type  Issue {
   id: ID!
@@ -64,6 +73,30 @@ enum IssueCategory {
 
 type CustomType {
   issue1432: String
+}
+
+"""
+A model added as part of fixing https://github.com/aerogear/graphback/issues/1452, disable some crud operations to decreate noises.
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
+"""
+type Fix {
+  id: ID!
+  
+  """
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  we should have filter type created as it can be used on the relationship level without throwing an error.
+  @oneToMany field: 'bugFix'
+  """
+  issues: [Issue]
 }
 
 scalar DateTime

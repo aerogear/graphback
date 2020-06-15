@@ -142,10 +142,15 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateFixInput {
+  id: ID
+}
+
 input CreateIssueInput {
   id: ID
   category: IssueCategory
   createdAt: DateTime
+  bugFixId: ID
 }
 
 input CreateNoteInput {
@@ -177,6 +182,30 @@ input DateTimeInput {
   between: [DateTime]
 }
 
+\\"\\"\\"
+A model added as part of fixing https://github.com/aerogear/graphback/issues/1452, disable some crud operations to decreate noises.
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
+\\"\\"\\"
+type Fix {
+  id: ID!
+
+  \\"\\"\\"
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  we should have filter type created as it can be used on the relationship level without throwing an error.
+  @oneToMany field: 'bugFix', key: 'bugFixId'
+  \\"\\"\\"
+  issues(filter: IssueFilter): [Issue]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -191,7 +220,16 @@ input IDInput {
 Model added to test schema generation using enum. 
 See issue https://github.com/aerogear/graphback/issues/1299
 
-@model
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
 \\"\\"\\"
 type Issue {
   id: ID!
@@ -203,6 +241,9 @@ type Issue {
   This shows that a custom type can be added without breaking Graphback schema generation
   \\"\\"\\"
   custom: CustomType
+
+  \\"\\"\\"@manyToOne field: 'issues', key: 'bugFixId'\\"\\"\\"
+  bugFix: Fix
 }
 
 enum IssueCategory {
@@ -215,22 +256,10 @@ input IssueFilter {
   id: IDInput
   category: StringInput
   createdAt: DateTimeInput
+  bugFixId: IDInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
-}
-
-type IssueResultList {
-  items: [Issue]!
-  offset: Int
-  limit: Int
-  count: Int
-}
-
-input IssueSubscriptionFilter {
-  id: ID
-  category: IssueCategory
-  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -238,12 +267,6 @@ input MutateCommentInput {
   title: String
   description: String
   note_id: ID
-}
-
-input MutateIssueInput {
-  id: ID!
-  category: IssueCategory
-  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -270,8 +293,7 @@ type Mutation {
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
   createIssue(input: CreateIssueInput!): Issue!
-  updateIssue(input: MutateIssueInput!): Issue!
-  deleteIssue(input: MutateIssueInput!): Issue!
+  createFix(input: CreateFixInput!): Fix!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -328,8 +350,6 @@ type Query {
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
-  getIssue(id: ID!): Issue
-  findIssues(filter: IssueFilter, page: PageRequest, orderBy: OrderByInput): IssueResultList!
 }
 
 enum SortDirectionEnum {
@@ -360,9 +380,6 @@ type Subscription {
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
-  newIssue(filter: IssueSubscriptionFilter): Issue!
-  updatedIssue(filter: IssueSubscriptionFilter): Issue!
-  deletedIssue(filter: IssueSubscriptionFilter): Issue!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -435,10 +452,15 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateFixInput {
+  id: ID
+}
+
 input CreateIssueInput {
   id: ID
   category: IssueCategory
   createdAt: DateTime
+  bugFixId: ID
 }
 
 input CreateNoteInput {
@@ -470,6 +492,33 @@ input DateTimeInput {
   between: [DateTime]
 }
 
+\\"\\"\\"
+A model added as part of fixing
+https://github.com/aerogear/graphback/issues/1452, disable some crud operations
+to decreate noises.
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
+\\"\\"\\"
+type Fix {
+  id: ID!
+
+  \\"\\"\\"
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452
+  showing that even if filtering is disabled on a model level, 
+  we should have filter type created as it can be used on the relationship level without throwing an error.
+  @oneToMany field: 'bugFix', key: 'bugFixId'
+  \\"\\"\\"
+  issues(filter: IssueFilter): [Issue]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -484,7 +533,16 @@ input IDInput {
 Model added to test schema generation using enum. 
 See issue https://github.com/aerogear/graphback/issues/1299
 
-@model
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
 \\"\\"\\"
 type Issue {
   id: ID!
@@ -496,6 +554,9 @@ type Issue {
   This shows that a custom type can be added without breaking Graphback schema generation
   \\"\\"\\"
   custom: CustomType
+
+  \\"\\"\\"@manyToOne field: 'issues', key: 'bugFixId'\\"\\"\\"
+  bugFix: Fix
 }
 
 enum IssueCategory {
@@ -508,22 +569,10 @@ input IssueFilter {
   id: IDInput
   category: StringInput
   createdAt: DateTimeInput
+  bugFixId: IDInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
-}
-
-type IssueResultList {
-  items: [Issue]!
-  offset: Int
-  limit: Int
-  count: Int
-}
-
-input IssueSubscriptionFilter {
-  id: ID
-  category: IssueCategory
-  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -531,12 +580,6 @@ input MutateCommentInput {
   title: String
   description: String
   note_id: ID
-}
-
-input MutateIssueInput {
-  id: ID!
-  category: IssueCategory
-  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -563,8 +606,7 @@ type Mutation {
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
   createIssue(input: CreateIssueInput!): Issue!
-  updateIssue(input: MutateIssueInput!): Issue!
-  deleteIssue(input: MutateIssueInput!): Issue!
+  createFix(input: CreateFixInput!): Fix!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -621,8 +663,6 @@ type Query {
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
-  getIssue(id: ID!): Issue
-  findIssues(filter: IssueFilter, page: PageRequest, orderBy: OrderByInput): IssueResultList!
 }
 
 enum SortDirectionEnum {
@@ -653,9 +693,6 @@ type Subscription {
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
-  newIssue(filter: IssueSubscriptionFilter): Issue!
-  updatedIssue(filter: IssueSubscriptionFilter): Issue!
-  deletedIssue(filter: IssueSubscriptionFilter): Issue!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -729,10 +766,15 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateFixInput {
+  id: ID
+}
+
 input CreateIssueInput {
   id: ID
   category: IssueCategory
   createdAt: DateTime
+  bugFixId: ID
 }
 
 input CreateNoteInput {
@@ -764,6 +806,33 @@ input DateTimeInput {
   between: [DateTime]
 }
 
+\\"\\"\\"
+A model added as part of fixing
+https://github.com/aerogear/graphback/issues/1452, disable some crud operations
+to decreate noises.
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
+\\"\\"\\"
+type Fix {
+  id: ID!
+
+  \\"\\"\\"
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452
+  showing that even if filtering is disabled on a model level, 
+  we should have filter type created as it can be used on the relationship level without throwing an error.
+  @oneToMany field: 'bugFix', key: 'bugFixId'
+  \\"\\"\\"
+  issues(filter: IssueFilter): [Issue]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -778,7 +847,16 @@ input IDInput {
 Model added to test schema generation using enum. 
 See issue https://github.com/aerogear/graphback/issues/1299
 
-@model
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
 \\"\\"\\"
 type Issue {
   id: ID!
@@ -790,6 +868,9 @@ type Issue {
   This shows that a custom type can be added without breaking Graphback schema generation
   \\"\\"\\"
   custom: CustomType
+
+  \\"\\"\\"@manyToOne field: 'issues', key: 'bugFixId'\\"\\"\\"
+  bugFix: Fix
 }
 
 enum IssueCategory {
@@ -802,22 +883,10 @@ input IssueFilter {
   id: IDInput
   category: StringInput
   createdAt: DateTimeInput
+  bugFixId: IDInput
   and: [IssueFilter]
   or: [IssueFilter]
   not: IssueFilter
-}
-
-type IssueResultList {
-  items: [Issue]!
-  offset: Int
-  limit: Int
-  count: Int
-}
-
-input IssueSubscriptionFilter {
-  id: ID
-  category: IssueCategory
-  createdAt: DateTime
 }
 
 input MutateCommentInput {
@@ -825,12 +894,6 @@ input MutateCommentInput {
   title: String
   description: String
   note_id: ID
-}
-
-input MutateIssueInput {
-  id: ID!
-  category: IssueCategory
-  createdAt: DateTime
 }
 
 input MutateNoteInput {
@@ -857,8 +920,7 @@ type Mutation {
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
   createIssue(input: CreateIssueInput!): Issue!
-  updateIssue(input: MutateIssueInput!): Issue!
-  deleteIssue(input: MutateIssueInput!): Issue!
+  createFix(input: CreateFixInput!): Fix!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -915,8 +977,6 @@ type Query {
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
-  getIssue(id: ID!): Issue
-  findIssues(filter: IssueFilter, page: PageRequest, orderBy: OrderByInput): IssueResultList!
 }
 
 enum SortDirectionEnum {
@@ -947,9 +1007,6 @@ type Subscription {
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
-  newIssue(filter: IssueSubscriptionFilter): Issue!
-  updatedIssue(filter: IssueSubscriptionFilter): Issue!
-  deletedIssue(filter: IssueSubscriptionFilter): Issue!
 }
 
 \\"\\"\\"@model\\"\\"\\"
