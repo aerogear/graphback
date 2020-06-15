@@ -53,7 +53,7 @@
     "graphql": "^14.6.0",
     "graphql-config": "3.0.2",
     "graphql-migrations": "0.14.0-alpha3",
-    "inquirer": "7.1.0",
+    "inquirer": "7.2.0",
     "js-yaml": "3.14.0",
     "node-emoji": "1.10.0",
     "openapi-to-graphql": "2.1.0",
