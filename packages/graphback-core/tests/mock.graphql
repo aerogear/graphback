@@ -1,8 +1,7 @@
-""" 
-@model
+"""
+@model(delete: false)
 @versioned
-@delta   
-@crud.delete: false
+@delta
 """
 type Note {
   id: ID!
@@ -15,9 +14,8 @@ type Note {
   comment: [Comment]!
 }
 
-""" 
-@model   
-@crud.create: false
+"""
+@model(create: false)
 """
 type Comment {
   id: ID!

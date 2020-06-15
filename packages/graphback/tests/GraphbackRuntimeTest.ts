@@ -6,34 +6,30 @@ import { GraphbackRuntime } from '../src/GraphbackRuntime';
 describe('GraphbackRuntime', () => {
   const schema = `
     """
-      @model
-      @crud.subCreate: true
-      @crud.subUpdate: false
-      @crud.subDelete: true
+      @model(subCreate: true, subUpdate: false, subDelete: true)
       """
       type FirstModel {
-      id: ID!
+        id: ID!
       }
 
       """
-      @model
-      @crud.subCreate: false
-      @crud.subUpdate: true
+      @model(subCreate: false, subUpdate: true)
       """
       type FirstSecond {
-      id: ID!
+        id: ID!
       }
 
       """
-      @model
-      @crud.find: false
-      @crud.create: false
-      @crud.delete: false
-      @crud.update: false
-      @crud.findOne: false
+      @model(
+        find: false,
+        create: false,
+        delete: false,
+        update: false,
+        findOne: false
+      )
       """
       type FirstThird {
-      id: ID!
+        id: ID!
       }
     `;
 
@@ -98,8 +94,9 @@ describe('GraphbackRuntime', () => {
           publishCreate: false,
           publishUpdate: true,
           publishDelete: true
-        }}
-      ];
+        }
+      }
+    ];
 
     const graphbackRuntime: GraphbackRuntime = new GraphbackRuntime(buildSchema(schema), config);
     const pubSubModels: GraphbackPubSubModel[] = graphbackRuntime.getDataSourceModels();
