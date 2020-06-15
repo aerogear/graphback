@@ -108,4 +108,39 @@ describe('Soft deletion test', () => {
     // Tests that we cannot find it anymore
     expect(Post.findOne({id})).rejects.toThrow();
   })
+
+  it('can filter sync queries', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @versioned
+    @delta
+    """
+    type Post {
+      id: ID!
+      text: String!
+    }
+    `);
+
+    const { Post }  = context.providers;
+
+    // Create some posts
+    for (const postTitle of ["post", "post2", "trains"]) {
+      await Post.create({ text: postTitle });
+    }
+
+    // Sync query
+    const deltaPosts = await Post.sync("0", {
+      text: {
+        startsWith: 'post'
+      }
+    });
+
+    expect(deltaPosts.length).toBeGreaterThanOrEqual(1);
+
+    for (const p of deltaPosts) {
+      expect(p.text).toMatch(/^post/g);
+    }
+
+  })
 })
