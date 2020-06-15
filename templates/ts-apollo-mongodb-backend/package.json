@@ -14,7 +14,7 @@
   "dependencies": {
     "apollo-server-express": "2.14.4",
     "@graphql-tools/graphql-file-loader": "6.0.9",
-    "@graphql-tools/load": "6.0.9",
+    "@graphql-tools/load": "6.0.9-alpha-ec5c6b7.0",
     "@graphback/runtime-mongo": "0.14.0-alpha3",
     "cors": "2.8.5",
     "dotenv": "8.2.0",
