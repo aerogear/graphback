@@ -98,13 +98,13 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     return super.findBy(filter, orderBy, page);
   }
 
-  public sync(lastSync: string): Promise<Type[]> {
-    const filter = {
+  public sync(lastSync: string, filter?: any): Promise<Type[]> {
+
+    return super.findBy({
+      ...filter,
       updatedAt: {
         gt: lastSync
-      },
-    };
-
-    return super.findBy(filter, undefined, undefined);
+      }
+    }, undefined, undefined);
   }
 }
