@@ -15,6 +15,8 @@ import { GraphbackContext } from '../service/GraphbackContext';
  *    Subscription: {...}
  * }
  * ```
+ *
+ * TODO: Remove this class and GraphbackRuntime once https://github.com/aerogear/graphback/issues/1448 is completed
  */
 export class LayeredRuntimeResolverCreator {
   private models: ModelDefinition[];

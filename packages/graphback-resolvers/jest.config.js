@@ -1,6 +1,6 @@
 /* eslint-disable */
 const baseConfig = require("../../jest.config");
-const packageName = 'graphback-codegen-schema';
+const packageName = 'graphback-resolvers';
 
 module.exports = {
   ...baseConfig,
