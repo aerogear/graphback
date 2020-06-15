@@ -206,21 +206,22 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
 
   private getCustomIndex(field: GraphQLField<any, any>): IndexSpecification {
     const indexMetadata: any = parseMetadata('index', field.description);
-      if (indexMetadata) {
-        let indexName = `graphback_custom_index_${field.name}_on_${this.collectionName}`;
-        if (indexMetadata.name && indexMetadata.name !== undefined && indexMetadata.name !== '') {
-          indexName = indexMetadata.name;
-        }
+    if (indexMetadata) {
+      // const indexName = `graphback_index_${field.name}_on_${this.collectionName}`;
+      // if (indexMetadata.name && indexMetadata.name !== undefined || indexMetadata.name !== '') {
+      //   indexName = indexMetadata.name;
+      // }
 
-        return {
-          key: {
-            [field.name]: 1
-          },
-          name: indexName
+      const indexSpec: IndexSpecification = Object.assign({
+        key: {
+          [field.name]: 1
         }
-      } else {
-        return undefined;
-      }
+      }, indexMetadata);
+
+      return indexSpec;
+    } else {
+      return undefined;
+    }
   }
 
   private getRelationIndex(field: GraphQLField<any, any>): IndexSpecification {
