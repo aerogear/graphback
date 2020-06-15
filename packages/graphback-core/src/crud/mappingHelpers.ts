@@ -1,5 +1,5 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, GraphQLNamedType, getNamedType, isObjectType, getNullableType, GraphQLInputField, GraphQLInputFieldConfig, GraphQLScalarType, isScalarType, isNullableType, GraphQLNonNull, GraphQLInputType, isNonNullType, isEnumType } from 'graphql';
-import { parseMarker } from 'graphql-metadata';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNamedType, isObjectType, isScalarType, GraphQLNonNull, GraphQLInputType, isNonNullType, isEnumType } from 'graphql';
+import { parseMetadata } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
 import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
@@ -92,7 +92,7 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
 }
 
 export function isModelType(graphqlType: GraphQLObjectType): boolean {
-  return !!parseMarker('model', graphqlType.description);
+  return !!parseMetadata('model', graphqlType.description);
 }
 
 /**

@@ -1,33 +1,100 @@
-//tslint:disable-next-line: match-default-export-name no-implicit-dependencies
-import { readFileSync } from 'fs';
 import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata } from '../src'
+import { GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, getModelByName } from '../src'
 
-const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
+const setup = (model: string, config?: { crudMethods?: GraphbackCRUDGeneratorConfig }) => {
+  const metadata = new GraphbackCoreMetadata({ crudMethods: config?.crudMethods }, buildSchema(model))
 
-test('Test metadata', async () => {
+  return { metadata }
+}
 
-  const crudMethods = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": false,
-    "delete": true,
-  }
+test('Model has default crud configuration', async () => {
 
-  let metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(schemaText))
-  metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
+  const { metadata } = setup(`
+
+"""
+@model
+"""
+type Comment {
+  id: ID!
+}
+
+"""
+@model
+@delta
+"""
+type Note {
+  id: ID!
+  title: String!
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]
+}`)
+
+
   const models = metadata.getModelDefinitions();
-  const crudModels = models.map((model: any) => {
-    expect(model.crudOptions.findOne).toEqual(true);
-    expect(model.crudOptions.find).toEqual(false);
 
-    return model.crudOptions;
-  })
+  const { crudOptions, config, relationships } = getModelByName('Note', models)
 
-  expect(models[0].crudOptions.delete).toEqual(false)
-  expect(models[0].config.deltaSync).toEqual(true)
-  expect(models[1].crudOptions.create).toEqual(false)
-  expect(models[1].crudOptions.delete).toEqual(true)
-  expect(crudModels).toMatchSnapshot()
+  expect(crudOptions).toBeDefined()
+  expect(config.deltaSync).toBe(true)
+  expect(relationships).toHaveLength(1)
 });
+
+test('Model has default crud configuration', async () => {
+
+  const { metadata } = setup(`
+"""
+@model
+"""
+type Note {
+  id: ID!
+  title: String!
+}`)
+
+
+  const models = metadata.getModelDefinitions();
+
+  const { crudOptions } = getModelByName('Note', models)
+
+  expect(crudOptions).toEqual({
+    findOne: true,
+    find: true,
+    create: true,
+    update: true,
+    delete: true,
+    subCreate: true,
+    subDelete: true,
+    subUpdate: true
+  })
+});
+
+test('Override CRUD config for model', async () => {
+
+  const { metadata } = setup(`
+"""
+@model(create: false)
+"""
+type Note {
+  id: ID!
+  title: String!
+}
+
+"""
+@model
+"""
+type Comment {
+  id: ID!
+  title: String!
+}
+`)
+
+  const models = metadata.getModelDefinitions();
+
+  const note = getModelByName('Note', models)
+  const comment = getModelByName('Comment', models)
+
+  expect(note.crudOptions.create).toBe(false)
+  expect(comment.crudOptions.create).toBe(true)
+});
+
