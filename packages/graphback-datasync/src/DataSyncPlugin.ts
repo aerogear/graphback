@@ -61,7 +61,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
                 });
                 const filterTypeName = getInputTypeName(modelName, GraphbackOperationType.FIND);
                 schemaComposer.Query.addFieldArgs(deltaQuery, {
-                    lastSync: 'String!',
+                    lastSync: GraphQLNonNull(GraphQLString),
                     filter: filterTypeName
                 })
             }
