@@ -1,8 +1,6 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
-import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
-import { createTestingContext, Context } from "./MongoDataProviderTest";
+import { createTestingContext, Context } from "./__util__";
 
 describe('MongoDBDataProvider Advanced Filtering', () => {
 

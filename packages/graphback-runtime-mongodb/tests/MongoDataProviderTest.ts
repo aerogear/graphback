@@ -1,62 +1,7 @@
 //tslint:disable-next-line: match-default-export-name
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ObjectID, MongoClient } from 'mongodb';
-import { buildSchema } from 'graphql';
-import { filterModelTypes, GraphbackCoreMetadata } from '@graphback/core';
 import { advanceTo, advanceBy } from "jest-date-mock";
-import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
-
-
-export interface Context {
-  providers: { [modelname: string]: MongoDBDataProvider };
-  server: MongoMemoryServer
-}
-
-export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
-  // Setup graphback
-  let schema = buildSchema(schemaStr);
-
-  const server = new MongoMemoryServer();
-  const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
-  await client.connect();
-  const db = client.db('test');
-
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const schemaGenerator = new SchemaCRUDPlugin({ outputPath: './tmp', format: 'graphql' })
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, schema)
-  schema = schemaGenerator.transformSchema(metadata)
-
-  const providers: { [name: string]: MongoDBDataProvider } = {}
-  const models = filterModelTypes(schema)
-  for (const modelType of models) {
-    providers[modelType.name] = new MongoDBDataProvider(modelType, db);
-  }
-
-  // if seed data is supplied, insert it into collections
-  if (config?.seedData) {
-    const collectionNames = Object.keys(config.seedData);
-    for (const collectionName of collectionNames) {
-      for (const element of config.seedData[collectionName]) {
-        await providers[collectionName].create(element);
-      }
-    };
-  }
-
-  return { server, providers }
-}
+import { Context,createTestingContext } from "./__util__";
 
 describe('MongoDBDataProvider Basic CRUD', () => {
   interface Todo {
@@ -89,9 +34,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
   //all tests can run parallel
 
 
-  afterEach(async () => {
-    await context.server.stop();
-  })
+  afterEach(() => context.server.stop())
 
   test('Test mongo crud', async () => {
     context = await createTestingContext(todoSchema, {
@@ -283,6 +226,8 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 describe('MongoDB indexing', () => {
   let context: Context;
 
+  afterEach(() => context.server.stop())
+
   it('can create default indexes', async () => {
     context = await createTestingContext(`
     """
@@ -302,7 +247,17 @@ describe('MongoDB indexing', () => {
     await client.connect();
     const db = client.db('test');
 
-    expect(await db.collection('note').indexes()).toMatchSnapshot();
+    const indexes = await db.collection('note').indexes();
+
+    expect(indexes[1]).toMatchObject(
+      {
+        "key": {
+          "text": 1
+        },
+        "name": "text_1",
+        "ns": "test.note"
+      }
+    )
   })
 
   it('can create indexes with options', async () => {
@@ -332,6 +287,57 @@ describe('MongoDB indexing', () => {
     await client.connect();
     const db = client.db('test');
 
-    expect(await db.collection('note').indexes()).toMatchSnapshot();
+    const indexes = await db.collection('note').indexes();
+
+    expect(indexes[1]).toMatchObject(
+      {
+        "key": {
+          "meta": 1,
+          "pages": 1
+        },
+        "name": "compound_index",
+        "ns": "test.note"
+      }
+    )
+  })
+
+  it('can create relation indexes', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    """
+    type Note {
+      id: ID!
+      text: String
+      """
+      @oneToMany field: 'note'
+      """
+      comments: [Comment]
+    }
+
+    """
+    @model
+    """
+    type Comment {
+      id: ID!
+      text: String
+    }
+    `);
+
+    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db('test');
+
+    const indexes = await db.collection('comment').indexes();
+
+    expect(indexes[1]).toMatchObject(
+      {
+        "key": {
+          "noteId": 1,
+        },
+        "name": "graphback_relation_index_noteId_on_comment",
+        "ns": "test.comment"
+      }
+    )
   })
 })
