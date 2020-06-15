@@ -1,7 +1,9 @@
 import { GraphQLSchema } from 'graphql';
 import { GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition } from '@graphback/core';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
-import { LayeredRuntimeResolverCreator, GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap, GraphbackContext } from '@graphback/runtime';
+import { ResolversCRUDPlugin } from '@graphback/resolvers';
+import { mergeSchemas } from '@graphql-tools/merge';
+import { GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap, GraphbackContext } from '@graphback/runtime';
 import { PubSub } from 'graphql-subscriptions';
 
 export interface GraphbackAPIConfig {
@@ -78,6 +80,7 @@ function createServices(models: ModelDefinition[], createService: Function, crea
 export function buildGraphbackAPI(model: string | GraphQLSchema, config: GraphbackAPIConfig): GraphbackAPI {
   const schemaPlugins: GraphbackPlugin[] = [
     new SchemaCRUDPlugin,
+    new ResolversCRUDPlugin,
     ...config.plugins || []
   ]
 
@@ -100,10 +103,12 @@ export function buildGraphbackAPI(model: string | GraphQLSchema, config: Graphba
       graphback: services
     }
   }
-  const runtimeResolversCreator = new LayeredRuntimeResolverCreator(models);
-  const resolvers = runtimeResolversCreator.generate()
 
-  const schema = metadata.getSchema()
+  const resolvers = metadata.getResolvers()
+
+  // merge resolvers into schema to make it executable
+  const schema = mergeSchemas({ schemas: [metadata.getSchema()], resolvers })
+
   const typeDefs = printSchemaWithDirectives(schema)
 
   return {

@@ -1,5 +1,5 @@
 {
-  "name": "graphback-templates-runtime-mongo",
+  "name": "graphback-templates-runtime-postgres",
   "version": "0.14.0-alpha4",
   "description": "Graphback runtime template with Apollo Server and PostgreSQL",
   "private": true,

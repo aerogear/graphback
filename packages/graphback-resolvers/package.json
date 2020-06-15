@@ -1,13 +1,13 @@
 {
-  "name": "graphback",
-  "version": "0.14.0-alpha4",
-  "description": "Auto generate resolvers on top of the graphql and database of your choice",
+  "name": "@graphback/resolvers",
+  "version": "0.14.0-alpha3",
+  "description": "Generates GraphQL CRUD compatible resolvers",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "typescript": {
     "definition": "types/index.d.ts"
   },
-  "author": "wtrocki@redhat.com",
+  "author": "ephelan@redhat.com",
   "scripts": {
     "clean": "rimraf coverage dist types",
     "build": "tsc",
@@ -18,10 +18,13 @@
   "engines": {
     "node": ">=10.15.3"
   },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/jest": "26.0.0",
     "@types/node": "12.12.47",
-    "@types/pino": "5.20.0",
     "graphql": "14.6.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
@@ -30,20 +33,10 @@
     "tsutils": "3.17.1",
     "typescript": "3.9.5"
   },
-  "license": "Apache-2.0",
   "dependencies": {
-    "@graphback/codegen-client": "0.14.0-alpha4",
-    "@graphback/codegen-schema": "0.14.0-alpha4",
-    "@graphback/core": "0.14.0-alpha4",
-    "@graphback/runtime": "0.14.0-alpha4",
-    "@graphback/resolvers": "0.14.0-alpha4",
-    "@graphql-inspector/core": "1.30.4",
-    "@graphql-tools/merge": "6.0.9",
-    "glob": "7.1.6",
-    "graphql-subscriptions": "1.1.0",
-    "pg": "8.2.1",
-    "pino": "6.3.2",
-    "tslib": "1.13.0"
+    "@graphback/core": "0.14.0-alpha3",
+    "@graphql-tools/utils": "6.0.9",
+    "graphql-metadata": "0.6.3"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

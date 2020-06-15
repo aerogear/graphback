@@ -30,6 +30,7 @@ export class GraphbackCoreMetadata {
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
         this.schema = schema;
+        this.resolvers = []
         this.supportedCrudMethods = Object.assign({}, defaultCRUDGeneratorConfig, globalConfig?.crudMethods)
     }
 
@@ -42,7 +43,9 @@ export class GraphbackCoreMetadata {
     }
 
     public addResolvers(resolvers: IResolvers) {
-      this.resolvers.push(resolvers);
+      if (resolvers) {
+        this.resolvers.push(resolvers);
+      }
     }
 
     public getResolvers(): IResolvers[] {
