@@ -1,6 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { parseAnnotations, parseMarker, parseMetadata } from 'graphql-metadata'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common'
+import { IResolvers } from '@graphql-tools/utils'
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
@@ -24,6 +25,7 @@ export class GraphbackCoreMetadata {
 
     private supportedCrudMethods: GraphbackCRUDGeneratorConfig
     private schema: GraphQLSchema;
+    private resolvers: IResolvers[];
     private models: ModelDefinition[];
 
     public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
@@ -37,6 +39,14 @@ export class GraphbackCoreMetadata {
 
     public setSchema(newSchema: GraphQLSchema) {
         this.schema = newSchema;
+    }
+
+    public addResolvers(resolvers: IResolvers) {
+      this.resolvers.push(resolvers);
+    }
+
+    public getResolvers(): IResolvers[] {
+      return this.resolvers;
     }
 
     /**

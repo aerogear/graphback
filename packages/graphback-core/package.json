@@ -36,6 +36,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@graphql-tools/utils": "6.0.9",
     "@graphql-toolkit/common": "0.10.7",
     "glob": "7.1.6",
     "graphql-compose": "7.18.1",
