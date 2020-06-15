@@ -279,3 +279,59 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     expect(next.createdAt).toEqual(createDate.getTime())
   })
 });
+
+describe('MongoDB indexing', () => {
+  let context: Context;
+
+  it('can create default indexes', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @versioned
+    """
+    type Note {
+      id: ID!
+      """
+      @index
+      """
+      text: String
+    }
+    `);
+
+    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db('test');
+
+    expect(await db.collection('note').indexes()).toMatchSnapshot();
+  })
+
+  it('can create indexes with options', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @versioned
+    """
+    type Note {
+      id: ID!
+      text: String
+      """
+      @index(
+        name: 'compound_index',
+        key: {
+          meta: 1,
+          pages: 1
+        }
+      )
+      """
+      meta: String
+      pages: Int
+    }
+    `);
+
+    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db('test');
+
+    expect(await db.collection('note').indexes()).toMatchSnapshot();
+  })
+})
