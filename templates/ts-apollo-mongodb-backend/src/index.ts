@@ -24,17 +24,14 @@ async function start() {
 
   const db = await connectDB()
 
-  const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+  const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
     dataProviderCreator: createMongoDbProvider(db)
   });
 
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context: (context: any) => ({
-      ...context,
-      services
-    })
+    context: contextCreator
   })
 
   apolloServer.applyMiddleware({ app })

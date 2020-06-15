@@ -35,33 +35,33 @@ export class LayeredRuntimeResolverCreator {
         const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
         //tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].create(args.input, context)
+          return context.graphback[modelName].create(args.input, context)
         }
       }
       if (resolverElement.crudOptions.update) {
         const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
         //tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].update(args.input, context)
+          return context.graphback[modelName].update(args.input, context)
         }
       }
       if (resolverElement.crudOptions.delete) {
         const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
         //tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].delete(args.input, context)
+          return context.graphback[modelName].delete(args.input, context)
         }
       }
 
@@ -70,18 +70,18 @@ export class LayeredRuntimeResolverCreator {
         const primaryKeyLabel = getPrimaryKey(resolverElement.graphqlType).name;
         //tslint:disable-next-line: no-any
         resolvers.Query[findOneField] = (parent: any, args: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
+          return context.graphback[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
         }
       }
       if (resolverElement.crudOptions.find) {
         const findField = getFieldName(modelName, GraphbackOperationType.FIND);
         //tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: GraphbackContext) => {
-          return context.services[modelName].findBy(args.filter, args.orderBy, args.page, context)
+          return context.graphback[modelName].findBy(args.filter, args.orderBy, args.page, context)
         }
       }
 
@@ -90,7 +90,7 @@ export class LayeredRuntimeResolverCreator {
         const deltaQuery = getDeltaQuery(resolverElement.graphqlType.name)
 
         resolvers.Query[deltaQuery] = async (parent: any, args: any, context: GraphbackContext) => {
-          const dataSyncService: any = context.services[modelName];
+          const dataSyncService: any = context.graphback[modelName];
 
           if (dataSyncService.sync === undefined) {
             throw Error("Please use DataSync provider for delta queries");
@@ -131,11 +131,11 @@ export class LayeredRuntimeResolverCreator {
       resolvers.Subscription[operation] = {
         //tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].subscribeToCreate({}, context);
+          return context.graphback[modelName].subscribeToCreate({}, context);
         }
       }
     }
@@ -145,11 +145,11 @@ export class LayeredRuntimeResolverCreator {
       resolvers.Subscription[operation] = {
         //tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].subscribeToUpdate({}, context);
+          return context.graphback[modelName].subscribeToUpdate({}, context);
         }
       }
     }
@@ -159,11 +159,11 @@ export class LayeredRuntimeResolverCreator {
       resolvers.Subscription[operation] = {
         //tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].subscribeToDelete({}, context);
+          return context.graphback[modelName].subscribeToDelete({}, context);
         }
       }
     }
@@ -180,19 +180,19 @@ export class LayeredRuntimeResolverCreator {
 
       if (relationship.kind === 'oneToMany') {
         resolverFn = (parent: any, args: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
+          return context.graphback[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
         }
       } else {
         resolverFn = (parent: any, args: any, context: GraphbackContext) => {
-          if (!context.services || !context.services[modelName]) {
+          if (!context.graphback || !context.graphback[modelName]) {
             throw new Error(`Missing service for ${modelName}`);
           }
 
-          return context.services[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
+          return context.graphback[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
         }
       }
 

@@ -67,7 +67,7 @@ import { buildGraphbackAPI } from 'graphback'
 import { createKnexDbProvider, createCRUDService } from '@graphback/runtime-knex'
 import { PubSub } from 'graphql-subscriptions'
 
-const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
   serviceCreator: createCRUDService({
     pubSub: new PubSub()
   }),
