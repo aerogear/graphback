@@ -205,13 +205,18 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   }
 
   private getCustomIndex(field: GraphQLField<any, any>): IndexSpecification {
-    const otherAnnotations = parseMetadata('db', field.description) as any;
-      if (otherAnnotations?.index) {
+    const indexMetadata: any = parseMetadata('index', field.description);
+      if (indexMetadata) {
+        let indexName = `graphback_custom_index_${field.name}_on_${this.collectionName}`;
+        if (indexMetadata.name && indexMetadata.name !== undefined && indexMetadata.name !== '') {
+          indexName = indexMetadata.name;
+        }
+
         return {
           key: {
             [field.name]: 1
           },
-          name: `graphback_custom_index_${field.name}_on_${this.collectionName}`
+          name: indexName
         }
       } else {
         return undefined;
