@@ -24,10 +24,12 @@ Array [
     "args": Array [
       150,
     ],
+    "autoIncrementable": false,
     "column": "name",
     "columnType": "string",
     "comment": undefined,
     "defaultValue": undefined,
+    "isPrimaryKey": false,
     "nullable": true,
     "priority": 0,
     "table": "User",

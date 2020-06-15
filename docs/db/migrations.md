@@ -234,5 +234,5 @@ When using custom name in database we need to map it directly inside resolver or
     }
 ```
 
-> NOTE: database migration logic require objects to have `id: ID!` field defined. 
-Renaming `id` field to anything else will break Graphback data resolution logic
+> NOTE: To be able to fully use Graphback, it is recommended that your data models objects to have `id: ID!` field 
+or a primary key field specified with the `@id` annotation.

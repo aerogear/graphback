@@ -15,7 +15,6 @@ function dbFactory(tables: Table[] = []): AbstractDatabase {
 function tableFactory(options: any): Table {
   return {
     columns: [],
-    primaries: [],
     indexes: [],
     uniques: [],
     annotations: {},
@@ -46,11 +45,15 @@ test('create simple table', async () => {
           name: 'id',
           type: 'increments',
           nullable: false,
+          isPrimaryKey: true,
+          autoIncrementable: true
         }),
         columnFactory({
           name: 'name',
           type: 'string',
           args: [150],
+          isPrimaryKey: false,
+          autoIncrementable: false
         }),
       ]
     }),
@@ -69,10 +72,10 @@ test('create simple table', async () => {
     priority: 0,
   } as Operation)
   expect(result[2]).toEqual({
-    type: 'table.primary.set',
+    type: "table.primary.set",
     table: 'User',
     column: 'id',
-    columnType: 'increments',
+    columnType: "increments",
     priority: 0,
   } as Operation)
   expect(result[3]).toEqual({
@@ -84,6 +87,8 @@ test('create simple table', async () => {
     nullable: true,
     defaultValue: undefined,
     comment: undefined,
+    isPrimaryKey: false,
+    autoIncrementable: false,
     priority: 0,
   } as Operation)
 
@@ -147,6 +152,9 @@ test('set primary key', async () => {
         columnFactory({
           name: 'id',
           type: 'increments',
+          nullable: false,
+          isPrimaryKey: true,
+          autoIncrementable: true
         }),
       ],
     }),

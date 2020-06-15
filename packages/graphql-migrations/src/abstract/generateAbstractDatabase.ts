@@ -137,7 +137,6 @@ class AbstractDatabaseBuilder {
       columns: [],
       columnMap: new Map<string, TableColumn>(),
       indexes: [],
-      primaries: [],
       uniques: [],
     }
 
@@ -168,11 +167,29 @@ class AbstractDatabaseBuilder {
     this.database.tables.push(table)
     this.database.tableMap.set(type.name, table)
 
+    const primaryKeys = table.columns.filter((column: TableColumn) => column.isPrimaryKey);
+    const primaryKeysSize = primaryKeys.length;
+
+    if (primaryKeysSize >=2) {
+        const autoIncrementablePrimaryKey = primaryKeys.find((primaryKey: TableColumn) => primaryKey.autoIncrementable);
+
+        if (primaryKeysSize > 2 || (primaryKeysSize === 2 && !autoIncrementablePrimaryKey)) {
+            throw Error(`Multiple primary keys found for table ${table.name}`);
+        }
+
+        // default primary key given with `@id`, privilege this user supplied primary key over the auto incrementable one
+        if (autoIncrementablePrimaryKey) {
+          autoIncrementablePrimaryKey.autoIncrementable = false;
+          autoIncrementablePrimaryKey.isPrimaryKey = false;
+        }
+    }
+
+
     return table
   }
 
   private buildColumn(table: Table, field: GraphQLField<any, any>) {
-    const descriptor = this.getFieldDescriptor(field)
+    const descriptor = this.getFieldDescriptor(field);
     if (!descriptor) { return undefined }
     table.columns.push(descriptor)
     table.columnMap.set(field.name, descriptor)
@@ -183,7 +200,7 @@ class AbstractDatabaseBuilder {
   // eslint-disable-next-line complexity
   private getFieldDescriptor(
     field: GraphQLField<any, any>,
-    fieldType?: GraphQLOutputType,
+    fieldType?: GraphQLOutputType
   ): TableColumn | undefined {
     const annotations: any = parseAnnotations('db', field.description || undefined)
     const relationshipMarker = parseRelationshipAnnotation(field.description);
@@ -201,10 +218,6 @@ class AbstractDatabaseBuilder {
     let type: string
     let args: any[]
     let foreign: ForeignKey | undefined
-
-    if (columnName === 'id' && (isScalarType(fieldType) && fieldType.name !== 'ID')) {
-      throw new Error(`Scalar ID is missing on type ${this.currentType}.${field.name}`);
-    }
 
     // Scalar
     if (isScalarType(fieldType) || annotations.type) {
@@ -312,7 +325,6 @@ class AbstractDatabaseBuilder {
             columns: [],
             columnMap: new Map(),
             indexes: [],
-            primaries: [],
             uniques: [],
           }
           this.tableQueue.push(joinTable)
@@ -382,22 +394,6 @@ class AbstractDatabaseBuilder {
       return undefined
     }
 
-
-    // Handle Primary Key
-    const isPrimaryKey = parseMetadata("id", field) || (isScalarType(fieldType) && ID_TYPE.default(field.name, fieldType.name));
-    if (this.currentTable && isPrimaryKey) {
-      const indexName = ID_TYPE.defaultName(this.currentTable.name).substr(0, 63);
-      const list: any[] = this.currentTable[ID_TYPE.list] || [];
-      if(list.length === ID_TYPE.max) {
-        list.splice(0, ID_TYPE.max); // TODO - should this be an error? Multiple primary keys for table 
-     }
-
-     list.push({
-      name: indexName,
-      columns: [columnName] 
-    });
-    }
-
     //Handle Index and Unique
     for (const indexTypeDef of INDEX_UNIQUE_TYPES) {
       const annotation = annotations[indexTypeDef.annotation]
@@ -431,15 +427,20 @@ class AbstractDatabaseBuilder {
       }
     }
 
+    const autoIncrementable = isScalarType(fieldType) && ID_TYPE.default(field.name, fieldType.name);
+    const  isPrimaryKey  = parseMetadata("id", field) || autoIncrementable;
+
     return {
       name: columnName,
       comment: escapeComment(stripAnnotations(field.description || undefined)),
       annotations,
       type,
       args: args || [],
-      nullable: !notNull,
+      nullable: !notNull && !isPrimaryKey,
       foreign,
       defaultValue: annotations.default,
+      autoIncrementable,
+      isPrimaryKey 
     }
   }
 

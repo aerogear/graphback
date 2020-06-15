@@ -17,6 +17,7 @@ const CREATE_TABLE_CHILD_OPS: OperationType[] = [
 
 const ALTER_TABLE_CHILD_OPS: OperationType[] = [
   ...CREATE_TABLE_CHILD_OPS,
+  'table.primary.drop',
   'column.rename',
   'column.alter',
   'column.drop',
@@ -224,6 +225,10 @@ class Writer {
         col = col.defaultTo(op.defaultValue)
       }
 
+      if (op.isPrimaryKey) {
+        col = col.primary();
+      }
+
       return col
     } else {
       throw new Error(`Table ${op.table} column ${op.column}: Unsupported column type ${op.columnType}`)
@@ -295,6 +300,16 @@ class Writer {
               const tpop = (childOp as Operations.TablePrimarySetOperation)
               table[tpop.columnType](tpop.column).primary();
               break
+            case 'table.primary.drop':
+              const tpdop = (childOp as Operations.TablePrimaryDropOperation)
+              const constraintName = this.knex.raw(tpdop.primaryKeyName);
+              this.removeOperation(tpdop);
+              await this.trx.raw(`ALTER TABLE "?"."?" DROP CONSTRAINT "?"`, [
+                this.knex.raw(this.schemaName),
+                this.knex.raw(tableName),
+                constraintName
+              ]);
+              break
             case 'column.create':
               this.createColumn(childOp as Operations.ColumnCreateOperation, table)
               break
@@ -325,6 +340,7 @@ class Writer {
     if (op.comment) {
       col = col.comment(op.comment)
     }
+    
     if (op.nullable) {
       col = col.nullable()
     } else {
@@ -333,7 +349,12 @@ class Writer {
     if (typeof op.defaultValue !== 'undefined') {
       col = col.defaultTo(op.defaultValue)
     }
-    col = col.alter()
+
+    if (op.isPrimaryKey) {
+      col = col.primary();
+    }
+
+    col = col.alter();
 
     return col
   }

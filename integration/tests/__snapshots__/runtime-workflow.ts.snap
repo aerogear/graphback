@@ -9,9 +9,11 @@ Object {
         "id" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -21,9 +23,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "title",
           "nullable": false,
           "type": "string",
@@ -33,9 +37,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -45,9 +51,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -57,9 +65,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "title",
           "nullable": false,
           "type": "string",
@@ -69,9 +79,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -80,14 +92,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "note",
-      "primaries": Array [
-        Object {
-          "columns": Array [
-            "id",
-          ],
-          "name": "note_pkey",
-        },
-      ],
       "uniques": Array [],
     },
     "Comment" => Object {
@@ -96,9 +100,11 @@ Object {
         "id" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -108,9 +114,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "text",
           "nullable": true,
           "type": "string",
@@ -120,9 +128,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -130,6 +140,7 @@ Object {
         "metadata" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -138,6 +149,7 @@ Object {
             "tableName": "commentmetadata",
             "type": "CommentMetadata",
           },
+          "isPrimaryKey": false,
           "name": "metadataId",
           "nullable": true,
           "type": "integer",
@@ -145,6 +157,7 @@ Object {
         "note" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -153,6 +166,7 @@ Object {
             "tableName": "note",
             "type": "Note",
           },
+          "isPrimaryKey": false,
           "name": "noteId",
           "nullable": true,
           "type": "integer",
@@ -162,9 +176,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -174,9 +190,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "text",
           "nullable": true,
           "type": "string",
@@ -186,9 +204,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -196,6 +216,7 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -204,6 +225,7 @@ Object {
             "tableName": "commentmetadata",
             "type": "CommentMetadata",
           },
+          "isPrimaryKey": false,
           "name": "metadataId",
           "nullable": true,
           "type": "integer",
@@ -211,6 +233,7 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -219,6 +242,7 @@ Object {
             "tableName": "note",
             "type": "Note",
           },
+          "isPrimaryKey": false,
           "name": "noteId",
           "nullable": true,
           "type": "integer",
@@ -227,14 +251,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "comment",
-      "primaries": Array [
-        Object {
-          "columns": Array [
-            "id",
-          ],
-          "name": "comment_pkey",
-        },
-      ],
       "uniques": Array [],
     },
     "CommentMetadata" => Object {
@@ -243,9 +259,11 @@ Object {
         "id" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -253,9 +271,11 @@ Object {
         "opened" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "opened",
           "nullable": true,
           "type": "boolean",
@@ -265,9 +285,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -275,9 +297,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "opened",
           "nullable": true,
           "type": "boolean",
@@ -286,14 +310,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "commentmetadata",
-      "primaries": Array [
-        Object {
-          "columns": Array [
-            "id",
-          ],
-          "name": "commentmetadata_pkey",
-        },
-      ],
       "uniques": Array [],
     },
   },
@@ -304,9 +320,11 @@ Object {
         "id" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -316,9 +334,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "title",
           "nullable": false,
           "type": "string",
@@ -328,9 +348,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -340,9 +362,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -352,9 +376,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "title",
           "nullable": false,
           "type": "string",
@@ -364,9 +390,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -375,14 +403,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "note",
-      "primaries": Array [
-        Object {
-          "columns": Array [
-            "id",
-          ],
-          "name": "note_pkey",
-        },
-      ],
       "uniques": Array [],
     },
     Object {
@@ -391,9 +411,11 @@ Object {
         "id" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -403,9 +425,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "text",
           "nullable": true,
           "type": "string",
@@ -415,9 +439,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -425,6 +451,7 @@ Object {
         "metadata" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -433,6 +460,7 @@ Object {
             "tableName": "commentmetadata",
             "type": "CommentMetadata",
           },
+          "isPrimaryKey": false,
           "name": "metadataId",
           "nullable": true,
           "type": "integer",
@@ -440,6 +468,7 @@ Object {
         "note" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -448,6 +477,7 @@ Object {
             "tableName": "note",
             "type": "Note",
           },
+          "isPrimaryKey": false,
           "name": "noteId",
           "nullable": true,
           "type": "integer",
@@ -457,9 +487,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -469,9 +501,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "text",
           "nullable": true,
           "type": "string",
@@ -481,9 +515,11 @@ Object {
           "args": Array [
             255,
           ],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "description",
           "nullable": true,
           "type": "string",
@@ -491,6 +527,7 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -499,6 +536,7 @@ Object {
             "tableName": "commentmetadata",
             "type": "CommentMetadata",
           },
+          "isPrimaryKey": false,
           "name": "metadataId",
           "nullable": true,
           "type": "integer",
@@ -506,6 +544,7 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": Object {
@@ -514,6 +553,7 @@ Object {
             "tableName": "note",
             "type": "Note",
           },
+          "isPrimaryKey": false,
           "name": "noteId",
           "nullable": true,
           "type": "integer",
@@ -522,14 +562,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "comment",
-      "primaries": Array [
-        Object {
-          "columns": Array [
-            "id",
-          ],
-          "name": "comment_pkey",
-        },
-      ],
       "uniques": Array [],
     },
     Object {
@@ -538,9 +570,11 @@ Object {
         "id" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -548,9 +582,11 @@ Object {
         "opened" => Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "opened",
           "nullable": true,
           "type": "boolean",
@@ -560,9 +596,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": true,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": true,
           "name": "id",
           "nullable": false,
           "type": "increments",
@@ -570,9 +608,11 @@ Object {
         Object {
           "annotations": Object {},
           "args": Array [],
+          "autoIncrementable": false,
           "comment": undefined,
           "defaultValue": undefined,
           "foreign": undefined,
+          "isPrimaryKey": false,
           "name": "opened",
           "nullable": true,
           "type": "boolean",
@@ -581,14 +621,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "commentmetadata",
-      "primaries": Array [
-        Object {
-          "columns": Array [
-            "id",
-          ],
-          "name": "commentmetadata_pkey",
-        },
-      ],
       "uniques": Array [],
     },
   ],

@@ -31,5 +31,7 @@ export interface TableColumn {
   args: any[]
   nullable: boolean
   foreign: ForeignKey | undefined
-  defaultValue: any
+  defaultValue: any,
+  isPrimaryKey: boolean
+  autoIncrementable: boolean
 }

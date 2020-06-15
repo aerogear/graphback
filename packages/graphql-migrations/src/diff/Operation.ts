@@ -8,6 +8,7 @@ export type OperationType =
   'table.index.create' |
   'table.index.drop' |
   'table.primary.set' |
+  'table.primary.drop' |
   'table.unique.create' |
   'table.unique.drop' |
   'table.foreign.create' |
@@ -72,6 +73,12 @@ export interface TablePrimarySetOperation extends Operation {
   columnType: string
 }
 
+export interface TablePrimaryDropOperation extends Operation {
+  type: 'table.primary.drop'
+  table: string,
+  primaryKeyName: string
+}
+
 export interface TableUniqueCreateOperation extends Operation {
   type: 'table.unique.create'
   table: string
@@ -109,6 +116,8 @@ export interface ColumnCreateOperation extends Operation {
   comment: string | undefined
   nullable: boolean
   defaultValue: any
+  isPrimaryKey: boolean
+  autoIncrementable: boolean
 }
 
 export interface ColumnAlterOperation extends Operation {
@@ -119,7 +128,8 @@ export interface ColumnAlterOperation extends Operation {
   args: any[]
   comment: string | undefined
   nullable: boolean
-  defaultValue: any
+  defaultValue: any,
+  isPrimaryKey: boolean
 }
 
 export interface ColumnRenameOperation extends Operation {

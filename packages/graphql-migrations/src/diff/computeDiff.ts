@@ -82,6 +82,8 @@ class Differ {
         this.setTableComment(toTable)
       }
 
+      let dropPrimaryKey = false;
+
       const sameColumnQueue: { fromCol: TableColumn, toCol: TableColumn }[] = []
       const addColumnQueue = toTable.columns.slice()
       for (const fromCol of fromTable.columns) {
@@ -103,10 +105,13 @@ class Differ {
           // Same or Rename
           if (!removed) {
             sameColumnQueue.push({ fromCol, toCol })
+            dropPrimaryKey = dropPrimaryKey || (fromCol.isPrimaryKey && !toCol.isPrimaryKey);
             // A new table shouldn't be added
             addColumnQueue.splice(i, 1)
             break
           }
+
+          dropPrimaryKey = dropPrimaryKey || fromCol.isPrimaryKey;
         }
 
         // Drop column
@@ -115,9 +120,14 @@ class Differ {
         }
       }
 
+      // Drop primary key
+      if (dropPrimaryKey) {
+        this.dropPrimary(toTable); 
+      }
+
       // Add columns
       for (const column of addColumnQueue) {
-        if (column.name === 'id') {
+        if (column.isPrimaryKey && column.autoIncrementable) {
           this.setPrimary(toTable, column)
         } else {
           this.createColumn(toTable, column)
@@ -140,6 +150,7 @@ class Differ {
           getKnexColumnType(fromCol.type) !== getKnexColumnType(toCol.type) || !isEqual(fromCol.args, toCol.args) ||
           fromCol.nullable !== toCol.nullable ||
           fromCol.defaultValue !== toCol.defaultValue ||
+          fromCol.isPrimaryKey !== toCol.isPrimaryKey ||
           (Array.isArray(fromCol.defaultValue) && !isEqual(fromCol.defaultValue, toCol.defaultValue)) ||
           (typeof fromCol.defaultValue === 'object' && !isEqual(fromCol.defaultValue, toCol.defaultValue))
         ) {
@@ -194,7 +205,7 @@ class Differ {
 
     // Columns
     for (const column of table.columns) {
-      if (column.name === 'id') {
+      if (column.isPrimaryKey && column.autoIncrementable) {
         this.setPrimary(table, column)
       } else {
         this.createColumn(table, column);
@@ -247,6 +258,17 @@ class Differ {
       table: table.name,
       columnType: column.type,
       column: column.name,
+      priority: 0,
+    }
+    this.operations.push(op)
+  }
+
+
+  private dropPrimary(table: Table) {
+    const op: Operations.TablePrimaryDropOperation = {
+      type: 'table.primary.drop',
+      table: table.name,
+      primaryKeyName: `${table.name}_pkey`, // TODO - this is the default primary key, it maybe be different we should correctly determine primary key name
       priority: 0,
     }
     this.operations.push(op)
@@ -338,6 +360,8 @@ class Differ {
       nullable: column.nullable,
       defaultValue: column.defaultValue,
       priority: 0,
+      isPrimaryKey: column.isPrimaryKey,
+      autoIncrementable: column.autoIncrementable
     }
     this.operations.push(op)
 
@@ -367,6 +391,7 @@ class Differ {
       nullable: column.nullable,
       defaultValue: column.defaultValue,
       priority: 0,
+      isPrimaryKey: column.isPrimaryKey
     }
     this.operations.push(op)
   }

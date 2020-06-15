@@ -67,7 +67,6 @@ class Reader {
         annotations: {},
         columns: [],
         columnMap: new Map(),
-        primaries: [],
         indexes: [],
         uniques: [],
       }
@@ -83,20 +82,28 @@ class Reader {
       const columnComments = await getColumnComments(this.knex, tableName, this.schemaName)
       const columnInfo: { [key: string]: Knex.ColumnInfo } = await this.knex(tableName)
         .withSchema(this.schemaName)
-        .columnInfo() as any
+        .columnInfo() as any;
+      // Primary key
+      const primaries = await getPrimaryKey(this.knex, tableName, this.schemaName)
+      
       // eslint-disable-next-line no-restricted-syntax
       for (const key in columnInfo) {
         if (columnInfo[key]) {
           const columnName = this.getColumnName(key)
           if (!columnName) { continue }
-          const info = columnInfo[key]
-          const foreign = foreignKeys.find((k: any) => k.column === key)
+          const info = columnInfo[key];
+          const {args, type} = getTypeAlias(info.type, info.maxLength);
+          const foreign = foreignKeys.find((k: any) => k.column === key);
+          const isPrimaryKey  = primaries.some((primary:  {column: string, indexName: string }) => primary.column === columnName);
           const column: TableColumn = {
             name: columnName,
+            isPrimaryKey,
+            autoIncrementable: type === "increments" || type === "bigIncrements", // TODO
             comment: this.getComment(columnComments, key),
             annotations: {},
-            ...getTypeAlias(info.type, info.maxLength),
-            nullable: info.nullable,
+            args,
+            type,
+            nullable: info.nullable && !isPrimaryKey,
             defaultValue: transformDefaultValue(info.defaultValue),
             foreign: foreign ? {
               type: undefined,
@@ -116,13 +123,6 @@ class Reader {
           table.columnMap.set(key, column)
         }
       }
-
-      // Primary key
-      const primaries = await getPrimaryKey(this.knex, tableName, this.schemaName)
-      table.primaries = primaries.map((p: any) => ({
-        columns: this.getColumnNames([p.column]),
-        name: p.indexName,
-      }))
 
       // Index
       const indexes = await getIndexes(this.knex, tableName, this.schemaName)
