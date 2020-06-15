@@ -31,17 +31,14 @@ type User {
 const db = Knex(...)
 
 // Creates in memory type definitions, resolvers and CRUD services
-const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
   dataProviderCreator: createKnexDbProvider(db)
 });
 
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
-  context: (context) => ({
-    ...context,
-    services
-  })
+  context: contextCreator
 });
 ```
 
@@ -50,7 +47,7 @@ If you prefer to use MongoDb:
 ```ts
 import { createMongoDbProvider } from '@graphback/runtime-mongo'
 
-const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
   dataProviderCreator: createMongoDbProvider(db)
 });
 ```
@@ -61,7 +58,7 @@ By default, Graphback will create a CRUDService with default configuration for e
 import { createMongoDbProvider, createCRUDService } from '@graphback/runtime-mongo'
 import { MyCustomLogger } from './util'
 
-const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
   serviceCreator: createCRUDService({
     pubSub: new PubSub(),
     logger: MyCustomLogger

@@ -71,14 +71,11 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  const { typeDefs, resolvers, services } = graphbackApi;
+  const { typeDefs, resolvers, contextCreator } = graphbackApi;
   server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: (context: any) => ({
-      ...context,
-      services
-    })
+    context: contextCreator
   });
 
   client = createTestClient(server);
