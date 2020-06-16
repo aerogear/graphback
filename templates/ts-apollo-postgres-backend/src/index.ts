@@ -16,7 +16,7 @@ const app = express()
 
 app.use(cors())
 
-const modelDefs = loadSchemaSync(path.resolve(__dirname, '../model/*.graphql'), {
+const modelDefs = loadSchemaSync(path.resolve('./model/*.graphql'), {
   loaders: [
     new GraphQLFileLoader()
   ]
