@@ -105,12 +105,12 @@ export function buildGraphbackAPI(model: string | GraphQLSchema, config: Graphba
   const resolvers = metadata.getResolvers()
 
   // merge resolvers into schema to make it executable
-  const schema = mergeSchemas({ schemas: [metadata.getSchema()], resolvers })
+  const schemaWithResolvers = mergeSchemas({ schemas: [metadata.getSchema()], resolvers })
 
-  const typeDefs = printSchemaWithDirectives(schema)
+  const typeDefs = printSchemaWithDirectives(schemaWithResolvers)
 
   return {
-    schema,
+    schema: schemaWithResolvers,
     typeDefs,
     resolvers,
     services,
