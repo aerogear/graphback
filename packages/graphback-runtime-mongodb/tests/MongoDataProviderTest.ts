@@ -335,7 +335,7 @@ describe('MongoDB indexing', () => {
         "key": {
           "noteId": 1,
         },
-        "name": "graphback_relation_index_noteId_on_comment",
+        "name": "noteId_1",
         "ns": "test.comment"
       }
     )

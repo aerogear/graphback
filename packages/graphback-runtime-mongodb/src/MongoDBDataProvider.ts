@@ -4,6 +4,7 @@ import { ObjectId, Db, Cursor, MongoError, IndexSpecification } from "mongodb"
 import { ModelTableMap, buildModelTableMap, getDatabaseArguments, parseRelationshipAnnotation } from '@graphback/core';
 import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
+import { findAndCreateIndexes } from "./utils/createIndexes";
 
 interface SortOrder {
   [fieldName: string]: 1 | -1;
@@ -17,7 +18,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
   protected collectionName: string;
   protected tableMap: ModelTableMap;
   protected fieldTransformMap: FieldTransformMap;
-  protected indexes: IndexSpecification[];
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
@@ -25,15 +25,9 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     this.collectionName = this.tableMap.tableName;
     this.fieldTransformMap = getFieldTransformations(baseType);
 
-    // Get a list of all required indexes
-    this.indexes = this.getIndexFields(baseType);
-
-    if (this.indexes.length > 0) {
-      // Apply indexes
-      this.db.collection(this.collectionName).createIndexes(this.indexes).catch((err: any) => {
-        throw Error(err)
-      });
-    }
+    findAndCreateIndexes(baseType, this.db.collection(this.collectionName)).catch((e: Error) => {
+      throw e
+    })
   }
   
   public async create(data: any): Promise<Type> {
