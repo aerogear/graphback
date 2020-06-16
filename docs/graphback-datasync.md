@@ -1,14 +1,12 @@
 ---
-id: dataSync-plugin
-title: Graphback Data Synchronization plugin
-sidebar_label: Data Synchronization plugin
+id: graphback-datasync
+title: Graphback Data Synchronization package
+sidebar_label: Setting up Data Synchronization using Graphback
 ---
 
-# Graphback Data Synchronization plugin
+The `@graphback/datasync` package consisting of the Data Synchronization Schema plugin and compatible data sources, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). Currently this plugin **only** supports MongoDB data sources, with support for other kinds of data sources coming in a future release.
 
-The Graphback Data Synchronization package consisting of the Data Synchronization Schema plugin, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). Currently this plugin **only** supports MongoDB data source, with support for other data sources coming in a future release.
-
-# Installation
+## Installation
 
 The Graphback Data Synchronization package provides schema plugins as well as data sources for all supported data synchronization patterns.
 
@@ -16,7 +14,7 @@ The Graphback Data Synchronization package provides schema plugins as well as da
 npm install @graphback/datasync
 ```
 
-# Usage
+## Usage
 
 There are two steps to implementing a data synchronization strategy:
 
@@ -29,7 +27,7 @@ Currently the supported strategies are:
 
 ## Soft Deletes with delta queries
 
-1. ### Sprinkle metadata on your schema
+1. ### Sprinkle some metadata in your schema
 
 Add the `versioned` and `delta` markers to your model(s) in your GraphQL SDL:
 

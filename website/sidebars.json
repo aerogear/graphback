@@ -30,7 +30,11 @@
       "migrations/openapi"
     ],
     "Reference": [
-      "commands"
+      "commands",
+      "metadata"
+    ],
+    "Data Synchronization": [
+      "graphback-datasync"
     ],
     "Releases": [
       "releases"
