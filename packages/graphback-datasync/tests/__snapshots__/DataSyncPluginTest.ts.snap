@@ -104,12 +104,14 @@ input MutateCommentInput {
   title: String
   description: String
   noteId: ID
+  updatedAt: String!
 }
 
 input MutateNoteInput {
   id: ID!
   title: String
   description: String
+  updatedAt: String!
 }
 
 type Mutation {
