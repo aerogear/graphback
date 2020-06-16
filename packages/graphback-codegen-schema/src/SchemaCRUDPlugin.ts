@@ -293,7 +293,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const name = model.graphqlType.name;
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
-      const {markers, fieldNames} = metadataMap;
+      const { markers, fieldNames } = metadataMap;
       if (parseMarker(markers.versioned, desc)) {
         // metadata fields needed for @versioned
 
