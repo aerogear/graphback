@@ -1,5 +1,5 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, getDeltaQuery } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, getDeltaQuery, metadataMap } from '@graphback/core'
 import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
@@ -64,6 +64,20 @@ export class DataSyncPlugin extends GraphbackPlugin {
                     lastSync: GraphQLNonNull(GraphQLString),
                     filter: filterTypeName
                 })
+
+                // Add updatedAt arg to update and delete input types
+                // for conflict resolution
+                const {fieldNames} = metadataMap;
+                [GraphbackOperationType.DELETE, GraphbackOperationType.UPDATE].map((operation: GraphbackOperationType) => {
+                    const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, operation))
+                    if (inputType) {
+                        inputType.addFields({
+                            [fieldNames.updatedAt]: {
+                                type: GraphQLNonNull(GraphQLString)
+                            }
+                        });
+                    }
+                });
             }
         })
 

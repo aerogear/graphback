@@ -39,11 +39,6 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value), _deleted: false }).toArray();
     if (queryResult && queryResult[0]) {
       queryResult[0][idField.name] = queryResult[0]._id;
-      if (data.updatedAt !== queryResult[0].updatedAt) {
-        const conflictError: any = new Error();
-        conflictError.conflictInfo = { serverState: queryResult[0], clientState: data };
-        throw conflictError
-      }
 
 
       // TODO use findOneAndUpdate to check consistency afterwards
