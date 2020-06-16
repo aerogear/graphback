@@ -42,7 +42,7 @@ export class GraphbackCoreMetadata {
         this.schema = newSchema;
     }
 
-    public createResolvers(resolvers: IResolvers) {
+    public addResolvers(resolvers: IResolvers) {
       if (resolvers) {
         this.resolvers.push(resolvers);
       }
