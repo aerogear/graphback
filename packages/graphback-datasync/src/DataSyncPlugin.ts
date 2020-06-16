@@ -68,16 +68,15 @@ export class DataSyncPlugin extends GraphbackPlugin {
                 // Add updatedAt arg to update and delete input types
                 // for conflict resolution
                 const {fieldNames} = metadataMap;
-                [GraphbackOperationType.DELETE, GraphbackOperationType.UPDATE].map((operation: GraphbackOperationType) => {
-                    const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, operation))
-                    if (inputType) {
-                        inputType.addFields({
-                            [fieldNames.updatedAt]: {
-                                type: GraphQLNonNull(GraphQLString)
-                            }
-                        });
-                    }
-                });
+
+                const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
+                if (inputType) {
+                    inputType.addFields({
+                        [fieldNames.updatedAt]: {
+                            type: GraphQLNonNull(GraphQLString)
+                        }
+                    });
+                }
             }
         })
 
