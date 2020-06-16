@@ -55,7 +55,6 @@
     "codegen-offix-workspace": "yarn workspace @graphback/codegen-offix",
     "codegen-client-workspace": "yarn workspace @graphback/codegen-client",
     "codegen-schema-workspace": "yarn workspace @graphback/codegen-schema",
-    "resolvers-workspace": "yarn workspace @graphback/resolvers",
     "runtime-workspace": "yarn workspace @graphback/runtime",
     "datasync-workspace": "yarn workspace @graphback/datasync",
     "runtime-knex-workspace": "yarn workspace @graphback/runtime-knex",

@@ -1,7 +1,6 @@
 import { GraphQLSchema } from 'graphql';
 import { GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition } from '@graphback/core';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
-import { ResolversCRUDPlugin } from '@graphback/resolvers';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap, GraphbackContext } from '@graphback/runtime';
 import { PubSub } from 'graphql-subscriptions';
@@ -80,7 +79,6 @@ function createServices(models: ModelDefinition[], createService: Function, crea
 export function buildGraphbackAPI(model: string | GraphQLSchema, config: GraphbackAPIConfig): GraphbackAPI {
   const schemaPlugins: GraphbackPlugin[] = [
     new SchemaCRUDPlugin,
-    new ResolversCRUDPlugin,
     ...config.plugins || []
   ]
 

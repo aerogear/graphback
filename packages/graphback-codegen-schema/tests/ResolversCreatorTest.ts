@@ -1,6 +1,6 @@
 import { buildSchema } from 'graphql';
 import { GraphbackPluginEngine } from '@graphback/core';
-import { ResolversCRUDPlugin } from '../src/ResolversCRUDPlugin';
+import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schema = buildSchema(`
 """
@@ -26,7 +26,7 @@ type User {
 
 test('creates resolvers for models', async ()  => {
   const pluginEngine = new GraphbackPluginEngine({schema, plugins: [
-    new ResolversCRUDPlugin()
+    new SchemaCRUDPlugin()
   ]})
 
   const metadata = pluginEngine.createResources()
