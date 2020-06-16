@@ -31,7 +31,7 @@ export abstract class GraphbackPlugin {
    *
    * @param metadata - metadata object with model metadata
    */
-  public addResolvers(metadata: GraphbackCoreMetadata): IResolvers {
+  public createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
     return undefined
   }
 

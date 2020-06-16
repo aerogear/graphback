@@ -83,7 +83,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    *
    * @param {GraphbackCoreMetadata} metadata - Core metatata containing all model information
    */
-  public addResolvers(metadata: GraphbackCoreMetadata): IResolvers {
+  public createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
     const resolvers: IResolvers = {
       Query: {},
       Mutation: {},

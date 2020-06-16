@@ -66,8 +66,8 @@ export class GraphbackPluginEngine {
             const newSchema = plugin.transformSchema(this.metadata);
             this.metadata.setSchema(newSchema);
 
-            const resolvers = plugin.addResolvers(this.metadata);
-            this.metadata.addResolvers(resolvers)
+            const resolvers = plugin.createResolvers(this.metadata);
+            this.metadata.createResolvers(resolvers)
         }
 
         return this.metadata;
