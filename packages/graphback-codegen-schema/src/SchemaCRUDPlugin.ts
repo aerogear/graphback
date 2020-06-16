@@ -96,7 +96,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       this.addQueryResolvers(model, resolvers.Query)
       this.addMutationResolvers(model, resolvers.Mutation)
       this.addSubscriptionResolvers(model, resolvers.Subscription)
-      this.addRelationshipResolvers(model.relationships, resolvers)
+      this.addRelationshipResolvers(model, resolvers)
 
       // TODO: new DataSync resolver plugin
       // If delta marker is encountered, add resolver for `delta` query
@@ -416,18 +416,23 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   /**
    * Create relationship resolver fields
    *
-   * @param {FieldRelationshipMetadata[]} relationships - Model relationship metadata
-   * @param {IResolvers} resolverObj - Resolvers object
+   * @param {ModelDefinition} model - Model definition with relationship metadata
+   * @param {IResolvers} resolversObj - Resolvers object
    */
-  protected addRelationshipResolvers(relationships: FieldRelationshipMetadata[], resolverObj: IResolvers) {
-    if (!relationships.length) { return undefined }
+  protected addRelationshipResolvers(model: ModelDefinition, resolversObj: IResolvers) {
+    if (!model.relationships.length) { return undefined }
 
-    for (const relationship of relationships) {
+    const relationResolvers = {}
+    for (const relationship of model.relationships) {
       if (relationship.kind === 'oneToMany') {
-        this.addOneToManyResolver(relationship, resolverObj)
+        this.addOneToManyResolver(relationship, relationResolvers)
       } else {
-        this.addOneToOneResolver(relationship, resolverObj)
+        this.addOneToOneResolver(relationship, relationResolvers)
       }
+    }
+
+    if (Object.keys(relationResolvers).length > 0) {
+      resolversObj[model.graphqlType.name] = relationResolvers
     }
   }
 
@@ -442,11 +447,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
 
     mutationObj[resolverCreateField] = (_: any, args: any, context: any) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.services[modelName].create(args.input, context)
+      return context.graphback[modelName].create(args.input, context)
     }
   }
 
@@ -461,11 +466,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
 
     mutationObj[updateField] = (_: any, args: any, context: any) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.services[modelName].update(args.input, context)
+      return context.graphback[modelName].update(args.input, context)
     }
   }
 
@@ -480,11 +485,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
 
     mutationObj[deleteField] = (_: any, args: any, context: any) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.services[modelName].delete(args.input, context)
+      return context.graphback[modelName].delete(args.input, context)
     }
   }
 
@@ -499,7 +504,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
     queryObj[findField] = (_: any, args: any, context: any) => {
-      return context.services[modelName].findBy(args.filter, args.orderBy, args.page, context)
+      return context.graphback[modelName].findBy(args.filter, args.orderBy, args.page, context)
     }
   }
 
@@ -516,11 +521,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const primaryKeyLabel = getPrimaryKey(modelType).name;
 
     queryObj[findOneField] = (_: any, args: any, context: any) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.services[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
+      return context.graphback[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
     }
   }
 
@@ -536,11 +541,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     subscriptionObj[operation] = {
       subscribe: (_: any, __: any, context: any) => {
-        if (!context.services || !context.services[modelName]) {
+        if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.services[modelName].subscribeToCreate({}, context);
+        return context.graphback[modelName].subscribeToCreate({}, context);
       }
     }
   }
@@ -557,11 +562,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     subscriptionObj[operation] = {
       subscribe: (_: any, __: any, context: any) => {
-        if (!context.services || !context.services[modelName]) {
+        if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.services[modelName].subscribeToUpdate({}, context);
+        return context.graphback[modelName].subscribeToUpdate({}, context);
       }
     }
   }
@@ -578,11 +583,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     subscriptionObj[operation] = {
       subscribe: (_: any, __: any, context: any) => {
-        if (!context.services || !context.services[modelName]) {
+        if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.services[modelName].subscribeToDelete({}, context);
+        return context.graphback[modelName].subscribeToDelete({}, context);
       }
     }
   }
@@ -593,17 +598,17 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * @param {GraphQLObjectType} modelType - Model GraphQL object type
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addOneToManyResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers) {
+  protected addOneToManyResolver(relationship: FieldRelationshipMetadata, resolverObj: any) {
     const modelName = relationship.relationType.name;
     const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
 
     resolverObj[relationOwner] = (parent: any, args: any, context: any) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.services[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
+      return context.graphback[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
     }
   }
 
@@ -613,17 +618,17 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * @param {GraphQLObjectType} modelType - Model GraphQL object type
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addOneToOneResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers) {
+  protected addOneToOneResolver(relationship: FieldRelationshipMetadata, resolverObj: any) {
     const modelName = relationship.relationType.name;
     const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
 
     resolverObj[relationOwner] = (parent: any, _: any, context: any) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.services[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
+      return context.graphback[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
     }
   }
 
@@ -633,7 +638,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const deltaQuery = getDeltaQuery(modelType.name)
 
     queryObj[deltaQuery] = async (_: any, args: any, context: any) => {
-      const dataSyncService: any = context.services[modelName];
+      const dataSyncService: any = context.graphback[modelName];
 
       if (dataSyncService.sync === undefined) {
         throw Error("Please use DataSync provider for delta queries");
