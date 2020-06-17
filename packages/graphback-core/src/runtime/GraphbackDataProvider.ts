@@ -1,6 +1,5 @@
-import { GraphQLObjectType } from 'graphql';
-import { GraphbackPage } from "../GraphbackPage"
-import { GraphbackOrderBy } from '../GraphbackOrderBy';
+import { GraphbackPage } from "./interfaces"
+import { GraphbackOrderBy } from './interfaces';
 
 /**
  * Graphback layered architecture component that can be called
@@ -60,8 +59,6 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param context context object passed from graphql or rest layer
    */
   findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
-
-
   /**
    * Read multiple items by their id's (used for lazy data loading purposes)
    *
@@ -70,5 +67,4 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param ids array of identifiers that needs to be fetched
    */
   batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]>
-
 }

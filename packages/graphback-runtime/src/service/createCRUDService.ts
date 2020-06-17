@@ -1,9 +1,7 @@
-import { ModelDefinition } from '@graphback/core';
+import { ModelDefinition, GraphbackCRUDService, GraphbackDataProvider } from '@graphback/core';
 import { PubSubEngine } from 'graphql-subscriptions';
-import { GraphbackDataProvider } from '../data/GraphbackDataProvider';
 import { GraphbackMessageLogger } from '../utils/Logger';
 import { CRUDServiceConfig, CRUDService } from './CRUDService';
-import { GraphbackCRUDService } from './GraphbackCRUDService';
 
 export interface CreateCRUDServiceOptions {
   /**
@@ -20,7 +18,7 @@ export interface CreateCRUDServiceOptions {
  *
  * @param config
  */
-export function createCRUDService(config: CreateCRUDServiceOptions): (...args: any[]) => GraphbackCRUDService  {
+export function createCRUDService(config: CreateCRUDServiceOptions): (...args: any[]) => GraphbackCRUDService {
   return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
     const serviceConfig: CRUDServiceConfig = {
       ...config,

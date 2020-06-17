@@ -1,4 +1,4 @@
-import { GraphbackCRUDService } from './GraphbackCRUDService';
+import { GraphbackCRUDService } from '@graphback/core/src/runtime/GraphbackCRUDService';
 
 /**
  * Map model names to a CRUD service
