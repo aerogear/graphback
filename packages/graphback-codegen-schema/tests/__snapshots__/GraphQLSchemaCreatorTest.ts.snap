@@ -6,17 +6,22 @@ Array [
     "Comment": Object {
       "noteComment": [Function],
     },
+    "Fix": Object {
+      "issues": [Function],
+    },
+    "Issue": Object {
+      "bugFix": [Function],
+    },
     "Mutation": Object {
       "createComment": [Function],
+      "createFix": [Function],
       "createIssue": [Function],
       "createNote": [Function],
       "createTest": [Function],
       "deleteComment": [Function],
-      "deleteIssue": [Function],
       "deleteNote": [Function],
       "deleteTest": [Function],
       "updateComment": [Function],
-      "updateIssue": [Function],
       "updateNote": [Function],
       "updateTest": [Function],
     },
@@ -26,19 +31,14 @@ Array [
     },
     "Query": Object {
       "findComments": [Function],
-      "findIssues": [Function],
       "findNotes": [Function],
       "findTests": [Function],
       "getComment": [Function],
-      "getIssue": [Function],
       "getNote": [Function],
       "getTest": [Function],
     },
     "Subscription": Object {
       "deletedComment": Object {
-        "subscribe": [Function],
-      },
-      "deletedIssue": Object {
         "subscribe": [Function],
       },
       "deletedNote": Object {
@@ -50,9 +50,6 @@ Array [
       "newComment": Object {
         "subscribe": [Function],
       },
-      "newIssue": Object {
-        "subscribe": [Function],
-      },
       "newNote": Object {
         "subscribe": [Function],
       },
@@ -60,9 +57,6 @@ Array [
         "subscribe": [Function],
       },
       "updatedComment": Object {
-        "subscribe": [Function],
-      },
-      "updatedIssue": Object {
         "subscribe": [Function],
       },
       "updatedNote": Object {
