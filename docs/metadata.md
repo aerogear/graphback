@@ -73,7 +73,7 @@ It is apparent that the `comment` type does not have a `delete` mutation or a `d
 
 ### `@db`
 
-GraphQL migrations is a tool to create and update database tables for using relational databases with Graphback. It supports a ton of features by using the `@db` annotation. Please check [this](https://www.npmjs.com/package/graphql-migrations) page for complete documentation of it's features.
+GraphQL migrations is a tool to create and update database tables for using relational databases with Graphback. It supports a ton of features by using the `@db` annotation. Please check [this](https://www.npmjs.com/package/graphql-migrations) page for complete documentation of it's features. This feature is **only** supported by Knex supported data sources.
 
 ### `@versioned`
 
@@ -110,7 +110,7 @@ type Comment {
 
 ### `@index`
 
-The `@index` annotation can be used to create an index on a specific field or a set of fields at runtime. This annotation is **only** supported by the MongoDB data source as of now. Note that if you have relationships in your models, they are automatically indexed by Graphback.
+The `@index` annotation can be used to create an index on a specific field or a set of fields at runtime. This annotation is **only** supported by the MongoDB data source as of now. Note that if you have relationships in your models, the relevant foreign keys are automatically indexed by Graphback, so you do not have to index them using `@index`.
 
 #### Arguments
 
