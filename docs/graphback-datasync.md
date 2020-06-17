@@ -6,6 +6,13 @@ sidebar_label: Setting up Data Synchronization using Graphback
 
 The `@graphback/datasync` package consisting of the Data Synchronization Schema plugin and compatible data sources, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). Currently this plugin **only** supports MongoDB data sources, with support for other kinds of data sources coming in a future release.
 
+## Motivation
+
+The raison d'être of the `@graphback/datasync` package is to provide additional out of the box functionality to offline-first GraphQL clients, mainly targeting [Offix](https://offix.dev). To that end, it has two main goals to fulfill:
+
+1. Provide Delta Queries: Delta queries can be used by GraphQL clients to refresh changes in data between periods of connectivity outages. This is functionally complete for MongoDB with support for other data sources and strategies under development.
+2. Provide Server-side Conflict Resolution capabilities: For mutations that are applied offline, this provides the server with the ability to resolve conflicts between server and client side data. This functionality is yet to be implemented.
+
 ## Installation
 
 The Graphback Data Synchronization package provides schema plugins as well as data sources for all supported data synchronization patterns.
