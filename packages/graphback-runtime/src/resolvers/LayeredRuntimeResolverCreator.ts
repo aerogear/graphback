@@ -1,4 +1,4 @@
-import { GraphbackContext, getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata, getDeltaQuery } from '@graphback/core';
+import { GraphbackContext, getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata } from '@graphback/core';
 
 /**
  * Generate runtime resolver layer using Apollo GraphQL format
@@ -84,21 +84,7 @@ export class LayeredRuntimeResolverCreator {
         resolvers.Query[findField] = (parent: any, args: any, context: GraphbackContext) => {
           return context.graphback[modelName].findBy(args.filter, args.orderBy, args.page, context)
         }
-      }
-
-      // If delta marker is encountered, add resolver for `delta` query
-      if (resolverElement.config.deltaSync) {
-        const deltaQuery = getDeltaQuery(resolverElement.graphqlType.name)
-
-        resolvers.Query[deltaQuery] = async (parent: any, args: any, context: GraphbackContext) => {
-          const dataSyncService: any = context.graphback[modelName];
-
-          if (dataSyncService.sync === undefined) {
-            throw Error("Please use DataSync service for delta queries");
-          }
-
-          return dataSyncService.sync(args.lastSync, args.filter);
-        }
+      
       }
 
       const relationResolvers = this.createRelations(resolverElement.relationships);
