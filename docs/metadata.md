@@ -69,6 +69,12 @@ type Subscription {
 
 It is apparent that the `comment` type does not have a `delete` mutation or a `deleted` subscription.
 
+## Datasource specific annotations
+
+### `@db`
+
+GraphQL migrations is a tool to create and update database tables for using relational databases with Graphback. It supports a ton of features by using the `@db` annotation. Please check [this](https://www.npmjs.com/package/graphql-migrations) page for complete documentation of it's features.
+
 ### `@versioned`
 
 The `versioned` annotation adds two fields to a model: `updatedAt` and `createdAt` which are then automatically managed by graphback. This annotation is **only** supported by the MongoDB data source as of now.
@@ -99,5 +105,62 @@ type Comment {
   note: Note
   createdAt: String
   updatedAt: String
+}
+```
+
+### `@index`
+
+The `@index` annotation can be used to create an index on a specific field or a set of fields at runtime. This annotation is **only** supported by the MongoDB data source as of now. Note that if you have relationships in your models, they are automatically indexed by Graphback.
+
+#### Arguments
+
+The arguments provided to `@index` are parsed into an [Index Definition](https://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html#~IndexDefinition) object and then passed to [db.collection.createIndexes](https://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html#createIndexes). 
+
+#### Example
+
+From following example data model:
+
+```graphql
+"""
+@model
+"""
+type Comment {
+  id: ID!
+  """
+  @index
+  """
+  text: String
+  """
+  @index(
+    name: 'compound_index',
+    key: {
+      text: 1,
+      description: 1
+    }
+  )
+  """
+  description: String
+}
+```
+
+Graphback creates the following indexes on the collection `comment` in a db (say `testdb`):
+
+```json
+{
+  "v" : 2,
+  "key" : {
+    "text" : 1
+  },
+  "name" : "text_1",
+  "ns" : "testdb.comment"
+},
+{
+  "v" : 2,
+  "key" : {
+    "text" : 1,
+    "description" : 1
+  },
+  "name" : "compound_index",
+  "ns" : "testdb.comment"
 }
 ```
