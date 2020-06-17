@@ -7,4 +7,4 @@ export * from "./resolvers/RuntimeResolversDefinition"
 export * from "./GraphbackPubSubModel"
 export * from './utils/fieldTransformHelpers';
 
-export { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage } from '@graphback/core'
+export { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList, GraphbackServiceConfigMap } from '@graphback/core'
