@@ -12,28 +12,28 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLType, isObjectType } from 'gra
  */
 //FIXME: Swap with https://github.com/ardatan/graphql-toolkit/pull/422
 export const getModelTypesFromSchema = (schema: GraphQLSchema): GraphQLObjectType[] => {
-    const allTypesMap = schema.getTypeMap();
-    const types = Object.values(allTypesMap);
+  const allTypesMap = schema.getTypeMap();
+  const types = Object.values(allTypesMap);
 
-    return types.filter((graphqlType: GraphQLType) => {
-        if (graphqlType instanceof GraphQLObjectType) {
-            //Filter out private types
-            if (graphqlType.name.startsWith('__')) {
-                return false;
-            }
-            if (schema.getMutationType() && graphqlType.name === schema.getMutationType().name) {
-                return false;
-            }
-            if (schema.getQueryType() && graphqlType.name === schema.getQueryType().name) {
-                return false;
-            }
-            if (schema.getSubscriptionType() && graphqlType.name === schema.getSubscriptionType().name) {
-                return false;
-            }
-
-            return true
-        }
-
+  return types.filter((graphqlType: GraphQLType) => {
+    if (graphqlType instanceof GraphQLObjectType) {
+      //Filter out private types
+      if (graphqlType.name.startsWith('__')) {
         return false;
-    }) as GraphQLObjectType[]
+      }
+      if (schema.getMutationType() && graphqlType.name === schema.getMutationType().name) {
+        return false;
+      }
+      if (schema.getQueryType() && graphqlType.name === schema.getQueryType().name) {
+        return false;
+      }
+      if (schema.getSubscriptionType() && graphqlType.name === schema.getSubscriptionType().name) {
+        return false;
+      }
+
+      return true
+    }
+
+    return false;
+  }) as GraphQLObjectType[]
 }

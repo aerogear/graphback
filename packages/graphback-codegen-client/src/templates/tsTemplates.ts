@@ -128,7 +128,7 @@ export const createMutationsTS = (types: ModelDefinition[]) => {
 
   types.forEach((model: ModelDefinition) => {
     const t = model.graphqlType;
-  if (model.crudOptions.create) {
+    if (model.crudOptions.create) {
       mutations.push({
         name: getFieldName(t.name, GraphbackOperationType.CREATE),
         implementation: createMutationTS(t)
@@ -159,7 +159,7 @@ export const createSubscriptionsTS = (types: ModelDefinition[]) => {
   types.forEach((model: ModelDefinition) => {
     const t = model.graphqlType;
     const name = model.graphqlType.name;
-  if (model.crudOptions.create && model.crudOptions.subCreate) {
+    if (model.crudOptions.create && model.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
       const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_CREATE)
       subscriptions.push({

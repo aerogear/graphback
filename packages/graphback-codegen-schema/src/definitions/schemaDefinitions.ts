@@ -102,7 +102,7 @@ function getModelInputFields(modelType: GraphQLObjectType): GraphQLInputField[] 
 
   for (const field of fields) {
     if (isOneToManyField(field)) {
-        continue;
+      continue;
     }
 
     const type = getInputFieldType(field);

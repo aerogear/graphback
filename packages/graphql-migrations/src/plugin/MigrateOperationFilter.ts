@@ -7,7 +7,7 @@ import { Operation } from '../diff/Operation';
  * from array
  */
 export interface MigrateOperationFilter {
-    filter(operations: Operation[]): Operation[];
+  filter(operations: Operation[]): Operation[];
 };
 
 /**
@@ -16,16 +16,16 @@ export interface MigrateOperationFilter {
  */
 export const removeNonSafeOperationsFilter: MigrateOperationFilter = {
 
-    filter: (operations: Operation[]) => {
-        return operations.filter((op: Operation) => {
-            if (op.type === 'table.drop' ||
+  filter: (operations: Operation[]) => {
+    return operations.filter((op: Operation) => {
+      if (op.type === 'table.drop' ||
                 op.type === 'table.rename' ||
                 op.type === 'column.rename') {
-                return false;
-            }
+        return false;
+      }
 
-            return true;
-        })
-    }
+      return true;
+    })
+  }
 };
 

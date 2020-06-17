@@ -171,17 +171,17 @@ class AbstractDatabaseBuilder {
     const primaryKeysSize = primaryKeys.length;
 
     if (primaryKeysSize >=2) {
-        const autoIncrementablePrimaryKey = primaryKeys.find((primaryKey: TableColumn) => primaryKey.autoIncrementable);
+      const autoIncrementablePrimaryKey = primaryKeys.find((primaryKey: TableColumn) => primaryKey.autoIncrementable);
 
-        if (primaryKeysSize > 2 || (primaryKeysSize === 2 && !autoIncrementablePrimaryKey)) {
-            throw Error(`Multiple primary keys found for table ${table.name}`);
-        }
+      if (primaryKeysSize > 2 || (primaryKeysSize === 2 && !autoIncrementablePrimaryKey)) {
+        throw Error(`Multiple primary keys found for table ${table.name}`);
+      }
 
-        // default primary key given with `@id`, privilege this user supplied primary key over the auto incrementable one
-        if (autoIncrementablePrimaryKey) {
-          autoIncrementablePrimaryKey.autoIncrementable = false;
-          autoIncrementablePrimaryKey.isPrimaryKey = false;
-        }
+      // default primary key given with `@id`, privilege this user supplied primary key over the auto incrementable one
+      if (autoIncrementablePrimaryKey) {
+        autoIncrementablePrimaryKey.autoIncrementable = false;
+        autoIncrementablePrimaryKey.isPrimaryKey = false;
+      }
     }
 
 
@@ -415,9 +415,9 @@ class AbstractDatabaseBuilder {
             type: indexType,
             columns: [],
           } : {
-              name: indexName,
-              columns: [],
-            }
+            name: indexName,
+            columns: [],
+          }
           list.push(index)
         }
         index.columns.push(columnName)

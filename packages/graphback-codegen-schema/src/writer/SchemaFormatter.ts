@@ -8,11 +8,11 @@
  *
  */
 export interface SchemaFormatter {
-    /**
-     * Transform schema string to new format.
-     * Can be used to wrap schema into js or typescript import format that can be added to the file
-     *
-     * @param schemaString
-     */
-    format(schemaString: string): string
+  /**
+   * Transform schema string to new format.
+   * Can be used to wrap schema into js or typescript import format that can be added to the file
+   *
+   * @param schemaString
+   */
+  format(schemaString: string): string
 }

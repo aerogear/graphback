@@ -7,19 +7,19 @@ import { buildASTSchema, GraphQLObjectType, GraphQLSchema, isInputType, parse, p
  * @return schema without comments
  */
 export const removeCommentsFromSchema = (schema: GraphQLSchema) => {
-    //Parse it to get ast
-    const schemaAST = parse(printSchema(schema));
-    const result = visit(schemaAST, {
-        //tslint:disable-next-line: no-any
-        leave: (node: any) => {
-            //leave any node
-            if (node.description) {
-                node.description = undefined;
-            }
-        }
-    });
+  //Parse it to get ast
+  const schemaAST = parse(printSchema(schema));
+  const result = visit(schemaAST, {
+    //tslint:disable-next-line: no-any
+    leave: (node: any) => {
+      //leave any node
+      if (node.description) {
+        node.description = undefined;
+      }
+    }
+  });
 
-    return buildASTSchema(result);
+  return buildASTSchema(result);
 }
 
 
@@ -30,27 +30,27 @@ export const removeCommentsFromSchema = (schema: GraphQLSchema) => {
  * @param schema 
  */
 export const removeOperationsFromSchema = (schema: GraphQLSchema) => {
-    const schemaConfig = schema.toConfig();
-    //Filter typemap for individual query/mutation/subscription types
-    //Names can be different depending on user setting
-    //This is much faster than using visitor
-    schemaConfig.types = schemaConfig.types.filter((graphQLType: GraphQLObjectType) => {
-        if(isInputType(graphQLType)){
-            return false;
-        }
-        if (schemaConfig.mutation && graphQLType.name === schemaConfig.mutation.name) {
-            return false;
-        }
-        if (schemaConfig.query && graphQLType.name === schemaConfig.query.name) {
-            return false;
-        }
+  const schemaConfig = schema.toConfig();
+  //Filter typemap for individual query/mutation/subscription types
+  //Names can be different depending on user setting
+  //This is much faster than using visitor
+  schemaConfig.types = schemaConfig.types.filter((graphQLType: GraphQLObjectType) => {
+    if(isInputType(graphQLType)){
+      return false;
+    }
+    if (schemaConfig.mutation && graphQLType.name === schemaConfig.mutation.name) {
+      return false;
+    }
+    if (schemaConfig.query && graphQLType.name === schemaConfig.query.name) {
+      return false;
+    }
 
-        return true;
-    })
-    schemaConfig.query = undefined
-    schemaConfig.mutation = undefined;
-    //Required when query is missing
-    schemaConfig.assumeValid = true;
+    return true;
+  })
+  schemaConfig.query = undefined
+  schemaConfig.mutation = undefined;
+  //Required when query is missing
+  schemaConfig.assumeValid = true;
 
-    return new GraphQLSchema(schemaConfig);
+  return new GraphQLSchema(schemaConfig);
 }

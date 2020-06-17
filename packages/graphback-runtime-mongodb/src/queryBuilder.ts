@@ -6,16 +6,16 @@ const NOT_FIELD = 'not';
 
 // Operators that work with simple substitution :P
 const operatorMap = {
-    [AND_FIELD]: '$and',
-    [OR_FIELD]: '$or',
-    [NOT_FIELD]: '$nor',
-    ne: '$ne',
-    eq: '$eq',
-    le: '$lte',
-    lt: '$lt',
-    ge: '$gte',
-    gt: '$gt',
-    in: '$in',
+  [AND_FIELD]: '$and',
+  [OR_FIELD]: '$or',
+  [NOT_FIELD]: '$nor',
+  ne: '$ne',
+  eq: '$eq',
+  le: '$lte',
+  lt: '$lt',
+  ge: '$gte',
+  gt: '$gt',
+  in: '$in',
 }
 
 type OperatorTransform = [string, any][];
@@ -25,54 +25,54 @@ type OperatorTransformFunction = (value: any) => OperatorTransform;
 // A map of functions to transform mongodb incompatible operators
 // Each function returns pairs of a key and an object for that key
 const operatorTransform: {
-    [operator: string]: OperatorTransformFunction
+  [operator: string]: OperatorTransformFunction
 } = {
-    between: (values: [any, any]): OperatorTransform => {
-        values.sort();
+  between: (values: [any, any]): OperatorTransform => {
+    values.sort();
 
-        return [
-            [operatorMap.ge, values[0]],
-            [operatorMap.le, values[1]]
-        ]
-    },
-    nbetween: (values: [any, any]): OperatorTransform => {
+    return [
+      [operatorMap.ge, values[0]],
+      [operatorMap.le, values[1]]
+    ]
+  },
+  nbetween: (values: [any, any]): OperatorTransform => {
 
-        values.sort();
+    values.sort();
 
-        return [
-            [
-                "$not", 
-                {
-                    [operatorMap.ge]: values[0],
-                    [operatorMap.le]: values[1],
-                }
-            ],
-            [
-                "$exists",
-                true
-            ]
-        ]
-    },
-    contains: (value: string): OperatorTransform => {
-        return [
-            ['$regex', new RegExp(escapeRegex(value), 'g')]
-        ]
-    },
-    startsWith: (value: string): OperatorTransform => {
-        return [
-            ['$regex', new RegExp(`^${escapeRegex(value)}`, 'g')]
-        ]
-    },
-    endsWith: (value: string): OperatorTransform => {
-        return [
-            ['$regex', new RegExp(`${escapeRegex(value)}$`, 'g')]
-        ]
-    },
+    return [
+      [
+        "$not", 
+        {
+          [operatorMap.ge]: values[0],
+          [operatorMap.le]: values[1],
+        }
+      ],
+      [
+        "$exists",
+        true
+      ]
+    ]
+  },
+  contains: (value: string): OperatorTransform => {
+    return [
+      ['$regex', new RegExp(escapeRegex(value), 'g')]
+    ]
+  },
+  startsWith: (value: string): OperatorTransform => {
+    return [
+      ['$regex', new RegExp(`^${escapeRegex(value)}`, 'g')]
+    ]
+  },
+  endsWith: (value: string): OperatorTransform => {
+    return [
+      ['$regex', new RegExp(`${escapeRegex(value)}$`, 'g')]
+    ]
+  },
 }
 
 // Function to check if variable is primitive or a map
 function isPrimitive(test: any): boolean {
-    return ((test instanceof RegExp) || (test !== Object(test)));
+  return ((test instanceof RegExp) || (test !== Object(test)));
 };
 
 /**
@@ -83,79 +83,79 @@ function isPrimitive(test: any): boolean {
  * @param key field of filter object to be checked
  */
 function stringTimestampsToInt(filter: any, key: string): any {
-    // If the field is one of 'createdAt' or 'updatedAt',
-    // try to coerce the values passed directly or to 
-    // operators on these fields to Integers
-    if (["createdAt", "updatedAt"].includes(key)) {
-        if (isPrimitive(filter[key])) {
-            filter[key] = parseInt(filter[key], 10);
-        } else {
-            const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
-                return [entry[0], parseInt(entry[1], 10)];
-            });
-            filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
-        }
+  // If the field is one of 'createdAt' or 'updatedAt',
+  // try to coerce the values passed directly or to 
+  // operators on these fields to Integers
+  if (["createdAt", "updatedAt"].includes(key)) {
+    if (isPrimitive(filter[key])) {
+      filter[key] = parseInt(filter[key], 10);
+    } else {
+      const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
+        return [entry[0], parseInt(entry[1], 10)];
+      });
+      filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
     }
+  }
 
-    return filter;
+  return filter;
 }
 
 function traverse(filter: any): any {
 
-    Object.keys(filter).forEach((key: string) => {
+  Object.keys(filter).forEach((key: string) => {
 
-            // Transform the operators to mongodb operators
+    // Transform the operators to mongodb operators
 
-            // Check if it can be directly substituted
-            if (operatorMap[key]) {
+    // Check if it can be directly substituted
+    if (operatorMap[key]) {
 
-                // Substitute it with the mongodb operator
-                filter[operatorMap[key]] = filter[key];
-                /*eslint-disable-next-line*/
+      // Substitute it with the mongodb operator
+      filter[operatorMap[key]] = filter[key];
+      /*eslint-disable-next-line*/
                 delete filter[key];
 
-            } else if (operatorTransform[key]) {
+    } else if (operatorTransform[key]) {
 
-                // For: n/between, contains, startswith, endswith
-                // Transform into mongodb operator
-                const transforms = operatorTransform[key](filter[key]);
-                // Apply the transformed operators to filter
-                /*eslint-disable-next-line*/
+      // For: n/between, contains, startswith, endswith
+      // Transform into mongodb operator
+      const transforms = operatorTransform[key](filter[key]);
+      // Apply the transformed operators to filter
+      /*eslint-disable-next-line*/
                 delete filter[key];
-                transforms.forEach((t: [string, any]) => {
-                    const [operator, value] = t;
-                    filter[operator] = value;
-                });
-            }
-    });
+      transforms.forEach((t: [string, any]) => {
+        const [operator, value] = t;
+        filter[operator] = value;
+      });
+    }
+  });
 
-    // If there is nesting, recursively transform all operators
-    Object.keys(filter).forEach((key: string) => {
-            if (['$and', '$or', '$nor'].includes(key)) {
+  // If there is nesting, recursively transform all operators
+  Object.keys(filter).forEach((key: string) => {
+    if (['$and', '$or', '$nor'].includes(key)) {
 
-                // If AND, OR, NOT do not have an array as their contents
-                // Transform contents to an array(as mongodb only supports
-                // arrays as arguments of these operators)
-                if (!Array.isArray(filter[key])) {
-                    filter[key] = [filter[key]];
-                }
-            }
+      // If AND, OR, NOT do not have an array as their contents
+      // Transform contents to an array(as mongodb only supports
+      // arrays as arguments of these operators)
+      if (!Array.isArray(filter[key])) {
+        filter[key] = [filter[key]];
+      }
+    }
 
-            filter = stringTimestampsToInt(filter, key)
+    filter = stringTimestampsToInt(filter, key)
 
-            // Recursive step
-            if (!isPrimitive(filter[key])) {
-                filter[key] = traverse(filter[key]);
-            }
-    });
+    // Recursive step
+    if (!isPrimitive(filter[key])) {
+      filter[key] = traverse(filter[key]);
+    }
+  });
 
-    return filter
+  return filter
 }
 
 export function buildQuery(filter: any) {
-    let query = {};
-    if (filter)
-        {query = traverse(filter);}
+  let query = {};
+  if (filter)
+  {query = traverse(filter);}
 
-    return query;
+  return query;
 }
