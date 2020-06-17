@@ -45,37 +45,37 @@ export interface KeycloakRuntimeContextOptions<Provider extends GraphbackDataPro
  * Helper function for creating Keycloak runtime context used in Graphback
  */
 export function createKeycloakRuntimeContext<Provider extends GraphbackDataProvider, Service extends CRUDService>
-  ({ models, db, schema, pubSub, dataProvider, crudService, authConfig }: KeycloakRuntimeContextOptions<Provider, Service>) {
+({ models, db, schema, pubSub, dataProvider, crudService, authConfig }: KeycloakRuntimeContextOptions<Provider, Service>) {
   if (!models || models.length === 0) {
-      throw new Error(`No models provided`)
+    throw new Error(`No models provided`)
   }
 
   return models.reduce((services: any, model: GraphbackPubSubModel) => {
-      const modelType = schema.getType(model.name) as GraphQLObjectType
-      if (modelType === undefined) {
-          throw new Error(`
+    const modelType = schema.getType(model.name) as GraphQLObjectType
+    if (modelType === undefined) {
+      throw new Error(`
       Schema is missing provided type. 
       Please make sure that you pass the right schema to createCRUDRuntimeContext`)
-      }
+    }
 
-      const objectDB = new dataProvider(modelType, db)
+    const objectDB = new dataProvider(modelType, db)
 
-      // default to the KeycloakCrudService class but allow user to provide their own class
-      // useful in cases where they extend the class.
-      // example: datasync-starter extends the CrudService class to change some pubsub behaviour
-      const service = crudService || KeycloakCrudService
+    // default to the KeycloakCrudService class but allow user to provide their own class
+    // useful in cases where they extend the class.
+    // example: datasync-starter extends the CrudService class to change some pubsub behaviour
+    const service = crudService || KeycloakCrudService
 
-      services[model.name] = new service({
-          modelType,
-          db: objectDB,
-          subscriptionConfig: {
-              pubSub,
-              ...model.pubSub
-          },
-          authConfig: authConfig[model.name]
-      })
+    services[model.name] = new service({
+      modelType,
+      db: objectDB,
+      subscriptionConfig: {
+        pubSub,
+        ...model.pubSub
+      },
+      authConfig: authConfig[model.name]
+    })
 
-      return services;
+    return services;
   }, {})
 
 }

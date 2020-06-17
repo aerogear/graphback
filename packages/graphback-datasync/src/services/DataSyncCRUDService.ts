@@ -2,8 +2,8 @@ import { CRUDService, CRUDServiceConfig } from "@graphback/runtime"
 import { DataSyncProvider } from "../providers";
 
 export interface SyncList<T> {
-    items: T[],
-    lastSync: string
+  items: T[],
+  lastSync: string
 }
 
 /**
@@ -11,20 +11,20 @@ export interface SyncList<T> {
  */
 export class DataSyncCRUDService<T = any> extends CRUDService<T> {
 
-    public constructor(modelName: string, db: DataSyncProvider, config: CRUDServiceConfig) {
-        super(modelName, db, config);
-    }
-    /**
-     * sync
-     * For delta queries
-     */
-    public async sync(lastSync: string, filter?: any, context?: any): Promise<SyncList<T>> {
+  public constructor(modelName: string, db: DataSyncProvider, config: CRUDServiceConfig) {
+    super(modelName, db, config);
+  }
+  /**
+   * sync
+   * For delta queries
+   */
+  public async sync(lastSync: string, filter?: any, context?: any): Promise<SyncList<T>> {
 
-        const res = await (this.db as DataSyncProvider).sync(lastSync, filter);
+    const res = await (this.db as DataSyncProvider).sync(lastSync, filter);
 
-        return {
-            items: res,
-            lastSync: Date.now().toString()
-        }
+    return {
+      items: res,
+      lastSync: Date.now().toString()
     }
+  }
 }

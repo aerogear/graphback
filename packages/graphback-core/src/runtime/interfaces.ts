@@ -18,8 +18,8 @@ export interface GraphbackContext {
  * Interface represents GraphbackPage type
  */
 export interface GraphbackPage {
-    limit?: number
-    offset?: number
+  limit?: number
+  offset?: number
 }
 
 export type SortDirection = 'asc' | 'desc'
