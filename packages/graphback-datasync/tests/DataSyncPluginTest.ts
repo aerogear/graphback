@@ -26,4 +26,6 @@ test('Test snapshot config gql', async () => {
   metadata.setSchema(schemaPlugin.transformSchema(metadata))
   const schema = datasync.transformSchema(metadata)
   expect(printSchema(schema)).toMatchSnapshot();
+  const resolvers: any = datasync.createResolvers(metadata);
+  expect(resolvers.Query.syncComments).toBeTruthy()
 });

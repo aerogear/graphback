@@ -1,9 +1,10 @@
 
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, getDeltaQuery, metadataMap } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext } from '@graphback/core'
 import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
-import { getDeltaType, getDeltaListType } from "./deltaMappingHelper";
+import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
+import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -16,7 +17,7 @@ export const SCHEMA_CRUD_PLUGIN_NAME = "DatasyncPlugin";
  * DataSync plugin
  *
  * Plugin is enabled by """ @delta """ annotation
- * It will generate diffQueries
+ * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
 
@@ -30,7 +31,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       return schema;
     }
     models.forEach((model: ModelDefinition) => {
-            
+
       const modelName = model.graphqlType.name;
       const modifiedType = schemaComposer.getOTC(modelName);
       const entries = Object.entries(modifiedType.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
@@ -43,7 +44,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
         ...fields,
         _deleted: 'Boolean',
-      })            
+      })
 
       schemaComposer.createObjectTC({
         name: getDeltaListType(modelName),
@@ -54,7 +55,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       })
       // Diff queries
       if (parseMetadata('delta', model.graphqlType)) {
-                
+
         const deltaQuery = getDeltaQuery(model.graphqlType.name)
         schemaComposer.Query.addFields({
           [deltaQuery]: `${getDeltaListType(modelName)}!`
@@ -67,7 +68,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
         // Add updatedAt arg to update and delete input types
         // for conflict resolution
-        const {fieldNames} = metadataMap;
+        const { fieldNames } = metadataMap;
 
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
         if (inputType) {
@@ -83,6 +84,30 @@ export class DataSyncPlugin extends GraphbackPlugin {
     return buildSchema(schemaComposer.toSDL())
   }
 
+  /**
+   * Creates resolvers for Data Synchonization
+   *
+   * @param {GraphbackCoreMetadata} metadata - Core metatata containing all model information
+   */
+  public createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
+    const resolvers: IResolvers = {
+      Query: {},
+      Mutation: {},
+      Subscription: {}
+    }
+
+    const models = metadata.getModelDefinitions()
+
+    for (const model of models) {
+      // If delta marker is encountered, add resolver for `delta` query
+      if (model.config.deltaSync) {
+        this.addDeltaSyncResolver(model.graphqlType, resolvers.Query as IFieldResolver<any, any>)
+      }
+    }
+
+    return resolvers
+  }
+
   public createResources(metadata: GraphbackCoreMetadata): void {
     // TODO generate delta resolvers
     // TODO DataSource support for deltas
@@ -94,4 +119,18 @@ export class DataSyncPlugin extends GraphbackPlugin {
     return SCHEMA_CRUD_PLUGIN_NAME;
   }
 
+  protected addDeltaSyncResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const deltaQuery = getDeltaQuery(modelType.name)
+
+    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext) => {
+      const dataSyncService: any = context.graphback[modelName];
+
+      if (dataSyncService.sync === undefined) {
+        throw Error("Please use DataSync provider for delta queries");
+      }
+
+      return dataSyncService.sync(args.lastSync);
+    }
+  }
 }

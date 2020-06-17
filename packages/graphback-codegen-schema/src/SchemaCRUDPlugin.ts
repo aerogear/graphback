@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, getDeltaQuery, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext } from '@graphback/core'
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
@@ -97,12 +97,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       this.addMutationResolvers(model, resolvers.Mutation as IFieldResolver<any, any>)
       this.addSubscriptionResolvers(model, resolvers.Subscription as IFieldResolver<any, any>)
       this.addRelationshipResolvers(model, resolvers)
-
-      // TODO: new DataSync resolver plugin
-      // If delta marker is encountered, add resolver for `delta` query
-      if (model.config.deltaSync) {
-        this.addDeltaSyncResolver(model.graphqlType, resolvers.Query as IFieldResolver<any, any>)
-      }
     }
 
     return resolvers
@@ -628,22 +622,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       }
 
       return context.graphback[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
-    }
-  }
-
-  // TODO: Move to DataSync plugin.
-  protected addDeltaSyncResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
-    const modelName = modelType.name;
-    const deltaQuery = getDeltaQuery(modelType.name)
-
-    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext) => {
-      const dataSyncService: any = context.graphback[modelName];
-
-      if (dataSyncService.sync === undefined) {
-        throw Error("Please use DataSync provider for delta queries");
-      }
-
-      return dataSyncService.sync(args.lastSync);
     }
   }
 
