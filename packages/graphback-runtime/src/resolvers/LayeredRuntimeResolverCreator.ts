@@ -1,5 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata, getDeltaQuery } from '@graphback/core';
-import { GraphbackContext } from '@graphback/core/src/runtime/GraphbackContext';
+import { GraphbackContext, getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata, getDeltaQuery } from '@graphback/core';
 
 /**
  * Generate runtime resolver layer using Apollo GraphQL format
