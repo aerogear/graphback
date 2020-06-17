@@ -5,6 +5,7 @@ import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
+import { getDataSyncService } from "./util";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -124,11 +125,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     const deltaQuery = getDeltaQuery(modelType.name)
 
     queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext) => {
-      const dataSyncService: any = context.graphback[modelName];
-
-      if (dataSyncService.sync === undefined) {
-        throw Error("Please use DataSync provider for delta queries");
-      }
+      const dataSyncService = getDataSyncService(context.graphback[modelName]);
 
       return dataSyncService.sync(args.lastSync);
     }
