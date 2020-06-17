@@ -167,61 +167,6 @@ export class MongoDBDataProvider<Type = any, GraphbackContext = any> implements 
     return document;
   }
 
-  protected getIndexFields(baseType: GraphQLObjectType): IndexSpecification[] {
-    const res: IndexSpecification[] = [];
-    const fields = baseType.getFields();
-    Object.keys(fields).forEach((k: string) => {
-      const field = fields[k];
-
-      // Add custom Index if found e.g. @db(index: 1)
-      const customIndex = this.getCustomIndex(field);
-      if (customIndex !== undefined) {
-        res.push(customIndex);
-
-        // To prevent adding mutliple index on same field
-        return;
-      }
-      
-      // Add Index on relation fields
-      const relationIndex = this.getRelationIndex(field);
-      if (relationIndex !== undefined) {
-        res.push(relationIndex);
-      }
-
-    })
-    
-    return res;
-  }
-
-  private getCustomIndex(field: GraphQLField<any, any>): IndexSpecification {
-    const indexMetadata: any = parseMetadata('index', field.description);
-    if (indexMetadata) {
-      const indexSpec: IndexSpecification = Object.assign({
-        key: {
-          [field.name]: 1
-        }
-      }, indexMetadata);
-
-      return indexSpec;
-    } else {
-      return undefined;
-    }
-  }
-
-  private getRelationIndex(field: GraphQLField<any, any>): IndexSpecification {
-    const relationshipData = parseRelationshipAnnotation(field.description)
-    if (relationshipData?.kind && ['manyToOne', 'manyToMany'].includes(relationshipData.kind)) {
-      return {
-        key: {
-          [relationshipData.key]: 1
-        },
-        name: `graphback_relation_index_${relationshipData.key}_on_${this.collectionName}`
-      }
-    } else {
-      return undefined;
-    }
-  }
-
   private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
     const sortOrder: SortOrder = {};
     if (orderBy) {
