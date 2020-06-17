@@ -1,5 +1,4 @@
-import { GraphbackPage } from "./interfaces"
-import { GraphbackOrderBy } from './interfaces';
+import { GraphbackPage, GraphbackOrderBy } from "./interfaces"
 
 /**
  * Graphback layered architecture component that can be called
