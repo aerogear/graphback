@@ -1,7 +1,7 @@
 //tslint:disable-next-line: match-default-export-name no-implicit-dependencies
 import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
-import { LayeredRuntimeResolverCreator } from '../src';
+import { LayeredRuntimeResolverCreator } from '../src/resolvers/LayeredRuntimeResolverCreator';
 
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
