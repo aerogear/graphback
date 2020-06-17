@@ -36,7 +36,7 @@ describe('buildGraphbackAPI', () => {
       dataProviderCreator: createKnexDbProvider(db)
     })
 
-    const { Query, Subscription, Mutation } = resolvers
+    const { Query, Subscription, Mutation } = resolvers[0]
     expect(Object.keys(Query)).toEqual(['getNote', 'findNotes'])
     expect(Object.keys(Subscription)).toEqual(['newNote', 'updatedNote', 'deletedNote'])
     expect(Object.keys(Mutation)).toEqual(['createNote', 'updateNote', 'deleteNote'])
@@ -75,7 +75,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Query, Mutation } = resolvers
+    const { Query, Mutation } = resolvers[0]
     expect(Object.keys(Query)).toEqual(['findNotes', 'getComment'])
     expect(Object.keys(Mutation)).toEqual(['createNote', 'createComment', 'deleteComment'])
   })
@@ -101,7 +101,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Subscription } = resolvers
+    const { Subscription } = resolvers[0]
     expect(Object.keys(Subscription)).toEqual(['newNote', 'updatedNote'])
   })
 
@@ -126,7 +126,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Subscription } = resolvers
+    const { Subscription } = resolvers[0]
     expect(Object.keys(Subscription)).toEqual(['updatedNote', 'deletedNote'])
   })
 
@@ -151,28 +151,8 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Subscription } = resolvers
+    const { Subscription } = resolvers[0]
     expect(Object.keys(Subscription)).toEqual(['newNote', 'deletedNote'])
-  })
-
-  test('Creates a matching GraphQLSchema object and schema AST', () => {
-
-    const model = `
-    """ @model """
-    type Note {
-      id: ID!
-      title: String!
-      description: String
-    }
-    `
-
-    const { db } = setup()
-
-    const { typeDefs, schema } = buildGraphbackAPI(model, {
-      dataProviderCreator: createKnexDbProvider(db)
-    })
-
-    expect(buildSchema(typeDefs).astNode).toEqual(schema.astNode)
   })
 
   test('Custom plugins are executed', () => {

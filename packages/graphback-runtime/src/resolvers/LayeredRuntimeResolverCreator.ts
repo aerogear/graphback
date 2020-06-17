@@ -1,5 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata, getDeltaQuery } from '@graphback/core';
-import { GraphbackContext } from '../service/GraphbackContext';
+import { GraphbackContext, getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, FieldRelationshipMetadata, getDeltaQuery } from '@graphback/core';
 
 /**
  * Generate runtime resolver layer using Apollo GraphQL format
@@ -15,6 +14,8 @@ import { GraphbackContext } from '../service/GraphbackContext';
  *    Subscription: {...}
  * }
  * ```
+ *
+ * TODO: Remove this class and GraphbackRuntime once https://github.com/aerogear/graphback/issues/1448 is completed
  */
 export class LayeredRuntimeResolverCreator {
   private models: ModelDefinition[];

@@ -1,9 +1,10 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, metadataMap } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, GraphQLScalarType, isScalarType, isSpecifiedScalarType } from 'graphql';
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, getDeltaQuery, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext } from '@graphback/core'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
+import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMarker } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
@@ -77,6 +78,36 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     return schemaComposer.buildSchema()
   }
 
+  /**
+   * Creates CRUD resolvers
+   *
+   * @param {GraphbackCoreMetadata} metadata - Core metatata containing all model information
+   */
+  public createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
+    const resolvers: IResolvers = {
+      Query: {},
+      Mutation: {},
+      Subscription: {}
+    }
+
+    const models = metadata.getModelDefinitions()
+
+    for (const model of models) {
+      this.addQueryResolvers(model, resolvers.Query as IFieldResolver<any, any>)
+      this.addMutationResolvers(model, resolvers.Mutation as IFieldResolver<any, any>)
+      this.addSubscriptionResolvers(model, resolvers.Subscription as IFieldResolver<any, any>)
+      this.addRelationshipResolvers(model, resolvers)
+
+      // TODO: new DataSync resolver plugin
+      // If delta marker is encountered, add resolver for `delta` query
+      if (model.config.deltaSync) {
+        this.addDeltaSyncResolver(model.graphqlType, resolvers.Query as IFieldResolver<any, any>)
+      }
+    }
+
+    return resolvers
+  }
+
   public createResources(metadata: GraphbackCoreMetadata): void {
     if (!this.pluginConfig.outputPath) {
       return
@@ -91,27 +122,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     writeFileSync(location, schemaString);
   }
 
-  /**
-   * Create resolvers function that
-   *
-   * @param inputContext
-   * @param options
-   */
-  public transformSchemaToString(schema: GraphQLSchema) {
-    const schemaString = printSchemaWithDirectives(schema);
-    if (this.pluginConfig) {
-      if (this.pluginConfig.format === 'ts') {
-        return tsSchemaFormatter.format(schemaString)
-      }
-      if (this.pluginConfig.format === 'js') {
-        return jsSchemaFormatter.format(schemaString)
-      }
-      if (this.pluginConfig.format === 'graphql') {
-        return gqlSchemaFormatter.format(schemaString)
-      }
-    }
-    throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `graphql` flags");
-  }
+
 
   public getPluginName() {
     return SCHEMA_CRUD_PLUGIN_NAME;
@@ -320,8 +331,319 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
           });
         }
       }
-
     });
+  }
+
+  /**
+   *
+   * Print schema as a string and format in one of the available languages
+   *
+   * @param {GraphQLSchema} schema
+   */
+  protected transformSchemaToString(schema: GraphQLSchema) {
+    const schemaString = printSchemaWithDirectives(schema);
+    if (this.pluginConfig) {
+      if (this.pluginConfig.format === 'ts') {
+        return tsSchemaFormatter.format(schemaString)
+      }
+      if (this.pluginConfig.format === 'js') {
+        return jsSchemaFormatter.format(schemaString)
+      }
+      if (this.pluginConfig.format === 'graphql') {
+        return gqlSchemaFormatter.format(schemaString)
+      }
+    }
+    throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `graphql` flags");
+  }
+
+  /**
+   * Create Query resolver fields
+   *
+   * @param {ModelDefinition} model - The model definition with CRUD config and GraphQL typr
+   * @param {IFieldResolver} queryObj - Query resolver object
+   */
+  protected addQueryResolvers(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
+    const modelType = model.graphqlType;
+
+    if (model.crudOptions.findOne) {
+      this.addFindOneQueryResolver(modelType, queryObj)
+    }
+    if (model.crudOptions.find) {
+      this.addFindQueryResolver(modelType, queryObj)
+    }
+  }
+
+  /**
+   * Create Mutation resolver fields
+   *
+   * @param {ModelDefinition} model - The model definition with CRUD config and GraphQL typr
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addMutationResolvers(model: ModelDefinition, mutationObj: IFieldResolver<any, any>) {
+    const modelType = model.graphqlType;
+
+    if (model.crudOptions.create) {
+      this.addCreateMutationResolver(modelType, mutationObj)
+    }
+    if (model.crudOptions.update) {
+      this.addUpdateMutationResolver(modelType, mutationObj)
+    }
+    if (model.crudOptions.delete) {
+      this.addDeleteMutationResolver(modelType, mutationObj)
+    }
+  }
+
+  /**
+   * Create Subscription resolver fields
+   *
+   * @param {ModelDefinition} model - The model definition with CRUD config and GraphQL typr
+   * @param {IFieldResolver} subscriptionObj - Subscription resolver object
+   */
+  protected addSubscriptionResolvers(model: ModelDefinition, subscriptionObj: IFieldResolver<any, any>) {
+    const modelType = model.graphqlType;
+
+    if (model.crudOptions.create && model.crudOptions.subCreate) {
+      this.addCreateSubscriptionResolver(modelType, subscriptionObj)
+    }
+    if (model.crudOptions.update && model.crudOptions.subUpdate) {
+      this.addUpdateSubscriptionResolver(modelType, subscriptionObj)
+    }
+    if (model.crudOptions.delete && model.crudOptions.subDelete) {
+      this.addDeleteSubscriptionResolver(modelType, subscriptionObj)
+    }
+  }
+
+  /**
+   * Create relationship resolver fields
+   *
+   * @param {ModelDefinition} model - Model definition with relationship metadata
+   * @param {IResolvers} resolversObj - Resolvers object
+   */
+  protected addRelationshipResolvers(model: ModelDefinition, resolversObj: IResolvers) {
+    const relationResolvers = {}
+    for (const relationship of model.relationships) {
+      if (relationship.kind === 'oneToMany') {
+        this.addOneToManyResolver(relationship, relationResolvers)
+      } else {
+        this.addOneToOneResolver(relationship, relationResolvers)
+      }
+    }
+
+    if (Object.keys(relationResolvers).length > 0) {
+      resolversObj[model.graphqlType.name] = relationResolvers
+    }
+  }
+
+  /**
+   * Creates a Create mutation resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addCreateMutationResolver(modelType: GraphQLObjectType, mutationObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
+
+    mutationObj[resolverCreateField] = (_: any, args: any, context: GraphbackContext) => {
+      if (!context.graphback || !context.graphback[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
+      return context.graphback[modelName].create(args.input, context)
+    }
+  }
+
+  /**
+   * Creates an Update mutation resolver
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addUpdateMutationResolver(modelType: GraphQLObjectType, mutationObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
+
+    mutationObj[updateField] = (_: any, args: any, context: GraphbackContext) => {
+      if (!context.graphback || !context.graphback[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
+      return context.graphback[modelName].update(args.input, context)
+    }
+  }
+
+  /**
+   * Creates a Delete Mutation resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addDeleteMutationResolver(modelType: GraphQLObjectType, mutationObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
+
+    mutationObj[deleteField] = (_: any, args: any, context: GraphbackContext) => {
+      if (!context.graphback || !context.graphback[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
+      return context.graphback[modelName].delete(args.input, context)
+    }
+  }
+
+  /**
+   * Creates a Find Query resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addFindQueryResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const findField = getFieldName(modelName, GraphbackOperationType.FIND);
+
+    queryObj[findField] = (_: any, args: any, context: GraphbackContext) => {
+      return context.graphback[modelName].findBy(args.filter, args.orderBy, args.page, context)
+    }
+  }
+
+  /**
+   * Creates a FindOne Query resolver
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addFindOneQueryResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const findOneField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
+
+    const primaryKeyLabel = getPrimaryKey(modelType).name;
+
+    queryObj[findOneField] = (_: any, args: any, context: GraphbackContext) => {
+      if (!context.graphback || !context.graphback[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
+      return context.graphback[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
+    }
+  }
+
+  /**
+   * Creates a Create Subscription resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addCreateSubscriptionResolver(modelType: GraphQLObjectType, subscriptionObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const operation = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
+
+    subscriptionObj[operation] = {
+      subscribe: (_: any, __: any, context: GraphbackContext) => {
+        if (!context.graphback || !context.graphback[modelName]) {
+          throw new Error(`Missing service for ${modelName}`);
+        }
+
+        return context.graphback[modelName].subscribeToCreate({}, context);
+      }
+    }
+  }
+
+  /**
+   * Creates an Update Subscription resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addUpdateSubscriptionResolver(modelType: GraphQLObjectType, subscriptionObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const operation = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
+
+    subscriptionObj[operation] = {
+      subscribe: (_: any, __: any, context: GraphbackContext) => {
+        if (!context.graphback || !context.graphback[modelName]) {
+          throw new Error(`Missing service for ${modelName}`);
+        }
+
+        return context.graphback[modelName].subscribeToUpdate({}, context);
+      }
+    }
+  }
+
+  /**
+   * Creates a Delete Subscription resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   */
+  protected addDeleteSubscriptionResolver(modelType: GraphQLObjectType, subscriptionObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const operation = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
+
+    subscriptionObj[operation] = {
+      subscribe: (_: any, __: any, context: GraphbackContext) => {
+        if (!context.graphback || !context.graphback[modelName]) {
+          throw new Error(`Missing service for ${modelName}`);
+        }
+
+        return context.graphback[modelName].subscribeToDelete({}, context);
+      }
+    }
+  }
+
+  /**
+   * Creates a OneToMany Relationship resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IResolvers} resolverObj - Resolvers object
+   */
+  protected addOneToManyResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers) {
+    const modelName = relationship.relationType.name;
+    const relationIdField = getPrimaryKey(relationship.relationType);
+    const relationOwner = relationship.ownerField.name;
+
+    resolverObj[relationOwner] = (parent: any, args: any, context: GraphbackContext) => {
+      if (!context.graphback || !context.graphback[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
+      return context.graphback[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
+    }
+  }
+
+  /**
+   * Creates a OneToOne/ManyToOne Relationship resolver field
+   *
+   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {IResolvers} resolverObj - Resolvers object
+   */
+  protected addOneToOneResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers) {
+    const modelName = relationship.relationType.name;
+    const relationIdField = getPrimaryKey(relationship.relationType);
+    const relationOwner = relationship.ownerField.name;
+
+    resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext) => {
+      if (!context.graphback || !context.graphback[modelName]) {
+        throw new Error(`Missing service for ${modelName}`);
+      }
+
+      return context.graphback[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
+    }
+  }
+
+  // TODO: Move to DataSync plugin.
+  protected addDeltaSyncResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
+    const modelName = modelType.name;
+    const deltaQuery = getDeltaQuery(modelType.name)
+
+    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext) => {
+      const dataSyncService: any = context.graphback[modelName];
+
+      if (dataSyncService.sync === undefined) {
+        throw Error("Please use DataSync provider for delta queries");
+      }
+
+      return dataSyncService.sync(args.lastSync);
+    }
   }
 
   private createSchemaCRUDTypes(schemaComposer: SchemaComposer<any>) {

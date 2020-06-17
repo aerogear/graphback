@@ -1,15 +1,13 @@
-import { ModelDefinition } from '@graphback/core';
-import { PubSubEngine } from 'graphql-subscriptions';
-import { GraphbackDataProvider } from '../data/GraphbackDataProvider';
+import { ModelDefinition, GraphbackCRUDService, GraphbackDataProvider } from '@graphback/core';
+import { PubSubEngine, PubSub } from 'graphql-subscriptions';
 import { GraphbackMessageLogger } from '../utils/Logger';
 import { CRUDServiceConfig, CRUDService } from './CRUDService';
-import { GraphbackCRUDService } from './GraphbackCRUDService';
 
 export interface CreateCRUDServiceOptions {
   /**
    * PubSub implementation for creating subscriptions
    */
-  pubSub: PubSubEngine
+  pubSub?: PubSubEngine
   /**
    * Optional logger
    */
@@ -17,12 +15,15 @@ export interface CreateCRUDServiceOptions {
 }
 
 /**
+ * Creates a CRUDService for every data model
  *
- * @param config
+ * @param {PubSubEngine} [config.pubSub] - Pub usb mechanism to use
+ * @param {CreateCRUDServiceOptions} [config.logger] - Optional custom logger
  */
-export function createCRUDService(config: CreateCRUDServiceOptions): (...args: any[]) => GraphbackCRUDService  {
+export function createCRUDService(config?: CreateCRUDServiceOptions): (...args: any[]) => GraphbackCRUDService {
   return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
     const serviceConfig: CRUDServiceConfig = {
+      pubSub: new PubSub(),
       ...config,
       crudOptions: model.crudOptions
     }

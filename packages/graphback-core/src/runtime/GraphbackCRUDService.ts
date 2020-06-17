@@ -1,11 +1,9 @@
-import { GraphQLObjectType } from 'graphql';
-import { GraphbackPage } from "../GraphbackPage"
-import { GraphbackDataProvider } from '../data/GraphbackDataProvider';
-import { GraphbackPubSubModel } from '../GraphbackPubSubModel';
+import { GraphbackPage } from './interfaces';
 
 export interface ResultList<T = any> {
   items: T[]
 }
+
 /**
  * Graphback layered architecture component that can be called
  * from the resolver layer in GraphQL and Middlerware layer in RESTfull approach.

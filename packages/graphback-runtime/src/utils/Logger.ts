@@ -17,7 +17,7 @@ export interface GraphbackMessageLogger {
  */
 export const defaultLogger: GraphbackMessageLogger = {
     log: (message: string) => {
-        //tslint:disable-next-line: no-console
+        // eslint-disable-next-line no-console
         console.log(message);
     }
 }

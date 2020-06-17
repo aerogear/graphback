@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { buildSchema, printSchema } from 'graphql';
-import { GraphbackCoreMetadata, printSchemaWithDirectives } from '@graphback/core';
+import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine } from '@graphback/core';
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -92,7 +92,7 @@ test('Test one side relationship schema query type generation', async () => {
     """
     tests: [Test]!
   }
-  
+
   """
   @model
   """
@@ -110,4 +110,17 @@ test('Test one side relationship schema query type generation', async () => {
 
   const transformedSchema = schemaGenerator.transformSchema(metadata)
   expect(printSchema(transformedSchema)).toMatchSnapshot()
+});
+
+
+test('Creates CRUD resolvers for models', async () => {
+  const pluginEngine = new GraphbackPluginEngine({
+    schema: schemaText, plugins: [
+      new SchemaCRUDPlugin()
+    ]
+  })
+
+  const metadata = pluginEngine.createResources()
+
+  expect(metadata.getResolvers()).toMatchSnapshot();
 });
