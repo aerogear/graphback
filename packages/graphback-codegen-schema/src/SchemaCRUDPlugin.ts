@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, getDeltaQuery, FieldRelationshipMetadata, getPrimaryKey } from '@graphback/core'
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, getDeltaQuery, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
@@ -444,7 +444,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
 
-    mutationObj[resolverCreateField] = (_: any, args: any, context: any) => {
+    mutationObj[resolverCreateField] = (_: any, args: any, context: GraphbackContext) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -463,7 +463,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
 
-    mutationObj[updateField] = (_: any, args: any, context: any) => {
+    mutationObj[updateField] = (_: any, args: any, context: GraphbackContext) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -482,7 +482,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
 
-    mutationObj[deleteField] = (_: any, args: any, context: any) => {
+    mutationObj[deleteField] = (_: any, args: any, context: GraphbackContext) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -501,7 +501,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
-    queryObj[findField] = (_: any, args: any, context: any) => {
+    queryObj[findField] = (_: any, args: any, context: GraphbackContext) => {
       return context.graphback[modelName].findBy(args.filter, args.orderBy, args.page, context)
     }
   }
@@ -518,7 +518,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     const primaryKeyLabel = getPrimaryKey(modelType).name;
 
-    queryObj[findOneField] = (_: any, args: any, context: any) => {
+    queryObj[findOneField] = (_: any, args: any, context: GraphbackContext) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -538,7 +538,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: any) => {
+      subscribe: (_: any, __: any, context: GraphbackContext) => {
         if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
@@ -559,7 +559,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: any) => {
+      subscribe: (_: any, __: any, context: GraphbackContext) => {
         if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
@@ -580,7 +580,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: any) => {
+      subscribe: (_: any, __: any, context: GraphbackContext) => {
         if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
@@ -601,7 +601,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
 
-    resolverObj[relationOwner] = (parent: any, args: any, context: any) => {
+    resolverObj[relationOwner] = (parent: any, args: any, context: GraphbackContext) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -621,7 +621,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
 
-    resolverObj[relationOwner] = (parent: any, _: any, context: any) => {
+    resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -635,7 +635,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const deltaQuery = getDeltaQuery(modelType.name)
 
-    queryObj[deltaQuery] = async (_: any, args: any, context: any) => {
+    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext) => {
       const dataSyncService: any = context.graphback[modelName];
 
       if (dataSyncService.sync === undefined) {
