@@ -41,7 +41,7 @@ const operatorTransform: {
 
     return [
       [
-        "$not", 
+        "$not",
         {
           [operatorMap.ge]: values[0],
           [operatorMap.le]: values[1],
@@ -88,10 +88,19 @@ function stringTimestampsToInt(filter: any, key: string): any {
   // operators on these fields to Integers
   if (["createdAt", "updatedAt"].includes(key)) {
     if (isPrimitive(filter[key])) {
-      filter[key] = parseInt(filter[key], 10);
+      const n = parseInt(filter[key], 10);
+      if (isNaN(n)) {
+        throw Error("Please provide a valid timestamp")
+      }
+      filter[key] = n;
     } else {
       const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
-        return [entry[0], parseInt(entry[1], 10)];
+        const n = parseInt(entry[1], 10);
+        if (isNaN(n)) {
+          throw Error("Please provide a valid timestamp")
+        }
+
+        return [entry[0], n];
       });
       filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
     }
@@ -112,7 +121,7 @@ function traverse(filter: any): any {
       // Substitute it with the mongodb operator
       filter[operatorMap[key]] = filter[key];
       /*eslint-disable-next-line*/
-                delete filter[key];
+      delete filter[key];
 
     } else if (operatorTransform[key]) {
 
@@ -121,7 +130,7 @@ function traverse(filter: any): any {
       const transforms = operatorTransform[key](filter[key]);
       // Apply the transformed operators to filter
       /*eslint-disable-next-line*/
-                delete filter[key];
+      delete filter[key];
       transforms.forEach((t: [string, any]) => {
         const [operator, value] = t;
         filter[operator] = value;
@@ -154,8 +163,7 @@ function traverse(filter: any): any {
 
 export function buildQuery(filter: any) {
   let query = {};
-  if (filter)
-  {query = traverse(filter);}
+  if (filter) { query = traverse(filter); }
 
   return query;
 }
