@@ -50,7 +50,7 @@ npm install @graphback/codegen-schema
     outputPath: './src/schema'
   });
 
-  buildGraphbackAPI(modelDefs, {
+  const { schema } = buildGraphbackAPI(modelDefs, {
     dataProviderCreator: createKnexDbProvider(db),
     plugins: [
       schemaPlugin
