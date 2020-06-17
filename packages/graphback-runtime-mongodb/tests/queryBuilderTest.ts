@@ -299,5 +299,8 @@ describe('queryBuilder scalar filtering', () => {
     const newPosts = await context.providers.Post.findBy({ createdAt: { gt: posts[0].createdAt } });
     expect(newPosts.length).toEqual(2);
     expect(newPosts.map((post: any) => post.text)).toEqual(["not yet", "bye guys"]);
+
+    // Passing invalid timestamp throws
+    expect(context.providers.Post.findBy({ createdAt: { gt: "break" } })).rejects.toThrow();
   });
 })
