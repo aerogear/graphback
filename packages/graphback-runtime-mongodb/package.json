@@ -26,7 +26,7 @@
     "@graphback/codegen-schema": "0.14.0-alpha4",
     "@types/jest": "26.0.0",
     "@types/node": "12.12.47",
-    "graphql": "14.6.0",
+    "graphql": "15.1.0",
     "jest": "26.0.1",
     "jest-date-mock": "1.0.8",
     "mongodb-memory-server": "6.6.1",
@@ -46,7 +46,7 @@
     "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
+    "graphql": "^14.0.0 || ^15.0.0",
     "mongodb": "3.5.9"
   }
 }
