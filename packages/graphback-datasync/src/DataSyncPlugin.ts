@@ -12,7 +12,7 @@ import { isDataSyncService } from "./util";
  */
 
 
-export const DATASYNC_PLUGIN_NAME = "DatasyncPlugin";
+export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
 
 /**
  * DataSync plugin
