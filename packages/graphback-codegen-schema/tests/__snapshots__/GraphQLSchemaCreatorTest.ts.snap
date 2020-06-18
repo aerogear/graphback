@@ -71,14 +71,11 @@ Array [
 `;
 
 exports[`Test one side relationship schema query type generation 1`] = `
-"input IDInput {
-  ne: ID
-  eq: ID
-  le: ID
-  lt: ID
-  ge: ID
-  gt: ID
-  in: [ID]
+"type Query {
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -89,57 +86,6 @@ type Note {
 
   \\"\\"\\"@oneToMany field: 'note', key: 'test_id'\\"\\"\\"
   tests(filter: TestFilter): [Test]!
-}
-
-input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  and: [NoteFilter]
-  or: [NoteFilter]
-  not: NoteFilter
-}
-
-type NoteResultList {
-  items: [Note]!
-  offset: Int
-  limit: Int
-  count: Int
-}
-
-input OrderByInput {
-  field: String!
-  order: SortDirectionEnum = ASC
-}
-
-input PageRequest {
-  limit: Int
-  offset: Int
-}
-
-type Query {
-  getNote(id: ID!): Note
-  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
-  getTest(id: ID!): Test
-  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
-}
-
-enum SortDirectionEnum {
-  DESC
-  ASC
-}
-
-input StringInput {
-  ne: String
-  eq: String
-  le: String
-  lt: String
-  ge: String
-  gt: String
-  in: [String]
-  contains: String
-  startsWith: String
-  endsWith: String
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -160,6 +106,60 @@ input TestFilter {
   not: TestFilter
 }
 
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID]
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String]
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type NoteResultList {
+  items: [Note]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input NoteFilter {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+}
+
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
 type TestResultList {
   items: [Test]!
   offset: Int
@@ -171,6 +171,12 @@ type TestResultList {
 
 exports[`Test snapshot config gql 1`] = `
 "directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+
+\\"\\"\\"Exposes a URL that specifies the behaviour of this scalar.\\"\\"\\"
+directive @specifiedBy(
+  \\"\\"\\"The URL that specifies the behaviour of this scalar.\\"\\"\\"
+  url: String!
+) on SCALAR
 
 \\"\\"\\" @model \\"\\"\\"
 type Comment {
@@ -356,12 +362,12 @@ type Mutation {
   createNote(input: CreateNoteInput!): Note!
   updateNote(input: MutateNoteInput!): Note!
   deleteNote(input: MutateNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
   createTest(input: CreateTestInput!): Test!
   updateTest(input: MutateTestInput!): Test!
   deleteTest(input: MutateTestInput!): Test!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: MutateCommentInput!): Comment!
+  deleteComment(input: MutateCommentInput!): Comment!
   createIssue(input: CreateIssueInput!): Issue!
   createFix(input: CreateFixInput!): Fix!
 }
@@ -416,10 +422,10 @@ type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
   getNote(id: ID!): Note
   findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
-  getComment(id: ID!): Comment
-  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   getTest(id: ID!): Test
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
 }
 
 enum SortDirectionEnum {
@@ -444,12 +450,12 @@ type Subscription {
   newNote(filter: NoteSubscriptionFilter): Note!
   updatedNote(filter: NoteSubscriptionFilter): Note!
   deletedNote(filter: NoteSubscriptionFilter): Note!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
   newTest(filter: TestSubscriptionFilter): Test!
   updatedTest(filter: TestSubscriptionFilter): Test!
   deletedTest(filter: TestSubscriptionFilter): Test!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -482,6 +488,29 @@ input TestSubscriptionFilter {
 exports[`Test snapshot config js 1`] = `
 "directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
 
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments(filter: CommentFilter): [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
 \\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
@@ -502,6 +531,82 @@ input CommentFilter {
   not: CommentFilter
 }
 
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID]
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String]
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+
+type NoteResultList {
+  items: [Note]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input NoteFilter {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  test_id: IDInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+}
+
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
+type TestResultList {
+  items: [Test]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input TestFilter {
+  id: IDInput
+  name: StringInput
+  and: [TestFilter]
+  or: [TestFilter]
+  not: TestFilter
+}
+
 type CommentResultList {
   items: [Comment]!
   offset: Int
@@ -509,28 +614,19 @@ type CommentResultList {
   count: Int
 }
 
-input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
-input CreateCommentInput {
-  id: ID
-  title: String!
-  description: String!
-  note_id: ID!
-}
-
-input CreateFixInput {
-  id: ID
-}
-
-input CreateIssueInput {
-  id: ID
-  category: IssueCategory
-  createdAt: DateTime
-  bugFixId: ID
+type Mutation {
+  likeNote(id: ID!): Note!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: MutateNoteInput!): Note!
+  deleteNote(input: MutateNoteInput!): Note!
+  createTest(input: CreateTestInput!): Test!
+  updateTest(input: MutateTestInput!): Test!
+  deleteTest(input: MutateTestInput!): Test!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: MutateCommentInput!): Comment!
+  deleteComment(input: MutateCommentInput!): Comment!
+  createIssue(input: CreateIssueInput!): Issue!
+  createFix(input: CreateFixInput!): Fix!
 }
 
 input CreateNoteInput {
@@ -540,63 +636,35 @@ input CreateNoteInput {
   test_id: ID
 }
 
+input MutateNoteInput {
+  id: ID!
+  title: String
+  description: String
+  test_id: ID
+}
+
 input CreateTestInput {
   id: ID
   name: String
 }
 
-type CustomType {
-  issue1432: String
-}
-
-scalar DateTime
-
-input DateTimeInput {
-  ne: DateTime
-  eq: DateTime
-  le: DateTime
-  lt: DateTime
-  ge: DateTime
-  gt: DateTime
-  in: [DateTime]
-  between: [DateTime]
-}
-
-\\"\\"\\"
-A model added as part of fixing
-https://github.com/aerogear/graphback/issues/1452, disable some crud operations
-to decreate noises.
-@model(
-  find: false,
-  findOne: false,
-  create: true,
-  update: false,
-  delete: false,
-  subCreate: false, 
-  subUpdate: false, 
-  subDelete: false
-)
-\\"\\"\\"
-type Fix {
+input MutateTestInput {
   id: ID!
-
-  \\"\\"\\"
-  Added as part of fixing https://github.com/aerogear/graphback/issues/1452
-  showing that even if filtering is disabled on a model level, 
-  we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany field: 'bugFix', key: 'bugFixId'
-  \\"\\"\\"
-  issues(filter: IssueFilter): [Issue]
+  name: String
 }
 
-input IDInput {
-  ne: ID
-  eq: ID
-  le: ID
-  lt: ID
-  ge: ID
-  gt: ID
-  in: [ID]
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
+}
+
+input MutateCommentInput {
+  id: ID!
+  title: String
+  description: String
+  note_id: ID
 }
 
 \\"\\"\\"
@@ -635,6 +703,36 @@ enum IssueCategory {
   FEATURE_REQUEST
 }
 
+scalar DateTime
+
+type CustomType {
+  issue1432: String
+}
+
+\\"\\"\\"
+A model added as part of fixing https://github.com/aerogear/graphback/issues/1452, disable some crud operations to decreate noises.
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
+\\"\\"\\"
+type Fix {
+  id: ID!
+
+  \\"\\"\\"
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  we should have filter type created as it can be used on the relationship level without throwing an error.
+  @oneToMany field: 'bugFix', key: 'bugFixId'
+  \\"\\"\\"
+  issues(filter: IssueFilter): [Issue]
+}
+
 input IssueFilter {
   id: IDInput
   category: StringInput
@@ -645,68 +743,38 @@ input IssueFilter {
   not: IssueFilter
 }
 
-input MutateCommentInput {
-  id: ID!
-  title: String
-  description: String
-  note_id: ID
+input DateTimeInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
 }
 
-input MutateNoteInput {
-  id: ID!
-  title: String
-  description: String
-  test_id: ID
+input CreateIssueInput {
+  id: ID
+  category: IssueCategory
+  createdAt: DateTime
+  bugFixId: ID
 }
 
-input MutateTestInput {
-  id: ID!
-  name: String
+input CreateFixInput {
+  id: ID
 }
 
-type Mutation {
-  likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: MutateTestInput!): Test!
-  deleteTest(input: MutateTestInput!): Test!
-  createIssue(input: CreateIssueInput!): Issue!
-  createFix(input: CreateFixInput!): Fix!
-}
-
-\\"\\"\\" @model \\"\\"\\"
-type Note {
-  id: ID!
-  title: String!
-  description: String!
-
-  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
-  comments(filter: CommentFilter): [Comment]!
-
-  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
-  test: Test
-}
-
-input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  test_id: IDInput
-  and: [NoteFilter]
-  or: [NoteFilter]
-  not: NoteFilter
-}
-
-type NoteResultList {
-  items: [Note]!
-  offset: Int
-  limit: Int
-  count: Int
+type Subscription {
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newTest(filter: TestSubscriptionFilter): Test!
+  updatedTest(filter: TestSubscriptionFilter): Test!
+  deletedTest(filter: TestSubscriptionFilter): Test!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
 }
 
 input NoteSubscriptionFilter {
@@ -715,80 +783,15 @@ input NoteSubscriptionFilter {
   description: String
 }
 
-input OrderByInput {
-  field: String!
-  order: SortDirectionEnum = ASC
-}
-
-input PageRequest {
-  limit: Int
-  offset: Int
-}
-
-type Query {
-  getLikedNotes(id: ID!, names: [String]!): Note!
-  getNote(id: ID!): Note
-  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
-  getComment(id: ID!): Comment
-  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
-  getTest(id: ID!): Test
-  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
-}
-
-enum SortDirectionEnum {
-  DESC
-  ASC
-}
-
-input StringInput {
-  ne: String
-  eq: String
-  le: String
-  lt: String
-  ge: String
-  gt: String
-  in: [String]
-  contains: String
-  startsWith: String
-  endsWith: String
-}
-
-type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
-  newTest(filter: TestSubscriptionFilter): Test!
-  updatedTest(filter: TestSubscriptionFilter): Test!
-  deletedTest(filter: TestSubscriptionFilter): Test!
-}
-
-\\"\\"\\"@model\\"\\"\\"
-type Test {
-  id: ID!
-  name: String
-}
-
-input TestFilter {
-  id: IDInput
-  name: StringInput
-  and: [TestFilter]
-  or: [TestFilter]
-  not: TestFilter
-}
-
-type TestResultList {
-  items: [Test]!
-  offset: Int
-  limit: Int
-  count: Int
-}
-
 input TestSubscriptionFilter {
   id: ID
   name: String
+}
+
+input CommentSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
 }
 "
 `;
@@ -796,6 +799,29 @@ input TestSubscriptionFilter {
 exports[`Test snapshot config ts 1`] = `
 "directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
 
+type Query {
+  getLikedNotes(id: ID!, names: [String]!): Note!
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
+  getTest(id: ID!): Test
+  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+}
+
+\\"\\"\\" @model \\"\\"\\"
+type Note {
+  id: ID!
+  title: String!
+  description: String!
+
+  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  comments(filter: CommentFilter): [Comment]!
+
+  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  test: Test
+}
+
 \\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
@@ -816,6 +842,82 @@ input CommentFilter {
   not: CommentFilter
 }
 
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID]
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String]
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Test {
+  id: ID!
+  name: String
+}
+
+type NoteResultList {
+  items: [Note]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input NoteFilter {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  test_id: IDInput
+  and: [NoteFilter]
+  or: [NoteFilter]
+  not: NoteFilter
+}
+
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
+type TestResultList {
+  items: [Test]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input TestFilter {
+  id: IDInput
+  name: StringInput
+  and: [TestFilter]
+  or: [TestFilter]
+  not: TestFilter
+}
+
 type CommentResultList {
   items: [Comment]!
   offset: Int
@@ -823,28 +925,19 @@ type CommentResultList {
   count: Int
 }
 
-input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
-input CreateCommentInput {
-  id: ID
-  title: String!
-  description: String!
-  note_id: ID!
-}
-
-input CreateFixInput {
-  id: ID
-}
-
-input CreateIssueInput {
-  id: ID
-  category: IssueCategory
-  createdAt: DateTime
-  bugFixId: ID
+type Mutation {
+  likeNote(id: ID!): Note!
+  createNote(input: CreateNoteInput!): Note!
+  updateNote(input: MutateNoteInput!): Note!
+  deleteNote(input: MutateNoteInput!): Note!
+  createTest(input: CreateTestInput!): Test!
+  updateTest(input: MutateTestInput!): Test!
+  deleteTest(input: MutateTestInput!): Test!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: MutateCommentInput!): Comment!
+  deleteComment(input: MutateCommentInput!): Comment!
+  createIssue(input: CreateIssueInput!): Issue!
+  createFix(input: CreateFixInput!): Fix!
 }
 
 input CreateNoteInput {
@@ -854,63 +947,35 @@ input CreateNoteInput {
   test_id: ID
 }
 
+input MutateNoteInput {
+  id: ID!
+  title: String
+  description: String
+  test_id: ID
+}
+
 input CreateTestInput {
   id: ID
   name: String
 }
 
-type CustomType {
-  issue1432: String
-}
-
-scalar DateTime
-
-input DateTimeInput {
-  ne: DateTime
-  eq: DateTime
-  le: DateTime
-  lt: DateTime
-  ge: DateTime
-  gt: DateTime
-  in: [DateTime]
-  between: [DateTime]
-}
-
-\\"\\"\\"
-A model added as part of fixing
-https://github.com/aerogear/graphback/issues/1452, disable some crud operations
-to decreate noises.
-@model(
-  find: false,
-  findOne: false,
-  create: true,
-  update: false,
-  delete: false,
-  subCreate: false, 
-  subUpdate: false, 
-  subDelete: false
-)
-\\"\\"\\"
-type Fix {
+input MutateTestInput {
   id: ID!
-
-  \\"\\"\\"
-  Added as part of fixing https://github.com/aerogear/graphback/issues/1452
-  showing that even if filtering is disabled on a model level, 
-  we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany field: 'bugFix', key: 'bugFixId'
-  \\"\\"\\"
-  issues(filter: IssueFilter): [Issue]
+  name: String
 }
 
-input IDInput {
-  ne: ID
-  eq: ID
-  le: ID
-  lt: ID
-  ge: ID
-  gt: ID
-  in: [ID]
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+  note_id: ID!
+}
+
+input MutateCommentInput {
+  id: ID!
+  title: String
+  description: String
+  note_id: ID
 }
 
 \\"\\"\\"
@@ -949,6 +1014,36 @@ enum IssueCategory {
   FEATURE_REQUEST
 }
 
+scalar DateTime
+
+type CustomType {
+  issue1432: String
+}
+
+\\"\\"\\"
+A model added as part of fixing https://github.com/aerogear/graphback/issues/1452, disable some crud operations to decreate noises.
+@model(
+  find: false,
+  findOne: false,
+  create: true,
+  update: false,
+  delete: false,
+  subCreate: false, 
+  subUpdate: false, 
+  subDelete: false
+)
+\\"\\"\\"
+type Fix {
+  id: ID!
+
+  \\"\\"\\"
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  we should have filter type created as it can be used on the relationship level without throwing an error.
+  @oneToMany field: 'bugFix', key: 'bugFixId'
+  \\"\\"\\"
+  issues(filter: IssueFilter): [Issue]
+}
+
 input IssueFilter {
   id: IDInput
   category: StringInput
@@ -959,68 +1054,38 @@ input IssueFilter {
   not: IssueFilter
 }
 
-input MutateCommentInput {
-  id: ID!
-  title: String
-  description: String
-  note_id: ID
+input DateTimeInput {
+  ne: DateTime
+  eq: DateTime
+  le: DateTime
+  lt: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  between: [DateTime]
 }
 
-input MutateNoteInput {
-  id: ID!
-  title: String
-  description: String
-  test_id: ID
+input CreateIssueInput {
+  id: ID
+  category: IssueCategory
+  createdAt: DateTime
+  bugFixId: ID
 }
 
-input MutateTestInput {
-  id: ID!
-  name: String
+input CreateFixInput {
+  id: ID
 }
 
-type Mutation {
-  likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: MutateTestInput!): Test!
-  deleteTest(input: MutateTestInput!): Test!
-  createIssue(input: CreateIssueInput!): Issue!
-  createFix(input: CreateFixInput!): Fix!
-}
-
-\\"\\"\\" @model \\"\\"\\"
-type Note {
-  id: ID!
-  title: String!
-  description: String!
-
-  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
-  comments(filter: CommentFilter): [Comment]!
-
-  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
-  test: Test
-}
-
-input NoteFilter {
-  id: IDInput
-  title: StringInput
-  description: StringInput
-  test_id: IDInput
-  and: [NoteFilter]
-  or: [NoteFilter]
-  not: NoteFilter
-}
-
-type NoteResultList {
-  items: [Note]!
-  offset: Int
-  limit: Int
-  count: Int
+type Subscription {
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+  newTest(filter: TestSubscriptionFilter): Test!
+  updatedTest(filter: TestSubscriptionFilter): Test!
+  deletedTest(filter: TestSubscriptionFilter): Test!
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
 }
 
 input NoteSubscriptionFilter {
@@ -1029,80 +1094,15 @@ input NoteSubscriptionFilter {
   description: String
 }
 
-input OrderByInput {
-  field: String!
-  order: SortDirectionEnum = ASC
-}
-
-input PageRequest {
-  limit: Int
-  offset: Int
-}
-
-type Query {
-  getLikedNotes(id: ID!, names: [String]!): Note!
-  getNote(id: ID!): Note
-  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
-  getComment(id: ID!): Comment
-  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
-  getTest(id: ID!): Test
-  findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
-}
-
-enum SortDirectionEnum {
-  DESC
-  ASC
-}
-
-input StringInput {
-  ne: String
-  eq: String
-  le: String
-  lt: String
-  ge: String
-  gt: String
-  in: [String]
-  contains: String
-  startsWith: String
-  endsWith: String
-}
-
-type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
-  newTest(filter: TestSubscriptionFilter): Test!
-  updatedTest(filter: TestSubscriptionFilter): Test!
-  deletedTest(filter: TestSubscriptionFilter): Test!
-}
-
-\\"\\"\\"@model\\"\\"\\"
-type Test {
-  id: ID!
-  name: String
-}
-
-input TestFilter {
-  id: IDInput
-  name: StringInput
-  and: [TestFilter]
-  or: [TestFilter]
-  not: TestFilter
-}
-
-type TestResultList {
-  items: [Test]!
-  offset: Int
-  limit: Int
-  count: Int
-}
-
 input TestSubscriptionFilter {
   id: ID
   name: String
+}
+
+input CommentSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
 }
 "
 `;
