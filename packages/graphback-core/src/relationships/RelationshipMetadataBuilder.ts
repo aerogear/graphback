@@ -117,7 +117,9 @@ export class RelationshipMetadataBuilder {
       description: fieldDescription,
       type: fieldType,
       args: [],
-      extensions: []
+      extensions: [],
+      isDeprecated: false,
+      deprecationReason: undefined
     }
   }
 
@@ -130,7 +132,9 @@ export class RelationshipMetadataBuilder {
       description: fieldDescription,
       type: baseType,
       args: [],
-      extensions: []
+      extensions: [],
+      isDeprecated: false,
+      deprecationReason: undefined
     }
   }
 
