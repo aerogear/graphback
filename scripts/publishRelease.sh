@@ -18,7 +18,7 @@ if [[ "$(echo $TAG | grep -E $RELEASE_SYNTAX)" == "$TAG" ]]; then
   echo "publishing a new release: $TAG"
   lerna --no-private exec npm publish
 elif [[ "$(echo $TAG | grep -E $PRERELEASE_SYNTAX)" == "$TAG" ]]; then
-  lerna version $TAG --no-push -y
+  lerna version $TAG --no-push --no-push --no-git-tag-version --exact --ignore-changes -y 
   echo "publishing a new pre release: $TAG" 
   lerna --no-private exec "npm publish --tag next"
 else
