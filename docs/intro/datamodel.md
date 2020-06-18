@@ -8,7 +8,7 @@ Developers can focus on data and application requirements by modeling them using
 
 ## Model
 
-Graphback operates on GraphQL Schema types annotated with `@model`.
+Graphback operates on GraphQL Schema types annotated with `@model`. Refer to [this](../metadata.md) page for complete documentation of `@model` and other annotations.
 Adding this annotation to your type will enable Graphback to add additional elements to the schema and generate related code in JavaScript or TypeScript.
 
 ```graphql
