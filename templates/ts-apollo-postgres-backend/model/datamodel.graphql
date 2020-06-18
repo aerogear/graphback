@@ -1,14 +1,17 @@
-directive @auth(permissions: [CrudPermissions]) on OBJECT | FIELD_DEFINITION
-
 """ @model """
 type Note {
   id: ID!
-  title: String! @auth(permissions: [CREATE, READ])
+  title: String!
+  description: String
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]!
 }
 
-enum CrudPermissions {
-  CREATE
-  READ
-  UPDATE
-  DELETE
+""" @model """
+type Comment {
+  id: ID!
+  text: String
+  description: String
 }
