@@ -34,7 +34,8 @@
       "metadata"
     ],
     "Data Synchronization": [
-      "graphback-datasync"
+      "datasync/datasync-intro",
+      "datasync/datasync-soft-delete"
     ],
     "Releases": [
       "releases"
