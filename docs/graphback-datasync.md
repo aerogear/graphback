@@ -1,17 +1,19 @@
 ---
 id: graphback-datasync
-title: Graphback Data Synchronization package
+title: Data Synchronization
 sidebar_label: Setting up Data Synchronization using Graphback
 ---
 
-The `@graphback/datasync` package consisting of the Data Synchronization Schema plugin and compatible data sources, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). Currently this plugin **only** supports MongoDB data sources, with support for other kinds of data sources coming in a future release.
+The `@graphback/datasync` package consisting of the Data Synchronization Schema plugin and compatible data sources, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). 
+
+> **NOTE**: Currently this plugin **only** supports MongoDB data sources, with support for other kinds of data sources coming in a future release.
 
 ## Motivation
 
 The raison d'être of the `@graphback/datasync` package is to provide additional out of the box functionality to offline-first GraphQL clients, mainly targeting [Offix](https://offix.dev). To that end, it has two main goals to fulfill:
 
-1. Provide Delta Queries: Delta queries can be used by GraphQL clients to refresh changes in data between periods of connectivity outages. This is functionally complete for MongoDB with support for other data sources and strategies under development.
-2. Provide Server-side Conflict Resolution capabilities: For mutations that are applied offline, this provides the server with the ability to resolve conflicts between server and client side data. This functionality is yet to be implemented.
+1. Provide Delta Queries: Delta queries can be used by GraphQL clients to refresh changes in data between periods of connectivity outages. 
+2. Provide server-side Conflict Resolution capabilities: For mutations that are applied offline, this provides the server with the ability to resolve conflicts between server and client
 
 ## Installation
 
@@ -34,7 +36,7 @@ Currently the supported strategies are:
 
 ## Soft Deletes with delta queries
 
-1. ### Sprinkle some metadata in your schema
+1. Add metadata to your models
 
 Add the `versioned` and `delta` markers to your model(s) in your GraphQL SDL:
 
@@ -51,7 +53,9 @@ type Comment {
 }
 ```
 
-The `versioned` marker ensures consistency of your data and `delta` marker gives you delta queries. Note that while `versioned` marker can be used without the `@graphback/datasync` package, both `versioned` and `delta` are required for implementing data synchronization on a given type.
+The `versioned` marker ensures consistency of your data and `delta` marker gives you delta queries. 
+
+> **Note**: `versioned` marker can be used without the `@graphback/datasync` package, both `versioned` and `delta` are required for implementing data synchronization on a given type.
 
 This transforms your schema to the following:
 
@@ -87,7 +91,9 @@ type CommentDeltaList {
 
 It also adds a `sync` query or a delta query as shown below. This allows you to get all the changes(updates and deletes) to your data that happened since the `lastSync` timestamp. 
 
-Internally this uses the `updatedAt` timestamp to check if any documents in the database have been modified since the `lastSync` timestamp. Note that however this strategy can only get you the latest version of changed documents ignoring any in-between states that may have transpired between `lastSync` and now.
+Internally this uses the `updatedAt` database field to check if any documents in the database have been modified, by comparing client provided `lastSync` timestamp value.
+
+> **Note**: `Soft Deletes` strategy can only get you the latest version of changed documents ignoring any in-between states that may have transpired between `lastSync` and now.
 
 ```graphql
 type Query {
@@ -96,7 +102,7 @@ type Query {
 }
 ```
 
-2. ### Use the plugin and the data sources
+2. Make required changes on top of the Graphback template
 
 In order to get this functionality, you also need to pass the plugin and the data sources to the `buildGraphbackAPI` method:
 
@@ -114,9 +120,8 @@ const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
   });
 ```
 
-Done! You now have data synchronization!
 
-## Example
+## Issuing Delta Sync queries from client
 
 As an example consider the usecase when your application has stayed offline for a while. You can then use the `syncX` query to get only the changed documents rather than having to refetch all of the documents.
 
