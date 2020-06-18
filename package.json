@@ -84,6 +84,6 @@
   "homepage": "https://github.com/aerogear/graphback#readme",
   "resolutions": {
     "@types/react": "16.9.38",
-    "graphql": "15.1.0"
+    "graphql": "^14.0.0 || ^15.0.0"
   }
 }
