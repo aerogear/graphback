@@ -28,10 +28,3 @@ help you to manage data migrations by specifying GraphQL queries.
   ```
 
   Generate command will execute generation process that will gener GraphQL server based on your data model.
-
-## OpenAPI
-
- ```bash
- graphback openapi 
- ```    
- Generate GraphQL schema and resolvers based on OpenAPI spec.

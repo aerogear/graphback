@@ -119,6 +119,10 @@ const { typeDefs, resolvers, services } = buildGraphbackAPI(modelDefs, {
 
 For more advanced usage, refer to the [Runtime API](./intro/serverless) documentation.
 
+#### Removed `graphback openapi` CLI command.
+
+We have removed the `graphback openapi` CLI command, but you can still use [OpenAPI-to-GraphQL](https://github.com/IBM/openapi-to-graphql) to create a GraphQL schema from your OpenAPI specification.
+
 ### Deprecated
 
 - `PgKnexDBDataProvider` has been deprecated in favour of `KnexDBDataProvider`.
@@ -228,7 +232,7 @@ type User {
   id: ID!
   messages: [Message]
 }
-```
+```openapi
 
 This creates a `userId` foreign key column in the `message` table. Visit the [relationships documentation](../relationships#OneToMany) for more examples.
 
