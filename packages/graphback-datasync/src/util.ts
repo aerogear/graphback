@@ -6,10 +6,10 @@ export function isDataSyncModel(model: ModelDefinition): boolean {
   return parseMetadata("delta", model.graphqlType) && parseMetadata("versioned", model.graphqlType)
 }
 
-export function getDataSyncService(service: GraphbackCRUDService): DataSyncCRUDService {
+export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDService {
   if (service instanceof DataSyncCRUDService) {
     return service;
   }
 
-  throw Error("Service is not a DataSyncCRUDService. Please use DataSyncCRUDService and DataSync-compliant DataProvider with DataSync Plugin to get Delta Queries.")
+  return undefined;
 }
