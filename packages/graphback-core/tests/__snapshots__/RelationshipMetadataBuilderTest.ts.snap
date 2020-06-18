@@ -6,9 +6,11 @@ exports[`should build one-to-many and many-to-one relationships from both fields
   \\"kind\\": \\"oneToMany\\",
   \\"owner\\": \\"User\\",
   \\"ownerField\\": {
-   \\"type\\": \\"[Message!]!\\",
+   \\"name\\": \\"sentMessages\\",
    \\"description\\": \\"some extra description\\\\n@oneToMany field: 'sender', key: 'senderId'\\",
+   \\"type\\": \\"[Message!]!\\",
    \\"args\\": [],
+   \\"isDeprecated\\": false,
    \\"astNode\\": {
     \\"kind\\": \\"FieldDefinition\\",
     \\"description\\": {
@@ -70,9 +72,7 @@ exports[`should build one-to-many and many-to-one relationships from both fields
      \\"start\\": 89,
      \\"end\\": 204
     }
-   },
-   \\"name\\": \\"sentMessages\\",
-   \\"isDeprecated\\": false
+   }
   },
   \\"relationType\\": \\"Message\\",
   \\"relationFieldName\\": \\"sender\\",
@@ -82,9 +82,11 @@ exports[`should build one-to-many and many-to-one relationships from both fields
   \\"kind\\": \\"manyToOne\\",
   \\"owner\\": \\"Message\\",
   \\"ownerField\\": {
-   \\"type\\": \\"User\\",
+   \\"name\\": \\"sender\\",
    \\"description\\": \\"@manyToOne field: 'sentMessages', key: 'senderId'\\",
+   \\"type\\": \\"User\\",
    \\"args\\": [],
+   \\"isDeprecated\\": false,
    \\"astNode\\": {
     \\"kind\\": \\"FieldDefinition\\",
     \\"description\\": {
@@ -125,9 +127,7 @@ exports[`should build one-to-many and many-to-one relationships from both fields
      \\"start\\": 300,
      \\"end\\": 377
     }
-   },
-   \\"name\\": \\"sender\\",
-   \\"isDeprecated\\": false
+   }
   },
   \\"relationType\\": \\"User\\",
   \\"relationFieldName\\": \\"sentMessages\\",
@@ -142,9 +142,11 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
   \\"kind\\": \\"oneToOne\\",
   \\"owner\\": \\"Address\\",
   \\"ownerField\\": {
-   \\"type\\": \\"User!\\",
+   \\"name\\": \\"resident\\",
    \\"description\\": \\"@oneToOne key: 'residentId'\\",
+   \\"type\\": \\"User!\\",
    \\"args\\": [],
+   \\"isDeprecated\\": false,
    \\"astNode\\": {
     \\"kind\\": \\"FieldDefinition\\",
     \\"description\\": {
@@ -192,9 +194,7 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
      \\"start\\": 176,
      \\"end\\": 233
     }
-   },
-   \\"name\\": \\"resident\\",
-   \\"isDeprecated\\": false
+   }
   },
   \\"relationType\\": \\"User\\",
   \\"relationForeignKey\\": \\"residentId\\"
