@@ -13,3 +13,23 @@ export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDSe
 
   return undefined;
 }
+
+/**
+ * Interface for holding the conflicting states
+ * between server and client
+ */
+export interface ConflictStateMap {
+  serverState: any,
+  clientState: any
+}
+
+/**
+ * Error that signifies conflict between server-side and client-side data
+ */
+export class ConflictError extends Error {
+  public conflictInfo: ConflictStateMap;
+  public constructor(stateMap: ConflictStateMap) {
+    super();
+    this.conflictInfo = stateMap;
+  }
+}
