@@ -12,15 +12,6 @@
     "start": "echo disabled",
     "pretest": "yarn build"
   },
-  "dependencies": {
-    "@graphql-toolkit/file-loading": "0.10.7",
-    "apollo-boost": "0.4.9",
-    "apollo-server": "2.15.0",
-    "apollo-server-testing": "2.15.0",
-    "jest": "26.0.1",
-    "knex": "0.21.1",
-    "node-fetch": "2.6.0"
-  },
   "engines": {
     "node": ">=10.15.3"
   },
@@ -29,7 +20,14 @@
     "sqlite3": "4.2.0",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
-    "typescript": "3.9.5"
+    "typescript": "3.9.5",
+    "@graphql-toolkit/file-loading": "0.10.7",
+    "apollo-boost": "0.4.9",
+    "apollo-server": "2.15.0",
+    "apollo-server-testing": "2.15.0",
+    "jest": "26.0.1",
+    "knex": "0.21.1",
+    "node-fetch": "2.6.0"
   },
   "license": "Apache-2.0"
 }
