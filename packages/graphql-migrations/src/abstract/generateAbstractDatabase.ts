@@ -383,7 +383,7 @@ class AbstractDatabaseBuilder {
       Field ${this.currentType}.${field.name} of type ${stringifiedType} not supported.
       Consider specifying the type ${stringifiedType} with:
       """
-      @model 
+      @model
       """
       as a type comment or specifying column type with:
       """
@@ -440,7 +440,7 @@ class AbstractDatabaseBuilder {
       foreign,
       defaultValue: annotations.default,
       autoIncrementable,
-      isPrimaryKey 
+      isPrimaryKey
     }
   }
 
@@ -453,7 +453,9 @@ class AbstractDatabaseBuilder {
       type: oneToManyRelationship.relation,
       description: oneToManyRelationship.description,
       args: [],
-      extensions: []
+      extensions: [],
+      isDeprecated: false,
+      deprecationReason: undefined
     }
 
     const table = this.getRelationTableFromOneToMany(oneToManyRelationship)
