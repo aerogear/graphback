@@ -13,8 +13,7 @@
     "@typescript-eslint",
     "@typescript-eslint/tslint",
     "import",
-    "no-null",
-    "unicorn"
+    "no-null"
   ],
   "rules": {
     "@typescript-eslint/adjacent-overload-signatures": "error",
