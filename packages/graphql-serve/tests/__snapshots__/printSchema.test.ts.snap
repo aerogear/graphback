@@ -245,5 +245,3 @@ input UserSubscriptionFilter {
   name: String
 }"
 `;
-
-exports[`printSchema from remote URL 1`] = `Promise {}`;
