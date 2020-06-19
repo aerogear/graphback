@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType } from '@graphback/core';
+import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType, DefaultValueAnnotation } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -15,17 +15,17 @@ import {
 } from 'graphql'
 import { parseAnnotations, stripAnnotations, parseMetadata } from 'graphql-metadata';
 // eslint-disable-next-line import/no-internal-modules
-import { TypeMap } from 'graphql/type/schema'
-import { escapeComment } from '../util/comments'
-import getObjectTypeFromList from '../util/getObjectTypeFromList'
+import { TypeMap } from 'graphql/type/schema';
+import { escapeComment } from '../util/comments';
+import getObjectTypeFromList from '../util/getObjectTypeFromList';
 import getKnexColumnType from '../util/getKnexColumnType';
-import { AbstractDatabase } from './AbstractDatabase'
-import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar'
-import { OneToManyRelationship } from './RelationshipTypes'
-import { Table } from './Table'
+import { AbstractDatabase } from './AbstractDatabase';
+import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar';
+import { OneToManyRelationship } from './RelationshipTypes';
+import { Table } from './Table';
 import { ForeignKey, TableColumn } from './TableColumn'
 
-const ROOT_TYPES = ['Query', 'Mutation', 'Subscription']
+const ROOT_TYPES = ['Query', 'Mutation', 'Subscription'];
 
 const ID_TYPE = {
   list: 'primaries',
@@ -47,6 +47,12 @@ const INDEX_UNIQUE_TYPES = [
     defaultName: (table: string, column: string) => `${table}_${column}_unique`,
   }
 ];
+
+const ANNOTATIONS = {
+  id: "id",
+  db: "db",
+  default: "default"
+};
 
 export type ScalarMap = (
   field: GraphQLField<any, any>,
@@ -124,7 +130,7 @@ class AbstractDatabaseBuilder {
   }
 
   private buildTable(type: GraphQLObjectType) {
-    const annotations: any = parseAnnotations('db', type.description || undefined)
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, type.description || undefined)
 
     if (annotations.skip) {
       return undefined
@@ -202,7 +208,7 @@ class AbstractDatabaseBuilder {
     field: GraphQLField<any, any>,
     fieldType?: GraphQLOutputType
   ): TableColumn | undefined {
-    const annotations: any = parseAnnotations('db', field.description || undefined)
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, field.description || undefined)
     const relationshipMarker = parseRelationshipAnnotation(field.description);
 
     if (annotations.skip) {
@@ -302,7 +308,7 @@ class AbstractDatabaseBuilder {
         const foreignField = foreignType.getFields()[foreignKey]
         if (!foreignField) { return undefined }
         //@db.foreign
-        const foreignAnnotations: any = parseAnnotations('db', foreignField.description || undefined)
+        const foreignAnnotations: any = parseAnnotations(ANNOTATIONS.db, foreignField.description || undefined)
         const foreignAnnotation = foreignAnnotations.foreign
         if (foreignAnnotation && foreignAnnotation !== field.name) { return undefined }
         //Type
@@ -428,7 +434,8 @@ class AbstractDatabaseBuilder {
     }
 
     const autoIncrementable = isScalarType(fieldType) && ID_TYPE.default(field.name, fieldType.name);
-    const  isPrimaryKey  = parseMetadata("id", field) || autoIncrementable;
+    const  isPrimaryKey  = parseMetadata(ANNOTATIONS.id, field) || autoIncrementable;
+    const defaultValue: DefaultValueAnnotation = parseMetadata(ANNOTATIONS.default, field);
 
     return {
       name: columnName,
@@ -438,14 +445,14 @@ class AbstractDatabaseBuilder {
       args: args || [],
       nullable: !notNull && !isPrimaryKey,
       foreign,
-      defaultValue: annotations.default,
+      defaultValue: defaultValue?.value,
       autoIncrementable,
       isPrimaryKey
     }
   }
 
   private createOneToManyRelationship(oneToManyRelationship: OneToManyRelationship) {
-    const annotations: any = parseAnnotations('db', oneToManyRelationship.description || undefined);
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, oneToManyRelationship.description || undefined);
     const relationshipMarker = parseRelationshipAnnotation(oneToManyRelationship.description);
 
     const field: GraphQLField<any, any> = {
@@ -466,7 +473,7 @@ class AbstractDatabaseBuilder {
   }
 
   private getRelationTableFromOneToMany(oneToMany: OneToManyRelationship) {
-    const annotations: any = parseAnnotations('db', oneToMany.description || undefined);
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, oneToMany.description || undefined);
 
     return this.database.tables.find((table: Table) => {
       const tableName = annotations.name || this.getTableName(oneToMany.type.name);
@@ -476,7 +483,7 @@ class AbstractDatabaseBuilder {
   }
 
   private isOneToMany(type: GraphQLObjectType, field: GraphQLField<any, any>) {
-    const annotations: any = parseAnnotations('db', field.description || undefined);
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, field.description || undefined);
 
     const relationType = getObjectTypeFromList(field);
     if ((relationType && relationType.name !== type.name) && !annotations.manyToMany) {

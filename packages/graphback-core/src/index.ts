@@ -14,3 +14,4 @@ export * from './relationships/RelationshipMetadataBuilder';
 export * from './relationships/relationshipHelpers';
 export * from './runtime'
 export * from './db';
+export * from './annotations/DefaultValueAnnotation';

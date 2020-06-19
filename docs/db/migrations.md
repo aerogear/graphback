@@ -186,12 +186,14 @@ type User {
 
 #### Default field value
 
+You can specify a default value using the `@default` field annotation as shown below.
+
 ```graphql
 type Note {
   id: ID!
   title: String!
   """
-  @db.default: false
+  @default(value: false)
   """
   complete: Boolean
 }
