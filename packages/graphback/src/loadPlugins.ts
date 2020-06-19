@@ -17,12 +17,12 @@ export function loadPlugins(pluginConfig: any): GraphbackPlugin[] {
         pluginInstances.push(new plugin.Plugin(config));
       }
       else {
-        //tslint:disable-next-line: no-console
+        // eslint-disable-next-line no-console
         console.log(`${pluginName} plugin is not exporting 'Plugin' class`);
       }
     }
     catch (e) {
-      //tslint:disable-next-line: no-console
+      // eslint-disable-next-line no-console
       console.log(`${pluginName} plugin missing in package.json`, e);
     }
   }
