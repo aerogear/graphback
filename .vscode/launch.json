@@ -112,6 +112,7 @@
       "protocol": "inspector",
       "args": [
         "serve",
+        "./model",
         "port=8080"
       ],
       "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",

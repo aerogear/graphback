@@ -9,8 +9,6 @@ import cors from "cors"
 import express from "express"
 import http from "http"
 import { createRuntime } from './runtime';
-import { GraphbackServerConfig } from "./GraphbackServerConfig";
-import { printSchema } from 'graphql';
 
 const ENDPOINT = "/graphql";
 
@@ -79,6 +77,10 @@ export class GraphbackServer {
     return `http://localhost:${this.serverPort}${ENDPOINT}`;
   }
 
+  public getHttpPort(): number {
+    return this.serverPort;
+  }
+
   public getWsUrl(): string {
     if (this.serverPort === undefined) {
       throw new Error(
@@ -94,13 +96,12 @@ export class GraphbackServer {
   }
 }
 
-export async function buildGraphbackServer(graphbackServerConfig: GraphbackServerConfig): Promise<GraphbackServer> {
+export async function buildGraphbackServer(modelDir: string): Promise<GraphbackServer> {
   const app = express();
 
   app.use(cors());
 
-
-  const { typeDefs, resolvers, contextCreator } = await createRuntime(graphbackServerConfig);
+  const { typeDefs, resolvers, contextCreator } = await createRuntime(modelDir);
 
   const apolloConfig = {
     typeDefs,

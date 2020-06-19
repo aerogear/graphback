@@ -2,7 +2,7 @@
 import { GraphbackAPI, buildGraphbackAPI } from 'graphback'
 import { createMongoDbProvider } from '@graphback/runtime-mongo'
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import { loadModel } from './loadModel';
 import { GraphQLSchema } from 'graphql';
 import { GraphbackServerConfig } from "./GraphbackServerConfig";
@@ -17,11 +17,12 @@ export interface Runtime {
   }
 };
 
-export const createMongoDBConnection = async () => {
+export const createMongoDBConnection = async (): Promise<Db> => {
   const server = new MongoMemoryServer();
   const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true })
   await client.connect();
   const db = client.db('test');
+
   return db;
 }
 
@@ -29,9 +30,8 @@ export const createMongoDBConnection = async () => {
  * Method used to create runtime schema
  * It will be part of the integration tests
  */
-export const createRuntime = async (graphbackServerConfig: GraphbackServerConfig): Promise<GraphbackAPI> => {
-  const graphbackConfig = graphbackServerConfig.graphback;
-  const model = await loadModel(graphbackConfig.model);
+export const createRuntime = async (modelDir: string): Promise<GraphbackAPI> => {
+  const model = await loadModel(modelDir);
 
   const db = await createMongoDBConnection();
 
