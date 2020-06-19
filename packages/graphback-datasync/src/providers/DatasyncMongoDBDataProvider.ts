@@ -2,7 +2,7 @@ import { GraphQLObjectType } from 'graphql';
 import { getDatabaseArguments, metadataMap } from '@graphback/core';
 import { ObjectId, IndexSpecification } from 'mongodb';
 import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType, applyIndexes } from '@graphback/runtime-mongo'; 
-import { ConflictError } from "../util";
+import { ConflictError, ConflictStateMap } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
@@ -30,62 +30,40 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
   }
 
   public async update(data: any): Promise<Type> {
-    const { idField } = getDatabaseArguments(this.tableMap, data);
-    const { fieldNames } = metadataMap;
+    const conflict = await this.checkForConflicts(data);
 
-    if (!idField.value) {
-      throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
+    if (conflict !== undefined) {
+      throw new ConflictError(conflict);
     }
 
-    // TODO Can be improved by conditional updates
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false });
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (parseInt(data[fieldNames.updatedAt], 10) !== queryResult[fieldNames.updatedAt]) {
-        throw  new ConflictError({ serverState: queryResult, clientState: data });
-      }
-
-      // TODO use findOneAndUpdate to check consistency afterwards
-      return super.update(data);
-    }
-
-    throw new NoDataError(`Could not find document to update in ${this.collectionName}`);
+    // TODO use findOneAndUpdate to check consistency afterwards
+    return super.update(data);
   }
 
   public async delete(data: any): Promise<Type> {
+    const conflict = await this.checkForConflicts(data);
+    if (conflict !== undefined) {
+      throw new ConflictError(conflict);
+    }
 
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    const {fieldNames} = metadataMap;
+    data = {};
 
-    if (!idField.value) {
-      throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
-    }
+    this.fieldTransformMap[TransformType.UPDATE]
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform();
+      });
 
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false });
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (parseInt(data[fieldNames.updatedAt], 10) !== queryResult[fieldNames.updatedAt]) {
-        throw  new ConflictError({ serverState: queryResult, clientState: data });
-      }
+    data._deleted = true;
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value), _deleted: false }, { $set: data });
+    if (result.result.nModified === 1) {
+      const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) })
+      if (updatedDocument) {
 
-      data = {};
-
-      this.fieldTransformMap[TransformType.UPDATE]
-        .forEach((f: FieldTransform) => {
-          data[f.fieldName] = f.transform();
-        });
-
-      data._deleted = true;
-
-      const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value), _deleted: false }, { $set: data });
-      if (result.result.nModified === 1) {
-        const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) })
-        if (updatedDocument) {
-
-          return this.mapFields(updatedDocument);
-        }
+        return this.mapFields(updatedDocument);
       }
     }
+
     throw new NoDataError(`Could not delete from ${this.collectionName}`);
   }
 
@@ -123,5 +101,25 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
         gt: lastSync
       }
     }, undefined, undefined);
+  }
+
+  protected async checkForConflicts(clientData: any): Promise<ConflictStateMap> {
+    const { idField } = getDatabaseArguments(this.tableMap, clientData);
+    const {fieldNames} = metadataMap;
+
+    if (!idField.value) {
+      throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
+    }
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false });
+    if (queryResult) {
+      queryResult[idField.name] = queryResult._id;
+      if (clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {
+        return { serverState: queryResult, clientState: clientData };
+      }
+
+      return undefined;
+    }
+
+    throw new NoDataError(`Could not delete from ${this.collectionName}`);
   }
 }

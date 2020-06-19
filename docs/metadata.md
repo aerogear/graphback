@@ -187,7 +187,7 @@ type Comment {
 
 ### `@index`
 
-The `@index` annotation can be used to create an index on a specific field or a set of fields at runtime. This annotation is **only** supported by the MongoDB data source as of now. Note that if you have relationships in your models, the relevant foreign keys are automatically indexed by Graphback, so you do not have to index them using `@index`.
+The `@index` annotation can be used to create an index on a specific field or a set of fields at runtime. This annotation is **only** supported by the MongoDB data source as of now. Note that if you have relationships in your models, the relevant foreign keys are automatically indexed by Graphback, so you do not have to index them using `@index`. Similarly, custom primary keys marked with `@id` are also automatically indexed by Graphback.
 
 #### Arguments
 
