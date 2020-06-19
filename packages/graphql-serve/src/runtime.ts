@@ -3,7 +3,7 @@ import { GraphbackAPI, buildGraphbackAPI } from 'graphback'
 import { createMongoDbProvider } from '@graphback/runtime-mongo'
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient } from 'mongodb';
-import { loadSchema } from './loadSchema';
+import { loadModel } from './loadModel';
 import { GraphQLSchema } from 'graphql';
 import { GraphbackServerConfig } from "./GraphbackServerConfig";
 
@@ -31,11 +31,11 @@ export const createMongoDBConnection = async () => {
  */
 export const createRuntime = async (graphbackServerConfig: GraphbackServerConfig): Promise<GraphbackAPI> => {
   const graphbackConfig = graphbackServerConfig.graphback;
-  const schemaText = loadSchema(graphbackConfig.model);
+  const model = await loadModel(graphbackConfig.model);
 
   const db = await createMongoDBConnection();
 
-  const graphbackAPI = buildGraphbackAPI(schemaText, {
+  const graphbackAPI = buildGraphbackAPI(model, {
     dataProviderCreator: createMongoDbProvider(db)
   })
 

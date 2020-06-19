@@ -1,9 +1,8 @@
 import { GraphbackPlugin, GraphbackPluginEngine, printSchemaWithDirectives } from 'graphback'
-import { loadModel } from '../loadSchema';
+import { loadModel } from '../loadModel';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 
-export const printSchemaHandler = async (argv: { model?: string }): Promise<void> => {
-  console.log(argv.model)
+export const printSchemaHandler = async (argv: { model?: string }): Promise<string> => {
   const schemaText = await loadModel(argv.model);
 
   const schemaPlugins: GraphbackPlugin[] = [
@@ -20,6 +19,7 @@ export const printSchemaHandler = async (argv: { model?: string }): Promise<void
 
   const schema = metadata.getSchema();
 
-  console.log("Generated schema:\n");
-  console.log(printSchemaWithDirectives(schema));
+  const printedSchema = printSchemaWithDirectives(schema)
+
+  return printedSchema
 }
