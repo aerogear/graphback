@@ -90,8 +90,9 @@ The `@default` annotation is used to specify a default value. This is currently 
 
 #### Arguments
 
-| Argument | Description
-|`value`| Specifies the value that the field will take as a defaut value in the database. **Required**. 
+| Argument | Description |
+|-|-|
+`value`| Specifies the value that the field will take as a defaut value in the database. **Required**. 
 
 #### Example
 
