@@ -84,6 +84,27 @@ type Comment {
 }
 ```
 
+### `@default`
+
+The `@default` annotation is used to specify a default value. This is currently only supported for PostgreSQL database through the [graphql-migrations](db/migrations.md) package.
+
+#### Arguments
+
+| Argument | Description
+|`value`| Specifies the value that the field will take as a defaut value in the database. **Required**. 
+
+#### Example
+
+```graphql
+type Comment {
+  id: ID!
+  """
+  @default(value: '')
+  """
+  text: String
+}
+```
+
 ### `@oneToMany`
 
 `@oneToMany` is used to define a One To Many relationship.

@@ -113,15 +113,15 @@ test('default value', async () => {
       type User {
         id: ID!
         """
-        @db.default: true
+        @default(value: true)
         """
         someOption: Boolean
         """
-        @db.default: false
+        @default(value: false)
         """
         thatOption: Boolean
         """
-        @db.default: ''
+        @default(value: '')
         """
         thisOption: Boolean
       }

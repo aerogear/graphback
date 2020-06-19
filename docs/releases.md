@@ -88,6 +88,23 @@ For more advanced usage, refer to the [Runtime API](./intro/serverless) document
 
 We have replaced the `@db.primary` annotation with `@id`.
 
+#### `@db.default` is removed, use `@default` instead
+
+We have replaced the `@db.default` annotation with `@default`.
+Now you can provide default values like this:
+```
+"""
+@default(value: 'default value')
+"""
+```
+
+instead of 
+```
+"""
+@db.default 'default value'
+"""
+```
+
 #### Removed `graphback db` CLI command to migrate database
 
 We have removed the `graphback db` command. Database migrations can be only executed from the codebase when application is started.

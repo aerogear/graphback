@@ -143,7 +143,7 @@ type Note {
 type Note {
   id: ID!
   """
-  db.default: 'Note title'
+  default(value: 'Note title')
   """
   title: String
 }
