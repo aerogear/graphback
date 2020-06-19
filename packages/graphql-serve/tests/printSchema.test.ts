@@ -1,9 +1,11 @@
-import { join } from "path"
 import { printSchemaHandler } from '../src/components/printSchemaHandler'
 
-test('printSchema from GraphQL file', async () => {
+beforeEach(() => {
+  process.chdir(__dirname)
+})
 
-  const modelFile = join(__dirname, './files/user-model.graphql')
+test('printSchema from GraphQL file', async () => {
+  const modelFile = './files/user-model.graphql'
 
   const schemaSDL = await printSchemaHandler({ model: modelFile })
 
@@ -11,9 +13,11 @@ test('printSchema from GraphQL file', async () => {
   expect(schemaSDL).toMatchSnapshot()
 })
 
-test('printSchema from remote URL', () => {
+test('printSchema from directory', async () => {
+  const modelFile = './files'
 
-  const schemaSDL = printSchemaHandler({ model: 'https://raw.githubusercontent.com/aerogear/graphback/master/templates/ts-apollo-postgres-backend/model/datamodel.graphql' })
+  const schemaSDL = await printSchemaHandler({ model: modelFile })
+
   expect(schemaSDL).toBeDefined()
   expect(schemaSDL).toMatchSnapshot()
 })
