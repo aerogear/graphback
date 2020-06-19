@@ -98,7 +98,7 @@ export function buildGraphbackAPI(model: string | GraphQLSchema, config: Graphba
   const contextCreator = (context: any) => {
     return {
       ...context,
-      graphback: services
+      graphback: { services }
     }
   }
 

@@ -29,7 +29,7 @@ async function createOffixTestingContext(schemaStr: string, config?: { seedData:
         const collectionNames = Object.keys(config.seedData);
         for (const collectionName of collectionNames) {
             for (const element of config.seedData[collectionName]) {
-                await providers[collectionName].create(element);
+                await providers[collectionName].create(element, { graphback: {services: {}, options: {selectedFields: ["id", "text", "version"]}}});
             }
         };
     }

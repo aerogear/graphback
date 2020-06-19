@@ -15,7 +15,7 @@ afterEach(() => {
     unlinkSync(dbPath)
   }
 })
-
+const fields = ["id", "title"];
 const setup = async ({ schemaSDL, seedData }: { schemaSDL?: string, seedData?: { [tableName: string]: any | any[] } } = {}) => {
   if (!schemaSDL) {
     schemaSDL =
@@ -71,7 +71,7 @@ test('create Todo', async () => {
   const { services } = await setup()
   const todo = await services.Todo.create({
     text: 'create a todo',
-  });
+  }, {graphback: {services: {}, options: { selectedFields: ["id", "text"]}}});
 
   expect(todo.id).toEqual(1);
   expect(todo.text).toEqual('create a todo');
@@ -82,6 +82,13 @@ test('update Todo', async () => {
   const todo = await services.Todo.update({
     id: 1,
     text: 'my updated first todo',
+  }, {
+    graphback: {
+      services: {},
+      options: {
+        selectedFields: ["id", "text"]
+      }
+    }
   });
 
   expect(todo.id).toEqual(1);
@@ -93,6 +100,13 @@ test('delete Todo', async () => {
   const data = await services.Todo.delete({
     id: 2,
     text: 'my second todo',
+  }, {
+    graphback: {
+      services: {},
+      options: {
+        selectedFields: ["id"]
+      }
+    }
   });
 
   expect(data.id).toEqual(2);
@@ -103,7 +117,7 @@ test('find Todo by text', async () => {
 
   const todoResults = await services.Todo.findBy({
     text: { eq: 'the second todo' },
-  });
+  }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
 
   expect(todoResults.items.length).toEqual(1);
   expect(todoResults.items[0].id).toEqual(2);
@@ -126,7 +140,14 @@ test('delete User by custom ID field', async () => {
     seedData: { user: [{ email: 'johndoe@email.com' }, { email: 'test@test.com' }] }
   })
 
-  const result = await services.User.delete({ email: 'test@test.com' })
+  const result = await services.User.delete({ email: 'test@test.com' }, {
+    graphback: {
+      services: {},
+      options: {
+        selectedFields: ["email"]
+      }
+    }
+  });
 
   expect(result.email).toEqual('test@test.com')
 });
@@ -149,10 +170,10 @@ test('insertion of User with same custom ID field more than once should fail', a
   });
 
   try {
-    const result = await services.User.create({ email: 'johndoe@email.com', name: 'John doe' });
+    const result = await services.User.create({ email: 'johndoe@email.com', name: 'John doe' }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
     expect(result).toBeFalsy(); // should not reach here because an error should have been thrown by line above
   } catch (e) {
-     expect(e.code).toBe("SQLITE_CONSTRAINT"); 
+     expect(e.code).toBe("SQLITE_CONSTRAINT");
      expect(e.message).toBe("insert into `user` (`email`, `name`) values ('johndoe@email.com', 'John doe') - SQLITE_CONSTRAINT: UNIQUE constraint failed: user.email");
   }
 });
@@ -174,7 +195,7 @@ test('update User by custom ID field', async () => {
     seedData: { user: [{ email: 'johndoe@email.com' }] }
   })
 
-  const result = await services.User.update({ email: 'johndoe@email.com', name: 'John Doe' })
+  const result = await services.User.update({ email: 'johndoe@email.com', name: 'John Doe' }, {graphback: {services: {}, options: { selectedFields: ["name"]}}})
 
   expect(result.name).toEqual('John Doe')
 });
@@ -199,7 +220,7 @@ test('find users where name starts with "John"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { startsWith: 'John' } })
+  const result = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(2)
 })
@@ -224,7 +245,7 @@ test('find users where name ends with "Jones"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { endsWith: 'Jones' } })
+  const result = await services.User.findBy({ name: { endsWith: 'Jones' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(1)
 })
@@ -249,7 +270,7 @@ test('find users where name ends with "Jones"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { endsWith: 'Jones' } })
+  const result = await services.User.findBy({ name: { endsWith: 'Jones' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(1)
 })
@@ -274,7 +295,7 @@ test('find users where name not eq "John"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { ne: 'John' } })
+  const result = await services.User.findBy({ name: { ne: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["name"]}}})
 
   expect(result.items).toHaveLength(1)
   expect(result.items[0].name).toBe('James')
@@ -300,7 +321,7 @@ test('find users where name in array', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { in: ['Sarah', 'John'] } })
+  const result = await services.User.findBy({ name: { in: ['Sarah', 'John'] } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(2)
 })
@@ -326,7 +347,7 @@ test('find users where name contains "John"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { contains: 'John' } })
+  const result = await services.User.findBy({ name: { contains: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(3)
 })
@@ -355,7 +376,7 @@ test('find users where friends == 1', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { eq: 1 } })
+  const result = await services.User.findBy({ friends: { eq: 1 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(1)
 })
@@ -384,7 +405,7 @@ test('find users where friends < 1', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { lt: 20 } })
+  const result = await services.User.findBy( {friends: { lt: 20 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(2)
 })
@@ -413,7 +434,7 @@ test('find users where friends <= 1', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { le: 1 } })
+  const result = await services.User.findBy({ friends: { le: 1 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(2)
 })
@@ -442,7 +463,7 @@ test('find users where friends > 30', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { gt: 30 } })
+  const result = await services.User.findBy({ friends: { gt: 30 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(2)
 })
@@ -471,7 +492,7 @@ test('find users where friends >= 50', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { ge: 50 } })
+  const result = await services.User.findBy({ friends: { ge: 50 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(result.items).toHaveLength(2)
 })

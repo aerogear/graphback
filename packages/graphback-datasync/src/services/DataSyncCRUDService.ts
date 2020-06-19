@@ -1,4 +1,4 @@
-import { CRUDService, CRUDServiceConfig } from "@graphback/runtime"
+import { CRUDService, CRUDServiceConfig, GraphbackContext } from "@graphback/runtime"
 import { DataSyncProvider } from "../providers";
 
 export interface SyncList<T> {
@@ -18,9 +18,9 @@ export class DataSyncCRUDService<T = any> extends CRUDService<T> {
    * sync
    * For delta queries
    */
-  public async sync(lastSync: string, filter?: any, context?: any): Promise<SyncList<T>> {
+  public async sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<SyncList<T>> {
 
-    const res = await (this.db as DataSyncProvider).sync(lastSync, filter);
+    const res = await (this.db as DataSyncProvider).sync(lastSync, context, filter);
 
     return {
       items: res,

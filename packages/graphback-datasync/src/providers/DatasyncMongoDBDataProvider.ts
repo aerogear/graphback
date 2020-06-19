@@ -1,14 +1,15 @@
+import { Context } from 'vm';
 import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap } from '@graphback/core';
-import { ObjectId, IndexSpecification } from 'mongodb';
-import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType, applyIndexes } from '@graphback/runtime-mongo'; 
+import { getDatabaseArguments, metadataMap, GraphbackContext } from '@graphback/core';
+import { ObjectId } from 'mongodb';
+import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
-export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> implements DataSyncProvider {
+export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
@@ -23,25 +24,25 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     });
   }
 
-  public async create(data: any): Promise<Type> {
+  public async create(data: any, context: GraphbackContext): Promise<Type> {
     data._deleted = false;
 
-    return super.create(data);
+    return super.create(data, context);
   }
 
-  public async update(data: any): Promise<Type> {
-    const conflict = await this.checkForConflicts(data);
+  public async update(data: any, context: GraphbackContext): Promise<Type> {
+    const conflict = await this.checkForConflicts(data, context);
 
     if (conflict !== undefined) {
       throw new ConflictError(conflict);
     }
 
     // TODO use findOneAndUpdate to check consistency afterwards
-    return super.update(data);
+    return super.update(data, context);
   }
 
-  public async delete(data: any): Promise<Type> {
-    const conflict = await this.checkForConflicts(data);
+  public async delete(data: any, context: GraphbackContext): Promise<Type> {
+    const conflict = await this.checkForConflicts(data, context);
     if (conflict !== undefined) {
       throw new ConflictError(conflict);
     }
@@ -55,9 +56,11 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
       });
 
     data._deleted = true;
-    const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value), _deleted: false }, { $set: data });
+    const objectId = new ObjectId(idField.value);
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId, _deleted: false }, { $set: data });
     if (result.result.nModified === 1) {
-      const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) })
+      const projection = this.buildProjectionOption(context);
+      const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: objectId }, {projection})
       if (updatedDocument) {
 
         return this.mapFields(updatedDocument);
@@ -67,14 +70,15 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     throw new NoDataError(`Could not delete from ${this.collectionName}`);
   }
 
-  public async findOne(filter: any): Promise<Type> {
+  public async findOne(filter: any, context: GraphbackContext): Promise<Type> {
     if (filter.id) {
       filter = { _id: new ObjectId(filter.id) }
     }
+    const projection = this.buildProjectionOption(context);
     const query = this.db.collection(this.collectionName).findOne({
       ...filter,
       _deleted: false
-    });
+    }, { projection });
     const data = await query;
 
     if (data) {
@@ -83,34 +87,39 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     if (filter === undefined) {
       filter = {};
     }
 
-    filter._deleted = false
+    filter._deleted = false;
 
-    return super.findBy(filter, orderBy, page);
+    return super.findBy(filter, context, orderBy, page);
   }
 
-  public sync(lastSync: string, filter?: any): Promise<Type[]> {
+  public sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<Type[]> {
 
     return super.findBy({
       ...filter,
       updatedAt: {
         gt: lastSync
       }
-    }, undefined, undefined);
+    }, context, undefined, undefined);
   }
 
-  protected async checkForConflicts(clientData: any): Promise<ConflictStateMap> {
+  protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
     const { idField } = getDatabaseArguments(this.tableMap, clientData);
     const {fieldNames} = metadataMap;
 
     if (!idField.value) {
       throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
     }
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false });
+    const projection = {
+      ...this.buildProjectionOption(context),
+      [fieldNames.updatedAt]: 1,
+      _deleted: 1
+    };
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false }, {projection});
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
       if (clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {

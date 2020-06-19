@@ -6,12 +6,21 @@ import { GraphbackCRUDService } from './GraphbackCRUDService';
 export interface GraphbackServiceConfigMap {
   [modelName: string]: GraphbackCRUDService
 }
+/**
+ * Contains resolver options
+ */
+export interface GraphbackResolverOptions {
+  selectedFields: string[]
+}
 
 /**
  * GraphQL context interface according to Graphback runtime layer format
  */
 export interface GraphbackContext {
-  graphback: GraphbackServiceConfigMap
+  graphback: {
+    services: GraphbackServiceConfigMap,
+    options: GraphbackResolverOptions
+  }
 }
 
 /**
