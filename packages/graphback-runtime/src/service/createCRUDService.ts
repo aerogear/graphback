@@ -1,6 +1,5 @@
 import { ModelDefinition, GraphbackCRUDService, GraphbackDataProvider } from '@graphback/core';
 import { PubSubEngine, PubSub } from 'graphql-subscriptions';
-import { GraphbackMessageLogger } from '../utils/Logger';
 import { CRUDServiceConfig, CRUDService } from './CRUDService';
 
 export interface CreateCRUDServiceOptions {
@@ -8,10 +7,6 @@ export interface CreateCRUDServiceOptions {
    * PubSub implementation for creating subscriptions
    */
   pubSub?: PubSubEngine
-  /**
-   * Optional logger
-   */
-  logger?: GraphbackMessageLogger
 }
 
 /**

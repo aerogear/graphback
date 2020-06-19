@@ -1,7 +1,6 @@
 import { GraphbackOperationType, upperCaseFirstChar, GraphbackDataProvider, GraphbackCRUDGeneratorConfig, GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
-import { defaultLogger, GraphbackMessageLogger } from '../utils/Logger';
 
 /**
  * Configurations necessary to create a CRUDService
@@ -11,10 +10,7 @@ export interface CRUDServiceConfig {
    * PubSub implementation for creating subscriptions
    */
   pubSub?: PubSubEngine
-  /**
-   * Optional logging service
-   */
-  logger?: GraphbackMessageLogger
+
   /**
    * Model-specific CRUD configuration
    */
@@ -29,7 +25,6 @@ export interface CRUDServiceConfig {
 //tslint:disable-next-line: no-any
 export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   protected db: GraphbackDataProvider;
-  private logger: GraphbackMessageLogger;
   private pubSub: PubSubEngine;
   private modelName: string;
   private crudOptions: GraphbackCRUDGeneratorConfig;
@@ -39,12 +34,9 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     this.crudOptions = config.crudOptions;
     this.db = db;
     this.pubSub = config.pubSub;
-    this.logger = config.logger || defaultLogger;
   }
 
   public async create(data: T, context?: any): Promise<T> {
-    this.logger.log(`Creating object ${this.modelName}`);
-
     const result = await this.db.create(data, context);
 
     if (this.pubSub && this.crudOptions.subCreate) {
@@ -58,7 +50,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   public async update(data: T, context?: any): Promise<T> {
-    this.logger.log(`Updating object ${this.modelName}`)
 
     const result = await this.db.update(data, context);
 
@@ -74,8 +65,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
   //tslint:disable-next-line: no-reserved-keywords
   public async delete(data: T, context?: any): Promise<T> {
-    this.logger.log(`deleting object ${this.modelName}`)
-
     const result = await this.db.delete(data, context);
 
     if (this.pubSub && this.crudOptions.subDelete) {
@@ -88,15 +77,11 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   public findOne(args: Partial<T>, context?: any): Promise<T> {
-    this.logger.log(`fetching single object ${this.modelName} with args ${JSON.stringify(args)}`)
-
     return this.db.findOne(args, context)
   }
 
   //tslint:disable-next-line: no-any
   public async findBy(filter: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: any): Promise<ResultList<T>> {
-    this.logger.log(`querying object ${this.modelName} with filter ${JSON.stringify(filter)}`)
-
     const items = await this.db.findBy(filter, orderBy, page, context);
 
     // set page values for returned object
@@ -114,8 +99,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
   public subscribeToCreate(filter: any, context?: any): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
-      this.logger.log(`Cannot subscribe to events for ${this.modelName}`)
-
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
     const createSubKey = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
@@ -125,8 +108,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
   public subscribeToUpdate(filter: any, context?: any): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
-      this.logger.log(`Cannot subscribe to events for ${this.modelName}`)
-
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
     const updateSubKey = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
@@ -136,8 +117,6 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
   public subscribeToDelete(filter: any, context?: any): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
-      this.logger.log(`Cannot subscribe to events for ${this.modelName}`)
-
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
     const deleteSubKey = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
@@ -147,7 +126,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
 
 
   public batchLoadData(relationField: string, id: string | number, filter: any, context?: any) {
-    //TODO use relationfield mapping
+    // TODO use relationfield mapping
     const keyName = `${this.modelName}${upperCaseFirstChar(relationField)}DataLoader`;
     if (!context[keyName]) {
       context[keyName] = new DataLoader<string, any>((keys: string[]) => {
