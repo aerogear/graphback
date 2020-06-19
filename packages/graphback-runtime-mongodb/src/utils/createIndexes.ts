@@ -28,7 +28,7 @@ export async function applyIndexes(indexes: IndexSpecification[], collection: Co
       message = `${error.errmsg}, try double checking what you are passing to @index.`;
     }
 
-    if (message === '') {
+    if (message === undefined) {
       message = `Graphback was unable to create the specified indexes: ${error.message}.`
     }
 
@@ -42,10 +42,20 @@ export function getIndexFields(baseType: GraphQLObjectType): IndexSpecification[
   Object.keys(fields).forEach((k: string) => {
     const field = fields[k];
 
+    // Add unique index on custom primary keys e.g @id
+    const pkIndex = isCustomIdField(field);
+    if (pkIndex !== undefined) {
+      res.push(pkIndex);
+
+      return
+    }
+
     // Add Index on relation fields
     const relationIndex = getRelationIndex(field);
     if (relationIndex !== undefined) {
       res.push(relationIndex);
+
+      return;
     }
 
     // Add custom Index if found e.g. @index
@@ -82,6 +92,22 @@ export function getRelationIndex(field: GraphQLField<any, any>): IndexSpecificat
         [relationshipData.key]: 1
       },
     }
+  } else {
+    return undefined;
+  }
+}
+
+export function isCustomIdField(field: GraphQLField<any, any>): IndexSpecification {
+  const indexMetadata: any = parseMetadata('id', field.description);
+  if (indexMetadata === true) {
+    const indexSpec: IndexSpecification = {
+      key: {
+        [field.name]: 1
+      },
+      unique: true
+    };
+
+    return indexSpec;
   } else {
     return undefined;
   }
