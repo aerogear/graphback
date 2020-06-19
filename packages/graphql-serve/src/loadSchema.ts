@@ -1,6 +1,7 @@
-import { readFileSync } from 'fs';
 import { join } from 'path';
-import { GlobSync } from 'glob';
+import { loadSchema } from '@graphql-tools/load'
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
+import { GraphQLSchema } from 'graphql';
 
 /**
  * Loads the schema text from the model directory
@@ -9,16 +10,14 @@ import { GlobSync } from 'glob';
  * @param {string} modelDir
  * @returns {string}
  */
-export function loadSchema(modelDir: string): string {
+export function loadModel(modelDir: string): Promise<GraphQLSchema> {
   const modelPath = join(process.cwd(), modelDir, '*.graphql');
 
-  const files = new GlobSync(modelPath);
+  const modelDefs = loadSchema(modelPath, {
+    loaders: [
+      new GraphQLFileLoader()
+    ]
+  })
 
-  if (files.found.length === 0) {
-    throw new Error('Missing GraphQL schema');
-  }
-
-  return files.found.map((f: string) => {
-    return readFileSync(f, 'utf8');
-  }).join('\n');
+  return modelDefs
 }
