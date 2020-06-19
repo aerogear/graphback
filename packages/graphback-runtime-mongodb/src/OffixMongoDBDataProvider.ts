@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
-import { NoDataError, FieldTransform, TransformType } from '@graphback/runtime';
-import { getDatabaseArguments } from '@graphback/core';
+import { NoDataError} from '@graphback/runtime';
+import { getDatabaseArguments, GraphbackContext } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider } from './MongoDBDataProvider';
 
@@ -9,22 +9,22 @@ import { MongoDBDataProvider } from './MongoDBDataProvider';
  *
  * https://offix.dev/docs/conflict-server#structure-of-the-conflict-error
  */
-export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> {
+export class OffixMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> {
 
   public constructor(baseType: GraphQLObjectType, client: any) {
     super(baseType, client);
   }
 
-  public async create(data: any): Promise<Type> {
+  public async create(data: any, context: GraphbackContext): Promise<Type> {
     if (!data.version) {
       data.version = 1;
     }
 
-    return super.create(data);
+    return super.create(data, context);
   }
 
 
-  public async update(data: any): Promise<Type> {
+  public async update(data: any, context: GraphbackContext): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
 
     if (!idField.value) {
@@ -32,7 +32,8 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
     }
 
     // TODO Can be improved by conditional updates
-    const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }).toArray();
+    const projection = { ...this.buildProjectionOption(context), version: 1};
+    const queryResult = await this.db.collection(this.collectionName).find({ _id: new ObjectId(idField.value) }, {projection}).toArray();
     if (queryResult && queryResult[0]) {
       queryResult[0][idField.name] = queryResult[0]._id;
       if (data.version !== queryResult[0].version) {
@@ -45,7 +46,7 @@ export class OffixMongoDBDataProvider<Type = any, GraphbackContext = any> extend
 
 
       // TODO use findOneAndUpdate to check consistency afterwards
-      return super.update(data);
+      return super.update(data, context);
     }
 
     throw new NoDataError(`Could not find document to update in ${this.collectionName}`);

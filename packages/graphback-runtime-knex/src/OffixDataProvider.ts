@@ -1,4 +1,4 @@
-import { getDatabaseArguments } from '@graphback/core';
+import { getDatabaseArguments, GraphbackContext } from '@graphback/core';
 import { NoDataError } from '@graphback/runtime'
 import { GraphQLObjectType } from 'graphql';
 import Knex from 'knex'
@@ -17,10 +17,10 @@ export class OffixDataProvider extends KnexDBDataProvider {
   /**
    * @param data
    */
-  public async update(data: any): Promise<any> {
+  public async update(data: any, context: GraphbackContext): Promise<any> {
     const { idField, data: updateData } = getDatabaseArguments(this.tableMap, data);
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).where(idField.name, '=', idField.value);
+    const dbResult = await this.db.select([...context.graphback.options.selectedFields, 'version']).from(this.tableName).where(idField.name, '=', idField.value);
     if (dbResult && dbResult[0]) {
       if (data.version !== dbResult[0].version) {
         const conflictError: any = new Error();

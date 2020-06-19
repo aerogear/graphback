@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
-import { existsSync, mkdirSync, writeFileSync, fstat } from 'fs';
-import { resolve, dirname, join } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, isScalarType, isSpecifiedScalarType } from 'graphql';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { resolve, join, dirname } from 'path';
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMarker } from "graphql-metadata";
@@ -80,11 +80,19 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     const models = metadata.getModelDefinitions()
 
+    const modelNameToModelDefinition = models
+      .reduce((acc: any, model: ModelDefinition) => {
+        return {
+          ...acc,
+          [model.graphqlType.name]: model
+        }
+      }, {});
+
     for (const model of models) {
       this.addQueryResolvers(model, resolvers.Query as IFieldResolver<any, any>)
       this.addMutationResolvers(model, resolvers.Mutation as IFieldResolver<any, any>)
       this.addSubscriptionResolvers(model, resolvers.Subscription as IFieldResolver<any, any>)
-      this.addRelationshipResolvers(model, resolvers)
+      this.addRelationshipResolvers(model, resolvers, modelNameToModelDefinition)
     }
 
     return resolvers
@@ -346,13 +354,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * @param {IFieldResolver} queryObj - Query resolver object
    */
   protected addQueryResolvers(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
-    const modelType = model.graphqlType;
-
     if (model.crudOptions.findOne) {
-      this.addFindOneQueryResolver(modelType, queryObj)
+      this.addFindOneQueryResolver(model, queryObj)
     }
     if (model.crudOptions.find) {
-      this.addFindQueryResolver(modelType, queryObj)
+      this.addFindQueryResolver(model, queryObj)
     }
   }
 
@@ -366,13 +372,13 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelType = model.graphqlType;
 
     if (model.crudOptions.create) {
-      this.addCreateMutationResolver(modelType, mutationObj)
+      this.addCreateMutationResolver(model, mutationObj)
     }
     if (model.crudOptions.update) {
-      this.addUpdateMutationResolver(modelType, mutationObj)
+      this.addUpdateMutationResolver(model, mutationObj)
     }
     if (model.crudOptions.delete) {
-      this.addDeleteMutationResolver(modelType, mutationObj)
+      this.addDeleteMutationResolver(model, mutationObj)
     }
   }
 
@@ -401,14 +407,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    *
    * @param {ModelDefinition} model - Model definition with relationship metadata
    * @param {IResolvers} resolversObj - Resolvers object
+   * @param modelNameToModelDefinition - model type name to its definition for quick search
    */
-  protected addRelationshipResolvers(model: ModelDefinition, resolversObj: IResolvers) {
+  protected addRelationshipResolvers(model: ModelDefinition, resolversObj: IResolvers, modelNameToModelDefinition: any) {
     const relationResolvers = {}
     for (const relationship of model.relationships) {
       if (relationship.kind === 'oneToMany') {
-        this.addOneToManyResolver(relationship, relationResolvers)
+        this.addOneToManyResolver(relationship, relationResolvers, modelNameToModelDefinition)
       } else {
-        this.addOneToOneResolver(relationship, relationResolvers)
+        this.addOneToOneResolver(relationship, relationResolvers, modelNameToModelDefinition)
       }
     }
 
@@ -420,93 +427,126 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   /**
    * Creates a Create mutation resolver field
    *
-   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {ModelDefinition} model - Model GraphQL object type
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addCreateMutationResolver(modelType: GraphQLObjectType, mutationObj: IFieldResolver<any, any>) {
+  protected addCreateMutationResolver(model: ModelDefinition, mutationObj: IFieldResolver<any, any>) {
+    const modelType = model.graphqlType
     const modelName = modelType.name;
     const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
 
-    mutationObj[resolverCreateField] = (_: any, args: any, context: GraphbackContext) => {
-      if (!context.graphback || !context.graphback[modelName]) {
+    mutationObj[resolverCreateField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback[modelName].create(args.input, context)
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].create(args.input, {...context, graphback});
     }
   }
 
   /**
    * Creates an Update mutation resolver
    *
-   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {ModelDefinition} model - Model definition object
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addUpdateMutationResolver(modelType: GraphQLObjectType, mutationObj: IFieldResolver<any, any>) {
-    const modelName = modelType.name;
+  protected addUpdateMutationResolver(model: ModelDefinition, mutationObj: IFieldResolver<any, any>) {
+    const modelName = model.graphqlType.name;
     const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
 
-    mutationObj[updateField] = (_: any, args: any, context: GraphbackContext) => {
-      if (!context.graphback || !context.graphback[modelName]) {
+    mutationObj[updateField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback[modelName].update(args.input, context)
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].update(args.input, {...context, graphback})
     }
   }
 
   /**
    * Creates a Delete Mutation resolver field
    *
-   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {ModelDefinition} model - Model definition object
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addDeleteMutationResolver(modelType: GraphQLObjectType, mutationObj: IFieldResolver<any, any>) {
-    const modelName = modelType.name;
+  protected addDeleteMutationResolver(model: ModelDefinition, mutationObj: IFieldResolver<any, any>) {
+    const modelName = model.graphqlType.name;
     const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
 
-    mutationObj[deleteField] = (_: any, args: any, context: GraphbackContext) => {
-      if (!context.graphback || !context.graphback[modelName]) {
+    mutationObj[deleteField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback[modelName].delete(args.input, context)
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].delete(args.input, {...context, graphback})
     }
   }
 
   /**
    * Creates a Find Query resolver field
    *
-   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {ModelDefinition} model - Model definition object
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addFindQueryResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
+  protected addFindQueryResolver(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
+    const modelType = model.graphqlType
     const modelName = modelType.name;
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
-    queryObj[findField] = (_: any, args: any, context: GraphbackContext) => {
-      return context.graphback[modelName].findBy(args.filter, args.orderBy, args.page, context)
+    queryObj[findField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].findBy(args.filter, {...context, graphback}, args.orderBy, args.page)
     }
   }
 
   /**
    * Creates a FindOne Query resolver
    *
-   * @param {GraphQLObjectType} modelType - Model GraphQL object type
+   * @param {ModelDefinition} model - Model definition object
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
-  protected addFindOneQueryResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
+  protected addFindOneQueryResolver(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
+    const modelType = model.graphqlType
     const modelName = modelType.name;
     const findOneField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
 
     const primaryKeyLabel = getPrimaryKey(modelType).name;
 
-    queryObj[findOneField] = (_: any, args: any, context: GraphbackContext) => {
-      if (!context.graphback || !context.graphback[modelName]) {
+    queryObj[findOneField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback[modelName].findOne({ [primaryKeyLabel]: args.id }, context)
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].findOne({ [primaryKeyLabel]: args.id }, {...context, graphback})
     }
   }
 
@@ -521,12 +561,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: GraphbackContext) => {
-        if (!context.graphback || !context.graphback[modelName]) {
+      subscribe: (_: any, __: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+        if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback[modelName].subscribeToCreate({}, context);
+        return context.graphback.services[modelName].subscribeToCreate({}, context);
       }
     }
   }
@@ -542,12 +582,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: GraphbackContext) => {
-        if (!context.graphback || !context.graphback[modelName]) {
+      subscribe: (_: any, __: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+        if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback[modelName].subscribeToUpdate({}, context);
+        return context.graphback.services[modelName].subscribeToUpdate({}, context);
       }
     }
   }
@@ -563,12 +603,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: GraphbackContext) => {
-        if (!context.graphback || !context.graphback[modelName]) {
+      subscribe: (_: any, __: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+        if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback[modelName].subscribeToDelete({}, context);
+        return context.graphback.services[modelName].subscribeToDelete({}, context);
       }
     }
   }
@@ -578,18 +618,32 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    *
    * @param {GraphQLObjectType} modelType - Model GraphQL object type
    * @param {IResolvers} resolverObj - Resolvers object
+   * @param modelNameToModelDefinition - model type name to its definition for quick search
    */
-  protected addOneToManyResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers) {
+  protected addOneToManyResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers, modelNameToModelDefinition: any) {
     const modelName = relationship.relationType.name;
     const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
+    const model = modelNameToModelDefinition[modelName];
 
-    resolverObj[relationOwner] = (parent: any, args: any, context: GraphbackContext) => {
-      if (!context.graphback || !context.graphback[modelName]) {
+    resolverObj[relationOwner] = (parent: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback[modelName].batchLoadData(relationship.relationForeignKey, parent[relationIdField.name], args.filter, context);
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      selectedFields.push(relationship.relationForeignKey);
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].batchLoadData(
+        relationship.relationForeignKey,
+        parent[relationIdField.name],
+        args.filter,
+        {...context, graphback}
+      );
     }
   }
 
@@ -598,18 +652,26 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    *
    * @param {GraphQLObjectType} modelType - Model GraphQL object type
    * @param {IResolvers} resolverObj - Resolvers object
+   * @param modelNameToModelDefinition - model type name to its definition for quick search
    */
-  protected addOneToOneResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers) {
+  protected addOneToOneResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers, modelNameToModelDefinition: any) {
     const modelName = relationship.relationType.name;
     const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
+    const model = modelNameToModelDefinition[modelName];
 
-    resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext) => {
-      if (!context.graphback || !context.graphback[modelName]) {
+    resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] });
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return context.graphback.services[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] }, {...context, graphback});
     }
   }
 

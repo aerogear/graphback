@@ -1,4 +1,4 @@
-import { GraphbackOperationType, upperCaseFirstChar, GraphbackDataProvider, GraphbackCRUDGeneratorConfig, GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage } from "@graphback/core"
+import { GraphbackOperationType, upperCaseFirstChar, GraphbackDataProvider, GraphbackCRUDGeneratorConfig, GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage, GraphbackContext } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 
@@ -36,7 +36,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     this.pubSub = config.pubSub;
   }
 
-  public async create(data: T, context?: any): Promise<T> {
+  public async create(data: T, context: GraphbackContext): Promise<T> {
     const result = await this.db.create(data, context);
 
     if (this.pubSub && this.crudOptions.subCreate) {
@@ -49,7 +49,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return result;
   }
 
-  public async update(data: T, context?: any): Promise<T> {
+  public async update(data: T, context: GraphbackContext): Promise<T> {
 
     const result = await this.db.update(data, context);
 
@@ -64,7 +64,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   //tslint:disable-next-line: no-reserved-keywords
-  public async delete(data: T, context?: any): Promise<T> {
+  public async delete(data: T, context: GraphbackContext): Promise<T> {
     const result = await this.db.delete(data, context);
 
     if (this.pubSub && this.crudOptions.subDelete) {
@@ -76,13 +76,13 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return result;
   }
 
-  public findOne(args: Partial<T>, context?: any): Promise<T> {
+  public findOne(args: Partial<T>, context: GraphbackContext): Promise<T> {
     return this.db.findOne(args, context)
   }
 
   //tslint:disable-next-line: no-any
-  public async findBy(filter: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: any): Promise<ResultList<T>> {
-    const items = await this.db.findBy(filter, orderBy, page, context);
+  public async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<ResultList<T>> {
+    const items = await this.db.findBy(filter, context, orderBy, page);
 
     // set page values for returned object
     const resultPageInfo = {
@@ -97,7 +97,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     }
   }
 
-  public subscribeToCreate(filter: any, context?: any): AsyncIterator<T> | undefined {
+  public subscribeToCreate(filter: any, context: GraphbackContext): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
@@ -106,7 +106,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return this.pubSub.asyncIterator(createSubKey)
   }
 
-  public subscribeToUpdate(filter: any, context?: any): AsyncIterator<T> | undefined {
+  public subscribeToUpdate(filter: any, context: GraphbackContext): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
@@ -115,7 +115,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return this.pubSub.asyncIterator(updateSubKey)
   }
 
-  public subscribeToDelete(filter: any, context?: any): AsyncIterator<T> | undefined {
+  public subscribeToDelete(filter: any, context: GraphbackContext): AsyncIterator<T> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
@@ -125,12 +125,12 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
 
-  public batchLoadData(relationField: string, id: string | number, filter: any, context?: any) {
+  public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext) {
     // TODO use relationfield mapping
     const keyName = `${this.modelName}${upperCaseFirstChar(relationField)}DataLoader`;
     if (!context[keyName]) {
       context[keyName] = new DataLoader<string, any>((keys: string[]) => {
-        return this.db.batchRead(relationField, keys, filter);
+        return this.db.batchRead(relationField, keys, filter, context);
       });
     }
 

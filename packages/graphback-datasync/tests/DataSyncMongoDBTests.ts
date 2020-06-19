@@ -53,13 +53,15 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     const collectionNames = Object.keys(config.seedData);
     for (const collectionName of collectionNames) {
       for (const element of config.seedData[collectionName]) {
-        await providers[collectionName].create(element);
+        await providers[collectionName].create(element, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
       }
     };
   }
 
   return { server, providers }
 }
+
+const fields = ["id", "text"];
 
 describe('Soft deletion test', () => {
   let context: Context;
@@ -79,7 +81,7 @@ describe('Soft deletion test', () => {
 
     const { Post } = context.providers;
 
-    const first = await Post.create({ text: 'TestPost' });
+    const first = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: ["_deleted"]}}});
     expect(first._deleted).toEqual(false)
   })
 
@@ -99,15 +101,15 @@ describe('Soft deletion test', () => {
     const startTime = 1590679886048;
     const deleteTime = 1590679887032;
     advanceTo(startTime);
-    const { id } = await Post.create({ text: 'TestPost' });
+    const { id } = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: fields}}});
     advanceTo(deleteTime);
-    const deletedPost = await Post.delete({ id, [fieldNames.updatedAt]: startTime });
+    const deletedPost = await Post.delete({ id, [fieldNames.updatedAt]: startTime }, {graphback: {services: {}, options: { selectedFields: ["_deleted", "updatedAt"]}}});
     expect(deletedPost._deleted).toEqual(true);
     expect(deletedPost.updatedAt).toEqual(deleteTime);
 
     // Tests that we cannot find it anymore
     // This test fails if we can still find the document
-    await expect(Post.findOne({ id })).rejects.toThrowError(NoDataError);
+    await expect(Post.findOne({ id }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(NoDataError);
   })
 
   it('can filter sync queries', async () => {
@@ -126,11 +128,11 @@ describe('Soft deletion test', () => {
 
     // Create some posts
     for (const postTitle of ["post", "post2", "trains"]) {
-      await Post.create({ text: postTitle });
+      await Post.create({ text: postTitle }, {graphback: {services: {}, options: { selectedFields: fields}}});
     }
 
     // Sync query
-    const deltaPosts = await Post.sync("0", {
+    const deltaPosts = await Post.sync("0", {graphback: {services: {}, options: { selectedFields: fields}}}, {
       text: {
         startsWith: 'post'
       }
@@ -160,16 +162,16 @@ describe('Soft deletion test', () => {
     const startTime = 1590679886048;
     const updateTime = 1590679887032;
     advanceTo(startTime);
-    const { id } = await Post.create({ text: 'TestPost' });
+    const { id } = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     // Update document once
     advanceTo(updateTime);
-    await Post.update({ id, text: 'updated post text', updatedAt: startTime });
+    await Post.update({ id, text: 'updated post text', updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     // Try to update document again with older timestamp
-    await expect(Post.update({ id, text: 'updated post text 2', updatedAt: startTime })).rejects.toThrowError(ConflictError);
+    await expect(Post.update({ id, text: 'updated post text 2', updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
 
     // Try to deletee document with older timestamp
-    await expect(Post.delete({ id, updatedAt: startTime })).rejects.toThrowError(ConflictError);
+    await expect(Post.delete({ id, updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
   })
 })

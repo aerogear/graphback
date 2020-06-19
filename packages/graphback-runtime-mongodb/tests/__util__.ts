@@ -47,7 +47,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     const collectionNames = Object.keys(config.seedData);
     for (const collectionName of collectionNames) {
       for (const element of config.seedData[collectionName]) {
-        await providers[collectionName].create(element);
+        await providers[collectionName].create(element, {graphback: {services: {}, options: {selectedFields: [""]}}});
       }
     };
   }

@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLType, isObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLType } from 'graphql';
 
 /**
  *

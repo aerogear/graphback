@@ -47,6 +47,8 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
   return { schema, providers }
 }
 
+const fields = ["id", "text"];
+
 test('batch read Todos', async () => {
   const seedData = [
     { text: 'my first default todo' },
@@ -63,7 +65,7 @@ type Todo {
  text: String
 }`, { seedData: { todo: seedData } })
 
-  const todos = await providers.Todo.batchRead('id', ['1', '2']);
+  const todos = await providers.Todo.batchRead('id', ['1', '2'], {}, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
 
   expect(todos[0][0].id).toEqual(1);
   expect(todos[1][0].id).toEqual(2);
@@ -81,7 +83,7 @@ type Todo {
 
   const todo = await providers.Todo.create({
     text: 'create a todo',
-  });
+  }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
   expect(todo.id === 4);
   expect(todo.text === 'create a todo');
@@ -100,7 +102,7 @@ type Todo {
   const todo = await providers.Todo.update({
     id: '1',
     text: 'my updated first todo',
-  });
+  }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
   expect(todo.id).toEqual(1);
   expect(todo.text).toEqual('my updated first todo');
@@ -120,7 +122,7 @@ type Todo {
     }
   })
 
-  const data = await providers.Todo.delete({ id: '3' });
+  const data = await providers.Todo.delete({ id: '3' }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
   expect(data.id).toEqual(3);
 });
@@ -138,10 +140,10 @@ type Todo {
   for (let i = 0; i < 15; i++) {
     await providers.Todo.create({
       text: `todo${i}`,
-    });
+    }, {graphback: {services: {}, options: { selectedFields: ["*"]}}});
   }
 
-  const todos = await providers.Todo.findBy();
+  const todos = await providers.Todo.findBy({}, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
 
   expect(todos).toHaveLength(15)
 });
@@ -166,7 +168,7 @@ type Todo {
 
   const todos = await providers.Todo.findBy({
     text: { eq: 'second todo' },
-  });
+  }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
   expect(todos.length).toEqual(1);
   expect(todos[0].id).toEqual(2);
@@ -187,10 +189,10 @@ type Todo {
   for (let i = 0; i < numberOfTodos + 1; i++) {
     await providers.Todo.create({
       text,
-    });
+    }, {graphback: {services: {}, options: { selectedFields: "*"}}});
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, undefined, { limit: numberOfTodos });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: fields}}}, undefined, { limit: numberOfTodos });
 
   expect(todos.length).toEqual(numberOfTodos);
 });
@@ -212,10 +214,10 @@ type Todo {
   for (let i = 0; i < numberOfTodos; i++) {
     await providers.Todo.create({
       text,
-    });
+    }, {graphback: {services: {}, options: { selectedFields: "*"}}});
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, undefined, {
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}}, undefined, {
     offset: n,
     limit: numberOfTodos
   });
@@ -238,10 +240,10 @@ type Todo {
   for (let i = 0; i < numberOfTodos; i++) {
     await providers.Todo.create({
       text
-    });
+    }, {graphback: {services: {}, options: { selectedFields: fields}}});
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
   expect(todos.length).toEqual(numberOfTodos);
 });
@@ -272,7 +274,7 @@ type Todo {
         "eq": "three"
       }
     }
-  })
+  }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(2)
 });
@@ -310,7 +312,7 @@ type Todo {
         }
       }
     ]
-  })
+  }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(3)
 });
@@ -341,7 +343,7 @@ type Todo {
         "eq": ""
       }
     }
-  })
+  }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(1)
 });
@@ -369,7 +371,7 @@ type Todo {
         "eq": ""
       }
     }
-  })
+  }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(2)
 });
@@ -389,10 +391,10 @@ type Todo {
   for (let i = 0; i < numberOfTodos; i++) {
     await providers.Todo.create({
       text
-    });
+    }, {graphback: {services: {}, options: { selectedFields: "*"}}});
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, { order: 'desc', field: 'id' });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: fields}}}, { order: 'desc', field: 'id' });
 
   expect(todos[0].id).toEqual(12);
 });
@@ -412,10 +414,10 @@ type Todo {
   for (let i = 0; i < numberOfTodos; i++) {
     await providers.Todo.create({
       text
-    });
+    }, {graphback: {services: {}, options: { selectedFields: "*"}}});
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, { field: 'id' });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}}, { field: 'id' });
 
   expect(todos[0].id).toEqual(1);
 });
@@ -456,7 +458,7 @@ type Todo {
     }
   })
 
-  const todos = await providers.Todo.findBy({ items: { between: [2, 6] } });
+  const todos = await providers.Todo.findBy({ items: { between: [2, 6] } }, {graphback: {services: {}, options: { selectedFields: ["id", "items"]}}});
 
   expect(todos).toHaveLength(5);
 
@@ -501,11 +503,50 @@ type Todo {
     }
   })
 
-  const todos = await providers.Todo.findBy({ not: { items: { between: [2, 6] } } });
+  const todos = await providers.Todo.findBy({ not: { items: { between: [2, 6] } } }, {graphback: {services: {}, options: { selectedFields: ["id", "items"]}}});
 
   expect(todos).toHaveLength(2);
 
   const todoItems = todos.map((t: any) => t.items)
 
   expect(todoItems).toEqual([1, 8])
+});
+
+test('select only requested fields', async () => {
+  const { providers } = await setup(`
+"""
+@model
+"""
+type Todo {
+ id: ID!
+ text: String
+}`, {
+    seedData:
+    {
+      todo: [
+        { text: 'first todo' },
+        { text: 'second todo' }
+      ]
+    }
+  })
+
+  const todos = await providers.Todo.findBy({}, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+
+  expect(todos.length).toEqual(2);
+  todos.forEach((todo, index) => {
+    expect(todo.id).toEqual(1 + index);
+    expect(todo.text).toBeUndefined();
+  });
+
+  const createdTodo = await providers.Todo.create({text: "new todo"}, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+  expect(createdTodo.id).toEqual(3);
+  expect(createdTodo.text).toBeUndefined();
+
+  const updatedTodo = await providers.Todo.update({id: "3", text: "updated todo"}, {graphback: {services: {}, options: { selectedFields: ["text"]}}});
+  expect(updatedTodo.id).toBeUndefined();
+  expect(updatedTodo.text).toEqual("updated todo");
+
+  const deletedTodo = await providers.Todo.update({id: "3"}, {graphback: {services: {}, options: { selectedFields: ["id", "text"]}}});
+  expect(deletedTodo.id).toEqual(3);
+  expect(deletedTodo.text).toEqual("updated todo");
 });

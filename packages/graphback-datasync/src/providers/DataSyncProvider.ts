@@ -1,6 +1,6 @@
-import { GraphbackDataProvider, } from "@graphback/runtime";
+import { GraphbackDataProvider, GraphbackContext, } from "@graphback/runtime";
 
-export interface DataSyncProvider<Type = any, GraphbackContext = any> extends GraphbackDataProvider<Type,GraphbackContext> {
+export interface DataSyncProvider<Type = any> extends GraphbackDataProvider<Type> {
 
-  sync(lastSync: string, filter?: any, context?: GraphbackContext): Promise<Type[]>;
+  sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<Type[]>;
 }

@@ -1,4 +1,4 @@
-import { getDatabaseArguments } from '@graphback/core';
+import { getDatabaseArguments, GraphbackContext } from '@graphback/core';
 import * as Knex from 'knex';
 import { NoDataError } from '@graphback/runtime';
 import { GraphQLObjectType } from 'graphql';
@@ -10,19 +10,19 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
  * NOTE: This class implements SQLite specific implementaion
  */
 //tslint:disable-next-line: no-any
-export class SQLiteKnexDBDataProvider<Type = any, GraphbackContext = any> extends KnexDBDataProvider<Type, GraphbackContext>{
+export class SQLiteKnexDBDataProvider<Type = any> extends KnexDBDataProvider<Type>{
 
   public constructor(baseType: GraphQLObjectType, db: Knex) {
     super(baseType, db);
   }
 
-  public async create(data: Type): Promise<Type> {
+  public async create(data: Type, context: GraphbackContext): Promise<Type> {
     const { data: createData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
     const [id] = await this.db(this.tableName).insert(createData);
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select().from(this.tableName).where(this.tableMap.idField, '=', id)
+    const dbResult = await this.db.select(context.graphback.options.selectedFields).from(this.tableName).where(this.tableMap.idField, '=', id)
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

@@ -22,7 +22,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param data input data
    * @param context context object passed from graphql or rest layer
    */
-  create(data: Type, context?: GraphbackContext): Promise<Type>;
+  create(data: Type, context: GraphbackContext): Promise<Type>;
 
   /**
    * Implementation for object updates
@@ -31,7 +31,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param data input data
    * @param context context object passed from graphql or rest layer
    */
-  update(data: Type, context?: GraphbackContext): Promise<Type>;
+  update(data: Type, context: GraphbackContext): Promise<Type>;
 
   /**
    * Implementation for object deletes
@@ -40,30 +40,31 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param data data used for checking consistency
    * @param context context object passed from graphql or rest layer
    */
-  delete(data: Type, context?: GraphbackContext): Promise<Type>;
+  delete(data: Type, context: GraphbackContext): Promise<Type>;
 
   /**
    * Implementation for finding a single unique object
    *
-   * @param filter filter by unique attriburtes
+   * @param args filter by unique attriburtes
    * @param context context object passed from graphql or rest layer
    */
-  findOne(args: Partial<Type>, context?: GraphbackContext): Promise<Type>;
+  findOne(args: Partial<Type>, context: GraphbackContext): Promise<Type>;
   /**
    * Implementation for reading objects with filtering capabilities
    *
-   * @param name name of the object to search
+   * @param page paging context
    * @param orderBy gives the ability to order the results based on a field in ascending or descending order
    * @param filter filter by specific type
    * @param context context object passed from graphql or rest layer
    */
-  findBy(filter?: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage, context?: GraphbackContext): Promise<Type[]>;
+  findBy(filter: any,context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]>;
   /**
    * Read multiple items by their id's (used for lazy data loading purposes)
    *
-   * @param name
    * @param relationField - name of the field that will be used to match ids
    * @param ids array of identifiers that needs to be fetched
+   * @param context fields to select from datasource
+   * @param filter filter by specific type
    */
-  batchRead(relationField: string, ids: string[], filter?: any): Promise<Type[][]>
+  batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]>
 }

@@ -1,10 +1,10 @@
-
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext } from '@graphback/core'
 import { createVersionedInputFields,createVersionedFields } from "@graphback/codegen-schema";
-import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
+
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel } from "./util";
 
@@ -34,7 +34,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     }
 
     models.forEach((model: ModelDefinition) => {
-      
+
       this.addDataSyncMetadataFields(schemaComposer, model);
       const modelName = model.graphqlType.name;
       const modifiedType = schemaComposer.getOTC(modelName);
@@ -105,7 +105,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     for (const model of models) {
       // If delta marker is encountered, add resolver for `delta` query
       if (isDataSyncModel(model)) {
-        this.addDeltaSyncResolver(model.graphqlType, resolvers.Query as IFieldResolver<any, any>)
+        this.addDeltaSyncResolver(model, resolvers.Query as IFieldResolver<any, any>)
       }
     }
 
@@ -123,17 +123,23 @@ export class DataSyncPlugin extends GraphbackPlugin {
     return DATASYNC_PLUGIN_NAME;
   }
 
-  protected addDeltaSyncResolver(modelType: GraphQLObjectType, queryObj: IFieldResolver<any, any>) {
-    const modelName = modelType.name;
+  protected addDeltaSyncResolver(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
+    const modelName = model.graphqlType.name;
     const deltaQuery = getDeltaQuery(modelName)
 
-    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext) => {
-      const dataSyncService = isDataSyncService(context.graphback[modelName]);
+    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      const dataSyncService = isDataSyncService(context.graphback.services[modelName]);
       if (dataSyncService === undefined) {
         throw Error("Service is not a DataSyncCRUDService. Please use DataSyncCRUDService and DataSync-compliant DataProvider with DataSync Plugin to get Delta Queries.")
       }
 
-      return dataSyncService.sync(args.lastSync);
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
+      const graphback = {
+        services: context.graphback.services,
+        options: { selectedFields }
+      };
+
+      return dataSyncService.sync(args.lastSync, {...context, graphback }, args.filter);
     }
   }
 
