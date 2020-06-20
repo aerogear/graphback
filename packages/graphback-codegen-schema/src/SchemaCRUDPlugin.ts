@@ -7,7 +7,7 @@ import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMarker } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createMetadataFields,createMetadataInputFields } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -301,29 +301,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const desc = model.graphqlType.description;
       const { markers, fieldNames } = metadataMap;
       if (parseMarker(markers.versioned, desc)) {
+        const metadataFields = createMetadataFields();
         // metadata fields needed for @versioned
 
-        modelTC.addFields({
-          [fieldNames.createdAt]: {
-            type: GraphQLString,
-            description: `@${markers.createdAt}\n@db.type: 'timestamp'`
-          },
-          [fieldNames.updatedAt]: {
-            type: GraphQLString,
-            description: `@${markers.updatedAt}\n@db.type: 'timestamp'`
-          }
-        });
+        modelTC.addFields(metadataFields);
 
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
         if (inputType) {
-          inputType.addFields({
-            [fieldNames.createdAt]: {
-              type: StringScalarInputType
-            },
-            [fieldNames.updatedAt]: {
-              type: StringScalarInputType
-            }
-          });
+          const metadataInputFields = createMetadataInputFields();
+          inputType.addFields(metadataInputFields);
         }
       }
     });

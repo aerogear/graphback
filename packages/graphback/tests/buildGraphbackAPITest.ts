@@ -160,7 +160,7 @@ describe('buildGraphbackAPI', () => {
     const model = `
     """
     @model
-    @delta
+    @datasync
     """
     type Note {
       id: ID!
