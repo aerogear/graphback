@@ -1,4 +1,7 @@
 import * as escapeRegex from "escape-string-regexp";
+import { metadataMap } from "@graphback/core";
+
+const { fieldNames } =  metadataMap;
 
 const AND_FIELD = 'and';
 const OR_FIELD = 'or';
@@ -86,7 +89,7 @@ function stringTimestampsToInt(filter: any, key: string): any {
   // If the field is one of 'createdAt' or 'updatedAt',
   // try to coerce the values passed directly or to 
   // operators on these fields to Integers
-  if (["createdAt", "updatedAt"].includes(key)) {
+  if ([fieldNames.createdAt, fieldNames.updatedAt].includes(key)) {
     if (isPrimitive(filter[key])) {
       const n = parseInt(filter[key], 10);
       if (isNaN(n)) {
