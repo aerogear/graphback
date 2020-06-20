@@ -1,5 +1,6 @@
+/* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType, isEnumType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField, getPrimaryKey } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField, getPrimaryKey, metadataMap } from '@graphback/core';
 
 const PageRequestTypeName = 'PageRequest';
 const SortDirectionEnumName = 'SortDirectionEnum';
@@ -273,3 +274,28 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
     }
   })
 }
+
+export function createMetadataInputFields() {
+  return {
+    [metadataMap.fieldNames.createdAt]: {
+      type: StringScalarInputType
+    },
+    [metadataMap.fieldNames.updatedAt]: {
+      type: StringScalarInputType
+    }
+  };
+}
+
+export function createMetadataFields() {
+  return {
+    [metadataMap.fieldNames.createdAt]: {
+      type: GraphQLString,
+      description: `@${metadataMap.markers.createdAt}\n@db.type: 'timestamp'`
+    },
+    [metadataMap.fieldNames.updatedAt]: {
+      type: GraphQLString,
+      description: `@${metadataMap.markers.updatedAt}\n@db.type: 'timestamp'`
+    }
+  };
+}
+
