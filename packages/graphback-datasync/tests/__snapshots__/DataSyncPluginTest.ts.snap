@@ -3,8 +3,7 @@
 exports[`Test snapshot config gql 1`] = `
 "\\"\\"\\"
 @model
-@versioned
-@delta
+@datasync
 \\"\\"\\"
 type Comment {
   id: ID!
@@ -126,8 +125,7 @@ type Mutation {
 
 \\"\\"\\"
 @model
-@versioned
-@delta
+@datasync
 \\"\\"\\"
 type Note {
   id: ID!

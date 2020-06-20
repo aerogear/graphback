@@ -12,4 +12,4 @@
 
 ## Graphback-Datasync
 
-This package contains plugins as well as compatible data sources for implementing Data Synchronisation using Graphback.
+This package contains plugins as well as compatible data sources for implementing Data Synchronisation using Graphback. The documentation for this package can be found [here](https://graphback.dev/docs/next/datasync/datasync-intro).

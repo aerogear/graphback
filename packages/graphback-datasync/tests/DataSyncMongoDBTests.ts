@@ -69,8 +69,7 @@ describe('Soft deletion test', () => {
     context = await createTestingContext(`
     """
     @model
-    @versioned
-    @delta
+    @datasync
     """
     type Post {
       id: ID!
@@ -88,8 +87,7 @@ describe('Soft deletion test', () => {
     context = await createTestingContext(`
     """
     @model
-    @versioned
-    @delta
+    @datasync
     """
     type Post {
       id: ID!
@@ -116,8 +114,7 @@ describe('Soft deletion test', () => {
     context = await createTestingContext(`
     """
     @model
-    @versioned
-    @delta
+    @datasync
     """
     type Post {
       id: ID!
@@ -151,8 +148,7 @@ describe('Soft deletion test', () => {
     context = await createTestingContext(`
     """
     @model
-    @versioned
-    @delta
+    @datasync
     """
     type Post {
       id: ID!
