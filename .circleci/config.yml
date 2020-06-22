@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/graphback
     docker:
       # Node 8 LTS
-      - image: circleci/node:lts-browsers
+      - image: circleci/node:lts
         environment:
           NODE_OPTIONS: --max_old_space_size=4096
       - image: circleci/postgres:latest

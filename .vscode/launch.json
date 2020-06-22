@@ -111,7 +111,26 @@
       "protocol": "inspector",
       "args": [
         "serve",
+        "./model",
         "port=8080"
+      ],
+      "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "CLI print-schema",
+      "program": "${workspaceRoot}/packages/graphql-serve/dist/index.js",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
+      "sourceMaps": true,
+      "protocol": "inspector",
+      "args": [
+        "print-schema",
+        "./model"
       ],
       "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },

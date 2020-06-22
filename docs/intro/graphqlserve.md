@@ -48,6 +48,12 @@ You can customise the directory of the data models:
 gqls serve ./path/to/models
 ```
 
+You can also specify where to load the data models from with a Glob pattern:
+
+```sh
+gqls print-schema ./schema/**/*.graphql
+```
+
 You can specify which port to start the server on:
 
 ```sh
@@ -64,21 +70,9 @@ Graphback receives your data models as an input and processes them to generate a
 
 GraphQL Serve allows you to print the resulting schema in your terminal with the `print-schema` subcommand:
 
-```gql
-$ gqlserve print-schema ./path/to/models
-```
-
-### Customising your server configuration
-
-Graphback enabled applications use [GraphQL Config](https://graphql-config.com) to let you control your GraphQL application. Graphback specific customisations are specified in the `graphback` extension. See [Config](./config) to learn how you can customise your Graphback project configuration.
-
-GraphQL Serve is fully compatible with GraphQL Config. Running `gqlserve [subcommand]` in the same directory as your `.graphqlrc` file will use the Graphback configuration section to find your model directory, configure global CRUD methods and execute the plugin sequence.
-
 ```sh
-$ gqls serve                    
+$ gqls print-schema ./path/to/models
+Generated schema:
 
-No port number specified.
-Starting server on random available port...
-
-Listening at: http://localhost:34059/graphql
+...
 ```

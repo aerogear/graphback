@@ -1,18 +1,25 @@
-import { GraphbackRuntime } from 'graphback'
-import { printSchema } from 'graphql';
-import { getGraphbackServerConfig } from "../GraphbackServerConfig";
-import { loadSchema }  from '../loadSchema';
+import { GraphbackPlugin, GraphbackPluginEngine, printSchemaWithDirectives } from 'graphback'
+import { loadModel } from '../loadModel';
+import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 
-export const printSchemaHandler = async (argv: {model?: string}) => {
-    const graphbackServerConfig = await getGraphbackServerConfig({ modeldir: argv.model });
+export const printSchemaHandler = async (argv: { model?: string }): Promise<string> => {
+  const schemaText = await loadModel(argv.model);
 
-    const graphbackConfig = graphbackServerConfig.graphback;
-    const schemaText = loadSchema(graphbackConfig.model);
+  const schemaPlugins: GraphbackPlugin[] = [
+    new SchemaCRUDPlugin
+  ]
 
-    const runtimeEngine = new GraphbackRuntime(schemaText, graphbackConfig);
+  const pluginEngine = new GraphbackPluginEngine({
+    schema: schemaText,
+    plugins: schemaPlugins,
+    config: { crudMethods: {} }
+  })
 
-    const schema = runtimeEngine.getMetadata().getSchema();
+  const metadata = pluginEngine.createResources()
 
-    console.log("Generated schema:\n");
-    console.log(printSchema(schema));
+  const schema = metadata.getSchema();
+
+  const printedSchema = printSchemaWithDirectives(schema)
+
+  return printedSchema
 }

@@ -5,7 +5,6 @@ import { prompt as ask } from 'inquirer'
 import { allTemplates, extractTemplate } from '../init/starterTemplates'
 import { Template } from '../init/templateMetadata'
 import { logError, logInfo } from '../utils'
-import { initConfig } from './config';
 
 /**
  * Check if directory exists
@@ -78,7 +77,7 @@ GraphQL server successfully bootstrapped :rocket:
 
 Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
-3. Review Graphback graphqlrc.yml config file 
+3. Review Graphback graphqlrc.yml config file
 2. Edit the .graphql file inside your model folder.
 3. Depending on template you might also need to run generator:
    "graphback generate" command to generate source code

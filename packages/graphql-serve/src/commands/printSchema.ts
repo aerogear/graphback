@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+import { cyan } from 'chalk';
 import { printSchemaHandler } from '../components';
 
 type Params = { model?: string };
@@ -18,5 +19,8 @@ export const builder = (args: yargs.Argv): void => {
 }
 
 export async function handler(args: Params): Promise<void> {
-  await printSchemaHandler(args);
+  const schemaSDL = await printSchemaHandler(args);
+
+  console.log("Generated schema:\n");
+  console.log(cyan(schemaSDL));
 }
