@@ -11,8 +11,8 @@ Our templates target to be minimal and unopiniated and we use `InMemoryPubSubEng
 
 Our team recomends following engines:
 
-- Redis - using https://github.com/davidyaha/graphql-redis-subscriptions
 - AMQ (MQTT) using https://github.com/aerogear/graphql-mqtt-subscriptions
+- Redis - using https://github.com/davidyaha/graphql-redis-subscriptions
 
 ## Subscriptions explained
 
