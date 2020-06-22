@@ -1,7 +1,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-
     {
       "name": "Current TS File",
       "type": "node",
@@ -117,7 +116,7 @@
       ],
       "cwd": "${workspaceRoot}/templates/ts-apollo-postgres-backend",
     },
-     {
+    {
       "type": "node",
       "request": "launch",
       "name": "CLI print-schema",

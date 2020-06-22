@@ -5,9 +5,9 @@ import {
 } from "@graphback/runtime";
 import { Server } from "http";
 import getPort from "get-port";
-import cors from "cors"
-import express from "express"
-import http from "http"
+import cors from "cors";
+import express from "express";
+import http from "http";
 import { createRuntime } from './runtime';
 
 const ENDPOINT = "/graphql";
