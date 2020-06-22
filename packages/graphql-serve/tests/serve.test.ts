@@ -1,5 +1,5 @@
-import { serveHandler } from '../src/components'
 import { buildSchema } from 'graphql';
+import { serveHandler } from '../src/components'
 
 export const expectedUserSchema = `"""
 Directs the executor to skip this field or fragment when the \`if\` argument is true.
@@ -143,5 +143,5 @@ test('start a Graphback server', async () => {
 
   expect(schema.astNode).toEqual(buildSchema(expectedUserSchema).astNode)
 
-  server.stop()
+  await server.stop()
 })

@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "outDir": "./dist/",
     "declarationDir": "types",
     "lib": [
