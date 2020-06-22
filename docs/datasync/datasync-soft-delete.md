@@ -12,12 +12,13 @@ Start off with the official Graphback template for MongoDB [*here*](https://GitH
 
 ### Annotate the required models
 
-Add the `@datasync` annotation to your model(s) in your GraphQL SDL found in the `model` folder:
+Add the `@versioned` and `@delta` annotations to your model(s) in your GraphQL SDL found in the model folder:
 
 ```graphql
 """ 
 @model
-@datasync
+@versioned
+@delta
 """
 type Comment {
   id: ID!
@@ -26,14 +27,19 @@ type Comment {
 }
 ```
 
-The `@datasync` annotation ensures consistency of your data and gives you delta queries.
+The `@versioned` annotation ensures consistency of your data and the `@delta` annotation gives you delta queries.
 
-This transforms your model by adding two fields: `updatedAt` and `createdAt`
+The `@graphback/datasync` package also provides a `@datasync` annotation, which is a shorthand for both `@versioned` and `@delta`.
+
+> **NOTE**: While the `@versioned` annotation can be used independent of `@graphback/datasync`, both `@versioned` and `@delta` are needed on a model for adding delta queries
+
+`@versioned` transforms your model by adding two fields: `updatedAt` and `createdAt`
 
 ```graphql
 """ 
 @model
-@datasync 
+@versioned
+@delta 
 """
 type Comment {
   id: ID!
@@ -44,7 +50,7 @@ type Comment {
 }
 ```
 
-The `@datasync` also annotation adds a `sync` query or a delta query:
+The `@delta` annotation adds a `sync` query or a delta query:
 ```graphql
 type Query {
   syncComments(lastSync: String!, filter: CommentFilter): CommentDeltaList!
@@ -53,7 +59,7 @@ type Query {
 
 This allows you to get all the changed(updates and deletes) documents in a collection since the `lastSync` timestamp. Internally this uses the `updatedAt` database field to check if any documents in the database have been modified, by comparing client provided `lastSync` timestamp value. The documents to be returned in a `sync` query may also be filtered, so you can, for example, only `sync` comments on a specific post. last stuff 
 
-The `@datasync` annotation also adds a `Delta` type and a `DeltaList` type:
+The `@delta` annotation also adds a `Delta` type and a `DeltaList` type:
 ```graphql
 type CommentDelta {
   id: ID!
