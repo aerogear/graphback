@@ -275,7 +275,7 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
   })
 }
 
-export function createMetadataInputFields() {
+export function createVersionedInputFields() {
   return {
     [metadataMap.fieldNames.createdAt]: {
       type: StringScalarInputType
@@ -286,7 +286,7 @@ export function createMetadataInputFields() {
   };
 }
 
-export function createMetadataFields() {
+export function createVersionedFields() {
   return {
     [metadataMap.fieldNames.createdAt]: {
       type: GraphQLString,

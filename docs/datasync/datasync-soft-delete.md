@@ -12,13 +12,12 @@ Start off with the official Graphback template for MongoDB [*here*](https://GitH
 
 ### Annotate the required models
 
-Add the `@versioned` and `@delta` annotations to your model(s) in your GraphQL SDL found in the model folder:
+Add the `@datasync` annotation to your model(s) in your GraphQL SDL found in the `model` folder:
 
 ```graphql
 """ 
 @model
-@versioned
-@delta
+@datasync
 """
 type Comment {
   id: ID!
@@ -27,19 +26,16 @@ type Comment {
 }
 ```
 
-The `@versioned` annotation ensures consistency of your data and the `@delta` annotation gives you delta queries.
+The `@datasync` annotation ensures consistency of your data and gives you delta queries.
 
-The `@graphback/datasync` package also provides a `@datasync` annotation, which is a shorthand for both `@versioned` and `@delta`.
+> **NOTE**: The `@datasync` annotation is a shorthand for two annotations `@versioned` and `@delta`. Refer to the last section for details.
 
-> **NOTE**: While the `@versioned` annotation can be used independent of `@graphback/datasync`, both `@versioned` and `@delta` are needed on a model for adding delta queries
-
-`@versioned` transforms your model by adding two fields: `updatedAt` and `createdAt`
+`@datasync` transforms your model by adding two fields: `updatedAt` and `createdAt`
 
 ```graphql
 """ 
 @model
-@versioned
-@delta 
+@datasync 
 """
 type Comment {
   id: ID!
@@ -50,16 +46,18 @@ type Comment {
 }
 ```
 
-The `@delta` annotation adds a `sync` query or a delta query:
+The `@datasync` annotation adds a `sync` query or a delta query:
 ```graphql
 type Query {
   syncComments(lastSync: String!, filter: CommentFilter): CommentDeltaList!
 }
 ```
 
-This allows you to get all the changed(updates and deletes) documents in a collection since the `lastSync` timestamp. Internally this uses the `updatedAt` database field to check if any documents in the database have been modified, by comparing client provided `lastSync` timestamp value. The documents to be returned in a `sync` query may also be filtered, so you can, for example, only `sync` comments on a specific post. last stuff 
+This allows you to get all the changed documents(updated and deleted) in a collection since the `lastSync` timestamp. Internally this uses the `updatedAt` database field to check if any documents in the database have been modified, by comparing client provided `lastSync` timestamp value.
 
-The `@delta` annotation also adds a `Delta` type and a `DeltaList` type:
+> **NOTE**: The `sync` query also accepts a filter argument for filtering
+
+The `@datasync` annotation also adds a `Delta` type and a `DeltaList` type:
 ```graphql
 type CommentDelta {
   id: ID!
@@ -189,4 +187,46 @@ type CommentDelta {
 }
 ```
 
-Note that there are is no relationship field in the `CommentDelta` type.
+Notice that there are is no relationship field in the `CommentDelta` type.
+
+
+## Advanced topics
+
+### `@delta` annotation
+
+The `@datasync` annotation provided by `@graphback/datasync` is a shorthand for two separate annotations: `@delta` and `@versioned`. Vanilla Graphback supports `@versioned` out of the box, see [this](../metadata.md) page for it's thorough documentation.
+
+The `@delta` annotation is only provided by the `@graphback/datasync` package. However, we do not support using this annotation on it's own without `@versioned`.
+
+#### Example
+
+Replacing `@datasync` in any the above examples yields the exact same results, for example:
+```graphql
+""" 
+@model
+@versioned
+@delta
+"""
+type Comment {
+  id: ID!
+  text: String
+  description: String
+}
+```
+
+This model exactly yields all of the type-definitions outlined above:
+```graphql
+""" 
+@model
+@datasync 
+"""
+type Comment {
+  id: ID!
+  text: String
+  description: String
+  createdAt: String
+  updatedAt: String
+}
+```
+
+Similarly, this also yields a `Delta` type, a `DeltaList` type and a `sync` query.

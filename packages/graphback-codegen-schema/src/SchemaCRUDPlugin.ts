@@ -7,7 +7,7 @@ import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMarker } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createMetadataFields,createMetadataInputFields } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields,createVersionedInputFields } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -73,7 +73,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     this.buildSchemaModelRelationships(schemaComposer, models);
 
     this.buildSchemaForModels(schemaComposer, models);
-    this.addMetaFields(schemaComposer, models);
+    this.addVersionedMetadataFields(schemaComposer, models);
 
     return schemaComposer.buildSchema()
   }
@@ -294,21 +294,21 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     schemaComposer.Query.addFields(queryFields)
   }
 
-  protected addMetaFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
-    models.forEach((model: ModelDefinition, index: number) => {
+  protected addVersionedMetadataFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
+    models.forEach((model: ModelDefinition) => {
       const name = model.graphqlType.name;
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
-      const { markers, fieldNames } = metadataMap;
+      const { markers } = metadataMap;
       if (parseMarker(markers.versioned, desc)) {
-        const metadataFields = createMetadataFields();
+        const metadataFields = createVersionedFields();
         // metadata fields needed for @versioned
 
         modelTC.addFields(metadataFields);
 
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
         if (inputType) {
-          const metadataInputFields = createMetadataInputFields();
+          const metadataInputFields = createVersionedInputFields();
           inputType.addFields(metadataInputFields);
         }
       }

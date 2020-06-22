@@ -1,6 +1,6 @@
 
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext } from '@graphback/core'
-import { createMetadataInputFields,createMetadataFields } from "@graphback/codegen-schema";
+import { createVersionedInputFields,createVersionedFields } from "@graphback/codegen-schema";
 import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
@@ -33,9 +33,9 @@ export class DataSyncPlugin extends GraphbackPlugin {
       return schema;
     }
 
-    this.addMetaFields(schemaComposer, models);
     models.forEach((model: ModelDefinition) => {
-
+      
+      this.addDataSyncMetadataFields(schemaComposer, model);
       const modelName = model.graphqlType.name;
       const modifiedType = schemaComposer.getOTC(modelName);
       const entries = Object.entries(modifiedType.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
@@ -137,24 +137,21 @@ export class DataSyncPlugin extends GraphbackPlugin {
     }
   }
 
-  protected addMetaFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
-    models.forEach((model: ModelDefinition, index: number) => {
-      const name = model.graphqlType.name;
-      const modelTC = schemaComposer.getOTC(name);
-      const desc = model.graphqlType.description;
-      const { markers } = metadataMap;
-      if (parseMetadata("datasync", desc)) {
-        const metadataFields = createMetadataFields();
-        // metadata fields needed for @versioned
+  protected addDataSyncMetadataFields(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
+    const name = model.graphqlType.name;
+    const modelTC = schemaComposer.getOTC(name);
+    const desc = model.graphqlType.description;
+    if (parseMetadata("datasync", desc)) {
+      const metadataFields = createVersionedFields();
+      // metadata fields needed for @versioned
 
-        modelTC.addFields(metadataFields);
+      modelTC.addFields(metadataFields);
 
-        const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
-        if (inputType) {
-          const metadataInputFields = createMetadataInputFields();
-          inputType.addFields(metadataInputFields);
-        }
+      const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
+      if (inputType) {
+        const metadataInputFields = createVersionedInputFields();
+        inputType.addFields(metadataInputFields);
       }
-    });
+    }
   }
 }
