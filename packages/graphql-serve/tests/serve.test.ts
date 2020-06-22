@@ -138,8 +138,8 @@ beforeEach(() => {
   process.chdir(__dirname)
 })
 
-afterEach(() => {
-  context.server.stop()
+afterEach(async () => {
+  await context.server.stop()
 })
 
 test('start a Graphback server', async () => {
