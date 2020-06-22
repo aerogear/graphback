@@ -4,12 +4,12 @@ import {
   GraphbackCRUDService
 } from "@graphback/runtime";
 import { Server } from "http";
-import getPort from "get-port";
+import * as getPort from "get-port";
 import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
 import { createRuntime, createMongoDBClient } from './runtime';
-import { Db, MongoClient } from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 const ENDPOINT = "/graphql";
 
