@@ -71,7 +71,7 @@ Graphback receives your data models as an input and processes them to generate a
 GraphQL Serve allows you to print the resulting schema in your terminal with the `print-schema` subcommand:
 
 ```sh
-$ gqlserve print-schema ./path/to/models
+$ gqls print-schema ./path/to/models
 Generated schema:
 
 ...

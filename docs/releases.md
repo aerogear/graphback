@@ -140,6 +140,14 @@ For more advanced usage, refer to the [Runtime API](./intro/serverless) document
 
 We have removed the `graphback openapi` CLI command, but you can still use [OpenAPI-to-GraphQL](https://github.com/IBM/openapi-to-graphql) to create a GraphQL schema from your OpenAPI specification.
 
+#### `graphl-config` is not supported in `graphql-serve`
+
+To use `graphql-serve` now you must use a model file:
+
+```sh
+gqls serve ./path/to/models/*.graphql --port 8080
+```
+
 ### Deprecated
 
 - `PgKnexDBDataProvider` has been deprecated in favour of `KnexDBDataProvider`.
