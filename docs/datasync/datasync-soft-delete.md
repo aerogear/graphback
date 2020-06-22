@@ -194,13 +194,13 @@ Notice that there are is no relationship field in the `CommentDelta` type.
 
 ### `@delta` annotation
 
-The `@datasync` annotation provided by `@graphback/datasync` is a shorthand for two separate annotations: `@delta` and `@versioned`. Vanilla Graphback supports `@versioned` out of the box, see [this](../metadata.md) page for it's thorough documentation.
+The `@datasync` annotation provided by `@graphback/datasync` is a shorthand for two separate annotations: `@delta` and `@versioned`. Vanilla Graphback supports `@versioned` out of the box, see [this](../metadata.md) page.
 
 The `@delta` annotation is only provided by the `@graphback/datasync` package. However, we do not support using this annotation on it's own without `@versioned`.
 
 #### Example
 
-Replacing `@datasync` in any the above examples yields the exact same results, for example:
+Replacing `@datasync` in any the above examples with `@versioned` and `@delta` yields the exact same results, for example:
 ```graphql
 """ 
 @model
@@ -218,7 +218,8 @@ This model exactly yields all of the type-definitions outlined above:
 ```graphql
 """ 
 @model
-@datasync 
+@versioned
+@delta 
 """
 type Comment {
   id: ID!
@@ -229,4 +230,4 @@ type Comment {
 }
 ```
 
-Similarly, this also yields a `Delta` type, a `DeltaList` type and a `sync` query.
+Similarly, this will also yield a `Delta` type, a `DeltaList` type and a `sync` query.
