@@ -21,6 +21,13 @@
       "plugins/crud-client",
       "plugins/customplugin"
     ],
+    "Authentication": [
+      "authentication/authinto",
+      "authentication/keycloak"
+    ],
+    "Subscriptions": [
+      "subscriptions/subintro"
+    ],
     "Database": [
       "db/dbintroduction",
       "db/datasources",

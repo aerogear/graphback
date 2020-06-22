@@ -1,15 +1,15 @@
 ---
 id: subintro
-title: Live Updates for Graphback for Graphback
+title: Live Updates for Graphback
 sidebar_label: Live Updates
 ---
 
 Graphback provides out of the box subscriptions support by providing one of the `PubSubEngines` 
 from https://github.com/apollographql/graphql-subscriptions library. 
 Thanks to that developers can connect to any publish subscribe mechanism they have available.
-Our templates target to be minimal and unopiniated and we use `InMemoryPubSubEngine`
+Our templates target to be minimal and unopiniated are using `InMemoryPubSubEngine`
 
-Our team recomends following engines:
+We recomend following engines:
 
 - AMQ (MQTT) using https://github.com/aerogear/graphql-mqtt-subscriptions
 - Redis - using https://github.com/davidyaha/graphql-redis-subscriptions
