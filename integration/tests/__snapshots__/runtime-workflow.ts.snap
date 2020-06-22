@@ -3,6 +3,97 @@
 exports[` 1`] = `
 Object {
   "tableMap": Map {
+    "Note" => Object {
+      "annotations": Object {},
+      "columnMap": Map {
+        "id" => Object {
+          "annotations": Object {},
+          "args": Array [],
+          "autoIncrementable": true,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": true,
+          "name": "id",
+          "nullable": false,
+          "type": "increments",
+        },
+        "title" => Object {
+          "annotations": Object {},
+          "args": Array [
+            255,
+          ],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "title",
+          "nullable": false,
+          "type": "string",
+        },
+        "description" => Object {
+          "annotations": Object {},
+          "args": Array [
+            255,
+          ],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "description",
+          "nullable": true,
+          "type": "string",
+        },
+      },
+      "columns": Array [
+        Object {
+          "annotations": Object {},
+          "args": Array [],
+          "autoIncrementable": true,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": true,
+          "name": "id",
+          "nullable": false,
+          "type": "increments",
+        },
+        Object {
+          "annotations": Object {},
+          "args": Array [
+            255,
+          ],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "title",
+          "nullable": false,
+          "type": "string",
+        },
+        Object {
+          "annotations": Object {},
+          "args": Array [
+            255,
+          ],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "description",
+          "nullable": true,
+          "type": "string",
+        },
+      ],
+      "comment": undefined,
+      "indexes": Array [],
+      "name": "note",
+      "uniques": Array [],
+    },
     "Comment" => Object {
       "annotations": Object {},
       "columnMap": Map {
@@ -221,7 +312,9 @@ Object {
       "name": "commentmetadata",
       "uniques": Array [],
     },
-    "Note" => Object {
+  },
+  "tables": Array [
+    Object {
       "annotations": Object {},
       "columnMap": Map {
         "id" => Object {
@@ -312,8 +405,6 @@ Object {
       "name": "note",
       "uniques": Array [],
     },
-  },
-  "tables": Array [
     Object {
       "annotations": Object {},
       "columnMap": Map {
@@ -530,97 +621,6 @@ Object {
       "comment": undefined,
       "indexes": Array [],
       "name": "commentmetadata",
-      "uniques": Array [],
-    },
-    Object {
-      "annotations": Object {},
-      "columnMap": Map {
-        "id" => Object {
-          "annotations": Object {},
-          "args": Array [],
-          "autoIncrementable": true,
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": undefined,
-          "isPrimaryKey": true,
-          "name": "id",
-          "nullable": false,
-          "type": "increments",
-        },
-        "title" => Object {
-          "annotations": Object {},
-          "args": Array [
-            255,
-          ],
-          "autoIncrementable": false,
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": undefined,
-          "isPrimaryKey": false,
-          "name": "title",
-          "nullable": false,
-          "type": "string",
-        },
-        "description" => Object {
-          "annotations": Object {},
-          "args": Array [
-            255,
-          ],
-          "autoIncrementable": false,
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": undefined,
-          "isPrimaryKey": false,
-          "name": "description",
-          "nullable": true,
-          "type": "string",
-        },
-      },
-      "columns": Array [
-        Object {
-          "annotations": Object {},
-          "args": Array [],
-          "autoIncrementable": true,
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": undefined,
-          "isPrimaryKey": true,
-          "name": "id",
-          "nullable": false,
-          "type": "increments",
-        },
-        Object {
-          "annotations": Object {},
-          "args": Array [
-            255,
-          ],
-          "autoIncrementable": false,
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": undefined,
-          "isPrimaryKey": false,
-          "name": "title",
-          "nullable": false,
-          "type": "string",
-        },
-        Object {
-          "annotations": Object {},
-          "args": Array [
-            255,
-          ],
-          "autoIncrementable": false,
-          "comment": undefined,
-          "defaultValue": undefined,
-          "foreign": undefined,
-          "isPrimaryKey": false,
-          "name": "description",
-          "nullable": true,
-          "type": "string",
-        },
-      ],
-      "comment": undefined,
-      "indexes": Array [],
-      "name": "note",
       "uniques": Array [],
     },
   ],
