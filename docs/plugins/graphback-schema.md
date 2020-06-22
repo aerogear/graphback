@@ -21,24 +21,14 @@ npm install @graphback/codegen-schema
 
 ### Configuration
 
-`SchemaCRUDPlugin` can be configured to write your generated schema to a file:
+By default `SchemaCRUDPlugin` will not generate any schema file, instead creating an in-memory schema. You might sometimes need the schema file for compatibility with other libraries or frameworks, so Graphback allows you to automate the persistence of the schema to a file in your project:
 
 
 ```ts
   /**
-   * Output format for schema
-   */
-  format: 'ts' | 'js' | 'graphql',
-
-  /**
    * RelativePath for the output files created by generator
    */
   outputPath: string
-
-  /**
-   * Name of the output file (by default `schema`)
-   */
-  outputFileName?: string
 ```
 
 
@@ -47,7 +37,7 @@ npm install @graphback/codegen-schema
 ```ts
   const schemaPlugin = new SchemaCRUDPlugin({
     format: 'graphql',
-    outputPath: './src/schema'
+    outputPath: './src/schema/schema.graphql'
   });
 
   const { schema } = buildGraphbackAPI(modelDefs, {
@@ -57,6 +47,12 @@ npm install @graphback/codegen-schema
     ]
   });
 ```
+
+You can also specify the directory of the schema:
+
+`outputPath: './path/to/schema'`
+
+Graphback will create a file called `schema.graphql` in `./path/to/schema/schema.graphql`.
 
 ## Extending schema using other plugins
 

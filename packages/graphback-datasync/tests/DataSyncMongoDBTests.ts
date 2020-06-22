@@ -33,7 +33,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     "subDelete": true
   }
 
-  const schemaGenerator = new SchemaCRUDPlugin({ outputPath: './tmp', format: 'graphql' })
+  const schemaGenerator = new SchemaCRUDPlugin()
   const DataSyncGenerator = new DataSyncPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
@@ -165,7 +165,7 @@ describe('Soft deletion test', () => {
     const updateTime = 1590679887032;
     advanceTo(startTime);
     const { id } = await Post.create({ text: 'TestPost' });
-    
+
     // Update document once
     advanceTo(updateTime);
     await Post.update({ id, text: 'updated post text', updatedAt: startTime });

@@ -4,30 +4,62 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
-import { ApolloServer, PubSub, gql } from "apollo-server";
+import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
 import { loadConfig } from 'graphql-config';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
 import { GraphbackGenerator, buildGraphbackAPI, GraphbackAPI } from "graphback/src";
-import { printSchema, GraphQLSchema, DocumentNode } from 'graphql';
+import { GraphQLSchema, DocumentNode } from 'graphql';
 import { migrateDB } from '../../packages/graphql-migrations/src';
 import { createKnexDbProvider } from "../../packages/graphback-runtime-knex/src"
 
 /** global config */
 let db: Knex;
 let server: ApolloServer;
-let modelSchema: GraphQLSchema;
 let client: ApolloServerTestClient;
 let graphbackApi: GraphbackAPI;
 
 let documents: DocumentNode;
 
+const modelText = `""" @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]!
+}
+
+""" @model """
+type Comment {
+  id: ID!
+  text: String
+  description: String
+  """
+  @oneToOne
+  """
+  metadata: CommentMetadata
+}
+
+"""
+@model
+"""
+type CommentMetadata {
+  id: ID!
+  opened: Boolean
+}
+
+type Query {
+  helloWorld: String
+}`
+
 beforeAll(async () => {
   try {
     const { projectConfig, graphbackConfig } = await getConfig();
-    const modelText = readFileSync(graphbackConfig.model, 'utf8');
     mkdirSync("./output");
     mkdirSync("./output/client")
     const generator = new GraphbackGenerator(modelText, graphbackConfig);
@@ -40,22 +72,22 @@ beforeAll(async () => {
         password: "postgres",
         database: "users",
         host: "localhost",
-        port: 5432
+        port: process.env.PORT || 5432
       }
     }
     const knex = Knex(dbMigrationsConfig);
-    await knex.schema.dropTableIfExists('comment').dropTableIfExists('commentmetadata').dropTableIfExists('note');
-
-    const schema = await projectConfig.getSchema();
-    const { newDB } = await migrateDB(dbMigrationsConfig, schema);
-
-    expect(newDB).toMatchSnapshot();
-
-    await seedDatabase(knex);
 
     graphbackApi = buildGraphbackAPI(modelText, {
       dataProviderCreator: createKnexDbProvider(knex)
     });
+
+    const { newDB } = await migrateDB(dbMigrationsConfig, graphbackApi.schema);
+
+    await knex.schema.dropTableIfExists('comment').dropTableIfExists('commentmetadata').dropTableIfExists('note');
+
+    await seedDatabase(knex);
+
+    expect(newDB).toMatchSnapshot();
 
     db = knex;
     const source = await loadDocuments(path.resolve(`./output/client/**/*.graphql`), {

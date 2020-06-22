@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { existsSync, mkdirSync, writeFileSync, fstat } from 'fs';
+import { resolve, dirname, join } from 'path';
 import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLString, isScalarType, isSpecifiedScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
@@ -14,19 +14,10 @@ import { buildFilterInputType, createModelListResultType, StringScalarInputType,
  */
 export interface SchemaCRUDPluginConfig {
   /**
-   * Output format for schema string
-   */
-  format: 'ts' | 'js' | 'graphql',
-
-  /**
    * RelativePath for the output files created by generator
+   * e.g. /path/to/schema/schema.graphql
    */
   outputPath?: string
-
-  /**
-   * Name of the output file (by default `schema`)
-   */
-  outputFileName?: string
 }
 
 export const SCHEMA_CRUD_PLUGIN_NAME = "SchemaCRUD";
@@ -52,8 +43,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   public constructor(pluginConfig?: SchemaCRUDPluginConfig) {
     super()
     this.pluginConfig = {
-      format: 'graphql',
-      outputFileName: 'schema',
       ...pluginConfig
     }
   }
@@ -71,7 +60,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const schemaComposer = new SchemaComposer(schema)
 
     this.buildSchemaModelRelationships(schemaComposer, models);
-
     this.buildSchemaForModels(schemaComposer, models);
     this.addMetaFields(schemaComposer, models);
 
@@ -107,13 +95,26 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       return
     }
 
-    const schemaString = this.transformSchemaToString(metadata.getSchema());
-    if (!existsSync(this.pluginConfig.outputPath)) {
-      mkdirSync(this.pluginConfig.outputPath, { recursive: true });
+    let schemaPath = resolve(this.pluginConfig.outputPath)
+
+    // check if user path is to directory or full path to schema
+    // assign default file name otherwise
+    if (schemaPath.indexOf('.') === -1) {
+      schemaPath = join(schemaPath, 'schema.graphql');
     }
 
-    const location = resolve(this.pluginConfig.outputPath, `${this.pluginConfig.outputFileName}.${this.pluginConfig.format}`);
-    writeFileSync(location, schemaString);
+    // get file extension
+    const fileExtension = schemaPath.split('.').pop();
+
+    const schemaString = this.transformSchemaToString(metadata.getSchema(), fileExtension);
+
+    const outputDir = resolve(dirname(this.pluginConfig.outputPath))
+
+    if (!existsSync(outputDir)) {
+      mkdirSync(outputDir, { recursive: true });
+    }
+
+    writeFileSync(schemaPath, schemaString);
   }
 
 
@@ -334,21 +335,22 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * Print schema as a string and format in one of the available languages
    *
    * @param {GraphQLSchema} schema
+   * @param {string} fileExtension
    */
-  protected transformSchemaToString(schema: GraphQLSchema) {
+  protected transformSchemaToString(schema: GraphQLSchema, fileExtension: string) {
     const schemaString = printSchemaWithDirectives(schema);
     if (this.pluginConfig) {
-      if (this.pluginConfig.format === 'ts') {
+      if (fileExtension === 'ts') {
         return tsSchemaFormatter.format(schemaString)
       }
-      if (this.pluginConfig.format === 'js') {
+      if (fileExtension === 'js') {
         return jsSchemaFormatter.format(schemaString)
       }
-      if (this.pluginConfig.format === 'graphql') {
+      if (fileExtension === 'graphql') {
         return gqlSchemaFormatter.format(schemaString)
       }
     }
-    throw Error("Invalid format specified. `options.format` supports only `ts`, `js` and `graphql` flags");
+    throw Error(`Invalid format '${fileExtension}' specified. \`options.format\` supports only \`ts\`, \`js\` and \`graphql\` flags`);
   }
 
   /**

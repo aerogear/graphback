@@ -18,7 +18,7 @@ test('Test snapshot config gql', async () => {
   }
 
 
-  const schemaGenerator = new SchemaCRUDPlugin({ format: 'graphql', outputPath: './tmp' })
+  const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))
@@ -40,7 +40,7 @@ test('Test snapshot config ts', async () => {
   }
 
 
-  const schemaGenerator = new SchemaCRUDPlugin({ format: 'ts', outputPath: './tmp' })
+  const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))
@@ -62,7 +62,7 @@ test('Test snapshot config js', async () => {
   }
 
 
-  const schemaGenerator = new SchemaCRUDPlugin({ format: 'js', outputPath: './tmp' })
+  const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(schemaText))
@@ -103,7 +103,7 @@ test('Test one side relationship schema query type generation', async () => {
   `;
 
   const oneSidedSchema = buildSchema(schemaText);
-  const schemaGenerator = new SchemaCRUDPlugin({ format: 'graphql', outputPath: './tmp' })
+  const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, oneSidedSchema)
