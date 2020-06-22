@@ -5,20 +5,36 @@ import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, Fiel
 import { ConflictError, ConflictStateMap } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
+export interface DataSyncMongoOpts {
+  TTLOffset?: number,
+}
+
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
 export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> extends MongoDBDataProvider<Type, GraphbackContext> implements DataSyncProvider {
+  protected TTLOffset: number;
 
-  public constructor(baseType: GraphQLObjectType, client: any) {
+  public constructor(baseType: GraphQLObjectType, client: any, opts?:DataSyncMongoOpts) {
     super(baseType, client);
-    applyIndexes([
+    const indexes: IndexSpecification[] = [
       {
         key: {
           _deleted: 1
         }
       }
-    ],this.db.collection(this.collectionName)).catch((e: any) => {
+    ]
+    if (opts?.TTLOffset !== undefined && Number.isInteger(opts?.TTLOffset)){
+      this.TTLOffset = opts.TTLOffset;
+      indexes.push({
+        key: {
+          _ttl:1
+        },
+        expireAfterSeconds: 0,
+        sparse: true
+      })
+    }
+    applyIndexes(indexes,this.db.collection(this.collectionName)).catch((e: any) => {
       throw e;
     });
   }
@@ -55,6 +71,9 @@ export class DataSyncMongoDBDataProvider<Type = any, GraphbackContext = any> ext
       });
 
     data._deleted = true;
+    if (this.TTLOffset !== undefined){
+      data._ttl = new Date(Date.now() + (this.TTLOffset * 1000));
+    }
     const result = await this.db.collection(this.collectionName).updateOne({ _id: new ObjectId(idField.value), _deleted: false }, { $set: data });
     if (result.result.nModified === 1) {
       const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value) })

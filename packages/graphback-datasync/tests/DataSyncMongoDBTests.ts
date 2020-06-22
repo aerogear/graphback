@@ -5,7 +5,7 @@ import { filterModelTypes, GraphbackCoreMetadata, metadataMap } from '@graphback
 import { advanceTo, advanceBy } from "jest-date-mock";
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { NoDataError } from "@graphback/runtime-mongo";
-import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError } from '../src';
+import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError, DataSyncMongoOpts } from '../src';
 
 const {fieldNames} = metadataMap;
 export interface Context {
@@ -13,7 +13,7 @@ export interface Context {
   server: MongoMemoryServer
 }
 
-export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
+export async function createTestingContext(schemaStr: string, config?: { seedData?: { [collection: string]: any[] }, providerOpts?: DataSyncMongoOpts }): Promise<Context> {
   // Setup graphback
   let schema = buildSchema(schemaStr);
 
@@ -45,7 +45,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
   const providers: { [name: string]: DataSyncMongoDBDataProvider } = {}
   const models = filterModelTypes(schema)
   for (const modelType of models) {
-    providers[modelType.name] = new DataSyncMongoDBDataProvider(modelType, db);
+    providers[modelType.name] = new DataSyncMongoDBDataProvider(modelType, db, config?.providerOpts);
   }
 
   // if seed data is supplied, insert it into collections
@@ -173,7 +173,71 @@ describe('Soft deletion test', () => {
     // Try to update document again with older timestamp
     await expect(Post.update({ id, text: 'updated post text 2', updatedAt: startTime })).rejects.toThrowError(ConflictError);
 
-    // Try to deletee document with older timestamp
+    // Try to deletee document with older timestamp 
     await expect(Post.delete({ id, updatedAt: startTime })).rejects.toThrowError(ConflictError);
+  })
+
+  it('creates _deleted index', async () => {
+    context = await createTestingContext(`
+      """
+      @model
+      @datasync
+      """
+      type Note {
+        id: ID!
+        text: String
+      }
+      `);
+
+    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db('test');
+
+    const indexes = await db.collection('note').indexes();
+
+    expect(indexes[1]).toMatchObject(
+      {
+        "key": {
+          "_deleted": 1
+        },
+        "name": "_deleted_1",
+        "ns": "test.note"
+      }
+    )
+  })
+
+  it('creates _ttl index', async () => {
+    context = await createTestingContext(`
+      """
+      @model
+      @datasync
+      """
+      type Note {
+        id: ID!
+        text: String
+      }
+      `, {
+      providerOpts: {
+        TTLOffset: 20
+      }
+    });
+
+    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db('test');
+
+    const indexes = await db.collection('note').indexes();
+
+    expect(indexes[2]).toMatchObject(
+      {
+        "key": {
+          "_ttl": 1
+        },
+        "name": "_ttl_1",
+        "ns": "test.note",
+        "expireAfterSeconds": 0,
+        "sparse": true
+      }
+    )
   })
 })
