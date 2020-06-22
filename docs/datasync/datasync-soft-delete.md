@@ -82,7 +82,7 @@ The `DeltaList` is a container for `Delta` type, which also returns a `lastSync`
 
 ### Modify the template to support Data Synchronization
 
-In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-0.14.0/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `DataSyncPlugin` and compliant data sources in `buildGraphbackAPI`:
+In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `DataSyncPlugin` and compliant data sources in `buildGraphbackAPI`:
 
 ```typescript
 import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin } from '@graphback/datasync'

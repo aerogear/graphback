@@ -4,7 +4,11 @@ import { DataSyncCRUDService } from "./services";
 
 export function isDataSyncModel(model: ModelDefinition): boolean {
   // (Both delta and versioned) or (just datasync)
-  return (parseMetadata("delta", model.graphqlType) && parseMetadata("versioned", model.graphqlType))||(parseMetadata('datasync', model.graphqlType))
+  return (
+    (parseMetadata("delta", model.graphqlType) && parseMetadata("versioned", model.graphqlType))
+    ||
+    (parseMetadata('datasync', model.graphqlType))
+  )
 }
 
 export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDService {
