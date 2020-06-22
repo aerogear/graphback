@@ -23,7 +23,6 @@
     "access": "public"
   },
   "devDependencies": {
-    "@graphback/codegen-schema": "0.14.0-alpha4",
     "@types/jest": "26.0.0",
     "@types/node": "12.12.47",
     "graphql": "15.1.0",
@@ -37,6 +36,7 @@
     "typescript": "3.9.5"
   },
   "dependencies": {
+    "@graphback/codegen-schema": "0.14.0-alpha4",
     "@graphback/core": "0.14.0-alpha4",
     "@graphback/runtime": "0.14.0-alpha4",
     "@graphback/runtime-knex": "0.14.0-alpha4",
