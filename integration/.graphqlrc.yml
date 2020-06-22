@@ -17,6 +17,8 @@ extensions:
       subDelete: true
     ## Codegen plugins
     plugins:
+        graphback-schema:
+          outputPath: ./output/schema
         graphback-client:
           format: 'graphql'
           outputFile: './output/client/graphback.graphql'
