@@ -27,11 +27,11 @@
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
     "pino": "6.3.2",
-    "ts-jest": "26.1.0"
+    "ts-jest": "26.1.1"
   },
   "devDependencies": {
     "@types/jest": "26.0.0",
-    "@types/lodash": "4.14.155",
+    "@types/lodash": "4.14.156",
     "@types/node": "12.12.47",
     "graphql": "15.1.0",
     "graphql-compose": "7.18.1",
