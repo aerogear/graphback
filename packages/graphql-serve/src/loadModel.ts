@@ -25,9 +25,10 @@ export async function loadModel(modelPath: string): Promise<GraphQLSchema> {
 }
 
 function resolveModelPath(modelPath: string): string {
-  if (typeof modelPath === 'string' && existsSync(modelPath) && lstatSync(modelPath).isDirectory()) {
-    modelPath = join(process.cwd(), modelPath, '*.graphql')
+  let fullModelPath = join(process.cwd(), modelPath)
+  if (typeof modelPath === 'string' && existsSync(fullModelPath) && lstatSync(fullModelPath).isDirectory()) {
+    fullModelPath = join(fullModelPath, '*.graphql')
   }
 
-  return modelPath
+  return fullModelPath
 }
