@@ -1,5 +1,6 @@
 import { buildSchema } from 'graphql';
 import { serveHandler } from '../src/components'
+import { GraphbackServer, buildGraphbackServer } from '../src/GraphbackServer';
 
 export const expectedUserSchema = `"""
 Directs the executor to skip this field or fragment when the \`if\` argument is true.
@@ -123,17 +124,30 @@ input UserSubscriptionFilter {
 }
 `
 
+const context: { server?: GraphbackServer } = {}
+
+async function createTestingServer(argv: { model?: string, port?: number }): Promise<{ server?: GraphbackServer }> {
+  const server = await serveHandler(argv)
+
+  context.server = server
+
+  return context
+}
+
 beforeEach(() => {
   process.chdir(__dirname)
+})
+
+afterEach(() => {
+  context.server.stop()
 })
 
 test('start a Graphback server', async () => {
   const modelFile = './files/user-model.graphql'
 
-  const server = await serveHandler({ model: modelFile, port: 8181 })
+  const { server } = await createTestingServer({ model: modelFile, port: 8181 })
 
   expect(server).toBeDefined()
-  expect(server.getHttpUrl()).toBe('http://localhost:8181/graphql')
 
   const schemaSDL = server.getSchema()
 
@@ -142,6 +156,4 @@ test('start a Graphback server', async () => {
   const schema = buildSchema(schemaSDL)
 
   expect(schema.astNode).toEqual(buildSchema(expectedUserSchema).astNode)
-
-  await server.stop()
 })

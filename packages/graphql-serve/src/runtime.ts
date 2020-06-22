@@ -15,23 +15,20 @@ export interface Runtime {
   }
 };
 
-export const createMongoDBConnection = async (): Promise<Db> => {
+export const createMongoDBClient = async (): Promise<MongoClient> => {
   const server = new MongoMemoryServer();
   const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true })
   await client.connect();
-  const db = client.db('test');
 
-  return db;
+  return client
 }
 
 /**
  * Method used to create runtime schema
  * It will be part of the integration tests
  */
-export const createRuntime = async (modelDir: string): Promise<GraphbackAPI> => {
+export const createRuntime = async (modelDir: string, db: Db): Promise<GraphbackAPI> => {
   const model = await loadModel(modelDir);
-
-  const db = await createMongoDBConnection();
 
   const graphbackAPI = buildGraphbackAPI(model, {
     dataProviderCreator: createMongoDbProvider(db)
