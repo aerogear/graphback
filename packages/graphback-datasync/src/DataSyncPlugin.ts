@@ -1,11 +1,12 @@
 
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext } from '@graphback/core'
+import { createVersionedInputFields,createVersionedFields } from "@graphback/codegen-schema";
 import { GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLList, GraphQLSchema, buildSchema, GraphQLString, GraphQLBoolean } from 'graphql';
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
-import { isDataSyncService } from "./util";
+import { isDataSyncService, isDataSyncModel } from "./util";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -31,8 +32,10 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
       return schema;
     }
-    models.forEach((model: ModelDefinition) => {
 
+    models.forEach((model: ModelDefinition) => {
+      
+      this.addDataSyncMetadataFields(schemaComposer, model);
       const modelName = model.graphqlType.name;
       const modifiedType = schemaComposer.getOTC(modelName);
       const entries = Object.entries(modifiedType.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
@@ -55,7 +58,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
         }
       })
       // Diff queries
-      if (parseMetadata('delta', model.graphqlType)) {
+      if (isDataSyncModel(model)) {
 
         const deltaQuery = getDeltaQuery(model.graphqlType.name)
         schemaComposer.Query.addFields({
@@ -101,7 +104,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
     for (const model of models) {
       // If delta marker is encountered, add resolver for `delta` query
-      if (model.config.deltaSync) {
+      if (isDataSyncModel(model)) {
         this.addDeltaSyncResolver(model.graphqlType, resolvers.Query as IFieldResolver<any, any>)
       }
     }
@@ -131,6 +134,24 @@ export class DataSyncPlugin extends GraphbackPlugin {
       }
 
       return dataSyncService.sync(args.lastSync);
+    }
+  }
+
+  protected addDataSyncMetadataFields(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
+    const name = model.graphqlType.name;
+    const modelTC = schemaComposer.getOTC(name);
+    const desc = model.graphqlType.description;
+    if (parseMetadata("datasync", desc)) {
+      const metadataFields = createVersionedFields();
+      // metadata fields needed for @versioned
+
+      modelTC.addFields(metadataFields);
+
+      const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
+      if (inputType) {
+        const metadataInputFields = createVersionedInputFields();
+        inputType.addFields(metadataInputFields);
+      }
     }
   }
 }

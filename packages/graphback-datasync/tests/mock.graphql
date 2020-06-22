@@ -1,7 +1,6 @@
 """
 @model
-@versioned
-@delta
+@datasync
 """
 type Note {
   id: ID!
@@ -15,8 +14,7 @@ type Note {
 
 """
 @model
-@versioned
-@delta
+@datasync
 """
 type Comment {
   id: ID!
