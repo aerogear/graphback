@@ -28,14 +28,14 @@
     "graphql": "15.1.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
-    "ts-jest": "26.1.0",
+    "ts-jest": "26.1.1",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
     "typescript": "3.9.5"
   },
   "dependencies": {
     "@graphback/core": "0.14.0-alpha4",
-    "@graphql-tools/utils": "6.0.9",
+    "@graphql-tools/utils": "6.0.10",
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-toolkit/schema-merging": "0.10.7",

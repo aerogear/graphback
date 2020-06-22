@@ -25,7 +25,7 @@
     "graphql": "15.1.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
-    "ts-jest": "26.1.0",
+    "ts-jest": "26.1.1",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
     "typescript": "3.9.5"
@@ -37,7 +37,7 @@
     "@graphback/core": "0.14.0-alpha4",
     "@graphback/runtime": "0.14.0-alpha4",
     "@graphql-inspector/core": "2.1.0",
-    "@graphql-tools/merge": "6.0.9",
+    "@graphql-tools/merge": "6.0.10",
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
     "pg": "8.2.1",
