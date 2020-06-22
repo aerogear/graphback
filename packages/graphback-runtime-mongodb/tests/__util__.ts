@@ -30,7 +30,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     "subDelete": true
   }
 
-  const schemaGenerator = new SchemaCRUDPlugin({ outputPath: './tmp', format: 'graphql' })
+  const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, schema)

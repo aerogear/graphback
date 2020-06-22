@@ -148,6 +148,16 @@ To use `graphql-serve` now you must use a model file:
 gqls serve ./path/to/models/*.graphql --port 8080
 ```
 
+#### SchemaCRUDPlugin only has a single configuration option
+
+We have removed the `fileName` and `format` options from `SchemaCRUDPlugin`. These can be inferred from the `outputPath`:
+
+```ts
+const schemaPlugin = new SchemaCRUDPlugin({
+  outputPath: './path/to/my/schema.js'
+});
+```
+
 ### Deprecated
 
 - `PgKnexDBDataProvider` has been deprecated in favour of `KnexDBDataProvider`.
@@ -160,6 +170,7 @@ gqls serve ./path/to/models/*.graphql --port 8080
 - Added a new, simpler runtime API
 - GraphbackPluginEngine accepts now object instead of arguments.
 `new GraphbackPluginEngine({schema})`
+- Provide full path to schema in the `SchemaCRUDPlugin` config option `outputPath`
 
 # 0.13.0
 
