@@ -5,8 +5,6 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db } from 'mongodb';
 import { loadModel } from './loadModel';
 import { GraphQLSchema } from 'graphql';
-import { GraphbackServerConfig } from "./GraphbackServerConfig";
-
 
 export interface Runtime {
   schema: GraphQLSchema;
