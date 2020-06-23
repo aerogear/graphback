@@ -20,8 +20,7 @@ export const removeNonModelTypesFromSchema: SchemaTransformerPlugin = {
     }
 
     const x = schemaComposer.toSDL()
-    console.log(x)
-
+    
     return schemaComposer.buildSchema()
   }
 }
