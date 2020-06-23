@@ -96,6 +96,16 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     return super.findBy(filter, context, orderBy, page);
   }
 
+  public async count(filter: any): Promise<number> {
+    if (filter === undefined) {
+      filter = {};
+    }
+
+    filter._deleted = false;
+
+    return super.count(filter);
+  }
+
   public sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<Type[]> {
 
     return super.findBy({

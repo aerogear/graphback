@@ -511,11 +511,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
-    queryObj[findField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
+    queryObj[findField] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
       const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
+      const count = getSelectedFieldsFromResolverInfo(info, model).some((field: string ) =>  field === "count");
       const graphback = {
         services: context.graphback.services,
-        options: { selectedFields }
+        options: { selectedFields, aggregations: { count } }
       };
 
       return context.graphback.services[modelName].findBy(args.filter, {...context, graphback}, args.orderBy, args.page)

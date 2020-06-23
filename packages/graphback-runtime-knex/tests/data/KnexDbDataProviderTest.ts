@@ -314,6 +314,27 @@ type Todo {
   }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(3)
+
+  // count
+  const count = await providers.Todo.count({
+    "title": {
+      "eq": "one"
+    },
+    "or": [
+      {
+        "title": {
+          "eq": "three"
+        }
+      },
+      {
+        "description": {
+          "eq": ""
+        }
+      }
+    ]
+  });
+
+  expect(count).toEqual(3);
 });
 
 test('and clause', async () => {
@@ -345,6 +366,19 @@ type Todo {
   }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(1)
+
+  const count = await providers.Todo.count({
+    "title": {
+      "eq": "two"
+    },
+    "and": {
+      "description": {
+        "eq": ""
+      }
+    }
+  })
+
+  expect(count).toEqual(1)
 });
 
 test('not clause', async () => {
@@ -373,6 +407,17 @@ type Todo {
   }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
 
   expect(todos).toHaveLength(2)
+
+  // count
+  const count = await providers.Todo.count({
+    "not": {
+      "description": {
+        "eq": ""
+      }
+    }
+  })
+
+  expect(count).toEqual(2)
 });
 
 test('order todos by ID in descending order', async () => {
@@ -464,6 +509,10 @@ type Todo {
   const todoItems = todos.map((t: any) => t.items)
 
   expect(todoItems).toEqual([2, 3, 4, 5, 6])
+
+  // count
+  const count = await providers.Todo.count({ items: { between: [2, 6] } });
+  expect(count).toEqual(5);
 });
 
 test('get todos with field value not in a range', async () => {

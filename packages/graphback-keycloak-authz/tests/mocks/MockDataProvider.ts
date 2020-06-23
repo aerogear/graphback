@@ -22,6 +22,10 @@ export class MockDataProvider<Type = any, GraphbackContext = any> implements Gra
     return []
   }
 
+  async count(filter: any) {
+    return 1
+  }
+
   async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext) {
     return []
   }

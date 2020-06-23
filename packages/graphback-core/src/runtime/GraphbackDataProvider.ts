@@ -58,6 +58,14 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param context context object passed from graphql or rest layer
    */
   findBy(filter: any,context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]>;
+
+  /**
+   * Implementation for counting number of objects with filtering capabilities
+   *
+   * @param filter filter by specific type
+   */
+  count(filter: any): Promise<number>;
+
   /**
    * Read multiple items by their id's (used for lazy data loading purposes)
    *

@@ -42,6 +42,7 @@ export const findQuery = (t: GraphQLObjectType) => {
       }
       offset
       limit
+      count
     }
   }`
 }
