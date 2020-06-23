@@ -59,7 +59,7 @@ type Query {
 
 beforeAll(async () => {
   try {
-    const { projectConfig, graphbackConfig } = await getConfig();
+    const { graphbackConfig } = await getConfig();
     mkdirSync("./output");
     mkdirSync("./output/client")
     const generator = new GraphbackGenerator(modelText, graphbackConfig);
@@ -75,21 +75,18 @@ beforeAll(async () => {
         port: process.env.PORT || 5432
       }
     }
-    const knex = Knex(dbMigrationsConfig);
+    db = Knex(dbMigrationsConfig);
 
     graphbackApi = buildGraphbackAPI(modelText, {
-      dataProviderCreator: createKnexDbProvider(knex)
+      dataProviderCreator: createKnexDbProvider(db)
     });
 
     const { newDB } = await migrateDB(dbMigrationsConfig, graphbackApi.schema);
 
-    await knex.schema.dropTableIfExists('comment').dropTableIfExists('commentmetadata').dropTableIfExists('note');
-
-    await seedDatabase(knex);
+    await seedDatabase(db);
 
     expect(newDB).toMatchSnapshot();
 
-    db = knex;
     const source = await loadDocuments(path.resolve(`./output/client/**/*.graphql`), {
       loaders: [
         new GraphQLFileLoader()
@@ -208,7 +205,7 @@ test('Find all notes', async () => {
 })
 
 test('Find all notes except the first', async () => {
-  const { data, errors } = await client.query({
+  const { data } = await client.query({
     operationName: 'findNotes',
     query: documents,
     variables: { page: { offset: 1 } }
