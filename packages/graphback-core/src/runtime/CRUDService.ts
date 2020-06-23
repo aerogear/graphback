@@ -1,6 +1,7 @@
-import { GraphbackOperationType, upperCaseFirstChar, GraphbackDataProvider, GraphbackCRUDGeneratorConfig, GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage, GraphbackContext } from "@graphback/core"
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
+import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar } from '..';
+import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList } from '.';
 
 /**
  * Configurations necessary to create a CRUDService

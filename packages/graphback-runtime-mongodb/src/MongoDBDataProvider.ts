@@ -1,7 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy, getFieldTransformations, FieldTransform, TransformType, FieldTransformMap } from '@graphback/runtime';
 import { ObjectId, Db, Cursor } from "mongodb"
-import { ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext } from '@graphback/core';
+import { ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError } from '@graphback/core';
 import { buildQuery } from './queryBuilder'
 import { findAndCreateIndexes } from "./utils/createIndexes";
 
@@ -62,10 +61,10 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       });
 
     const objectId = new ObjectId(idField.value);
-    const result = await this.db.collection(this.collectionName).updateOne({ _id:  objectId}, { $set: data });
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId }, { $set: data });
     if (result) {
       const projection = this.buildProjectionOption(context);
-      const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId },{ projection }).toArray();
+      const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId }, { projection }).toArray();
       if (queryResult && queryResult[0]) {
 
         return this.mapFields(queryResult[0]);
@@ -83,7 +82,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
     const objectId = new ObjectId(idField.value);
     const projection = this.buildProjectionOption(context);
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: objectId },{ projection });
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection });
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: objectId });
       if (result.result.ok) {
@@ -99,7 +98,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       filter = { _id: new ObjectId(filter.id) }
     }
     const projection = this.buildProjectionOption(context);
-    const query = this.db.collection(this.collectionName).findOne(filter,{ projection });
+    const query = this.db.collection(this.collectionName).findOne(filter, { projection });
     const data = await query;
 
     if (data) {
@@ -110,7 +109,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
   public async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
     const projection = this.buildProjectionOption(context);
-    const query = this.db.collection(this.collectionName).find(buildQuery(filter),{ projection });
+    const query = this.db.collection(this.collectionName).find(buildQuery(filter), { projection });
     const data = await this.usePage(this.sortQuery(query, orderBy), page);
 
     if (data) {
@@ -132,7 +131,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await this.db.collection(this.collectionName).find(buildQuery({ _id: { $in: array }, ...filter }),{ projection }).toArray();
+      result = await this.db.collection(this.collectionName).find(buildQuery({ _id: { $in: array }, ...filter }), { projection }).toArray();
     } else {
       let query: any = {};
       const array = ids.map((value: any) => {
@@ -142,7 +141,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
         ...filter
       }
       query[relationField] = { $in: array };
-      result = await this.db.collection(this.collectionName).find(buildQuery(query),{ projection }).toArray();
+      result = await this.db.collection(this.collectionName).find(buildQuery(query), { projection }).toArray();
     }
 
     if (result) {

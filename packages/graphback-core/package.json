@@ -43,7 +43,9 @@
     "graphql-fields-list": "2.1.3",
     "graphql-metadata": "0.6.3",
     "pino": "6.3.2",
-    "pluralize": "8.0.0"
+    "pluralize": "8.0.0",
+    "dataloader": "2.0.0",
+    "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0"

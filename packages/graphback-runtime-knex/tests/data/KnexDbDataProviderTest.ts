@@ -3,8 +3,7 @@
 import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
-import { filterModelTypes } from '@graphback/core';
-import { GraphbackDataProvider } from '@graphback/runtime';
+import { filterModelTypes, GraphbackDataProvider } from '@graphback/core';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 

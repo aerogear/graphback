@@ -38,8 +38,6 @@
   "dependencies": {
     "@graphback/codegen-schema": "0.14.0-alpha4",
     "@graphback/core": "0.14.0-alpha4",
-    "@graphback/runtime": "0.14.0-alpha4",
-    "@graphback/runtime-knex": "0.14.0-alpha4",
     "@graphback/runtime-mongo": "0.14.0-alpha4",
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",

@@ -12,34 +12,11 @@
 
 ## Graphback-Core 
 
-Codegen core package is an abstraction that provides common entry point to all graphback generators:
-- Client generator
-- Schema generator
-- Various resolver generators
-- Various Service layer generators
-- Various DBLayer generators
+Core package is an abstraction that provides common entry point to all graphback concepts:
 
-`InputProcessor` abstraction provides seamless way for providing valid input for generators. 
+- Plugins
+- Helpers for building https://graphqlcrud.org schema
+- GraphbackCRUDService abstraction
+- DataProvider abstraction
 
-> Note: This package is not designed to be used directly.
-
-
-## Adding support for new inputs types
-
-Graphback-Codegen-Input by default relies on GraphQL schema model as input. 
-However it can support any type of inputs like json schema, database or OpenAPI definitions.
-
-Developers can extend functionality by using `InputProcessor` abstraction.
-
-## Generator config
-
-Each individual type will contain individual config. Developers can pass global configuration that will be applied to every type
-
-See `GraphbackCRUDGeneratorConfig` for more information.
-
-Config can be modified directly in the schema by utilizing [`graphql-metadata`](graphql-metadata):
-
-## Contributing
-
-`./api` folder contains all types required for creating input processors
-`./graphql` folder contains implementation that builds GraphQL based processors
+> NOTE: This package is not designed to be used directly.

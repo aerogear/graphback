@@ -4,5 +4,3 @@ export * from "./OffixDataProvider"
 
 // Helpers
 export * from './createKnexDbProvider'
-
-export * from "@graphback/runtime";

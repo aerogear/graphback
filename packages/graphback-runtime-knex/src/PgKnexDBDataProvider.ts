@@ -1,6 +1,5 @@
-import { getDatabaseArguments, GraphbackContext } from '@graphback/core';
+import { getDatabaseArguments, GraphbackContext, NoDataError } from '@graphback/core';
 import * as Knex from 'knex';
-import { NoDataError } from '@graphback/runtime';
 import { GraphQLObjectType } from 'graphql';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 
@@ -22,7 +21,6 @@ export class PgKnexDBDataProvider<Type = any> extends KnexDBDataProvider<Type> {
 
     //tslint:disable-next-line: await-promise
     const dbResult = await this.db(this.tableName).insert(createData).returning(context.graphback.options.selectedFields);
-    console.log({dbResult})
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

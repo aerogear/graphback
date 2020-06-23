@@ -1,4 +1,6 @@
+import { ModelDefinition } from '..';
 import { GraphbackCRUDService } from './GraphbackCRUDService';
+import { GraphbackDataProvider } from '.';
 
 /**
  * Map model names to a CRUD service
@@ -40,3 +42,13 @@ export interface GraphbackOrderBy {
   order?: SortDirection
   field: string
 }
+
+/**
+ * Creator method that can be used by underlying implementation to create new data service
+ */
+export type DataProviderCreator = (model: ModelDefinition) => GraphbackDataProvider
+
+/**
+ * Creator method that can be used by underlying implementation to create new data service
+ */
+export type ServiceCreator = (model: ModelDefinition, dataProvider: GraphbackDataProvider) => GraphbackCRUDService

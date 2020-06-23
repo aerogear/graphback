@@ -1,6 +1,5 @@
 import Knex from 'knex';
-import { ModelDefinition } from '@graphback/core';
-import { GraphbackDataProvider } from '@graphback/runtime';
+import { ModelDefinition, GraphbackDataProvider } from '@graphback/core';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 
 /**
@@ -8,7 +7,7 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
  *
  * @param {Knex} db - Knex database configuration object
  */
-export function createKnexDbProvider(db: Knex): (...args: any[]) => GraphbackDataProvider {
+export function createKnexDbProvider(db: Knex) {
   return (model: ModelDefinition): GraphbackDataProvider => {
     return new KnexDBDataProvider(model.graphqlType, db)
   }

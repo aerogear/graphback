@@ -1,4 +1,4 @@
-import { CRUDService, CRUDServiceConfig, GraphbackContext } from "@graphback/runtime"
+import { CRUDService, CRUDServiceConfig, GraphbackContext } from '@graphback/core';
 import { DataSyncProvider } from "../providers";
 
 export interface SyncList<T> {
