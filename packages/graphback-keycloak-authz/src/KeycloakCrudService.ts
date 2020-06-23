@@ -1,11 +1,6 @@
-import {
-  GraphbackPage,
-  ResultList,
-  GraphbackOrderBy
-} from "@graphback/runtime";
 import { isAuthorizedByRole } from "keycloak-connect-graphql";
-import { GraphbackCRUDService } from '../../graphback-core/src/runtime/GraphbackCRUDService';
-import { CrudServiceAuthConfig } from './definitions';
+import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage  } from '@graphback/core';
+import { CrudServiceAuthConfig } from './KeycloakConfig';
 import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 
 /**
@@ -32,11 +27,11 @@ export type KeycloakCrudServiceOptions = {
 export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
 
   private authConfig: CrudServiceAuthConfig;
-  private wrappingService: GraphbackCRUDService;
+  private protectedService: GraphbackCRUDService;
 
   public constructor({ service, authConfig }: KeycloakCrudServiceOptions) {
     this.authConfig = authConfig || getEmptyServiceConfig();
-    this.wrappingService = service;
+    this.protectedService = service;
   }
 
   public create(data: T, context: any): Promise<T> {
@@ -47,7 +42,7 @@ export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
       }
     }
 
-    return this.wrappingService.create(data, context);
+    return this.protectedService.create(data, context);
   }
 
   public update(data: T, context: any): Promise<T> {
@@ -58,7 +53,7 @@ export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
       }
     }
 
-    return this.wrappingService.update(data, context);
+    return this.protectedService.update(data, context);
   }
 
   public delete(data: T, context: any): Promise<T> {
@@ -69,7 +64,7 @@ export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
       }
     }
 
-    return this.wrappingService.delete(data, context);
+    return this.protectedService.delete(data, context);
   }
 
   public findOne(args: any, context: any): Promise<T> {
@@ -80,7 +75,7 @@ export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
       }
     }
 
-    return this.wrappingService.findOne(args, context);
+    return this.protectedService.findOne(args, context);
   }
 
   public findBy(filter: any, context: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<ResultList<T>> {
@@ -91,22 +86,22 @@ export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
       }
     }
 
-    return this.wrappingService.findBy(filter, orderBy, page, context);
+    return this.protectedService.findBy(filter, orderBy, page, context);
   }
 
   public subscribeToCreate(filter?: any, context?: any): AsyncIterator<T> {
-    return this.wrappingService.subscribeToCreate(filter, context)
+    return this.protectedService.subscribeToCreate(filter, context)
   }
 
   public subscribeToUpdate(filter?: any, context?: any): AsyncIterator<T> {
-    return this.wrappingService.subscribeToUpdate(filter, context)
+    return this.protectedService.subscribeToUpdate(filter, context)
   }
 
   public subscribeToDelete(filter?: any, context?: any): AsyncIterator<T> {
-    return this.wrappingService.subscribeToDelete(filter, context)
+    return this.protectedService.subscribeToDelete(filter, context)
   }
 
   public batchLoadData(relationField: string, id: string | number, filter: any, context: any) {
-    return this.wrappingService.batchLoadData(relationField, id, filter, context)
+    return this.protectedService.batchLoadData(relationField, id, filter, context)
   }
 }

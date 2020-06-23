@@ -1,8 +1,7 @@
 import { GraphQLSchema } from 'graphql';
-import { GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition } from '@graphback/core';
+import { ServiceCreator, DataProviderCreator, GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition, GraphbackServiceConfigMap, GraphbackContext, createCRUDService } from '@graphback/core';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 import { mergeSchemas } from '@graphql-tools/merge';
-import { GraphbackCRUDService, createCRUDService, GraphbackDataProvider, GraphbackServiceConfigMap, GraphbackContext } from '@graphback/runtime';
 import { PubSub } from 'graphql-subscriptions';
 
 export interface GraphbackAPIConfig {
@@ -14,14 +13,16 @@ export interface GraphbackAPIConfig {
    * Schema plugins to perform automatic changes to the schema
    */
   plugins?: GraphbackPlugin[]
+  
   /**
    * Function which creates a default CRUD Service for every data model
    */
-  serviceCreator?(...args: any[]): GraphbackCRUDService;
+  serviceCreator?: ServiceCreator;
+
   /**
    * Function which creates a default data provicer for every data model
    */
-  dataProviderCreator(...args: any): GraphbackDataProvider;
+  dataProviderCreator: DataProviderCreator;
 }
 
 /**

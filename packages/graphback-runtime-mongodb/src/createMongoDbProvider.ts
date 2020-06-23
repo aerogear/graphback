@@ -1,6 +1,5 @@
 import { Db } from 'mongodb';
-import { ModelDefinition } from '@graphback/core';
-import { GraphbackDataProvider } from '@graphback/runtime';
+import { ModelDefinition, GraphbackDataProvider } from '@graphback/core';
 import { MongoDBDataProvider } from './MongoDBDataProvider';
 
 /**

@@ -1,6 +1,6 @@
 import { Db } from 'mongodb';
-import { ModelDefinition } from '@graphback/core';
-import { MongoDBDataProvider, GraphbackDataProvider } from "@graphback/runtime-mongo"
+import { ModelDefinition, GraphbackDataProvider } from '@graphback/core';
+import { MongoDBDataProvider } from "@graphback/runtime-mongo"
 import { isDataSyncModel } from '../util';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
 

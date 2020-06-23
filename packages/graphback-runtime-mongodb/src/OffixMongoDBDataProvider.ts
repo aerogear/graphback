@@ -1,6 +1,5 @@
 import { GraphQLObjectType } from 'graphql';
-import { NoDataError} from '@graphback/runtime';
-import { getDatabaseArguments, GraphbackContext } from '@graphback/core';
+import { getDatabaseArguments, GraphbackContext, NoDataError } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider } from './MongoDBDataProvider';
 

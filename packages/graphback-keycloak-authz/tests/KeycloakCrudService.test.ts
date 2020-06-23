@@ -70,7 +70,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
   expect(() => service.create(val, unauthorizedContext)).toThrowError('User is not authorized.')
   expect(() => service.update(val,unauthorizedContext)).toThrowError('User is not authorized.')
   expect(() => service.delete(val,unauthorizedContext)).toThrowError('User is not authorized.')
-  expect(() => service.findBy(val, unauthorizedContext, null, null)).toThrowError('User is not authorized.')
+  expect(() => service.findBy(val, unauthorizedContext, undefined, undefined)).toThrowError('User is not authorized.')
   expect(() => service.findOne(val,unauthorizedContext)).toThrowError('User is not authorized.')
 
   // verify that no calls to the underlying data provider were made

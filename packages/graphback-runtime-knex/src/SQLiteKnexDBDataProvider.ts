@@ -1,6 +1,5 @@
-import { getDatabaseArguments, GraphbackContext } from '@graphback/core';
+import { getDatabaseArguments, GraphbackContext, NoDataError } from '@graphback/core';
 import * as Knex from 'knex';
-import { NoDataError } from '@graphback/runtime';
 import { GraphQLObjectType } from 'graphql';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 

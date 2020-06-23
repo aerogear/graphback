@@ -1,4 +1,5 @@
-import { GraphbackDataProvider, GraphbackPage, GraphbackOrderBy } from '@graphback/runtime';
+/* eslint-disable */
+import { GraphbackDataProvider, GraphbackPage, GraphbackOrderBy } from '@graphback/core';
 
 export class MockDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<any, any> {
   async create(data: Type, context: GraphbackContext) {
