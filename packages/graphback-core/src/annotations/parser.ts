@@ -1,6 +1,6 @@
 import { FieldDefinitionNode, GraphQLField, GraphQLObjectType, TypeDefinitionNode } from 'graphql';
-import { parseAnnotations } from "graphql-metadata";
+import { parseMetadata } from "graphql-metadata";
 
 export const parseDbAnnotations = (node: TypeDefinitionNode | FieldDefinitionNode | GraphQLObjectType | GraphQLField<any, any>): any => {
-  return node.description ? parseAnnotations('db', String(node.description)) : {};
+  return node.description ? parseMetadata('db', String(node.description)) : {};
 }

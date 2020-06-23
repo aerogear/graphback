@@ -13,7 +13,7 @@ import {
   isScalarType,
   GraphQLEnumValue,
 } from 'graphql'
-import { parseAnnotations, stripAnnotations, parseMetadata } from 'graphql-metadata';
+import { stripAnnotations, parseMetadata } from 'graphql-metadata';
 // eslint-disable-next-line import/no-internal-modules
 import { TypeMap } from 'graphql/type/schema';
 import { escapeComment } from '../util/comments';
@@ -130,7 +130,7 @@ class AbstractDatabaseBuilder {
   }
 
   private buildTable(type: GraphQLObjectType) {
-    const annotations: any = parseAnnotations(ANNOTATIONS.db, type.description || undefined)
+    const annotations: any = parseMetadata(ANNOTATIONS.db, type.description || undefined)
 
     if (annotations.skip) {
       return undefined
@@ -208,7 +208,7 @@ class AbstractDatabaseBuilder {
     field: GraphQLField<any, any>,
     fieldType?: GraphQLOutputType
   ): TableColumn | undefined {
-    const annotations: any = parseAnnotations(ANNOTATIONS.db, field.description || undefined)
+    const annotations: any = parseMetadata(ANNOTATIONS.db, field.description || undefined)
     const relationshipMarker = parseRelationshipAnnotation(field.description);
 
     if (annotations.skip) {
@@ -308,7 +308,7 @@ class AbstractDatabaseBuilder {
         const foreignField = foreignType.getFields()[foreignKey]
         if (!foreignField) { return undefined }
         //@db.foreign
-        const foreignAnnotations: any = parseAnnotations(ANNOTATIONS.db, foreignField.description || undefined)
+        const foreignAnnotations: any = parseMetadata(ANNOTATIONS.db, foreignField.description || undefined)
         const foreignAnnotation = foreignAnnotations.foreign
         if (foreignAnnotation && foreignAnnotation !== field.name) { return undefined }
         //Type
@@ -452,7 +452,7 @@ class AbstractDatabaseBuilder {
   }
 
   private createOneToManyRelationship(oneToManyRelationship: OneToManyRelationship) {
-    const annotations: any = parseAnnotations(ANNOTATIONS.db, oneToManyRelationship.description || undefined);
+    const annotations: any = parseMetadata(ANNOTATIONS.db, oneToManyRelationship.description || undefined);
     const relationshipMarker = parseRelationshipAnnotation(oneToManyRelationship.description);
 
     const field: GraphQLField<any, any> = {
@@ -473,7 +473,7 @@ class AbstractDatabaseBuilder {
   }
 
   private getRelationTableFromOneToMany(oneToMany: OneToManyRelationship) {
-    const annotations: any = parseAnnotations(ANNOTATIONS.db, oneToMany.description || undefined);
+    const annotations: any = parseMetadata(ANNOTATIONS.db, oneToMany.description || undefined);
 
     return this.database.tables.find((table: Table) => {
       const tableName = annotations.name || this.getTableName(oneToMany.type.name);
@@ -483,7 +483,7 @@ class AbstractDatabaseBuilder {
   }
 
   private isOneToMany(type: GraphQLObjectType, field: GraphQLField<any, any>) {
-    const annotations: any = parseAnnotations(ANNOTATIONS.db, field.description || undefined);
+    const annotations: any = parseMetadata(ANNOTATIONS.db, field.description || undefined);
 
     const relationType = getObjectTypeFromList(field);
     if ((relationType && relationType.name !== type.name) && !annotations.manyToMany) {

@@ -1,5 +1,5 @@
 import { GraphQLField, GraphQLScalarType } from 'graphql'
-import { parseAnnotations } from 'graphql-metadata'
+import { parseMetadata } from 'graphql-metadata'
 import { TableColumnType } from './TableColumn'
 
 export interface TableColumnTypeDescriptor {
@@ -21,13 +21,13 @@ export default function(
   annotations: any,
 ): TableColumnTypeDescriptor | null {
   if (!annotations) {
-    annotations = parseAnnotations('db', field.description || undefined)
+    annotations = parseMetadata('db', field.description || undefined)
   }
 
   // increments
   if (scalarType && scalarType.name === 'ID') {
     if (annotations.type) {
-      throw new Error(`@db.type annotation is not permitted on ID field.`);
+      throw new Error(`@db(type: <type>) annotation is not permitted on ID field.`);
     }
 
     return {

@@ -1,4 +1,4 @@
-import { parseMarker } from 'graphql-metadata';
+import { parseMetadata } from 'graphql-metadata';
 import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { getInputTypeName, GraphbackOperationType } from '../crud';
@@ -13,7 +13,7 @@ export function parseRelationshipAnnotation(description: string = ''): Relations
   const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
 
   for (const kind of relationshipKinds) {
-    const annotation: any = parseMarker(kind, description);
+    const annotation: any = parseMetadata(kind, description);
 
     if (!annotation) {
       continue;
@@ -39,7 +39,7 @@ export function parseRelationshipAnnotation(description: string = ''): Relations
  * @param relationships
  */
 export function isOneToManyField(field: GraphQLField<any, any>): boolean {
-  const oneToManyAnnotation: any = parseMarker('oneToMany', field.description)
+  const oneToManyAnnotation: any = parseMetadata('oneToMany', field.description)
 
   return !!oneToManyAnnotation
 }
