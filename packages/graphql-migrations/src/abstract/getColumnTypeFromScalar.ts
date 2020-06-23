@@ -1,6 +1,7 @@
 import { GraphQLField, GraphQLScalarType } from 'graphql'
 import { parseMetadata } from 'graphql-metadata'
 import { TableColumnType } from './TableColumn'
+import { parseAnnotations } from '../util/parseAnnotations';
 
 export interface TableColumnTypeDescriptor {
   /**
@@ -21,7 +22,7 @@ export default function(
   annotations: any,
 ): TableColumnTypeDescriptor | null {
   if (!annotations) {
-    annotations = parseMetadata('db', field.description || undefined)
+    annotations = parseAnnotations('db', field.description || undefined)
   }
 
   // increments

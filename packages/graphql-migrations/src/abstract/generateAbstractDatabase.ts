@@ -19,6 +19,7 @@ import { TypeMap } from 'graphql/type/schema';
 import { escapeComment } from '../util/comments';
 import getObjectTypeFromList from '../util/getObjectTypeFromList';
 import getKnexColumnType from '../util/getKnexColumnType';
+import { parseAnnotations } from '../util/parseAnnotations'
 import { AbstractDatabase } from './AbstractDatabase';
 import getColumnTypeFromScalar, { TableColumnTypeDescriptor } from './getColumnTypeFromScalar';
 import { OneToManyRelationship } from './RelationshipTypes';
@@ -130,7 +131,7 @@ class AbstractDatabaseBuilder {
   }
 
   private buildTable(type: GraphQLObjectType) {
-    const annotations: any = parseMetadata(ANNOTATIONS.db, type.description || undefined)
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, type.description || undefined)
 
     if (annotations.skip) {
       return undefined
@@ -176,7 +177,7 @@ class AbstractDatabaseBuilder {
     const primaryKeys = table.columns.filter((column: TableColumn) => column.isPrimaryKey);
     const primaryKeysSize = primaryKeys.length;
 
-    if (primaryKeysSize >=2) {
+    if (primaryKeysSize >= 2) {
       const autoIncrementablePrimaryKey = primaryKeys.find((primaryKey: TableColumn) => primaryKey.autoIncrementable);
 
       if (primaryKeysSize > 2 || (primaryKeysSize === 2 && !autoIncrementablePrimaryKey)) {
@@ -208,7 +209,7 @@ class AbstractDatabaseBuilder {
     field: GraphQLField<any, any>,
     fieldType?: GraphQLOutputType
   ): TableColumn | undefined {
-    const annotations: any = parseMetadata(ANNOTATIONS.db, field.description || undefined)
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, field.description || undefined)
     const relationshipMarker = parseRelationshipAnnotation(field.description);
 
     if (annotations.skip) {
@@ -303,12 +304,14 @@ class AbstractDatabaseBuilder {
           return undefined
         }
 
+        const manyToMany = parseAnnotations('manyToMany', field.description)
+
         //Foreign Field
-        const foreignKey = onSameType ? field.name : annotations.manyToMany || this.currentTable.name
+        const foreignKey = onSameType ? field.name : manyToMany.field || this.currentTable.name
         const foreignField = foreignType.getFields()[foreignKey]
         if (!foreignField) { return undefined }
-        //@db.foreign
-        const foreignAnnotations: any = parseMetadata(ANNOTATIONS.db, foreignField.description || undefined)
+        //@db(foreign: true)
+        const foreignAnnotations: any = parseAnnotations(ANNOTATIONS.db, foreignField.description || undefined)
         const foreignAnnotation = foreignAnnotations.foreign
         if (foreignAnnotation && foreignAnnotation !== field.name) { return undefined }
         //Type
@@ -338,7 +341,7 @@ class AbstractDatabaseBuilder {
         }
         let descriptors = []
         if (onSameType) {
-          const key = annotations.manyToMany || 'id'
+          const key = manyToMany.field || 'id'
           const sameTypeForeignField = foreignType.getFields()[key]
           if (!sameTypeForeignField) {
             console.warn(`Foreign field ${key} on type ${ofType.name} not found on field ${this.currentType}.${field.name}.`)
@@ -377,7 +380,7 @@ class AbstractDatabaseBuilder {
         type = 'json'
         args = []
       } else {
-        console.warn(`Unsupported Scalar/Enum list on field ${this.currentType}.${field.name}. Use @db.type: "json"`)
+        console.warn(`Unsupported Scalar/Enum list on field ${this.currentType}.${field.name}. Use @db(type: "json")`)
 
         return undefined
       }
@@ -393,16 +396,18 @@ class AbstractDatabaseBuilder {
       """
       as a type comment or specifying column type with:
       """
-      @db.type: "text"
+      @db(type: "text")
       """
       as the field comment.`)
 
       return undefined
     }
 
+
     //Handle Index and Unique
     for (const indexTypeDef of INDEX_UNIQUE_TYPES) {
-      const annotation = annotations[indexTypeDef.annotation]
+      const annotation = parseMetadata(indexTypeDef.annotation, field.description)
+
       if (this.currentTable && annotation) {
         let indexName: string | undefined
         let indexType: string | undefined
@@ -421,9 +426,9 @@ class AbstractDatabaseBuilder {
             type: indexType,
             columns: [],
           } : {
-            name: indexName,
-            columns: [],
-          }
+              name: indexName,
+              columns: [],
+            }
           list.push(index)
         }
         index.columns.push(columnName)
@@ -434,7 +439,7 @@ class AbstractDatabaseBuilder {
     }
 
     const autoIncrementable = isScalarType(fieldType) && ID_TYPE.default(field.name, fieldType.name);
-    const  isPrimaryKey  = parseMetadata(ANNOTATIONS.id, field) || autoIncrementable;
+    const isPrimaryKey = parseMetadata(ANNOTATIONS.id, field) || autoIncrementable;
     const defaultValue: DefaultValueAnnotation = parseMetadata(ANNOTATIONS.default, field);
 
     return {
@@ -452,7 +457,7 @@ class AbstractDatabaseBuilder {
   }
 
   private createOneToManyRelationship(oneToManyRelationship: OneToManyRelationship) {
-    const annotations: any = parseMetadata(ANNOTATIONS.db, oneToManyRelationship.description || undefined);
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, oneToManyRelationship.description || undefined);
     const relationshipMarker = parseRelationshipAnnotation(oneToManyRelationship.description);
 
     const field: GraphQLField<any, any> = {
@@ -473,7 +478,7 @@ class AbstractDatabaseBuilder {
   }
 
   private getRelationTableFromOneToMany(oneToMany: OneToManyRelationship) {
-    const annotations: any = parseMetadata(ANNOTATIONS.db, oneToMany.description || undefined);
+    const annotations: any = parseAnnotations(ANNOTATIONS.db, oneToMany.description || undefined);
 
     return this.database.tables.find((table: Table) => {
       const tableName = annotations.name || this.getTableName(oneToMany.type.name);
@@ -483,10 +488,8 @@ class AbstractDatabaseBuilder {
   }
 
   private isOneToMany(type: GraphQLObjectType, field: GraphQLField<any, any>) {
-    const annotations: any = parseMetadata(ANNOTATIONS.db, field.description || undefined);
-
     const relationType = getObjectTypeFromList(field);
-    if ((relationType && relationType.name !== type.name) && !annotations.manyToMany) {
+    if ((relationType && relationType.name !== type.name) && !parseMetadata('manyToMany', field)) {
       return true;
     }
 

@@ -88,7 +88,7 @@ test('Test one side relationship schema query type generation', async () => {
     title: String!
     description: String!
     """
-    @oneToMany field: 'note', key: 'test_id'
+    @oneToMany(field: 'note', key: 'test_id')
     """
     tests: [Test]!
   }

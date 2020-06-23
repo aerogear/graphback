@@ -114,8 +114,8 @@ type Comment {
 
 | Argument | Description | Example |
 |-|-|-|
-|`field`| Specifies the name of resolver field on the foreign object. **Required**. Accepts a string value | `@oneToMany field: 'user'`|
-|`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToMany field: 'user' key: 'user_key'`|
+|`field`| Specifies the name of resolver field on the foreign object. **Required**. Accepts a string value | `@oneToMany(field: 'user'`)|
+|`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToMany(field: 'user', key: 'user_key')`|
 
 #### Example
 
@@ -123,7 +123,7 @@ type Comment {
 """mode"""
 type User {
   id:ID!
-  """@oneToMany field: author"""
+  """@oneToMany(field: 'author')"""
   posts: [Post]
 }
 """@model"""
@@ -151,7 +151,7 @@ type Post {
 
 | Argument | Description | Example |
 |-|-|-|
-|`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToMany field: 'user' key: 'user_key'`|
+|`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToMany(field: 'user', key: 'user_key')`|
 
 #### Example
 

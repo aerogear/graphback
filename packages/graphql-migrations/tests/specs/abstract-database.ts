@@ -51,7 +51,7 @@ test('simple type', async () => {
 test('skip table', async () => {
   const schema = buildSchema(`
       """
-      @db.skip
+      @db(skip: true)
       @model
       """
       type User {
@@ -71,7 +71,7 @@ test('skip field', async () => {
       type User {
         id: ID!
         """
-        @db.skip
+        @db(skip: true)
         """
         name: String!
       }
@@ -184,7 +184,7 @@ test('simple index', async () => {
       type User {
         id: ID!
         """
-        @db.index
+        @index
         """
         email: String!
       }
@@ -204,11 +204,11 @@ test('multiple indexes', async () => {
       """
       type User {
         """
-        @db.index
+        @index
         """
         id: ID!
         """
-        @db.index
+        @index
         """
         email: String!
       }
@@ -230,11 +230,11 @@ test('named index', async () => {
       type User {
         id: ID!
         """
-        @db.index: 'myIndex'
+        @index(name: 'myIndex')
         """
         email: String!
         """
-        @db.index: 'myIndex'
+        @index(name: 'myIndex')
         """
         name: String!
       }
@@ -244,7 +244,7 @@ test('named index', async () => {
   const [User] = adb.tables
   expect(User.indexes.length).toEqual(1);
   const [myIndex] = User.indexes
-  expect(myIndex.name).toEqual('myIndex');;
+  expect(myIndex.name).toEqual('myIndex');
   expect(myIndex.columns).toEqual(['email', 'name'])
 })
 
@@ -256,11 +256,11 @@ test('object index', async () => {
       type User {
         id: ID!
         """
-        @db.index: { name: 'myIndex', type: 'string' }
+        @index(name: 'myIndex', type: 'string')
         """
         email: String!
         """
-        @db.index: 'myIndex'
+        @index(name: 'myIndex')
         """
         name: String!
       }
@@ -283,7 +283,7 @@ test('unique index', async () => {
       type User {
         id: ID!
         """
-        @db.unique
+        @unique
         """
         email: String!
       }
@@ -299,7 +299,7 @@ test('unique index', async () => {
 test('custom name', async () => {
   const schema = buildSchema(`
       """
-      @db.name: 'people'
+      @db(name: 'people')
       @model
       """
       type User {
@@ -321,8 +321,7 @@ test('custom type', async () => {
       type User {
         id: ID!
         """
-        @db.type: 'string'
-        @db.length: 36
+        @db(type: 'string', length: 36)
         """
         name: String
       }
@@ -379,7 +378,7 @@ test('many to many', async () => {
       type User {
         id: ID!
         """
-        @db.manyToMany: 'users'
+        @manyToMany(field: 'users')
         """
         messages: [Message!]!
       }
@@ -390,7 +389,7 @@ test('many to many', async () => {
       type Message {
         id: ID!
         """
-        @db.manyToMany: 'messages'
+        @manyToMany(field: 'messages')
         """
         users: [User]
       }
@@ -445,7 +444,7 @@ test('simple list', async () => {
       type User {
         id: ID!
         """
-        @db.type: 'json'
+        @db(type: 'json')
         """
         names: [String]
       }
@@ -548,18 +547,18 @@ test('sandbox', async () => {
         id: ID!
         """
         Display name
-        @db.length: 200
+        @db(length: 200)
         """
         name: String!
         email: String!
         score: Int
         """
-        @db.type: 'json'
+        @db(type: 'json')
         """
         scores: [Int]
         messages: [Message]
         """
-        @db.manyToMany: 'users'
+        @manyToMany(field: 'users')
         """
         sharedMessages: [Message]
         contacts: [User]
@@ -572,16 +571,16 @@ test('sandbox', async () => {
         id: ID!
         user: User!
         """
-        @db.manyToMany: 'sharedMessages'
+        @manyToMany(field: 'sharedMessages')
         """
         users: [User]
         """
-        @db.type: 'datetime'
+        @db(type: 'datetime')
         """
         created: Date!
         title: String!
         """
-        @db.type: 'text'
+        @db(type: 'text')
         """
         content: String!
       }

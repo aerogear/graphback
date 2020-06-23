@@ -310,9 +310,7 @@ Array [
     "annotations": Object {},
     "columnMap": Map {
       "usersId" => Object {
-        "annotations": Object {
-          "manyToMany": "sharedMessages",
-        },
+        "annotations": Object {},
         "args": Array [],
         "autoIncrementable": false,
         "comment": undefined,
@@ -329,9 +327,7 @@ Array [
         "type": "integer",
       },
       "sharedMessagesId" => Object {
-        "annotations": Object {
-          "manyToMany": "users",
-        },
+        "annotations": Object {},
         "args": Array [],
         "autoIncrementable": false,
         "comment": undefined,
@@ -350,9 +346,7 @@ Array [
     },
     "columns": Array [
       Object {
-        "annotations": Object {
-          "manyToMany": "sharedMessages",
-        },
+        "annotations": Object {},
         "args": Array [],
         "autoIncrementable": false,
         "comment": undefined,
@@ -369,9 +363,7 @@ Array [
         "type": "integer",
       },
       Object {
-        "annotations": Object {
-          "manyToMany": "users",
-        },
+        "annotations": Object {},
         "args": Array [],
         "autoIncrementable": false,
         "comment": undefined,

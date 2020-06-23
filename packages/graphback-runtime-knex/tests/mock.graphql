@@ -4,7 +4,7 @@ type Note {
   title: String!
   description: String!
   """
-  @oneToMany field: 'noteComment', key: 'noteId'
+  @oneToMany(field: 'noteComment', key: 'noteId')
   """
   comments: [Comment]!
 }

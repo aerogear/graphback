@@ -10,7 +10,7 @@ const getScalarInputName = (type: GraphQLNamedType) => {
   if (isEnumType(type)) {
     return `StringInput`
   }
-  
+
   return `${type.name}Input`
 }
 
@@ -290,11 +290,11 @@ export function createVersionedFields() {
   return {
     [metadataMap.fieldNames.createdAt]: {
       type: GraphQLString,
-      description: `@${metadataMap.markers.createdAt}\n@db.type: 'timestamp'`
+      description: `@${metadataMap.markers.createdAt}\n@db(type: 'timestamp')`
     },
     [metadataMap.fieldNames.updatedAt]: {
       type: GraphQLString,
-      description: `@${metadataMap.markers.updatedAt}\n@db.type: 'timestamp'`
+      description: `@${metadataMap.markers.updatedAt}\n@db(type: 'timestamp')`
     }
   };
 }

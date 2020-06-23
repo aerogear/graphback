@@ -6,7 +6,7 @@ type Note {
   title: String! @test(description: "mock directive")
   description: String!
   """
-  @oneToMany field: 'noteComment', key: 'note_id'
+  @oneToMany(field: 'noteComment', key: 'note_id')
   """
   comments: [Comment]!
   """
@@ -40,7 +40,7 @@ type Mutation {
 }
 
 """
-Model added to test schema generation using enum. 
+Model added to test schema generation using enum.
 See issue https://github.com/aerogear/graphback/issues/1299
 
 @model(
@@ -49,8 +49,8 @@ See issue https://github.com/aerogear/graphback/issues/1299
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 """
@@ -83,18 +83,18 @@ A model added as part of fixing https://github.com/aerogear/graphback/issues/145
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 """
 type Fix {
   id: ID!
-  
+
   """
-  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany field: 'bugFix'
+  @oneToMany(field: 'bugFix')
   """
   issues: [Issue]
 }
