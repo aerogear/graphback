@@ -224,6 +224,65 @@ test('find users where name starts with "John"', async () => {
   expect(result.items).toHaveLength(2)
 })
 
+test('find and count all users', async () => {
+  const { services } = await setup({
+    schemaSDL: `
+    """
+    @model
+    """
+    type User {
+      id: ID
+      name: String
+    }
+    `,
+    seedData: {
+      user: [
+        { name: 'John Doe' },
+        { name: 'John Paul' },
+        { name: 'James Doe' },
+        { name: 'Johnny Doe' },
+        { name: 'John Luke' }
+      ]
+    }
+  })
+
+  const resultWithCount = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
+    count: true
+  }}}})
+
+  expect(resultWithCount.count).toEqual(4);
+  expect(resultWithCount.items).toHaveLength(4);
+
+
+  const resultWithoutCount = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
+    count: false
+  }}}})
+
+
+  expect(resultWithoutCount.count).toBeUndefined();
+  expect(resultWithoutCount.items).toHaveLength(4);
+
+  const resultWithoutItems = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: [], aggregations: {
+    count: true
+  }}}})
+
+
+  expect(resultWithoutItems.items).toBeUndefined();
+  expect(resultWithoutItems.count).toEqual(4);
+
+  // count with limit and offset
+
+  let resultWithLimitAndOffset = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
+    count: true
+  }}}}, undefined, {offset: 0, limit: 1})
+
+
+  expect(resultWithLimitAndOffset.items).toHaveLength(1);
+  expect(resultWithLimitAndOffset.count).toEqual(4);
+  expect(resultWithLimitAndOffset.limit).toEqual(1);
+  expect(resultWithLimitAndOffset.offset).toEqual(0);
+})
+
 test('find users where name ends with "Jones"', async () => {
   const { services } = await setup({
     schemaSDL: `
@@ -248,7 +307,7 @@ test('find users where name ends with "Jones"', async () => {
 
   expect(result.items).toHaveLength(1)
 })
- 
+
 test('find users where name not eq "John"', async () => {
   const { services } = await setup({
     schemaSDL: `

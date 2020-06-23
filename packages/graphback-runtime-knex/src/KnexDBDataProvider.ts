@@ -93,6 +93,13 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     throw new NoDataError(`No results for ${this.tableName} query and filter: ${JSON.stringify(filter)}`);
   }
 
+  public async count(filter: any): Promise<number> {
+    const dbResult = await buildQuery(this.db, filter).from(this.tableName).count();
+    const count: any = Object.values(dbResult[0])[0];
+
+    return parseInt(count, 10);
+  }
+
   public async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]> {
     //TODO: Use mapping when relationships are done
     //tslint:disable-next-line: await-promise

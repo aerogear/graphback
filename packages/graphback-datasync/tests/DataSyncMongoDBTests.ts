@@ -102,9 +102,19 @@ describe('Soft deletion test', () => {
     advanceTo(startTime);
     const { id } = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: fields}}});
     advanceTo(deleteTime);
+
+    // check count
+    let count = await Post.count({[fieldNames.updatedAt]: startTime });
+    expect(count).toEqual(1);
+
+    // delete the Post
     const deletedPost = await Post.delete({ id, [fieldNames.updatedAt]: startTime }, {graphback: {services: {}, options: { selectedFields: ["_deleted", "updatedAt"]}}});
     expect(deletedPost._deleted).toEqual(true);
     expect(deletedPost.updatedAt).toEqual(deleteTime);
+
+    // re check count after deletion
+    count = await Post.count({});
+    expect(count).toEqual(0);
 
     // Tests that we cannot find it anymore
     // This test fails if we can still find the document
@@ -143,6 +153,13 @@ describe('Soft deletion test', () => {
       expect(p.text).toMatch(/^post/g);
     }
 
+    // check count
+    const count = await Post.count({
+      text: {
+        startsWith: 'post'
+      }
+    });
+    expect(count).toEqual(2);
   })
 
   it('throws conflict error for update/delete conflicts', async () => {

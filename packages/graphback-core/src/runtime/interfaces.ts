@@ -12,7 +12,10 @@ export interface GraphbackServiceConfigMap {
  * Contains resolver options
  */
 export interface GraphbackResolverOptions {
-  selectedFields: string[]
+  selectedFields: string[],
+  aggregations?: { // A map that indicates the type of aggreation that can be perfomed withing the current context
+    count?: boolean
+  }
 }
 
 /**

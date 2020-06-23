@@ -120,6 +120,10 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
+  public async count(filter: any): Promise<number> {
+    return this.db.collection(this.collectionName).countDocuments(buildQuery(filter));
+  }
+
   public async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]> {
     let result: any;
 

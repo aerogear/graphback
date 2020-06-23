@@ -11,7 +11,7 @@ import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
 import { GraphbackGenerator, buildGraphbackAPI, GraphbackAPI } from "graphback/src";
-import { GraphQLSchema, DocumentNode } from 'graphql';
+import { DocumentNode } from 'graphql';
 import { migrateDB } from '../../packages/graphql-migrations/src';
 import { createKnexDbProvider } from "../../packages/graphback-runtime-knex/src"
 
@@ -200,7 +200,8 @@ test('Find all notes', async () => {
       }
     ],
     limit: null,
-    offset: 0
+    offset: 0,
+    count: 2
   })
 })
 
@@ -222,7 +223,8 @@ test('Find all notes except the first', async () => {
       }
     ],
     limit: null,
-    offset: 1
+    offset: 1,
+    count: 2
   })
 })
 
@@ -255,7 +257,8 @@ test('Find at most one note', async () => {
       },
     ],
     limit: 1,
-    offset: 0
+    offset: 0,
+    count: 2
   })
 })
 
@@ -295,7 +298,8 @@ test('Find all comments', async () => {
       }
     ],
     limit: null,
-    offset: 0
+    offset: 0,
+    count: 2
   })
 })
 
@@ -378,7 +382,8 @@ test('Find comments on Note 1 except first', async () => {
       }
     ],
     limit: null,
-    offset: 1
+    offset: 1,
+    count: 2
   })
 })
 

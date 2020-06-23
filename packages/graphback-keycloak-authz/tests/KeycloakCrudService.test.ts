@@ -16,7 +16,6 @@ const pubSub = new PubSub()
 // something probably changed in the CRUDService implementation
 // around paging
 const emptyPageValue = { items: [], offset: 0 }
-const fields = ["test"];
 
 test('unauthorized tokens will result in unauthorized errors', async () => {
 
@@ -51,7 +50,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
     }
   } as Keycloak.Token
 
-  const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken) }
+  const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
 
   const val = { test: 'value' }
 
@@ -109,7 +108,7 @@ test('authorized tokens will not throw an error and will get a result', async ()
   } as Keycloak.Token
 
 
-  const authorizedContext = { kauth: new KeycloakContextBase(authorizedToken) }
+  const authorizedContext = { kauth: new KeycloakContextBase(authorizedToken), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
 
   const dbCreateSpy = jest.spyOn(db, "create")
   const dbUpdateSpy = jest.spyOn(db, "update")
@@ -153,7 +152,7 @@ test('passing no authConfig will result in all operations being allowed', async 
     service: new CRUDService(modelType.name, db, { crudOptions: {}, pubSub })
   })
 
-  const context = { kauth: {} }
+  const context = { kauth: {}, graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
   const val = { test: 'value' }
 
   await expect(service.create(val, context)).resolves.toEqual(val)
@@ -195,7 +194,7 @@ test('multiple roles can be applied to each operation', async () => {
     }
   } as Keycloak.Token
 
-  const context = { kauth: new KeycloakContextBase(Token) }
+  const context = { kauth: new KeycloakContextBase(Token), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
 
   const val = { test: 'value' }
 
