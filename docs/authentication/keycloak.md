@@ -6,7 +6,7 @@ sidebar_label: Keycloak Auth
 
 ## Graphback Keycloak Authz
 
-Graphback Keycloak Authz enables [Keycloak](https://www.keycloak.org/) integration in [Graphback](https://graphback.dev) based applications. This enables you to declaratively add authorization capabilities like role bassed access on top of the CRUD model that is used within Graphback.
+Graphback Keycloak Authz enables [Keycloak](https://www.keycloak.org/) integration in [Graphback](https://graphback.dev) based applications. This enables you to declaratively add authorization capabilities like role based access on top of the CRUD model that is used within Graphback.
 
 The `KeycloakCrudService` extends Graphback's default `CrudService` class which provides the authorization capabilities. See [the docs](https://graphback.dev/docs/crud/crudruntime) for more information about the Crud model in Graphback.
 
@@ -16,7 +16,7 @@ This package is designed to work with [`keycloak-connect`](https://www.npmjs.com
 
 ## Getting Started
 
-This module requires you to install the following dependecies into your application.
+This module requires you to install the following dependencies into your application.
 
 ```bash
 npm install keycloak-connect
