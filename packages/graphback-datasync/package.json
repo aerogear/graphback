@@ -25,6 +25,7 @@
   "devDependencies": {
     "@types/jest": "26.0.0",
     "@types/node": "12.12.47",
+    "@types/agenda": "2.0.8",
     "graphql": "15.1.0",
     "jest": "26.0.1",
     "jest-date-mock": "1.0.8",
@@ -44,6 +45,7 @@
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-tools/utils": "6.0.10",
+    "agenda": "3.1.0",
     "graphql-compose": "7.18.1",
     "graphql-metadata": "0.7.0",
     "graphql-subscriptions": "1.1.0",
