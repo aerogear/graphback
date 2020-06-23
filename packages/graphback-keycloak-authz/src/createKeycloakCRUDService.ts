@@ -1,41 +1,17 @@
-import { ModelDefinition, GraphbackDataProvider, GraphbackCRUDService, CreateCRUDServiceOptions, CRUDServiceConfig, CRUDService } from '@graphback/core';
+import { ModelDefinition, GraphbackDataProvider, GraphbackCRUDService, CreateCRUDServiceOptions, CRUDServiceConfig, CRUDService, ServiceCreator, createCRUDService } from '@graphback/core';
 import { KeycloakCrudService } from './KeycloakCrudService';
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 
 /**
- * Creates a new KeycloakCrudService
+ * Creates a new KeycloakCrudService by wrapping original service.
+ * This method can work with both CRUDService (default) and DataSyncService
  *
- * @param config
- * @this {authConfig} authConfig - CRUD auth config for entire model
+ * @param authConfig  - CRUD auth config for entire model
+ *  @param serviceCreator - function that creates wrapper service
  */
-export function createKeycloakCRUDService(authConfig: CrudServiceAuthConfig, serviceCreator: (model: ModelDefinition, dataProvider: GraphbackDataProvider) => GraphbackCRUDService, crudConfig?: CreateCRUDServiceOptions) {
+export function createKeycloakCRUDService(authConfig: CrudServiceAuthConfig, serviceCreator: ServiceCreator) {
   return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
-    const serviceConfig: CRUDServiceConfig = {
-      ...crudConfig,
-      crudOptions: model.crudOptions
-    }
-
-    const service = new CRUDService(model.graphqlType.name, dataProvider, serviceConfig)
-    const keycloakService = new KeycloakCrudService({ service, authConfig });
-
-    return keycloakService;
-  }
-}
-
-/**
- * Creates a new KeycloakCrudService
- *
- * @param config
- * @this {authConfig} authConfig - CRUD auth config for entire model
- */
-export function createKeycloakDataSyncCRUDService(authConfig: CrudServiceAuthConfig, crudConfig?: CreateCRUDServiceOptions) {
-  return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
-    const serviceConfig: CRUDServiceConfig = {
-      ...crudConfig,
-      crudOptions: model.crudOptions
-    }
-
-    const service = new CRUDService(model.graphqlType.name, dataProvider, serviceConfig)
+    const service = serviceCreator(model, dataProvider);
     const keycloakService = new KeycloakCrudService({ service, authConfig });
 
     return keycloakService;

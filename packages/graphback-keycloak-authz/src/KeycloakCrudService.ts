@@ -1,5 +1,5 @@
 import { isAuthorizedByRole } from "keycloak-connect-graphql";
-import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage  } from '@graphback/core';
+import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage } from '@graphback/core';
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 
@@ -86,7 +86,7 @@ export class KeycloakCrudService<T = any> implements GraphbackCRUDService<T> {
       }
     }
 
-    return this.protectedService.findBy(filter, orderBy, page, context);
+    return this.protectedService.findBy(filter, context, orderBy, page);
   }
 
   public subscribeToCreate(filter?: any, context?: any): AsyncIterator<T> {
