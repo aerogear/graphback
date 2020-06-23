@@ -250,31 +250,6 @@ test('find users where name ends with "Jones"', async () => {
   expect(result.items).toHaveLength(1)
 })
 
-test('find users where name ends with "Jones"', async () => {
-  const { services } = await setup({
-    schemaSDL: `
-    """
-    @model
-    """
-    type User {
-      id: ID
-      name: String
-    }
-    `,
-    seedData: {
-      user: [
-        { name: 'John Doe' },
-        { name: 'Johnny Jones' },
-        { name: 'James Doe' }
-      ]
-    }
-  })
-
-  const result = await services.User.findBy({ name: { endsWith: 'Jones' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
-
-  expect(result.items).toHaveLength(1)
-})
-
 test('find users where name not eq "John"', async () => {
   const { services } = await setup({
     schemaSDL: `
