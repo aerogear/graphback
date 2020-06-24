@@ -137,7 +137,7 @@ export function buildRelationshipFilterFieldMap(model: ModelDefinition) {
  * @param columnKey
  */
 export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', fieldName: string, columnKey: string): string => {
-  return `@${relationshipKind} field: '${fieldName}', key: '${columnKey}'`;
+  return `@${relationshipKind}(field: '${fieldName}', key: '${columnKey}')`;
 }
 
 /**
@@ -148,7 +148,7 @@ export const relationshipFieldDescriptionTemplate = (relationshipKind: 'oneToOne
  * @param columnKey
  */
 export const relationshipOneToOneFieldDescriptionTemplate = (relationshipKind: 'oneToOne' | 'oneToMany' | 'manyToOne', columnKey: string): string => {
-  return `@${relationshipKind} key: '${columnKey}'`;
+  return `@${relationshipKind}(key: '${columnKey}')`;
 }
 
 /**
