@@ -52,7 +52,7 @@ With this configuration the following rules are in place.
 
 ## Example with Graphback Runtime
 
-During server initialization, use the `createKeycloakRuntimeContext` function to initialize the KeycloakCrudService instances for each model.
+During server initialization, use the `createKeycloakCRUDService` function to initialize the KeycloakCrudService instances for each model.
 
 The following example shows just the necessary parts to set up the runtime services in Graphback.
 
