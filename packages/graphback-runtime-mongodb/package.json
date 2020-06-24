@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@graphback/codegen-schema": "0.14.0-alpha4",
-    "@types/jest": "26.0.0",
+    "@types/jest": "26.0.3",
     "@types/node": "12.12.47",
     "graphql": "15.1.0",
     "jest": "26.1.0",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@graphback/core": "0.14.0-alpha4",
-    "@types/mongodb": "3.5.24",
+    "@types/mongodb": "3.5.25",
     "dataloader": "2.0.0",
     "escape-string-regexp": "4.0.0",
     "graphql-metadata": "0.7.0",
