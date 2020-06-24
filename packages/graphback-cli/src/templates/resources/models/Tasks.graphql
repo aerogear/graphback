@@ -6,6 +6,9 @@ type Task {
   description: String!
   status: String!
   creationMetadata: CreationMetadata
+  """
+  @oneToOne
+  """
   assignedTo: User
 }
 

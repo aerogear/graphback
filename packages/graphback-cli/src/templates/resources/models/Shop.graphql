@@ -3,8 +3,17 @@ type Shop {
   id: ID!
   name: String!
   ## Relationship
+  """
+  @oneToMany(field: 'shops')
+  """
   products: [Product]!
+  """
+  @oneToMany(field: 'shops')
+  """
   customers: [Person]!
+  """
+  @oneToOne
+  """
   owner: Person!
 }
 

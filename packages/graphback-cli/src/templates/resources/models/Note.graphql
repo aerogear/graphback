@@ -3,6 +3,9 @@ type Note {
   id: ID!
   title: String!
   description: String!
+  """
+  @oneToMany(field: 'note')
+  """
   comments: [Comment]!
 }
 
