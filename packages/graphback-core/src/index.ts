@@ -18,5 +18,5 @@ export * from './utils/printSchemaWithDirectives';
 export * from './utils/metadataAnnotations';
 export * from './utils/fieldTransformHelpers';
 
-export * from './runtime'
+export * from './runtime';
 export * from './db';
