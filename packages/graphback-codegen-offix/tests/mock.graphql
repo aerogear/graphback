@@ -15,7 +15,7 @@ type Comment {
   title: String!
   description: String!
   """
-  @manyToOne field: 'comments', key: 'noteId'
+  @manyToOne(field: 'comments', key: 'noteId')
   """
   noteComment: Note!
 }

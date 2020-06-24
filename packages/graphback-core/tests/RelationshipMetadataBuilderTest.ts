@@ -120,7 +120,7 @@ test('should build one-to-many and many-to-one relationships from both fields', 
         id: ID!
         description: String
         """
-        @manyToOne field: 'sentMessages'
+        @manyToOne(field: 'sentMessages')
         """
         sender: User
     }

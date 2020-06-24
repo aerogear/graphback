@@ -84,7 +84,7 @@ type Note {
   title: String!
   description: String!
 
-  \\"\\"\\"@oneToMany field: 'note', key: 'test_id'\\"\\"\\"
+  \\"\\"\\"@oneToMany(field: 'note', key: 'test_id')\\"\\"\\"
   tests(filter: TestFilter): [Test]!
 }
 
@@ -93,7 +93,7 @@ type Test {
   id: ID!
   name: String
 
-  \\"\\"\\"@manyToOne field: 'tests', key: 'test_id'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'tests', key: 'test_id')\\"\\"\\"
   note: Note
 }
 
@@ -184,7 +184,7 @@ type Comment {
   title: String!
   description: String!
 
-  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'comments', key: 'note_id')\\"\\"\\"
   noteComment: Note!
 }
 
@@ -266,8 +266,8 @@ A model added as part of fixing https://github.com/aerogear/graphback/issues/145
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 \\"\\"\\"
@@ -275,9 +275,9 @@ type Fix {
   id: ID!
 
   \\"\\"\\"
-  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany field: 'bugFix', key: 'bugFixId'
+  @oneToMany(field: 'bugFix', key: 'bugFixId')
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }
@@ -293,7 +293,7 @@ input IDInput {
 }
 
 \\"\\"\\"
-Model added to test schema generation using enum. 
+Model added to test schema generation using enum.
 See issue https://github.com/aerogear/graphback/issues/1299
 
 @model(
@@ -302,8 +302,8 @@ See issue https://github.com/aerogear/graphback/issues/1299
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 \\"\\"\\"
@@ -318,7 +318,7 @@ type Issue {
   \\"\\"\\"
   custom: CustomType
 
-  \\"\\"\\"@manyToOne field: 'issues', key: 'bugFixId'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'issues', key: 'bugFixId')\\"\\"\\"
   bugFix: Fix
 }
 
@@ -378,10 +378,10 @@ type Note {
   title: String! @test(description: \\"mock directive\\")
   description: String!
 
-  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  \\"\\"\\"@oneToMany(field: 'noteComment', key: 'note_id')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
 
-  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  \\"\\"\\"@oneToOne(key: 'test_id')\\"\\"\\"
   test: Test
 }
 
@@ -504,10 +504,10 @@ type Note {
   title: String!
   description: String!
 
-  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  \\"\\"\\"@oneToMany(field: 'noteComment', key: 'note_id')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
 
-  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  \\"\\"\\"@oneToOne(key: 'test_id')\\"\\"\\"
   test: Test
 }
 
@@ -517,7 +517,7 @@ type Comment {
   title: String!
   description: String!
 
-  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'comments', key: 'note_id')\\"\\"\\"
   noteComment: Note!
 }
 
@@ -668,7 +668,7 @@ input MutateCommentInput {
 }
 
 \\"\\"\\"
-Model added to test schema generation using enum. 
+Model added to test schema generation using enum.
 See issue https://github.com/aerogear/graphback/issues/1299
 
 @model(
@@ -677,8 +677,8 @@ See issue https://github.com/aerogear/graphback/issues/1299
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 \\"\\"\\"
@@ -693,7 +693,7 @@ type Issue {
   \\"\\"\\"
   custom: CustomType
 
-  \\"\\"\\"@manyToOne field: 'issues', key: 'bugFixId'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'issues', key: 'bugFixId')\\"\\"\\"
   bugFix: Fix
 }
 
@@ -717,8 +717,8 @@ A model added as part of fixing https://github.com/aerogear/graphback/issues/145
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 \\"\\"\\"
@@ -726,9 +726,9 @@ type Fix {
   id: ID!
 
   \\"\\"\\"
-  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany field: 'bugFix', key: 'bugFixId'
+  @oneToMany(field: 'bugFix', key: 'bugFixId')
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }
@@ -815,10 +815,10 @@ type Note {
   title: String!
   description: String!
 
-  \\"\\"\\"@oneToMany field: 'noteComment', key: 'note_id'\\"\\"\\"
+  \\"\\"\\"@oneToMany(field: 'noteComment', key: 'note_id')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
 
-  \\"\\"\\"@oneToOne key: 'test_id'\\"\\"\\"
+  \\"\\"\\"@oneToOne(key: 'test_id')\\"\\"\\"
   test: Test
 }
 
@@ -828,7 +828,7 @@ type Comment {
   title: String!
   description: String!
 
-  \\"\\"\\"@manyToOne field: 'comments', key: 'note_id'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'comments', key: 'note_id')\\"\\"\\"
   noteComment: Note!
 }
 
@@ -979,7 +979,7 @@ input MutateCommentInput {
 }
 
 \\"\\"\\"
-Model added to test schema generation using enum. 
+Model added to test schema generation using enum.
 See issue https://github.com/aerogear/graphback/issues/1299
 
 @model(
@@ -988,8 +988,8 @@ See issue https://github.com/aerogear/graphback/issues/1299
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 \\"\\"\\"
@@ -1004,7 +1004,7 @@ type Issue {
   \\"\\"\\"
   custom: CustomType
 
-  \\"\\"\\"@manyToOne field: 'issues', key: 'bugFixId'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'issues', key: 'bugFixId')\\"\\"\\"
   bugFix: Fix
 }
 
@@ -1028,8 +1028,8 @@ A model added as part of fixing https://github.com/aerogear/graphback/issues/145
   create: true,
   update: false,
   delete: false,
-  subCreate: false, 
-  subUpdate: false, 
+  subCreate: false,
+  subUpdate: false,
   subDelete: false
 )
 \\"\\"\\"
@@ -1037,9 +1037,9 @@ type Fix {
   id: ID!
 
   \\"\\"\\"
-  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level, 
+  Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany field: 'bugFix', key: 'bugFixId'
+  @oneToMany(field: 'bugFix', key: 'bugFixId')
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }

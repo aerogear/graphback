@@ -10,7 +10,7 @@ type Note {
   """
   comments: [Comment]!
   """
-  @oneToOne key: 'test_id'
+  @oneToOne(key: 'test_id')
   """
   test: Test
 }

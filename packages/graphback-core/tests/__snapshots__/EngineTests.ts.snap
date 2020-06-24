@@ -11,7 +11,7 @@ type Note {
   id: ID!
   title: String!
   description: String!
-  \\"\\"\\"@oneToMany field: 'noteComment'\\"\\"\\"
+  \\"\\"\\"@oneToMany(field: 'noteComment')\\"\\"\\"
   comment: [Comment]!
 }",
   "\\"\\"\\"@model(create: false)\\"\\"\\"
