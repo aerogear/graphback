@@ -1,5 +1,5 @@
 import { CodeFileLoader } from '@graphql-toolkit/code-file-loader';
-import { GraphQLExtensionDeclaration, loadConfig } from 'graphql-config';
+import { GraphQLExtensionDeclaration } from 'graphql-config';
 
 
 export const graphbackExtension = 'graphback';
