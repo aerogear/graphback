@@ -9,7 +9,7 @@ type Note {
   description: String!
   ## Relationship
   """
-  @oneToMany field: 'noteComment'
+  @oneToMany(field: 'noteComment')
   """
   comment: [Comment]!
 }

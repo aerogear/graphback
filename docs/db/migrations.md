@@ -205,8 +205,7 @@ type Note {
 type Note {
   id: ID!
   """
-  @db.type: 'string'
-  @db.length: 100
+  @db(type: 'string', length: 100)
   """
   title: String!
 }

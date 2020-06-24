@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { resolve, join, dirname } from 'path';
+import { existsSync, mkdirSync, writeFileSync, fstat } from 'fs';
+import { resolve, dirname, join } from 'path';
 import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
-import { parseMarker } from "graphql-metadata";
+import { parseMetadata } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields,createVersionedInputFields } from './definitions/schemaDefinitions';
 
@@ -309,7 +309,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
       const { markers } = metadataMap;
-      if (parseMarker(markers.versioned, desc)) {
+      if (parseMetadata(markers.versioned, desc)) {
         const metadataFields = createVersionedFields();
         // metadata fields needed for @versioned
 

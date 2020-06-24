@@ -24,21 +24,21 @@ test('should build mapping using custom values from mapping annotations', () => 
     const schema = buildSchema(`
     """
     @model
-    @db.name: 'user_account'
+    @db(name: 'user_account')
     """
     type User {
         id: ID!
         """
-        @db.name: 'user_email'
+        @db(name: 'user_email')
         """
         email: String!
         """
-        @db.name: 'userName'
+        @db(name: 'userName')
         """
         name: String!
         address: String
         """
-        @db.name: 'AccountConfirmed'
+        @db(name: 'AccountConfirmed')
         """
         accountConfirmed: Boolean
     }`);
@@ -81,7 +81,7 @@ test('should use custom ID field from annotation', () => {
         id: ID!
         """
         @id
-        @db.name: 'user_email'
+        @db(name: 'user_email')
         """
         email: String!
     }`);

@@ -1,11 +1,11 @@
 import { GraphQLField, GraphQLFieldMap, GraphQLObjectType } from "graphql";
-import { parseDbAnnotations } from '../annotations/parser';
+import { parseMetadata } from 'graphql-metadata'
 import { defaultTableNameTransform } from './defaultNameTransforms';
 import { getPrimaryKey } from './getPrimaryKey';
 
 /**
  * Contains mapping information between GraphQL Model type and database table
- * 
+ *
  * - typeName: Original GraphQLObjectType name
  * - tableName: Name of datase table
  * - id: Indicates the primary key field
@@ -20,15 +20,15 @@ export interface ModelTableMap {
 
 /**
  * Gets the datase column name for a GraphQL type.
- * Checks for the `@db.name` annotation for a customised name
- * 
- * @param field 
+ * Checks for the `@db(name)` annotation for a customised name
+ *
+ * @param field
  */
 export function getTableName(model: GraphQLObjectType): string {
   let tableName = defaultTableNameTransform(model.name, 'to-db');
 
-  const dbAnnotations = parseDbAnnotations(model);
-  if (dbAnnotations.name) {
+  const dbAnnotations = parseMetadata('db', model);
+  if (dbAnnotations && dbAnnotations.name) {
     tableName = dbAnnotations.name;
   }
 
@@ -37,15 +37,15 @@ export function getTableName(model: GraphQLObjectType): string {
 
 /**
  * Gets the datase column name for a GraphQL field.
- * Checks for the `@db.name` annotation for a customised name
- * 
- * @param field 
+ * Checks for the `@db(name)` annotation for a customised name
+ *
+ * @param field
  */
 export function getColumnName(field: GraphQLField<any, any>): string {
   let columnName = field.name;
 
-  const dbAnnotations = parseDbAnnotations(field);
-  if (dbAnnotations.name) {
+  const dbAnnotations = parseMetadata('db', field);
+  if (dbAnnotations && dbAnnotations.name) {
     columnName = dbAnnotations.name;
   }
 
@@ -69,7 +69,7 @@ function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>): any {
 /**
  * Builds a database mapping model of a GraphQLObject type.
  * @param model - The GraphQL object data model representation
- * 
+ *
  * @returns {ModelTableMap} A model containing the table name, any field customisations and a mapping of the primary key field.
  */
 export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {

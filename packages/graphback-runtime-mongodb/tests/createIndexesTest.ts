@@ -88,11 +88,11 @@ describe('MongoDB indexing', () => {
         id: ID!
         text: String
         """
-        @oneToMany field: 'note'
+        @oneToMany(field: 'note')
         """
         comments: [Comment]
       }
-  
+
       """
       @model
       """

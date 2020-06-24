@@ -26,7 +26,7 @@ type Note {
   id: ID!
   title: String!
   """
-  @oneToMany field: 'note'
+  @oneToMany(field: 'note')
   """
   comments: [Comment]
 }`)

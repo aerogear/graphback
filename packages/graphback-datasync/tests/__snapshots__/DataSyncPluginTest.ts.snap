@@ -10,18 +10,18 @@ type Comment {
   title: String!
   description: String!
 
-  \\"\\"\\"@manyToOne field: 'comments', key: 'noteId'\\"\\"\\"
+  \\"\\"\\"@manyToOne(field: 'comments', key: 'noteId')\\"\\"\\"
   noteComment: Note!
 
   \\"\\"\\"
   @createdAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
 }
@@ -33,13 +33,13 @@ type CommentDelta {
 
   \\"\\"\\"
   @createdAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
   _deleted: Boolean
@@ -132,18 +132,18 @@ type Note {
   title: String!
   description: String!
 
-  \\"\\"\\"@oneToMany field: 'noteComment', key: 'noteId'\\"\\"\\"
+  \\"\\"\\"@oneToMany(field: 'noteComment', key: 'noteId')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
 
   \\"\\"\\"
   @createdAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
 }
@@ -155,13 +155,13 @@ type NoteDelta {
 
   \\"\\"\\"
   @createdAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   createdAt: String
 
   \\"\\"\\"
   @updatedAt
-  @db.type: 'timestamp'
+  @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
   _deleted: Boolean

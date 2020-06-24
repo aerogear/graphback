@@ -132,7 +132,7 @@ export type Note = {
   id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  /** @oneToMany field: 'note', key: 'noteId' */
+  /** @oneToMany(field: 'note', key: 'noteId') */
   comments: Array<Maybe<Comment>>;
 };
 

@@ -35,7 +35,7 @@ test('should create many-to-one relationship metadata from one-to-many field', (
         name: String
         """
         some extra description
-        @oneToMany field: 'sender', key: 'sender_id'
+        @oneToMany(field: 'sender', key: 'sender_id')
         """
         sentMessages: [Message!]!
     }
@@ -110,7 +110,7 @@ test('should build one-to-many and many-to-one relationships from both fields', 
         name: String
         """
         some extra description
-        @oneToMany field: 'sender'
+        @oneToMany(field: 'sender')
         """
         sentMessages: [Message!]!
     }
@@ -120,7 +120,7 @@ test('should build one-to-many and many-to-one relationships from both fields', 
         id: ID!
         description: String
         """
-        @manyToOne field: 'sentMessages'
+        @manyToOne(field: 'sentMessages')
         """
         sender: User
     }
@@ -154,7 +154,7 @@ test('should throw error when relationship field is missing @model annotation', 
         id: ID!
         name: String
         """
-        @oneToMany field: 'user'
+        @oneToMany(field: 'user')
         """
         messages: [Message]
     }
@@ -174,7 +174,7 @@ test('should throw error when relationship field is not an object type', () => {
         id: ID!
         name: String
         """
-        @oneToMany field: 'user'
+        @oneToMany(field: 'user')
         """
         messages: [String]
     }`);
@@ -189,7 +189,7 @@ test('should throw error when relationship field base type is not a model type',
         id: ID!
         name: String
         """
-        @oneToMany field: 'user'
+        @oneToMany(field: 'user')
         """
         messages: [Message]
     }
@@ -209,7 +209,7 @@ test('should throw error when relation field maps to wrong type', () => {
         id: ID!
         name: String
         """
-        @oneToMany field: 'user'
+        @oneToMany(field: 'user')
         """
         messages: [Message]
     }
@@ -236,7 +236,7 @@ test('should throw error when relation field is no a single object', () => {
         id: ID!
         name: String
         """
-        @oneToMany field: 'user'
+        @oneToMany(field: 'user')
         """
         messages: [Message]
     }
@@ -258,7 +258,7 @@ test('should throw error when relationship key annotations are not the same', ()
         id: ID!
         name: String
         """
-        @oneToMany field: 'user', key: 'user_id'
+        @oneToMany(field: 'user', key: 'user_id')
         """
         messages: [Message]
     }
@@ -268,7 +268,7 @@ test('should throw error when relationship key annotations are not the same', ()
         id: ID!
         text: String
         """
-        @manyToOne field: 'messages', key: 'userId'
+        @manyToOne(field: 'messages', key: 'userId')
         """
         user: User
     }`);

@@ -7,7 +7,7 @@ exports[`should build one-to-many and many-to-one relationships from both fields
   \\"owner\\": \\"User\\",
   \\"ownerField\\": {
    \\"name\\": \\"sentMessages\\",
-   \\"description\\": \\"some extra description\\\\n@oneToMany field: 'sender', key: 'senderId'\\",
+   \\"description\\": \\"some extra description\\\\n@oneToMany(field: 'sender', key: 'senderId')\\",
    \\"type\\": \\"[Message!]!\\",
    \\"args\\": [],
    \\"isDeprecated\\": false,
@@ -15,19 +15,19 @@ exports[`should build one-to-many and many-to-one relationships from both fields
     \\"kind\\": \\"FieldDefinition\\",
     \\"description\\": {
      \\"kind\\": \\"StringValue\\",
-     \\"value\\": \\"some extra description\\\\n@oneToMany field: 'sender'\\",
+     \\"value\\": \\"some extra description\\\\n@oneToMany(field: 'sender')\\",
      \\"block\\": true,
      \\"loc\\": {
       \\"start\\": 89,
-      \\"end\\": 170
+      \\"end\\": 171
      }
     },
     \\"name\\": {
      \\"kind\\": \\"Name\\",
      \\"value\\": \\"sentMessages\\",
      \\"loc\\": {
-      \\"start\\": 179,
-      \\"end\\": 191
+      \\"start\\": 180,
+      \\"end\\": 192
      }
     },
     \\"arguments\\": [],
@@ -43,34 +43,34 @@ exports[`should build one-to-many and many-to-one relationships from both fields
          \\"kind\\": \\"Name\\",
          \\"value\\": \\"Message\\",
          \\"loc\\": {
-          \\"start\\": 194,
-          \\"end\\": 201
+          \\"start\\": 195,
+          \\"end\\": 202
          }
         },
         \\"loc\\": {
-         \\"start\\": 194,
-         \\"end\\": 201
+         \\"start\\": 195,
+         \\"end\\": 202
         }
        },
        \\"loc\\": {
-        \\"start\\": 194,
-        \\"end\\": 202
+        \\"start\\": 195,
+        \\"end\\": 203
        }
       },
       \\"loc\\": {
-       \\"start\\": 193,
-       \\"end\\": 203
+       \\"start\\": 194,
+       \\"end\\": 204
       }
      },
      \\"loc\\": {
-      \\"start\\": 193,
-      \\"end\\": 204
+      \\"start\\": 194,
+      \\"end\\": 205
      }
     },
     \\"directives\\": [],
     \\"loc\\": {
      \\"start\\": 89,
-     \\"end\\": 204
+     \\"end\\": 205
     }
    }
   },
@@ -83,7 +83,7 @@ exports[`should build one-to-many and many-to-one relationships from both fields
   \\"owner\\": \\"Message\\",
   \\"ownerField\\": {
    \\"name\\": \\"sender\\",
-   \\"description\\": \\"@manyToOne field: 'sentMessages', key: 'senderId'\\",
+   \\"description\\": \\"@manyToOne(field: 'sentMessages', key: 'senderId')\\",
    \\"type\\": \\"User\\",
    \\"args\\": [],
    \\"isDeprecated\\": false,
@@ -91,19 +91,19 @@ exports[`should build one-to-many and many-to-one relationships from both fields
     \\"kind\\": \\"FieldDefinition\\",
     \\"description\\": {
      \\"kind\\": \\"StringValue\\",
-     \\"value\\": \\"@manyToOne field: 'sentMessages'\\",
+     \\"value\\": \\"@manyToOne(field: 'sentMessages')\\",
      \\"block\\": true,
      \\"loc\\": {
-      \\"start\\": 300,
-      \\"end\\": 356
+      \\"start\\": 301,
+      \\"end\\": 358
      }
     },
     \\"name\\": {
      \\"kind\\": \\"Name\\",
      \\"value\\": \\"sender\\",
      \\"loc\\": {
-      \\"start\\": 365,
-      \\"end\\": 371
+      \\"start\\": 367,
+      \\"end\\": 373
      }
     },
     \\"arguments\\": [],
@@ -113,19 +113,19 @@ exports[`should build one-to-many and many-to-one relationships from both fields
       \\"kind\\": \\"Name\\",
       \\"value\\": \\"User\\",
       \\"loc\\": {
-       \\"start\\": 373,
-       \\"end\\": 377
+       \\"start\\": 375,
+       \\"end\\": 379
       }
      },
      \\"loc\\": {
-      \\"start\\": 373,
-      \\"end\\": 377
+      \\"start\\": 375,
+      \\"end\\": 379
      }
     },
     \\"directives\\": [],
     \\"loc\\": {
-     \\"start\\": 300,
-     \\"end\\": 377
+     \\"start\\": 301,
+     \\"end\\": 379
     }
    }
   },
@@ -143,7 +143,7 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
   \\"owner\\": \\"Address\\",
   \\"ownerField\\": {
    \\"name\\": \\"resident\\",
-   \\"description\\": \\"@oneToOne key: 'residentId'\\",
+   \\"description\\": \\"@oneToOne(key: 'residentId')\\",
    \\"type\\": \\"User!\\",
    \\"args\\": [],
    \\"isDeprecated\\": false,

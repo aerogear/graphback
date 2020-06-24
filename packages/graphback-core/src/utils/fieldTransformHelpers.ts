@@ -1,4 +1,4 @@
-import { parseMarker } from "graphql-metadata";
+import { parseMetadata } from "graphql-metadata";
 import { GraphQLObjectType } from 'graphql';
 
 export type FieldTransformer = (value?: any) => any;
@@ -26,7 +26,7 @@ export function getFieldTransformations(baseType: GraphQLObjectType): FieldTrans
     [TransformType.UPDATE]: []
   };
   for (const field of Object.values(fieldMap)) {
-    if (parseMarker("updatedAt", field.description)) {
+    if (parseMetadata("updatedAt", field.description)) {
       fieldTransformMap[TransformType.UPDATE].push({
         fieldName: field.name,
         transform: () => {
@@ -40,7 +40,7 @@ export function getFieldTransformations(baseType: GraphQLObjectType): FieldTrans
         }
       });
     }
-    if (parseMarker("createdAt", field.description)) {
+    if (parseMetadata("createdAt", field.description)) {
       fieldTransformMap[TransformType.CREATE].push({
         fieldName: field.name,
         transform: () => {

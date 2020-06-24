@@ -29,7 +29,7 @@ type Note {
   title: String!
   description: String
   """
-  @oneToMany field: 'note'
+  @oneToMany(field: 'note')
   """
   comments: [Comment]!
 }
