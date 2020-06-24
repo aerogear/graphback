@@ -28,7 +28,6 @@ export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
   }
 
   public findOne(args: any, context: any): Promise<T> {
-
     return this.proxiedService.findOne(args, context);
   }
 
