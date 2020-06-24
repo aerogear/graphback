@@ -22,7 +22,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/jest": "26.0.0",
+    "@types/jest": "26.0.3",
     "@types/node": "12.12.47",
     "graphql": "15.1.0",
     "jest": "26.1.0",
