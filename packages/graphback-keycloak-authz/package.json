@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@graphback/core": "0.14.0-alpha4",
-    "@graphback/runtime": "0.14.0-alpha4",
     "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {

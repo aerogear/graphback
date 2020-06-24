@@ -1,7 +1,6 @@
-import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, GraphbackPage, NoDataError, GraphbackOrderBy } from '@graphback/runtime';
 import { buildQuery } from './knexQueryMapper';
 
 /**

@@ -1,4 +1,4 @@
-import { CrudServiceAuthConfig } from "./definitions"
+import { CrudServiceAuthConfig } from "./KeycloakConfig"
 
 
 const supportedCrudOperations = ['create', 'read', 'update', 'delete'];

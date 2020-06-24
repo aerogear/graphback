@@ -1,36 +1,19 @@
-import { ModelDefinition } from '@graphback/core';
-import { PubSubEngine, PubSub } from 'graphql-subscriptions';
-import { GraphbackCRUDService, GraphbackDataProvider } from '@graphback/runtime'
-import { KeycloakCrudServiceOptions, KeycloakCrudService } from './KeycloakCrudService';
-import { CrudServiceAuthConfig } from './definitions';
-
-export interface CreateKeycloakCRUDServiceOptions {
-  /**
-   * PubSub implementation for creating subscriptions
-   */
-  pubSub: PubSubEngine
-  /**
-   * Auth config for entire data model
-   */
-  authConfig: CrudServiceAuthConfig
-}
+import { ModelDefinition, GraphbackDataProvider, GraphbackCRUDService, ServiceCreator } from '@graphback/core';
+import { KeycloakCrudService } from './KeycloakCrudService';
+import { CrudServiceAuthConfig } from './KeycloakConfig';
 
 /**
- * Creates a new KeycloakCrudService
+ * Creates a new KeycloakCrudService by wrapping original service.
+ * This method can work with both CRUDService (default) and DataSyncService
  *
- * @param config
- * @param {PubSub} pubSub - PubSub engine
- * @this {authConfig} authConfig - CRUD auth config for entire model
+ * @param authConfig  - CRUD auth config for entire model
+ *  @param serviceCreator - function that creates wrapper service
  */
-export function createCRUDService(config: CreateKeycloakCRUDServiceOptions): Function {
+export function createKeycloakCRUDService(authConfig: CrudServiceAuthConfig, serviceCreator: ServiceCreator) {
   return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
-    const serviceConfig: KeycloakCrudServiceOptions = {
-      ...config,
-      modelType: model.graphqlType,
-      db: dataProvider,
-      crudOptions: model.crudOptions
-    }
+    const service = serviceCreator(model, dataProvider);
+    const keycloakService = new KeycloakCrudService({ service, authConfig });
 
-    return new KeycloakCrudService(serviceConfig)
+    return keycloakService;
   }
 }

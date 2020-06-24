@@ -40,7 +40,6 @@
     "@graphback/codegen-client": "0.14.0-alpha4",
     "@graphback/codegen-schema": "0.14.0-alpha4",
     "@graphback/core": "0.14.0-alpha4",
-    "@graphback/runtime": "0.14.0-alpha4",
     "@graphback/runtime-knex": "0.14.0-alpha4",
     "@graphback/runtime-mongo": "0.14.0-alpha4",
     "@graphql-tools/load": "6.0.10",

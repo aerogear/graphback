@@ -1,8 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { createKnexDbProvider, CRUDService } from '@graphback/runtime-knex'
+import { createKnexDbProvider } from '@graphback/runtime-knex'
 import * as Knex from 'knex'
-import { buildSchema } from 'graphql'
-import { buildGraphbackAPI } from '../src'
+import { buildGraphbackAPI, CRUDService } from '../src'
 import { DataSyncPlugin } from '../../graphback-datasync/src/DataSyncPlugin'
 
 describe('buildGraphbackAPI', () => {

@@ -1,10 +1,9 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { ObjectID, MongoClient } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import { buildSchema } from 'graphql';
-import { filterModelTypes, GraphbackCoreMetadata, metadataMap } from '@graphback/core';
-import { advanceTo, advanceBy } from "jest-date-mock";
+import { filterModelTypes, GraphbackCoreMetadata, metadataMap, NoDataError } from '@graphback/core';
+import { advanceTo } from "jest-date-mock";
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { NoDataError } from "@graphback/runtime-mongo";
 import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError } from '../src';
 
 const {fieldNames} = metadataMap;

@@ -246,7 +246,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     const todos = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: ["id", "text"]}}});
 
     expect(todos.length).toEqual(3);
-    todos.forEach((todo) => {
+    todos.forEach((todo: any) => {
       expect(todo.id).toBeDefined();
       expect(todo.text).toBeDefined();
       expect(todo.description).toBeUndefined(); // should be undefined since not selected

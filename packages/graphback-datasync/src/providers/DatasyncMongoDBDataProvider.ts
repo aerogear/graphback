@@ -1,8 +1,7 @@
-import { Context } from 'vm';
 import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap, GraphbackContext } from '@graphback/core';
+import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage } from '@graphback/core';
 import { ObjectId } from 'mongodb';
-import { MongoDBDataProvider, NoDataError, GraphbackOrderBy, GraphbackPage, FieldTransform, TransformType, applyIndexes } from '@graphback/runtime-mongo';
+import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
@@ -19,7 +18,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
           _deleted: 1
         }
       }
-    ],this.db.collection(this.collectionName)).catch((e: any) => {
+    ], this.db.collection(this.collectionName)).catch((e: any) => {
       throw e;
     });
   }
@@ -60,7 +59,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId, _deleted: false }, { $set: data });
     if (result.result.nModified === 1) {
       const projection = this.buildProjectionOption(context);
-      const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: objectId }, {projection})
+      const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection })
       if (updatedDocument) {
 
         return this.mapFields(updatedDocument);
@@ -109,7 +108,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
 
   protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
     const { idField } = getDatabaseArguments(this.tableMap, clientData);
-    const {fieldNames} = metadataMap;
+    const { fieldNames } = metadataMap;
 
     if (!idField.value) {
       throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
@@ -119,7 +118,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       [fieldNames.updatedAt]: 1,
       _deleted: 1
     };
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false }, {projection});
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false }, { projection });
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
       if (clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {

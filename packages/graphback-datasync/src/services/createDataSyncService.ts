@@ -1,6 +1,5 @@
-import { ModelDefinition } from '@graphback/core';
+import { ModelDefinition, CRUDService, CRUDServiceConfig, GraphbackCRUDService } from '@graphback/core';
 import { PubSubEngine } from 'graphql-subscriptions';
-import { CRUDService, CRUDServiceConfig, GraphbackCRUDService } from '@graphback/runtime';
 import { isDataSyncModel } from '../util';
 import { DataSyncProvider } from '../providers';
 import { DataSyncCRUDService } from './DataSyncCRUDService';

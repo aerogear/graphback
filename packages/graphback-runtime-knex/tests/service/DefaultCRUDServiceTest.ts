@@ -3,10 +3,9 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService } from '../../../graphback-runtime/src';
-import { filterModelTypes } from '../../../graphback-core/src';
+import { CRUDService, filterModelTypes } from '@graphback/core';
+import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
-import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
@@ -71,7 +70,7 @@ test('create Todo', async () => {
   const { services } = await setup()
   const todo = await services.Todo.create({
     text: 'create a todo',
-  }, {graphback: {services: {}, options: { selectedFields: ["id", "text"]}}});
+  }, { graphback: { services: {}, options: { selectedFields: ["id", "text"] } } });
 
   expect(todo.id).toEqual(1);
   expect(todo.text).toEqual('create a todo');
@@ -117,7 +116,7 @@ test('find Todo by text', async () => {
 
   const todoResults = await services.Todo.findBy({
     text: { eq: 'the second todo' },
-  }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+  }, { graphback: { services: {}, options: { selectedFields: ["id"] } } });
 
   expect(todoResults.items.length).toEqual(1);
   expect(todoResults.items[0].id).toEqual(2);
@@ -170,11 +169,11 @@ test('insertion of User with same custom ID field more than once should fail', a
   });
 
   try {
-    const result = await services.User.create({ email: 'johndoe@email.com', name: 'John doe' }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+    const result = await services.User.create({ email: 'johndoe@email.com', name: 'John doe' }, { graphback: { services: {}, options: { selectedFields: ["id"] } } });
     expect(result).toBeFalsy(); // should not reach here because an error should have been thrown by line above
   } catch (e) {
-     expect(e.code).toBe("SQLITE_CONSTRAINT");
-     expect(e.message).toBe("insert into `user` (`email`, `name`) values ('johndoe@email.com', 'John doe') - SQLITE_CONSTRAINT: UNIQUE constraint failed: user.email");
+    expect(e.code).toBe("SQLITE_CONSTRAINT");
+    expect(e.message).toBe("insert into `user` (`email`, `name`) values ('johndoe@email.com', 'John doe') - SQLITE_CONSTRAINT: UNIQUE constraint failed: user.email");
   }
 });
 
@@ -195,7 +194,7 @@ test('update User by custom ID field', async () => {
     seedData: { user: [{ email: 'johndoe@email.com' }] }
   })
 
-  const result = await services.User.update({ email: 'johndoe@email.com', name: 'John Doe' }, {graphback: {services: {}, options: { selectedFields: ["name"]}}})
+  const result = await services.User.update({ email: 'johndoe@email.com', name: 'John Doe' }, { graphback: { services: {}, options: { selectedFields: ["name"] } } })
 
   expect(result.name).toEqual('John Doe')
 });
@@ -220,7 +219,7 @@ test('find users where name starts with "John"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ name: { startsWith: 'John' } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(2)
 })
@@ -245,36 +244,11 @@ test('find users where name ends with "Jones"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { endsWith: 'Jones' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ name: { endsWith: 'Jones' } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(1)
 })
-
-test('find users where name ends with "Jones"', async () => {
-  const { services } = await setup({
-    schemaSDL: `
-    """
-    @model
-    """
-    type User {
-      id: ID
-      name: String
-    }
-    `,
-    seedData: {
-      user: [
-        { name: 'John Doe' },
-        { name: 'Johnny Jones' },
-        { name: 'James Doe' }
-      ]
-    }
-  })
-
-  const result = await services.User.findBy({ name: { endsWith: 'Jones' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
-
-  expect(result.items).toHaveLength(1)
-})
-
+ 
 test('find users where name not eq "John"', async () => {
   const { services } = await setup({
     schemaSDL: `
@@ -295,7 +269,7 @@ test('find users where name not eq "John"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { ne: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["name"]}}})
+  const result = await services.User.findBy({ name: { ne: 'John' } }, { graphback: { services: {}, options: { selectedFields: ["name"] } } })
 
   expect(result.items).toHaveLength(1)
   expect(result.items[0].name).toBe('James')
@@ -321,7 +295,7 @@ test('find users where name in array', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { in: ['Sarah', 'John'] } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ name: { in: ['Sarah', 'John'] } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(2)
 })
@@ -347,7 +321,7 @@ test('find users where name contains "John"', async () => {
     }
   })
 
-  const result = await services.User.findBy({ name: { contains: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ name: { contains: 'John' } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(3)
 })
@@ -376,7 +350,7 @@ test('find users where friends == 1', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { eq: 1 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ friends: { eq: 1 } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(1)
 })
@@ -405,7 +379,7 @@ test('find users where friends < 1', async () => {
     }
   })
 
-  const result = await services.User.findBy( {friends: { lt: 20 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ friends: { lt: 20 } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(2)
 })
@@ -434,7 +408,7 @@ test('find users where friends <= 1', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { le: 1 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ friends: { le: 1 } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(2)
 })
@@ -463,7 +437,7 @@ test('find users where friends > 30', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { gt: 30 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ friends: { gt: 30 } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(2)
 })
@@ -492,7 +466,7 @@ test('find users where friends >= 50', async () => {
     }
   })
 
-  const result = await services.User.findBy({ friends: { ge: 50 } }, {graphback: {services: {}, options: { selectedFields: ["id"]}}})
+  const result = await services.User.findBy({ friends: { ge: 50 } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } })
 
   expect(result.items).toHaveLength(2)
 })

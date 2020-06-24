@@ -38,7 +38,6 @@
   },
   "dependencies": {
     "@graphback/core": "0.14.0-alpha4",
-    "@graphback/runtime": "0.14.0-alpha4",
     "@types/mongodb": "3.5.24",
     "dataloader": "2.0.0",
     "escape-string-regexp": "4.0.0",

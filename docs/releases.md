@@ -36,6 +36,13 @@ becomes:
 """
 ```
 
+### @graphback/runtime package is removed
+
+Runtime package should no longer be used in top level API.
+All functionalities were moved to the @graphback/core package.
+
+> NOTE: Users should never have runtime or core packages imported in their 
+applications and interact with graphback package as aggregator
 
 #### API code generation is no longer supported
 

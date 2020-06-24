@@ -1,4 +1,4 @@
-import { GraphbackDataProvider, GraphbackContext, } from "@graphback/runtime";
+import { GraphbackDataProvider, GraphbackContext } from "@graphback/core";
 
 export interface DataSyncProvider<Type = any> extends GraphbackDataProvider<Type> {
 

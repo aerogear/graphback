@@ -1,8 +1,4 @@
 import { ApolloServer, PubSub } from "apollo-server-express";
-import {
-  GraphbackDataProvider,
-  GraphbackCRUDService
-} from "@graphback/runtime";
 import { Server } from "http";
 import * as getPort from "get-port";
 import * as cors from "cors";
@@ -10,6 +6,7 @@ import * as express from "express";
 import * as http from "http";
 import { createRuntime, createMongoDBClient } from './runtime';
 import { MongoClient } from 'mongodb';
+import { GraphbackDataProvider, GraphbackCRUDService } from 'graphback';
 
 const ENDPOINT = "/graphql";
 
