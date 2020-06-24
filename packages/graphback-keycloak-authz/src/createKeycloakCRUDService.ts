@@ -1,4 +1,4 @@
-import { ModelDefinition, GraphbackDataProvider, GraphbackCRUDService, CreateCRUDServiceOptions, CRUDServiceConfig, CRUDService, ServiceCreator, createCRUDService } from '@graphback/core';
+import { ModelDefinition, GraphbackDataProvider, GraphbackCRUDService, ServiceCreator } from '@graphback/core';
 import { KeycloakCrudService } from './KeycloakCrudService';
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 
