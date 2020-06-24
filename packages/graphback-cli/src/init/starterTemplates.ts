@@ -14,32 +14,32 @@ export const allTemplates: Template[] = [
   {
     name: 'apollo-fullstack-react-postgres-ts',
     description: 'Apollo GraphQL Server connecting to Postgres database and React client using TypeScript',
-    repos: [{
-      uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
-      path: '/templates/ts-apollo-postgres-backend',
-    },
-    {
-      uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
-      path: '/templates/ts-react-apollo-client',
-      mountpath: "client"
-    }]
+    repos: [
+      {
+        uri: 'https://github.com/aerogear/graphback',
+        branch: 'templates-0.14.0',
+        path: '/templates/ts-react-apollo-client',
+        mountpath: "client"
+      }, {
+        uri: 'https://github.com/aerogear/graphback',
+        branch: 'templates-0.14.0',
+        path: '/templates/ts-apollo-postgres-backend',
+      }]
   },
   {
     name: 'apollo-fullstack-react-mongo-ts',
     description: 'Apollo GraphQL Server connecting to Mongo database and React client using TypeScript',
-    repos: [{
-      uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
-      path: '/templates/ts-apollo-mongodb-backend',
-    },
-    {
-      uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
-      path: '/templates/ts-react-apollo-client',
-      mountpath: "client"
-    }]
+    repos: [
+      {
+        uri: 'https://github.com/aerogear/graphback',
+        branch: 'templates-0.14.0',
+        path: '/templates/ts-react-apollo-client',
+        mountpath: "client"
+      },{
+        uri: 'https://github.com/aerogear/graphback',
+        branch: 'templates-0.14.0',
+        path: '/templates/ts-apollo-mongodb-backend',
+      }]
   },
   {
     name: 'apollo-mongo-server-ts',
