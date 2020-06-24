@@ -12,7 +12,7 @@ With the `GraphbackCRUDService` abstraction developers can add any rules and imp
 Graphback developers recomend following libraries:
 
 - Passport.js if you looking for in application authorization and authentication mechanisms.
-- Keycloak SSO - Standalone SSO server offering integration with various social OAuth logins and federating users.
+- [Keycloak](https://www.keycloak.org/) SSO - Standalone SSO server offering integration with various social OAuth logins and federating users.
 
 Graphback provides out of the box support for Keycloak SSO thanks to @graphback/keycloak-authz that utilizes
 https://github.com/aerogear/keycloak-connect-graphql library
