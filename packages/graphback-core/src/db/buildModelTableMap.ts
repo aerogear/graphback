@@ -1,5 +1,5 @@
 import { GraphQLField, GraphQLFieldMap, GraphQLObjectType } from "graphql";
-import { parseDbAnnotations } from '../annotations/parser';
+import { parseMetadata } from 'graphql-metadata'
 import { defaultTableNameTransform } from './defaultNameTransforms';
 import { getPrimaryKey } from './getPrimaryKey';
 
@@ -27,7 +27,7 @@ export interface ModelTableMap {
 export function getTableName(model: GraphQLObjectType): string {
   let tableName = defaultTableNameTransform(model.name, 'to-db');
 
-  const dbAnnotations = parseDbAnnotations(model);
+  const dbAnnotations = parseMetadata('db', model);
   if (dbAnnotations && dbAnnotations.name) {
     tableName = dbAnnotations.name;
   }
@@ -44,7 +44,7 @@ export function getTableName(model: GraphQLObjectType): string {
 export function getColumnName(field: GraphQLField<any, any>): string {
   let columnName = field.name;
 
-  const dbAnnotations = parseDbAnnotations(field);
+  const dbAnnotations = parseMetadata('db', field);
   if (dbAnnotations && dbAnnotations.name) {
     columnName = dbAnnotations.name;
   }
