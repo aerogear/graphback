@@ -2,10 +2,10 @@ import { GraphbackCRUDService, ResultList } from './GraphbackCRUDService';
 import { GraphbackOrderBy, GraphbackPage } from '.';
 
 /**
- * This custom CRUD Service shows another potential way to add auth
- *
- * This is actually quite nice and clean but it does not allow for field level auth.
- * It's still a possibility that we could go with though!
+ * ProxyService that can be used by any services that wish to extend 
+ * Graphback functionality.
+ * Service works by proxying method requests to another service or 
+ * datastore.
  */
 export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
 
