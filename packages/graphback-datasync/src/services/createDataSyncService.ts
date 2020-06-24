@@ -15,7 +15,7 @@ export interface CreateDataSyncCRUDServiceOptions {
  *
  * @param config
  */
-export function createDataSyncCRUDService(config: CreateDataSyncCRUDServiceOptions): (...args: any[]) => GraphbackCRUDService {
+export function createDataSyncCRUDService(config: CreateDataSyncCRUDServiceOptions) {
   return (model: ModelDefinition, dataProvider: DataSyncProvider): GraphbackCRUDService => {
 
     const serviceConfig: CRUDServiceConfig = {
