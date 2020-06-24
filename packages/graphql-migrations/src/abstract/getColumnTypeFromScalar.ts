@@ -1,7 +1,6 @@
 import { GraphQLField, GraphQLScalarType } from 'graphql'
-import { parseMetadata } from 'graphql-metadata'
-import { TableColumnType } from './TableColumn'
 import { parseAnnotations } from '../util/parseAnnotations';
+import { TableColumnType } from './TableColumn'
 
 export interface TableColumnTypeDescriptor {
   /**

@@ -426,9 +426,9 @@ class AbstractDatabaseBuilder {
             type: indexType,
             columns: [],
           } : {
-              name: indexName,
-              columns: [],
-            }
+            name: indexName,
+            columns: [],
+          }
           list.push(index)
         }
         index.columns.push(columnName)
