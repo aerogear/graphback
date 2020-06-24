@@ -82,6 +82,6 @@
   },
   "homepage": "https://github.com/aerogear/graphback#readme",
   "resolutions": {
-    "@types/react": "16.9.38"
+    "@types/react": "16.9.39"
   }
 }
