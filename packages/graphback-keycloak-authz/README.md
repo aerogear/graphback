@@ -6,5 +6,5 @@
   Declarative code and schema driven RBAC for Graphback 🚀
 </p>
 
-**Documentation**: http://localhost:3000/docs/next/authentication/keycloak
+**Documentation**: https://graphback.dev/docs/next/authentication/keycloak
 **Repository**: https://github.com/aerogear/graphback/
