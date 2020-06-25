@@ -13,7 +13,8 @@ export function loadDBConfig() {
       database: process.env.DB_DATABASE,
       host: process.env.DB_HOST,
       port: port && !isNaN(port) ? port : 5432
-    }
+    },
+    pool: { min: 5, max: 30 }
   };
 }
 
