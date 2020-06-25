@@ -35,6 +35,17 @@ type Note {
   """
   comments: [Comment]!
 }
+
+""" 
+@model
+@datasync
+"""
+type Comment {
+  id: ID!
+  text: String
+  description: String
+}
+
 ```
 
 - Start the server
