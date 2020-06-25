@@ -22,13 +22,20 @@ docker-compose up -d
 - Define your schema in the `model/datamodel.graphql` file. Or use the default:
 
 ```
-type User {
+"""
+@model
+@datasync
+"""
+type Note {
   id: ID!
-  name: String
+  title: String!
+  description: String
+  """
+  @oneToMany(field: 'note')
+  """
+  comments: [Comment]!
 }
 ```
-
-> **NOTE**: for Data Synchonization to work, you must use the `@datasync` annotation on required model(s)
 
 - Start the server
 

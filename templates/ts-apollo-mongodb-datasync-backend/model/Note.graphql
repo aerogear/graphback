@@ -1,4 +1,7 @@
-""" @model """
+"""
+@model
+@datasync
+"""
 type Note {
   id: ID!
   title: String!
