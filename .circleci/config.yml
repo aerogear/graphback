@@ -12,6 +12,11 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgresql
           POSTGRES_DB: users
+      - image: circleci/mongo:latest
+        environment:
+          MONGO_INITDB_DATABASE: users
+          MONGO_INITDB_ROOT_USERNAME: mongodb
+          MONGO_INITDB_ROOT_PASSWORD: mongo
     steps:
       - checkout
       - restore_cache:
