@@ -51,7 +51,6 @@
     "core-workspace": "yarn workspace @graphback/core",
     "graphback-workspace": "yarn workspace graphback",
     "cli-workspace": "yarn workspace graphback-cli",
-    "codegen-offix-workspace": "yarn workspace @graphback/codegen-offix",
     "codegen-client-workspace": "yarn workspace @graphback/codegen-client",
     "codegen-schema-workspace": "yarn workspace @graphback/codegen-schema",
     "datasync-workspace": "yarn workspace @graphback/datasync",
