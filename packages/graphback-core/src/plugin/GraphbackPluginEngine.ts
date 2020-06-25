@@ -58,7 +58,7 @@ export class GraphbackPluginEngine {
 
   public createSchema(): GraphbackCoreMetadata {
     if (this.plugins.length === 0) {
-      throw new Error("GraphbackEngine: No Graphback plugins registered")
+      console.warn("GraphbackEngine: No Graphback plugins registered");
     }
     //We need to apply all required changes to the schema we need
     //This is to ensure that every plugin can add changes to the schema

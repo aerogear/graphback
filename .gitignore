@@ -42,3 +42,5 @@ lib
 yarn.lock
 integration/test.sqlite
 integration/output/
+integration/output-postgres/
+integration/output-mongo/

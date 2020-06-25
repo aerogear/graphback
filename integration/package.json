@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "rimraf": "3.0.2",
-    "sqlite3": "4.2.0",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
     "typescript": "3.9.5",
@@ -27,6 +26,7 @@
     "apollo-server-testing": "2.15.0",
     "jest": "26.1.0",
     "knex": "0.21.1",
+    "mongodb": "3.5.9",
     "node-fetch": "2.6.0"
   },
   "license": "Apache-2.0"

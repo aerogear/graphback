@@ -9,85 +9,47 @@ import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing'
 import { loadConfig } from 'graphql-config';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
-import * as Knex from 'knex';
-import { GraphbackGenerator, buildGraphbackAPI, GraphbackAPI } from "graphback/src";
+import { buildGraphbackAPI, GraphbackAPI } from "graphback";
 import { DocumentNode } from 'graphql';
-import { migrateDB } from '../../packages/graphql-migrations/src';
-import { createKnexDbProvider } from "../../packages/graphback-runtime-knex/src"
+import { createMongoDbProvider } from "../../packages/graphback-runtime-mongodb"
+import { MongoClient, Db } from 'mongodb';
+import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
+import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
 
 /** global config */
-let db: Knex;
+let db: Db;
+let mongoClient: MongoClient;
 let server: ApolloServer;
 let client: ApolloServerTestClient;
 let graphbackApi: GraphbackAPI;
 
 let documents: DocumentNode;
 
-const modelText = `""" @model """
-type Note {
-  id: ID!
-  title: String!
-  description: String
-  """
-  @oneToMany(field: 'note')
-  """
-  comments: [Comment]!
-}
+let notesId = [];
+let commentId = [];
+let metadataId = [];
 
-""" @model """
-type Comment {
-  id: ID!
-  text: String
-  description: String
-  """
-  @oneToOne
-  """
-  metadata: CommentMetadata
-}
-
-"""
-@model
-"""
-type CommentMetadata {
-  id: ID!
-  opened: Boolean
-}
-
-type Query {
-  helloWorld: String
-}`
+const modelText = readFileSync("./mock.graphql").toString();
 
 beforeAll(async () => {
   try {
-    const { graphbackConfig } = await getConfig();
-    mkdirSync("./output");
-    mkdirSync("./output/client")
-    const generator = new GraphbackGenerator(modelText, graphbackConfig);
-    generator.generateSourceCode();
+    mkdirSync("./output-mongo");
+    mkdirSync("./output-mongo/client")
 
-    const dbMigrationsConfig = {
-      client: "pg",
-      connection: {
-        user: "postgresql",
-        password: "postgres",
-        database: "users",
-        host: "localhost",
-        port: process.env.PORT || 5432
-      }
-    }
-    db = Knex(dbMigrationsConfig);
-
+    mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27017/users?authSource=admin', { useUnifiedTopology: true });
+    await mongoClient.connect();
+    db = mongoClient.db('users');
     graphbackApi = buildGraphbackAPI(modelText, {
-      dataProviderCreator: createKnexDbProvider(db)
+      dataProviderCreator: createMongoDbProvider(db),
+      plugins: [
+        new SchemaCRUDPlugin({outputPath: "./output-mongo/schema/schema.graphql"}),
+        new ClientCRUDPlugin({format: 'graphql', outputFile: './output-mongo/client/graphback.graphql'})
+      ]
     });
-
-    const { newDB } = await migrateDB(dbMigrationsConfig, graphbackApi.schema);
 
     await seedDatabase(db);
 
-    expect(newDB).toMatchSnapshot();
-
-    const source = await loadDocuments(path.resolve(`./output/client/**/*.graphql`), {
+    const source = await loadDocuments(path.resolve(`./output-mongo/client/**/*.graphql`), {
       loaders: [
         new GraphQLFileLoader()
       ]
@@ -112,14 +74,15 @@ beforeEach(() => {
 
 afterEach(() => server.stop())
 
-afterAll(() => {
-  rmdirSync(path.resolve('./output'), { recursive: true });
-
-  return db.destroy();
+afterAll(async () => {
+  rmdirSync(path.resolve('./output-mongo'), { recursive: true });
+  const dropCollections = ["note", "comment", "commentmetadata"].map((name: string) => db.dropCollection(name));
+  await Promise.all(dropCollections);
+  return mongoClient.close();
 });
 
-async function seedDatabase(db: Knex) {
-  await db('note').insert([
+async function seedDatabase(db: Db) {
+  const notes = [
     {
       title: 'Note A',
       description: 'Note A Description'
@@ -128,31 +91,46 @@ async function seedDatabase(db: Knex) {
       title: 'Note B',
       description: 'Note B Description'
     }
-  ]);
+  ]
 
-  await db('commentmetadata').insert([
+  for (const note of notes) {
+    const { ops } = await db.collection("note").insertOne(note);
+    notesId.push(ops[0]._id.toString());
+  }
+
+  const commentMetadata = [
     {
       opened: true
     },
     {
       opened: false
     }
-  ])
+  ]
 
-  await db('comment').insert([
+  for (const metadata of commentMetadata) {
+    const {ops} = await db.collection('commentmetadata').insertOne(metadata);
+    metadataId.push(ops[0]._id.toString());
+  }
+
+  const comments = [
     {
       text: 'Note A Comment',
       description: 'Note A Comment Description',
-      noteId: 1,
-      metadataId: 1
+      noteId: notesId[0],
+      metadataId: metadataId[0]
     },
     {
       text: 'Note A Comment 2',
       description: 'Note A Comment Description',
-      noteId: 1,
-      metadataId: 2
+      noteId: notesId[0],
+      metadataId: metadataId[1]
     }
-  ]);
+  ]
+
+  for (const comment of comments)  {
+    const {ops} = await db.collection('comment').insertOne(comment);
+    commentId.push(ops[0]._id.toString())
+  }
 }
 
 const getConfig = async () => {
@@ -176,24 +154,24 @@ test('Find all notes', async () => {
   expect(data.findNotes).toEqual({
     items: [
       {
-        id: '1',
+        id: notesId[0],
         title: 'Note A',
         description: 'Note A Description',
         comments: [
           {
-            id: '1',
+            id: commentId[0],
             text: 'Note A Comment',
             description: 'Note A Comment Description'
           },
           {
-            id: '2',
+            id: commentId[1],
             text: 'Note A Comment 2',
             description: 'Note A Comment Description'
           }
         ]
       },
       {
-        id: '2',
+        id: notesId[1],
         title: 'Note B',
         description: 'Note B Description',
         comments: []
@@ -216,7 +194,7 @@ test('Find all notes except the first', async () => {
   expect(data.findNotes).toEqual({
     items: [
       {
-        id: '2',
+        id: notesId[1],
         title: 'Note B',
         description: 'Note B Description',
         comments: []
@@ -239,17 +217,17 @@ test('Find at most one note', async () => {
   expect(data.findNotes).toEqual({
     items: [
       {
-        id: '1',
+        id: notesId[0],
         title: 'Note A',
         description: 'Note A Description',
         comments: [
           {
-            id: '1',
+            id: commentId[0],
             text: 'Note A Comment',
             description: 'Note A Comment Description'
           },
           {
-            id: '2',
+            id: commentId[1],
             text: 'Note A Comment 2',
             description: 'Note A Comment Description'
           }
@@ -269,30 +247,30 @@ test('Find all comments', async () => {
   expect(data.findComments).toEqual({
     items: [
       {
-        id: '1',
+        id: commentId[0],
         text: 'Note A Comment',
         description: 'Note A Comment Description',
         note: {
-          id: '1',
+          id: notesId[0],
           title: 'Note A',
           description: 'Note A Description'
         },
         metadata: {
-          id: '1',
+          id: metadataId[0],
           opened: true
         }
       },
       {
-        id: '2',
+        id: commentId[1],
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
         note: {
-          id: '1',
+          id: notesId[0],
           title: 'Note A',
           description: 'Note A Description'
         },
         metadata: {
-          id: '2',
+          id: metadataId[1],
           opened: false
         }
       }
@@ -304,21 +282,21 @@ test('Find all comments', async () => {
 })
 
 test('Note 1 should be defined', async () => {
-  const response = await getNote('1', client);
+  const response = await getNote(notesId[0], client);
   expect(response.data).toBeDefined();
   const notes = response.data.getNote;
   expect(notes).toEqual({
-    id: '1',
+    id: notesId[0],
     title: 'Note A',
     description: 'Note A Description',
     comments: [
       {
-        id: '1',
+        id: commentId[0],
         text: 'Note A Comment',
         description: 'Note A Comment Description'
       },
       {
-        id: '2',
+        id: commentId[1],
         text: 'Note A Comment 2',
         description: 'Note A Comment Description'
       }
@@ -330,7 +308,7 @@ test('Find at most one comment on Note 1', async () => {
   const response = await client.query({
     operationName: "findComments",
     query: documents,
-    variables: { filter: { noteId: { eq: 1 } }, page: { limit: 1 } }
+    variables: { filter: { noteId: { eq: notesId[0] } }, page: { limit: 1 } }
   });
 
   expect(response.data).toBeDefined()
@@ -338,16 +316,16 @@ test('Find at most one comment on Note 1', async () => {
   expect(comments.items).toHaveLength(1);
   expect(comments.items).toEqual([
     {
-      id: '1',
+      id: commentId[0],
       text: 'Note A Comment',
       description: 'Note A Comment Description',
       metadata: {
-        id: "1",
+        id: metadataId[0],
         opened: true,
       },
       note: {
         description: "Note A Description",
-        id: "1",
+        id: notesId[0],
         title: "Note A",
       },
     }
@@ -358,7 +336,7 @@ test('Find comments on Note 1 except first', async () => {
   const response = await client.query({
     operationName: "findComments",
     query: documents,
-    variables: { filter: { noteId: { eq: 1 } }, page: { offset: 1 } }
+    variables: { filter: { noteId: { eq: notesId[0] } }, page: { offset: 1 } }
   });
 
   expect(response.data).toBeDefined()
@@ -367,16 +345,16 @@ test('Find comments on Note 1 except first', async () => {
   expect(notes).toEqual({
     items: [
       {
-        id: '2',
+        id: commentId[1],
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
         metadata: {
-          "id": "2",
+          "id": metadataId[1],
           "opened": false,
         },
         note: {
           "description": "Note A Description",
-          "id": "1",
+          "id": notesId[0],
           "title": "Note A",
         },
       }
@@ -388,7 +366,7 @@ test('Find comments on Note 1 except first', async () => {
 })
 
 test('Should update Note 1 title', async () => {
-  const response = await updateNote({ id: '1', title: 'Note 1 New Title' }, client);
+  const response = await updateNote({ id: notesId[0], title: 'Note 1 New Title' }, client);
   expect(response.data).toBeDefined();
   expect(response.data.updateNote.title).toBe('Note 1 New Title');
 });
@@ -396,13 +374,13 @@ test('Should update Note 1 title', async () => {
 test('Should create a new Note', async () => {
   const response = await createNote(client, { title: 'New note', description: 'New note description' });
   expect(response.data).toBeDefined();
-  expect(response.data.createNote).toEqual({ id: '3', title: 'New note', description: 'New note description' });
+  expect(response.data.createNote).toEqual({ id: response.data.createNote.id, title: 'New note', description: 'New note description' });
 })
 
 test('Delete Note 1', async () => {
-  const response = await deleteNote(client, '2');
+  const response = await deleteNote(client, notesId[1]);
   expect(response.data).toBeDefined();
-  expect(response.data.deleteNote).toEqual({ id: '2', description: 'Note B Description', title: 'Note B' });
+  expect(response.data.deleteNote).toEqual({ id: notesId[1], description: 'Note B Description', title: 'Note B' });
 });
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
