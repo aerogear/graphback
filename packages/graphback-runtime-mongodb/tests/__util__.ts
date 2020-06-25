@@ -1,4 +1,4 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server-global';
 import { MongoClient } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { filterModelTypes, GraphbackCoreMetadata } from '@graphback/core';
