@@ -118,36 +118,4 @@ describe('MongoDB indexing', () => {
       }
     )
   })
-
-  it('creates index on custom @id fields', async () => {
-    context = await createTestingContext(`
-      """
-      @model
-      @versioned
-      """
-      type Note {
-        id: ID!
-        """@id"""
-        master_key: String!
-        text: String!
-      }
-      `);
-
-    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db('test');
-
-    const indexes = await db.collection('note').indexes();
-
-    expect(indexes[1]).toMatchObject(
-      {
-        "key": {
-          "master_key": 1
-        },
-        "name": "master_key_1",
-        "ns": "test.note",
-        "unique": true
-      }
-    )
-  });
 })
