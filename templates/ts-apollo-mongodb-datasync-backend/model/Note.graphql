@@ -1,0 +1,20 @@
+""" @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  """
+  @oneToMany field: 'note'
+  """
+  comments: [Comment]!
+}
+
+""" 
+@model
+@datasync
+"""
+type Comment {
+  id: ID!
+  text: String
+  description: String
+}
