@@ -28,7 +28,7 @@ async function start() {
   const db = await connectDB()
 
   const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
-    dataProviderCreator: createDataSyncMongoDbProvider(db, { Comment: 1 }, { pruneInterval: '10 seconds' }),
+    dataProviderCreator: createDataSyncMongoDbProvider(db),
     serviceCreator: createDataSyncCRUDService({ pubSub: new PubSub() }),
     plugins: [
       new DataSyncPlugin()
