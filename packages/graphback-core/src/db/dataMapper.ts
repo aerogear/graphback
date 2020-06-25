@@ -1,4 +1,5 @@
 import { ModelTableMap } from './buildModelTableMap';
+import { type } from 'os';
 
 export interface TableDataMap {
   idField?: TableID
@@ -29,10 +30,19 @@ function getTableId(idField: string, data: any): TableID {
 export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
   const idField = modelMap.idField;
 
-  //TODO: Map fields to custom db names
-
   return {
     idField: getTableId(idField, data),
-    data
+    // eslint-disable-next-line @typescript-eslint/tslint/config
+    data: Object.keys(data).reduce((dataObj, key) => {
+      const value = data[key]
+
+      if (typeof value === 'object') {
+        dataObj[key] = JSON.stringify(value)
+      } else {
+        dataObj[key] = value
+      }
+      
+      return dataObj
+    }, {})
   }
 }
