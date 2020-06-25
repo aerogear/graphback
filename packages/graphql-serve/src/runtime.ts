@@ -35,16 +35,16 @@ export const createRuntime = async (modelDir: string, db: Db, datasync: boolean)
   let graphbackAPI;
   if (datasync) {
     graphbackAPI = buildGraphbackAPI(model, {
-      dataProviderCreator: createMongoDbProvider(db)
-    })
-  } else {
-    graphbackAPI = buildGraphbackAPI(model, {
       serviceCreator: createDataSyncCRUDService({ pubSub: new PubSub() }),
       dataProviderCreator: createDataSyncMongoDbProvider(db),
       plugins: [new DataSyncPlugin()]
     })
-  }
 
+  } else {
+    graphbackAPI = buildGraphbackAPI(model, {
+      dataProviderCreator: createMongoDbProvider(db)
+    })
+  }
 
   return graphbackAPI;
 }
