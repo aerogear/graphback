@@ -13,7 +13,6 @@ export async function connectDB() {
 
   const mongoClient = await MongoClient.connect(url, { useUnifiedTopology: true });
 
-  // get db instance
   const db = mongoClient.db(process.env.DB_DATABASE);
 
   return db;

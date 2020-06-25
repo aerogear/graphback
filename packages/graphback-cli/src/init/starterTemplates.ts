@@ -51,6 +51,15 @@ export const allTemplates: Template[] = [
     }]
   },
   {
+    name: 'apollo-mongo-datasync-server-ts',
+    description: 'Apollo GraphQL Server connecting to Mongo database using TypeScript. Contains Data Synchronization features.',
+    repos: [{
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-0.14.0',
+      path: '/templates/ts-apollo-mongodb-datasync-backend',
+    }]
+  },
+  {
     name: 'apollo-postgres-server-ts',
     description: 'Apollo GraphQL Server connecting to Postgres database using TypeScript',
     repos: [{
