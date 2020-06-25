@@ -100,7 +100,7 @@ export class GraphbackServer {
   }
 }
 
-export async function buildGraphbackServer(modelDir: string): Promise<GraphbackServer> {
+export async function buildGraphbackServer(modelDir: string, enableDataSync: boolean): Promise<GraphbackServer> {
   const app = express();
 
   app.use(cors());
@@ -108,7 +108,7 @@ export async function buildGraphbackServer(modelDir: string): Promise<GraphbackS
   const dbClient = await createMongoDBClient();
   const db = dbClient.db('test')
 
-  const { typeDefs, resolvers, contextCreator } = await createRuntime(modelDir, db);
+  const { typeDefs, resolvers, contextCreator } = await createRuntime(modelDir, db, enableDataSync);
 
   const apolloConfig = {
     typeDefs,

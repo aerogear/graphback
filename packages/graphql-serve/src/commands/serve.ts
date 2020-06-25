@@ -1,14 +1,14 @@
 import yargs from 'yargs';
 import { serveHandler } from '../components/serveHandler';
 
-type Params = { model?: string, port?: number };
+type Params = { model?: string, port?: number, datasync: boolean };
 
 export const command = 'serve [modelDir] [options]';
 
 export const desc = 'Generate and start GraphQL server from data model files';
 
 // tslint:disable-next-line: typedef
-export const builder = (args: yargs.Argv):void => {
+export const builder = (args: yargs.Argv): void => {
   args.positional('modelDir', {
     describe: 'Directory to search for data models',
     type: 'string',
@@ -18,6 +18,12 @@ export const builder = (args: yargs.Argv):void => {
     describe: 'Specify the port on which to listen on',
     type: 'number',
     alias: 'p'
+  })
+
+  args.option('datasync', {
+    describe: 'Enable datasynchronization features',
+    type: 'boolean',
+    alias: 'ds'
   })
   args.example('$0 serve . -p 8080', 'generate schema from data model files in current directory and start GraphQL server on port 8080')
 }
