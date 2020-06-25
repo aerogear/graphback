@@ -727,7 +727,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         schemaComposer.add(createInputTypeForScalar(namedType));
       }
 
-      if (isObjectType(namedType) && !isModelType(namedType)) {
+      const isRootType = ['Query', 'Subscription', 'Mutation'].includes(namedType.name)
+      if (isObjectType(namedType) && !isModelType(namedType) && !isRootType) {
         addCreateObjectInputType(schemaComposer, namedType)
         addUpdateObjectInputType(schemaComposer, namedType)
       }
