@@ -130,8 +130,6 @@ function where(builder: Knex.QueryBuilder, filter: any, or: boolean = false, not
     builder = where(builder, orFilter, true, not)
   }
 
-  console.log(builder.toQuery())
-
   return builder
 }
 

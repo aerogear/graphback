@@ -172,8 +172,10 @@ export function getInputFieldNamedType(schemaComposer: SchemaComposer<any>, fiel
   }
 
   if (isObjectType(fieldType) && !isModelType(fieldType)) {
+    // TODO: Filtering on JSON fields
     if (operation === GraphbackOperationType.FIND) {
-      return GraphQLJSON
+      return undefined
+      // return GraphQLJSON
     }
 
     const typeName = getInputTypeName(fieldType.name, operation)
