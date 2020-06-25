@@ -3,15 +3,15 @@
 Template showcases Graphback Data Synchronization capabilities using
 resolver layer created in-memory as opposed to codegeneration.
 
-Serverless example can be build as docker image with configurable volume for models. 
-This models will be processed at application at startup giving fully featured GraphQL Server 
-following Graphback CRUD specification.
+Serverless example can be built as docker image with configurable volume for models. 
+This models will be processed at application startup giving fully featured GraphQL Server 
+following [GraphQL CRUD specification.](https://graphqlcrud.org/)
 
 For more information please refer to: 
 
 ### Running example
 
-The project has been created using `graphback`. Run the project using the following steps.
+The project has been created using [`Graphback`](https://graphback.dev/). Run the project using the following steps.
 
 - Start the database
 
