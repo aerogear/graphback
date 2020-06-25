@@ -101,7 +101,7 @@ function where(builder: Knex.QueryBuilder, filter: any, or: boolean = false, not
 
     // eslint-disable-next-line no-null/no-null
     if (exprEntry[1] === null) {
-      builder = builder[builderMethod('whereNull', or, not)](col)
+      builder = builder[builderMethod('whereNull', or, exprEntry[0] === 'ne')](col)
     } else if (Object.keys(methodMapping).includes(exprEntry[0])) {
       builder = builder[builderMethod(exprEntry[0], or, not)](col, exprEntry[1])
     } else if (exprEntry[0] === 'contains') {
@@ -129,6 +129,8 @@ function where(builder: Knex.QueryBuilder, filter: any, or: boolean = false, not
   for (const orFilter of orQueries) {
     builder = where(builder, orFilter, true, not)
   }
+
+  console.log(builder.toQuery())
 
   return builder
 }
