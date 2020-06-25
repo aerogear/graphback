@@ -26,7 +26,7 @@
     "@types/chalk": "0.4.31",
     "@types/inquirer": "6.5.0",
     "@types/jest": "26.0.3",
-    "@types/js-yaml": "3.12.4",
+    "@types/js-yaml": "3.12.5",
     "@types/node": "12.12.47",
     "@types/node-emoji": "1.8.1",
     "@types/through": "0.0.30",
