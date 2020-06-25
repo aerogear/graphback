@@ -42,14 +42,6 @@ export function getIndexFields(baseType: GraphQLObjectType): IndexSpecification[
   Object.keys(fields).forEach((k: string) => {
     const field = fields[k];
 
-    // Add unique index on custom primary keys e.g @id
-    const pkIndex = getIndexForCustomPrimaryKey(field);
-    if (pkIndex !== undefined) {
-      res.push(pkIndex);
-
-      return
-    }
-
     // Add Index on relation fields
     const relationIndex = getRelationIndex(field);
     if (relationIndex !== undefined) {
@@ -92,22 +84,6 @@ export function getRelationIndex(field: GraphQLField<any, any>): IndexSpecificat
         [relationshipData.key]: 1
       },
     }
-  } else {
-    return undefined;
-  }
-}
-
-export function getIndexForCustomPrimaryKey(field: GraphQLField<any, any>): IndexSpecification {
-  const indexMetadata: any = parseMetadata('id', field.description);
-  if (indexMetadata === true) {
-    const indexSpec: IndexSpecification = {
-      key: {
-        [field.name]: 1
-      },
-      unique: true
-    };
-
-    return indexSpec;
   } else {
     return undefined;
   }
