@@ -20,3 +20,5 @@ export * from './utils/fieldTransformHelpers';
 
 export * from './runtime';
 export * from './db';
+
+export * from './scalars'

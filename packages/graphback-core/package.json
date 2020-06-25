@@ -38,6 +38,7 @@
   "dependencies": {
     "@graphql-tools/utils": "6.0.10",
     "@graphql-toolkit/common": "0.10.7",
+    "graphql-type-json": "0.3.2",
     "glob": "7.1.6",
     "graphql-compose": "7.18.1",
     "graphql-fields-list": "2.1.3",

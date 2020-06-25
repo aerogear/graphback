@@ -4,14 +4,19 @@ type Note {
   title: String!
   description: String
   """
-  @oneToMany(field: 'note')
+  @db(type: 'json')
   """
-  comments: [Comment]!
+  comment: Comment
 }
 
-""" @model """
 type Comment {
   id: ID!
-  text: String
-  description: String
+  text: String!
+  description: String!
+  test: Test!
+  test2: [Test!]!
+}
+
+type Test {
+  hello: String
 }

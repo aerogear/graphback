@@ -1,8 +1,10 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNamedType, isObjectType, isScalarType, GraphQLNonNull, GraphQLInputType, isNonNullType, isEnumType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNamedType, isObjectType, isScalarType, GraphQLInputType, isEnumType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
+import { SchemaComposer } from 'graphql-compose';
 import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
+import { GraphQLJSON } from '../scalars'
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO it is esential to document this element
@@ -156,16 +158,27 @@ export function getInputFieldName(field: GraphQLField<any, any>): string {
   return relationshipAnnotation.key || transformForeignKeyName(field.name);
 }
 
-export function getInputFieldType(field: GraphQLField<any, any>): GraphQLInputType {
-  let fieldType = getNamedType(field.type);
+export function getInputFieldNamedType(schemaComposer: SchemaComposer<any>, field: GraphQLField<any, any>, operation: GraphbackOperationType): GraphQLInputType {
+  const fieldType = getNamedType(field.type);
 
   if (isObjectType(fieldType) && isModelType(fieldType)) {
     const idField = getPrimaryKey(fieldType);
-    fieldType = getNamedType(idField.type);
+
+    return getNamedType(idField.type) as GraphQLInputType
   }
 
   if (isScalarType(fieldType) || isEnumType(fieldType)) {
-    return isNonNullType(field.type) ? GraphQLNonNull(fieldType) : fieldType
+    return fieldType
+  }
+
+  if (isObjectType(fieldType) && !isModelType(fieldType)) {
+    if (operation === GraphbackOperationType.FIND) {
+      return GraphQLJSON
+    }
+
+    const typeName = getInputTypeName(fieldType.name, operation)
+
+    return schemaComposer.getITC(typeName).getType()
   }
 
   return undefined;

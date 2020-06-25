@@ -21,6 +21,8 @@ export const getSelectedFieldsFromResolverInfo = (info: GraphQLResolveInfo, mode
 
         if (foundRelationship) {
           acc.push(foundRelationship.relationForeignKey)
+        } else {
+          acc.push(entry[0])
         }
       } else {
         acc.push(entry[0]);
