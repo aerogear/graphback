@@ -1,3 +1,5 @@
+/* eslint-disable import/no-internal-modules */
+/* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 /* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-use-before-define */
@@ -6,7 +8,6 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { loadConfig } from 'graphql-config';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
@@ -85,6 +86,7 @@ afterEach(() => server.stop())
 afterAll(async () => {
   rmdirSync(path.resolve('./output-postgres'), { recursive: true });
   await db.schema.dropTableIfExists('comment').dropTableIfExists('commentmetadata').dropTableIfExists('note');
+
   return db.destroy();
 });
 
@@ -96,7 +98,15 @@ async function seedDatabase(db: Knex) {
     },
     {
       title: 'Note B',
-      description: 'Note B Description'
+      description: 'Note B Description',
+      tasks: [
+        {
+          title: 'Task 1'
+        },
+        {
+          title: 'Task 2'
+        }
+      ]
     }
   ]);
 
@@ -125,20 +135,6 @@ async function seedDatabase(db: Knex) {
   ]);
 }
 
-const getConfig = async () => {
-  const config = await loadConfig({
-    rootDir: process.cwd(),
-    extensions: [
-      () => ({ name: 'graphback' })
-    ]
-  });
-
-  const projectConfig = config.getDefault();
-  const graphbackConfig = projectConfig.extension('graphback');
-
-  return { projectConfig, graphbackConfig };
-}
-
 test('Find all notes', async () => {
   const { data } = await client.query({ operationName: 'findNotes', query: documents });
 
@@ -149,6 +145,7 @@ test('Find all notes', async () => {
         id: '1',
         title: 'Note A',
         description: 'Note A Description',
+        tasks: [],
         comments: [
           {
             id: '1',
@@ -166,7 +163,15 @@ test('Find all notes', async () => {
         id: '2',
         title: 'Note B',
         description: 'Note B Description',
-        comments: []
+        comments: [],
+        tasks: [
+          {
+            title: 'Task 1'
+          },
+          {
+            title: 'Task 2'
+          }
+        ]
       }
     ],
     limit: null,

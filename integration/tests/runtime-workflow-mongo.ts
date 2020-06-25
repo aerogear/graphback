@@ -42,8 +42,8 @@ beforeAll(async () => {
     graphbackApi = buildGraphbackAPI(modelText, {
       dataProviderCreator: createMongoDbProvider(db),
       plugins: [
-        new SchemaCRUDPlugin({outputPath: "./output-mongo/schema/schema.graphql"}),
-        new ClientCRUDPlugin({format: 'graphql', outputFile: './output-mongo/client/graphback.graphql'})
+        new SchemaCRUDPlugin({ outputPath: "./output-mongo/schema/schema.graphql" }),
+        new ClientCRUDPlugin({ format: 'graphql', outputFile: './output-mongo/client/graphback.graphql' })
       ]
     });
 
@@ -89,7 +89,15 @@ async function seedDatabase(db: Db) {
     },
     {
       title: 'Note B',
-      description: 'Note B Description'
+      description: 'Note B Description',
+      tasks: [
+        {
+          title: 'Task 1'
+        },
+        {
+          title: 'Task 2'
+        }
+      ]
     }
   ]
 
@@ -108,7 +116,7 @@ async function seedDatabase(db: Db) {
   ]
 
   for (const metadata of commentMetadata) {
-    const {ops} = await db.collection('commentmetadata').insertOne(metadata);
+    const { ops } = await db.collection('commentmetadata').insertOne(metadata);
     metadataId.push(ops[0]._id.toString());
   }
 
@@ -127,24 +135,10 @@ async function seedDatabase(db: Db) {
     }
   ]
 
-  for (const comment of comments)  {
-    const {ops} = await db.collection('comment').insertOne(comment);
+  for (const comment of comments) {
+    const { ops } = await db.collection('comment').insertOne(comment);
     commentId.push(ops[0]._id.toString())
   }
-}
-
-const getConfig = async () => {
-  const config = await loadConfig({
-    rootDir: process.cwd(),
-    extensions: [
-      () => ({ name: 'graphback' })
-    ]
-  });
-
-  const projectConfig = config.getDefault();
-  const graphbackConfig = projectConfig.extension('graphback');
-
-  return { projectConfig, graphbackConfig };
 }
 
 test('Find all notes', async () => {
@@ -174,7 +168,15 @@ test('Find all notes', async () => {
         id: notesId[1],
         title: 'Note B',
         description: 'Note B Description',
-        comments: []
+        comments: [],
+        tasks: [
+          {
+            title: 'Task 1'
+          },
+          {
+            title: 'Task 2'
+          }
+        ]
       }
     ],
     limit: null,
