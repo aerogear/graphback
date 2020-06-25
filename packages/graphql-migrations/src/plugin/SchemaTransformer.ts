@@ -15,12 +15,8 @@ export const removeNonModelTypesFromSchema: SchemaTransformerPlugin = {
     }
 
     const schemaComposer = new SchemaComposer(schema)
-    for (const userType of nonModelTypes) {
-      schemaComposer.delete('StringInput')
-    }
+    schemaComposer.delete('StringInput')
 
-    const x = schemaComposer.toSDL()
-    
     return schemaComposer.buildSchema()
   }
 }
