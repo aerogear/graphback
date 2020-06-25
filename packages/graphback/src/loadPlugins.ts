@@ -2,6 +2,10 @@
 import { GraphbackPlugin } from "@graphback/core";
 
 export function loadPlugins(pluginConfig: any): GraphbackPlugin[] {
+  if (!pluginConfig) {
+    return [];
+  }
+
   const pluginInstances = [];
   for (const pluginLabel of Object.keys(pluginConfig)) {
     let pluginName = pluginLabel;
