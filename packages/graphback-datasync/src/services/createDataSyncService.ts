@@ -1,4 +1,4 @@
-import { ModelDefinition, CRUDService, CRUDServiceConfig, GraphbackCRUDService } from '@graphback/core';
+import { ModelDefinition, CRUDService, CRUDServiceConfig, GraphbackCRUDService, GraphbackDataProvider } from '@graphback/core';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { isDataSyncModel } from '../util';
 import { DataSyncProvider } from '../providers';
@@ -16,7 +16,7 @@ export interface CreateDataSyncCRUDServiceOptions {
  * @param config
  */
 export function createDataSyncCRUDService(config: CreateDataSyncCRUDServiceOptions) {
-  return (model: ModelDefinition, dataProvider: DataSyncProvider): GraphbackCRUDService => {
+  return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
 
     const serviceConfig: CRUDServiceConfig = {
       ...config,
@@ -24,7 +24,7 @@ export function createDataSyncCRUDService(config: CreateDataSyncCRUDServiceOptio
     }
 
     if (isDataSyncModel(model)) {
-      return new DataSyncCRUDService(model.graphqlType.name, dataProvider, serviceConfig)
+      return new DataSyncCRUDService(model.graphqlType.name, dataProvider as DataSyncProvider, serviceConfig)
     } else {
       return new CRUDService(model.graphqlType.name, dataProvider, serviceConfig)
     }
