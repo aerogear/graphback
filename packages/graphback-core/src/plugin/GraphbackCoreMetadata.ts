@@ -2,6 +2,7 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { parseMetadata } from 'graphql-metadata'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common'
 import { IResolvers } from '@graphql-tools/utils'
+import { mergeResolvers } from '@graphql-tools/merge';
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
@@ -25,12 +26,11 @@ export class GraphbackCoreMetadata {
 
   private supportedCrudMethods: GraphbackCRUDGeneratorConfig
   private schema: GraphQLSchema;
-  private resolvers: IResolvers[];
+  private resolvers: IResolvers;
   private models: ModelDefinition[];
 
   public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
     this.schema = schema;
-    this.resolvers = []
     this.supportedCrudMethods = Object.assign({}, defaultCRUDGeneratorConfig, globalConfig?.crudMethods)
   }
 
@@ -44,11 +44,15 @@ export class GraphbackCoreMetadata {
 
   public addResolvers(resolvers: IResolvers) {
     if (resolvers) {
-      this.resolvers.push(resolvers);
+      const mergedResolvers = [
+        this.resolvers,
+        resolvers
+      ]
+      this.resolvers = mergeResolvers(mergedResolvers)
     }
   }
 
-  public getResolvers(): IResolvers[] {
+  public getResolvers(): IResolvers {
     return this.resolvers;
   }
 
@@ -92,8 +96,10 @@ export class GraphbackCoreMetadata {
     // Whether to add delta queries
     const deltaSync = parseMetadata('delta', modelType);
 
-    return { graphqlType: modelType, relationships, crudOptions, config: {
-      deltaSync
-    }};
+    return {
+      graphqlType: modelType, relationships, crudOptions, config: {
+        deltaSync
+      }
+    };
   }
 }
