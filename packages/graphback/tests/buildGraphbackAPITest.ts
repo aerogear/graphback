@@ -1,7 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { createKnexDbProvider } from '@graphback/runtime-knex'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import * as Knex from 'knex'
-import { buildGraphbackAPI, CRUDService } from '../src'
+import { createKnexDbProvider } from '../../graphback-runtime-knex/src'
+import { buildGraphbackAPI } from '../src'
+import { CRUDService } from '../../graphback-core/src'
 import { DataSyncPlugin } from '../../graphback-datasync/src/DataSyncPlugin'
 
 describe('buildGraphbackAPI', () => {
@@ -35,7 +36,7 @@ describe('buildGraphbackAPI', () => {
       dataProviderCreator: createKnexDbProvider(db)
     })
 
-    const { Query, Subscription, Mutation } = resolvers[0]
+    const { Query, Subscription, Mutation } = resolvers
     expect(Object.keys(Query)).toEqual(['getNote', 'findNotes'])
     expect(Object.keys(Subscription)).toEqual(['newNote', 'updatedNote', 'deletedNote'])
     expect(Object.keys(Mutation)).toEqual(['createNote', 'updateNote', 'deleteNote'])
@@ -74,7 +75,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Query, Mutation } = resolvers[0]
+    const { Query, Mutation } = resolvers
     expect(Object.keys(Query)).toEqual(['findNotes', 'getComment'])
     expect(Object.keys(Mutation)).toEqual(['createNote', 'createComment', 'deleteComment'])
   })
@@ -100,7 +101,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Subscription } = resolvers[0]
+    const { Subscription } = resolvers
     expect(Object.keys(Subscription)).toEqual(['newNote', 'updatedNote'])
   })
 
@@ -125,7 +126,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Subscription } = resolvers[0]
+    const { Subscription } = resolvers
     expect(Object.keys(Subscription)).toEqual(['updatedNote', 'deletedNote'])
   })
 
@@ -150,7 +151,7 @@ describe('buildGraphbackAPI', () => {
       }
     })
 
-    const { Subscription } = resolvers[0]
+    const { Subscription } = resolvers
     expect(Object.keys(Subscription)).toEqual(['newNote', 'deletedNote'])
   })
 

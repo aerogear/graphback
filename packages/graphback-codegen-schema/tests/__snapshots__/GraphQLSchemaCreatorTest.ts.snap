@@ -1,73 +1,71 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Creates CRUD resolvers for models 1`] = `
-Array [
-  Object {
-    "Comment": Object {
-      "noteComment": [Function],
+Object {
+  "Comment": Object {
+    "noteComment": [Function],
+  },
+  "Fix": Object {
+    "issues": [Function],
+  },
+  "Issue": Object {
+    "bugFix": [Function],
+  },
+  "Mutation": Object {
+    "createComment": [Function],
+    "createFix": [Function],
+    "createIssue": [Function],
+    "createNote": [Function],
+    "createTest": [Function],
+    "deleteComment": [Function],
+    "deleteNote": [Function],
+    "deleteTest": [Function],
+    "updateComment": [Function],
+    "updateNote": [Function],
+    "updateTest": [Function],
+  },
+  "Note": Object {
+    "comments": [Function],
+    "test": [Function],
+  },
+  "Query": Object {
+    "findComments": [Function],
+    "findNotes": [Function],
+    "findTests": [Function],
+    "getComment": [Function],
+    "getNote": [Function],
+    "getTest": [Function],
+  },
+  "Subscription": Object {
+    "deletedComment": Object {
+      "subscribe": [Function],
     },
-    "Fix": Object {
-      "issues": [Function],
+    "deletedNote": Object {
+      "subscribe": [Function],
     },
-    "Issue": Object {
-      "bugFix": [Function],
+    "deletedTest": Object {
+      "subscribe": [Function],
     },
-    "Mutation": Object {
-      "createComment": [Function],
-      "createFix": [Function],
-      "createIssue": [Function],
-      "createNote": [Function],
-      "createTest": [Function],
-      "deleteComment": [Function],
-      "deleteNote": [Function],
-      "deleteTest": [Function],
-      "updateComment": [Function],
-      "updateNote": [Function],
-      "updateTest": [Function],
+    "newComment": Object {
+      "subscribe": [Function],
     },
-    "Note": Object {
-      "comments": [Function],
-      "test": [Function],
+    "newNote": Object {
+      "subscribe": [Function],
     },
-    "Query": Object {
-      "findComments": [Function],
-      "findNotes": [Function],
-      "findTests": [Function],
-      "getComment": [Function],
-      "getNote": [Function],
-      "getTest": [Function],
+    "newTest": Object {
+      "subscribe": [Function],
     },
-    "Subscription": Object {
-      "deletedComment": Object {
-        "subscribe": [Function],
-      },
-      "deletedNote": Object {
-        "subscribe": [Function],
-      },
-      "deletedTest": Object {
-        "subscribe": [Function],
-      },
-      "newComment": Object {
-        "subscribe": [Function],
-      },
-      "newNote": Object {
-        "subscribe": [Function],
-      },
-      "newTest": Object {
-        "subscribe": [Function],
-      },
-      "updatedComment": Object {
-        "subscribe": [Function],
-      },
-      "updatedNote": Object {
-        "subscribe": [Function],
-      },
-      "updatedTest": Object {
-        "subscribe": [Function],
-      },
+    "updatedComment": Object {
+      "subscribe": [Function],
+    },
+    "updatedNote": Object {
+      "subscribe": [Function],
+    },
+    "updatedTest": Object {
+      "subscribe": [Function],
     },
   },
-]
+}
 `;
 
 exports[`Test one side relationship schema query type generation 1`] = `

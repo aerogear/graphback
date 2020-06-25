@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isSpecifiedScalarType, isEnumType } from "graphql";
+import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType } from "graphql";
 import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldType, isOneToManyField, getPrimaryKey, metadataMap } from '@graphback/core';
 
 const PageRequestTypeName = 'PageRequest';
