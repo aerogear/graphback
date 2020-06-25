@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isNonNullType, isInputObjectType, isNullableType, isWrappingType, isListType, GraphQLOutputType, GraphQLInputType, assertInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphQLJSON } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphQLJSON, isModelType } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -131,7 +131,7 @@ function getModelInputFields(schemaComposer: SchemaComposer<any>, modelType: Gra
 
     const inputField: GraphQLInputField = {
       name,
-      type: isNonNullType(field.type) ? GraphQLNonNull(type) : type,
+      type: copyWrappingType(field.type, type) as GraphQLInputType,
       description: undefined,
       extensions: []
     }
@@ -285,13 +285,17 @@ export const buildMutationInputType = (schemaComposer: SchemaComposer<any>, mode
   schemaComposer.add(mutationInputObject)
 }
 
-function mapObjectInputFields(schemaComposer: SchemaComposer<any>, fields: GraphQLField<any, any>[]): GraphQLInputField[] {
+function mapObjectInputFields(schemaComposer: SchemaComposer<any>, fields: GraphQLField<any, any>[], objectName: string): GraphQLInputField[] {
   return fields.map((field: GraphQLField<any, any>) => {
     let namedType = getNamedType(field.type)
     let typeName = namedType.name
 
     let inputType
     if (isObjectType(namedType)) {
+      if (isModelType(namedType)) {
+        throw new Error(`Non-model ${objectName}.${field.name} maps to Graphback model (${namedType.name}) which is not allowed.`)
+      }
+
       typeName = getInputTypeName(typeName, GraphbackOperationType.CREATE)
       namedType = schemaComposer.getOrCreateITC(typeName).getType()
 
@@ -312,7 +316,7 @@ export function addCreateObjectInputType(schemaComposer: SchemaComposer<any>, ob
 
   const inputType = new GraphQLInputObjectType({
     name: getInputTypeName(objectType.name, operationType),
-    fields: mapObjectInputFields(schemaComposer, objectFields)
+    fields: mapObjectInputFields(schemaComposer, objectFields, objectType.name)
       .reduce((fieldObj: any, { name, type, description }: any) => {
         fieldObj[name] = { type, description }
 
@@ -329,7 +333,7 @@ export function addUpdateObjectInputType(schemaComposer: SchemaComposer<any>, ob
 
   const inputType = new GraphQLInputObjectType({
     name: getInputTypeName(objectType.name, operationType),
-    fields: mapObjectInputFields(schemaComposer, objectFields)
+    fields: mapObjectInputFields(schemaComposer, objectFields, objectType.name)
       .reduce((fieldObj: any, { name, type, description }: any) => {
         fieldObj[name] = { type: getNullableType(type), description }
 

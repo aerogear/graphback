@@ -1,4 +1,4 @@
-import { isWrappingType, GraphQLNonNull, isListType, GraphQLList, GraphQLType, getNamedType, GraphQLInputType, GraphQLOutputType, GraphQLObjectType } from 'graphql';
+import { isWrappingType, GraphQLNonNull, isListType, GraphQLList, GraphQLType, getNamedType, GraphQLInputType, GraphQLOutputType } from 'graphql';
 
 type WrappingTypeName = 'GraphQLList' | 'GraphQLNonNull'
 type InputOrOutTypeType = GraphQLInputType | GraphQLOutputType
