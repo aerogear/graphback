@@ -16,6 +16,32 @@ Please follow individual releases for more information.
 
 Graphback 0.14 contains a lot of breaking changes that will improve and simplify your application code.
 
+#### Changed annotation syntax
+
+All annotations now use a single syntax format: `@annotation(foo 'bar')`
+
+Examples:
+
+```
+@oneToMany field: 'note'
+```
+
+becomes: 
+
+```
+@oneToMany(field: 'note')
+```
+
+```
+@db.type: 'timestamp'
+```
+
+becomes:
+
+```
+@db(type: 'timestamp')
+```
+
 #### Removed `@crud` annotation
 
 The `@crud` model annotation has been removed. To specify CRUD configuration on your model use the `@model` annotation.
