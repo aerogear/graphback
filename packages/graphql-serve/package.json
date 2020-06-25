@@ -42,6 +42,7 @@
     "@graphback/core": "0.14.0-alpha4",
     "@graphback/runtime-knex": "0.14.0-alpha4",
     "@graphback/runtime-mongo": "0.14.0-alpha4",
+    "@graphback/datasync": "0.14.0-alpha4",
     "@graphql-tools/load": "6.0.10",
     "@graphql-tools/graphql-file-loader": "6.0.10",
     "apollo-server-express": "2.15.0",
