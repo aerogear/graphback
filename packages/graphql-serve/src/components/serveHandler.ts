@@ -1,7 +1,7 @@
 import { buildGraphbackServer, GraphbackServer } from "../GraphbackServer";
 
-export const serveHandler = async (argv: { model?: string, port?: number }): Promise<GraphbackServer> => {
-  const server = await buildGraphbackServer(argv.model);
+export const serveHandler = async (argv: { model?: string, port?: number, datasync }): Promise<GraphbackServer> => {
+  const server = await buildGraphbackServer(argv.model, !!argv.datasync);
 
   if ('port' in argv) {
     const portNumber = argv.port;
