@@ -1,5 +1,4 @@
 import { ModelTableMap } from './buildModelTableMap';
-import { type } from 'os';
 
 export interface TableDataMap {
   idField?: TableID
