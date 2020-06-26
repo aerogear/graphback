@@ -26,22 +26,21 @@ function getTableId(idField: string, data: any): TableID {
   }
 }
 
-export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
+export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any): TableDataMap => {
   const idField = modelMap.idField;
+  // Transform data if it defined
+  let transFormedData: any;
+  if (data) {
+    const keys = Object.keys(data);
+    transFormedData = {};
+    for (const key of keys) {
+      const value: any = data[key];
+      transFormedData[key] = typeof value === 'object'? JSON.stringify(value) : value;
+    }
+  };
 
   return {
     idField: getTableId(idField, data),
-    // eslint-disable-next-line @typescript-eslint/tslint/config
-    data: Object.keys(data).reduce((dataObj, key) => {
-      const value = data[key]
-
-      if (typeof value === 'object') {
-        dataObj[key] = JSON.stringify(value)
-      } else {
-        dataObj[key] = value
-      }
-      
-      return dataObj
-    }, {})
+    data: transFormedData
   }
 }
