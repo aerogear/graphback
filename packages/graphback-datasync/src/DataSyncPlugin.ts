@@ -134,12 +134,9 @@ export class DataSyncPlugin extends GraphbackPlugin {
       }
 
       const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
+      context.graphback.options = { selectedFields };
 
-      return dataSyncService.sync(args.lastSync, {...context, graphback }, args.filter);
+      return dataSyncService.sync(args.lastSync, context, args.filter);
     }
   }
 
