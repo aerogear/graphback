@@ -1,6 +1,6 @@
 import { GraphQLSchema } from 'graphql';
 import { ServiceCreator, DataProviderCreator, GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition, GraphbackServiceConfigMap, GraphbackContext, createCRUDService } from '@graphback/core';
-import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
+import { SchemaCRUDPlugin, SCHEMA_CRUD_PLUGIN_NAME } from '@graphback/codegen-schema';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { PubSub } from 'graphql-subscriptions';
 
@@ -13,7 +13,7 @@ export interface GraphbackAPIConfig {
    * Schema plugins to perform automatic changes to the schema
    */
   plugins?: GraphbackPlugin[]
-  
+
   /**
    * Function which creates a default CRUD Service for every data model
    */
@@ -65,6 +65,34 @@ function createServices(models: ModelDefinition[], createService: Function, crea
   return services
 }
 
+type  PluginMap = { [name: string]: GraphbackPlugin}
+
+function getPlugins(plugins?: GraphbackPlugin[]): GraphbackPlugin[] {
+  plugins = plugins || [];
+  const pluginsMap: PluginMap = plugins.reduce((acc: PluginMap, plugin: GraphbackPlugin) => {
+    if (acc[plugin.getPluginName()]) {
+      console.debug(`Plugin ${plugin.getPluginName()} is already defined and will be overridden`);
+    }
+
+    acc[plugin.getPluginName()] = plugin;
+
+    return acc;
+  }, {});
+
+  let schemaPlugin: GraphbackPlugin;
+
+  if (pluginsMap[SCHEMA_CRUD_PLUGIN_NAME]) {
+    schemaPlugin = pluginsMap[SCHEMA_CRUD_PLUGIN_NAME];
+    /*eslint-disable-next-line*/
+    delete pluginsMap[SCHEMA_CRUD_PLUGIN_NAME]; // remove the crud schema plugin as it will be added as first entry.
+  }
+
+  return [
+    schemaPlugin || new SchemaCRUDPlugin(),
+    ...Object.values(pluginsMap)
+  ]
+}
+
 /**
  * Creates all of the components needed for the GraphQL server - resolvers, schema and services.
  *
@@ -78,10 +106,7 @@ function createServices(models: ModelDefinition[], createService: Function, crea
  * @returns {GraphbackAPI} Generated schema, CRUD resolvers and services
  */
 export function buildGraphbackAPI(model: string | GraphQLSchema, config: GraphbackAPIConfig): GraphbackAPI {
-  const schemaPlugins: GraphbackPlugin[] = [
-    new SchemaCRUDPlugin,
-    ...config.plugins || []
-  ]
+  const schemaPlugins: GraphbackPlugin[] = getPlugins(config.plugins)
 
   const pluginEngine = new GraphbackPluginEngine({
     schema: model,
