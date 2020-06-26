@@ -4,6 +4,7 @@ import { getUserTypesFromSchema } from '@graphql-toolkit/common'
 import { IResolvers } from '@graphql-tools/utils'
 import { mergeResolvers } from '@graphql-tools/merge';
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
+import { getPrimaryKey } from '../db';
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
@@ -97,9 +98,11 @@ export class GraphbackCoreMetadata {
     const deltaSync = parseMetadata('delta', modelType);
 
     return {
-      graphqlType: modelType, relationships, crudOptions, config: {
-        deltaSync
-      }
+      relationships,
+      crudOptions,
+      graphqlType: modelType,
+      config: { deltaSync },
+      primaryKey: getPrimaryKey(modelType).name
     };
   }
 }

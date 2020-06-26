@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, getPrimaryKey, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, isSpecifiedGraphbackScalarType } from '@graphback/core'
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, isSpecifiedGraphbackScalarType, getPrimaryKey } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
@@ -568,8 +568,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelType = model.graphqlType
     const modelName = modelType.name;
     const findOneField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
-
-    const primaryKeyLabel = getPrimaryKey(modelType).name;
+    const primaryKeyLabel = model.primaryKey;
 
     queryObj[findOneField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo ) => {
       if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
@@ -658,7 +657,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    */
   protected addOneToManyResolver(relationship: FieldRelationshipMetadata, resolverObj: IResolvers, modelNameToModelDefinition: any) {
     const modelName = relationship.relationType.name;
-    const relationIdField = getPrimaryKey(relationship.relationType);
     const relationOwner = relationship.ownerField.name;
     const model = modelNameToModelDefinition[modelName];
 
@@ -676,7 +674,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
       return context.graphback.services[modelName].batchLoadData(
         relationship.relationForeignKey,
-        parent[relationIdField.name],
+        parent[model.primaryKey],
         args.filter,
         {...context, graphback}
       );

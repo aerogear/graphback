@@ -7,6 +7,10 @@ type Note {
   @oneToMany(field: 'note')
   """
   comments: [Comment]!
+
+  """
+  @db(type:'json')
+  """
   tasks: [Task]!
 }
 
