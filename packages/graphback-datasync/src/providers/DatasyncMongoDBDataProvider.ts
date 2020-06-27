@@ -56,7 +56,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
 
     data._deleted = true;
     const objectId = new ObjectId(idField.value);
-    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId, _deleted: false }, { $set: data });
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId, _deleted: { $ne: true } }, { $set: data });
     if (result.result.nModified === 1) {
       const projection = this.buildProjectionOption(context);
       const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection })
@@ -76,7 +76,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const projection = this.buildProjectionOption(context);
     const query = this.db.collection(this.collectionName).findOne({
       ...filter,
-      _deleted: false
+      _deleted: { $ne: true}
     }, { projection });
     const data = await query;
 
@@ -91,7 +91,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       filter = {};
     }
 
-    filter._deleted = false;
+    filter._deleted = { ne: true };
 
     return super.findBy(filter, context, orderBy, page);
   }
@@ -101,7 +101,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       filter = {};
     }
 
-    filter._deleted = false;
+    filter._deleted = { ne: true};
 
     return super.count(filter);
   }
@@ -121,23 +121,23 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const { fieldNames } = metadataMap;
 
     if (!idField.value) {
-      throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
+      throw new NoDataError(`Couldn't get document from ${this.collectionName} - missing ID field`)
     }
     const projection = {
       ...this.buildProjectionOption(context),
       [fieldNames.updatedAt]: 1,
       _deleted: 1
     };
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false }, { projection });
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true} }, { projection });
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
-      if (clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {
+      if (queryResult[fieldNames.updatedAt] !== undefined && clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {
         return { serverState: queryResult, clientState: clientData };
       }
 
       return undefined;
     }
 
-    throw new NoDataError(`Could not delete from ${this.collectionName}`);
+    throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
   }
 }
