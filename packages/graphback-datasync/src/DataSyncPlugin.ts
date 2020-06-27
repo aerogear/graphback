@@ -18,7 +18,7 @@ export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
 /**
  * DataSync plugin
  *
- * Plugin is enabled by """ @delta """ annotation
+ * Plugin is enabled by """ @datasync """ annotation
  * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
@@ -32,7 +32,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
       return schema;
     }
-
+    let dataSyncModelCount = 0;
     models.forEach((model: ModelDefinition) => {
 
       this.addDataSyncMetadataFields(schemaComposer, model);
@@ -60,6 +60,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
       // Diff queries
       if (isDataSyncModel(model)) {
 
+        dataSyncModelCount+= 1;
+
         const deltaQuery = getDeltaQuery(model.graphqlType.name)
         schemaComposer.Query.addFields({
           [deltaQuery]: `${getDeltaListType(modelName)}!`
@@ -84,6 +86,10 @@ export class DataSyncPlugin extends GraphbackPlugin {
         }
       }
     })
+
+    if (dataSyncModelCount === 0) {
+      console.error("No DataSync Models detected, ensure that your models are properly annotated.")
+    }
 
     return buildSchema(schemaComposer.toSDL())
   }
