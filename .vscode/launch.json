@@ -63,6 +63,29 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
+      "name": "Template app Datasync Mongo",
+      "type": "node",
+      "request": "launch",
+      "env": {
+        "DB_USER": "mongodb",
+        "DB_PASSWORD": "mongo",
+        "DB_HOST": "localhost",
+        "DB_PORT": "27017",
+        "DB_DATABASE": "users",
+        "DB_AUTHSOURCE": "admin"
+      },
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${workspaceRoot}/templates/ts-apollo-mongodb-datasync-backend/src/index.ts"
+      ],
+      "cwd": "${workspaceRoot}/templates/ts-apollo-mongodb-datasync-backend",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "CLI config",
