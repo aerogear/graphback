@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import { buildSchema } from 'graphql';
-import { filterModelTypes, GraphbackCoreMetadata, metadataMap, NoDataError } from '@graphback/core';
+import { filterModelTypes, GraphbackCoreMetadata, metadataMap, NoDataError, defaultTableNameTransform } from '@graphback/core';
 import { advanceTo } from "jest-date-mock";
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError } from '../src';
@@ -9,7 +9,8 @@ import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError } from '../s
 const {fieldNames} = metadataMap;
 export interface Context {
   providers: { [modelname: string]: DataSyncMongoDBDataProvider };
-  server: MongoMemoryServer
+  server: MongoMemoryServer,
+  db: Db
 }
 
 export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
@@ -57,7 +58,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     };
   }
 
-  return { server, providers }
+  return { server, providers, db }
 }
 
 const fields = ["id", "text"];
@@ -187,7 +188,54 @@ describe('Soft deletion test', () => {
     // Try to update document again with older timestamp
     await expect(Post.update({ id, text: 'updated post text 2', updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
 
-    // Try to deletee document with older timestamp
+    // Try to delete document with older timestamp
     await expect(Post.delete({ id, updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+  })
+
+  it('sets updatedAt when field absent', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @datasync
+    """
+    type Post {
+      id: ID!
+      text: String!
+    }
+    `);
+
+    const { db, providers } = context;
+    const { Post } = providers;
+
+    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost'})).insertedId
+
+    const updateTime = 1593263130987
+    advanceTo(updateTime);
+    const update = await Post.update({ id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, fieldNames.updatedAt]}}});
+    expect(update[fieldNames.updatedAt]).toEqual(updateTime)
+  })
+
+  it('sets _deleted when field absent', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @datasync
+    """
+    type Post {
+      id: ID!
+      text: String!
+    }
+    `);
+
+    const { db, providers } = context;
+    const { Post } = providers;
+
+    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost'})).insertedId
+
+    const updateTime = 1593263130987
+    advanceTo(updateTime);
+    const deletedPost = await Post.delete({ id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, fieldNames.updatedAt, "_deleted"]}}});
+    expect(deletedPost[fieldNames.updatedAt]).toEqual(updateTime)
+    expect(deletedPost._deleted).toEqual(true);
   })
 })
