@@ -88,7 +88,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     })
 
     if (dataSyncModelCount === 0) {
-      console.error("No DataSync Models detected, ensure that your models are properly annotated.")
+      console.warn("No DataSync Models detected, ensure that your models are properly annotated.")
     }
 
     return buildSchema(schemaComposer.toSDL())
