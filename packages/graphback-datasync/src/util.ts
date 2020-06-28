@@ -25,7 +25,8 @@ export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDSe
  */
 export interface ConflictStateMap {
   serverState: any,
-  clientState: any
+  clientState: any,
+  base?: any
 }
 
 /**

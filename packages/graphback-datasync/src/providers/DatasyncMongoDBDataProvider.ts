@@ -3,14 +3,16 @@ import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, Trans
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
+import { ConflictEngine, TimestampConflictEngine } from '../conflict/conflictEngine';
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
 export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
+  protected conflictEngine: ConflictEngine;
 
-  public constructor(baseType: GraphQLObjectType, client: any) {
+  public constructor(baseType: GraphQLObjectType, client: any, customConflictEngine?: ConflictEngine) {
     super(baseType, client);
     applyIndexes([
       {
@@ -21,6 +23,17 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     ], this.db.collection(this.collectionName)).catch((e: any) => {
       throw e;
     });
+    if (customConflictEngine !== undefined) {
+      this.conflictEngine = customConflictEngine;
+    } else {
+      this.conflictEngine = new TimestampConflictEngine();
+    }
+
+    if (this.conflictEngine.updateState !== undefined) {
+      const updateTransforms = this.conflictEngine.updateState();
+      this.fieldTransformMap[TransformType.UPDATE].push(...updateTransforms);
+      this.fieldTransformMap[TransformType.CREATE].push(...updateTransforms);
+    }
   }
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
@@ -30,21 +43,14 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
   }
 
   public async update(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
-    }
+    data = await this.checkAndResolveConflicts(data, context);
 
     // TODO use findOneAndUpdate to check consistency afterwards
     return super.update(data, context);
   }
 
   public async delete(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
-    }
+    data = await this.checkAndResolveConflicts(data, context);
 
     const { idField } = getDatabaseArguments(this.tableMap, data);
     data = {};
@@ -116,7 +122,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     }, context, undefined, undefined);
   }
 
-  protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
+  protected async checkAndResolveConflicts(clientData: any, context: GraphbackContext): Promise<any> {
     const { idField } = getDatabaseArguments(this.tableMap, clientData);
     const { fieldNames } = metadataMap;
 
@@ -128,14 +134,21 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       [fieldNames.updatedAt]: 1,
       _deleted: 1
     };
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true} }, { projection });
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (queryResult[fieldNames.updatedAt] !== undefined && clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {
-        return { serverState: queryResult, clientState: clientData };
+    const serverState = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true} }, { projection });
+
+    if (serverState) {
+      let resolvedState = clientData;
+      const conflict = this.conflictEngine.checkForConflicts(serverState, clientData)
+
+      if (conflict !== undefined) {
+        if (this.conflictEngine.resolveConflicts !== undefined) {
+          resolvedState = this.conflictEngine.resolveConflicts(conflict);
+        } else {
+          throw new ConflictError(conflict);
+        }
       }
 
-      return undefined;
+      return resolvedState
     }
 
     throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
