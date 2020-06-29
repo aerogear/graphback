@@ -7,6 +7,11 @@ type Note {
   @oneToMany(field: 'note')
   """
   comments: [Comment]!
+
+  """
+  @db(type:'json')
+  """
+  tasks: [Task]!
 }
 
 """ @model """
@@ -26,6 +31,10 @@ type Comment {
 type CommentMetadata {
   id: ID!
   opened: Boolean
+}
+
+type Task {
+  title: String
 }
 
 type Query {

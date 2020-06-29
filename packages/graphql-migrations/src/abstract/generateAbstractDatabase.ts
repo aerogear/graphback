@@ -489,6 +489,13 @@ class AbstractDatabaseBuilder {
 
   private isOneToMany(type: GraphQLObjectType, field: GraphQLField<any, any>) {
     const relationType = getObjectTypeFromList(field);
+    const dbAnnotations = parseMetadata('db', field.description)
+    const isJsonColumn = dbAnnotations?.type === 'json'
+
+    if (isJsonColumn) {
+      return false
+    }
+
     if ((relationType && relationType.name !== type.name) && !parseMetadata('manyToMany', field)) {
       return true;
     }

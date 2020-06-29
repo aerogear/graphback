@@ -26,13 +26,21 @@ function getTableId(idField: string, data: any): TableID {
   }
 }
 
-export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
+export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any): TableDataMap => {
   const idField = modelMap.idField;
-
-  //TODO: Map fields to custom db names
+  // Transform data if it defined
+  let transFormedData: any;
+  if (data) {
+    const keys = Object.keys(data);
+    transFormedData = {};
+    for (const key of keys) {
+      const value: any = data[key];
+      transFormedData[key] = typeof value === 'object'? JSON.stringify(value) : value;
+    }
+  };
 
   return {
     idField: getTableId(idField, data),
-    data
+    data: transFormedData
   }
 }

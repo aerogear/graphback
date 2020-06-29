@@ -46,6 +46,20 @@ Object {
           "nullable": true,
           "type": "string",
         },
+        "tasks" => Object {
+          "annotations": Object {
+            "type": "json",
+          },
+          "args": Array [],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "tasks",
+          "nullable": false,
+          "type": "json",
+        },
       },
       "columns": Array [
         Object {
@@ -87,6 +101,20 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
+        },
+        Object {
+          "annotations": Object {
+            "type": "json",
+          },
+          "args": Array [],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "tasks",
+          "nullable": false,
+          "type": "json",
         },
       ],
       "comment": undefined,
@@ -357,6 +385,20 @@ Object {
           "nullable": true,
           "type": "string",
         },
+        "tasks" => Object {
+          "annotations": Object {
+            "type": "json",
+          },
+          "args": Array [],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "tasks",
+          "nullable": false,
+          "type": "json",
+        },
       },
       "columns": Array [
         Object {
@@ -398,6 +440,20 @@ Object {
           "name": "description",
           "nullable": true,
           "type": "string",
+        },
+        Object {
+          "annotations": Object {
+            "type": "json",
+          },
+          "args": Array [],
+          "autoIncrementable": false,
+          "comment": undefined,
+          "defaultValue": undefined,
+          "foreign": undefined,
+          "isPrimaryKey": false,
+          "name": "tasks",
+          "nullable": false,
+          "type": "json",
         },
       ],
       "comment": undefined,

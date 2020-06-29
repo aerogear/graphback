@@ -13,21 +13,28 @@ export const getSelectedFieldsFromResolverInfo = (info: GraphQLResolveInfo, mode
   const resolverFields = fieldsMap(info, { path });
   const selectedFields = Object.entries(resolverFields)
     .reduce((
-      acc: string[],
+      acc: Set<string>,
       entry: [string, unknown]
     ) => {
-      if (typeof entry[1] === "object") { // it is a nested object, check if it is a relationship to add the appropriate foreign key field
-        const foundRelationship = model.relationships.find((relationship: FieldRelationshipMetadata) => relationship.ownerField.name === entry[0] && relationship.kind !== "oneToMany");
 
-        if (foundRelationship) {
-          acc.push(foundRelationship.relationForeignKey)
-        }
+      if (typeof entry[1] !== 'object') {
+        acc.add(entry[0]);
       } else {
-        acc.push(entry[0]);
+        // it is a nested object, check if it is a relationship to add the appropriate foreign key field
+        const foundRelationship = model.relationships.find((relationship: FieldRelationshipMetadata) => relationship.ownerField.name === entry[0]);
+        if (foundRelationship) {
+          if (foundRelationship.kind !== "oneToMany") {
+            acc.add(foundRelationship.relationForeignKey);
+          } else {
+            acc.add(model.primaryKey);
+          }
+        } else {
+          acc.add(entry[0])
+        }
       }
 
       return acc;
-    } , []);
+    } , new Set<string>());
 
-  return selectedFields;
+  return [...selectedFields];
 }

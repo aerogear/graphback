@@ -18,7 +18,7 @@ Graphback 0.14 contains a lot of breaking changes that will improve and simplify
 
 #### Changed annotation syntax
 
-All annotations now use a uniform syntax format: `@annotation(foo 'bar') that is similar to GraphQL Directives`
+All annotations now use a uniform syntax format: `@annotation(foo 'bar')` that is similar to GraphQL Directives
 
 Examples:
 

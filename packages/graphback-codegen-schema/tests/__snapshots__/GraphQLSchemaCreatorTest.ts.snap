@@ -216,6 +216,10 @@ input CreateCommentInput {
   note_id: ID!
 }
 
+input CreateCustomTypeInput {
+  issue1432: String
+}
+
 input CreateFixInput {
   id: ID
 }
@@ -224,6 +228,7 @@ input CreateIssueInput {
   id: ID
   category: IssueCategory
   createdAt: DateTime
+  custom: CreateCustomTypeInput
   bugFixId: ID
 }
 
@@ -756,7 +761,12 @@ input CreateIssueInput {
   id: ID
   category: IssueCategory
   createdAt: DateTime
+  custom: CreateCustomTypeInput
   bugFixId: ID
+}
+
+input CreateCustomTypeInput {
+  issue1432: String
 }
 
 input CreateFixInput {
@@ -1067,7 +1077,12 @@ input CreateIssueInput {
   id: ID
   category: IssueCategory
   createdAt: DateTime
+  custom: CreateCustomTypeInput
   bugFixId: ID
+}
+
+input CreateCustomTypeInput {
+  issue1432: String
 }
 
 input CreateFixInput {

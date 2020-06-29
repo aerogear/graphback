@@ -1,3 +1,5 @@
+/* eslint-disable import/no-internal-modules */
+/* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 /* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-use-before-define */
@@ -6,7 +8,6 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { loadConfig } from 'graphql-config';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import * as Knex from 'knex';
@@ -85,6 +86,7 @@ afterEach(() => server.stop())
 afterAll(async () => {
   rmdirSync(path.resolve('./output-postgres'), { recursive: true });
   await db.schema.dropTableIfExists('comment').dropTableIfExists('commentmetadata').dropTableIfExists('note');
+
   return db.destroy();
 });
 
@@ -92,11 +94,20 @@ async function seedDatabase(db: Knex) {
   await db('note').insert([
     {
       title: 'Note A',
-      description: 'Note A Description'
+      description: 'Note A Description',
+      tasks: JSON.stringify([])
     },
     {
       title: 'Note B',
-      description: 'Note B Description'
+      description: 'Note B Description',
+      tasks: JSON.stringify([
+        {
+          title: 'Task 1'
+        },
+        {
+          title: 'Task 2'
+        }
+      ])
     }
   ]);
 
@@ -125,20 +136,6 @@ async function seedDatabase(db: Knex) {
   ]);
 }
 
-const getConfig = async () => {
-  const config = await loadConfig({
-    rootDir: process.cwd(),
-    extensions: [
-      () => ({ name: 'graphback' })
-    ]
-  });
-
-  const projectConfig = config.getDefault();
-  const graphbackConfig = projectConfig.extension('graphback');
-
-  return { projectConfig, graphbackConfig };
-}
-
 test('Find all notes', async () => {
   const { data } = await client.query({ operationName: 'findNotes', query: documents });
 
@@ -149,6 +146,7 @@ test('Find all notes', async () => {
         id: '1',
         title: 'Note A',
         description: 'Note A Description',
+        tasks: [],
         comments: [
           {
             id: '1',
@@ -166,7 +164,15 @@ test('Find all notes', async () => {
         id: '2',
         title: 'Note B',
         description: 'Note B Description',
-        comments: []
+        comments: [],
+        tasks: [
+          {
+            title: 'Task 1'
+          },
+          {
+            title: 'Task 2'
+          }
+        ]
       }
     ],
     limit: null,
@@ -189,7 +195,15 @@ test('Find all notes except the first', async () => {
         id: '2',
         title: 'Note B',
         description: 'Note B Description',
-        comments: []
+        comments: [],
+        tasks: [
+          {
+            title: 'Task 1'
+          },
+          {
+            title: 'Task 2'
+          }
+        ]
       }
     ],
     limit: null,
@@ -212,6 +226,7 @@ test('Find at most one note', async () => {
         id: '1',
         title: 'Note A',
         description: 'Note A Description',
+        tasks: [],
         comments: [
           {
             id: '1',
@@ -276,11 +291,12 @@ test('Find all comments', async () => {
 test('Note 1 should be defined', async () => {
   const response = await getNote('1', client);
   expect(response.data).toBeDefined();
-  const notes = response.data.getNote;
-  expect(notes).toEqual({
+  const note = response.data.getNote;
+  expect(note).toEqual({
     id: '1',
     title: 'Note A',
     description: 'Note A Description',
+    tasks: [],
     comments: [
       {
         id: '1',
@@ -364,9 +380,12 @@ test('Should update Note 1 title', async () => {
 });
 
 test('Should create a new Note', async () => {
-  const response = await createNote(client, { title: 'New note', description: 'New note description' });
+  const response = await createNote(client, { title: 'New note', description: 'New note description', tasks: [{ title: "new task title" }] });
   expect(response.data).toBeDefined();
   expect(response.data.createNote).toEqual({ id: '3', title: 'New note', description: 'New note description' });
+
+  const { data } = await getNote('3', client);
+  expect(data.getNote.tasks).toEqual([{ title: "new task title" }]);
 })
 
 test('Delete Note 1', async () => {
@@ -409,16 +428,6 @@ async function getNote(id: string | number, client: ApolloServerTestClient) {
     operationName: "getNote",
     query: documents,
     variables: { id }
-  });
-
-  return response;
-}
-
-async function findNoteComments(noteId: string, client: ApolloServerTestClient) {
-  const response = await client.query({
-    operationName: "findComments",
-    query: documents,
-    variables: { filter: { noteId } }
   });
 
   return response;
