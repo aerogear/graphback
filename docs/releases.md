@@ -204,6 +204,7 @@ const schemaPlugin = new SchemaCRUDPlugin({
 - GraphbackPluginEngine accepts now object instead of arguments.
 `new GraphbackPluginEngine({schema})`
 - Provide full path to schema in the `SchemaCRUDPlugin` config option `outputPath`
+- Support relationships with non-model GraphQL types.
 
 # 0.13.0
 
