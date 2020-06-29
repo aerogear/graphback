@@ -56,14 +56,10 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
 
     data._deleted = true;
     const objectId = new ObjectId(idField.value);
-    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId, _deleted: { $ne: true } }, { $set: data });
-    if (result.result.nModified === 1) {
-      const projection = this.buildProjectionOption(context);
-      const updatedDocument = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection })
-      if (updatedDocument) {
-
-        return this.mapFields(updatedDocument);
-      }
+    const projection = this.buildProjectionOption(context);
+    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, { projection, returnOriginal: false });
+    if (result.ok) {
+      return this.mapFields(result.value);
     }
 
     throw new NoDataError(`Could not delete from ${this.collectionName}`);
@@ -131,7 +127,10 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true} }, { projection });
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
-      if (queryResult[fieldNames.updatedAt] !== undefined && clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()) {
+      if (
+        queryResult[fieldNames.updatedAt] !== undefined && 
+        clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
+      ) {
         return { serverState: queryResult, clientState: clientData };
       }
 
