@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
 import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError } from '@graphback/core';
+import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
 import { findAndCreateIndexes } from "./utils/createIndexes";
 
@@ -16,12 +17,14 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   protected collectionName: string;
   protected tableMap: ModelTableMap;
   protected fieldTransformMap: FieldTransformMap;
+  protected coerceTSFields: boolean;
 
   public constructor(baseType: GraphQLObjectType, db: any) {
     this.db = db;
     this.tableMap = buildModelTableMap(baseType);
     this.collectionName = this.tableMap.tableName;
     this.fieldTransformMap = getFieldTransformations(baseType);
+    this.coerceTSFields = parseMetadata("versioned", baseType)
     findAndCreateIndexes(baseType, this.db.collection(this.collectionName)).catch((e: Error) => {
       throw e
     })
@@ -109,7 +112,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
   public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     const projection = this.buildProjectionOption(context);
-    const query = this.db.collection(this.collectionName).find(buildQuery(filter), { projection });
+    const query = this.db.collection(this.collectionName).find(buildQuery(filter, this.coerceTSFields), { projection });
     const data = await this.usePage(this.sortQuery(query, orderBy), page);
 
     if (data) {
@@ -121,7 +124,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   }
 
   public async count(filter: any): Promise<number> {
-    return this.db.collection(this.collectionName).countDocuments(buildQuery(filter));
+    return this.db.collection(this.collectionName).countDocuments(buildQuery(filter, this.coerceTSFields));
   }
 
   public async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]> {
@@ -135,7 +138,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       const array = ids.map((value: string) => {
         return new ObjectId(value);
       });
-      result = await this.db.collection(this.collectionName).find(buildQuery({ _id: { $in: array }, ...filter }), { projection }).toArray();
+      result = await this.db.collection(this.collectionName).find(buildQuery({ _id: { $in: array }, ...filter }, this.coerceTSFields), { projection }).toArray();
     } else {
       let query: any = {};
       const array = ids.map((value: any) => {
@@ -145,7 +148,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
         ...filter
       }
       query[relationField] = { $in: array };
-      result = await this.db.collection(this.collectionName).find(buildQuery(query), { projection }).toArray();
+      result = await this.db.collection(this.collectionName).find(buildQuery(query, this.coerceTSFields), { projection }).toArray();
     }
 
     if (result) {

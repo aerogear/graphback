@@ -112,7 +112,7 @@ function stringTimestampsToInt(filter: any, key: string): any {
   return filter;
 }
 
-function traverse(filter: any): any {
+function traverse(filter: any, coerceTSFields: boolean): any {
 
   Object.keys(filter).forEach((key: string) => {
 
@@ -153,20 +153,22 @@ function traverse(filter: any): any {
       }
     }
 
-    filter = stringTimestampsToInt(filter, key)
+    if (coerceTSFields === true) {
+      filter = stringTimestampsToInt(filter, key)
+    }
 
     // Recursive step
     if (!isPrimitive(filter[key])) {
-      filter[key] = traverse(filter[key]);
+      filter[key] = traverse(filter[key], coerceTSFields);
     }
   });
 
   return filter
 }
 
-export function buildQuery(filter: any) {
+export function buildQuery(filter: any, coerceTSFields: boolean) {
   let query = {};
-  if (filter) { query = traverse(filter); }
+  if (filter) { query = traverse(filter, coerceTSFields); }
 
   return query;
 }
