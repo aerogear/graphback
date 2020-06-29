@@ -111,7 +111,7 @@ input IDInput {
   lt: ID
   ge: ID
   gt: ID
-  in: [ID]
+  in: [ID!]
 }
 
 input StringInput {
@@ -121,7 +121,7 @@ input StringInput {
   lt: String
   ge: String
   gt: String
-  in: [String]
+  in: [String!]
   contains: String
   startsWith: String
   endsWith: String
@@ -257,8 +257,8 @@ input DateTimeInput {
   lt: DateTime
   ge: DateTime
   gt: DateTime
-  in: [DateTime]
-  between: [DateTime]
+  in: [DateTime!]
+  between: [DateTime!]
 }
 
 \\"\\"\\"
@@ -292,7 +292,7 @@ input IDInput {
   lt: ID
   ge: ID
   gt: ID
-  in: [ID]
+  in: [ID!]
 }
 
 \\"\\"\\"
@@ -443,7 +443,7 @@ input StringInput {
   lt: String
   ge: String
   gt: String
-  in: [String]
+  in: [String!]
   contains: String
   startsWith: String
   endsWith: String
@@ -541,7 +541,7 @@ input IDInput {
   lt: ID
   ge: ID
   gt: ID
-  in: [ID]
+  in: [ID!]
 }
 
 input StringInput {
@@ -551,7 +551,7 @@ input StringInput {
   lt: String
   ge: String
   gt: String
-  in: [String]
+  in: [String!]
   contains: String
   startsWith: String
   endsWith: String
@@ -753,8 +753,8 @@ input DateTimeInput {
   lt: DateTime
   ge: DateTime
   gt: DateTime
-  in: [DateTime]
-  between: [DateTime]
+  in: [DateTime!]
+  between: [DateTime!]
 }
 
 input CreateIssueInput {
@@ -857,7 +857,7 @@ input IDInput {
   lt: ID
   ge: ID
   gt: ID
-  in: [ID]
+  in: [ID!]
 }
 
 input StringInput {
@@ -867,7 +867,7 @@ input StringInput {
   lt: String
   ge: String
   gt: String
-  in: [String]
+  in: [String!]
   contains: String
   startsWith: String
   endsWith: String
@@ -1069,8 +1069,8 @@ input DateTimeInput {
   lt: DateTime
   ge: DateTime
   gt: DateTime
-  in: [DateTime]
-  between: [DateTime]
+  in: [DateTime!]
+  between: [DateTime!]
 }
 
 input CreateIssueInput {

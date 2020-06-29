@@ -30,8 +30,8 @@ export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
       lt: { type: scalarType },
       ge: { type: scalarType },
       gt: { type: scalarType },
-      in: { type: GraphQLList(scalarType) },
-      between: { type: GraphQLList(scalarType) }
+      in: { type: GraphQLList(GraphQLNonNull(scalarType)) },
+      between: { type: GraphQLList(GraphQLNonNull(scalarType)) }
     }
   });
 
@@ -56,7 +56,7 @@ export const StringScalarInputType = new GraphQLInputObjectType({
     lt: { type: GraphQLString },
     ge: { type: GraphQLString },
     gt: { type: GraphQLString },
-    in: { type: GraphQLList(GraphQLString) },
+    in: { type: GraphQLList(GraphQLNonNull(GraphQLString)) },
     contains: { type: GraphQLString },
     startsWith: { type: GraphQLString },
     endsWith: { type: GraphQLString }
@@ -72,7 +72,7 @@ export const IDScalarInputType = new GraphQLInputObjectType({
     lt: { type: GraphQLID },
     ge: { type: GraphQLID },
     gt: { type: GraphQLID },
-    in: { type: GraphQLList(GraphQLID) },
+    in: { type: GraphQLList(GraphQLNonNull(GraphQLID)) },
   }
 })
 
