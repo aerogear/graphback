@@ -1,4 +1,3 @@
-
 import Keycloak from 'keycloak-connect'
 import { KeycloakContextBase } from 'keycloak-connect-graphql'
 import { PubSub } from 'graphql-subscriptions'

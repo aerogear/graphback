@@ -18,7 +18,7 @@ export class MockDataProvider<Type = any, GraphbackContext = any> implements Gra
     return args
   }
 
-  async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage) {
+  async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy) {
     return []
   }
 

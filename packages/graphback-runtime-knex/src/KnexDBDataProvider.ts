@@ -77,7 +77,7 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     return result
   }
 
-  public async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     let query = buildQuery(this.db, filter).select(context.graphback.options.selectedFields).from(this.tableName)
 
     if (orderBy) {

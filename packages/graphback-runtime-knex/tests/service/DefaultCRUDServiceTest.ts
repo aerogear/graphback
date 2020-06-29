@@ -274,7 +274,7 @@ test('find and count all users', async () => {
 
   let resultWithLimitAndOffset = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
     count: true
-  }}}}, undefined, {offset: 0, limit: 1})
+  }}}}, {offset: 0, limit: 1})
 
 
   expect(resultWithLimitAndOffset.items).toHaveLength(1);
