@@ -55,8 +55,8 @@ input CommentFilter {
   title: StringInput
   description: StringInput
   noteId: IDInput
-  and: [CommentFilter]
-  or: [CommentFilter]
+  and: [CommentFilter!]
+  or: [CommentFilter!]
   not: CommentFilter
   createdAt: StringInput
   updatedAt: StringInput
@@ -176,8 +176,8 @@ input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
-  and: [NoteFilter]
-  or: [NoteFilter]
+  and: [NoteFilter!]
+  or: [NoteFilter!]
   not: NoteFilter
   createdAt: StringInput
   updatedAt: StringInput

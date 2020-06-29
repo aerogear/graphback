@@ -178,10 +178,10 @@ export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelT
     fields: {
       ...scalarInputFields,
       and: {
-        type: `[${inputTypeName}]`
+        type: `[${inputTypeName}!]`
       },
       or: {
-        type: `[${inputTypeName}]`
+        type: `[${inputTypeName}!]`
       },
       not: {
         type: `${inputTypeName}`
