@@ -176,6 +176,10 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   }
 
   protected buildProjectionOption(context: GraphbackContext) {
+    if (context?.graphback?.options?.selectedFields) {
+      return {};
+    }
+
     return context.graphback.options.selectedFields
       .reduce((acc: Record<string, any>, field: string) => {
         return {
