@@ -20,7 +20,7 @@ export class PgKnexDBDataProvider<Type = any> extends KnexDBDataProvider<Type> {
     const { data: createData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db(this.tableName).insert(createData).returning(context.graphback.options.selectedFields);
+    const dbResult = await this.db(this.tableName).insert(createData).returning(this.getSelectedFields(context));
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

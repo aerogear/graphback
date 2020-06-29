@@ -176,8 +176,8 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   }
 
   protected buildProjectionOption(context: GraphbackContext) {
-    if (context?.graphback?.options?.selectedFields) {
-      return {};
+    if (!context.graphback.options?.selectedFields?.length) {
+      return undefined;
     }
 
     return context.graphback.options.selectedFields
