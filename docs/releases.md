@@ -20,7 +20,7 @@ Graphback 0.14 contains a lot of breaking changes that will improve and simplify
 
 Previously, the CRUD mutation resolvers did not allow returning null. These can now be null.
 
-```
+```patch
 - createNote(input: CreateNoteInput!): Note!
 + createNote(input: CreateNoteInput!): Note
 ```
