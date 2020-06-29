@@ -125,8 +125,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     writeFileSync(schemaPath, schemaString);
   }
 
-
-
   public getPluginName() {
     return SCHEMA_CRUD_PLUGIN_NAME;
   }
@@ -252,7 +250,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
       const operation = getFieldName(name, operationType)
       mutationFields[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
+        type: modelType,
         args: {
           input: {
             type: GraphQLNonNull(createMutationInputType)
@@ -268,7 +266,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const updateMutationInputType = schemaComposer.getITC(inputTypeName).getType()
 
       mutationFields[operation] = {
-        type: GraphQLNonNull(modelType),
+        type: modelType,
         args: {
           input: {
             type: GraphQLNonNull(updateMutationInputType)
@@ -284,7 +282,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const deleteMutationInputType = schemaComposer.getITC(inputTypeName).getType()
 
       mutationFields[operation] = {
-        type: GraphQLNonNull(model.graphqlType),
+        type: modelType,
         args: {
           input: {
             type: GraphQLNonNull(deleteMutationInputType)
@@ -404,8 +402,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * @param {IFieldResolver} mutationObj - Mutation resolver object
    */
   protected addMutationResolvers(model: ModelDefinition, mutationObj: IFieldResolver<any, any>) {
-    const modelType = model.graphqlType;
-
     if (model.crudOptions.create) {
       this.addCreateMutationResolver(model, mutationObj)
     }

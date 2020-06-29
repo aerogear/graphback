@@ -43,7 +43,7 @@ input IDInput {
   lt: ID
   ge: ID
   gt: ID
-  in: [ID]
+  in: [ID!]
 }
 
 input MutateUserInput {
@@ -52,9 +52,9 @@ input MutateUserInput {
 }
 
 type Mutation {
-  createUser(input: CreateUserInput!): User!
-  updateUser(input: MutateUserInput!): User!
-  deleteUser(input: MutateUserInput!): User!
+  createUser(input: CreateUserInput!): User
+  updateUser(input: MutateUserInput!): User
+  deleteUser(input: MutateUserInput!): User
 }
 
 input OrderByInput {
@@ -84,7 +84,7 @@ input StringInput {
   lt: String
   ge: String
   gt: String
-  in: [String]
+  in: [String!]
   contains: String
   startsWith: String
   endsWith: String
