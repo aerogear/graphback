@@ -105,8 +105,8 @@ type User {
 input UserFilter {
   id: IDInput
   name: StringInput
-  and: [UserFilter]
-  or: [UserFilter]
+  and: [UserFilter!]
+  or: [UserFilter!]
   not: UserFilter
 }
 
