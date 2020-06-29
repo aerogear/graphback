@@ -2,9 +2,14 @@
 id: datamodel
 title: Data Model
 ---
+Graphback processes your data model to generate a server and client side using best patterns for production ready applications and reduces amount of boilerplate code needed to be added by you. Developers can focus on data and application requirements by modeling them using a GraphQL SDL.
 
-Graphback processes your data model to generate a server and client side using best patterns for production ready applications and reduces amount of boilerplate code needed to be added by you.
-Developers can focus on data and application requirements by modeling them using a GraphQL SDL.
+1. [Model](##Model)
+2. [Primary key](##Primary_key)
+3. [Relationships](##Relationships)
+
+For more information on getting started with Graphback, please https://graphback.dev/
+
 
 ## Model
 
