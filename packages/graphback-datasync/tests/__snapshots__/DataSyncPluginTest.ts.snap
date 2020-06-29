@@ -115,12 +115,12 @@ input MutateNoteInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
+  createNote(input: CreateNoteInput!): Note
+  updateNote(input: MutateNoteInput!): Note
+  deleteNote(input: MutateNoteInput!): Note
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: MutateCommentInput!): Comment
+  deleteComment(input: MutateCommentInput!): Comment
 }
 
 \\"\\"\\"

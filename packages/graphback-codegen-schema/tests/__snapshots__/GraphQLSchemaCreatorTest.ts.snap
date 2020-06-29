@@ -362,17 +362,17 @@ input MutateTestInput {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: MutateTestInput!): Test!
-  deleteTest(input: MutateTestInput!): Test!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
-  createIssue(input: CreateIssueInput!): Issue!
-  createFix(input: CreateFixInput!): Fix!
+  createNote(input: CreateNoteInput!): Note
+  updateNote(input: MutateNoteInput!): Note
+  deleteNote(input: MutateNoteInput!): Note
+  createTest(input: CreateTestInput!): Test
+  updateTest(input: MutateTestInput!): Test
+  deleteTest(input: MutateTestInput!): Test
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: MutateCommentInput!): Comment
+  deleteComment(input: MutateCommentInput!): Comment
+  createIssue(input: CreateIssueInput!): Issue
+  createFix(input: CreateFixInput!): Fix
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -619,17 +619,17 @@ type CommentResultList {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: MutateTestInput!): Test!
-  deleteTest(input: MutateTestInput!): Test!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
-  createIssue(input: CreateIssueInput!): Issue!
-  createFix(input: CreateFixInput!): Fix!
+  createNote(input: CreateNoteInput!): Note
+  updateNote(input: MutateNoteInput!): Note
+  deleteNote(input: MutateNoteInput!): Note
+  createTest(input: CreateTestInput!): Test
+  updateTest(input: MutateTestInput!): Test
+  deleteTest(input: MutateTestInput!): Test
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: MutateCommentInput!): Comment
+  deleteComment(input: MutateCommentInput!): Comment
+  createIssue(input: CreateIssueInput!): Issue
+  createFix(input: CreateFixInput!): Fix
 }
 
 input CreateNoteInput {
@@ -935,17 +935,17 @@ type CommentResultList {
 
 type Mutation {
   likeNote(id: ID!): Note!
-  createNote(input: CreateNoteInput!): Note!
-  updateNote(input: MutateNoteInput!): Note!
-  deleteNote(input: MutateNoteInput!): Note!
-  createTest(input: CreateTestInput!): Test!
-  updateTest(input: MutateTestInput!): Test!
-  deleteTest(input: MutateTestInput!): Test!
-  createComment(input: CreateCommentInput!): Comment!
-  updateComment(input: MutateCommentInput!): Comment!
-  deleteComment(input: MutateCommentInput!): Comment!
-  createIssue(input: CreateIssueInput!): Issue!
-  createFix(input: CreateFixInput!): Fix!
+  createNote(input: CreateNoteInput!): Note
+  updateNote(input: MutateNoteInput!): Note
+  deleteNote(input: MutateNoteInput!): Note
+  createTest(input: CreateTestInput!): Test
+  updateTest(input: MutateTestInput!): Test
+  deleteTest(input: MutateTestInput!): Test
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: MutateCommentInput!): Comment
+  deleteComment(input: MutateCommentInput!): Comment
+  createIssue(input: CreateIssueInput!): Issue
+  createFix(input: CreateFixInput!): Fix
 }
 
 input CreateNoteInput {
