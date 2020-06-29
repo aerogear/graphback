@@ -16,6 +16,15 @@ Please follow individual releases for more information.
 
 Graphback 0.14 contains a lot of breaking changes that will improve and simplify your application code.
 
+#### CRUD Mutation return types are nullable
+
+Previously, the CRUD mutation resolvers did not allow returning null. These can now be null.
+
+```
+- createNote(input: CreateNoteInput!): Note!
++ createNote(input: CreateNoteInput!): Note
+```
+
 #### Changed annotation syntax
 
 All annotations now use a uniform syntax format: `@annotation(foo 'bar')` that is similar to GraphQL Directives
