@@ -52,7 +52,7 @@
     "get-port": "5.1.1",
     "glob": "7.1.6",
     "graphback": "0.14.0-alpha4",
-    "graphql": "15.1.0",
+    "graphql": "15.2.0",
     "graphql-migrations": "0.14.0-alpha4",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.3",
