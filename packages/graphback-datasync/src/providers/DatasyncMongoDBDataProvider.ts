@@ -119,12 +119,15 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     if (!idField.value) {
       throw new NoDataError(`Couldn't get document from ${this.collectionName} - missing ID field`)
     }
-    const projection = {
-      ...this.buildProjectionOption(context),
-      [fieldNames.updatedAt]: 1,
-      _deleted: 1
-    };
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true} }, { projection });
+
+    const projection = this.buildProjectionOption(context);
+
+    if (projection) {
+      projection[fieldNames.updatedAt] = 1;
+      projection._deleted = 1
+    }
+
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false }, { projection });
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
       if (
