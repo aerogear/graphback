@@ -550,7 +550,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         options: { selectedFields, aggregations: { count } }
       };
 
-      return context.graphback.services[modelName].findBy(args.filter, {...context, graphback}, args.orderBy, args.page)
+      return context.graphback.services[modelName].findBy(args.filter, {...context, graphback}, args.page, args.orderBy)
     }
   }
 

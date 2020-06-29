@@ -2,9 +2,9 @@ import { GraphbackCRUDService, ResultList } from './GraphbackCRUDService';
 import { GraphbackOrderBy, GraphbackPage } from '.';
 
 /**
- * ProxyService that can be used by any services that wish to extend 
+ * ProxyService that can be used by any services that wish to extend
  * Graphback functionality.
- * Service works by proxying method requests to another service or 
+ * Service works by proxying method requests to another service or
  * datastore.
  */
 export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
@@ -31,8 +31,8 @@ export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
     return this.proxiedService.findOne(args, context);
   }
 
-  public findBy(filter: any, context: any, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<ResultList<T>> {
-    return this.proxiedService.findBy(filter, context, orderBy, page);
+  public findBy(filter: any, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+    return this.proxiedService.findBy(filter, context, page, orderBy);
   }
 
   public subscribeToCreate(filter?: any, context?: any): AsyncIterator<T> {

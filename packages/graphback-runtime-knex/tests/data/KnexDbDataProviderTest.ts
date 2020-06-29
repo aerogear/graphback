@@ -239,7 +239,7 @@ type Todo {
     }, { graphback: { services: {}, options: { selectedFields: "*" } } });
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } }, undefined, {
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } }, {
     offset: n,
     limit: numberOfTodos
   });
@@ -461,7 +461,7 @@ type Todo {
     }, { graphback: { services: {}, options: { selectedFields: "*" } } });
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, { graphback: { services: {}, options: { selectedFields: fields } } }, { order: 'desc', field: 'id' });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, { graphback: { services: {}, options: { selectedFields: fields } } }, undefined, { order: 'desc', field: 'id' });
 
   expect(todos[0].id).toEqual(12);
 });
@@ -484,7 +484,7 @@ type Todo {
     }, { graphback: { services: {}, options: { selectedFields: "*" } } });
   }
 
-  const todos = await providers.Todo.findBy({ text: { eq: text } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } }, { field: 'id' });
+  const todos = await providers.Todo.findBy({ text: { eq: text } }, { graphback: { services: {}, options: { selectedFields: ["id"] } } }, undefined, { field: 'id' });
 
   expect(todos[0].id).toEqual(1);
 });

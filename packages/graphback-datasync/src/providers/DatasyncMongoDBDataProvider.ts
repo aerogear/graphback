@@ -82,14 +82,14 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]> {
+  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     if (filter === undefined) {
       filter = {};
     }
 
     filter._deleted = { ne: true };
 
-    return super.findBy(filter, context, orderBy, page);
+    return super.findBy(filter, context, page, orderBy);
   }
 
   public async count(filter: any): Promise<number> {
@@ -128,7 +128,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
       if (
-        queryResult[fieldNames.updatedAt] !== undefined && 
+        queryResult[fieldNames.updatedAt] !== undefined &&
         clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
       ) {
         return { serverState: queryResult, clientState: clientData };

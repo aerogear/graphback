@@ -82,7 +82,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   //tslint:disable-next-line: no-any
-  public async findBy(filter: any, context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<ResultList<T>> {
+  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     let count: number;
     if (context.graphback.options.aggregations?.count) {
       count = await this.db.count(filter);
@@ -91,7 +91,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     let items: T[];
 
     if (context.graphback.options.selectedFields.length) {
-      items = await this.db.findBy(filter, context, orderBy, page);
+      items = await this.db.findBy(filter, context, page, orderBy);
     }
 
     // set page values for returned object

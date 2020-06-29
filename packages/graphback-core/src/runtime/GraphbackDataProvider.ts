@@ -52,12 +52,12 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
   /**
    * Implementation for reading objects with filtering capabilities
    *
-   * @param page paging context
-   * @param orderBy gives the ability to order the results based on a field in ascending or descending order
    * @param filter filter by specific type
    * @param context context object passed from graphql or rest layer
+   * @param page paging context
+   * @param orderBy gives the ability to order the results based on a field in ascending or descending order
    */
-  findBy(filter: any,context: GraphbackContext, orderBy?: GraphbackOrderBy, page?: GraphbackPage): Promise<Type[]>;
+  findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]>;
 
   /**
    * Implementation for counting number of objects with filtering capabilities
