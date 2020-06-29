@@ -207,8 +207,7 @@ describe('Soft deletion test', () => {
     const { db, providers } = context;
     const { Post } = providers;
 
-    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost'})).insertedId
-
+    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost' })).insertedId
     const updateTime = 1593263130987
     advanceTo(updateTime);
     const update = await Post.update({ id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, fieldNames.updatedAt]}}});
