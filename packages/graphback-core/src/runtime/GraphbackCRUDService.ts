@@ -1,7 +1,7 @@
 import { GraphbackPage } from './interfaces';
 
 export interface ResultList<T = any> {
-  items?: T[],
+  items: T[],
   count?: number;
   limit?: number;
   offset?: number;
