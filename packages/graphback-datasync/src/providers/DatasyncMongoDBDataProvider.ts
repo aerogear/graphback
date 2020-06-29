@@ -127,7 +127,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       projection._deleted = 1
     }
 
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: false }, { projection });
+    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true } }, { projection });
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
       if (
