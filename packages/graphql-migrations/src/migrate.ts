@@ -106,6 +106,7 @@ export async function migrateDB(
   //Generate new
   const newAdb = await generateAbstractDatabase(finalSchema, {
     scalarMap: finalOptions.scalarMap,
+    mapListToJson: finalOptions.mapListToJson
   })
   if (finalOptions.debug) {
     console.log('BEFORE', JSON.stringify(existingAdb.tables, undefined, 2))

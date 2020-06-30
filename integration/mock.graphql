@@ -9,7 +9,7 @@ type Note {
   comments: [Comment]!
 
   """
-  @db(type:'json')
+  @db(type: 'json')
   """
   tasks: [Task]!
 }
@@ -23,6 +23,7 @@ type Comment {
   @oneToOne
   """
   metadata: CommentMetadata
+  ratings: [Int!]
 }
 
 """
