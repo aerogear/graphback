@@ -180,5 +180,30 @@ describe('buildGraphbackAPI', () => {
 
     expect(schema.getType('NoteDeltaList')).toBeDefined()
   })
+
+  test('Works when there are no Graphback models', () => {
+
+    const model = `
+    type Note {
+      id: ID!
+      title: String!
+      description: String
+    }
+
+    type Query {
+      test: String
+    }
+    `
+
+    const { db } = setup()
+
+    const { schema, resolvers } = buildGraphbackAPI(model, {
+      dataProviderCreator: createKnexDbProvider(db)
+    })
+
+    expect(schema.getType('Note')).toBeDefined()
+    expect(resolvers).toBeUndefined()
+    expect(Object.keys(schema.getQueryType().getFields())).toEqual(['test'])
+  })
 })
 
