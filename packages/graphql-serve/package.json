@@ -45,7 +45,7 @@
     "@graphback/datasync": "0.14.0-alpha4",
     "@graphql-tools/load": "6.0.10",
     "@graphql-tools/graphql-file-loader": "6.0.10",
-    "apollo-server-express": "2.15.0",
+    "apollo-server-express": "2.15.1",
     "chalk": "4.1.0",
     "cors": "2.8.5",
     "express": "4.17.1",
