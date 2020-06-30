@@ -47,8 +47,8 @@ beforeAll(async () => {
     graphbackApi = buildGraphbackAPI(modelText, {
       dataProviderCreator: createKnexDbProvider(db),
       plugins: [
-        new SchemaCRUDPlugin({outputPath: "./output-postgres/schema/schema.graphql"}),
-        new ClientCRUDPlugin({format: 'graphql', outputFile: './output-postgres/client/graphback.graphql'})
+        new SchemaCRUDPlugin({ outputPath: "./output-postgres/schema/schema.graphql" }),
+        new ClientCRUDPlugin({ format: 'graphql', outputFile: './output-postgres/client/graphback.graphql' })
       ]
     });
 
@@ -125,13 +125,14 @@ async function seedDatabase(db: Knex) {
       text: 'Note A Comment',
       description: 'Note A Comment Description',
       noteId: 1,
-      metadataId: 1
+      metadataId: 1,
+      ratings: JSON.stringify([4, 4, 3, 2])
     },
     {
       text: 'Note A Comment 2',
       description: 'Note A Comment Description',
       noteId: 1,
-      metadataId: 2
+      metadataId: 2,
     }
   ]);
 }
@@ -151,12 +152,14 @@ test('Find all notes', async () => {
           {
             id: '1',
             text: 'Note A Comment',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: [4, 4, 3, 2]
           },
           {
             id: '2',
             text: 'Note A Comment 2',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: null
           }
         ]
       },
@@ -231,12 +234,14 @@ test('Find at most one note', async () => {
           {
             id: '1',
             text: 'Note A Comment',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: [4, 4, 3, 2]
           },
           {
             id: '2',
             text: 'Note A Comment 2',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: null,
           }
         ]
       },
@@ -257,6 +262,7 @@ test('Find all comments', async () => {
         id: '1',
         text: 'Note A Comment',
         description: 'Note A Comment Description',
+        ratings: [4, 4, 3, 2],
         note: {
           id: '1',
           title: 'Note A',
@@ -271,6 +277,7 @@ test('Find all comments', async () => {
         id: '2',
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
+        ratings: null,
         note: {
           id: '1',
           title: 'Note A',
@@ -301,12 +308,14 @@ test('Note 1 should be defined', async () => {
       {
         id: '1',
         text: 'Note A Comment',
-        description: 'Note A Comment Description'
+        description: 'Note A Comment Description',
+        ratings: [4, 4, 3, 2]
       },
       {
         id: '2',
         text: 'Note A Comment 2',
-        description: 'Note A Comment Description'
+        description: 'Note A Comment Description',
+        ratings: null
       }
     ]
   });
@@ -327,6 +336,7 @@ test('Find at most one comment on Note 1', async () => {
       id: '1',
       text: 'Note A Comment',
       description: 'Note A Comment Description',
+      ratings: [4, 4, 3, 2],
       metadata: {
         id: "1",
         opened: true,
@@ -356,6 +366,7 @@ test('Find comments on Note 1 except first', async () => {
         id: '2',
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
+        ratings: null,
         metadata: {
           "id": "2",
           "opened": false,

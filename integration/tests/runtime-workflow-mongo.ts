@@ -6,13 +6,12 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { loadConfig } from 'graphql-config';
 import { loadDocuments } from '@graphql-toolkit/core';
 import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
 import { buildGraphbackAPI, GraphbackAPI } from "graphback";
 import { DocumentNode } from 'graphql';
-import { createMongoDbProvider } from "../../packages/graphback-runtime-mongodb"
 import { MongoClient, Db } from 'mongodb';
+import { createMongoDbProvider } from "../../packages/graphback-runtime-mongodb"
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
 
@@ -25,9 +24,9 @@ let graphbackApi: GraphbackAPI;
 
 let documents: DocumentNode;
 
-let notesId = [];
-let commentId = [];
-let metadataId = [];
+const notesId = [];
+const commentId = [];
+const metadataId = [];
 
 const modelText = readFileSync("./mock.graphql").toString();
 
@@ -126,11 +125,13 @@ async function seedDatabase(db: Db) {
       text: 'Note A Comment',
       description: 'Note A Comment Description',
       noteId: notesId[0],
-      metadataId: metadataId[0]
+      metadataId: metadataId[0],
+      ratings: [4, 4, 5, 2]
     },
     {
       text: 'Note A Comment 2',
       description: 'Note A Comment Description',
+      ratings: null,
       noteId: notesId[0],
       metadataId: metadataId[1]
     }
@@ -156,11 +157,13 @@ test('Find all notes', async () => {
           {
             id: commentId[0],
             text: 'Note A Comment',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: [4, 4, 5, 2]
           },
           {
             id: commentId[1],
             text: 'Note A Comment 2',
+            ratings: null,
             description: 'Note A Comment Description'
           }
         ]
@@ -236,12 +239,14 @@ test('Find at most one note', async () => {
           {
             id: commentId[0],
             text: 'Note A Comment',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: [4, 4, 5, 2]
           },
           {
             id: commentId[1],
             text: 'Note A Comment 2',
-            description: 'Note A Comment Description'
+            description: 'Note A Comment Description',
+            ratings: null
           }
         ]
       },
@@ -262,6 +267,7 @@ test('Find all comments', async () => {
         id: commentId[0],
         text: 'Note A Comment',
         description: 'Note A Comment Description',
+        ratings: [4, 4, 5, 2],
         note: {
           id: notesId[0],
           title: 'Note A',
@@ -276,6 +282,7 @@ test('Find all comments', async () => {
         id: commentId[1],
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
+        ratings: null,
         note: {
           id: notesId[0],
           title: 'Note A',
@@ -306,12 +313,14 @@ test('Note 1 should be defined', async () => {
       {
         id: commentId[0],
         text: 'Note A Comment',
-        description: 'Note A Comment Description'
+        description: 'Note A Comment Description',
+        ratings: [4, 4, 5, 2]
       },
       {
         id: commentId[1],
         text: 'Note A Comment 2',
-        description: 'Note A Comment Description'
+        description: 'Note A Comment Description',
+        ratings: null
       }
     ]
   });
@@ -332,6 +341,7 @@ test('Find at most one comment on Note 1', async () => {
       id: commentId[0],
       text: 'Note A Comment',
       description: 'Note A Comment Description',
+      ratings: [4, 4, 5, 2],
       metadata: {
         id: metadataId[0],
         opened: true,
@@ -361,6 +371,7 @@ test('Find comments on Note 1 except first', async () => {
         id: commentId[1],
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
+        ratings: null,
         metadata: {
           "id": metadataId[1],
           "opened": false,
