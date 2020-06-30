@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
-import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isNonNullType, isInputObjectType, isNullableType, isWrappingType, isListType, GraphQLOutputType, GraphQLInputType, assertInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphQLJSON, isModelType } from '@graphback/core';
+import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, isModelType } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -39,7 +39,7 @@ export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
 }
 
 export const JSONScalarInputType = new GraphQLInputObjectType({
-  name: getInputName(GraphQLJSON),
+  name: getInputName(GraphbackJSON),
   fields: {
     ne: { type: GraphQLString },
     eq: { type: GraphQLString },

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, isSpecifiedGraphbackScalarType, getPrimaryKey } from '@graphback/core'
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, isSpecifiedGraphbackScalarType, getPrimaryKey, GraphbackJSON } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
@@ -15,7 +15,7 @@ import { buildFilterInputType, createModelListResultType, StringScalarInputType,
 export interface SchemaCRUDPluginConfig {
   /**
    * RelativePath for the output files created by generator
-   * e.g. /path/to/schema/schema.graphql
+   * e.g. ./path/to/schema/schema.graphql
    */
   outputPath?: string
 }
@@ -81,7 +81,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const resolvers: IResolvers = {
       Query: {},
       Mutation: {},
-      Subscription: {}
+      Subscription: {},
+      JSON: GraphbackJSON
     }
 
     const modelNameToModelDefinition = models

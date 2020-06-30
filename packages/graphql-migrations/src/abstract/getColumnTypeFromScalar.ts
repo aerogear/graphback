@@ -77,6 +77,13 @@ export default function(
     }
   }
 
+  if ((scalarType && scalarType.name === 'JSON' ) || annotations.type === 'json') {
+    return {
+      type: 'json',
+      args: []
+    }
+  }
+
   // date
   if (annotations.type === 'date') {
     return {
@@ -109,10 +116,10 @@ export default function(
     }
   }
 
-  // json & jsonb
-  if (['json', 'jsonb'].includes(annotations.type)) {
+  // jsonb
+  if (annotations.type === 'jsonb') {
     return {
-      type: annotations.type,
+      type: 'jsonb',
       args: [],
     }
   }

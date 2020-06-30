@@ -77,6 +77,7 @@ afterAll(async () => {
   rmdirSync(path.resolve('./output-mongo'), { recursive: true });
   const dropCollections = ["note", "comment", "commentmetadata"].map((name: string) => db.dropCollection(name));
   await Promise.all(dropCollections);
+
   return mongoClient.close();
 });
 
