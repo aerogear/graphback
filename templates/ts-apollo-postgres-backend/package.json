@@ -15,7 +15,7 @@
     "@graphback/runtime-knex": "0.14.0-alpha4",
     "@graphql-tools/load": "6.0.10",
     "@graphql-tools/graphql-file-loader": "6.0.10",
-    "apollo-server-express": "2.15.0",
+    "apollo-server-express": "2.15.1",
     "cors": "2.8.5",
     "dotenv": "8.2.0",
     "express": "4.17.1",
