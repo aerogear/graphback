@@ -24,7 +24,7 @@ module.exports = {
       },
       links: [
         {
-          to: 'docs/gettingstarted',
+          to: 'docs/next/introduction',
           activeBasePath: 'docs',
           label: 'Docs',
           position: 'left',
@@ -35,11 +35,11 @@ module.exports = {
             },
             ...versions.slice(1).map((version) => ({
               label: version,
-              to: `docs/${version}/gettingstarted`,
+              to: `docs/${version}/introduction`,
             })),
             {
               label: 'Master/Unreleased',
-              to: 'docs/next/gettingstarted',
+              to: 'docs/next/introduction',
             },
           ],
         },
