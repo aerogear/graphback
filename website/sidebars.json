@@ -1,48 +1,49 @@
 {
   "docs": {
-    "Introduction": [
-      "gettingstarted"
-    ],
     "Getting Started": [
-      "intro/quickstart",
-      "intro/existingproject",
-      "intro/serverless",
-      "intro/graphqlserve",
-      "intro/datamodel",
-      "intro/config"
+      "introduction",
+      "getting-started/create-new-app",
+      "getting-started/add-to-project"
+    ],
+    "Model": [
+      "model/model"
     ],
     "CRUD": [
-      "crud/crudspec",
-      "crud/crudruntime"
+      "crud/intro",
+      "crud/queries",
+      "crud/mutations",
+      "crud/subscriptions"
     ],
-    "Generator Plugins": [
-      "plugins/plugin-intro",
-      "plugins/crud-schema",
-      "plugins/crud-client",
-      "plugins/customplugin"
-    ],
-    "Authentication": [
-      "authentication/authinto",
-      "authentication/keycloak"
+    "Databases": [
+      "databases/postgres",
+      "databases/mongodb"
     ],
     "Subscriptions": [
-      "subscriptions/subintro"
+      "subscriptions/intro"
     ],
-    "Database": [
-      "db/dbintroduction",
-      "db/datasources",
-      "db/dbmigrations"
+    "Authentication": [
+      "authentication/intro",
+      "authentication/keycloak"
     ],
-    "Reference": [
-      "commands",
-      "metadata"
+    "Data Sync": [
+      "datasync/intro"
     ],
-    "Data Synchronization": [
-      "datasync/datasync-intro",
-      "datasync/datasync-soft-delete"
+    "Plugins": [
+      "plugins/schema-crud",
+      "plugins/client-crud",
+      "plugins/create"
     ],
-    "Releases": [
-      "releases"
+    "API Reference": [
+      "api/build-graphback-api",
+      "api/create-crud-service",
+      "api/create-knexdb-provider",
+      "api/create-mongodb-provider",
+      "api/graphback-crud-service",
+      "api/graphback-data-provider"
+    ],
+    "CLI Reference": [
+      "cli/create-graphql",
+      "cli/graphback-cli"
     ]
   }
 }
