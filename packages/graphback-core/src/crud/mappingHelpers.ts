@@ -4,7 +4,6 @@ import * as pluralize from 'pluralize'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
 import { SchemaComposer } from 'graphql-compose';
 import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
-import { GraphQLJSON } from '../scalars'
 import { GraphbackOperationType } from './GraphbackOperationType';
 
 //TODO it is esential to document this element
