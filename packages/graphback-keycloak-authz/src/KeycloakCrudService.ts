@@ -1,5 +1,5 @@
 import { isAuthorizedByRole } from "keycloak-connect-graphql";
-import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage, GraphbackProxyService } from '@graphback/core';
+import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage, GraphbackProxyService, GraphbackContext } from '@graphback/core';
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 
@@ -33,7 +33,7 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
     this.authConfig = authConfig || getEmptyServiceConfig();
   }
 
-  public create(data: T, context: any): Promise<T> {
+  public create(data: T, context: GraphbackContext): Promise<T> {
     if (this.authConfig.create && this.authConfig.create.roles && this.authConfig.create.roles.length > 0) {
       const { roles } = this.authConfig.create;
       if (!isAuthorizedByRole(roles, context)) {
@@ -41,21 +41,24 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
       }
     }
 
+    this.checkAuthRulesForInput(context, Object.keys(data));
+
     return super.create(data, context);
   }
 
-  public update(data: T, context: any): Promise<T> {
+  public update(data: T, context: GraphbackContext): Promise<T> {
     if (this.authConfig.update && this.authConfig.update.roles && this.authConfig.update.roles.length > 0) {
       const { roles } = this.authConfig.update;
       if (!isAuthorizedByRole(roles, context)) {
         throw new UnauthorizedError()
       }
     }
+    this.checkAuthRulesForInput(context, Object.keys(data));
 
     return super.update(data, context);
   }
 
-  public delete(data: T, context: any): Promise<T> {
+  public delete(data: T, context: GraphbackContext): Promise<T> {
     if (this.authConfig.delete && this.authConfig.delete.roles && this.authConfig.delete.roles.length > 0) {
       const { roles } = this.authConfig.delete;
       if (!isAuthorizedByRole(roles, context)) {
@@ -66,24 +69,28 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
     return super.delete(data, context);
   }
 
-  public findOne(args: any, context: any): Promise<T> {
+  public findOne(args: any, context: GraphbackContext): Promise<T> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
         throw new UnauthorizedError()
       }
     }
+
+    this.checkAuthRulesForSelections(context);
 
     return super.findOne(args, context);
   }
 
-  public findBy(filter: any, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
         throw new UnauthorizedError()
       }
     }
+
+    this.checkAuthRulesForSelections(context);
 
     return super.findBy(filter, context, page, orderBy);
   }
@@ -121,7 +128,7 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
     return super.subscribeToDelete(filter, context)
   }
 
-  public batchLoadData(relationField: string, id: string | number, filter: any, context: any) {
+  public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext) {
     if (this.authConfig?.relations[relationField]?.roles.length > 0) {
       const { roles } = this.authConfig?.relations[relationField];
       if (!isAuthorizedByRole(roles, context)) {
@@ -131,4 +138,38 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
 
     return super.batchLoadData(relationField, id, filter, context)
   }
+
+  /**
+   * Checks if user is allowed to create/update particular field
+   */
+  private checkAuthRulesForInput(context: any, inputKeys: string[]) {
+    if (this.authConfig.updateFields) {
+      for (const inputKey of inputKeys) {
+        if (this.authConfig.updateFields[inputKey]) {
+          const { roles } = this.authConfig.updateFields[inputKey];
+          if (!isAuthorizedByRole(roles, context)) {
+            throw new UnauthorizedError()
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks if user is allowed to request particular field
+   */
+  private checkAuthRulesForSelections(context: any) {
+    const selectedFields = context.graphback?.options?.selectedFields;
+    if (this.authConfig.returnFields && selectedFields) {
+      for (const selectedField of selectedFields) {
+        if (this.authConfig.returnFields[selectedField]) {
+          const { roles } = this.authConfig.returnFields[selectedField];
+          if (!isAuthorizedByRole(roles, context)) {
+            throw new UnauthorizedError(`Unauthorized to fetch: ${selectedField}`)
+          }
+        }
+      }
+    }
+  }
 }
+
