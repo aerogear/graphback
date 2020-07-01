@@ -1,4 +1,4 @@
-import { isAuthorizedByRole } from "keycloak-connect-graphql";
+import { isAuthorizedByRole, KeycloakContext } from "keycloak-connect-graphql";
 import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage, GraphbackProxyService, GraphbackContext } from '@graphback/core';
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
@@ -82,12 +82,21 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
     return super.findOne(args, context);
   }
 
-  public findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public findBy(filter: any, context: GraphbackContext | any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
         throw new UnauthorizedError()
       }
+    }
+
+    // TODO hardcoded context
+    if (this.authConfig.filterUsingAuthInfo && context.kauth) {
+      if (typeof this.authConfig.filterUsingAuthInfo !== 'function') {
+        throw new Error("Wrong auth filter implementation")
+      }
+
+      filter = this.authConfig.filterUsingAuthInfo(filter, context.kauth.accessToken.content)
     }
 
     this.checkAuthRulesForSelections(context);
