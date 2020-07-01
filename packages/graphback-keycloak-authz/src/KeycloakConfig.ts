@@ -24,22 +24,42 @@ export type CrudServiceAuthConfig = {
    * Create operation auth rules
    */
   subCreate?: CrudOperationAuthConfig,
- 
+
   /**
    * Update operation auth rules
    */
   subUpdate?: CrudOperationAuthConfig,
-  
+
   /**
    * Delete operation auth rules
    */
   subDelete?: CrudOperationAuthConfig,
-  
+
   /**
-   * relations operation auth rules used for fetching relationships
+   * Relations operation auth rules used for fetching objects that are in relation to main object we query
    */
   relations?: Map<string, CrudOperationAuthConfig>
+
+  /**
+   * Provides rules for creating and updating certain fields. 
+   * Creating or updating object with field specified will require role
+   * 
+   */
+  updateFields?: Map<string, CrudOperationAuthConfig>
+
+  /**
+   * Provides rules for fetching fields back from database
+   */
+  returnFields?: Map<string, CrudOperationAuthConfig>
+
+  authFilter?: AuthFilter
 };
+
+/**
+ * @return filter - new filter field for your specific database
+ */
+export type AuthFilter = (filter: any, profileInfo: any) => any
+
 
 export type CrudOperationAuthConfig = {
   roles: string[]
