@@ -262,13 +262,13 @@ test('find and count all users', async () => {
   expect(resultWithoutCount.count).toBeUndefined();
   expect(resultWithoutCount.items).toHaveLength(4);
 
-  const resultWithoutItems = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: [], aggregations: {
+  const resultWithCountAndItems = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: [], aggregations: {
     count: true
   }}}})
 
 
-  expect(resultWithoutItems.items).toBeUndefined();
-  expect(resultWithoutItems.count).toEqual(4);
+  expect(resultWithCountAndItems.items.length).toEqual(4);
+  expect(resultWithCountAndItems.count).toEqual(4);
 
   // count with limit and offset
 
