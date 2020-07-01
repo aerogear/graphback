@@ -7,7 +7,7 @@ import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMetadata } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, JSONScalarInputType } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, GraphbackJSONScalarInputType, GraphbackJSONObjectScalarInputType } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -81,9 +81,19 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const resolvers: IResolvers = {
       Query: {},
       Mutation: {},
-      Subscription: {},
-      GraphbackJSON
+      Subscription: {}
     }
+
+    const schemaComposer = new SchemaComposer(metadata.getSchema())
+
+    schemaComposer.forEach((tc: NamedTypeComposer<any>) => {
+      const namedType = tc.getType()
+      // check for a Graphback scalar
+      // and if so add it to the resolvers
+      if (isScalarType(namedType) && isSpecifiedGraphbackScalarType(namedType)) {
+        resolvers[namedType.name] = namedType
+      }
+    })
 
     const modelNameToModelDefinition = models
       .reduce((acc: any, model: ModelDefinition) => {
@@ -716,7 +726,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     schemaComposer.add(SortDirectionEnum);
     schemaComposer.add(StringScalarInputType);
     schemaComposer.add(BooleanScalarInputType);
-    schemaComposer.add(JSONScalarInputType);
+    schemaComposer.add(GraphbackJSONScalarInputType);
+    schemaComposer.add(GraphbackJSONObjectScalarInputType);
     schemaComposer.add(createInputTypeForScalar(GraphQLInt));
     schemaComposer.add(createInputTypeForScalar(GraphQLFloat));
 

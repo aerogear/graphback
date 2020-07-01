@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, isModelType } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, isModelType, GraphbackJSONObject } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -38,15 +38,6 @@ export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
   return newInput;
 }
 
-export const JSONScalarInputType = new GraphQLInputObjectType({
-  name: getInputName(GraphbackJSON),
-  fields: {
-    ne: { type: GraphQLString },
-    eq: { type: GraphQLString },
-    contains: { type: GraphQLString }
-  }
-})
-
 export const StringScalarInputType = new GraphQLInputObjectType({
   name: getInputName(GraphQLString),
   fields: {
@@ -81,6 +72,30 @@ export const BooleanScalarInputType = new GraphQLInputObjectType({
   fields: {
     ne: { type: GraphQLBoolean },
     eq: { type: GraphQLBoolean }
+  }
+})
+
+/**
+ * Custom GraphbackJSON scalar
+ */
+export const GraphbackJSONScalarInputType = new GraphQLInputObjectType({
+  name: getInputName(GraphbackJSON),
+  fields: {
+    ne: { type: GraphQLString },
+    eq: { type: GraphQLString },
+    contains: { type: GraphQLString }
+  }
+})
+
+/**
+ * Custom GraphbackJSONObject scalar
+ */
+export const GraphbackJSONObjectScalarInputType = new GraphQLInputObjectType({
+  name: getInputName(GraphbackJSONObject),
+  fields: {
+    ne: { type: GraphQLString },
+    eq: { type: GraphQLString },
+    contains: { type: GraphQLString }
   }
 })
 
