@@ -82,7 +82,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       Query: {},
       Mutation: {},
       Subscription: {},
-      JSON: GraphbackJSON
+      GraphbackJSON
     }
 
     const modelNameToModelDefinition = models
