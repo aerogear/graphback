@@ -89,18 +89,46 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
   }
 
   public subscribeToCreate(filter?: any, context?: any): AsyncIterator<T> {
+    if (this.authConfig.subCreate && this.authConfig.subCreate.roles && this.authConfig.subCreate.roles.length > 0) {
+      const { roles } = this.authConfig.subCreate;
+      if (!isAuthorizedByRole(roles, context)) {
+        throw new UnauthorizedError()
+      }
+    }
+
     return super.subscribeToCreate(filter, context)
   }
 
   public subscribeToUpdate(filter?: any, context?: any): AsyncIterator<T> {
+    if (this.authConfig.subUpdate && this.authConfig.subUpdate.roles && this.authConfig.subUpdate.roles.length > 0) {
+      const { roles } = this.authConfig.subUpdate;
+      if (!isAuthorizedByRole(roles, context)) {
+        throw new UnauthorizedError()
+      }
+    }
+
     return super.subscribeToUpdate(filter, context)
   }
 
   public subscribeToDelete(filter?: any, context?: any): AsyncIterator<T> {
+    if (this.authConfig.subDelete && this.authConfig.subDelete.roles && this.authConfig.subDelete.roles.length > 0) {
+      const { roles } = this.authConfig.subDelete;
+      if (!isAuthorizedByRole(roles, context)) {
+        throw new UnauthorizedError()
+      }
+    }
+
     return super.subscribeToDelete(filter, context)
   }
 
   public batchLoadData(relationField: string, id: string | number, filter: any, context: any) {
+    if (this.authConfig?.relations[relationField]?.roles.length > 0) {
+      const { roles } = this.authConfig?.relations[relationField];
+      if (!isAuthorizedByRole(roles, context)) {
+        throw new UnauthorizedError()
+      }
+    }
+
     return super.batchLoadData(relationField, id, filter, context)
   }
 }
