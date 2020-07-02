@@ -1,4 +1,3 @@
-export * from "./PgKnexDBDataProvider"
 export * from "./KnexDBDataProvider"
 
 // Helpers
