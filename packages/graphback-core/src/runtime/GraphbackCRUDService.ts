@@ -1,4 +1,5 @@
 import { GraphbackPage } from './interfaces';
+import { QueryFilter } from './QueryFilter';
 
 export interface ResultList<T = any> {
   items: T[],
@@ -62,7 +63,7 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
    * @param page pagination options
    * @param orderBy optionally sort the results by a column
    */
-  findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: any): Promise<ResultList<Type>>;
+  findBy(filter: QueryFilter, context: GraphbackContext, page?: GraphbackPage, orderBy?: any): Promise<ResultList<Type>>;
 
   /**
    * Subscription for all creation events
