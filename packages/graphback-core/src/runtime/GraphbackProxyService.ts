@@ -32,7 +32,7 @@ export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
     return this.proxiedService.findOne(args, context);
   }
 
-  public findBy(filter: QueryFilter, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public findBy(filter: QueryFilter<T>, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     return this.proxiedService.findBy(filter, context, page, orderBy);
   }
 

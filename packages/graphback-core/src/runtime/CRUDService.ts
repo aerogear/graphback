@@ -81,7 +81,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return this.db.findOne(args, context)
   }
 
-  public async findBy(filter: QueryFilter, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public async findBy(filter: QueryFilter<T>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     let count: number;
 
     if (context.graphback.options?.aggregations?.count) {
