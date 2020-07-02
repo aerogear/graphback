@@ -15,6 +15,7 @@
       "crud/subscriptions"
     ],
     "Databases": [
+      "databases/databases",
       "databases/postgres",
       "databases/mongodb"
     ],
