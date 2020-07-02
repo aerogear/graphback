@@ -3,6 +3,8 @@ import { GraphbackCRUDService, ResultList, GraphbackOrderBy, GraphbackPage, Grap
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 import { getEmptyServiceConfig, UnauthorizedError } from "./utils";
 
+
+
 /**
  * options object for the KeycloakCrudService
  */
@@ -90,7 +92,6 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
       }
     }
 
-    // TODO hardcoded context
     if (this.authConfig.filterUsingAuthInfo && context.kauth) {
       if (typeof this.authConfig.filterUsingAuthInfo !== 'function') {
         throw new Error("Wrong auth filter implementation")

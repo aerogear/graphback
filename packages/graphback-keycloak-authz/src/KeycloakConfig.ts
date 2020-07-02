@@ -38,18 +38,18 @@ export type CrudServiceAuthConfig = {
   /**
    * Relations operation auth rules used for fetching objects that are in relation to main object we query
    */
-  relations?: Map<string, CrudOperationAuthConfig>
+  relations?: { [key: string]: CrudOperationAuthConfig }
 
   /**
    * Provides rules for creating and updating certain fields.
    * Creating or updating object with field specified will require role
    */
-  updateFields?: Map<string, CrudOperationAuthConfig>
+  updateFields?: { [key: string]: CrudOperationAuthConfig }
 
   /**
    * Provides rules for fetching fields back from database
    */
-  returnFields?: Map<string, CrudOperationAuthConfig>
+  returnFields?: { [key: string]: CrudOperationAuthConfig }
 
   /**
    * Provides ability to supply additional filter arguments that will be computed on server.
