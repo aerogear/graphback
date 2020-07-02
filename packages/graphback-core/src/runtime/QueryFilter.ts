@@ -78,7 +78,6 @@ export type DateTimeInput = {
 /**
  * Generic query filter that helps
  */
-export type QueryFilter = {
-  [key: string]: any |
-  Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput>;
+export type QueryFilter<T = any> = {
+  [P in keyof T]?: any | Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput>;
 };
