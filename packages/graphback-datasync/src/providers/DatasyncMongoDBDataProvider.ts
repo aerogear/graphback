@@ -1,5 +1,5 @@
 import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter } from '@graphback/core';
+import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
@@ -72,7 +72,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const projection = this.buildProjectionOption(context);
     const query = this.db.collection(this.collectionName).findOne({
       ...filter,
-      _deleted: { $ne: true}
+      _deleted: { $ne: true }
     }, { projection });
     const data = await query;
 
@@ -82,7 +82,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
+  public async findBy(filter: QueryFilter<Type> | any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     if (filter === undefined) {
       filter = {};
     }
@@ -97,7 +97,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       filter = {};
     }
 
-    filter._deleted = { ne: true};
+    filter._deleted = { ne: true };
 
     return super.count(filter);
   }
