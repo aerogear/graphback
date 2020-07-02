@@ -9,11 +9,14 @@ import { CrudServiceAuthConfig } from './KeycloakConfig';
  * @param authConfig  - CRUD auth config for entire model
  *  @param serviceCreator - function that creates wrapper service
  */
-export function createKeycloakCRUDService(authConfig: CrudServiceAuthConfig, serviceCreator: ServiceCreator) {
+export function createKeycloakCRUDService(authConfigList: Map<string, CrudServiceAuthConfig>, serviceCreator: ServiceCreator) {
+  if (!authConfigList || !serviceCreator) {
+    throw new Error("Missing required arguments to create keycloak service")
+  }
+
   return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
     const service = serviceCreator(model, dataProvider);
-    authConfig = authConfig || {};
-    const objConfig = authConfig[model.graphqlType.name];
+    const objConfig = authConfigList[model.graphqlType.name];
     const keycloakService = new KeycloakCrudService({ service, authConfig: objConfig });
 
     return keycloakService;
