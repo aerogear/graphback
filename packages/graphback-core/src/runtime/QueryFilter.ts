@@ -76,8 +76,8 @@ export type DateTimeInput = {
 };
 
 /**
- * Generic query filter that helps
+ * Query filter used in Graphback services and data providers
  */
 export type QueryFilter<T = any> = {
-  [P in keyof T]?: any | Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput>;
+  [P in keyof T]?: any | Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput | DateTimeInput>;
 };

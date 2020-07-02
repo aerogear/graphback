@@ -58,7 +58,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param page paging context
    * @param orderBy gives the ability to order the results based on a field in ascending or descending order
    */
-  findBy(filter: QueryFilter, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]>;
+  findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]>;
 
   /**
    * Implementation for counting number of objects with filtering capabilities

@@ -82,7 +82,7 @@ export class KeycloakCrudService<T = any> extends GraphbackProxyService<T> {
     return super.findOne(args, context);
   }
 
-  public findBy(filter: QueryFilter, context: GraphbackContext | any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public findBy(filter: QueryFilter<T>, context: GraphbackContext | any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
