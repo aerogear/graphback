@@ -10,21 +10,16 @@ Before you start, check to make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/en/) v10.15.x or later
 - [npm](https://www.npmjs.com/) v5.x or later
+- [yarn](https://yarnpkg.com/) v1.x or later (optional)
 
 ## Create your application
 
 [Create GraphQL](https://github.com/aerogear/create-graphql) is a command-line utility for creating Graphback applications.
 
-Installing with npm:
+Create a Graphback application with npx:
 
 ```sh
-npm install -g create-graphql
-```
-
-Next, create a Graphback application:
-
-```sh
-create-graphql my-awesome-project
+npx create-graphql my-awesome-project
 ```
 
 The CLI will ask you to pick from one of a number of templates. Once chosen, the template will be downloaded to your computer.
