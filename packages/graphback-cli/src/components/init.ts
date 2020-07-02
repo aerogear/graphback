@@ -77,10 +77,7 @@ GraphQL server successfully bootstrapped :rocket:
 
 Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
-3. Review Graphback graphqlrc.yml config file
-2. Edit the .graphql file inside your model folder.
-3. Depending on template you might also need to run generator:
-   "graphback generate" command to generate source code
+2. Follow template README.md to start server
 `
 }
 
