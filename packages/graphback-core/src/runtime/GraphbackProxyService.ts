@@ -8,7 +8,7 @@ import { GraphbackOrderBy, GraphbackPage } from '.';
  * Service works by proxying method requests to another service or
  * datastore.
  */
-export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
+export class GraphbackProxyService<Type = any> implements GraphbackCRUDService<Type> {
 
   protected proxiedService: GraphbackCRUDService;
 
@@ -16,35 +16,35 @@ export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
     this.proxiedService = service;
   }
 
-  public create(data: T, context: any): Promise<T> {
+  public create(data: Type, context: any): Promise<Type> {
     return this.proxiedService.create(data, context);
   }
 
-  public update(data: T, context: any): Promise<T> {
+  public update(data: Type, context: any): Promise<Type> {
     return this.proxiedService.update(data, context);
   }
 
-  public delete(data: T, context: any): Promise<T> {
+  public delete(data: Type, context: any): Promise<Type> {
     return this.proxiedService.delete(data, context);
   }
 
-  public findOne(args: any, context: any): Promise<T> {
+  public findOne(args: any, context: any): Promise<Type> {
     return this.proxiedService.findOne(args, context);
   }
 
-  public findBy(filter: QueryFilter<T>, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public findBy(filter: QueryFilter<Type>, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<Type>> {
     return this.proxiedService.findBy(filter, context, page, orderBy);
   }
 
-  public subscribeToCreate(filter?: any, context?: any): AsyncIterator<T> {
+  public subscribeToCreate(filter?: any, context?: any): AsyncIterator<Type> {
     return this.proxiedService.subscribeToCreate(filter, context)
   }
 
-  public subscribeToUpdate(filter?: any, context?: any): AsyncIterator<T> {
+  public subscribeToUpdate(filter?: any, context?: any): AsyncIterator<Type> {
     return this.proxiedService.subscribeToUpdate(filter, context)
   }
 
-  public subscribeToDelete(filter?: any, context?: any): AsyncIterator<T> {
+  public subscribeToDelete(filter?: any, context?: any): AsyncIterator<Type> {
     return this.proxiedService.subscribeToDelete(filter, context)
   }
 

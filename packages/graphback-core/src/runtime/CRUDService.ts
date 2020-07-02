@@ -24,7 +24,7 @@ export interface CRUDServiceConfig {
  * - Logging: using logging abstraction
  */
 //tslint:disable-next-line: no-any
-export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
+export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
   protected db: GraphbackDataProvider;
   private pubSub: PubSubEngine;
   private modelName: string;
@@ -37,7 +37,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     this.pubSub = config.pubSub;
   }
 
-  public async create(data: T, context: GraphbackContext): Promise<T> {
+  public async create(data: Type, context: GraphbackContext): Promise<Type> {
     const result = await this.db.create(data, context);
 
     if (this.pubSub && this.crudOptions.subCreate) {
@@ -50,7 +50,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return result;
   }
 
-  public async update(data: T, context: GraphbackContext): Promise<T> {
+  public async update(data: Type, context: GraphbackContext): Promise<Type> {
 
     const result = await this.db.update(data, context);
 
@@ -65,7 +65,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
   }
 
   //tslint:disable-next-line: no-reserved-keywords
-  public async delete(data: T, context: GraphbackContext): Promise<T> {
+  public async delete(data: Type, context: GraphbackContext): Promise<Type> {
     const result = await this.db.delete(data, context);
 
     if (this.pubSub && this.crudOptions.subDelete) {
@@ -77,18 +77,18 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return result;
   }
 
-  public findOne(args: Partial<T>, context: GraphbackContext): Promise<T> {
+  public findOne(args: Partial<Type>, context: GraphbackContext): Promise<Type> {
     return this.db.findOne(args, context)
   }
 
-  public async findBy(filter: QueryFilter<T>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<Type>> {
     let count: number;
 
     if (context.graphback.options?.aggregations?.count) {
       count = await this.db.count(filter);
     }
 
-    const items: T[] = await this.db.findBy(filter, context, page, orderBy);
+    const items: Type[] = await this.db.findBy(filter, context, page, orderBy);
 
     // set page values for returned object
     const resultPageInfo = {
@@ -104,7 +104,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     }
   }
 
-  public subscribeToCreate(filter: any, context: GraphbackContext): AsyncIterator<T> | undefined {
+  public subscribeToCreate(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
@@ -113,7 +113,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return this.pubSub.asyncIterator(createSubKey)
   }
 
-  public subscribeToUpdate(filter: any, context: GraphbackContext): AsyncIterator<T> | undefined {
+  public subscribeToUpdate(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
@@ -122,7 +122,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return this.pubSub.asyncIterator(updateSubKey)
   }
 
-  public subscribeToDelete(filter: any, context: GraphbackContext): AsyncIterator<T> | undefined {
+  public subscribeToDelete(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }

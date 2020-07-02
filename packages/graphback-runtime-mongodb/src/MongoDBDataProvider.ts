@@ -107,7 +107,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: QueryFilter<T>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
+  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     const projection = this.buildProjectionOption(context);
     const query = this.db.collection(this.collectionName).find(buildQuery(filter), { projection });
     const data = await this.usePage(this.sortQuery(query, orderBy), page);

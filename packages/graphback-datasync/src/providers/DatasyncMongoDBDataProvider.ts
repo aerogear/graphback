@@ -1,5 +1,5 @@
 import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage } from '@graphback/core';
+import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
@@ -82,7 +82,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: QueryFilter<T>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
+  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     if (filter === undefined) {
       filter = {};
     }
