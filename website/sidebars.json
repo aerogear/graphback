@@ -6,7 +6,7 @@
       "getting-started/add-to-project"
     ],
     "Model": [
-      "model/model"
+      "model/your-model"
     ],
     "CRUD": [
       "crud/intro",
@@ -15,6 +15,7 @@
       "crud/subscriptions"
     ],
     "Databases": [
+      "databases/databases",
       "databases/postgres",
       "databases/mongodb"
     ],

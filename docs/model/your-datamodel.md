@@ -1,5 +1,5 @@
 ---
-id: model
+id: your-model
 title: Model
 sidebar_label: Model 
 ---
