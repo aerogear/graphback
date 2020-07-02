@@ -139,7 +139,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
   }
 
   public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext | KeycloakContext | any) {
-    if (this.authConfig?.relations[relationField]?.roles.length > 0) {
+    if (this.authConfig?.relations && this.authConfig?.relations[relationField]?.roles.length > 0) {
       const { roles } = this.authConfig?.relations[relationField];
       if (!isAuthorizedByRole(roles, context)) {
         throw new UnauthorizedError()
