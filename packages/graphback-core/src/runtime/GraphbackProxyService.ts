@@ -1,4 +1,5 @@
 import { GraphbackCRUDService, ResultList } from './GraphbackCRUDService';
+import { QueryFilter } from './QueryFilter';
 import { GraphbackOrderBy, GraphbackPage } from '.';
 
 /**
@@ -31,7 +32,7 @@ export class GraphbackProxyService<T = any> implements GraphbackCRUDService<T> {
     return this.proxiedService.findOne(args, context);
   }
 
-  public findBy(filter: any, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public findBy(filter: QueryFilter, context: any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     return this.proxiedService.findBy(filter, context, page, orderBy);
   }
 

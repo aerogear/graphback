@@ -1,7 +1,7 @@
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar } from '..';
-import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList } from '.';
+import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList, QueryFilter } from '.';
 
 /**
  * Configurations necessary to create a CRUDService
@@ -81,8 +81,7 @@ export class CRUDService<T = any> implements GraphbackCRUDService<T>  {
     return this.db.findOne(args, context)
   }
 
-  //tslint:disable-next-line: no-any
-  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
+  public async findBy(filter: QueryFilter, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<T>> {
     let count: number;
 
     if (context.graphback.options?.aggregations?.count) {

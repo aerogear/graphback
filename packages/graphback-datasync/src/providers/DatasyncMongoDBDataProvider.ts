@@ -82,7 +82,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
+  public async findBy(filter: QueryFilter, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     if (filter === undefined) {
       filter = {};
     }

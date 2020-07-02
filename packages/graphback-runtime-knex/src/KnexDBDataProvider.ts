@@ -1,4 +1,4 @@
-import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError, QueryFilter } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { buildQuery } from './knexQueryMapper';
@@ -77,7 +77,7 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     return result
   }
 
-  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
+  public async findBy(filter: QueryFilter, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
     let query = buildQuery(this.db, filter).select(this.getSelectedFields(context)).from(this.tableName)
 
     if (orderBy) {
