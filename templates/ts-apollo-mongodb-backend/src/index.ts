@@ -1,15 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config()
 import path from 'path'
+import http from "http"
+import express from "express"
+import cors from "cors"
 import { ApolloServer } from "apollo-server-express"
 import { buildGraphbackAPI } from 'graphback'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { createMongoDbProvider } from '@graphback/runtime-mongo'
-import cors from "cors"
-import express from "express"
-import http from "http"
+
 import { connectDB } from './db'
+import { customResolvers } from "./custom-resolvers"
 
 async function start() {
   const app = express()
@@ -30,7 +32,7 @@ async function start() {
 
   const apolloServer = new ApolloServer({
     typeDefs,
-    resolvers,
+    resolvers: [resolvers, customResolvers],
     context: contextCreator
   })
 

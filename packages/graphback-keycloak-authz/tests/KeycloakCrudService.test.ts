@@ -286,9 +286,7 @@ test('Batching', async () => {
   expect(() => service.batchLoadData('task', "test", {}, context)).toThrowError('User is not authorized.')
 });
 
-
-
-test('Input filter', async () => {
+test('Input and output filter', async () => {
 
   const modelType = buildSchema(`
     type Task {

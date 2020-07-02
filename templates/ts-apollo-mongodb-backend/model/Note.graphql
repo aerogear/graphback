@@ -1,4 +1,6 @@
-""" @model """
+"""
+ @model
+"""
 type Note {
   id: ID!
   title: String!
@@ -9,9 +11,15 @@ type Note {
   comments: [Comment]!
 }
 
-""" @model """
+"""
+ @model
+"""
 type Comment {
   id: ID!
   text: String
   description: String
+}
+
+type Query {
+  printNote: String
 }
