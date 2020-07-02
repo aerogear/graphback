@@ -33,7 +33,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     this.authConfig = authConfig || getEmptyServiceConfig();
   }
 
-  public create(data: Type, context: GraphbackContext | any): Promise<Type> {
+  public create(data: Type, context: GraphbackContext | KeycloakContext | any): Promise<Type> {
     if (this.authConfig.create && this.authConfig.create.roles && this.authConfig.create.roles.length > 0) {
       const { roles } = this.authConfig.create;
       if (!isAuthorizedByRole(roles, context)) {
@@ -46,7 +46,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     return super.create(data, context);
   }
 
-  public update(data: Type, context: GraphbackContext | any): Promise<Type> {
+  public update(data: Type, context: GraphbackContext | KeycloakContext | any): Promise<Type> {
     if (this.authConfig.update && this.authConfig.update.roles && this.authConfig.update.roles.length > 0) {
       const { roles } = this.authConfig.update;
       if (!isAuthorizedByRole(roles, context)) {
@@ -58,7 +58,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     return super.update(data, context);
   }
 
-  public delete(data: Type, context: GraphbackContext | any): Promise<Type> {
+  public delete(data: Type, context: GraphbackContext | KeycloakContext | any): Promise<Type> {
     if (this.authConfig.delete && this.authConfig.delete.roles && this.authConfig.delete.roles.length > 0) {
       const { roles } = this.authConfig.delete;
       if (!isAuthorizedByRole(roles, context)) {
@@ -69,7 +69,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     return super.delete(data, context);
   }
 
-  public findOne(args: any, context: GraphbackContext | any): Promise<Type> {
+  public findOne(args: any, context: GraphbackContext | KeycloakContext | any): Promise<Type> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
@@ -82,7 +82,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     return super.findOne(args, context);
   }
 
-  public findBy(filter: QueryFilter<Type>, context: GraphbackContext | any | any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<Type>> {
+  public findBy(filter: QueryFilter<Type>, context: GraphbackContext | KeycloakContext | any | any, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<Type>> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
@@ -137,7 +137,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     return super.subscribeToDelete(filter, context)
   }
 
-  public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext | any) {
+  public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext | KeycloakContext | any) {
     if (this.authConfig?.relations[relationField]?.roles.length > 0) {
       const { roles } = this.authConfig?.relations[relationField];
       if (!isAuthorizedByRole(roles, context)) {
