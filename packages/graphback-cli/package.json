@@ -13,7 +13,7 @@
   "author": "wtrocki@redhat.com",
   "scripts": {
     "clean": "rimraf coverage dist types",
-    "build": "tsc && ncp ./src/templates/resources ./dist/templates/resources",
+    "build": "tsc",
     "cmdinit": "ts-node ./dist/index.js init test",
     "watch": "tsc -w",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
