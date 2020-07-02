@@ -1,9 +1,10 @@
+/* eslint-disable max-lines */
 import Keycloak from 'keycloak-connect'
 import { KeycloakContextBase } from 'keycloak-connect-graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { buildSchema, GraphQLObjectType } from 'graphql'
 import { CRUDService } from '@graphback/core'
-import { KeycloakCrudService } from '../src'
+import { KeycloakCrudService, CrudServiceAuthConfig } from '../src'
 import { MockDataProvider } from './mocks/MockDataProvider'
 
 
@@ -49,7 +50,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
     }
   } as Keycloak.Token
 
-  const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
+  const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } } } }
 
   const val = { test: 'value' }
 
@@ -107,7 +108,7 @@ test('authorized tokens will not throw an error and will get a result', async ()
   } as Keycloak.Token
 
 
-  const authorizedContext = { kauth: new KeycloakContextBase(authorizedToken), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
+  const authorizedContext = { kauth: new KeycloakContextBase(authorizedToken), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } } } }
 
   const dbCreateSpy = jest.spyOn(db, "create")
   const dbUpdateSpy = jest.spyOn(db, "update")
@@ -151,7 +152,7 @@ test('passing no authConfig will result in all operations being allowed', async 
     service: new CRUDService(modelType.name, db, { crudOptions: {}, pubSub })
   })
 
-  const context = { kauth: {}, graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
+  const context = { kauth: {}, graphback: { options: { selectedFields: ["id"], aggregations: { count: false } } } }
   const val = { test: 'value' }
 
   await expect(service.create(val, context)).resolves.toEqual(val)
@@ -193,7 +194,7 @@ test('multiple roles can be applied to each operation', async () => {
     }
   } as Keycloak.Token
 
-  const context = { kauth: new KeycloakContextBase(Token), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } }} }
+  const context = { kauth: new KeycloakContextBase(Token), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } } } }
 
   const val = { test: 'value' }
 
@@ -202,4 +203,123 @@ test('multiple roles can be applied to each operation', async () => {
   expect(() => service.delete(val, context)).toThrowError('User is not authorized.')
   await expect(service.findBy(val, context)).resolves.toEqual(emptyPageValue)
   await expect(service.findOne(val, context)).resolves.toEqual(val)
+});
+
+
+test('Subscriptions', async () => {
+
+  const modelType = buildSchema(`
+    type Task {
+      id: ID
+      title: String
+      description: String
+    }
+  `).getType('Task') as GraphQLObjectType
+
+  const authConfig = {
+    subCreate: { roles: ['admin'] },
+    subUpdate: { roles: ['admin',] },
+    subDelete: { roles: ['admin'] }
+  }
+
+  const service = new KeycloakCrudService({
+    authConfig,
+    service: new CRUDService(modelType.name, new MockDataProvider(), { crudOptions: {}, pubSub })
+  })
+
+  const Token = {
+    hasRole: (role: string) => {
+      return role === 'user'
+    },
+    isExpired: () => {
+      return false
+    }
+  } as Keycloak.Token
+
+  const context = { kauth: new KeycloakContextBase(Token), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } } } }
+
+  const val = { test: 'value' }
+
+  expect(() => service.subscribeToCreate(val, context)).toThrowError('User is not authorized.')
+  expect(() => service.subscribeToDelete(val, context)).toThrowError('User is not authorized.')
+  expect(() => service.subscribeToUpdate(val, context)).toThrowError('User is not authorized.')
+});
+
+test('Batching', async () => {
+
+  const modelType = buildSchema(`
+    type Task {
+      id: ID
+      title: String
+      description: String
+
+      """ @oneToMany(field: 'task') """
+      comment: Comment
+    }
+
+    type Comment {
+      id: ID!
+      name: String!
+    }
+  `).getType('Task') as GraphQLObjectType
+
+  const authConfig: CrudServiceAuthConfig = {
+    relations: { task: { roles: ['admin'] } }
+  }
+
+  const service = new KeycloakCrudService({
+    authConfig,
+    service: new CRUDService(modelType.name, new MockDataProvider(), { crudOptions: {}, pubSub })
+  })
+
+  const Token = {
+    hasRole: (role: string) => {
+      return role === 'user'
+    },
+    isExpired: () => {
+      return false
+    }
+  } as Keycloak.Token
+
+  const context = { kauth: new KeycloakContextBase(Token), graphback: { options: { selectedFields: ["id"], aggregations: { count: false } } } }
+
+  expect(() => service.batchLoadData('task', "test", {}, context)).toThrowError('User is not authorized.')
+});
+
+
+
+test('Input filter', async () => {
+
+  const modelType = buildSchema(`
+    type Task {
+      id: ID
+      title: String
+      secret: String
+    }
+  `).getType('Task') as GraphQLObjectType
+
+  const authConfig: CrudServiceAuthConfig = {
+    returnFields: { "secret": { roles: ['admin'] } },
+    updateFields: { "secret": { roles: ['admin'] } }
+  }
+
+  const service = new KeycloakCrudService({
+    authConfig,
+    service: new CRUDService(modelType.name, new MockDataProvider(), { crudOptions: {}, pubSub })
+  })
+
+  const Token = {
+    hasRole: (role: string) => {
+      return role === 'user'
+    },
+    isExpired: () => {
+      return false
+    }
+  } as Keycloak.Token
+
+  const context = { kauth: new KeycloakContextBase(Token), graphback: { options: { selectedFields: ["secret"], aggregations: { count: false } } } }
+
+  expect(() => service.update({secret: "Tasks only for admins"}, context)).toThrowError('User is not authorized.')
+  expect(() => service.create({secret: "Tasks updates only for admins"}, context)).toThrowError('User is not authorized.')
+  expect(() => service.findBy({}, context)).toThrowError('Unauthorized to fetch: secret')
 });
