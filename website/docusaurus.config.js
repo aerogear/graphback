@@ -12,9 +12,9 @@ module.exports = {
   themeConfig: {
     disableDarkMode: true,
     prism: {
-      theme: require('prism-react-renderer/themes/github'),
+      theme: require('prism-react-renderer/themes/dracula'),
       // darkTheme: require('prism-react-renderer/themes/dracula'),
-      defaultLanguage: 'javascript',
+      defaultLanguage: 'typescript',
     },
     navbar: {
       title: 'Graphback',
