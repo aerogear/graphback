@@ -1,6 +1,6 @@
 import { ModelDefinition, GraphbackDataProvider, GraphbackCRUDService, ServiceCreator } from '@graphback/core';
 import { KeycloakCrudService } from './KeycloakCrudService';
-import { CrudServiceAuthConfig } from './KeycloakConfig';
+import { CrudServiceAuthConfig, CrudServicesAuthConfig } from './KeycloakConfig';
 
 /**
  * Creates a new KeycloakCrudService by wrapping original service.
@@ -9,7 +9,7 @@ import { CrudServiceAuthConfig } from './KeycloakConfig';
  * @param authConfig  - CRUD auth config for entire model
  *  @param serviceCreator - function that creates wrapper service
  */
-export function createKeycloakCRUDService(authConfigList: Map<string, CrudServiceAuthConfig>, serviceCreator: ServiceCreator) {
+export function createKeycloakCRUDService(authConfigList: CrudServicesAuthConfig, serviceCreator: ServiceCreator) {
   if (!authConfigList || !serviceCreator) {
     throw new Error("Missing required arguments to create keycloak service")
   }
