@@ -36,6 +36,6 @@ Install dependencies with yarn (or npm):
 yarn install
 ```
 
-The project will have a GraphQL schema file with some example types which you will likely want to change. Learn how to [design your data models](../model/your-model).
+The project will have a GraphQL schema file with some example types which you will likely want to change. Learn how to [design your data models](../model/datamodel).
 
 Each template will be different, so you should follow the guide in your new project's README to complete the setup.
