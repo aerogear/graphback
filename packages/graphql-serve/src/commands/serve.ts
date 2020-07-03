@@ -21,7 +21,7 @@ export const builder = (args: yargs.Argv): void => {
   })
 
   args.option('datasync', {
-    describe: 'Enable datasynchronization features',
+    describe: 'Enable data synchronization features',
     type: 'boolean',
     alias: 'ds'
   })

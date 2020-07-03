@@ -8,7 +8,7 @@
     "definition": "types/index.d.ts"
   },
   "bin": {
-    "gqls": "dist/index.js"
+    "gqlserve": "dist/index.js"
   },
   "scripts": {
     "clean": "rimraf coverage dist types",
