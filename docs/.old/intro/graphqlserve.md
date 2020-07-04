@@ -37,7 +37,7 @@ The `@model` annotation indicates that `Note` is a data model and Graphback will
 To start your server, run the following command from the same directory as `Note.graphql`:
 
 ```sh
-gqls serve .
+gqlserve serve .
 ```
 
 This will start a GraphQL server on a random port using the data models we just added.
@@ -45,19 +45,19 @@ This will start a GraphQL server on a random port using the data models we just 
 You can customise the directory of the data models:
 
 ```sh
-gqls serve ./path/to/models
+gqlserve serve ./path/to/models
 ```
 
 You can also specify where to load the data models from with a Glob pattern:
 
 ```sh
-gqls print-schema ./schema/**/*.graphql
+gqlserve print-schema ./schema/**/*.graphql
 ```
 
 You can specify which port to start the server on:
 
 ```sh
-$ gqls serve ./path/to/models --port 8080
+$ gqlserve serve ./path/to/models --port 8080
 
 Starting server...
 
@@ -71,7 +71,7 @@ Graphback receives your data models as an input and processes them to generate a
 GraphQL Serve allows you to print the resulting schema in your terminal with the `print-schema` subcommand:
 
 ```sh
-$ gqls print-schema ./path/to/models
+$ gqlserve print-schema ./path/to/models
 Generated schema:
 
 ...

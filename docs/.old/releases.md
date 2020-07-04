@@ -187,7 +187,7 @@ We have removed the `graphback openapi` CLI command, but you can still use [Open
 To use `graphql-serve` now you must use a model file:
 
 ```sh
-gqls serve ./path/to/models/*.graphql --port 8080
+gqlserve serve ./path/to/models/*.graphql --port 8080
 ```
 
 #### SchemaCRUDPlugin only has a single configuration option

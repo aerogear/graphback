@@ -30,14 +30,14 @@ database.
 
 Using npm:
 
-```
+```shell
 npm install -g graphql-serve
 ```
 
 or yarn:
 
-```
-yarn add graphql-serve
+```shell
+yarn global add graphql-serve
 ```
 
 ### Usage
@@ -60,27 +60,27 @@ type Note {
 
 Assuming you have created your various `*.graphql` data model files in the `models` directory, to automatically generate resolvers and start a GraphQL server listening on port 8080 do the following:
 
-```
-$ gqls serve models --port=8080
+```shell
+$ gqlserve serve models --port=8080
 ```
 
 
 If you only need to see the generated GraphQL Schema, use the `print-schema` command:
 
-```
-$ gqls print-schema .
+```shell
+$ gqlserve print-schema .
 ```
 The above command prints schema generated from data model files in the current directory.
 
 This information is also provided with the command itself:
 ```
-$ gqls -h
-gqls <command>
+$ gqlserve -h
+gqlserve <command>
 
 Commands:
-  gqls print-schema [modelDir]     Generate and print GraphQL schema from data
+  gqlserve print-schema [modelDir]     Generate and print GraphQL schema from data
                                    model files
-  gqls serve [modelDir] [options]  Generate and start GraphQL server from data
+  gqlserve serve [modelDir] [options]  Generate and start GraphQL server from data
                                    model files
 
 Options:
@@ -89,8 +89,8 @@ Options:
 ```
 For the serve command:
 ```
-$ gqls serve -h
-gqls serve [modelDir] [options]
+$ gqlserve serve -h
+gqlserve serve [modelDir] [options]
 
 Generate and start GraphQL server from data model files
 
@@ -98,19 +98,20 @@ Positionals:
   modelDir, model  Directory to search for data models                  [string]
 
 Options:
-  --port, -p     Specify the port on which to listen on                 [number]
-  -h, --help     Show help                                             [boolean]
-  -v, --version  Show version number                                   [boolean]
+  --port, -p        Specify the port on which to listen on              [number]
+  --datasync, --ds  Enable datasynchronization features                [boolean]
+  -h, --help        Show help                                          [boolean]
+  -v, --version     Show version number                                [boolean]
 
 Examples:
-  gqls serve . -p 8080  generate schema from data model files in current
-                        directory and start GraphQL server on port 8080
+  gqlserve serve . -p 8080  generate schema from data model files in current
+                            directory and start GraphQL server on port 8080
 ```
 
 Also for print-schema command:
 ```
-$ gqls print-schema -h
-gqls print-schema [modelDir]
+$ gqlserve print-schema -h
+gqlserve print-schema [modelDir]
 
 Generate and print GraphQL schema from data model files
 
@@ -122,13 +123,15 @@ Options:
   -v, --version  Show version number                                   [boolean]
 
 Examples:
-  gqls print-schema modelDir  only display generated schema from data model
+  gqlserve print-schema modelDir  only display generated schema from data model
                               files in modelDir directory and quit
 ```
 
 Under to hood we use Graphback to parse the Type Definitions/Data Model and
 generate the GraphQL schema and resolvers. See the
-[Graphback Docs on Data Model Definition](https://graphback.dev/docs/datamodel)
+[Graphback Docs on Data Model Definition](https://graphback.dev/docs/datamodel) and 
+[Data Synchronization](https://graphback.dev/docs/next/datasync/datasync-intro) for data synchronization
+features.
 
 
 ## Extension to GraphQL TestX
