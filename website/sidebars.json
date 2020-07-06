@@ -6,7 +6,8 @@
       "getting-started/add-to-project"
     ],
     "Model": [
-      "model/your-model"
+      "model/datamodel",
+      "model/annotations"
     ],
     "CRUD": [
       "crud/intro",
@@ -17,7 +18,8 @@
     "Databases": [
       "databases/databases",
       "databases/postgres",
-      "databases/mongodb"
+      "databases/mongodb",
+      "databases/graphql-migrations"
     ],
     "Subscriptions": [
       "subscriptions/intro"
@@ -28,6 +30,9 @@
     ],
     "Data Sync": [
       "datasync/intro"
+    ],
+    "GraphQL Migrations": [
+      "databases/graphql-migrations"
     ],
     "Plugins": [
       "plugins/schema-crud",

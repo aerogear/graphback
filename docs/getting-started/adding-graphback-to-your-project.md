@@ -97,7 +97,7 @@ type Note {
 }
 ```
 
-For more advanced usage on how to configure your data models, see our [Model](../model/your-model) guides.
+For more advanced usage on how to configure your data models, see our [Model](../model/datamodel) guides.
 
 ### Configure Graphback
 
