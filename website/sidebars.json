@@ -10,7 +10,7 @@
       "model/annotations"
     ],
     "CRUD": [
-      "crud/intro",
+      "crud/overview",
       "crud/queries",
       "crud/mutations",
       "crud/subscriptions"

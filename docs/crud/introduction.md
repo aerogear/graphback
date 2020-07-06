@@ -1,7 +1,116 @@
 ---
-id: intro
-title: CRUD with Graphback
-sidebar_label: Introduction
+id: overview
+title: CRUD Overview
+sidebar_label: Overview
 ---
 
-## TODO .
+Graphback generates a CRUD API for each model in your GraphQL schema. This gives you queries, mutations and subscriptions that can be instantly be used perform queries and mutations on your data.
+
+Graphback provides an implementation of [GraphQLCRUD](https://graphqlcrud.org) for a standardised CRUD API using common data access patterns.
+
+Custom queries, mutations and subscriptions you create in your schema will be ignored by Graphback during generation, but will still be in your generated schema, giving flexibility to provide your own implementations on the server.
+
+To tell Graphback to create a CRUD API for your type, add a `@model` annotation.
+
+```graphql
+""" @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  likes: Int
+}
+```
+
+This will add queries, mutations and subscriptions to the schema for `Note`. It will aldo create corresponding CRUD resolvers which are configured to access the data from your data source.
+
+```graphql
+""" @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  likes: Int
+}
+
+// highlight-start
+type Query {
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
+}
+
+type Mutation {
+  createNote(input: CreateNoteInput!): Note
+  updateNote(input: MutateNoteInput!): Note
+  deleteNote(input: MutateNoteInput!): Note
+}
+
+type Subscription {
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+}
+// highlight-end
+```
+
+## Configuration
+
+Graphback can be configured to enable/disable CRUD generation per GraphQL type, or globally across the entire application.
+
+See the table below for the full list of CRUD configuration options that can be applied to the application or models.
+
+| Option    	| Description                                                             	| Default 	|
+|-----------	|-------------------------------------------------------------------------	|---------	|
+| find      	| Specifies whether a `find<Type>s` findBy query should be generated.     	| true    	|
+| findOne   	| Specifies whether a `get<Type>` findOne query should be generated.      	| true    	|
+| create    	| Specifies whether a `create<Type>` query should be generated.           	| true    	|
+| update    	| Specifies whether a `update<Type>` update mutation should be generated. 	| true    	|
+| delete    	| Specifies whether a `delete<Type>` delete mutation should be generated. 	| true    	|
+| subCreate 	| Specifies whether a `new<Type>` subscription should be generated.       	| true    	|
+| subUpdate 	| Specifies whether a `updated<Type>` subscription should be generated.    	| true    	|
+| subDelete 	| Specifies whether a `deleted<Type>` subscription should be generated.    	| true    	|
+
+### Application wide
+
+You can configure different CRUD methods to be enabled or disabled across all data models in `buildGraphbackAPI` through the `crud` config option.
+
+In this example, generation of the `delete` mutation for all models is disabled.
+
+```ts
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
+  ...,
+  crud: {
+    delete: false
+  }
+});
+```
+
+:::caution
+CRUD configuration [set on an individual type](#per-type) with the `@model` annotation will override the application-wide CRUD configuration.
+:::
+
+### Per type
+
+CRUD can be enabled/disabled individually for each model in your schema with the [`@model`](../model/annotations) annotation.
+
+```graphql
+""" 
+@model(delete: false)
+"""
+type Note {
+  ...
+}
+```
+
+This disables `deleteNote` generation for `Note`.
+
+```graphql
+type Mutation {
+  createNote(input: CreateNoteInput!): Note
+  updateNote(input: MutateNoteInput!): Note
+}
+```
+
+:::caution
+CRUD configuration set with `@model` will override the [application-wide CRUD configuration](#application-wide) value for that type only.
+:::
