@@ -18,8 +18,7 @@
     "Databases": [
       "databases/databases",
       "databases/postgres",
-      "databases/mongodb",
-      "databases/graphql-migrations"
+      "databases/mongodb"
     ],
     "Subscriptions": [
       "subscriptions/intro"
@@ -33,7 +32,9 @@
       "datasync/soft-delete"
     ],
     "GraphQL Migrations": [
-      "databases/graphql-migrations"
+      "graphql-migrations/intro",
+      "graphql-migrations/db-design",
+      "graphql-migrations/api"
     ],
     "GraphQL Serve": [
       "graphqlserve/graphqlserve"
