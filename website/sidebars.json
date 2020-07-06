@@ -34,6 +34,9 @@
     "GraphQL Migrations": [
       "databases/graphql-migrations"
     ],
+    "GraphQL Serve": [
+      "graphqlserve/graphqlserve"
+    ],
     "Plugins": [
       "plugins/schema-crud",
       "plugins/client-crud",

@@ -1,0 +1,177 @@
+---
+id: graphqlserve
+title: Running an API without code
+sidebar_label: API without code
+---
+
+With GraphQL Serve you can have a full featured [GraphQL CRUD](https://graphqlcrud.org/) API with subscriptions and data synchronization running in just a few seconds without writing a single line of code - all you need is a data model `.graphql` file.
+
+GraphQL Serve is a CLI tool that leverages the power of Graphback to generate a codeless Node.js GraphQL API complete with schema and CRUD resolvers and an in-memory MongoDB database.
+
+## Installation
+
+You can install `graphql-serve` globally with npm:
+
+```shell
+npm i -g graphql-serve
+```
+
+or with yarn:
+
+```shell
+yarn global add graphql-serve
+```
+
+or run it with [npx](https://www.npmjs.com/package/npx): 
+
+```shell
+npx graphql-serve
+```
+
+## Usage
+
+The bare minimum you need is a GraphQL file with your data models. Create a file called `Note.graphql` and add the following:
+
+```graphql
+""" @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  likes: Int
+}
+```
+
+The `@model` annotation indicates that `Note` is a data model and Graphback will generate resolvers, a CRUD service and data source for it. You can learn how to build more complex data models in [Data Model](../model/datamodel#Model).
+
+### Running your codeless GraphQL server
+
+To start your server, run the following command from the same directory as `Note.graphql`:
+
+```shell
+gqlserve serve Note.graphql
+```
+
+This will start a GraphQL server on a random port using the `Note.graphql` data models we just added.
+
+You can customise the directory of the data models:
+
+```shell
+gqlserve serve ./path/to/models
+```
+
+You can also specify where to load the data models from with a Glob pattern:
+
+```shell
+gqlserve serve ./schema/**/*.graphql
+```
+
+You can specify which port to start the server on:
+
+```shell
+$ gqlserve serve ./path/to/models --port 8080
+
+Starting server...
+
+Listening at: http://localhost:8080/graphql
+```
+
+### Enable Data Synchronization
+
+GraphQL Serve can also operate on data sync models. Under the hood this uses the [Data Sync](../datasync/intro) package. 
+To enable data synchronization, all we need to do is enable datasync capabilities on our models via the `@datasync` annotation.
+
+For the `Note` model defined above, this would look like: 
+
+```graphql
+""" 
+@model
+@datasync 
+"""
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  likes: Int
+}
+```
+
+Once we have a model with datasync capabilities, we can run our GraphQL server by enabling data synchronization as shown below:
+
+```shell
+gqlserve serve Note.graphql --datasync
+```
+ 
+### Printing your GraphQL schema
+
+Graphback receives your data models as an input and processes them to generate a GraphQL schema complete with additional types, queries, mutations and subscriptions.
+
+GraphQL Serve allows you to print the resulting schema in your terminal with the `print-schema` subcommand:
+
+```shell
+$ gqlserve print-schema ./path/to/models
+Generated schema:
+
+...
+```
+
+### Usage Information
+
+This information is also provided with the command itself:
+
+```shell
+$ gqlserve -h
+gqlserve <command>
+
+Commands:
+  gqlserve print-schema [modelDir]     Generate and print GraphQL schema from data
+                                   model files
+  gqlserve serve [modelDir] [options]  Generate and start GraphQL server from data
+                                   model files
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show version number                                   [boolean]
+```
+
+For the `serve` command:
+
+```shell
+$ gqlserve serve -h
+gqlserve serve [modelDir] [options]
+
+Generate and start GraphQL server from data model files
+
+Positionals:
+  modelDir, model  Directory to search for data models                  [string]
+
+Options:
+  --port, -p        Specify the port on which to listen on              [number]
+  --datasync, --ds  Enable datasynchronization features                [boolean]
+  -h, --help        Show help                                          [boolean]
+  -v, --version     Show version number                                [boolean]
+
+Examples:
+  gqlserve serve . -p 8080  generate schema from data model files in current
+                            directory and start GraphQL server on port 8080
+```
+
+Also for `print-schema` command:
+
+```shell
+$ gqlserve print-schema -h
+gqlserve print-schema [modelDir]
+
+Generate and print GraphQL schema from data model files
+
+Positionals:
+  modelDir, model  Directory to search for data models                  [string]
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show version number                                   [boolean]
+
+Examples:
+  gqlserve print-schema modelDir  only display generated schema from data model
+                              files in modelDir directory and quit
+```

@@ -73,7 +73,7 @@ $ gqlserve print-schema .
 The above command prints schema generated from data model files in the current directory.
 
 This information is also provided with the command itself:
-```
+```shell
 $ gqlserve -h
 gqlserve <command>
 
@@ -87,8 +87,8 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show version number                                   [boolean]
 ```
-For the serve command:
-```
+For the `serve` command:
+```shell
 $ gqlserve serve -h
 gqlserve serve [modelDir] [options]
 
@@ -108,8 +108,8 @@ Examples:
                             directory and start GraphQL server on port 8080
 ```
 
-Also for print-schema command:
-```
+Also for `print-schema` command:
+```shell
 $ gqlserve print-schema -h
 gqlserve print-schema [modelDir]
 
