@@ -76,6 +76,12 @@ Starting server...
 Listening at: http://localhost:8080/graphql
 ```
 
+### CRUD
+
+GraphQL Serve creates an in-memory CRUD API to give you queries, mutations and subscriptions for all your models using API patterns from [GraphQLCRUD](https://graphqlcrud.org).
+
+Visit the [CRUD section](../crud/overview) for an overview of the CRUD specification and guides on how to perform CRUD operations on your data.
+
 ### Enable Data Synchronization
 
 GraphQL Serve can also operate on data sync models. Under the hood this uses the [Data Sync](../datasync/intro) package. 
