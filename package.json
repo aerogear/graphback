@@ -11,12 +11,12 @@
     "@typescript-eslint/eslint-plugin-tslint": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
     "del-cli": "3.0.1",
-    "eslint": "7.3.1",
-    "eslint-plugin-flowtype": "5.1.4",
+    "eslint": "7.4.0",
+    "eslint-plugin-flowtype": "5.2.0",
     "eslint-plugin-import": "2.22.0",
     "eslint-plugin-jsx-a11y": "6.3.1",
     "eslint-plugin-no-null": "1.0.2",
-    "eslint-plugin-react": "7.20.2",
+    "eslint-plugin-react": "7.20.3",
     "eslint-plugin-react-hooks": "4.0.5",
     "husky": "4.2.5",
     "lerna": "3.22.1",
@@ -28,7 +28,7 @@
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
     "typedoc": "0.17.8",
-    "typescript": "3.9.5"
+    "typescript": "3.9.6"
   },
   "scripts": {
     "test": "jest -w 1",

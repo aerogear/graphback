@@ -17,7 +17,7 @@
   "dependencies": {
     "@graphback/core": "0.14.0-alpha4",
     "@graphql-inspector/core": "2.1.0",
-    "@types/jest": "26.0.3",
+    "@types/jest": "26.0.4",
     "case": "1.6.3",
     "chalk": "3.0.0",
     "glob": "7.1.6",
@@ -30,10 +30,10 @@
     "ts-jest": "26.1.1"
   },
   "devDependencies": {
-    "@types/jest": "26.0.3",
+    "@types/jest": "26.0.4",
     "@types/lodash": "4.14.157",
-    "@types/node": "12.12.47",
-    "graphql": "15.2.0",
+    "@types/node": "12.12.48",
+    "graphql": "15.3.0",
     "graphql-tools": "6.0.10",
     "jest": "26.1.0",
     "pg": "8.2.1",
@@ -41,7 +41,7 @@
     "sqlite3": "4.2.0",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
-    "typescript": "3.9.5"
+    "typescript": "3.9.6"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0"
