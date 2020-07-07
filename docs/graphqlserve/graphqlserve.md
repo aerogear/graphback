@@ -6,7 +6,7 @@ sidebar_label: API without code
 
 With GraphQL Serve you can have a full featured [GraphQL CRUD](https://graphqlcrud.org/) API with subscriptions and data synchronization running in just a few seconds without writing a single line of code - all you need is a data model `.graphql` file.
 
-GraphQL Serve is a CLI tool that leverages the power of Graphback to generate a codeless Node.js GraphQL API complete with schema and CRUD resolvers and an in-memory MongoDB database.
+GraphQL Serve is a CLI tool that leverages the power of Graphback to generate a codeless Node.js GraphQL API complete with schema and CRUD resolvers and an in-memory MongoDB database. 
 
 ## Installation
 
@@ -42,7 +42,7 @@ type Note {
 }
 ```
 
-The `@model` annotation indicates that `Note` is a data model and Graphback will generate resolvers, a CRUD service and data source for it. You can learn how to build more complex data models in [Data Model](../model/datamodel#Model).
+The `@model` annotation indicates that `Note` is a data model and Graphback will generate resolvers, a CRUD service and data source for it. You can learn how to build more complex data models in [Data Model](../model/datamodel#model).
 
 ### Running your codeless GraphQL server
 
