@@ -5,19 +5,20 @@ import { IResolvers } from '@graphql-tools/utils'
 import { mergeResolvers } from '@graphql-tools/merge';
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
 import { getPrimaryKey } from '../db';
+import { GraphbackOperationType, getFieldName, getSubscriptionName } from '../crud';
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
 import { ModelDefinition } from './ModelDefinition';
 
-const defaultCRUDGeneratorConfig = {
-  "create": true,
-  "update": true,
-  "findOne": true,
-  "find": true,
-  "delete": true,
-  "subCreate": true,
-  "subUpdate": true,
-  "subDelete": true,
+const defaultCRUDGeneratorConfig: GraphbackCRUDGeneratorConfig = {
+  create: true,
+  update: true,
+  findOne: true,
+  find: true,
+  delete: true,
+  subCreate: true,
+  subUpdate: true,
+  subDelete: true,
 }
 
 /**
@@ -91,9 +92,7 @@ export class GraphbackCoreMetadata {
   }
 
   private buildModel(modelType: GraphQLObjectType, relationships: FieldRelationshipMetadata[]): ModelDefinition {
-    let crudOptions = parseMetadata('model', modelType)
-    //Merge CRUD options from type with global ones
-    crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
+    const crudOptions = this.getModelCRUDConfig(modelType, this.getSchema())
     // Whether to add delta queries
     const deltaSync = parseMetadata('delta', modelType);
 
@@ -104,5 +103,82 @@ export class GraphbackCoreMetadata {
       config: { deltaSync },
       primaryKey: getPrimaryKey(modelType).name
     };
+  }
+
+  /**
+   * Merge model-specifc CRUD config with the global CRUD config.
+   * Check if the user has specified custom queries, mutations or subscriptions
+   * with a clashing name and disable CRUD generation for those too.
+   *
+   * @param {GraphQLObjectType} modelType - The Graphback model
+   * @param {GraphQLSchema} schema - The full GraphQL schema
+   */
+  private getModelCRUDConfig(modelType: GraphQLObjectType, schema: GraphQLSchema): GraphbackCRUDGeneratorConfig {
+    // parse CRUD config on model
+    let crudOptions: GraphbackCRUDGeneratorConfig = parseMetadata('model', modelType)
+    //Merge CRUD options from type with global ones
+    crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
+
+    let queryKeys: string[] = [];
+    let mutationKeys: string[] = [];
+    let subscriptionKeys: string[] = [];
+
+    if (schema.getQueryType()) {
+      queryKeys = Object.keys(schema.getQueryType().getFields())
+    }
+    if (schema.getMutationType()) {
+      mutationKeys = Object.keys(schema.getMutationType().getFields())
+    }
+    if (schema.getSubscriptionType()) {
+      subscriptionKeys = Object.keys(schema.getSubscriptionType().getFields())
+    }
+
+    const modelName = modelType.name
+
+    // check if user has a custom query with the same name as one of the
+    // Graphback CRUD queries. If so, disable generation of the query for the model
+    const findQueryName = getFieldName(modelName, GraphbackOperationType.FIND)
+    const getOneQueryName = getFieldName(modelName, GraphbackOperationType.FIND_ONE)
+    if (queryKeys.includes(findQueryName)) {
+      crudOptions.find = false
+    }
+    if (queryKeys.includes(getOneQueryName)) {
+      crudOptions.findOne = false
+    }
+
+    // check if user has a custom subscription with the same name as one of the
+    // Graphback CRUD queries .If so, disable generation of the query for the model
+    const createMutationName = getFieldName(modelName, GraphbackOperationType.CREATE)
+    const updateMutationName = getFieldName(modelName, GraphbackOperationType.UPDATE)
+    const deleteMutationName = getFieldName(modelName, GraphbackOperationType.DELETE)
+    if (mutationKeys.includes(createMutationName)) {
+      crudOptions.create = false
+      crudOptions.subCreate = false
+    }
+    if (mutationKeys.includes(updateMutationName)) {
+      crudOptions.update = false
+      crudOptions.update = false
+    }
+    if (mutationKeys.includes(deleteMutationName)) {
+      crudOptions.delete = false
+      crudOptions.subDelete = false
+    }
+
+    // check if user has a custom subscription with the same name as one of the
+    // Graphback CRUD queries .If so, disable generation of the query for the model
+    const createSubscriptionName = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
+    const updateSubscriptionName = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
+    const deleteSubscriptionName = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
+    if (subscriptionKeys.includes(createSubscriptionName)) {
+      crudOptions.subCreate = false
+    }
+    if (subscriptionKeys.includes(updateSubscriptionName)) {
+      crudOptions.subUpdate = false
+    }
+    if (subscriptionKeys.includes(deleteSubscriptionName)) {
+      crudOptions.subDelete = false
+    }
+
+    return crudOptions
   }
 }
