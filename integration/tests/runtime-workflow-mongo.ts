@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 /* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-use-before-define */
@@ -6,8 +7,8 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { loadDocuments } from '@graphql-toolkit/core';
-import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
+import { loadDocuments } from '@graphql-tools/load'
 import { buildGraphbackAPI, GraphbackAPI } from "graphback";
 import { DocumentNode } from 'graphql';
 import { MongoClient, Db } from 'mongodb';
@@ -48,7 +49,7 @@ beforeAll(async () => {
 
     await seedDatabase(db);
 
-    const source = await loadDocuments(path.resolve(`./output-mongo/client/**/*.graphql`), {
+    const source = await loadDocuments(path.resolve(`./output-mongo/client/graphback.graphql`), {
       loaders: [
         new GraphQLFileLoader()
       ]
@@ -77,6 +78,7 @@ afterAll(async () => {
   rmdirSync(path.resolve('./output-mongo'), { recursive: true });
   const dropCollections = ["note", "comment", "commentmetadata"].map((name: string) => db.dropCollection(name));
   await Promise.all(dropCollections);
+
   return mongoClient.close();
 });
 
