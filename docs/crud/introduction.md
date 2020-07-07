@@ -24,7 +24,7 @@ type Note {
 }
 ```
 
-This will add queries, mutations and subscriptions to the schema for `Note`. It will aldo create corresponding CRUD resolvers which are configured to access the data from your data source.
+This will add queries, mutations and subscriptions to the schema for `Note`. It will also create corresponding CRUD resolvers which are configured to access the data from your data source.
 
 ```graphql
 """ @model """
