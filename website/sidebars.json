@@ -29,7 +29,8 @@
       "authentication/keycloak"
     ],
     "Data Sync": [
-      "datasync/intro"
+      "datasync/intro",
+      "datasync/soft-delete"
     ],
     "GraphQL Migrations": [
       "databases/graphql-migrations"
