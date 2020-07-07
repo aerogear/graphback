@@ -21,6 +21,8 @@ type Query {
 }
 ```
 
+**Arguments:**
+
 - `filter`: filter object to query specific data.
 - `page`: enables pagination of the data.
 - `orderBy`: sorts the data in ascending or descending order.
@@ -242,4 +244,37 @@ findNotes(orderBy: {order: DESC, field: "likes"}) {
 
 ## get
 
-### TODO
+The `get` operation allows the client to fetch a single item from the database by its unique ID.
+
+The query follows the naming format `get<Type>`:
+
+```graphql
+type Query {
+  getNote(id: ID!): Note
+}
+```
+
+**Arguments:**
+
+- `id`: The unique ID of the object. This will always be `id: ID`. The resolver will automatically map this to your primary key field.
+
+```graphql
+"""
+@model
+"""
+type User {
+  """@id"""
+  email: String
+  name: String
+}
+```
+
+Example of a query to retrieve a single user by their primary field (email):
+
+```graphql
+getNote(id: "tommyshelby@gmail.com") {
+  id
+  email
+  name
+}
+```
