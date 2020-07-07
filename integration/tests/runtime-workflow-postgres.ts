@@ -8,8 +8,8 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { loadDocuments } from '@graphql-toolkit/core';
-import { GraphQLFileLoader } from '@graphql-toolkit/graphql-file-loader';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
+import { loadDocuments } from '@graphql-tools/load'
 import * as Knex from 'knex';
 import { buildGraphbackAPI, GraphbackAPI } from "graphback/src";
 import { DocumentNode } from 'graphql';
@@ -58,7 +58,7 @@ beforeAll(async () => {
 
     expect(newDB).toMatchSnapshot();
 
-    const source = await loadDocuments(path.resolve(`./output-postgres/client/**/*.graphql`), {
+    const source = await loadDocuments(path.resolve(`./output-postgres/client/graphback.graphql`), {
       loaders: [
         new GraphQLFileLoader()
       ]
