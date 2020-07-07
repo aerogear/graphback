@@ -342,6 +342,26 @@ type Note {
 }
 ```
 
+### Rename
+
+Table or columns can be renamed using the `@db(oldNames: ['old'])` annotation as shown below:
+
+```graphql
+"""
+@db(oldNames: ['task'])
+@model
+"""
+type Note {
+  id: ID!
+  """
+  @db(oldNames: ['text'])
+  """
+  title: String!
+}
+```
+
+This will rename the `text` to `title` and the table name to `note` without data loss. 
+ 
 ### Ignore a field 
 
 Sometimes our business model can contain more fields and some of these fields may only be there for representation purposes.
