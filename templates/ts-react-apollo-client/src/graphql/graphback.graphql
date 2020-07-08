@@ -41,6 +41,7 @@ query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput)
       }
       offset
       limit
+      count
     }
   }
 
@@ -57,6 +58,7 @@ query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderBy
       }
       offset
       limit
+      count
     }
   }
 
@@ -108,38 +110,38 @@ mutation deleteComment($input: MutateCommentInput!) {
 }
 
 
-subscription newNote($filter: NoteSubscriptionFilter) {
-  newNote(filter: $filter) {
-      ...NoteFields
+subscription newNote {
+  newNote {
+    ...NoteFields
   }
 } 
 
-subscription updatedNote($filter: NoteSubscriptionFilter) {
-  updatedNote(filter: $filter) {
-      ...NoteFields
+subscription updatedNote {
+  updatedNote {
+    ...NoteFields
   }
 } 
 
-subscription deletedNote($filter: NoteSubscriptionFilter) {
-  deletedNote(filter: $filter) {
-      ...NoteFields
+subscription deletedNote {
+  deletedNote {
+    ...NoteFields
   }
 } 
 
-subscription newComment($filter: CommentSubscriptionFilter) {
-  newComment(filter: $filter) {
-      ...CommentFields
+subscription newComment {
+  newComment {
+    ...CommentFields
   }
 } 
 
-subscription updatedComment($filter: CommentSubscriptionFilter) {
-  updatedComment(filter: $filter) {
-      ...CommentFields
+subscription updatedComment {
+  updatedComment {
+    ...CommentFields
   }
 } 
 
-subscription deletedComment($filter: CommentSubscriptionFilter) {
-  deletedComment(filter: $filter) {
-      ...CommentFields
+subscription deletedComment {
+  deletedComment {
+    ...CommentFields
   }
 } 

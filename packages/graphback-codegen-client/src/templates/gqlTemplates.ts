@@ -84,11 +84,10 @@ export const deleteMutation = (t: GraphQLObjectType) => {
 `
 }
 
-export const subscription = (t: GraphQLObjectType, fieldName: string, inputTypeField: string) => {
-
-  return `subscription ${fieldName}($filter: ${inputTypeField}) {
-  ${fieldName}(filter: $filter) {
-      ...${t.name}Fields
+export const subscription = (t: GraphQLObjectType, fieldName: string) => {
+  return `subscription ${fieldName} {
+  ${fieldName} {
+    ...${t.name}Fields
   }
 } `
 }
@@ -170,28 +169,25 @@ const createSubscriptions = (types: ModelDefinition[]) => {
 
     if (t.crudOptions.create && t.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
-      const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_CREATE)
       subscriptions.push({
         name: operation,
-        implementation: subscription(t.graphqlType, operation, inputTypeField)
+        implementation: subscription(t.graphqlType, operation)
       })
     }
 
     if (t.crudOptions.update && t.crudOptions.subUpdate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE);
-      const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
       subscriptions.push({
         name: operation,
-        implementation: subscription(t.graphqlType, operation, inputTypeField)
+        implementation: subscription(t.graphqlType, operation)
       })
     }
 
     if (t.crudOptions.delete && t.crudOptions.subDelete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE);
-      const inputTypeField = getInputTypeName(t.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_DELETE)
       subscriptions.push({
         name: operation,
-        implementation: subscription(t.graphqlType, operation, inputTypeField)
+        implementation: subscription(t.graphqlType, operation)
       })
     }
   })

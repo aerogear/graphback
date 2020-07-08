@@ -61,7 +61,7 @@ const deleteMutationTS = (t: GraphQLObjectType) => {
 
 const subscriptionTS = (t: GraphQLObjectType, subscriptionName: string, inputField: string) => {
   return `export const ${subscriptionName} = gql\`
-  ${subscription(t, subscriptionName, inputField)}
+  ${subscription(t, subscriptionName)}
 
   \$\{${t.name}Fragment}
 \`

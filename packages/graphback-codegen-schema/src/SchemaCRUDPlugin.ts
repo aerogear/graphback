@@ -7,7 +7,7 @@ import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMetadata } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, JSONScalarInputType } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, JSONScalarInputType } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -155,52 +155,26 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelTC = schemaComposer.getOTC(name)
     const modelType = modelTC.getType()
 
-    buildSubscriptionFilterType(schemaComposer, modelType);
-
     const subscriptionFields = {}
     if (model.crudOptions.subCreate && model.crudOptions.create) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
 
-      const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_CREATE)
-      const subCreateFilterInputType = schemaComposer.getITC(filterInputName).getType()
-
       subscriptionFields[operation] = {
-        type: GraphQLNonNull(modelType),
-        args: {
-          filter: {
-            type: subCreateFilterInputType,
-          },
-        }
+        type: GraphQLNonNull(modelType)
       };
     }
     if (model.crudOptions.subUpdate && model.crudOptions.update) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
 
-      const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
-      const subUpdateFilterInputType = schemaComposer.getITC(filterInputName).getType()
-
       subscriptionFields[operation] = {
-        type: GraphQLNonNull(modelType),
-        args: {
-          filter: {
-            type: subUpdateFilterInputType,
-          },
-        }
+        type: GraphQLNonNull(modelType)
       };
     }
     if (model.crudOptions.subDelete && model.crudOptions.delete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
 
-      const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_DELETE)
-      const subDeleteFilterInputType = schemaComposer.getITC(filterInputName).getType()
-
       subscriptionFields[operation] = {
-        type: GraphQLNonNull(modelType),
-        args: {
-          filter: {
-            type: subDeleteFilterInputType,
-          },
-        }
+        type: GraphQLNonNull(modelType)
       };
     }
 

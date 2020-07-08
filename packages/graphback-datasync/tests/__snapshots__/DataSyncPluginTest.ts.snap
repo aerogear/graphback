@@ -69,12 +69,6 @@ type CommentResultList {
   count: Int
 }
 
-input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
 input CreateCommentInput {
   id: ID
   title: String!
@@ -190,12 +184,6 @@ type NoteResultList {
   count: Int
 }
 
-input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
 input OrderByInput {
   field: String!
   order: SortDirectionEnum = ASC
@@ -235,12 +223,12 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newNote: Note!
+  updatedNote: Note!
+  deletedNote: Note!
+  newComment: Comment!
+  updatedComment: Comment!
+  deletedComment: Comment!
 }
 "
 `;

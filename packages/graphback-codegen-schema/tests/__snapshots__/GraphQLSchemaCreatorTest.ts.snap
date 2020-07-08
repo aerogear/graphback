@@ -203,12 +203,6 @@ type CommentResultList {
   count: Int
 }
 
-input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
 input CreateCommentInput {
   id: ID
   title: String!
@@ -405,12 +399,6 @@ type NoteResultList {
   count: Int
 }
 
-input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
 input OrderByInput {
   field: String!
   order: SortDirectionEnum = ASC
@@ -450,15 +438,15 @@ input StringInput {
 }
 
 type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newTest(filter: TestSubscriptionFilter): Test!
-  updatedTest(filter: TestSubscriptionFilter): Test!
-  deletedTest(filter: TestSubscriptionFilter): Test!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newNote: Note!
+  updatedNote: Note!
+  deletedNote: Note!
+  newTest: Test!
+  updatedTest: Test!
+  deletedTest: Test!
+  newComment: Comment!
+  updatedComment: Comment!
+  deletedComment: Comment!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -480,11 +468,6 @@ type TestResultList {
   offset: Int
   limit: Int
   count: Int
-}
-
-input TestSubscriptionFilter {
-  id: ID
-  name: String
 }"
 `;
 
@@ -774,32 +757,15 @@ input CreateFixInput {
 }
 
 type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newTest(filter: TestSubscriptionFilter): Test!
-  updatedTest(filter: TestSubscriptionFilter): Test!
-  deletedTest(filter: TestSubscriptionFilter): Test!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
-}
-
-input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
-input TestSubscriptionFilter {
-  id: ID
-  name: String
-}
-
-input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  newNote: Note!
+  updatedNote: Note!
+  deletedNote: Note!
+  newTest: Test!
+  updatedTest: Test!
+  deletedTest: Test!
+  newComment: Comment!
+  updatedComment: Comment!
+  deletedComment: Comment!
 }
 "
 `;
@@ -1090,32 +1056,15 @@ input CreateFixInput {
 }
 
 type Subscription {
-  newNote(filter: NoteSubscriptionFilter): Note!
-  updatedNote(filter: NoteSubscriptionFilter): Note!
-  deletedNote(filter: NoteSubscriptionFilter): Note!
-  newTest(filter: TestSubscriptionFilter): Test!
-  updatedTest(filter: TestSubscriptionFilter): Test!
-  deletedTest(filter: TestSubscriptionFilter): Test!
-  newComment(filter: CommentSubscriptionFilter): Comment!
-  updatedComment(filter: CommentSubscriptionFilter): Comment!
-  deletedComment(filter: CommentSubscriptionFilter): Comment!
-}
-
-input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
-}
-
-input TestSubscriptionFilter {
-  id: ID
-  name: String
-}
-
-input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  newNote: Note!
+  updatedNote: Note!
+  deletedNote: Note!
+  newTest: Test!
+  updatedTest: Test!
+  deletedTest: Test!
+  newComment: Comment!
+  updatedComment: Comment!
+  deletedComment: Comment!
 }
 "
 `;

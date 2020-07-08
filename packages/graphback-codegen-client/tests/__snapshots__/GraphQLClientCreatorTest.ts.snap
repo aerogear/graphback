@@ -150,49 +150,49 @@ Object {
   ],
   "subscriptions": Array [
     Object {
-      "implementation": "subscription newNote($filter: NoteSubscriptionFilter) {
-  newNote(filter: $filter) {
-      ...NoteFields
+      "implementation": "subscription newNote {
+  newNote {
+    ...NoteFields
   }
 } ",
       "name": "newNote",
     },
     Object {
-      "implementation": "subscription updatedNote($filter: NoteSubscriptionFilter) {
-  updatedNote(filter: $filter) {
-      ...NoteFields
+      "implementation": "subscription updatedNote {
+  updatedNote {
+    ...NoteFields
   }
 } ",
       "name": "updatedNote",
     },
     Object {
-      "implementation": "subscription deletedNote($filter: NoteSubscriptionFilter) {
-  deletedNote(filter: $filter) {
-      ...NoteFields
+      "implementation": "subscription deletedNote {
+  deletedNote {
+    ...NoteFields
   }
 } ",
       "name": "deletedNote",
     },
     Object {
-      "implementation": "subscription newComment($filter: CommentSubscriptionFilter) {
-  newComment(filter: $filter) {
-      ...CommentFields
+      "implementation": "subscription newComment {
+  newComment {
+    ...CommentFields
   }
 } ",
       "name": "newComment",
     },
     Object {
-      "implementation": "subscription updatedComment($filter: CommentSubscriptionFilter) {
-  updatedComment(filter: $filter) {
-      ...CommentFields
+      "implementation": "subscription updatedComment {
+  updatedComment {
+    ...CommentFields
   }
 } ",
       "name": "updatedComment",
     },
     Object {
-      "implementation": "subscription deletedComment($filter: CommentSubscriptionFilter) {
-  deletedComment(filter: $filter) {
-      ...CommentFields
+      "implementation": "subscription deletedComment {
+  deletedComment {
+    ...CommentFields
   }
 } ",
       "name": "deletedComment",
@@ -418,9 +418,9 @@ export const CommentFragment = gql\`
   "subscriptions": Array [
     Object {
       "implementation": "export const newNote = gql\`
-  subscription newNote($filter: NoteSubscriptionFilter) {
-  newNote(filter: $filter) {
-      ...NoteFields
+  subscription newNote {
+  newNote {
+    ...NoteFields
   }
 } 
 
@@ -431,9 +431,9 @@ export const CommentFragment = gql\`
     },
     Object {
       "implementation": "export const updatedNote = gql\`
-  subscription updatedNote($filter: NoteSubscriptionFilter) {
-  updatedNote(filter: $filter) {
-      ...NoteFields
+  subscription updatedNote {
+  updatedNote {
+    ...NoteFields
   }
 } 
 
@@ -444,9 +444,9 @@ export const CommentFragment = gql\`
     },
     Object {
       "implementation": "export const deletedNote = gql\`
-  subscription deletedNote($filter: NoteSubscriptionFilter) {
-  deletedNote(filter: $filter) {
-      ...NoteFields
+  subscription deletedNote {
+  deletedNote {
+    ...NoteFields
   }
 } 
 
@@ -457,9 +457,9 @@ export const CommentFragment = gql\`
     },
     Object {
       "implementation": "export const newComment = gql\`
-  subscription newComment($filter: CommentSubscriptionFilter) {
-  newComment(filter: $filter) {
-      ...CommentFields
+  subscription newComment {
+  newComment {
+    ...CommentFields
   }
 } 
 
@@ -470,9 +470,9 @@ export const CommentFragment = gql\`
     },
     Object {
       "implementation": "export const updatedComment = gql\`
-  subscription updatedComment($filter: CommentSubscriptionFilter) {
-  updatedComment(filter: $filter) {
-      ...CommentFields
+  subscription updatedComment {
+  updatedComment {
+    ...CommentFields
   }
 } 
 
@@ -483,9 +483,9 @@ export const CommentFragment = gql\`
     },
     Object {
       "implementation": "export const deletedComment = gql\`
-  subscription deletedComment($filter: CommentSubscriptionFilter) {
-  deletedComment(filter: $filter) {
-      ...CommentFields
+  subscription deletedComment {
+  deletedComment {
+    ...CommentFields
   }
 } 
 

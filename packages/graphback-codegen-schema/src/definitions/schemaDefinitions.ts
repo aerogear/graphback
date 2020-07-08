@@ -224,36 +224,6 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
   schemaComposer.add(mutationInputType)
 }
 
-export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
-  const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.SUBSCRIPTION_CREATE);
-  const modelFields = Object.values(modelType.getFields());
-  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => {
-    const namedType = getNamedType(f.type);
-
-    return isScalarType(namedType) || isEnumType(namedType);
-  });
-
-  const filterInputType = new GraphQLInputObjectType({
-    name: inputTypeName,
-    fields: () => scalarFields
-      .map(({ name, type }: GraphQLField<any, any>) => {
-        const fieldType: GraphQLNamedType = getNamedType(type);
-
-        return {
-          name,
-          type: fieldType || type,
-          description: undefined
-        };
-      }).reduce((fieldObj: any, { name, type, description }: any) => {
-        fieldObj[name] = { type, description }
-
-        return fieldObj;
-      }, {})
-  });
-
-  schemaComposer.add(filterInputType)
-}
-
 export const buildMutationInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const operationType = GraphbackOperationType.UPDATE
   const inputTypeName = getInputTypeName(modelType.name, operationType);

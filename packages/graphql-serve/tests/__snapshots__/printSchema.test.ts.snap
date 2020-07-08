@@ -91,9 +91,9 @@ input StringInput {
 }
 
 type Subscription {
-  newUser(filter: UserSubscriptionFilter): User!
-  updatedUser(filter: UserSubscriptionFilter): User!
-  deletedUser(filter: UserSubscriptionFilter): User!
+  newUser: User!
+  updatedUser: User!
+  deletedUser: User!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -115,10 +115,5 @@ type UserResultList {
   offset: Int
   limit: Int
   count: Int
-}
-
-input UserSubscriptionFilter {
-  id: ID
-  name: String
 }"
 `;
