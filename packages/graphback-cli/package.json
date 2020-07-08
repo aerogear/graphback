@@ -46,7 +46,7 @@
     "chalk": "2.4.2",
     "chokidar": "3.4.0",
     "debounce": "1.2.0",
-    "execa": "4.0.2",
+    "execa": "4.0.3",
     "figlet": "1.4.0",
     "glob": "7.1.6",
     "graphback": "0.14.0-alpha4",
