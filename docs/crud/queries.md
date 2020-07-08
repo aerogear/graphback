@@ -45,11 +45,13 @@ type NoteResultList {
 Example of a simple query to retrieve all notes:
 
 ```graphql
-findNotes {
-  items {
-    id
-    title
-    likes
+query {
+  findNotes {
+    items {
+      id
+      title
+      likes
+    }
   }
 }
 ```
@@ -90,39 +92,41 @@ input NoteFilter {
 So you can perform filtering of the data like this:
 
 ```graphql
-findNotes(filter: {
-  title: {
-    contains: "emails"
-  },
-  opened: {
-    eq: false
-  },
-  likes: {
-    gt: 10
-  },
-  completedPercentage: {
-    between: [20, 40]
-  },
-  and: {
+query {
+  findNotes(filter: {
     title: {
-      startsWith: "read"
-    }
-  },
-  or: {
+      contains: "emails"
+    },
+    opened: {
+      eq: false
+    },
     likes: {
-      eq: 100 
+      gt: 10
+    },
+    completedPercentage: {
+      between: [20, 40]
+    },
+    and: {
+      title: {
+        startsWith: "read"
+      }
+    },
+    or: {
+      likes: {
+        eq: 100 
+      }
+    },
+    not: {
+      title: {
+        contains: "archived"
+      }
     }
-  },
-  not: {
-    title: {
-      contains: "archived"
+  }) {
+    items {
+      id
+      title
+      likes
     }
-  }
- }) {
-  items {
-    id
-    title
-    likes
   }
 }
 ```
