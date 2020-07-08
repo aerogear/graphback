@@ -17,7 +17,7 @@ The `migrateDB` method takes the three arguments, listed below.
   - [`plugins`](plugins.md) (default: `[]`): List of [graphql-migrations plugins](https://github.com/aerogear/graphback/blob/master/packages/graphql-migrations/src/plugin/MigratePlugin.ts) which describes queries that can be executed during migrations. 
   - `debug` (default: `false`): displays debugging informations and SQL queries.
   - `removeDirectivesFromSchema`: (default: `true`): Strips all directives from schema before processing.
-  - [`operationFilter`](./filter.md): Filter out database operations that we don't want, e.g. [prevent table deletion](https://github.com/aerogear/graphback/blob/master/packages/graphql-migrations/src/plugin/MigrateOperationFilter.ts).
+  - [`operationFilter`](operation-filters.md): Filter out database operations that we don't want.
 
 ## Table and Column Comments
 
