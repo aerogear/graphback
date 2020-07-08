@@ -28,41 +28,51 @@ input NoteSubscriptionFilter {
 }
 
 type Subscription {
-  newNote: Note!
-  updatedNote: Note!
-  deletedNote: Note!
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
 }
 // highlight-end
 ```
+
+:::caution
+Subscription filtering is not available yet and will be implemented in a future release.
+:::
 
 ### Examples
 
 Subscribing to a [`create`](./mutations#create) event on `Note`:
 
 ```graphql
-newNote {
-  id
-  title
-  likes
+subscription {
+  newNote {
+    id
+    title
+    likes
+  }
 }
 ```
 
 Subscribing to a [`update`](./mutations#update) event on `Note`:
 
 ```graphql
-updatedNote {
-  id
-  title
-  likes
+subscription {
+  updatedNote {
+    id
+    title
+    likes
+  }
 }
 ```
 
 Subscribing to a [`delete`](./mutations#delete) event on `Note`:
 
 ```graphql
-deletedNote {
-  id
-  title
-  likes
+subscription {
+  deletedNote {
+    id
+    title
+    likes
+  }
 }
 ```
