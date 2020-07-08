@@ -1,4 +1,4 @@
-import { Operation } from '../diff/Operation';
+import { Operation, OperationType } from '../diff/Operation';
 
 
 /**
@@ -14,18 +14,9 @@ export interface MigrateOperationFilter {
  * Suppress table deletion and renaming for operations that are not going to cause
  * data loss when field was removed accidentially.
  */
+
+const UNSAFE_OPERATIONS: OperationType[] = ['table.drop', 'column.drop', 'table.rename', 'column.rename'];
+
 export const removeNonSafeOperationsFilter: MigrateOperationFilter = {
-
-  filter: (operations: Operation[]) => {
-    return operations.filter((op: Operation) => {
-      if (op.type === 'table.drop' ||
-                op.type === 'table.rename' ||
-                op.type === 'column.rename') {
-        return false;
-      }
-
-      return true;
-    })
-  }
+  filter: (operations: Operation[]) => operations.filter((op: Operation) => !UNSAFE_OPERATIONS.includes(op.type))
 };
-
