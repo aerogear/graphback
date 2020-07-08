@@ -9,12 +9,14 @@ import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
+const pubSub = new PubSub();
+
 afterEach(() => {
   if (existsSync(dbPath)) {
     unlinkSync(dbPath)
   }
 })
-const fields = ["id", "title"];
+
 const setup = async ({ schemaSDL, seedData }: { schemaSDL?: string, seedData?: { [tableName: string]: any | any[] } } = {}) => {
   if (!schemaSDL) {
     schemaSDL =
@@ -52,8 +54,6 @@ type Todo {
   const models = filterModelTypes(schema)
   for (const modelType of models) {
     const modelProvider = new SQLiteKnexDBDataProvider(modelType, db);
-
-    const pubSub = new PubSub();
     const publishConfig = {
       subCreate: true,
       subDelete: true,
@@ -66,8 +66,17 @@ type Todo {
   return { schema, services }
 }
 
-test('create Todo', async () => {
+test('create Todo', async (done) => {
   const { services } = await setup()
+  const subId = await pubSub.subscribe("CREATE_TODO", ({ newTodo }) => {
+    expect(newTodo).toEqual({
+      id: 1,
+      text: "create a todo"
+    });
+    done();
+    pubSub.unsubscribe(subId);
+  });
+
   const todo = await services.Todo.create({
     text: 'create a todo',
   }, { graphback: { services: {}, options: { selectedFields: ["id", "text"] } } });
@@ -76,8 +85,18 @@ test('create Todo', async () => {
   expect(todo.text).toEqual('create a todo');
 });
 
-test('update Todo', async () => {
-  const { services } = await setup({ seedData: { todo: { text: 'my first todo' } } })
+test('update Todo', async (done) => {
+  const { services } = await setup({ seedData: { todo: { text: 'my first todo' } } });
+
+  const subId = await pubSub.subscribe("UPDATE_TODO", ({ updatedTodo }) => {
+    expect(updatedTodo).toEqual({
+      id: 1,
+      text: 'my updated first todo'
+    });
+    done();
+    pubSub.unsubscribe(subId);
+  });
+
   const todo = await services.Todo.update({
     id: 1,
     text: 'my updated first todo',
@@ -94,8 +113,17 @@ test('update Todo', async () => {
   expect(todo.text).toEqual('my updated first todo');
 });
 
-test('delete Todo', async () => {
-  const { services } = await setup({ seedData: { todo: [{ text: 'my first todo' }, { text: 'my second todo' }] } })
+test('delete Todo', async (done) => {
+  const { services } = await setup({ seedData: { todo: [{ text: 'my first todo' }, { text: 'my second todo' }] } });
+
+  const subId = await pubSub.subscribe("DELETE_TODO", ({ deletedTodo }) => {
+    expect(deletedTodo).toEqual({
+      id: 2
+    });
+    done();
+    pubSub.unsubscribe(subId);
+  });
+
   const data = await services.Todo.delete({
     id: 2,
     text: 'my second todo',
