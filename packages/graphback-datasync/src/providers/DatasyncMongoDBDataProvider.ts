@@ -135,6 +135,8 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
         queryResult[fieldNames.updatedAt] !== undefined &&
         clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
       ) {
+        queryResult[fieldNames.updatedAt] = queryResult[fieldNames.updatedAt].toString()
+
         return { serverState: queryResult, clientState: clientData };
       }
 
