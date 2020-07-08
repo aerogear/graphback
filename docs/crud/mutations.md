@@ -10,7 +10,7 @@ Graphback provides three mutation types for every model.
 - [`update<Type>`](#update): update an existing item in the database and return the updated object in the response.
 - [`delete<Type>`](#delete): delete a single item in the database and return the deleted object in the response.
 
-## create
+## Create
 
 The `create` mutation allows the client to insert a new item in the database.
 
@@ -63,17 +63,19 @@ The `CreateNoteInput` input type is created from the `Note` model.
 Example of a typical create mutation on `Note`:
 
 ```graphql
-createNote(input: {
-  title: "Do shopping",
-  description: "Get groceries for party",
-  authorId: 19
-}) {
-  id
-  title
-  description
-  author {
+mutation {
+  createNote(input: {
+    title: "Do shopping",
+    description: "Get groceries for party",
+    authorId: 19
+  }) {
     id
-    name
+    title
+    description
+    author {
+      id
+      name
+    }
   }
 }
 ```
@@ -115,25 +117,27 @@ Graphback generates the appropriate input types for regular types that do not ma
 You can create a new `Note` with `NoteMetadata` in a single mutation:
 
 ```graphql
-createNote(input: {
-  title: "Do shopping",
-  description: "Get groceries for party",
-  metadata: {
-    createdAt: "2340324024",
-    updatedAt: "2340324024"
-  }
-}) {
-  id
-  title
-  description
-  metadata {
-    createdAt
-    updatedAt
+mutation {
+  createNote(input: {
+    title: "Do shopping",
+    description: "Get groceries for party",
+    metadata: {
+      createdAt: "2340324024",
+      updatedAt: "2340324024"
+    }
+  }) {
+    id
+    title
+    description
+    metadata {
+      createdAt
+      updatedAt
+    }
   }
 }
 ```
 
-## update
+## Update
 
 The `update` mutation allows the client to update an existing item in the database.
 
@@ -182,16 +186,18 @@ The `MutateNoteInput` input type is created from the `Note` model.
 Example of a typical create mutation on `Note`:
 
 ```graphql
-updateNote(input: {
-  id: 10,
-  description: "Get remainder of groceries"
-}) {
-  id
-  title
-  description
-  author {
+mutation {
+  updateNote(input: {
+    id: 10,
+    description: "Get remainder of groceries"
+  }) {
     id
-    name
+    title
+    description
+    author {
+      id
+      name
+    }
   }
 }
 ```
@@ -233,25 +239,27 @@ Graphback generates the appropriate input types for regular GraphQL types that d
 You can update an existing `Note` with `NoteMetadata` in a single mutation:
 
 ```graphql
-updateNote(input: {
-  id: 10,
-  description: "Get prosecco for party",
-  metadata: {
-    createdAt: "2340349036",
-    updatedAt: "2340349036"
-  }
-}) {
-  id
-  title
-  description
-  metadata {
-    createdAt
-    updatedAt
+mutation {
+  updateNote(input: {
+    id: 10,
+    description: "Get prosecco for party",
+    metadata: {
+      createdAt: "2340349036",
+      updatedAt: "2340349036"
+    }
+  }) {
+    id
+    title
+    description
+    metadata {
+      createdAt
+      updatedAt
+    }
   }
 }
 ```
 
-## delete
+## Delete
 
 The `delete` mutation allows the client to delete an existing item from the database.
 
@@ -295,9 +303,11 @@ The `MutateNoteInput` input type is created from the `Note` model. Each input fi
 Example of a typical `delete` mutation on `Note`:
 
 ```graphql
-deleteNote(input: {
-  id: 10
-}) {
-  id
+mutation {
+  deleteNote(input: {
+    id: 10
+  }) {
+    id
+  }
 }
 ```

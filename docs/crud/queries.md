@@ -9,7 +9,7 @@ Graphback provides two query types for every model in the schema.
 - [`find<Type>s`](#find): fetch all or a subset of items through optional filtering, pagination and sorting.
 - [`get<Type>`](#get): fetch a single item by its unique ID.
 
-## find
+## Find
 
 The `find` operation allows the client to fetch multiple items from the database, with optional filtering, pagination and ordering of the data allowing you to specify exactly the data you need. 
 
@@ -45,11 +45,13 @@ type NoteResultList {
 Example of a simple query to retrieve all notes:
 
 ```graphql
-findNotes {
-  items {
-    id
-    title
-    likes
+query {
+  findNotes {
+    items {
+      id
+      title
+      likes
+    }
   }
 }
 ```
@@ -90,39 +92,41 @@ input NoteFilter {
 So you can perform filtering of the data like this:
 
 ```graphql
-findNotes(filter: {
-  title: {
-    contains: "emails"
-  },
-  opened: {
-    eq: false
-  },
-  likes: {
-    gt: 10
-  },
-  completedPercentage: {
-    between: [20, 40]
-  },
-  and: {
+query {
+  findNotes(filter: {
     title: {
-      startsWith: "read"
-    }
-  },
-  or: {
+      contains: "emails"
+    },
+    opened: {
+      eq: false
+    },
     likes: {
-      eq: 100 
+      gt: 10
+    },
+    completedPercentage: {
+      between: [20, 40]
+    },
+    and: {
+      title: {
+        startsWith: "read"
+      }
+    },
+    or: {
+      likes: {
+        eq: 100 
+      }
+    },
+    not: {
+      title: {
+        contains: "archived"
+      }
     }
-  },
-  not: {
-    title: {
-      contains: "archived"
+  }) {
+    items {
+      id
+      title
+      likes
     }
-  }
- }) {
-  items {
-    id
-    title
-    likes
   }
 }
 ```
@@ -242,7 +246,7 @@ findNotes(orderBy: {order: DESC, field: "likes"}) {
 }
 ```
 
-## get
+## Get
 
 The `get` operation allows the client to fetch a single item from the database by its unique ID.
 
