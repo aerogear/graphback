@@ -21,6 +21,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     ], this.db.collection(this.collectionName)).catch((e: any) => {
       throw e;
     });
+    this.coerceTSFields = true;
   }
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
