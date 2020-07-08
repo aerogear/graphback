@@ -9,7 +9,7 @@ Graphback provides two query types for every model in the schema.
 - [`find<Type>s`](#find): fetch all or a subset of items through optional filtering, pagination and sorting.
 - [`get<Type>`](#get): fetch a single item by its unique ID.
 
-## find
+## Find
 
 The `find` operation allows the client to fetch multiple items from the database, with optional filtering, pagination and ordering of the data allowing you to specify exactly the data you need. 
 
@@ -242,7 +242,7 @@ findNotes(orderBy: {order: DESC, field: "likes"}) {
 }
 ```
 
-## get
+## Get
 
 The `get` operation allows the client to fetch a single item from the database by its unique ID.
 

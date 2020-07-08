@@ -10,7 +10,7 @@ Graphback provides three mutation types for every model.
 - [`update<Type>`](#update): update an existing item in the database and return the updated object in the response.
 - [`delete<Type>`](#delete): delete a single item in the database and return the deleted object in the response.
 
-## create
+## Create
 
 The `create` mutation allows the client to insert a new item in the database.
 
@@ -133,7 +133,7 @@ createNote(input: {
 }
 ```
 
-## update
+## Update
 
 The `update` mutation allows the client to update an existing item in the database.
 
@@ -251,7 +251,7 @@ updateNote(input: {
 }
 ```
 
-## delete
+## Delete
 
 The `delete` mutation allows the client to delete an existing item from the database.
 
