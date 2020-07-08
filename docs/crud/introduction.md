@@ -55,6 +55,10 @@ type Subscription {
 // highlight-end
 ```
 
+:::caution
+Graphback will override custom queries, mutations and subscriptions from model files which have the same name as Graphback CRUD queries, mutations and subscriptions. Either change the name of your custom definitions or [disable generation](#per-type) of the CRUD operation(s) for the model(s).
+:::
+
 ## Configuration
 
 Graphback can be configured to enable/disable CRUD generation per GraphQL type, or globally across the entire application.
