@@ -1,23 +1,30 @@
 import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage } from '@graphback/core';
+import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, GraphbackOperationType, QueryFilter } from '@graphback/core';
 import { ObjectId } from 'mongodb';
-import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
+import { MongoDBDataProvider, applyIndexes, buildQuery } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
+import { ConflictEngine } from '../conflict';
 import { DataSyncProvider } from "./DataSyncProvider";
 import { DeltaProvider } from "./DeltaProvider";
+import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
-export class DeltaDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
+export class DeltaDBDataProvider<Type = any> extends DataSyncMongoDBDataProvider<Type> {
   protected deltaProvider: DeltaProvider;
 
-  public constructor(baseType: GraphQLObjectType, client: any) {
-    super(baseType, client);
+  public constructor(baseType: GraphQLObjectType, client: any, conflictStrategy?: new() => ConflictEngine) {
+    super(baseType, client, conflictStrategy);
     applyIndexes([
       {
         key: {
-          _deleted: 1
+          timestamp: 1
+        }
+      },
+      {
+        key: {
+          docId: 1
         }
       }
     ], this.db.collection(this.collectionName)).catch((e: any) => {
@@ -31,7 +38,7 @@ export class DeltaDBDataProvider<Type = any> extends MongoDBDataProvider<Type> i
 
     const res = await super.create(data, context);
 
-    this.deltaProvider.insertDiff(res).catch((e: any) => {
+    this.deltaProvider.insertDiff(data, GraphbackOperationType.CREATE).catch((e: any) => {
       console.error(`Error: Couldn't insert into delta table: ${e}`);
     })
     
@@ -39,140 +46,48 @@ export class DeltaDBDataProvider<Type = any> extends MongoDBDataProvider<Type> i
   }
 
   public async update(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
-    }
-
-    // TODO use findOneAndUpdate to check consistency afterwards
     const { idField } = getDatabaseArguments(this.tableMap, data);
-
-    if (!idField.value) {
-      throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
-    }
-
-    this.fieldTransformMap[TransformType.UPDATE]
-      .forEach((f: FieldTransform) => {
-        data[f.fieldName] = f.transform(f.fieldName);
-      });
+    const res = await super.update(data, context);
 
     const objectId = new ObjectId(idField.value);
-    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, { returnOriginal: false });
-    if (result.ok) {
-      
-      this.deltaProvider.insertDiff(result.value).catch((e: any) => {
-        console.error(`Error: Couldn't insert into delta table: ${e}`);
-      })
 
-      return this.mapFields(result.value)
-      
-    }
-    throw new NoDataError(`Cannot update ${this.collectionName}`);
+    this.deltaProvider.insertDiff({ ...data, id: objectId}, GraphbackOperationType.UPDATE).catch((e: any) => {
+      console.error(`Error: Couldn't insert into delta table: ${e}`);
+    })
 
-
+    return res;
   }
 
   public async delete(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
-    }
-
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    data = {};
+    const res = await super.delete(data, context);
 
-    this.fieldTransformMap[TransformType.UPDATE]
-      .forEach((f: FieldTransform) => {
-        data[f.fieldName] = f.transform();
-      });
-
-    data._deleted = true;
     const objectId = new ObjectId(idField.value);
-    const projection = this.buildProjectionOption(context);
-    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, {/*projection,*/ returnOriginal: false });
-    if (result.ok) {
-      this.deltaProvider.insertDiff(result.value).catch((e: any) => {
-        console.error(`Error: Couldn't insert into delta table: ${e}`);
-      })
+    this.deltaProvider.insertDiff({ ...data, id: objectId}, GraphbackOperationType.DELETE).catch((e: any) => {
+      console.error(`Error: Couldn't insert into delta table: ${e}`);
+    })
 
-      return this.mapFields(result.value);
-    }
-
-    throw new NoDataError(`Could not delete from ${this.collectionName}`);
+    return res;
   }
 
-  public async findOne(filter: any, context: GraphbackContext): Promise<Type> {
-    if (filter.id) {
-      filter = { _id: new ObjectId(filter.id) }
-    }
-    const projection = this.buildProjectionOption(context);
-    const query = this.db.collection(this.collectionName).findOne({
-      ...filter,
-      _deleted: { $ne: true}
-    }, { projection });
-    const data = await query;
+  public sync(lastSync: string, context: GraphbackContext, filter?: QueryFilter): Promise<Type[]> {
 
-    if (data) {
-      return this.mapFields(data);
-    }
-    throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
-  }
-
-  public async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
-    if (filter === undefined) {
-      filter = {};
-    }
-
-    filter._deleted = { ne: true };
-
-    return super.findBy(filter, context, page, orderBy);
-  }
-
-  public async count(filter: any): Promise<number> {
-    if (filter === undefined) {
-      filter = {};
-    }
-
-    filter._deleted = { ne: true};
-
-    return super.count(filter);
-  }
-
-  public sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<Type[]> {
-
-    return this.deltaProvider.sync(parseInt(lastSync, 10)).then((res: any[]) => {
+    return this.deltaProvider.sync(parseInt(lastSync, 10), buildQuery(filter)).then((res: any[]) => {
       return res.map((doc: any) => {
         return this.mapFields(doc);
-      })
+      }) // TODO: Discuss benefits and limitations
     });
   }
 
-  protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
-    const { idField } = getDatabaseArguments(this.tableMap, clientData);
-    const { fieldNames } = metadataMap;
+  protected async getServerState(clientSets: any) {
+    const { idField } = getDatabaseArguments(this.tableMap, clientSets);
 
     if (!idField.value) {
       throw new NoDataError(`Couldn't get document from ${this.collectionName} - missing ID field`)
     }
-    const projection = {
-      ...this.buildProjectionOption(context),
-      [fieldNames.updatedAt]: 1,
-      _deleted: 1
-    };
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true} }, {});
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (
-        queryResult[fieldNames.updatedAt] !== undefined &&
-        clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
-      ) {
-        return { serverState: queryResult, clientState: clientData };
-      }
 
-      return undefined;
-    }
+    const serverResult = await this.deltaProvider.sync(parseInt(clientSets.updatedAt, 10), { _id: new ObjectId(idField.value)});
 
-    throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
+    return serverResult[0];
   }
 }

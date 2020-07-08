@@ -50,6 +50,8 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
   public async update(data: Type, context: GraphbackContext): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
+    const updateSets = Object.assign({}, data as any);
+    delete updateSets.id;
 
     if (!idField.value) {
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
@@ -57,11 +59,11 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
     this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
-        data[f.fieldName] = f.transform(f.fieldName);
+        updateSets[f.fieldName] = f.transform(updateSets[f.fieldName]);
       });
 
     const objectId = new ObjectId(idField.value);
-    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId }, { $set: data });
+    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId }, { $set: updateSets });
     if (result) {
       const projection = this.buildProjectionOption(context);
       const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId }, { projection }).toArray();

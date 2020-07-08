@@ -6,7 +6,7 @@ import { ApolloServer } from "apollo-server-express"
 import { buildGraphbackAPI } from 'graphback'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin } from '@graphback/datasync'
+import { createDataSyncCRUDService, DataSyncPlugin } from '@graphback/datasync'
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import cors from "cors"
 // eslint-disable-next-line @typescript-eslint/tslint/config

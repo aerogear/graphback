@@ -3,14 +3,16 @@ import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, Trans
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
+import { ConflictEngine, TimestampConflictEngine } from "../conflict";
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
 export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
+  protected conflictEngine: ConflictEngine;
 
-  public constructor(baseType: GraphQLObjectType, client: any) {
+  public constructor(baseType: GraphQLObjectType, client: any, ConflictStrategy?:new () => ConflictEngine) {
     super(baseType, client);
     applyIndexes([
       {
@@ -21,6 +23,10 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     ], this.db.collection(this.collectionName)).catch((e: any) => {
       throw e;
     });
+
+    if (ConflictStrategy !== undefined){
+      this.conflictEngine = new ConflictStrategy();
+    }
   }
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
@@ -36,6 +42,10 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       throw new ConflictError(conflict);
     }
 
+    if (this.conflictEngine !== undefined) {
+      Object.assign(data, this.conflictEngine.updateState(data));
+    }
+
     // TODO use findOneAndUpdate to check consistency afterwards
     return super.update(data, context);
   }
@@ -47,7 +57,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     }
 
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    data = {};
+    delete data.id
 
     this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
@@ -113,33 +123,38 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
   }
 
   protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
-    const { idField } = getDatabaseArguments(this.tableMap, clientData);
-    const { fieldNames } = metadataMap;
+    if (this.conflictEngine !== undefined) {
+
+      const queryResult = await this.getServerState(clientData);
+      if (queryResult) {
+        const conflict = this.conflictEngine.checkForConflicts(queryResult, clientData)
+
+        if (conflict !== undefined && this.conflictEngine.resolveConflicts !== undefined) {
+          const resolved = this.conflictEngine.resolveConflicts(conflict);
+
+          if (resolved !== undefined) {
+            Object.assign(clientData, this.conflictEngine.resolveConflicts(conflict));
+
+            return undefined
+          }
+        }
+
+        return conflict
+      }
+
+      throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
+    }
+
+    return undefined;
+  }
+
+  protected async getServerState(clientState: any) {
+    const { idField } = getDatabaseArguments(this.tableMap, clientState);
 
     if (!idField.value) {
       throw new NoDataError(`Couldn't get document from ${this.collectionName} - missing ID field`)
     }
-
-    const projection = this.buildProjectionOption(context);
-
-    if (projection) {
-      projection[fieldNames.updatedAt] = 1;
-      projection._deleted = 1
-    }
-
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true } }, { projection });
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (
-        queryResult[fieldNames.updatedAt] !== undefined &&
-        clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
-      ) {
-        return { serverState: queryResult, clientState: clientData };
-      }
-
-      return undefined;
-    }
-
-    throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
+    
+    return this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true } });
   }
 }
