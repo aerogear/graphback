@@ -34,7 +34,9 @@
     "GraphQL Migrations": [
       "graphql-migrations/intro",
       "graphql-migrations/db-design",
-      "graphql-migrations/api"
+      "graphql-migrations/api",
+      "graphql-migrations/plugins",
+      "graphql-migrations/filters"
     ],
     "GraphQL Serve": [
       "graphqlserve/graphqlserve"
