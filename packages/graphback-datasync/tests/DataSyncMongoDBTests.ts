@@ -4,7 +4,7 @@ import { buildSchema } from 'graphql';
 import { filterModelTypes, GraphbackCoreMetadata, metadataMap, NoDataError, defaultTableNameTransform } from '@graphback/core';
 import { advanceTo } from "jest-date-mock";
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError } from '../src';
+import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError, TimestampConflictEngine } from '../src';
 
 const {fieldNames} = metadataMap;
 export interface Context {
@@ -45,7 +45,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
   const providers: { [name: string]: DataSyncMongoDBDataProvider } = {}
   const models = filterModelTypes(schema)
   for (const modelType of models) {
-    providers[modelType.name] = new DataSyncMongoDBDataProvider(modelType, db);
+    providers[modelType.name] = new DataSyncMongoDBDataProvider(modelType, db, TimestampConflictEngine);
   }
 
   // if seed data is supplied, insert it into collections

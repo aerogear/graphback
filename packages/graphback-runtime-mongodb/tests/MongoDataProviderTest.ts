@@ -272,7 +272,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     expect(updatedTodo.description).toBeUndefined();
     expect(updatedTodo.text).toEqual("updated todo");
 
-    const deletedTodo = await context.providers.Todos.update({id: createdTodo.id}, {graphback: {services: {}, options: { selectedFields: ["id", "text", "description"]}}});
+    const deletedTodo = await context.providers.Todos.delete({id: createdTodo.id}, {graphback: {services: {}, options: { selectedFields: ["id", "text", "description"]}}});
     expect(deletedTodo.id).toEqual(createdTodo.id);
     expect(deletedTodo.text).toEqual("updated todo");
     expect(deletedTodo.description).toEqual("todo add description");
