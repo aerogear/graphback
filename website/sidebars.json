@@ -43,8 +43,9 @@
       "graphqlserve/graphqlserve"
     ],
     "Plugins": [
-      "plugins/schema-crud",
-      "plugins/client-crud",
+      "plugins/overview",
+      "plugins/crud-schema",
+      "plugins/crud-client",
       "plugins/create"
     ],
     "API Reference": [
