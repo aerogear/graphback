@@ -16,9 +16,10 @@
       "crud/subscriptions"
     ],
     "Databases": [
-      "databases/databases",
+      "databases/overview",
+      "databases/mongodb",
       "databases/postgres",
-      "databases/mongodb"
+      "databases/sqlite"
     ],
     "Subscriptions": [
       "subscriptions/intro"
