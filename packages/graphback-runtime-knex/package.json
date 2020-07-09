@@ -38,7 +38,7 @@
     "@graphback/core": "0.14.0-alpha4",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0",
-    "knex": "0.21.1"
+    "knex": "0.21.2"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0"

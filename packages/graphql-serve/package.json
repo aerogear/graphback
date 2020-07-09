@@ -56,7 +56,7 @@
     "graphql-migrations": "0.14.0-alpha4",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.10.4",
-    "knex": "0.21.1",
+    "knex": "0.21.2",
     "knex-cleaner": "1.3.0",
     "mongodb": "3.5.9",
     "mongodb-memory-server": "6.6.1",
