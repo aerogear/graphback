@@ -11,7 +11,7 @@ Graphback uses [graphql-migrations](../packages/graphql-migrations) to automatic
 
 To create or update your database from the CLI, run:
 
-```sh
+```bash
 graphback db
 ```
 

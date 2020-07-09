@@ -36,7 +36,7 @@ Execute `graphback` in your shell for more information
 
 ## Update Database
 
-```sh
+```bash
 graphback update-db
 ```
 

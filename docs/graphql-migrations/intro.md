@@ -18,13 +18,13 @@ You can install `graphql-migrations` on your existing project using the followin
 
 With npm: 
 
-```shell
+```bash
 npm i graphql-serve
 ```
 
 or with yarn:
 
-```shell
+```bash
 yarn add graphql-serve
 ```
 

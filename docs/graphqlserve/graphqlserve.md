@@ -12,19 +12,19 @@ GraphQL Serve is a CLI tool that leverages the power of Graphback to generate a 
 
 You can install `graphql-serve` globally with npm:
 
-```shell
+```bash
 npm i -g graphql-serve
 ```
 
 or with yarn:
 
-```shell
+```bash
 yarn global add graphql-serve
 ```
 
 or run it with [npx](https://www.npmjs.com/package/npx): 
 
-```shell
+```bash
 npx graphql-serve
 ```
 
@@ -48,7 +48,7 @@ The `@model` annotation indicates that `Note` is a data model and Graphback will
 
 To start your server, run the following command from the same directory as `Note.graphql`:
 
-```shell
+```bash
 gqlserve serve Note.graphql
 ```
 
@@ -56,19 +56,19 @@ This will start a GraphQL server on a random port using the `Note.graphql` data 
 
 You can customise the directory of the data models:
 
-```shell
+```bash
 gqlserve serve ./path/to/models
 ```
 
 You can also specify where to load the data models from with a Glob pattern:
 
-```shell
+```bash
 gqlserve serve ./schema/**/*.graphql
 ```
 
 You can specify which port to start the server on:
 
-```shell
+```bash
 $ gqlserve serve ./path/to/models --port 8080
 
 Starting server...
@@ -104,7 +104,7 @@ type Note {
 
 Once we have a model with datasync capabilities, we can run our GraphQL server by enabling data synchronization as shown below:
 
-```shell
+```bash
 gqlserve serve Note.graphql --datasync
 ```
  
@@ -114,7 +114,7 @@ Graphback receives your data models as an input and processes them to generate a
 
 GraphQL Serve allows you to print the resulting schema in your terminal with the `print-schema` subcommand:
 
-```shell
+```bash
 $ gqlserve print-schema ./path/to/models
 Generated schema:
 
@@ -125,7 +125,7 @@ Generated schema:
 
 This information is also provided with the command itself:
 
-```shell
+```bash
 $ gqlserve -h
 gqlserve <command>
 
@@ -142,7 +142,7 @@ Options:
 
 For the `serve` command:
 
-```shell
+```bash
 $ gqlserve serve -h
 gqlserve serve [modelDir] [options]
 
@@ -164,7 +164,7 @@ Examples:
 
 Also for `print-schema` command:
 
-```shell
+```bash
 $ gqlserve print-schema -h
 gqlserve print-schema [modelDir]
 

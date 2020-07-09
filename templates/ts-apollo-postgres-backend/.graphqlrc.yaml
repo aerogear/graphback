@@ -1,0 +1,9 @@
+schema: './src/schema.graphql'
+documents: ./client/src/graphql/**/*.graphql
+extensions:
+  graphback:
+    model: ./model/datamodel.graphql
+    plugins:
+      graphback-client:
+        format: 'ts'
+        outputFile: ./client/src/graphql/graphback.ts

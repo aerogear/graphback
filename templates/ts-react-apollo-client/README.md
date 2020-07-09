@@ -9,7 +9,7 @@ Run the project using the following steps:
 
 - Install
 
-```sh
+```bash
 yarn install
 ```
 
@@ -20,6 +20,6 @@ yarn codegen:client
 
 - Start React App
 
-```sh
+```bash
 yarn start:client
 ```

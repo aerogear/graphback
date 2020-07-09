@@ -5,7 +5,7 @@ For CLI usage we recommend to use Node version manager - NVM.
 
 ## Building
 
-```sh
+```bash
 yarn install
 yarn build
 ```

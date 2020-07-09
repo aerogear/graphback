@@ -13,13 +13,13 @@ The package is built on top of the official [MongoDB Node.js Driver](https://mon
 
 Install with npm:
 
-```shell
+```bash
 npm install @graphback/runtime-mongo mongodb
 ```
 
 Install with yarn:
 
-```shell
+```bash
 yarn add @graphback/runtime-mongo mongodb
 ```
 

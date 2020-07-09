@@ -17,7 +17,7 @@ Graphback uses [graphql-migrations](https://www.npmjs.com/package/graphql-migrat
 
 To create or update your database from the CLI, run:
 
-```sh
+```bash
 graphback db
 ```
 

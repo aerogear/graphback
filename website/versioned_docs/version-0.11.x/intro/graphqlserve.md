@@ -37,7 +37,7 @@ The `@model` annotation indicates that `Note` is a data model and Graphback will
 
 To start your server, run the following command from the same directory as `Note.graphql`:
 
-```sh
+```bash
 gqls serve .
 ```
 
@@ -45,13 +45,13 @@ This will start a GraphQL server on a random port using the data models we just 
 
 You can customise the directory of the data models:
 
-```sh
+```bash
 gqls serve ./path/to/models
 ```
 
 You can specify which port to start the server on:
 
-```sh
+```bash
 $ gqls serve ./path/to/models --port 8080
 
 Starting server...
@@ -109,7 +109,7 @@ Graphback enabled applications use [GraphQL Config](https://graphql-config.com) 
 
 GraphQL Serve is fully compatible with GraphQL Config. Running `gqlserve [subcommand]` in the same directory as your `.graphqlrc` file will use the Graphback configuration section to find your model directory, configure global CRUD methods and execute the plugin sequence.
 
-```sh
+```bash
 $ gqls serve                    
 
 No port number specified.
