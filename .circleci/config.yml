@@ -42,7 +42,7 @@ jobs:
           command: yarn test
       - run:
           name: run integration tests
-          command: cd integration && yarn && yarn integration
+          command: yarn test:integration
   npm_publish:
     working_directory: ~/aerogear/graphback
     docker:
