@@ -168,7 +168,7 @@ type User {
 
 ### @index
 
-The `@index` annotation can be used with [GraphQL Migrations](../databases/migrations) to create indexes on your PostgreSQL database tables.
+The `@index` annotation can be used with [GraphQL Migrations](../graphql-migrations/db-design#index) to create indexes on your PostgreSQL database tables.
 
 You can create one or multiple indexes per table.
 
@@ -228,11 +228,11 @@ This creates the following composite index:
 
 ### @db
 
-GraphQL Migrations is a library to perform database migrations tables for PostgreSQL using a GraphQL schema. Most of the migration operations can be specified with the `@db` annotation. Check out the documentation for [GraphQL Migrations](../databases/migrations) to learn more.
+GraphQL Migrations is a library to perform database migrations tables for PostgreSQL using a GraphQL schema. Most of the migration operations can be specified with the `@db` annotation. Check out the documentation for [GraphQL Migrations](../graphql-migrations/db-design) to learn more.
 
 ### @default
 
-The `@default` annotation is used to specify a default value. This is currently only supported for PostgreSQL through the [GraphQL Migrations](../databases/migrations) package.
+The `@default` annotation is used to specify a default value. This is currently only supported for PostgreSQL through the [GraphQL Migrations](../graphql-migrations/db-design#default-field-value) package.
 
 ```graphql
 """@model"""

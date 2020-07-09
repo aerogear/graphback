@@ -78,7 +78,7 @@ const knex = Knex({
 const knexProviderCreator = createKnexDbProvider(knex);
 ```
 
-For more on database support in Graphback, see [Databases](../databases/databases).
+For more on database support in Graphback, see [Databases](../databases/overview).
 
 ### Configure your schema
 
