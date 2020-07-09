@@ -24,7 +24,7 @@
     "graphql-config": "3.0.3",
     "graphql-migrations": "0.14.0-alpha4",
     "graphql-subscriptions": "1.1.0",
-    "graphql-tag": "2.10.3",
+    "graphql-tag": "2.10.4",
     "knex": "0.21.1"
   },
   "devDependencies": {
