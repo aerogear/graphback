@@ -15,9 +15,6 @@
   "engines": {
     "node": ">=10.15.3"
   },
-  "dependencies": {
-    "graphback-cli": "0.14.0-alpha4"
-  },
   "devDependencies": {
     "rimraf": "3.0.2",
     "ts-node": "8.10.2",

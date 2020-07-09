@@ -1,5 +1,6 @@
 import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as util from 'util';
+import { join } from 'path'
 
 beforeAll(() => {
   mkdirSync('./output-cli/client', { recursive: true })
@@ -14,7 +15,9 @@ describe('CLI tests', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const exec = util.promisify(require('child_process').exec);
 
-    const { stdout } = await exec('yarn graphback generate');
+    const cliExec = join(__dirname, '../../packages/graphback-cli/dist/index.js')
+
+    const { stdout } = await exec(`node ${cliExec} generate`);
 
     const graphqlSchema = readFileSync('./output-cli/schema.graphql')
     const clientDocument = readFileSync('./output-cli/client/graphback.graphql')
