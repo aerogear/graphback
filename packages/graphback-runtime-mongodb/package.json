@@ -25,7 +25,7 @@
   "devDependencies": {
     "@graphback/codegen-schema": "0.14.0-alpha4",
     "@types/jest": "26.0.4",
-    "@types/node": "12.12.48",
+    "@types/node": "12.12.49",
     "graphql": "15.3.0",
     "jest": "26.1.0",
     "jest-date-mock": "1.0.8",
