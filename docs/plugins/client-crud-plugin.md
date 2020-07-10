@@ -4,8 +4,7 @@ title: ClientCRUD Plugin
 sidebar_label: ClientCRUD
 ---
 
-The `ClientCRUDPlugin` plugin creates your GraphQL schema with all input types, Query, Mutation and Subscription fields following recommended patterns from [GraphQL CRUD](https://graphqlcrud.org/).
-The plugin also creates your CRUD resolvers to use with your GraphQL schema.
+The `ClientCRUDPlugin` plugin uses your GraphQL schema to generate queries, mutations, subscriptions and fragments for use in your client-side application. The generated documents are compatible with all major GraphQL providers, such as [Apollo GraphQL](https://www.apollographql.com/) and [urql](https://formidable.com/open-source/urql/).
 
 ## Installation
 
@@ -60,3 +59,4 @@ Below is a full list of the available configuration options for this plugin.
 | Argument                    	| Description                                                                 	| Type     	|
 |---------------------------	|-----------------------------------------------------------------------------	|----------	|
 | `pluginConfig.outputFile` 	| Relative path to the GraphQL documents to be created.<br/><br/> Example: `"/path/to/documents.graphql"`. <br/><br/>Supported file extensions: `.ts`, `.graphql` | `string` 	|
+| `pluginConfig.fragmentOnly` 	| Optional. When `true` Graphback generates only creates fragments, and skips creating queries, mutations and subscriptions.  | `boolean` 	|
