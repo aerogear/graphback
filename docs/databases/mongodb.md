@@ -9,7 +9,7 @@ sidebar_label: MongoDB
 
 The package is built on top of the official [MongoDB Node.js Driver](https://mongodb.github.io/node-mongodb-native).
 
-# Installation
+## Installation
 
 Install with npm:
 
@@ -25,12 +25,12 @@ yarn add @graphback/runtime-mongo mongodb
 
 Running either of the two commands will install the `Graphback MongoDB Provider` ([`@graphback/runtime-mongo`](https://www.npmjs.com/package/@graphback/runtime-mongo)) and the MongoDB Driver ([`mongodb`](https://www.npmjs.com/package/mongodb)).
 
-# Creating the Database Connection
+## Creating Database Connection
 
 You'll need a running MongoDB instance before initializing the connection. 
 
 :::info
-If you do not have a running instance, you can use [Docker](https://www.docker.com/) to quickly spin up a MongoDB container by follow the instructions given in
+If you do not have a running instance, you can use [Docker](https://www.docker.com/) to quickly spin up a MongoDB container by following the instructions given in
 [MongoDB Docker Image](https://hub.docker.com/_/mongo).
 :::
 
@@ -53,9 +53,9 @@ You can change the configurations variables to match the one you have.
 
 To learn more about the accepted configuration, visit the [MongoDB Driver Connection Options](https://mongodb.github.io/node-mongodb-native/3.5/reference/connecting/) documentation.
 
-# Using MongoDB Provider
+## Using MongoDB Provider
 
-The Graphback MongoDB provider exposes a `createMongoDbProvider` method, which can be used to create data providers for each of your  data models. 
+The Graphback MongoDB provider exposes a [`createMongoDbProvider`](../api/create-mongodb-provider.md) method, which can be used to create data providers for each of your  data models. 
 
 The code below shows how you can create such a data provider creator and how it can be passed to [`buildGraphbackAPI`](../api/build-graphback-api.md).
 
