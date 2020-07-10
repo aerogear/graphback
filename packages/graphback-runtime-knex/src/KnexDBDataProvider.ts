@@ -7,11 +7,12 @@ import { buildQuery } from './knexQueryMapper';
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
  * Layer is tested with following databases:
  *
- * - Sqlite
+ * - SQLite (by `SQLiteKnexDBDataProvider`)
  * - MySQL (MariaDB)
- * - Postgres (by `PgKnexDBDataProvider`)
+ * - Postgres
  *
- * NOTE: For Postgres use dedicated `PgKnexDBDataProvider` that implements more performant creation method.
+ * NOTE: For SQLite use dedicated `SQLiteKnexDBDataProvider` that implements more speficic creation method to avoid the not supported `returning()`
+ * statement.
  */
 //tslint:disable-next-line: no-any
 export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Type> {
