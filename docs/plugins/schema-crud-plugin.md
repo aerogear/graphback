@@ -7,11 +7,6 @@ sidebar_label: SchemaCRUD
 The `SchemaCRUDPlugin` plugin creates your GraphQL schema with all input types, Query, Mutation and Subscription fields following recommended patterns from [GraphQL CRUD](https://graphqlcrud.org/).
 The plugin also creates your CRUD resolvers to use with your GraphQL schema.
 
-:::info
-Unless you need the schema to be output to a file you don't need to install or configure it as Graphback will automatically execute it as the default plugin.
-:::
-
-
 ## Installation
 
 ```bash
@@ -34,6 +29,10 @@ const { schema, resolvers } = buildGraphbackAPI(modelDefs, {
   ]
 });
 ```
+
+:::info
+Unless you need the schema to be output to a file you don't need to install or configure it as Graphback will automatically execute it as the default plugin.
+:::
 
 ## Configuration
 

@@ -21,7 +21,7 @@ yarn add -D graphback-cli
 
 ## Usage
 
-It is recommended to use the Graphback CLI for certain Graphback plugins, such as those that can modify files which your application depends on. This will prevent hidden oraccidental file modifications that would otherwise happen during start-up, which might cause issues in your application.
+It is recommended to use the Graphback CLI for certain Graphback plugins, such as those that can modify files which your application depends on. This will prevent hidden accidental file modifications that would otherwise happen during start-up, which might cause issues in your application.
 
 To load the `ClientCRUDPlugin` plugin, it should be configuration in a `.graphqlrc` [GraphQL Config](https://graphql-config.com) file. The Grahback CLI can dynamically load and execute plugins from a `.graphqlrc` file.
 
