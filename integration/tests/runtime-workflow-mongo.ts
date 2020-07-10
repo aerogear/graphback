@@ -43,7 +43,7 @@ beforeAll(async () => {
       dataProviderCreator: createMongoDbProvider(db),
       plugins: [
         new SchemaCRUDPlugin({ outputPath: "./output-mongo/schema/schema.graphql" }),
-        new ClientCRUDPlugin({ format: 'graphql', outputFile: './output-mongo/client/graphback.graphql' })
+        new ClientCRUDPlugin({ outputFile: './output-mongo/client/graphback.graphql' })
       ]
     });
 
