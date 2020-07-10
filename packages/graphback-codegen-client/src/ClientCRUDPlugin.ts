@@ -1,3 +1,4 @@
+import { parse } from 'path';
 import { GraphbackCoreMetadata, GraphbackPlugin } from '@graphback/core'
 import { writeDocumentsToFilesystem } from './helpers/writeDocuments';
 import { createClientDocumentsGQL, createClientDocumentsTS } from './templates'
@@ -7,15 +8,6 @@ import { ClientTemplates } from './templates/ClientTemplates'
  * Configuration for client generator
  */
 export interface ClientGeneratorPluginConfig {
-  /**
-   * Output language that will be supported
-   * Our plugin supports multiple languages for simplicity
-   *
-   * - ts - typescript file output (backwards compatibility)
-   * - graphql - .graphql file
-   */
-  format: 'ts' | 'graphql'
-
   /**
    * Generate only fragments and skip query, mutation and subscription elements
    * This can be particulairly usefull when many custom complex queries are needed
@@ -49,7 +41,7 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
   public constructor(pluginConfig?: ClientGeneratorPluginConfig) {
     super()
-    this.pluginConfig = Object.assign({ format: 'graphql' }, pluginConfig);
+    this.pluginConfig = pluginConfig;
     if (!pluginConfig.outputFile) {
       throw new Error("client plugin requires outputFile parameter")
     }
@@ -57,9 +49,8 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
   public createResources(metadata: GraphbackCoreMetadata): void {
     const documents = this.getDocuments(metadata)
-    const outputFormat = this.pluginConfig.format;
 
-    writeDocumentsToFilesystem(this.pluginConfig.outputFile, documents, outputFormat);
+    writeDocumentsToFilesystem(this.pluginConfig.outputFile, documents);
   }
 
   public getPluginName(): string {
@@ -74,10 +65,19 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
 
     let documents: ClientTemplates;
 
-    if (this.pluginConfig.format === 'ts') {
+    // Extract the file extension from the plugin config
+    const outputFileAsPath = parse(this.pluginConfig.outputFile);
+    const documentExtension = outputFileAsPath.ext;
+    const supportedFileExtensions = ['.ts', '.graphql'];
+
+    if (!supportedFileExtensions.includes(documentExtension)) {
+      throw new Error(`ClientCRUD plugin outputFile requires a file extension of either: ${supportedFileExtensions.join(', ')}`)
+    }
+
+    if (documentExtension === '.ts') {
       documents = createClientDocumentsTS(models);
     }
-    else if (this.pluginConfig.format === 'graphql') {
+    else if (documentExtension === '.graphql') {
       documents = createClientDocumentsGQL(models);
     } else {
       throw new Error("Invalid output format for client plugin");
@@ -87,7 +87,7 @@ export class ClientCRUDPlugin extends GraphbackPlugin {
       documents = {
         fragments: documents.fragments,
         queries: [],
-        mutations:[],
+        mutations: [],
         subscriptions: [],
       };
     }

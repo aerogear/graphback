@@ -48,7 +48,7 @@ beforeAll(async () => {
       dataProviderCreator: createKnexDbProvider(db),
       plugins: [
         new SchemaCRUDPlugin({ outputPath: "./output-postgres/schema/schema.graphql" }),
-        new ClientCRUDPlugin({ format: 'graphql', outputFile: './output-postgres/client/graphback.graphql' })
+        new ClientCRUDPlugin({ outputFile: './output-postgres/client/graphback.graphql' })
       ]
     });
 

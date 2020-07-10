@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test plugin engine gql 1`] = `
+exports[`Test plugin engine graphql 1`] = `
 Object {
   "fragments": Array [
     Object {
