@@ -61,7 +61,7 @@
     "mongodb": "3.5.9",
     "mongodb-memory-server": "6.6.1",
     "sqlite3": "4.2.0",
-    "yargs": "15.4.0"
+    "yargs": "15.4.1"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0"
