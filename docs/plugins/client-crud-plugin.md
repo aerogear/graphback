@@ -9,7 +9,7 @@ The `ClientCRUDPlugin` plugin uses your GraphQL schema to generate queries, muta
 ## Installation
 
 ```bash
-yarn add @graphback/codegen-schema
+yarn add @graphback/codegen-client
 ```
 
 To execute this plugin on-demand, you will use the [Graphback CLI](../graphback-cli). Install it as a devDependency in your project.
