@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/jest": "26.0.4",
-    "@types/node": "12.12.49",
+    "@types/node": "12.12.50",
     "graphql": "15.3.0",
     "jest": "26.1.0",
     "jest-date-mock": "1.0.8",
