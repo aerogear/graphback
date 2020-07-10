@@ -4,8 +4,6 @@ title: GraphQL Migrations Filters
 sidebar_label: Operation Filter
 ---
 
-# Filtering out operations
-
 It is possible to write custom hooks that can be used to filter out undesirable database operations such as those that could lead to data loss from being executed. The filter is an interface defining a function that takes take the operation and returns `true` to execute the operation and false otherwise. By default, GraphQL Migrations does not apply any filter. 
 
 ```ts

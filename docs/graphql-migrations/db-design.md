@@ -7,7 +7,7 @@ sidebar_label: Database Design
 GraphQL Migrations operates on business models defined in your schema: These are GraphQL types decorated with a [`@model`](../model/datamodel#model) annotation. 
 
 
-### Primary key
+## Primary key
 
 Each type must have a primary key. You can specify one are one using the [`@id`](../model/annotations#id) annotation on a field.
 
@@ -32,7 +32,7 @@ type Note {
 }
 ```
 
-### Nullability
+## Nullability
 
 GraphQL Migrations packages automatically adds a `NOT NULL` constraint to all non null fields defined in the business model. 
 All primary keys are not nullable, irrespective of whether they are defined as non null or not. 
@@ -61,11 +61,11 @@ Indexes:
     "note_pkey" PRIMARY KEY, btree (reference)
 ```
 
-### Foreign keys
+## Foreign keys
 
 GraphQL Migrations will automatically create and index foreign keys once it sees relationships between business models.
 
-#### OneToOne
+### OneToOne
 
 ```graphql
 """
@@ -113,7 +113,7 @@ type User {
 
 This maps `Profile.user` to `profile.user_id` in the database.
 
-#### OneToMany
+### OneToMany
 
 ```graphql
 """
@@ -149,7 +149,7 @@ type Note {
 
 This maps to `comment.note_id` in the database.
 
-#### ManyToMany
+### ManyToMany
 
 To create a many-to-many relationship, add a model for your join table and use two one-to-many relationship mappings to create the relationship.
 
@@ -290,7 +290,7 @@ GraphQL Migrations created the auto-incremented primary key by inferring the usa
 Additionally we can see that this primary key is referenced by the `comment` table because of the relationship.
 
 
-### Default field value
+## Default field value
 
 You can specify a default value using the `@default` field annotation as shown below.
 
@@ -306,7 +306,7 @@ type Note {
 }
 ```
 
-### Custom column type
+## Custom column type
 
 You can specify a custom type usig the `@db` field annotation as shown below:
 
@@ -326,7 +326,7 @@ type Comment {
 }
 ```
 
-### Column length
+## Column length
 
 By default string columns will be created as `varchar` with a column length of `255`. 
 This can be configured to any length using the `@db` field annnotation and the `length` argument:
@@ -342,7 +342,7 @@ type Note {
 }
 ```
 
-### Rename
+## Rename
 
 Table or columns can be renamed using the `@db(oldNames: ['old'])` annotation as shown below:
 
@@ -362,7 +362,7 @@ type Note {
 
 This will rename the `text` to `title` and the table name to `note` without data loss. 
  
-### Ignore a field 
+## Ignore a field 
 
 Sometimes our business model can contain more fields and some of these fields may only be there for representation purposes.
 We can safely ignore generating columns for these fields using the `@db(skip: true)` annotation on the corresponding field. 
@@ -381,7 +381,7 @@ type Note {
 This annotation is not supported by Graphback CRUD.
 :::
 
-### Column name
+## Column name
 
 When working with database migration library it is possible to change individual database columns.
 
@@ -408,7 +408,7 @@ When using custom name in database we need to map it directly inside resolver or
 :::
 
 
-### Index
+## Index
 
 The `@index` annotation can be used to create an index on a specific field. This annotation takes `name` as argument representing 
 the name of the created index. If the name argument is left out, GraphQL Migrations will create one for you using the `<tablename>_<columnName>_index` format.
@@ -449,7 +449,7 @@ Indexes:
 ```
 
 
-### Unique
+## Unique
 
 The `@unique` annotation can be used to create an unique constraint on a specific field. GraphQL Migrations will create the constraint name
 using the `<tablename>_<columnName>_unique` format.
