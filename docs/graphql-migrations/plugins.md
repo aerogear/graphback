@@ -1,10 +1,8 @@
 ---
 id: plugins
-title: GraphQL Migrations Plugins
+title: Custom logic with Plugins
 sidebar_label: Plugins
 ---
-
-# Custom logic with Plugins
 
 It's possible to write custom queries to be executed during migrations using Plugins.
 
