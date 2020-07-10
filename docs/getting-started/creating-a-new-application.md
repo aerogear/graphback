@@ -18,7 +18,7 @@ Before you start, check to make sure you have the following installed:
 
 Create a Graphback application with npx:
 
-```sh
+```bash
 npx create-graphql my-awesome-project
 ```
 
@@ -26,13 +26,13 @@ The CLI will ask you to pick from one of a number of templates. Once chosen, the
 
 Change into your project folder:
 
-```sh
+```bash
 cd my-awesome-project
 ```
 
 Install dependencies with yarn (or npm):
 
-```sh
+```bash
 yarn install
 ```
 

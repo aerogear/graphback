@@ -186,7 +186,7 @@ We have removed the `graphback openapi` CLI command, but you can still use [Open
 
 To use `graphql-serve` now you must use a model file:
 
-```sh
+```bash
 gqlserve serve ./path/to/models/*.graphql --port 8080
 ```
 

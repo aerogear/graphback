@@ -12,13 +12,13 @@ This website was created with [Docusaurus](https://docusaurus.io/).
 
 1. Make sure all the dependencies for the website are installed:
 
-```sh
+```bash
 # Install dependencies
 $ yarn
 ```
 2. Run your dev server:
 
-```sh
+```bash
 # Start the site
 $ yarn start
 ```

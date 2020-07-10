@@ -77,7 +77,7 @@ npm install @graphback/runtime-mongo
 
 You will also need to have a [MongoDB Node.js Driver](https://github.com/mongodb/node-mongodb-native) installed:
 
-```sh
+```bash
 npm install mongodb
 ```
 

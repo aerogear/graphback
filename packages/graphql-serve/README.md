@@ -30,13 +30,13 @@ database.
 
 Using npm:
 
-```shell
+```bash
 npm install -g graphql-serve
 ```
 
 or yarn:
 
-```shell
+```bash
 yarn global add graphql-serve
 ```
 
@@ -60,20 +60,20 @@ type Note {
 
 Assuming you have created your various `*.graphql` data model files in the `models` directory, to automatically generate resolvers and start a GraphQL server listening on port 8080 do the following:
 
-```shell
+```bash
 $ gqlserve serve models --port=8080
 ```
 
 
 If you only need to see the generated GraphQL Schema, use the `print-schema` command:
 
-```shell
+```bash
 $ gqlserve print-schema .
 ```
 The above command prints schema generated from data model files in the current directory.
 
 This information is also provided with the command itself:
-```shell
+```bash
 $ gqlserve -h
 gqlserve <command>
 
@@ -88,7 +88,7 @@ Options:
   -v, --version  Show version number                                   [boolean]
 ```
 For the `serve` command:
-```shell
+```bash
 $ gqlserve serve -h
 gqlserve serve [modelDir] [options]
 
@@ -109,7 +109,7 @@ Examples:
 ```
 
 Also for `print-schema` command:
-```shell
+```bash
 $ gqlserve print-schema -h
 gqlserve print-schema [modelDir]
 

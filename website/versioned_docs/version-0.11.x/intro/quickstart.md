@@ -9,13 +9,13 @@ You can use the Graphback CLI to generate a new GraphQL project in minutes.
 
 Initializing with npx:
 
-```sh
+```bash
 npx graphback-cli init <project-name>
 ```
 
 Or by installing Graphback CLI globally:
 
-```sh
+```bash
 npm install -g graphback-cli
 graphback init <project-name>
 ```

@@ -55,7 +55,7 @@ For this example we are going to assume that the project uses a PostgreSQL datab
 
 To use PostgreSQL with Graphback install [Knex.js](https://knexjs.org/) with the Graphback PostgreSQL library:
 
-```sh
+```bash
 npm install knex @graphback/runtime-knex
 ```
 
@@ -103,7 +103,7 @@ For more advanced usage on how to configure your data models, see our [Model](..
 
 Let's install Graphback and use it in the project.
 
-```sh
+```bash
 npm install graphback
 ```
 
