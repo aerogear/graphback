@@ -35,7 +35,7 @@ If you do not have a running instance, you can use [Docker](https://www.docker.c
 :::
 
 ```ts
-import Knex from 'knex'
+import Knex from 'knex';
 
 const dbConfig = {
     client: "pg",
@@ -63,7 +63,7 @@ The provider exposes a [`createKnexDbProvider`](../api/create-knexdb-provider.md
 The code below shows how you can create such a data provider creator and how it can be passed to [`buildGraphbackAPI`](../api/build-graphback-api.md).
 
 ```ts
-import Knex from 'knex'
+import Knex from 'knex';
 import { migrateDB } from 'graphql-migrations';
 import { createKnexDbProvider } from '@graphback/runtime-knex';
 
@@ -116,6 +116,6 @@ The highlighted code does the following:
  - Perform the migrations using [GraphQL Migrations](../graphql-migrations/intro.md) to create the `user` table.
  - And finally, create a data provider creator by using the `createKnexDbProvider` API. 
   
-The rest of the code uses [buildGraphbackAPI](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
+The rest of the code uses [`buildGraphbackAPI`](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
 
 Visit [Data Models](../model/datamodel.md) pages to learn more about how to design your business models.

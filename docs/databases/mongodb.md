@@ -99,6 +99,6 @@ The highlighted code does the following:
  - Select the `users` database.
  - And finally, create a data provider creator by using the `createMongoDbProvider` API. 
   
-The rest of the code uses [buildGraphbackAPI](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
+The rest of the code uses [`buildGraphbackAPI`](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
 
 Visit [Data Models](../model/datamodel.md) to learn more about how to design your business models.
