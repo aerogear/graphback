@@ -46,3 +46,7 @@ export class AMQCRUDService extends CrudService {
     }
 }
 ```
+
+## Running example
+
+If you wish to use authorization mechanism you can try it on [DataSync starter](https://github.com/aerogear/datasync-starter) project

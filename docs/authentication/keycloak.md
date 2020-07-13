@@ -235,3 +235,7 @@ const server = new ApolloServer({
 ```
 
 The above example shows runtime set up using the KnexDbDataProvider, but other data providers such as the `MongoDBDataProvider` can also be passed.
+
+## Running example
+
+If you wish to use authorization mechanism you can try it on [DataSync starter](https://github.com/aerogear/datasync-starter) project
