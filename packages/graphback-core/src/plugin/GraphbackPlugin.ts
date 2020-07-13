@@ -26,6 +26,14 @@ export abstract class GraphbackPlugin {
   }
 
   /**
+   * Create resources like files etc. for this plugin.
+   * This method should write resouces to filesystem
+   */
+  public createResources(metadata: GraphbackCoreMetadata): void {
+    return undefined;
+  }
+
+  /**
    * Method to create in-memory resolvers which will be
    * added to a list of resolvers output by Graphback
    *
@@ -44,12 +52,6 @@ export abstract class GraphbackPlugin {
     // eslint-disable-next-line no-console
     console.error(`Error - ${this.getPluginName()}: ${message}`)
   }
-
-  /**
-   * Create resources like files etc. for this plugin.
-   * This method should write resouces to filesystem
-   */
-  public abstract createResources(metadata: GraphbackCoreMetadata): void
 
   /**
    * @returns Unique name of the plugin

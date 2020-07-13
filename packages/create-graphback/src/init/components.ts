@@ -2,9 +2,9 @@ import { accessSync, mkdirSync } from 'fs'
 import chalk from 'chalk';
 import * as figlet from 'figlet'
 import { prompt as ask } from 'inquirer'
-import { allTemplates, extractTemplate } from '../init/starterTemplates'
-import { Template } from '../init/templateMetadata'
 import { logError, logInfo } from '../utils'
+import { allTemplates, extractTemplate } from './starterTemplates'
+import { Template } from './templateMetadata'
 
 /**
  * Check if directory exists

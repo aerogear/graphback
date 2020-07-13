@@ -1,11 +1,11 @@
-import { createWriteStream, mkdirSync, existsSync } from 'fs'
+import { createWriteStream, mkdirSync, existsSync } from 'fs';
 import chalk from 'chalk';
 import ora from 'ora'
-import * as github from 'parse-github-url'
-import * as request from 'request'
-import * as tar from 'tar'
-import * as tmp from 'tmp'
-import { Template, TemplateRepository } from './templateMetadata'
+import * as github from 'parse-github-url';
+import * as request from 'request';
+import * as tar from 'tar';
+import * as tmp from 'tmp';
+import { Template, TemplateRepository } from './templateMetadata';
 
 /**
  * available templates
@@ -68,7 +68,7 @@ export const allTemplates: Template[] = [
       path: '/templates/ts-apollo-postgres-backend',
     }]
   }
-]
+];
 
 /**
  * information about repository
@@ -103,10 +103,10 @@ function getTemplateRepositoryTarInformation(
 async function downloadRepository(
   tarInfo: TemplateRepositoryTarInformation,
 ): Promise<string> {
-  const spinner = ora(`Downloading starter from ${chalk.cyan(tarInfo.uri)}`).start()
+  const spinner = ora(`Downloading starter from ${chalk.cyan(tarInfo.uri)}`).start();
   const tmpPath = tmp.fileSync({
     postfix: '.tar.gz',
-  })
+  });
 
   // tslint:disable-next-line: typedef
   await new Promise((resolve) => {
@@ -117,11 +117,11 @@ async function downloadRepository(
     })
       .pipe(createWriteStream(tmpPath.name))
       .on('close', resolve)
-  })
+  });
 
-  spinner.succeed()
+  spinner.succeed();
 
-  return tmpPath.name
+  return tmpPath.name;
 }
 
 /**
@@ -135,16 +135,16 @@ async function extractStarterFromRepository(
   repo: TemplateRepositoryTarInformation,
   output: string,
 ): Promise<void> {
-  const spinner = ora(`Extracting content to ${chalk.cyan(output)}`)
+  const spinner = ora(`Extracting content to ${chalk.cyan(output)}`);
 
   await tar.extract({
     file: file,
     cwd: output,
     filter: (path: string) => RegExp(repo.files).test(path),
     strip: repo.files.split('/').length,
-  })
+  });
 
-  spinner.succeed()
+  spinner.succeed();
 
   return
 }
@@ -156,14 +156,15 @@ async function extractStarterFromRepository(
  */
 export async function extractTemplate(template: Template, name: string) {
   for (const repo of template.repos) {
-    const tarInfo = getTemplateRepositoryTarInformation(repo)
-    const file = await downloadRepository(tarInfo)
+    const tarInfo = getTemplateRepositoryTarInformation(repo);
+    const file = await downloadRepository(tarInfo);
     repo.mountpath = repo.mountpath || "";
-    const output = `${process.cwd()}/${name}/${repo.mountpath}`
+    const output = `${process.cwd()}/${name}/${repo.mountpath}`;
     if(!existsSync(output)){
-      mkdirSync(output)
+      mkdirSync(output);
     }
-    await extractStarterFromRepository(file, tarInfo, output)
+
+    return extractStarterFromRepository(file, tarInfo, output);
   }
 
 
