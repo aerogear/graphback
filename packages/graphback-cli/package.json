@@ -14,7 +14,6 @@
   "scripts": {
     "clean": "rimraf coverage dist types",
     "build": "tsc",
-    "cmdinit": "ts-node ./dist/index.js init test",
     "watch": "tsc -w",
     "lint": "eslint -t stylish --project \"tsconfig.json\"",
     "test": "echo \"no tests in this package\""
@@ -24,12 +23,9 @@
   },
   "devDependencies": {
     "@types/chalk": "0.4.31",
-    "@types/inquirer": "6.5.0",
     "@types/jest": "26.0.4",
-    "@types/js-yaml": "3.12.5",
     "@types/node": "12.12.50",
     "@types/node-emoji": "1.8.1",
-    "@types/through": "0.0.30",
     "@types/yargs": "15.0.5",
     "jest": "26.1.0",
     "lint-staged": "10.2.11",
@@ -46,20 +42,9 @@
     "chalk": "2.4.2",
     "chokidar": "3.4.0",
     "debounce": "1.2.0",
-    "execa": "4.0.3",
-    "figlet": "1.5.0",
-    "glob": "7.1.6",
     "graphback": "0.14.0-alpha4",
     "graphql-config": "3.0.3",
-    "graphql-migrations": "0.14.0-alpha4",
-    "inquirer": "7.3.1",
-    "js-yaml": "3.14.0",
     "node-emoji": "1.10.0",
-    "ora": "3.4.0",
-    "parse-github-url": "1.0.2",
-    "request": "2.88.2",
-    "tar": "6.0.2",
-    "tmp": "0.2.1",
     "yargs": "15.4.1"
   },
   "jest": {
