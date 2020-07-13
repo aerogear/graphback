@@ -19,7 +19,7 @@ Before you start, check to make sure you have the following installed:
 Create a Graphback application with npx:
 
 ```bash
-npx create-graphql my-awesome-project
+npx create-graphback my-awesome-project
 ```
 
 The CLI will ask you to pick from one of a number of templates. Once chosen, the template will be downloaded to your computer.

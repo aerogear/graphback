@@ -152,6 +152,11 @@ We have removed the `graphback db` command. Database migrations can be only exec
 
 See [Database Migrations](./db/migrations#API) on how to use the code-based migrations in your API.
 
+
+#### Removed `graphback init` CLI command
+
+We have removed the `graphback init` command, this has been replaced by a newly added micro-cli `create-graphback`. 
+
 #### Removed helper method to create CRUD services
 
 Previously you would have done this to create your context and a CRUD service for every model:
@@ -217,6 +222,7 @@ The format option has been removed as you can specify the file extension in `out
 `new GraphbackPluginEngine({schema})`
 - Provide full path to schema in the `SchemaCRUDPlugin` config option `outputPath`
 - Support relationships with non-model GraphQL types.
+- Create a new Graphback project using `create-graphback`
 
 # 0.13.0
 
