@@ -22,6 +22,30 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
 
 `GraphbackPlugin` has a number of methods for performing different extensions to your Graphback API.
 
+For the rest of this documentation, we will be using the following business model:
+
+```graphql
+""" @model """
+type Note {
+  id: ID!
+  title: String!
+  archived: Boolean!
+  description: String
+  """
+  @oneToMany(field: 'note')
+  """
+  comments: [Comment]!
+}
+
+""" @model """
+type Comment {
+  id: ID!
+  text: String
+  archived: Boolean! 
+  description: String
+}
+```
+
 ## transformSchema
 
 `transformSchema` lets you make modifications to the current iteration of the GraphQL schema object. In here you can create or modify any type or field in the schema. 
@@ -31,7 +55,7 @@ As the `GraphQLSchema` and its types are immutable we highly recommend you to in
 ```ts
 // highlight-start
 import { GraphbackPlugin, GraphbackCoreMetadata } from 'graphback';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, GraphQLSchema, GraphQLList, GraphQLNonNull } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 // highlight-end
 
@@ -86,6 +110,9 @@ Here `createResolvers` is creating a new query resolver for each query field add
 
 ```ts
 import { GraphbackPlugin, GraphbackCoreMetadata } from 'graphback';
+import { GraphbackContext, getSelectedFieldsFromResolverInfo, QueryFilter  } from '@graphback/core';
+import { GraphQLResolveInfo } from 'graphql';
+
 // highlight-start
 import { IResolvers, IObjectTypeResolver } from '@graphql-tools/utils';
 // highlight-end
@@ -94,38 +121,47 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
   ...
   // highlight-start
   createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
-    const resolvers: IResolvers = {}
-    const queryObj: IObjectTypeResolver = {}
+    const resolvers: IResolvers = {};
+    const queryObj: IObjectTypeResolver = {};
 
     // loop through every Graphback model
     for (const model of metadata.getModelDefinitions()) {
-      const modelName = model.graphqlType.name
+      const modelName = model.graphqlType.name;
 
       // create a resolver function for every query field created in `transformSchema`
       queryObj[`getArchived${modelName}s`] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-        const crudService = context.graphback.services[modelName]
+        const crudService = context.graphback.services[modelName];
 
-        // create a filter in the GraphQLCRUD format
+        // create a filter in the GraphQLCRUD format to retrieve only archived Notes
         const filter: QueryFilter = {
           archived: {
             eq: true
           }
-        }
+        };
+
+        // retrieve user selected fields from GraphQLResolveInfo which will be used to query the database for specific fields
+        // avoiding overfetching. This is optional, as passing just the context to the database query will retrieve all fields.
+        const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+        const graphback = {
+          services: context.graphback.services,
+          options: { selectedFields }
+        };
 
         // use the model service created by Graphback to query the database
-        const results = await crudService.findBy(filter, context)
+        const { items } = await crudService.findBy(filter, { ...context, graphback });
 
-        return results.items
+        return items;
       }
     }
 
-    resolvers.Query = queryObj
+    resolvers.Query = queryObj;
 
-    return resolvers
+    return resolvers;
   }
   // highlight-end
 }
 ```
+
 
 ## createResources
 
@@ -135,8 +171,10 @@ Here `createResources` is creating a GraphQL schema file from the schema generat
 
 ```ts
 import { GraphbackPlugin, GraphbackCoreMetadata } from 'graphback';
-// highlight-next-line
+// highlight-start
 import { writeFileSync } from 'fs';
+import { printSchema } from 'graphql';
+// highlight-end
 
 export class MyGraphbackPlugin extends GraphbackPlugin {
   ...
@@ -153,7 +191,7 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
 
 ## getPluginName
 
-TODO
+Returns a unique name of the plugin. The will be used by plugin registry to uniquely identify the plugin.  
 
 ```ts
 import { GraphbackPlugin, GraphbackCoreMetadata } from 'graphback';
@@ -167,5 +205,55 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
     return 'MyGraphbackPlugin';
   }
   // highlight-end
+}
+```
+
+## Usage
+
+To use the plugin, add it to the `plugins` array in [`buildGraphbackAPI`](../api/build-graphback-api#plugins).
+
+```ts
+const { resolvers, typeDefs, contextCreator } = buildGraphbackAPI(modelDefs, {
+  dataProviderCreator: createKnexDbProvider(db),
+  plugins: [
+    // highlight-start
+    new MyGraphbackPlugin()
+    // highlight-end
+  ]
+});
+
+const apolloServer = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: contextCreator
+})
+
+...
+```
+
+Archived `Notes` or `Comments` can be retrieved by the following query:
+
+
+```graphql
+query archivedNotesAndComments {
+  getArchivedNotes {
+    id
+    title
+    comments {
+      id
+      archived
+      text
+    }
+  }
+
+  getArchivedComments {
+    id
+    text
+    note {
+      id
+      archived
+      title
+    }
+  }
 }
 ```
