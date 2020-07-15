@@ -14,7 +14,7 @@ Before you start, check to make sure you have the following installed:
 
 ## Create your application
 
-[Create GraphQL](https://github.com/aerogear/create-graphql) is a command-line utility for creating Graphback applications.
+[Create Graphback](../cli/create-graphback.md) is a command-line utility for creating Graphback applications.
 
 Create a Graphback application with npx:
 
@@ -30,12 +30,6 @@ Change into your project folder:
 cd my-awesome-project
 ```
 
-Install dependencies with yarn (or npm):
-
-```bash
-yarn install
-```
-
 The project will have a GraphQL schema file with some example types which you will likely want to change. Learn how to [design your data models](../model/datamodel).
 
-Each template will be different, so you should follow the guide in your new project's README to complete the setup.
+Each template will be different, so you should follow the guide in your new project's `README` to complete the setup.
