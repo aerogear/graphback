@@ -1,6 +1,6 @@
 {
   "name": "react-client-example",
-  "version": "0.14.0-alpha4",
+  "version": "0.14.0-beta6",
   "private": true,
   "devDependencies": {
     "@graphql-codegen/add": "1.17.0",
@@ -8,7 +8,7 @@
     "@graphql-codegen/typescript": "1.17.0",
     "@graphql-codegen/typescript-operations": "1.17.0",
     "@graphql-codegen/typescript-react-apollo": "1.17.0",
-    "graphback-cli": "0.14.0-alpha4",
+    "graphback-cli": "0.14.0-beta6",
     "graphql": "15.3.0",
     "tslint": "6.1.2",
     "typescript": "3.9.6"

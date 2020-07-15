@@ -1,6 +1,6 @@
 {
   "name": "graphback-templates-mongodb-datasync-runtime",
-  "version": "0.14.0-alpha4",
+  "version": "0.14.0-beta6",
   "description": "Graphback with Data Synchronization runtime template with Apollo Server and MongoDb",
   "private": true,
   "main": "dist/src/index.js",
@@ -12,10 +12,10 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "apollo-server-express": "2.15.1",
+    "@graphback/datasync": "0.14.0-beta4",
     "@graphql-tools/graphql-file-loader": "6.0.9",
     "@graphql-tools/load": "6.0.9",
-    "@graphback/datasync": "0.14.0-beta4",
+    "apollo-server-express": "2.15.1",
     "cors": "2.8.5",
     "dotenv": "8.2.0",
     "express": "4.17.1",
