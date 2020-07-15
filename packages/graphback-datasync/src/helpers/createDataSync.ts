@@ -1,11 +1,10 @@
-import { GraphQLSchema } from 'graphql';
 import { Db } from 'mongodb';
+import { GraphQLSchema } from 'graphql';
 import { GraphbackAPIConfig, GraphbackAPI, buildGraphbackAPI } from "graphback";
-import { PubSub } from 'graphql-subscriptions';
-import { createDataSyncMongoDbProvider, createDataSyncConflictProviderCreator } from '../providers';
-import { ConflictError, ConflictMetadata, DataSyncModelConflictConfig, DataSyncModelConfigMap, GlobalConflictConfig } from "../util";
-import { createDataSyncCRUDService } from '../services';
+import { GlobalConflictConfig } from "../util";
 import { DataSyncPlugin } from '../DataSyncPlugin';
+import { createDataSyncCRUDService } from '../services';
+import { createDataSyncConflictProviderCreator } from '../providers';
 
 type DataSyncGraphbackAPIConfig = Omit<GraphbackAPIConfig, "dataProviderCreator">
 

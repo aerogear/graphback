@@ -1,5 +1,5 @@
 import { ObjectId, Db, Cursor } from "mongodb"
-import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, PrimaryKeyDescriptor } from '@graphback/core';
+import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, FieldDescriptor } from '@graphback/core';
 import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
 import { findAndCreateIndexes } from "./utils/createIndexes";
@@ -161,8 +161,8 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       }, {});
   }
 
-  private verifyMongoDBPrimaryKey(modelName: string, primaryKeyDesriptor: PrimaryKeyDescriptor ) {
-    if (primaryKeyDesriptor.name === "_id" && primaryKeyDesriptor.type === "GraphbackObjectID") {
+  private verifyMongoDBPrimaryKey(modelName: string, primaryKey: FieldDescriptor ) {
+    if (primaryKey.name === "_id" && primaryKey.type === "GraphbackObjectID") {
       return;
     }
     throw Error(`Model "${modelName}" must contain a "_id: GraphbackObjectID" primary key. Visit https://graphback.dev/docs/model/datamodel#mongodb to see how to set up one for your MongoDB model.`);

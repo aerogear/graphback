@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import * as DataLoader from "dataloader";
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes, GraphbackTimestamp, isSpecifiedGraphbackScalarType, FILTER_SUPPORTED_SCALARS } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLField, GraphQLInputObjectType, GraphQLNamedType, GraphQLScalarType } from 'graphql';
-import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
-import { IResolvers, IObjectTypeResolver } from '@graphql-tools/utils'
 import { parseMetadata } from "graphql-metadata";
+import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
+import { IResolvers, IObjectTypeResolver } from '@graphql-tools/utils';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLInputObjectType, GraphQLScalarType } from 'graphql';
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, graphbackScalarsTypes, getResolverInfoFieldsList, GraphbackTimestamp, FILTER_SUPPORTED_SCALARS } from '@graphback/core';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, getInputName } from './definitions/schemaDefinitions';
 
@@ -570,7 +570,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     queryObj[findField] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
       const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
-      const count = getSelectedFieldsFromResolverInfo(info, model).some((field: string) => field === "count");
+      const count = getResolverInfoFieldsList(info).some((field: string) => field === "count");
       const graphback = {
         services: context.graphback.services,
         options: { selectedFields, aggregations: { count } }
