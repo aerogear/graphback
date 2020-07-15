@@ -57,7 +57,7 @@
       "api/graphback-data-provider"
     ],
     "CLI Reference": [
-      "cli/create-graphql",
+      "cli/create-graphback",
       "cli/graphback-cli"
     ]
   }

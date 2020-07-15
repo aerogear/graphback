@@ -23,24 +23,15 @@ npx create-graphback my-project
 ```
 
 ```bash
-npm init create-graphback my-project
+npm init graphback my-project
 ```
 
-### Installation
+The CLI will ask you to pick from one of a number of templates. Once chosen, the template will be downloaded to your computer.
 
-If you prefer to install the cli globally, you can do so using your favourite package manager:
+Change into your project folder:
 
-With Yarn:
 ```bash
-yarn global add create-graphback
+cd my-awesome-project
 ```
 
-With NPM:
-```bash
-npm install --global create-graphback
-```
-
-And you can create a Graphback project with
-```bash
-create-graphback my-project
-```
+And follow the instructions in the `README.md` file to know how you can run the project.
