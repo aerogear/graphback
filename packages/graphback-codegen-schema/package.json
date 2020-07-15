@@ -1,6 +1,6 @@
 {
   "name": "@graphback/codegen-schema",
-  "version": "0.14.0-alpha4",
+  "version": "0.14.0-beta6",
   "description": "GraphQL-Code-Generator compatibile schema generator",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -34,11 +34,11 @@
     "typescript": "3.9.6"
   },
   "dependencies": {
-    "@graphback/core": "0.14.0-alpha4",
-    "@graphql-tools/utils": "6.0.10",
+    "@graphback/core": "0.14.0-beta6",
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-toolkit/schema-merging": "0.10.7",
+    "@graphql-tools/utils": "6.0.10",
     "graphql-compose": "7.18.1",
     "graphql-metadata": "0.7.0",
     "pluralize": "8.0.0"
