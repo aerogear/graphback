@@ -169,7 +169,7 @@ test('force deletes on delete conflicts', async () => {
 
   await deleteNote(client, { _id, [DataSyncFieldNames.version]: 1 })
 
-  const { data, errors } = await client.query({ query: SYNC_NOTES , variables: {
+  const { data } = await client.query({ query: SYNC_NOTES , variables: {
     lastSync: 0,
     filter: {
       title: {

@@ -123,7 +123,7 @@ async function seedDatabase(db: Db) {
 
 test('Sync all notes', async () => {
 
-  const { data, errors, extensions } = await client.query({ operationName:"syncNotes", query: SYNC_NOTES , variables: {
+  const { data } = await client.query({ operationName:"syncNotes", query: SYNC_NOTES , variables: {
     lastSync: 0,
     filter: {}
   }});

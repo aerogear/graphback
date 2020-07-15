@@ -1,12 +1,12 @@
-import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
-import { getUserTypesFromSchema, IResolvers } from '@graphql-tools/utils';
 import { mergeResolvers } from '@graphql-tools/merge';
-import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
+import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql';
+import { getUserTypesFromSchema, IResolvers } from '@graphql-tools/utils';
 import { getPrimaryKey } from '../db';
+import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
+import { ModelDefinition, ModelFieldMap } from './ModelDefinition';
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
-import { ModelDefinition } from './ModelDefinition';
 
 const defaultCRUDGeneratorConfig = {
   "create": true,
@@ -95,17 +95,46 @@ export class GraphbackCoreMetadata {
     crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
     // Whether to add delta queries
     const deltaSync = parseMetadata('delta', modelType);
-    const primaryKeyField = getPrimaryKey(modelType);
+    const { type: primaryKeyType, name } = getPrimaryKey(modelType);
+    const primaryKey = {
+      name,
+      type: getNamedType(primaryKeyType).name
+    };
+    // parse fields
+    const modelFields = modelType.getFields();
+    const fields: ModelFieldMap = {};
+
+    for (const field of Object.keys(modelFields)) {
+      let fieldName = field;
+      let type: string = '';
+
+      const foundRelationship = relationships.find((relationship: FieldRelationshipMetadata) => relationship.ownerField.name === field);
+
+      if (foundRelationship) {
+        if (foundRelationship.kind !== "oneToMany") {
+          fieldName = foundRelationship.relationForeignKey;
+          type = getNamedType(foundRelationship.relationType).name // TODO properly retrieve field type for foreign key
+        } else {
+          fieldName = primaryKey.name;
+          type = primaryKey.type;
+        }
+      } else {
+        type = getNamedType(modelFields[field].type).name;
+      }
+
+      fields[field] = {
+        name: fieldName,
+        type
+      };
+    }
 
     return {
-      relationships,
+      fields,
+      primaryKey,
       crudOptions,
-      graphqlType: modelType,
+      relationships,
       config: { deltaSync },
-      primaryKey: {
-        name: primaryKeyField.name,
-        type: getNamedType(primaryKeyField.type).name
-      }
+      graphqlType: modelType
     };
   }
 }

@@ -1,8 +1,7 @@
-import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, getSelectedFieldsFromResolverInfo, GraphbackTimestamp, isSpecifiedGraphbackScalarType } from '@graphback/core'
 import { SchemaComposer } from 'graphql-compose';
-import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
-
+import { IResolvers, IFieldResolver } from '@graphql-tools/utils';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, GraphbackTimestamp } from '@graphback/core';
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, GlobalConflictConfig, getModelConfigFromGlobal } from "./util";
 
@@ -108,13 +107,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
         throw Error("Service is not a DataSyncCRUDService. Please use DataSyncCRUDService and DataSync-compliant DataProvider with DataSync Plugin to get Delta Queries.")
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
-
-      return dataSyncService.sync(args.lastSync, {...context, graphback }, args.filter, args.limit);
+      return dataSyncService.sync(args.lastSync, context, args.filter, args.limit);
     }
   }
 
