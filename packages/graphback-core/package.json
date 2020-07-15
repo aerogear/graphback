@@ -1,6 +1,6 @@
 {
   "name": "@graphback/core",
-  "version": "0.14.0-alpha4",
+  "version": "0.14.0-beta6",
   "description": "Api for building Graphback generator metadata",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -36,18 +36,18 @@
     "access": "public"
   },
   "dependencies": {
-    "@graphql-tools/utils": "6.0.10",
     "@graphql-toolkit/common": "0.10.7",
-    "graphql-type-json": "0.3.2",
+    "@graphql-tools/merge": "6.0.10",
+    "@graphql-tools/utils": "6.0.10",
+    "dataloader": "2.0.0",
     "glob": "7.1.6",
     "graphql-compose": "7.18.1",
     "graphql-fields-list": "2.1.3",
     "graphql-metadata": "0.7.0",
-    "@graphql-tools/merge": "6.0.10",
+    "graphql-subscriptions": "1.1.0",
+    "graphql-type-json": "0.3.2",
     "pino": "6.3.2",
-    "pluralize": "8.0.0",
-    "dataloader": "2.0.0",
-    "graphql-subscriptions": "1.1.0"
+    "pluralize": "8.0.0"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0"

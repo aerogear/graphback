@@ -1,6 +1,6 @@
 {
   "name": "graphback-integration-tests",
-  "version": "0.14.0-alpha4",
+  "version": "0.14.0-beta6",
   "private": true,
   "description": "Integration tests",
   "main": "index.js",
@@ -16,19 +16,19 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "rimraf": "3.0.2",
-    "ts-node": "8.10.2",
-    "tsutils": "3.17.1",
-    "typescript": "3.9.6",
-    "@graphql-tools/graphql-file-loader": "6.0.12",
     "@graphql-toolkit/file-loading": "0.10.7",
+    "@graphql-tools/graphql-file-loader": "6.0.12",
     "apollo-boost": "0.4.9",
     "apollo-server": "2.15.1",
     "apollo-server-testing": "2.15.1",
     "jest": "26.1.0",
     "knex": "0.21.2",
     "mongodb": "3.5.9",
-    "node-fetch": "2.6.0"
+    "node-fetch": "2.6.0",
+    "rimraf": "3.0.2",
+    "ts-node": "8.10.2",
+    "tsutils": "3.17.1",
+    "typescript": "3.9.6"
   },
   "license": "Apache-2.0"
 }
