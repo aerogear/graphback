@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 //tslint:disable-next-line: match-default-export-name
 import { unlinkSync, existsSync } from 'fs';
-import { buildSchema, printSchema } from 'graphql';
+import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
 import { filterModelTypes, GraphbackDataProvider } from '@graphback/core';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
@@ -581,6 +581,80 @@ type Todo {
   const todoItems = todos.map((t: any) => t.items)
 
   expect(todoItems).toEqual([1, 8])
+});
+
+test('get todos with field value not in a given arrray argument', async () => {
+  const { providers } = await setup(
+    `"""
+@model
+"""
+type Todo {
+ id: ID!
+ items: Int
+}`, {
+    seedData: {
+      todo: [
+        {
+          items: 1,
+        },
+        {
+          items: 2,
+        },
+        {
+          items: 3
+        },
+        {
+          items: 4
+        },
+        {
+          items: 5
+        },
+        {
+          items: 6
+        },
+        {
+          items: 8
+        }
+      ]
+    }
+  });
+
+  const context = { graphback: { services: {}, options: { selectedFields: ["id"] } } }
+
+  // verify that not in operator works
+  const allTodos = await providers.Todo.findBy({ }, context);
+
+  const ignoredList = allTodos.slice(0,2);
+  const subListOfTodos = allTodos.slice(2);
+
+  const ignoreListFromDatabase = await providers.Todo.findBy({
+    not: {
+      id: {
+        in: subListOfTodos.map(({ id }) => id)
+      }
+    }
+  }, context);
+
+  expect(ignoredList).toEqual(ignoreListFromDatabase);
+
+  // create a new TODO
+  const newTodoItems = 2709;
+  await providers.Todo.create({items: newTodoItems }, context);
+  const allTodosAfterCreation = await providers.Todo.findBy({ }, context);
+
+  expect(allTodosAfterCreation.length).toEqual(allTodos.length + 1); // verify that a new todo was created
+
+  // retrieve all todo that do not have the newTodoItems using the in operator and verify
+
+  const oldTodos = await providers.Todo.findBy({
+    not: {
+      items: {
+        in: [ newTodoItems ]
+      }
+    }
+  }, context);
+
+  expect(oldTodos).toEqual(allTodos); // assert that we did not retrieve the newly added todo item
 });
 
 test('select only requested fields', async () => {

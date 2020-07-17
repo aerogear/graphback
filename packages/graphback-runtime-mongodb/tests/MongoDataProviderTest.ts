@@ -278,4 +278,64 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     expect(deletedTodo.description).toEqual("todo add description");
   });
 
+  test('get todos with field value not in a given arrray argument', async () => {
+    context = await createTestingContext(`"""
+    @model
+    """
+    type Todo {
+     id: ID!
+     items: Int
+    }`, {
+      seedData: {
+        Todo: [
+          {
+            items: 1,
+          },
+          {
+            items: 2,
+          },
+          {
+            items: 3
+          },
+          {
+            items: 4
+          },
+          {
+            items: 5
+          },
+          {
+            items: 6
+          },
+          {
+            items: 8
+          }
+        ]
+      }
+    });
+
+
+    const { providers } = context;
+    const queryContext = { graphback: { services: {}, options: { selectedFields: ["id"] } } }
+
+    // verify that not in operator works
+    const allTodos = await providers.Todo.findBy({ }, queryContext);
+    const newTodoItems = 2709;
+    await providers.Todo.create({items: newTodoItems }, queryContext);
+    const allTodosAfterCreation = await providers.Todo.findBy({ }, queryContext);
+
+    expect(allTodosAfterCreation.length).toEqual(allTodos.length + 1); // verify that a new todo was created
+
+    // retrieve all todo that do not have the newTodoItems using the in operator and verify
+
+    const oldTodos = await providers.Todo.findBy({
+      not: {
+        items: {
+          in: [ newTodoItems ]
+        }
+      }
+    }, queryContext);
+
+    expect(oldTodos).toEqual(allTodos); // assert that we did not retrieve the newly added todo item
+  });
+
 });
