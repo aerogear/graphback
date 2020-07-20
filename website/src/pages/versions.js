@@ -72,7 +72,7 @@ function Versions() {
                         {/* You are supposed to change this href where appropriate
                         Example: href="<baseUrl>/docs(/:language)/:version/:id" */}
                         <a
-                          href={`${siteConfig.baseUrl}docs/${version}/introduction`}>
+                          href={`${siteConfig.baseUrl}docs/${version}/gettingstarted`}>
                           Documentation
                         </a>
                       </td>
