@@ -1,7 +1,7 @@
 ---
 id: intro
 title: Authentication and authorization for Graphback
-sidebar_label: Authentication
+sidebar_label: Introduction
 ---
  
 Graphback integration allows developers to use their own authentication and autorization solution.
