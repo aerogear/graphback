@@ -1,6 +1,6 @@
 {
   "name": "graphback-templates-mongodb-datasync-runtime",
-  "version": "0.14.0-beta6",
+  "version": "0.14.0",
   "description": "Graphback with Data Synchronization runtime template with Apollo Server and MongoDb",
   "private": true,
   "main": "dist/src/index.js",
