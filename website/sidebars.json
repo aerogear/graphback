@@ -59,6 +59,9 @@
     "CLI Reference": [
       "cli/create-graphback",
       "cli/graphback-cli"
+    ],
+    "Release Notes":[
+      "releases"
     ]
   }
 }
