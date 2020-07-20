@@ -1,6 +1,13 @@
 /* eslint-disable */
 const versions = require('./versions.json');
 
+console.log(
+  versions.slice(1).map((version) => ({
+    label: version,
+    to: `docs/${version}/gettingstarted`,
+  })),
+);
+
 module.exports = {
   title: 'Graphback',
   tagline: 'GraphQL API for your client and server',
@@ -33,10 +40,10 @@ module.exports = {
               label: '0.14.x',
               to: 'docs/introduction',
             },
-            ...versions.slice(1).map((version) => ({
-              label: version,
-              to: `docs/${version}/introduction`,
-            })),
+            { label: '0.12.x', to: 'docs/0.12.x/gettingstarted' },
+            { label: '0.11.x', to: 'docs/0.11.x/gettingstarted' },
+            { label: '0.10.x', to: 'docs/0.10.x/gettingstarted' },
+            { label: '0.9.x', to: 'docs/0.9.x/gettingstarted' },
             {
               label: 'Master/Unreleased',
               to: 'docs/next/introduction',
@@ -84,7 +91,7 @@ module.exports = {
             {
               label: 'Releases',
               to: 'docs/releases',
-            }
+            },
           ],
         },
         {
@@ -117,8 +124,7 @@ module.exports = {
           path: '../docs',
           routeBasePath: 'docs',
           sidebarPath: require.resolve('./sidebars.json'),
-          editUrl:
-            'https://github.com/aerogear/graphback/edit/master/website/',
+          editUrl: 'https://github.com/aerogear/graphback/edit/master/website/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
