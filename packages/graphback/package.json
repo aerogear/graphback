@@ -1,6 +1,6 @@
 {
   "name": "graphback",
-  "version": "0.14.0-beta6",
+  "version": "0.14.0",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -32,9 +32,9 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@graphback/codegen-client": "0.14.0-beta6",
-    "@graphback/codegen-schema": "0.14.0-beta6",
-    "@graphback/core": "0.14.0-beta6",
+    "@graphback/codegen-client": "0.14.0",
+    "@graphback/codegen-schema": "0.14.0",
+    "@graphback/core": "0.14.0",
     "@graphql-inspector/core": "2.1.0",
     "@graphql-tools/merge": "6.0.10",
     "glob": "7.1.6",

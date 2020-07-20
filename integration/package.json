@@ -1,6 +1,6 @@
 {
   "name": "graphback-integration-tests",
-  "version": "0.14.0-beta6",
+  "version": "0.14.0",
   "private": true,
   "description": "Integration tests",
   "main": "index.js",

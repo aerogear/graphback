@@ -1,6 +1,6 @@
 {
   "name": "@graphback/runtime-mongo",
-  "version": "0.14.0-beta6",
+  "version": "0.14.0",
   "description": "Graphback runtime mongodb",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -23,7 +23,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@graphback/codegen-schema": "0.14.0-beta6",
+    "@graphback/codegen-schema": "0.14.0",
     "@types/jest": "26.0.4",
     "@types/node": "12.12.50",
     "graphql": "15.3.0",
@@ -37,7 +37,7 @@
     "typescript": "3.9.6"
   },
   "dependencies": {
-    "@graphback/core": "0.14.0-beta6",
+    "@graphback/core": "0.14.0",
     "@types/mongodb": "3.5.25",
     "dataloader": "2.0.0",
     "escape-string-regexp": "4.0.0",
