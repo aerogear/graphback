@@ -1,13 +1,6 @@
 /* eslint-disable */
 const versions = require('./versions.json');
 
-console.log(
-  versions.slice(1).map((version) => ({
-    label: version,
-    to: `docs/${version}/gettingstarted`,
-  })),
-);
-
 module.exports = {
   title: 'Graphback',
   tagline: 'GraphQL API for your client and server',
