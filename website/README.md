@@ -48,6 +48,12 @@ my-docusaurus/
     siteConfig.js
 ```
 
+# Creating version 
+
+1. Execute `yarn doc yourVersion` 
+2. Review docusaurus config and swap any occurence of old version
+
+
 # Editing Content
 
 ## Editing an existing docs page

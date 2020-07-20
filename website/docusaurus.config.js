@@ -30,8 +30,8 @@ module.exports = {
           position: 'left',
           items: [
             {
-              label: '0.12.x',
-              to: 'docs/gettingstarted',
+              label: '0.14.x',
+              to: 'docs/introduction',
             },
             ...versions.slice(1).map((version) => ({
               label: version,
@@ -45,7 +45,7 @@ module.exports = {
         },
         {
           to: 'versions',
-          label: `v0.12.x`,
+          label: `v0.14.x`,
           position: 'right',
         },
         {
@@ -63,23 +63,19 @@ module.exports = {
           items: [
             {
               label: 'Introduction',
-              to: 'docs/gettingstarted',
+              to: 'docs/introduction',
             },
             {
               label: 'Getting started',
-              to: 'docs/intro/quickstart',
+              to: 'docs/getting-started/create-new-app',
             },
             {
               label: 'CRUD',
-              to: 'docs/crud/crudspec',
+              to: 'docs/crud/overview',
             },
             {
               label: 'Plugins',
-              to: 'docs/plugins/plugin-intro',
-            },
-            {
-              label: 'Migrations',
-              to: 'docs/migrations/openapi',
+              to: 'docs/plugins/overview',
             },
             {
               label: 'Reference',
