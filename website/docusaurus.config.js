@@ -48,6 +48,10 @@ module.exports = {
           label: `v0.14.x`,
           position: 'right',
         },
+        { to: 'blog',
+          label: 'Blog',
+          position: 'right'
+        },
         {
           href: 'https://github.com/aerogear/graphback',
           label: 'GitHub',
