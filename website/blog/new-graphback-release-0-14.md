@@ -22,7 +22,7 @@ The complete changelog is available at https://graphback.dev/docs/releases#0140
 
 ## Introduction to Graphback
 
-<div style={{textAlign: 'center', width: '400px', height: '400px'}}>
+<div style={{textAlign: 'center', width: '400px', height: '400px', margin: '0 auto' }}>
 
 ![Graphback logo](https://graphback.dev/img/logo.png)
 
