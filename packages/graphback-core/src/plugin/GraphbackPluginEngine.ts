@@ -46,8 +46,20 @@ export class GraphbackPluginEngine {
     this.plugins.push(...plugins);
   }
 
+  /**
+   * Allows the transformation of schema by applying transformation logic for each plugin
+   * Creation of resolvers, which has to come after all the changes in schema have been applied
+   * Saving of the transformed schema and related files
+   */
   public createResources(): GraphbackCoreMetadata {
+    if (this.plugins.length === 0) {
+      console.warn("GraphbackEngine: No Graphback plugins registered");
+    }
+
     this.createSchema();
+
+    this.createResolvers();
+
     //Save schema and all files
     for (const plugin of this.plugins) {
       plugin.createResources(this.metadata);
@@ -56,20 +68,19 @@ export class GraphbackPluginEngine {
     return this.metadata;
   }
 
-  public createSchema(): GraphbackCoreMetadata {
-    if (this.plugins.length === 0) {
-      console.warn("GraphbackEngine: No Graphback plugins registered");
-    }
+  private createSchema() {
     //We need to apply all required changes to the schema we need
     //This is to ensure that every plugin can add changes to the schema
     for (const plugin of this.plugins) {
       const newSchema = plugin.transformSchema(this.metadata);
       this.metadata.setSchema(newSchema);
+    }
+  }
 
+  private createResolvers() {
+    for (const plugin of this.plugins) {
       const resolvers = plugin.createResolvers(this.metadata);
       this.metadata.addResolvers(resolvers)
     }
-
-    return this.metadata;
   }
 }
