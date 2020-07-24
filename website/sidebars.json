@@ -7,7 +7,8 @@
     ],
     "Model": [
       "model/datamodel",
-      "model/annotations"
+      "model/annotations",
+      "model/scalars"
     ],
     "CRUD": [
       "crud/overview",

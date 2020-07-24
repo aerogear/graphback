@@ -1,13 +1,13 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, isSpecifiedGraphbackScalarType, getPrimaryKey } from '@graphback/core'
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMetadata } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, JSONScalarInputType } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -57,7 +57,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       return schema;
     };
 
-    const schemaComposer = new SchemaComposer(schema)
+    const schemaComposer = new SchemaComposer(schema);
 
     this.buildSchemaModelRelationships(schemaComposer, models);
     this.buildSchemaForModels(schemaComposer, models);
@@ -82,6 +82,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       Query: {},
       Mutation: {},
       Subscription: {}
+    }
+
+
+    // Graphback scalar resolvers
+    const schema = metadata.getSchema();
+    for (const graphbackScalar of graphbackScalarsTypes) {
+      if (schema.getType(graphbackScalar.name)) {
+        resolvers[graphbackScalar.name] = graphbackScalar;
+      }
     }
 
     const modelNameToModelDefinition = models
@@ -715,13 +724,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     schemaComposer.add(SortDirectionEnum);
     schemaComposer.add(StringScalarInputType);
     schemaComposer.add(BooleanScalarInputType);
-    schemaComposer.add(JSONScalarInputType);
     schemaComposer.add(createInputTypeForScalar(GraphQLInt));
     schemaComposer.add(createInputTypeForScalar(GraphQLFloat));
 
     schemaComposer.forEach((tc: NamedTypeComposer<any>) => {
       const namedType = tc.getType();
-      if (isScalarType(namedType) && !isSpecifiedScalarType(namedType) && !isSpecifiedGraphbackScalarType(namedType)) {
+      if (isScalarType(namedType) && !isSpecifiedScalarType(namedType) && !isSpecifiedGraphbackJSONScalarType(namedType)) {
         schemaComposer.add(createInputTypeForScalar(namedType));
 
         return;

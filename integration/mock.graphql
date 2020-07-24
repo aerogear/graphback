@@ -2,6 +2,7 @@
 type Note {
   id: ID!
   title: String!
+  createdAt: GraphbackDateTime
   description: String
   """
   @oneToMany(field: 'note')
@@ -18,12 +19,14 @@ type Note {
 type Comment {
   id: ID!
   text: String
+  createdAt: GraphbackTimestamp
   description: String
   """
   @oneToOne
   """
   metadata: CommentMetadata
   ratings: [Int!]
+  objectId: GraphbackObjectID
 }
 
 """
@@ -41,3 +44,7 @@ type Task {
 type Query {
   helloWorld: String
 }
+
+scalar GraphbackTimestamp
+scalar GraphbackDateTime
+scalar GraphbackObjectID

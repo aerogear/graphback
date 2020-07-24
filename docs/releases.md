@@ -8,6 +8,12 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.15
+
+#### New Features
+
+* add support for common scalar types ([#1749](https://github.com/aerogear/graphback/pull/1749))
+  
 # 0.14.1
 
 ### Bug Fixes

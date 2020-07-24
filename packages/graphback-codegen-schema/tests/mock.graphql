@@ -20,12 +20,14 @@ type Note {
 """
 type Test {
   id: ID!
-  name: String
+  name: String,
+  metadata: GraphbackJSON
 }
 
 """ @model """
 type Comment {
   id: ID!
+  createdAt: GraphbackDate
   title: String!
   description: String!
   noteComment: Note!
@@ -100,3 +102,5 @@ type Fix {
 }
 
 scalar DateTime
+scalar GraphbackDate
+scalar GraphbackJSON

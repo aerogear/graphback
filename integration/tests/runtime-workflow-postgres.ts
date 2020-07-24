@@ -17,6 +17,7 @@ import { migrateDB } from '../../packages/graphql-migrations/src';
 import { createKnexDbProvider } from "../../packages/graphback-runtime-knex";
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
+import { ObjectID } from 'mongodb';
 
 /** global config */
 let db: Knex;
@@ -27,6 +28,8 @@ let graphbackApi: GraphbackAPI;
 let documents: DocumentNode;
 
 const modelText = readFileSync('./mock.graphql').toString();
+const createdAt = new Date();
+const objectId = new ObjectID("507f191e810c19729de860ea");
 
 beforeAll(async () => {
   try {
@@ -94,11 +97,13 @@ async function seedDatabase(db: Knex) {
   await db('note').insert([
     {
       title: 'Note A',
+      createdAt,
       description: 'Note A Description',
       tasks: JSON.stringify([])
     },
     {
       title: 'Note B',
+      createdAt,
       description: 'Note B Description',
       tasks: JSON.stringify([
         {
@@ -123,13 +128,17 @@ async function seedDatabase(db: Knex) {
   await db('comment').insert([
     {
       text: 'Note A Comment',
+      createdAt,
       description: 'Note A Comment Description',
       noteId: 1,
+      objectId: objectId.toString(),
       metadataId: 1,
       ratings: JSON.stringify([4, 4, 3, 2])
     },
     {
       text: 'Note A Comment 2',
+      createdAt,
+      objectId: objectId.toString(),
       description: 'Note A Comment Description',
       noteId: 1,
       metadataId: 2,
@@ -146,18 +155,23 @@ test('Find all notes', async () => {
       {
         id: '1',
         title: 'Note A',
+        createdAt,
         description: 'Note A Description',
         tasks: [],
         comments: [
           {
             id: '1',
             text: 'Note A Comment',
+            objectId: objectId.toString(),
+            createdAt: createdAt.getTime(),
             description: 'Note A Comment Description',
             ratings: [4, 4, 3, 2]
           },
           {
             id: '2',
             text: 'Note A Comment 2',
+            objectId: objectId.toString(),
+            createdAt: createdAt.getTime(),
             description: 'Note A Comment Description',
             ratings: null
           }
@@ -166,6 +180,7 @@ test('Find all notes', async () => {
       {
         id: '2',
         title: 'Note B',
+        createdAt,
         description: 'Note B Description',
         comments: [],
         tasks: [
@@ -197,6 +212,7 @@ test('Find all notes except the first', async () => {
       {
         id: '2',
         title: 'Note B',
+        createdAt,
         description: 'Note B Description',
         comments: [],
         tasks: [
@@ -228,18 +244,23 @@ test('Find at most one note', async () => {
       {
         id: '1',
         title: 'Note A',
+        createdAt,
         description: 'Note A Description',
         tasks: [],
         comments: [
           {
             id: '1',
             text: 'Note A Comment',
+            objectId: objectId.toString(),
+            createdAt: createdAt.getTime(),
             description: 'Note A Comment Description',
             ratings: [4, 4, 3, 2]
           },
           {
             id: '2',
             text: 'Note A Comment 2',
+            objectId: objectId.toString(),
+            createdAt: createdAt.getTime(),
             description: 'Note A Comment Description',
             ratings: null,
           }
@@ -261,11 +282,14 @@ test('Find all comments', async () => {
       {
         id: '1',
         text: 'Note A Comment',
+        objectId: objectId.toString(),
+        createdAt: createdAt.getTime(),
         description: 'Note A Comment Description',
         ratings: [4, 4, 3, 2],
         note: {
           id: '1',
           title: 'Note A',
+          createdAt,
           description: 'Note A Description'
         },
         metadata: {
@@ -275,12 +299,72 @@ test('Find all comments', async () => {
       },
       {
         id: '2',
+        createdAt: createdAt.getTime(),
         text: 'Note A Comment 2',
+        objectId: objectId.toString(),
         description: 'Note A Comment Description',
         ratings: null,
         note: {
           id: '1',
           title: 'Note A',
+          createdAt,
+          description: 'Note A Description'
+        },
+        metadata: {
+          id: '2',
+          opened: false
+        }
+      }
+    ],
+    limit: null,
+    offset: 0,
+    count: 2
+  })
+})
+
+test('filter comments using built in scalars', async () => {
+  const { data } = await client.query({ operationName: "findComments", query: documents,
+  variables: {
+    filter: {
+      createdAt: {
+        eq: createdAt.getTime()
+      }
+    }
+  }
+});
+
+  expect(data).toBeDefined();
+  expect(data.findComments).toEqual({
+    items: [
+      {
+        id: '1',
+        text: 'Note A Comment',
+        objectId: objectId.toString(),
+        createdAt: createdAt.getTime(),
+        description: 'Note A Comment Description',
+        ratings: [4, 4, 3, 2],
+        note: {
+          id: '1',
+          title: 'Note A',
+          createdAt,
+          description: 'Note A Description'
+        },
+        metadata: {
+          id: '1',
+          opened: true
+        }
+      },
+      {
+        id: '2',
+        createdAt: createdAt.getTime(),
+        text: 'Note A Comment 2',
+        objectId: objectId.toString(),
+        description: 'Note A Comment Description',
+        ratings: null,
+        note: {
+          id: '1',
+          title: 'Note A',
+          createdAt,
           description: 'Note A Description'
         },
         metadata: {
@@ -302,18 +386,23 @@ test('Note 1 should be defined', async () => {
   expect(note).toEqual({
     id: '1',
     title: 'Note A',
+    createdAt,
     description: 'Note A Description',
     tasks: [],
     comments: [
       {
         id: '1',
         text: 'Note A Comment',
+        objectId: objectId.toString(),
+        createdAt: createdAt.getTime(),
         description: 'Note A Comment Description',
         ratings: [4, 4, 3, 2]
       },
       {
         id: '2',
         text: 'Note A Comment 2',
+        objectId: objectId.toString(),
+        createdAt: createdAt.getTime(),
         description: 'Note A Comment Description',
         ratings: null
       }
@@ -335,6 +424,8 @@ test('Find at most one comment on Note 1', async () => {
     {
       id: '1',
       text: 'Note A Comment',
+      objectId: objectId.toString(),
+      createdAt: createdAt.getTime(),
       description: 'Note A Comment Description',
       ratings: [4, 4, 3, 2],
       metadata: {
@@ -344,6 +435,7 @@ test('Find at most one comment on Note 1', async () => {
       note: {
         description: "Note A Description",
         id: "1",
+        createdAt,
         title: "Note A",
       },
     }
@@ -358,13 +450,15 @@ test('Find comments on Note 1 except first', async () => {
   });
 
   expect(response.data).toBeDefined()
-  const notes = response.data.findComments
-  expect(notes.items).toHaveLength(1);
-  expect(notes).toEqual({
+  const comments = response.data.findComments
+  expect(comments.items).toHaveLength(1);
+  expect(comments).toEqual({
     items: [
       {
         id: '2',
         text: 'Note A Comment 2',
+        objectId: objectId.toString(),
+        createdAt: createdAt.getTime(),
         description: 'Note A Comment Description',
         ratings: null,
         metadata: {
@@ -374,6 +468,7 @@ test('Find comments on Note 1 except first', async () => {
         note: {
           "description": "Note A Description",
           "id": "1",
+          createdAt,
           "title": "Note A",
         },
       }
@@ -391,9 +486,10 @@ test('Should update Note 1 title', async () => {
 });
 
 test('Should create a new Note', async () => {
-  const response = await createNote(client, { title: 'New note', description: 'New note description', tasks: [{ title: "new task title" }] });
+  const createdAt = new Date();
+  const response = await createNote(client, { title: 'New note', createdAt: createdAt.toJSON(), description: 'New note description', tasks: [{ title: "new task title" }] });
   expect(response.data).toBeDefined();
-  expect(response.data.createNote).toEqual({ id: '3', title: 'New note', description: 'New note description' });
+  expect(response.data.createNote).toEqual({ id: '3', title: 'New note', createdAt, description: 'New note description' });
 
   const { data } = await getNote('3', client);
   expect(data.getNote.tasks).toEqual([{ title: "new task title" }]);
@@ -402,7 +498,7 @@ test('Should create a new Note', async () => {
 test('Delete Note 1', async () => {
   const response = await deleteNote(client, '2');
   expect(response.data).toBeDefined();
-  expect(response.data.deleteNote).toEqual({ id: '2', description: 'Note B Description', title: 'Note B' });
+  expect(response.data.deleteNote).toEqual({ id: '2', createdAt, description: 'Note B Description', title: 'Note B' });
 });
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
