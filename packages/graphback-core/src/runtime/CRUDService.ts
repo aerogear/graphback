@@ -1,6 +1,7 @@
 import * as DataLoader from "dataloader";
 import { PubSubEngine } from 'graphql-subscriptions';
-import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar } from '..';
+import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar, getSubscriptionName } from '..';
+import { withSubscriptionFilter } from './withSubscriptionFilter';
 import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList, QueryFilter } from '.';
 
 /**
@@ -104,31 +105,46 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     }
   }
 
-  public subscribeToCreate(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
+  public subscribeToCreate(filter: any, _context: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
-    const createSubKey = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
 
-    return this.pubSub.asyncIterator(createSubKey)
+    const operationType = GraphbackOperationType.CREATE
+    const createSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
+    const subscriptionName = getSubscriptionName(this.modelName, operationType)
+
+    const asyncIterator = this.pubSub.asyncIterator<Type>(createSubKey)
+
+    return withSubscriptionFilter(() => asyncIterator, filter, subscriptionName)()
   }
 
   public subscribeToUpdate(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
-    const updateSubKey = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
 
-    return this.pubSub.asyncIterator(updateSubKey)
+    const operationType = GraphbackOperationType.UPDATE
+    const updateSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
+    const subscriptionName = getSubscriptionName(this.modelName, operationType)
+
+    const asyncIterator = this.pubSub.asyncIterator<Type>(updateSubKey)
+
+    return withSubscriptionFilter(() => asyncIterator, filter, subscriptionName)()
   }
 
   public subscribeToDelete(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
-    const deleteSubKey = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
 
-    return this.pubSub.asyncIterator(deleteSubKey)
+    const operationType = GraphbackOperationType.UPDATE
+    const deleteSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
+    const subscriptionName = getSubscriptionName(this.modelName, operationType)
+
+    const asyncIterator = this.pubSub.asyncIterator<Type>(deleteSubKey)
+
+    return withSubscriptionFilter(() => asyncIterator, filter, subscriptionName)()
   }
 
 
