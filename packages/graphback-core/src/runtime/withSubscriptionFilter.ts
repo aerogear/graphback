@@ -9,7 +9,7 @@ export function withSubscriptionFilter(asyncIterator: ResolverFn, filter: any, s
     const subscriptionPayload = payload[subscriptionName]
 
     for (const key of Object.keys(filter)) {
-      if (!subscriptionPayload[key] || subscriptionPayload[key] !== filter[key]) {
+      if (!subscriptionPayload[key] || subscriptionPayload[key].toString() !== filter[key].toString()) {
         return false
       }
     }
