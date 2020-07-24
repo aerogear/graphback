@@ -105,7 +105,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     }
   }
 
-  public subscribeToCreate(filter: any, _context: GraphbackContext): AsyncIterator<Type> | undefined {
+  public subscribeToCreate(filter: any, _context?: GraphbackContext): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
