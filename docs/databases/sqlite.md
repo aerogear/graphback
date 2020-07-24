@@ -43,7 +43,7 @@ const db = Knex(dbConfig);
 
 Visit [Knex Connection Options](http://knexjs.org/#Installation-client) to learn more about the different connection options. 
 
-# Using Knex Provider
+## Using Knex Provider
 
 The provider exposes a [`SQLiteKnexDBDataProvider`](https://github.com/aerogear/graphback/blob/master/packages/graphback-runtime-knex/src/SQLiteKnexDBDataProvider.ts) API, which can be used to create a SQLite data providers for each of your data models. 
 
