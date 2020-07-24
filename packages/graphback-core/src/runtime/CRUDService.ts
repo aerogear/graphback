@@ -39,6 +39,10 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
   }
 
   public async create(data: Type, context: GraphbackContext): Promise<Type> {
+    if (this.crudOptions.subCreate) {
+      context.graphback.options.selectedFields = [];
+    }
+
     const result = await this.db.create(data, context);
 
     if (this.pubSub && this.crudOptions.subCreate) {
@@ -52,6 +56,9 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
   }
 
   public async update(data: Type, context: GraphbackContext): Promise<Type> {
+    if (this.crudOptions.subUpdate) {
+      context.graphback.options.selectedFields = [];
+    }
 
     const result = await this.db.update(data, context);
 
@@ -67,6 +74,10 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
   //tslint:disable-next-line: no-reserved-keywords
   public async delete(data: Type, context: GraphbackContext): Promise<Type> {
+    if (this.crudOptions.subDelete) {
+      context.graphback.options.selectedFields = [];
+    }
+
     const result = await this.db.delete(data, context);
 
     if (this.pubSub && this.crudOptions.subDelete) {
