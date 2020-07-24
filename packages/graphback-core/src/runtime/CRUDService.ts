@@ -138,7 +138,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
 
-    const operationType = GraphbackOperationType.UPDATE
+    const operationType = GraphbackOperationType.DELETE
     const deleteSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
     const subscriptionName = getSubscriptionName(this.modelName, operationType)
 
