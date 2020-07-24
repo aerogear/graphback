@@ -22,6 +22,10 @@ type Note {
 }
 ```
 
+:::info
+Check out the [Graphback Scalars](./scalars.md) chapter to see the list of scalars supported out of the box. 
+:::
+
 ## Primary key
 
 Graphback requires each data model to have one primary key field which is used to uniquely represent every object in the database.

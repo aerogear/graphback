@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
-import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isNonNullType, isInputObjectType, isNullableType, isWrappingType, isListType, GraphQLOutputType, GraphQLInputType, assertInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphQLJSON, isModelType } from '@graphback/core';
+import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -38,14 +38,6 @@ export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
   return newInput;
 }
 
-export const JSONScalarInputType = new GraphQLInputObjectType({
-  name: getInputName(GraphQLJSON),
-  fields: {
-    ne: { type: GraphQLString },
-    eq: { type: GraphQLString },
-    contains: { type: GraphQLString }
-  }
-})
 
 export const StringScalarInputType = new GraphQLInputObjectType({
   name: getInputName(GraphQLString),
@@ -153,6 +145,10 @@ export function buildFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInput
   }
 }
 
+// We need to ignore JSON filtering for now as database query does not work.
+// https://github.com/aerogear/graphback/issues/1761
+const TYPES_IGNORED_FOR_FILTERING = ["GraphbackJSON", "GraphbackJSONObject", 'JSON', 'JSONObject'];
+
 export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const operationType = GraphbackOperationType.FIND
 
@@ -160,18 +156,20 @@ export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelT
 
   const inputFields = getModelInputFields(schemaComposer, modelType, operationType);
 
-  const scalarInputFields = inputFields
-    .map(({ name, type }: GraphQLInputField) => {
-      return {
-        name,
-        type: getInputName(getNamedType(type)),
-        description: undefined
-      }
-    }).reduce((fieldObj: any, { name, type, description }: any) => {
-      fieldObj[name] = { type, description }
+  const scalarInputFields: any = {};
 
-      return fieldObj;
-    }, {})
+  for (const field of inputFields) {
+    const namedType = getNamedType(field.type)
+    if (TYPES_IGNORED_FOR_FILTERING.includes(namedType.name)) {
+      continue;
+    }
+
+    const type = getInputName(namedType);
+    scalarInputFields[field.name] = {
+      name: field.name,
+      type
+    }
+  }
 
   const filterInput = new GraphQLInputObjectType({
     name: inputTypeName,
@@ -201,24 +199,23 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
 
   const mutationInputType = new GraphQLInputObjectType({
     name: inputTypeName,
-    fields: () => allModelFields
-      .map(({ name, type }: GraphQLInputField) => {
-        let fieldType: GraphQLNamedType
+    fields: () => {
+      const fields: any = {};
+      for (const {name, type} of allModelFields) {
+        let fieldType: GraphQLNamedType;
         // Remove required from ID
         if (name === idField.name) {
-          fieldType = getNamedType(type)
+          fieldType = getNamedType(type);
         }
 
-        return {
+        fields[name] = {
           name,
-          type: fieldType || type,
-          description: undefined
-        }
-      }).reduce((fieldObj: any, { name, type, description }: any) => {
-        fieldObj[name] = { type, description }
+          type: fieldType || type
+        };
+      }
 
-        return fieldObj;
-      }, {})
+      return fields;
+    }
   });
 
   schemaComposer.add(mutationInputType)
@@ -230,25 +227,23 @@ export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>,
   const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => {
     const namedType = getNamedType(f.type);
 
-    return isScalarType(namedType) || isEnumType(namedType);
+    return (isScalarType(namedType) && !TYPES_IGNORED_FOR_FILTERING.includes(namedType.name)) || isEnumType(namedType);
   });
 
   const filterInputType = new GraphQLInputObjectType({
     name: inputTypeName,
-    fields: () => scalarFields
-      .map(({ name, type }: GraphQLField<any, any>) => {
+    fields: () => {
+      const fields: any = {};
+      for (const {name, type} of scalarFields) {
         const fieldType: GraphQLNamedType = getNamedType(type);
-
-        return {
+        fields[name] = {
           name,
-          type: fieldType || type,
-          description: undefined
+          type: fieldType || type
         };
-      }).reduce((fieldObj: any, { name, type, description }: any) => {
-        fieldObj[name] = { type, description }
+      }
 
-        return fieldObj;
-      }, {})
+      return fields;
+    }
   });
 
   schemaComposer.add(filterInputType)
@@ -263,23 +258,23 @@ export const buildMutationInputType = (schemaComposer: SchemaComposer<any>, mode
 
   const mutationInputObject = new GraphQLInputObjectType({
     name: inputTypeName,
-    fields: () => allModelFields
-      .map(({ name, type }: GraphQLInputField) => {
+    fields: () => {
+      const fields: any = {};
+      for (const {name, type} of allModelFields) {
         let fieldType: GraphQLNamedType
+
         if (name !== idField.name) {
-          fieldType = getNamedType(type)
+          fieldType = getNamedType(type);
         }
 
-        return {
+        fields[name] = {
           name,
-          type: fieldType || type,
-          description: undefined
-        }
-      }).reduce((fieldObj: any, { name, type, description }: any) => {
-        fieldObj[name] = { type, description }
+          type: fieldType || type
+        };
+      }
 
-        return fieldObj;
-      }, {})
+      return fields;
+    }
   });
 
   schemaComposer.add(mutationInputObject)

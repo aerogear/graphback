@@ -8,6 +8,8 @@ Object {
   "Fix": Object {
     "issues": [Function],
   },
+  "GraphbackDate": "GraphbackDate",
+  "GraphbackJSON": "GraphbackJSON",
   "Issue": Object {
     "bugFix": [Function],
   },
@@ -179,6 +181,7 @@ directive @specifiedBy(
 \\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
+  createdAt: GraphbackDate
   title: String!
   description: String!
 
@@ -188,6 +191,7 @@ type Comment {
 
 input CommentFilter {
   id: IDInput
+  createdAt: GraphbackDateInput
   title: StringInput
   description: StringInput
   note_id: IDInput
@@ -205,12 +209,14 @@ type CommentResultList {
 
 input CommentSubscriptionFilter {
   id: ID
+  createdAt: GraphbackDate
   title: String
   description: String
 }
 
 input CreateCommentInput {
   id: ID
+  createdAt: GraphbackDate
   title: String!
   description: String!
   note_id: ID!
@@ -242,6 +248,7 @@ input CreateNoteInput {
 input CreateTestInput {
   id: ID
   name: String
+  metadata: GraphbackJSON
 }
 
 type CustomType {
@@ -284,6 +291,21 @@ type Fix {
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }
+
+scalar GraphbackDate
+
+input GraphbackDateInput {
+  ne: GraphbackDate
+  eq: GraphbackDate
+  le: GraphbackDate
+  lt: GraphbackDate
+  ge: GraphbackDate
+  gt: GraphbackDate
+  in: [GraphbackDate!]
+  between: [GraphbackDate!]
+}
+
+scalar GraphbackJSON
 
 input IDInput {
   ne: ID
@@ -343,6 +365,7 @@ input IssueFilter {
 
 input MutateCommentInput {
   id: ID!
+  createdAt: GraphbackDate
   title: String
   description: String
   note_id: ID
@@ -358,6 +381,7 @@ input MutateNoteInput {
 input MutateTestInput {
   id: ID!
   name: String
+  metadata: GraphbackJSON
 }
 
 type Mutation {
@@ -465,6 +489,7 @@ type Subscription {
 type Test {
   id: ID!
   name: String
+  metadata: GraphbackJSON
 }
 
 input TestFilter {
@@ -517,6 +542,7 @@ type Note {
 \\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
+  createdAt: GraphbackDate
   title: String!
   description: String!
 
@@ -524,8 +550,11 @@ type Comment {
   noteComment: Note!
 }
 
+scalar GraphbackDate
+
 input CommentFilter {
   id: IDInput
+  createdAt: GraphbackDateInput
   title: StringInput
   description: StringInput
   note_id: IDInput
@@ -542,6 +571,17 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID!]
+}
+
+input GraphbackDateInput {
+  ne: GraphbackDate
+  eq: GraphbackDate
+  le: GraphbackDate
+  lt: GraphbackDate
+  ge: GraphbackDate
+  gt: GraphbackDate
+  in: [GraphbackDate!]
+  between: [GraphbackDate!]
 }
 
 input StringInput {
@@ -561,7 +601,10 @@ input StringInput {
 type Test {
   id: ID!
   name: String
+  metadata: GraphbackJSON
 }
+
+scalar GraphbackJSON
 
 type NoteResultList {
   items: [Note]!
@@ -649,15 +692,18 @@ input MutateNoteInput {
 input CreateTestInput {
   id: ID
   name: String
+  metadata: GraphbackJSON
 }
 
 input MutateTestInput {
   id: ID!
   name: String
+  metadata: GraphbackJSON
 }
 
 input CreateCommentInput {
   id: ID
+  createdAt: GraphbackDate
   title: String!
   description: String!
   note_id: ID!
@@ -665,6 +711,7 @@ input CreateCommentInput {
 
 input MutateCommentInput {
   id: ID!
+  createdAt: GraphbackDate
   title: String
   description: String
   note_id: ID
@@ -798,6 +845,7 @@ input TestSubscriptionFilter {
 
 input CommentSubscriptionFilter {
   id: ID
+  createdAt: GraphbackDate
   title: String
   description: String
 }
@@ -833,6 +881,7 @@ type Note {
 \\"\\"\\" @model \\"\\"\\"
 type Comment {
   id: ID!
+  createdAt: GraphbackDate
   title: String!
   description: String!
 
@@ -840,8 +889,11 @@ type Comment {
   noteComment: Note!
 }
 
+scalar GraphbackDate
+
 input CommentFilter {
   id: IDInput
+  createdAt: GraphbackDateInput
   title: StringInput
   description: StringInput
   note_id: IDInput
@@ -858,6 +910,17 @@ input IDInput {
   ge: ID
   gt: ID
   in: [ID!]
+}
+
+input GraphbackDateInput {
+  ne: GraphbackDate
+  eq: GraphbackDate
+  le: GraphbackDate
+  lt: GraphbackDate
+  ge: GraphbackDate
+  gt: GraphbackDate
+  in: [GraphbackDate!]
+  between: [GraphbackDate!]
 }
 
 input StringInput {
@@ -877,7 +940,10 @@ input StringInput {
 type Test {
   id: ID!
   name: String
+  metadata: GraphbackJSON
 }
+
+scalar GraphbackJSON
 
 type NoteResultList {
   items: [Note]!
@@ -965,15 +1031,18 @@ input MutateNoteInput {
 input CreateTestInput {
   id: ID
   name: String
+  metadata: GraphbackJSON
 }
 
 input MutateTestInput {
   id: ID!
   name: String
+  metadata: GraphbackJSON
 }
 
 input CreateCommentInput {
   id: ID
+  createdAt: GraphbackDate
   title: String!
   description: String!
   note_id: ID!
@@ -981,6 +1050,7 @@ input CreateCommentInput {
 
 input MutateCommentInput {
   id: ID!
+  createdAt: GraphbackDate
   title: String
   description: String
   note_id: ID
@@ -1114,6 +1184,7 @@ input TestSubscriptionFilter {
 
 input CommentSubscriptionFilter {
   id: ID
+  createdAt: GraphbackDate
   title: String
   description: String
 }

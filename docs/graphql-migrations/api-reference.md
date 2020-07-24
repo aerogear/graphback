@@ -138,3 +138,7 @@ migrateDB(dbConfig, schemaText, {
 ```
 
 A good example of this function is the [default scalar type to database column](https://github.com/aerogear/graphback/blob/master/packages/graphql-migrations/src/abstract/getColumnTypeFromScalar.ts#L18-L129) function, that Graphback uses to convert scalar types based on certain creteria.
+
+:::note
+Checkout the [Graphback Scalars](../model/scalars.md) chapter to learn more of supported GraphQL scalars with automatic mapping to the underlying database type. 
+:::

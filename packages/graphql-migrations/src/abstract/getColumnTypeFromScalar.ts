@@ -46,7 +46,7 @@ export default function(
   }
 
   // string
-  if ((scalarType && scalarType.name === 'String') || annotations.type === 'string') {
+  if ((scalarType && scalarType.name === 'String')|| annotations.type === 'string') {
     return {
       type: 'string',
       args: [annotations.length || 255],
@@ -78,7 +78,7 @@ export default function(
   }
 
   // date
-  if (annotations.type === 'date') {
+  if (annotations.type === 'date' || (scalarType && scalarType.name === 'GraphbackDate')) {
     return {
       type: 'date',
       args: [],
@@ -93,11 +93,35 @@ export default function(
     }
   }
 
+  // graphback datetime
+  if (scalarType && scalarType.name === 'GraphbackDateTime') {
+    return {
+      type: "datetime",
+      args: [],
+    }
+  }
+
+  // graphback time
+  if (scalarType && scalarType.name === 'GraphbackTime') {
+    return {
+      type: "time",
+      args: [],
+    }
+  }
+
   // timestamp
   if (annotations.type === 'timestamp') {
     return {
       type: 'timestamp',
       args: [annotations.useTz, annotations.precision],
+    }
+  }
+
+  // graphback timestamp
+  if (scalarType && scalarType.name === 'GraphbackTimestamp') {
+    return {
+      type: "timestamp",
+      args: [],
     }
   }
 
@@ -114,6 +138,23 @@ export default function(
     return {
       type: annotations.type,
       args: [],
+    }
+  }
+
+  // graphback json
+  if (scalarType && (scalarType.name === 'GraphbackJSON' || scalarType.name === 'GraphbackJSONObject')) {
+    return {
+      type: "json",
+      args: [],
+    }
+  }
+
+
+  // graphback ObjectId
+  if (scalarType && scalarType.name === 'GraphbackObjectID') {
+    return {
+      type: "string",
+      args: [24]
     }
   }
 

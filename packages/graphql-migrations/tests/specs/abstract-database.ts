@@ -313,6 +313,50 @@ test('custom name', async () => {
   expect(User.name).toEqual('people')
 })
 
+
+test('graphback scalars', async () => {
+  const schema = buildSchema(`
+      """
+      @model
+      """
+      type User {
+        id: ID!
+
+        graphbackJson: GraphbackJSON
+
+        graphbackJsonObj: GraphbackJSONObject
+
+        graphbackTime: GraphbackTime
+
+        graphbackTimestamp: GraphbackTimestamp
+
+        graphbackDate: GraphbackDate
+
+        graphbackDateTime: GraphbackDateTime
+
+        graphbackObjectID: GraphbackObjectID
+      }
+
+      scalar GraphbackJSON
+
+      scalar GraphbackJSONObject
+
+      scalar GraphbackTime
+
+      scalar GraphbackTimestamp
+
+      scalar GraphbackDate
+
+      scalar GraphbackDateTime
+
+      scalar GraphbackObjectID
+    `)
+  const adb = await generateAbstractDatabase(schema)
+  const [{ columns }] = adb.tables
+  const columnTypes = columns.map(({ type }) => type);
+  expect(columnTypes).toEqual(["increments", "json", "json", "time", "timestamp", "date", "datetime", "string"])
+})
+
 test('custom type', async () => {
   const schema = buildSchema(`
       """
