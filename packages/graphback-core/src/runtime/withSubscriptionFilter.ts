@@ -1,5 +1,11 @@
 import { withFilter, ResolverFn } from 'graphql-subscriptions'
 
+/**
+ *
+ * @param {ResolverFn} asyncIterator - PubSub asyncIterator
+ * @param {any} filter - Simple filter object to filter subscriptions
+ * @param {string} subscriptionName - The name of the subscription
+ */
 export function withSubscriptionFilter(asyncIterator: ResolverFn, filter: any, subscriptionName: string): ResolverFn {
   if (!filter) {
     return asyncIterator
