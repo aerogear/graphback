@@ -8,6 +8,12 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.14.1
+
+### Bug Fixes
+
+* allow model field on non-model types ([#1e64b3eb](https://github.com/aerogear/graphback/pull/1753)) ([2756b29a](https://github.com/aerogear/graphback/commit/1e64b3eb2a155d87091cffca206f2dbf3280a413))
+
 # 0.14.0
 
 ## Migrating to 0.14.0
