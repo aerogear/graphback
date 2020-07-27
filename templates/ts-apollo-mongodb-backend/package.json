@@ -1,6 +1,6 @@
 {
   "name": "graphback-templates-mongodb-runtime",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Graphback runtime template with Apollo Server and MongoDb",
   "private": true,
   "main": "dist/src/index.js",
@@ -12,14 +12,14 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "@graphback/runtime-mongo": "0.14.0",
+    "@graphback/runtime-mongo": "0.14.1",
     "@graphql-tools/graphql-file-loader": "6.0.10",
     "@graphql-tools/load": "6.0.10",
     "apollo-server-express": "2.15.1",
     "cors": "2.8.5",
     "dotenv": "8.2.0",
     "express": "4.17.1",
-    "graphback": "0.14.0",
+    "graphback": "0.14.1",
     "graphql": "15.3.0",
     "graphql-config": "3.0.3",
     "graphql-subscriptions": "1.1.0",
@@ -30,7 +30,7 @@
     "@types/glob": "7.1.3",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.7",
-    "graphback-cli": "0.14.0",
+    "graphback-cli": "0.14.1",
     "ts-node": "8.10.2",
     "tslint": "6.1.2",
     "typescript": "3.9.6"
