@@ -1,12 +1,12 @@
 import { createVersionedInputFields,createVersionedFields } from "@graphback/codegen-schema";
-import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo } from 'graphql';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo, GraphQLInt } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
-import { isDataSyncService, isDataSyncModel } from "./util";
+import { isDataSyncService, isDataSyncModel, ConflictEngine } from "./util";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -22,6 +22,14 @@ export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
  * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
+  protected conflictEngine: ConflictEngine;
+
+  public constructor(conflictEngine?: ConflictEngine) {
+    super()
+    if (conflictEngine !== undefined) {
+      this.conflictEngine = conflictEngine;
+    }
+  }
 
   public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
     const schema = metadata.getSchema()
@@ -72,14 +80,14 @@ export class DataSyncPlugin extends GraphbackPlugin {
           filter: filterTypeName
         })
 
-        // Add updatedAt arg to update and delete input types
+        // Add _version arg to update and delete input types
         // for conflict resolution
         const { fieldNames } = metadataMap;
 
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
-        if (inputType) {
+        if (inputType && this.conflictEngine !== undefined) {
           inputType.addFields({
-            [fieldNames.updatedAt]: {
+            [this.conflictEngine.conflictFieldName]: {
               type: GraphQLNonNull(GraphQLString)
             }
           });
@@ -158,6 +166,14 @@ export class DataSyncPlugin extends GraphbackPlugin {
       // metadata fields needed for @versioned
 
       modelTC.addFields(metadataFields);
+
+      if (this.conflictEngine !== undefined) {
+        modelTC.addFields({
+          [this.conflictEngine.conflictFieldName]: {
+            type: GraphQLString
+          }
+        })
+      }
 
       const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
       if (inputType) {

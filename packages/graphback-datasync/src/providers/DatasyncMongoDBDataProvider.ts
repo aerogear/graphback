@@ -1,16 +1,17 @@
 import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput } from '@graphback/core';
+import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput, ModelTableMap } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
-import { ConflictError, ConflictStateMap } from "../util";
-import { DataSyncProvider } from "./DataSyncProvider";
+import { ConflictError, ConflictStateMap, ConflictEngine} from "../util";
+import { DataSyncProvider } from "./";
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
 export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
+  protected conflictEngine: ConflictEngine;
 
-  public constructor(baseType: GraphQLObjectType, client: any) {
+  public constructor(baseType: GraphQLObjectType, client: any, conflictEngine?: ConflictEngine) {
     super(baseType, client);
     applyIndexes([
       {
@@ -22,45 +23,156 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       throw e;
     });
     this.coerceTSFields = true;
+    this.conflictEngine = conflictEngine;
   }
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
     data._deleted = false;
+    if (this.conflictEngine !== undefined) {
+      const { next, conflictFieldName } = this.conflictEngine;
+      data[conflictFieldName] = next(undefined, data);
+    }
 
     return super.create(data, context);
   }
 
   public async update(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
 
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
+    const { idField } = getDatabaseArguments(this.tableMap, data);
+
+    if (!idField.value) {
+      throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
 
-    // TODO use findOneAndUpdate to check consistency afterwards
-    return super.update(data, context);
+    const objectId = new ObjectId(idField.value);
+
+    const startTime = Date.now();
+
+    const RETRY_LIMIT = 3000; // 3 seconds
+
+    while ((Date.now() - startTime) < RETRY_LIMIT) {   // Commented for debugging
+    // while (Date.now()) {
+
+      this.fieldTransformMap[TransformType.UPDATE]
+        .forEach((f: FieldTransform) => {
+          data[f.fieldName] = f.transform(data[f.fieldName]);
+        });
+
+      const updateFilter: any = { _id: objectId, _deleted: { $ne: true } };
+      const updateSets = Object.assign({}, data);
+      // eslint-disable-next-line @typescript-eslint/tslint/config
+      delete updateSets[this.tableMap.idField];
+
+      if (this.conflictEngine !== undefined) {
+        
+        const { conflictFieldName, next } = this.conflictEngine;
+        const currentState = updateSets[conflictFieldName];
+        updateFilter[conflictFieldName] = currentState;
+
+        // eslint-disable-next-line @typescript-eslint/tslint/config
+        delete updateSets[conflictFieldName]
+
+        updateSets[conflictFieldName] = next(currentState, updateSets);
+      }
+
+      const updateResult = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, {
+        $set: updateSets
+      },{
+        w: "majority",
+        returnOriginal: false
+      })
+
+      if (!updateResult.value) {
+        // There is conflict or document doesn't exist
+  
+        // Check if document exists
+        const serverData = await this.db.collection(this.collectionName).findOne({ _id: objectId, _deleted: { $ne: true } })
+        if (!serverData){
+          throw new NoDataError(`Cannot update ${this.collectionName}`);
+        }
+
+        const { conflictFieldName, resolveConflicts } = this.conflictEngine;
+
+        let conflictMap:ConflictStateMap = {
+          serverState: serverData,
+          clientState: Object.assign({}, updateSets, { _id: objectId, [conflictFieldName]: updateFilter[conflictFieldName]})
+        }
+  
+        // Resolve conflicts/Reject Update:
+        if (resolveConflicts !== undefined) {
+          conflictMap = resolveConflicts(Object.assign({}, serverData), data)
+        }
+
+        if (conflictMap !== undefined){
+          const serverState = this.mapFields(serverData)
+
+          throw new ConflictError({ serverState, clientState: data})
+        }
+
+
+        // No conflicts, bump conflictField
+        data[conflictFieldName] = serverData[conflictFieldName];
+
+        continue
+      }
+
+      return this.mapFields(updateResult.value)
+
+    }
+    
+    throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
   public async delete(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
-    }
+    // throw new Error('not implemented');
+    // const conflict = await this.checkForConflicts(data, context);
+    // if (conflict !== undefined) {
+    //   throw new ConflictError(conflict);
+    // }
 
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    data = {};
+
+    const objectId = new ObjectId(idField.value);
+    const updateSets:any = { _id: objectId, _deleted: true }
 
     this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
-        data[f.fieldName] = f.transform();
+        updateSets[f.fieldName] = f.transform(data[f.fieldName]);
       });
 
-    data._deleted = true;
-    const objectId = new ObjectId(idField.value);
     const projection = this.buildProjectionOption(context);
-    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, { projection, returnOriginal: false });
-    if (result.ok) {
+
+    const updateFilter:any = { _id: objectId, _deleted: { $ne: true } }
+
+    if (this.conflictEngine !== undefined) {
+        
+      const { conflictFieldName, next } = this.conflictEngine;
+      const currentState = data[conflictFieldName];
+      updateFilter[conflictFieldName] = currentState;
+
+      updateSets[conflictFieldName] = next(currentState, updateSets);
+    }
+
+    const result = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: updateSets }, { returnOriginal: false });
+    if (result.value) {
       return this.mapFields(result.value);
+    } else {
+      // There is conflict or document doesn't exist
+  
+      // Check if document exists
+      const serverData = await this.db.collection(this.collectionName).findOne({ _id: objectId, _deleted: { $ne: true } })
+      if (!serverData){
+        throw new NoDataError(`Cannot update ${this.collectionName}`);
+      }
+
+      const { conflictFieldName } = this.conflictEngine;
+
+      const conflictMap:ConflictStateMap = {
+        serverState: this.mapFields(serverData),
+        clientState: Object.assign({}, updateSets, { _id: objectId, [conflictFieldName]: updateFilter[conflictFieldName]})
+      }
+
+      throw new ConflictError(conflictMap)
     }
 
     throw new NoDataError(`Could not delete from ${this.collectionName}`);
@@ -113,36 +225,10 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     }, context, undefined, undefined);
   }
 
+  /**
+   * @deprecated
+   */
   protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
-    const { idField } = getDatabaseArguments(this.tableMap, clientData);
-    const { fieldNames } = metadataMap;
-
-    if (!idField.value) {
-      throw new NoDataError(`Couldn't get document from ${this.collectionName} - missing ID field`)
-    }
-
-    const projection = this.buildProjectionOption(context);
-
-    if (projection) {
-      projection[fieldNames.updatedAt] = 1;
-      projection._deleted = 1
-    }
-
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true } }, { projection });
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (
-        queryResult[fieldNames.updatedAt] !== undefined &&
-        clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
-      ) {
-        queryResult[fieldNames.updatedAt] = queryResult[fieldNames.updatedAt].toString()
-
-        return { serverState: queryResult, clientState: clientData };
-      }
-
-      return undefined;
-    }
-
-    throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
+    throw new Error('Deprecated')
   }
 }

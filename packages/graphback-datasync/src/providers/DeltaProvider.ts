@@ -9,12 +9,22 @@ function getDeltaTableName(baseType: GraphQLObjectType) {
 
 type DeltaOps = GraphbackOperationType.CREATE | GraphbackOperationType.UPDATE | GraphbackOperationType.DELETE;
 
-interface ConflictingFieldsReport {
+export interface ConflictingFieldsReport {
   _id: ObjectId,
   conflicts: {
     [fieldName: string]: any
   },
-  updatedAt: number
+  version: number
+}
+
+interface DeltaDocument {
+  docId: ObjectId,
+  op: DeltaOps,
+  timestamp: Date,
+  version: number,
+  sets: {
+    [fieldName: string]: any
+  }
 }
 
 
@@ -34,24 +44,27 @@ export class DeltaProvider {
       {
         key: {
           "docId": 1,
-          "timestamp": 1
+          "version": 1
         }
       }
     ], this.db.collection(this.collectionName));
   }
 
 
-  public async insertDiff(_id: string|ObjectId, ts: string|number, updateData: any, op: DeltaOps) {
+  public async insertDiff(_id: string|ObjectId, ts: string|number, documentVersion: number, updateData: any, op: DeltaOps) {
     const docId = getObjectIdFromString(_id);
     const timestamp = getDateFromTimestamp(ts);
     const sets = getDiffEntry(updateData);
 
-    const res = await this.db.collection(this.collectionName).insertOne({
-      op: op.toString(),
+    const deltaDocument: DeltaDocument = {
+      op,
       docId,
       timestamp,
+      version: documentVersion,
       sets
-    })
+    }
+
+    const res = await this.db.collection(this.collectionName).insertOne(deltaDocument);
 
     return res.insertedId;
   }
@@ -101,22 +114,21 @@ export class DeltaProvider {
     return this.db.collection(this.collectionName).aggregate(syncPipeline).toArray()
   }
 
-  public async checkForConflicts(_id: string|ObjectId, ts: string|number, updateData: any): Promise<ConflictingFieldsReport> {
+  public async checkForConflicts(_id: string|ObjectId, version: number, updateData: any): Promise<ConflictingFieldsReport> {
 
     const docId = getObjectIdFromString(_id);
-    const timestamp = getDateFromTimestamp(ts);
     const sets = getDiffEntry(updateData);
 
     const fieldChecks = getFieldChecks(sets);
 
     const filter: FilterQuery<any> = {
       docId,
-      timestamp: {
-        $gt: timestamp
+      version: {
+        $gt: version
       }
     };
 
-    const deltas = await this.db.collection(this.collectionName).find(filter, { sort: { timestamp: -1 } }).toArray();
+    const deltas:DeltaDocument[] = await this.db.collection(this.collectionName).find(filter, { sort: { version: -1 } }).toArray();
 
     const latestDelta = deltas[deltas.length - 1];
 
@@ -134,7 +146,7 @@ export class DeltaProvider {
     return {
       _id: docId,
       conflicts,
-      updatedAt: latestDelta.timestamp.valueOf()
+      version: latestDelta.version
     }
   }
 }
