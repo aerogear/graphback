@@ -118,15 +118,15 @@ test('delete Todo', async (done) => {
 
   const subId = await pubSub.subscribe("DELETE_TODO", ({ deletedTodo }) => {
     expect(deletedTodo).toEqual({
-      id: 2
+      id: 2,
+      text: "my second todo"
     });
     done();
     pubSub.unsubscribe(subId);
   });
 
   const data = await services.Todo.delete({
-    id: 2,
-    text: 'my second todo',
+    id: 2
   }, {
     graphback: {
       services: {},
@@ -274,25 +274,43 @@ test('find and count all users', async () => {
     }
   })
 
-  const resultWithCount = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
-    count: true
-  }}}})
+  const resultWithCount = await services.User.findBy({ name: { startsWith: 'John' } }, {
+    graphback: {
+      services: {}, options: {
+        selectedFields: ["id"], aggregations: {
+          count: true
+        }
+      }
+    }
+  })
 
   expect(resultWithCount.count).toEqual(4);
   expect(resultWithCount.items).toHaveLength(4);
 
 
-  const resultWithoutCount = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
-    count: false
-  }}}})
+  const resultWithoutCount = await services.User.findBy({ name: { startsWith: 'John' } }, {
+    graphback: {
+      services: {}, options: {
+        selectedFields: ["id"], aggregations: {
+          count: false
+        }
+      }
+    }
+  })
 
 
   expect(resultWithoutCount.count).toBeUndefined();
   expect(resultWithoutCount.items).toHaveLength(4);
 
-  const resultWithCountAndItems = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: [], aggregations: {
-    count: true
-  }}}})
+  const resultWithCountAndItems = await services.User.findBy({ name: { startsWith: 'John' } }, {
+    graphback: {
+      services: {}, options: {
+        selectedFields: [], aggregations: {
+          count: true
+        }
+      }
+    }
+  })
 
 
   expect(resultWithCountAndItems.items.length).toEqual(4);
@@ -300,9 +318,15 @@ test('find and count all users', async () => {
 
   // count with limit and offset
 
-  let resultWithLimitAndOffset = await services.User.findBy({ name: { startsWith: 'John' } }, {graphback: {services: {}, options: { selectedFields: ["id"], aggregations: {
-    count: true
-  }}}}, {offset: 0, limit: 1})
+  let resultWithLimitAndOffset = await services.User.findBy({ name: { startsWith: 'John' } }, {
+    graphback: {
+      services: {}, options: {
+        selectedFields: ["id"], aggregations: {
+          count: true
+        }
+      }
+    }
+  }, { offset: 0, limit: 1 })
 
 
   expect(resultWithLimitAndOffset.items).toHaveLength(1);

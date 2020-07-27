@@ -596,12 +596,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.CREATE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      subscribe: (_: any, args: any, context: GraphbackContext) => {
         if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback.services[modelName].subscribeToCreate({}, context);
+        return context.graphback.services[modelName].subscribeToCreate(args.filter, context);
       }
     }
   }
@@ -617,12 +617,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.UPDATE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      subscribe: (_: any, args: any, context: GraphbackContext) => {
         if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback.services[modelName].subscribeToUpdate({}, context);
+        return context.graphback.services[modelName].subscribeToUpdate(args.filter, context);
       }
     }
   }
@@ -638,12 +638,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const operation = getSubscriptionName(modelName, GraphbackOperationType.DELETE)
 
     subscriptionObj[operation] = {
-      subscribe: (_: any, __: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      subscribe: (_: any, args: any, context: GraphbackContext) => {
         if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback.services[modelName].subscribeToDelete({}, context);
+        return context.graphback.services[modelName].subscribeToDelete(args.filter, context);
       }
     }
   }
