@@ -82,7 +82,7 @@ test('Test one side relationship schema query type generation', async () => {
     "subDelete": false
   }
 
-  const schemaText = `""" @model """
+  const modelText = `""" @model """
   type Note {
     id: ID!
     title: String!
@@ -102,7 +102,7 @@ test('Test one side relationship schema query type generation', async () => {
   }
   `;
 
-  const oneSidedSchema = buildSchema(schemaText);
+  const oneSidedSchema = buildSchema(modelText);
   const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
@@ -111,6 +111,43 @@ test('Test one side relationship schema query type generation', async () => {
   const transformedSchema = schemaGenerator.transformSchema(metadata)
   expect(printSchema(transformedSchema)).toMatchSnapshot()
 });
+
+test('Non-model type has model-type field', () => {
+  const defautConfig = {
+    "create": true,
+    "update": true,
+    "findOne": true,
+    "find": true,
+    "delete": true,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true
+  }
+
+  const modelText = `
+type JWTAuthResult {
+  user: User!
+  csrfToken: String!
+  authJWT: String!
+}
+
+"""@model"""
+type User {
+  id: ID!
+  name: String
+}
+
+type Query {
+  jwt: JWTAuthResult
+}`
+
+  const schemaGenerator = new SchemaCRUDPlugin()
+  const metadata = new GraphbackCoreMetadata({
+    crudMethods: defautConfig
+  }, buildSchema(modelText))
+  const schema = schemaGenerator.transformSchema(metadata)
+  expect(schema.getType('JWTAuthResult')).toBeDefined()
+})
 
 
 test('Creates CRUD resolvers for models', async () => {

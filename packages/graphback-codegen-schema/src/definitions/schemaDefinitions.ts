@@ -292,10 +292,6 @@ function mapObjectInputFields(schemaComposer: SchemaComposer<any>, fields: Graph
 
     let inputType
     if (isObjectType(namedType)) {
-      if (isModelType(namedType)) {
-        throw new Error(`Non-model ${objectName}.${field.name} maps to Graphback model (${namedType.name}) which is not allowed.`)
-      }
-
       typeName = getInputTypeName(typeName, GraphbackOperationType.CREATE)
       namedType = schemaComposer.getOrCreateITC(typeName).getType()
 
