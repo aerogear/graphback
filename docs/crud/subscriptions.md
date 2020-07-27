@@ -49,7 +49,7 @@ subscription {
 }
 ```
 
-and with a filter:
+You can apply field-equality filters to the subscription:
 
 ```graphql
 subscription {
@@ -73,7 +73,7 @@ subscription {
 }
 ```
 
-and with a filter:
+You can apply field-equality filters to the subscription:
 
 ```graphql
 subscription {
@@ -97,7 +97,7 @@ subscription {
 }
 ```
 
-and with a filter:
+You can apply field-equality filters to the subscription:
 
 ```graphql
 subscription {
