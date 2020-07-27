@@ -35,10 +35,6 @@ type Subscription {
 // highlight-end
 ```
 
-:::caution
-Subscription filtering is not available yet and will be implemented in a future release.
-:::
-
 ### Examples
 
 Subscribing to a [`create`](./mutations#create) event on `Note`:
@@ -46,6 +42,18 @@ Subscribing to a [`create`](./mutations#create) event on `Note`:
 ```graphql
 subscription {
   newNote {
+    id
+    title
+    likes
+  }
+}
+```
+
+and with a filter:
+
+```graphql
+subscription {
+  newNote(filter: {likes: 100}) {
     id
     title
     likes
@@ -65,11 +73,35 @@ subscription {
 }
 ```
 
+and with a filter:
+
+```graphql
+subscription {
+  updatedNote(filter: {likes: 100}) {
+    id
+    title
+    likes
+  }
+}
+```
+
 Subscribing to a [`delete`](./mutations#delete) event on `Note`:
 
 ```graphql
 subscription {
   deletedNote {
+    id
+    title
+    likes
+  }
+}
+```
+
+and with a filter:
+
+```graphql
+subscription {
+  updatedNote(filter: {likes: 100}) {
     id
     title
     likes
