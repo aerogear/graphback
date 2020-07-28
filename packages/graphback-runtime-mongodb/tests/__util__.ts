@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server-global';
 import { MongoClient } from 'mongodb';
 import { buildSchema } from 'graphql';
-import { filterModelTypes, GraphbackCoreMetadata } from '@graphback/core';
+import { GraphbackCoreMetadata } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 
@@ -12,7 +12,7 @@ export interface Context {
 
 export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
   // Setup graphback
-  let schema = buildSchema(schemaStr);
+  const schema = buildSchema(schemaStr);
 
   const server = new MongoMemoryServer();
   const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
@@ -30,16 +30,17 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     "subDelete": true
   }
 
-  const schemaGenerator = new SchemaCRUDPlugin()
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
-  }, schema)
-  schema = schemaGenerator.transformSchema(metadata)
+  }, schema);
+
+  const schemaGenerator = new SchemaCRUDPlugin();
+  schemaGenerator.transformSchema(metadata)
 
   const providers: { [name: string]: MongoDBDataProvider } = {}
-  const models = filterModelTypes(schema)
-  for (const modelType of models) {
-    providers[modelType.name] = new MongoDBDataProvider(modelType, db);
+  const models = metadata.getModelDefinitions()
+  for (const model of models) {
+    providers[model.graphqlType.name] = new MongoDBDataProvider(model, db);
   }
 
   // if seed data is supplied, insert it into collections

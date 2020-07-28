@@ -2,7 +2,7 @@ schema: './schema.graphql'
 documents: './output-cli/client/graphback.graphql'
 extensions:
   graphback:
-    model: ./mock.graphql
+    model: ./postgres-model.graphql
     plugins:
       graphback-schema:
         outputPath: ./output-cli/schema.graphql

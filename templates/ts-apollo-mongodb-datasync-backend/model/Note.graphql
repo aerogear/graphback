@@ -3,7 +3,7 @@
 @datasync
 """
 type Note {
-  id: ID!
+  _id: GraphbackObjectID!
   title: String!
   description: String
   """
@@ -12,12 +12,14 @@ type Note {
   comments: [Comment]!
 }
 
-""" 
+"""
 @model
 @datasync
 """
 type Comment {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   description: String
 }
+
+scalar GraphbackObjectID

@@ -13,12 +13,14 @@ describe('MongoDB indexing', () => {
       @versioned
       """
       type Note {
-        id: ID!
+        _id: GraphbackObjectID!
         """
         @index
         """
         text: String
       }
+
+      scalar GraphbackObjectID
       `);
 
     const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
@@ -45,7 +47,7 @@ describe('MongoDB indexing', () => {
       @versioned
       """
       type Note {
-        id: ID!
+        _id: GraphbackObjectID!
         text: String
         """
         @index(
@@ -59,6 +61,8 @@ describe('MongoDB indexing', () => {
         meta: String
         pages: Int
       }
+
+      scalar GraphbackObjectID
       `);
 
     const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
@@ -85,7 +89,7 @@ describe('MongoDB indexing', () => {
       @model
       """
       type Note {
-        id: ID!
+        _id: GraphbackObjectID!
         text: String
         """
         @oneToMany(field: 'note')
@@ -97,9 +101,11 @@ describe('MongoDB indexing', () => {
       @model
       """
       type Comment {
-        id: ID!
+        _id: GraphbackObjectID!
         text: String
       }
+
+      scalar GraphbackObjectID
       `);
 
     const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });

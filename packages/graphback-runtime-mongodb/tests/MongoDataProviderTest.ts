@@ -2,24 +2,29 @@
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
 import { Context,createTestingContext } from "./__util__";
+import { GraphbackCoreMetadata } from '@graphback/core';
+import { buildSchema } from 'graphql';
+import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 
 describe('MongoDBDataProvider Basic CRUD', () => {
   interface Todo {
-    id: ObjectID;
+    _id: ObjectID;
     text: string;
   }
   let context: Context;
 
-  const fields = ["id", "text"];
+  const fields = ["_id", "text"];
 
   const todoSchema = `
   """
   @model
   """
   type Todos {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   }
+
+  scalar GraphbackObjectID
   `;
 
   const defaultTodoSeed = [
@@ -36,7 +41,48 @@ describe('MongoDBDataProvider Basic CRUD', () => {
   //all tests can run parallel
 
 
-  afterEach(() => context.server.stop())
+  afterEach(async (done) => {
+    if (context) {
+      await context.server.stop();
+    }
+
+    done();
+  })
+
+  test('Test missing "_id: GraphbackObjectID" primary key', async () => {
+    const schema = `
+    """
+    @model
+    """
+    type MissingPrimaryKeyModel {
+    id: ID!
+    text: String
+    }
+    `;
+
+
+    const defautConfig = {
+      "create": true,
+      "update": true,
+      "findOne": true,
+      "find": true,
+      "delete": true,
+      "subCreate": true,
+      "subUpdate": true,
+      "subDelete": true
+    }
+
+    try {
+      const metadata = new GraphbackCoreMetadata({ crudMethods: defautConfig }, buildSchema(schema));
+      const  models = metadata.getModelDefinitions()
+      for (const model of models) {
+        new MongoDBDataProvider(model, null);
+      }
+      expect(true).toBeFalsy(); // should not reach here
+    } catch (error) {
+      expect(error.message).toEqual('Model "MissingPrimaryKeyModel" must contain a "_id: GraphbackObjectID" primary key. Visit https://graphback.dev/docs/model/datamodel#mongodb to see how to set up one for your MongoDB model.');
+    }
+  });
 
   test('Test mongo crud', async () => {
     context = await createTestingContext(todoSchema, {
@@ -51,15 +97,15 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     expect(todo.text).toEqual('create a todo');
 
     todo = await context.providers.Todos.update({
-      id: todo.id,
+      _id: todo._id,
       text: 'my updated first todo',
     }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     expect(todo.text).toEqual('my updated first todo');
 
-    const data = await context.providers.Todos.delete({ id: todo.id }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    const data = await context.providers.Todos.delete({ _id: todo._id }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
-    expect(data.id).toEqual(todo.id);
+    expect(data._id).toEqual(todo._id);
   });
 
 
@@ -90,7 +136,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     const all = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: []}}});
     const todos: Todo[] = await context.providers.Todos.findBy({
       text: { eq: all[0].text },
-    }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+    }, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
     expect(todos.length).toBeGreaterThan(0);
     const count = await context.providers.Todos.count({
       text: { eq: all[0].text }
@@ -197,14 +243,16 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     @versioned
     """
     type Note {
-      id: ID!
+      _id: GraphbackObjectID!
       text: String
     }
+
+    scalar GraphbackObjectID
     `);
     const cDate = new Date(2020, 5, 26, 18, 29, 23);
     advanceTo(cDate);
 
-    const res = await context.providers.Note.create({ text: 'asdf' }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+    const res = await context.providers.Note.create({ text: 'asdf' }, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
     expect(res.createdAt).toEqual(cDate.getTime());
     expect(res.createdAt).toEqual(res.updatedAt);
   })
@@ -216,14 +264,16 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     @versioned
     """
     type Note {
-      id: ID!
+      _id: GraphbackObjectID!
       text: String
     }
+
+    scalar GraphbackObjectID
     `);
     const createDate = new Date(2020, 5, 26, 18, 29, 23);
     advanceTo(createDate);
 
-    const res = await context.providers.Note.create({ text: 'asdf' }, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
+    const res = await context.providers.Note.create({ text: 'asdf' }, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
     expect(res.updatedAt).toEqual(createDate.getTime());
 
     advanceBy(3000);
@@ -243,10 +293,12 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     @model
     """
     type Todos {
-     id: ID!
+     _id: GraphbackObjectID!
      text: String,
      description: String
-    }`, {
+    }
+    scalar GraphbackObjectID
+    `, {
       seedData: {
         Todos: [
           { text: 'todo1', description: "first todo" },
@@ -256,24 +308,24 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       }
     });
 
-    const todos = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: ["id", "text"]}}});
+    const todos = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: ["_id", "text"]}}});
 
     expect(todos.length).toEqual(3);
     todos.forEach((todo: any) => {
-      expect(todo.id).toBeDefined();
+      expect(todo._id).toBeDefined();
       expect(todo.text).toBeDefined();
       expect(todo.description).toBeUndefined(); // should be undefined since not selected
     });
 
-    const createdTodo = await context.providers.Todos.create({text: "new todo", description: "todo add description"}, {graphback: {services: {}, options: { selectedFields: ["id"]}}});
-    expect(createdTodo.id).toBeDefined();
+    const createdTodo = await context.providers.Todos.create({text: "new todo", description: "todo add description"}, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
+    expect(createdTodo._id).toBeDefined();
 
-    const updatedTodo = await context.providers.Todos.update({id: createdTodo.id, text: "updated todo"}, {graphback: {services: {}, options: { selectedFields: ["text"]}}});
+    const updatedTodo = await context.providers.Todos.update({_id: createdTodo._id, text: "updated todo"}, {graphback: {services: {}, options: { selectedFields: ["text"]}}});
     expect(updatedTodo.description).toBeUndefined();
     expect(updatedTodo.text).toEqual("updated todo");
 
-    const deletedTodo = await context.providers.Todos.update({id: createdTodo.id}, {graphback: {services: {}, options: { selectedFields: ["id", "text", "description"]}}});
-    expect(deletedTodo.id).toEqual(createdTodo.id);
+    const deletedTodo = await context.providers.Todos.update({_id: createdTodo._id}, {graphback: {services: {}, options: { selectedFields: ["_id", "text", "description"]}}});
+    expect(deletedTodo._id).toEqual(createdTodo._id);
     expect(deletedTodo.text).toEqual("updated todo");
     expect(deletedTodo.description).toEqual("todo add description");
   });
@@ -283,9 +335,11 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     @model
     """
     type Todo {
-     id: ID!
+     _id: GraphbackObjectID!
      items: Int
-    }`, {
+    }
+    scalar GraphbackObjectID
+    `, {
       seedData: {
         Todo: [
           {
@@ -315,7 +369,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
 
     const { providers } = context;
-    const queryContext = { graphback: { services: {}, options: { selectedFields: ["id"] } } }
+    const queryContext = { graphback: { services: {}, options: { selectedFields: ["_id"] } } }
 
     // verify that not in operator works
     const allTodos = await providers.Todo.findBy({ }, queryContext);

@@ -3,7 +3,7 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, filterModelTypes } from '@graphback/core';
+import { CRUDService, filterModelTypes, GraphbackCoreMetadata } from '@graphback/core';
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 
@@ -39,6 +39,21 @@ type Todo {
 
   const schema = buildSchema(schemaSDL)
 
+  const defautCrudConfig = {
+    "create": true,
+    "update": true,
+    "findOne": true,
+    "find": true,
+    "delete": true,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true
+  }
+
+  const metadata = new GraphbackCoreMetadata({
+    crudMethods: defautCrudConfig
+  }, schema);
+
   await migrateDB(dbConfig, schema, {
     operationFilter: removeNonSafeOperationsFilter
   })
@@ -51,16 +66,16 @@ type Todo {
   }
 
   const services: { [name: string]: CRUDService } = {}
-  const models = filterModelTypes(schema)
-  for (const modelType of models) {
-    const modelProvider = new SQLiteKnexDBDataProvider(modelType, db);
+  const models = metadata.getModelDefinitions();
+  for (const model of models) {
+    const modelProvider = new SQLiteKnexDBDataProvider(model, db);
     const publishConfig = {
       subCreate: true,
       subDelete: true,
       subUpdate: true
     }
 
-    services[modelType.name] = new CRUDService(modelType.name, modelProvider, { pubSub, crudOptions: publishConfig })
+    services[model.graphqlType.name] = new CRUDService(model.graphqlType.name, modelProvider, { pubSub, crudOptions: publishConfig })
   }
 
   return { schema, services }

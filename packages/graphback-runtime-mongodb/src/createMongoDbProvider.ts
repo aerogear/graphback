@@ -9,6 +9,6 @@ import { MongoDBDataProvider } from './MongoDBDataProvider';
  */
 export function createMongoDbProvider(db: Db): (...args: any[]) => GraphbackDataProvider {
   return (model: ModelDefinition): GraphbackDataProvider => {
-    return new MongoDBDataProvider(model.graphqlType, db)
+    return new MongoDBDataProvider(model, db);
   }
 }

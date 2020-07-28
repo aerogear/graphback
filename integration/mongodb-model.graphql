@@ -1,0 +1,50 @@
+""" @model """
+type Note {
+  _id: GraphbackObjectID!
+  title: String!
+  createdAt: GraphbackDateTime
+  description: String
+  """
+  @oneToMany(field: 'note')
+  """
+  comments: [Comment]!
+
+  """
+  @db(type: 'json')
+  """
+  tasks: [Task]!
+}
+
+""" @model """
+type Comment {
+  _id: GraphbackObjectID!
+  text: String
+  createdAt: GraphbackTimestamp
+  description: String
+  """
+  @oneToOne
+  """
+  metadata: CommentMetadata
+  ratings: [Int!]
+  objectId: GraphbackObjectID
+}
+
+"""
+@model
+"""
+type CommentMetadata {
+  _id: GraphbackObjectID!
+  opened: Boolean
+}
+
+type Task {
+  title: String
+}
+
+type Query {
+  helloWorld: String
+}
+
+scalar GraphbackTimestamp
+scalar GraphbackDateTime
+scalar GraphbackObjectID

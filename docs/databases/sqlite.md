@@ -84,7 +84,7 @@ migrateDB(dbConfig, userModel, { }).then(() => {
 });
 
 // create the SQLite data provider
-const dataProviderCreator = (model: ModelDefinition) => new SQLiteKnexDBDataProvider(model.graphqlType, db);
+const dataProviderCreator = (model: ModelDefinition) => new SQLiteKnexDBDataProvider(model, db);
 
 // highlight-end
 

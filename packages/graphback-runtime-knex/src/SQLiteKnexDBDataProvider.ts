@@ -1,6 +1,5 @@
-import { getDatabaseArguments, GraphbackContext, NoDataError } from '@graphback/core';
+import { getDatabaseArguments, GraphbackContext, NoDataError, ModelDefinition } from '@graphback/core';
 import * as Knex from 'knex';
-import { GraphQLObjectType } from 'graphql';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 
 /**
@@ -11,8 +10,8 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
 //tslint:disable-next-line: no-any
 export class SQLiteKnexDBDataProvider<Type = any> extends KnexDBDataProvider<Type>{
 
-  public constructor(baseType: GraphQLObjectType, db: Knex) {
-    super(baseType, db);
+  public constructor(model: ModelDefinition, db: Knex) {
+    super(model, db);
   }
 
   public async create(data: Type, context: GraphbackContext): Promise<Type> {

@@ -1,4 +1,4 @@
-import { ObjectId, Collection, Cursor, MongoError, IndexSpecification } from "mongodb"
+import { Collection, IndexSpecification } from "mongodb"
 import { GraphQLObjectType, GraphQLField } from "graphql";
 import { parseMetadata } from "graphql-metadata";
 import { parseRelationshipAnnotation } from "@graphback/core";

@@ -317,7 +317,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryFields[operation] = {
         type: model.graphqlType,
-        args: buildFindOneFieldMap(modelType)
+        args: buildFindOneFieldMap(model, schemaComposer)
       };
     }
     if (model.crudOptions.find) {
@@ -575,7 +575,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelType = model.graphqlType
     const modelName = modelType.name;
     const findOneField = getFieldName(modelName, GraphbackOperationType.FIND_ONE);
-    const primaryKeyLabel = model.primaryKey;
+    const primaryKeyLabel = model.primaryKey.name;
 
     queryObj[findOneField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
       if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
@@ -681,7 +681,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
       return context.graphback.services[modelName].batchLoadData(
         relationship.relationForeignKey,
-        parent[model.primaryKey],
+        parent[model.primaryKey.name],
         args.filter,
         { ...context, graphback }
       );

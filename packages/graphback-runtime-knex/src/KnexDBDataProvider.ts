@@ -1,5 +1,4 @@
-import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError, QueryFilter } from '@graphback/core';
-import { GraphQLObjectType } from 'graphql';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError, QueryFilter, ModelDefinition } from '@graphback/core';
 import * as Knex from 'knex';
 import { buildQuery } from './knexQueryMapper';
 
@@ -17,15 +16,13 @@ import { buildQuery } from './knexQueryMapper';
 //tslint:disable-next-line: no-any
 export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Type> {
   protected db: Knex;
-  protected baseType: GraphQLObjectType;
   protected tableName: string;
   protected tableMap: ModelTableMap;
 
-  public constructor(baseType: GraphQLObjectType, db: Knex) {
+  public constructor(model: ModelDefinition, db: Knex) {
     this.db = db;
-    this.tableMap = buildModelTableMap(baseType);
+    this.tableMap = buildModelTableMap(model.graphqlType);
     this.tableName = this.tableMap.tableName;
-    this.baseType = baseType;
   }
 
   public async create(data: Type, context: GraphbackContext): Promise<Type> {

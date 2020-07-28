@@ -4,9 +4,10 @@
 import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
-import { filterModelTypes, GraphbackDataProvider } from '@graphback/core';
+import { filterModelTypes, GraphbackDataProvider, GraphbackCoreMetadata } from '@graphback/core';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
+import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
@@ -17,7 +18,21 @@ afterEach(() => {
 })
 
 const setup = async (schemaStr: string, config: { seedData?: { [tableName: string]: any[] | any } } = {}) => {
-  const schema = buildSchema(schemaStr)
+  const schema = buildSchema(schemaStr);
+  const defautCrudConfig = {
+    "create": true,
+    "update": true,
+    "findOne": true,
+    "find": true,
+    "delete": true,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true
+  }
+
+  const metadata = new GraphbackCoreMetadata({
+    crudMethods: defautCrudConfig
+  }, schema);
 
   const dbConfig = {
     client: 'sqlite3',
@@ -39,9 +54,9 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
   }
 
   const providers: { [name: string]: GraphbackDataProvider } = {}
-  const models = filterModelTypes(schema)
-  for (const modelType of models) {
-    providers[modelType.name] = new SQLiteKnexDBDataProvider(modelType, db);
+  const models = metadata.getModelDefinitions();
+  for (const model of models) {
+    providers[model.graphqlType.name] = new SQLiteKnexDBDataProvider(model, db);
   }
 
   return { schema, providers }

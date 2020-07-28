@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql'
+import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql'
 import { parseMetadata } from 'graphql-metadata'
 import { getUserTypesFromSchema } from '@graphql-toolkit/common'
 import { IResolvers } from '@graphql-tools/utils'
@@ -96,13 +96,17 @@ export class GraphbackCoreMetadata {
     crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
     // Whether to add delta queries
     const deltaSync = parseMetadata('delta', modelType);
+    const primaryKeyField = getPrimaryKey(modelType);
 
     return {
       relationships,
       crudOptions,
       graphqlType: modelType,
       config: { deltaSync },
-      primaryKey: getPrimaryKey(modelType).name
+      primaryKey: {
+        name: primaryKeyField.name,
+        type: getNamedType(primaryKeyField.type).name
+      }
     };
   }
 }
