@@ -1,7 +1,6 @@
 import { GraphQLInt, GraphQLFloat, GraphQLString } from 'graphql';
 import { TimeResolver, ObjectIDResolver, JSONResolver, JSONObjectResolver } from 'graphql-scalars';
 import { isSpecifiedGraphbackScalarType, GraphbackTime, GraphbackDateTime, GraphbackTimestamp, GraphbackDate, GraphbackObjectID, GraphbackJSON, GraphbackJSONObject, isSpecifiedGraphbackJSONScalarType } from "../src";
-import { sc } from 'graphql-compose';
 
 describe("Graphback scalars", () => {
   test('should return false for none GraphbackScalars', () => {
