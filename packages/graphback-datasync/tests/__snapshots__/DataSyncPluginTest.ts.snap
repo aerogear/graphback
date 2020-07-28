@@ -24,6 +24,7 @@ type Comment {
   @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
+  _version: Int
 }
 
 type CommentDelta {
@@ -42,6 +43,7 @@ type CommentDelta {
   @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
+  _version: Int
   _deleted: Boolean
 }
 
@@ -103,14 +105,14 @@ input MutateCommentInput {
   title: String
   description: String
   noteId: ID
-  updatedAt: String!
+  _version: Int!
 }
 
 input MutateNoteInput {
   id: ID!
   title: String
   description: String
-  updatedAt: String!
+  _version: Int!
 }
 
 type Mutation {
@@ -146,6 +148,7 @@ type Note {
   @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
+  _version: Int
 }
 
 type NoteDelta {
@@ -164,6 +167,7 @@ type NoteDelta {
   @db(type: 'timestamp')
   \\"\\"\\"
   updatedAt: String
+  _version: Int
   _deleted: Boolean
 }
 

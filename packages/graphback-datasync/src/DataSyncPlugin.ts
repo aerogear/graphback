@@ -1,5 +1,5 @@
 import { createVersionedInputFields,createVersionedFields } from "@graphback/codegen-schema";
-import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo } from 'graphql';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo, GraphQLInt } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
@@ -22,6 +22,7 @@ export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
  * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
+  protected conflictField: string = "_version";
 
   public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
     const schema = metadata.getSchema()
@@ -79,8 +80,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
         const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
         if (inputType) {
           inputType.addFields({
-            [fieldNames.updatedAt]: {
-              type: GraphQLNonNull(GraphQLString)
+            [this.conflictField]: {
+              type: GraphQLNonNull(GraphQLInt)
             }
           });
         }
@@ -158,6 +159,11 @@ export class DataSyncPlugin extends GraphbackPlugin {
       // metadata fields needed for @versioned
 
       modelTC.addFields(metadataFields);
+      modelTC.addFields({
+        [this.conflictField]: {
+          type: GraphQLInt
+        }
+      })
 
       const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
       if (inputType) {

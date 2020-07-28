@@ -25,6 +25,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
     data._deleted = false;
+    data._version = 1;
 
     return super.create(data, context);
   }
@@ -34,6 +35,11 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
 
     if (conflict !== undefined) {
       throw new ConflictError(conflict);
+    }
+
+    const currentVersion = data._version;
+    if (typeof (currentVersion) === "number") {
+      data._version = currentVersion + 1;
     }
 
     // TODO use findOneAndUpdate to check consistency afterwards
@@ -47,7 +53,11 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     }
 
     const { idField } = getDatabaseArguments(this.tableMap, data);
+    const currentVersion = data._version;
     data = {};
+    if (typeof (currentVersion) === "number") {
+      data._version = currentVersion + 1;
+    }
 
     this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
@@ -123,7 +133,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const projection = this.buildProjectionOption(context);
 
     if (projection) {
-      projection[fieldNames.updatedAt] = 1;
+      projection._version = 1;
       projection._deleted = 1
     }
 
@@ -131,10 +141,9 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     if (queryResult) {
       queryResult[idField.name] = queryResult._id;
       if (
-        queryResult[fieldNames.updatedAt] !== undefined &&
-        clientData[fieldNames.updatedAt].toString() !== queryResult[fieldNames.updatedAt].toString()
+        queryResult._version !== undefined &&
+        clientData._version !== queryResult._version
       ) {
-        queryResult[fieldNames.updatedAt] = queryResult[fieldNames.updatedAt].toString()
 
         return { serverState: queryResult, clientState: clientData };
       }

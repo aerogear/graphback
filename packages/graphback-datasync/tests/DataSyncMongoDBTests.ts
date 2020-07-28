@@ -76,7 +76,7 @@ scalar GraphbackObjectID
 
 describe('Soft deletion test', () => {
   let context: Context;
-  afterEach(() => context.server.stop());
+  afterEach(async () => context.server.stop());
 
   it('sets deleted to false on creation', async () => {
     context = await createTestingContext(postSchema);
@@ -98,13 +98,13 @@ describe('Soft deletion test', () => {
     advanceTo(deleteTime);
 
     // check count
-    let count = await Post.count({[fieldNames.updatedAt]: startTime });
+    let count = await Post.count({});
     expect(count).toEqual(1);
 
     // delete the Post
-    const deletedPost = await Post.delete({ _id, [fieldNames.updatedAt]: startTime }, {graphback: {services: {}, options: { selectedFields: ["_deleted", "updatedAt"]}}});
+    const deletedPost = await Post.delete({ _id, _version }, {graphback: {services: {}, options: { selectedFields: ["_deleted", "_version"]}}});
     expect(deletedPost._deleted).toEqual(true);
-    expect(deletedPost.updatedAt).toEqual(deleteTime);
+    expect(deletedPost._version).toEqual(2);
 
     // re check count after deletion
     count = await Post.count({});
@@ -154,17 +154,17 @@ describe('Soft deletion test', () => {
     const startTime = 1590679886048;
     const updateTime = 1590679887032;
     advanceTo(startTime);
-    const { _id } = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    const { id, _version } = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, "_version"]}}});
 
     // Update document once
     advanceTo(updateTime);
-    await Post.update({ _id, text: 'updated post text', updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    await Post.update({ id, text: 'updated post text', _version }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     // Try to update document again with older timestamp
-    await expect(Post.update({ _id, text: 'updated post text 2', updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+    await expect(Post.update({ id, text: 'updated post text 2', _version }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
 
     // Try to delete document with older timestamp
-    await expect(Post.delete({ _id, updatedAt: startTime }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+    await expect(Post.delete({ id, _version }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
   })
 
   it('sets updatedAt when field absent', async () => {
@@ -193,5 +193,44 @@ describe('Soft deletion test', () => {
     const deletedPost = await Post.delete({ _id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, fieldNames.updatedAt, "_deleted"]}}});
     expect(deletedPost[fieldNames.updatedAt]).toEqual(updateTime)
     expect(deletedPost._deleted).toEqual(true);
+  })
+
+  it('sets _version when created', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @datasync
+    """
+    type Post {
+      id: ID!
+      text: String!
+    }
+    `);
+
+    const { db, providers } = context;
+    const { Post } = providers;
+
+    const { id, _version } = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, "_version"]}}});
+    expect(_version).toEqual(1);
+  })
+
+  it('sets _version when updated', async () => {
+    context = await createTestingContext(`
+    """
+    @model
+    @datasync
+    """
+    type Post {
+      id: ID!
+      text: String!
+    }
+    `);
+
+    const { db, providers } = context;
+    const { Post } = providers;
+
+    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, "_version"]}}});
+    const { _version } = await Post.update({ id: createdPost.id, _version: createdPost._version, text: 'TestPost2' }, {graphback: {services: {}, options: { selectedFields: [...fields, "_version"]}}});
+    expect(_version).toEqual(2);
   })
 })
