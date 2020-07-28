@@ -1,5 +1,4 @@
-import { GraphQLObjectType } from 'graphql';
-import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput } from '@graphback/core';
+import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput, ModelDefinition } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { ConflictError, ConflictStateMap } from "../util";
@@ -10,8 +9,8 @@ import { DataSyncProvider } from "./DataSyncProvider";
  */
 export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
 
-  public constructor(baseType: GraphQLObjectType, client: any) {
-    super(baseType, client);
+  public constructor(model: ModelDefinition, client: any) {
+    super(model, client);
     applyIndexes([
       {
         key: {
@@ -60,7 +59,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const projection = this.buildProjectionOption(context);
     const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, { projection, returnOriginal: false });
     if (result.ok) {
-      return this.mapFields(result.value);
+      return result.value;
     }
 
     throw new NoDataError(`Could not delete from ${this.collectionName}`);
@@ -78,7 +77,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const data = await query;
 
     if (data) {
-      return this.mapFields(data);
+      return data;
     }
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }

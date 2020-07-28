@@ -47,6 +47,36 @@ Object {
 } ",
       "name": "CommentExpanded",
     },
+    Object {
+      "implementation": "fragment ModelWithGraphbackObjectIDPrimaryKeyFields on ModelWithGraphbackObjectIDPrimaryKey {
+   _id
+   metadata
+
+} ",
+      "name": "ModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "fragment ModelWithGraphbackObjectIDPrimaryKeyExpandedFields on ModelWithGraphbackObjectIDPrimaryKey {
+   _id
+   metadata
+
+} ",
+      "name": "ModelWithGraphbackObjectIDPrimaryKeyExpanded",
+    },
+    Object {
+      "implementation": "fragment ModelWithAnnotatedPrimaryKeyFields on ModelWithAnnotatedPrimaryKey {
+   email
+
+} ",
+      "name": "ModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "fragment ModelWithAnnotatedPrimaryKeyExpandedFields on ModelWithAnnotatedPrimaryKey {
+   email
+
+} ",
+      "name": "ModelWithAnnotatedPrimaryKeyExpanded",
+    },
   ],
   "mutations": Array [
     Object {
@@ -103,6 +133,60 @@ Object {
 ",
       "name": "deleteComment",
     },
+    Object {
+      "implementation": "mutation createModelWithGraphbackObjectIDPrimaryKey($input: CreateModelWithGraphbackObjectIDPrimaryKeyInput!) {
+  createModelWithGraphbackObjectIDPrimaryKey(input: $input) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+}
+",
+      "name": "createModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "mutation updateModelWithGraphbackObjectIDPrimaryKey($input: MutateModelWithGraphbackObjectIDPrimaryKeyInput!) {
+  updateModelWithGraphbackObjectIDPrimaryKey(input: $input) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+}
+",
+      "name": "updateModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "mutation deleteModelWithGraphbackObjectIDPrimaryKey($input: MutateModelWithGraphbackObjectIDPrimaryKeyInput!) {
+  deleteModelWithGraphbackObjectIDPrimaryKey(input: $input) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+}
+",
+      "name": "deleteModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "mutation createModelWithAnnotatedPrimaryKey($input: CreateModelWithAnnotatedPrimaryKeyInput!) {
+  createModelWithAnnotatedPrimaryKey(input: $input) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+}
+",
+      "name": "createModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "mutation updateModelWithAnnotatedPrimaryKey($input: MutateModelWithAnnotatedPrimaryKeyInput!) {
+  updateModelWithAnnotatedPrimaryKey(input: $input) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+}
+",
+      "name": "updateModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "mutation deleteModelWithAnnotatedPrimaryKey($input: MutateModelWithAnnotatedPrimaryKeyInput!) {
+  deleteModelWithAnnotatedPrimaryKey(input: $input) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+}
+",
+      "name": "deleteModelWithAnnotatedPrimaryKey",
+    },
   ],
   "queries": Array [
     Object {
@@ -146,6 +230,48 @@ Object {
     }
   }",
       "name": "getComment",
+    },
+    Object {
+      "implementation": "query findModelWithGraphbackObjectIDPrimaryKeys($filter: ModelWithGraphbackObjectIDPrimaryKeyFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findModelWithGraphbackObjectIDPrimaryKeys(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...ModelWithGraphbackObjectIDPrimaryKeyExpandedFields
+      }
+      offset
+      limit
+      count
+    }
+  }",
+      "name": "findModelWithGraphbackObjectIDPrimaryKeys",
+    },
+    Object {
+      "implementation": "query getModelWithGraphbackObjectIDPrimaryKey($id: GraphbackObjectID!) {
+    getModelWithGraphbackObjectIDPrimaryKey(id: $id) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyExpandedFields
+    }
+  }",
+      "name": "getModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "query findModelWithAnnotatedPrimaryKeys($filter: ModelWithAnnotatedPrimaryKeyFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findModelWithAnnotatedPrimaryKeys(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...ModelWithAnnotatedPrimaryKeyExpandedFields
+      }
+      offset
+      limit
+      count
+    }
+  }",
+      "name": "findModelWithAnnotatedPrimaryKeys",
+    },
+    Object {
+      "implementation": "query getModelWithAnnotatedPrimaryKey($id: String!) {
+    getModelWithAnnotatedPrimaryKey(id: $id) {
+      ...ModelWithAnnotatedPrimaryKeyExpandedFields
+    }
+  }",
+      "name": "getModelWithAnnotatedPrimaryKey",
     },
   ],
   "subscriptions": Array [
@@ -196,6 +322,54 @@ Object {
   }
 } ",
       "name": "deletedComment",
+    },
+    Object {
+      "implementation": "subscription newModelWithGraphbackObjectIDPrimaryKey($filter: ModelWithGraphbackObjectIDPrimaryKeySubscriptionFilter) {
+  newModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+} ",
+      "name": "newModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "subscription updatedModelWithGraphbackObjectIDPrimaryKey($filter: ModelWithGraphbackObjectIDPrimaryKeySubscriptionFilter) {
+  updatedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+} ",
+      "name": "updatedModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "subscription deletedModelWithGraphbackObjectIDPrimaryKey($filter: ModelWithGraphbackObjectIDPrimaryKeySubscriptionFilter) {
+  deletedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+} ",
+      "name": "deletedModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "subscription newModelWithAnnotatedPrimaryKey($filter: ModelWithAnnotatedPrimaryKeySubscriptionFilter) {
+  newModelWithAnnotatedPrimaryKey(filter: $filter) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+} ",
+      "name": "newModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "subscription updatedModelWithAnnotatedPrimaryKey($filter: ModelWithAnnotatedPrimaryKeySubscriptionFilter) {
+  updatedModelWithAnnotatedPrimaryKey(filter: $filter) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+} ",
+      "name": "updatedModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "subscription deletedModelWithAnnotatedPrimaryKey($filter: ModelWithAnnotatedPrimaryKeySubscriptionFilter) {
+  deletedModelWithAnnotatedPrimaryKey(filter: $filter) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+} ",
+      "name": "deletedModelWithAnnotatedPrimaryKey",
     },
   ],
 }
@@ -263,6 +437,52 @@ export const CommentFragment = gql\`
 \`
 ",
       "name": "CommentExpanded",
+    },
+    Object {
+      "implementation": "
+
+export const ModelWithGraphbackObjectIDPrimaryKeyFragment = gql\`
+  fragment ModelWithGraphbackObjectIDPrimaryKeyFields on ModelWithGraphbackObjectIDPrimaryKey {
+   _id
+   metadata
+
+} 
+\`
+",
+      "name": "ModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const ModelWithGraphbackObjectIDPrimaryKeyExpandedFragment = gql\`
+  fragment ModelWithGraphbackObjectIDPrimaryKeyExpandedFields on ModelWithGraphbackObjectIDPrimaryKey {
+   _id
+   metadata
+
+} 
+\`
+",
+      "name": "ModelWithGraphbackObjectIDPrimaryKeyExpanded",
+    },
+    Object {
+      "implementation": "
+
+export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
+  fragment ModelWithAnnotatedPrimaryKeyFields on ModelWithAnnotatedPrimaryKey {
+   email
+
+} 
+\`
+",
+      "name": "ModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "export const ModelWithAnnotatedPrimaryKeyExpandedFragment = gql\`
+  fragment ModelWithAnnotatedPrimaryKeyExpandedFields on ModelWithAnnotatedPrimaryKey {
+   email
+
+} 
+\`
+",
+      "name": "ModelWithAnnotatedPrimaryKeyExpanded",
     },
   ],
   "mutations": Array [
@@ -350,6 +570,90 @@ export const CommentFragment = gql\`
 ",
       "name": "deleteComment",
     },
+    Object {
+      "implementation": "export const createModelWithGraphbackObjectIDPrimaryKey = gql\`
+  mutation createModelWithGraphbackObjectIDPrimaryKey($input: CreateModelWithGraphbackObjectIDPrimaryKeyInput!) {
+  createModelWithGraphbackObjectIDPrimaryKey(input: $input) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+}
+
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
+\`
+",
+      "name": "createModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const updateModelWithGraphbackObjectIDPrimaryKey = gql\`
+  mutation updateModelWithGraphbackObjectIDPrimaryKey($input: MutateModelWithGraphbackObjectIDPrimaryKeyInput!) {
+  updateModelWithGraphbackObjectIDPrimaryKey(input: $input) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+}
+
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
+\`
+",
+      "name": "updateModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const deleteModelWithGraphbackObjectIDPrimaryKey = gql\`
+  mutation deleteModelWithGraphbackObjectIDPrimaryKey($input: MutateModelWithGraphbackObjectIDPrimaryKeyInput!) {
+  deleteModelWithGraphbackObjectIDPrimaryKey(input: $input) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+}
+
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
+\`
+",
+      "name": "deleteModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const createModelWithAnnotatedPrimaryKey = gql\`
+  mutation createModelWithAnnotatedPrimaryKey($input: CreateModelWithAnnotatedPrimaryKeyInput!) {
+  createModelWithAnnotatedPrimaryKey(input: $input) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+}
+
+
+  \${ModelWithAnnotatedPrimaryKeyFragment}
+\`
+",
+      "name": "createModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "export const updateModelWithAnnotatedPrimaryKey = gql\`
+  mutation updateModelWithAnnotatedPrimaryKey($input: MutateModelWithAnnotatedPrimaryKeyInput!) {
+  updateModelWithAnnotatedPrimaryKey(input: $input) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+}
+
+
+  \${ModelWithAnnotatedPrimaryKeyFragment}
+\`
+",
+      "name": "updateModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "export const deleteModelWithAnnotatedPrimaryKey = gql\`
+  mutation deleteModelWithAnnotatedPrimaryKey($input: MutateModelWithAnnotatedPrimaryKeyInput!) {
+  deleteModelWithAnnotatedPrimaryKey(input: $input) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+}
+
+
+  \${ModelWithAnnotatedPrimaryKeyFragment}
+\`
+",
+      "name": "deleteModelWithAnnotatedPrimaryKey",
+    },
   ],
   "queries": Array [
     Object {
@@ -413,6 +717,68 @@ export const CommentFragment = gql\`
 \`
 ",
       "name": "getComment",
+    },
+    Object {
+      "implementation": "export const findModelWithGraphbackObjectIDPrimaryKeys = gql\`
+  query findModelWithGraphbackObjectIDPrimaryKeys($filter: ModelWithGraphbackObjectIDPrimaryKeyFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findModelWithGraphbackObjectIDPrimaryKeys(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...ModelWithGraphbackObjectIDPrimaryKeyExpandedFields
+      }
+      offset
+      limit
+      count
+    }
+  }
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyExpandedFragment}
+\`
+",
+      "name": "findModelWithGraphbackObjectIDPrimaryKeys",
+    },
+    Object {
+      "implementation": "export const getModelWithGraphbackObjectIDPrimaryKey = gql\`
+  query getModelWithGraphbackObjectIDPrimaryKey($id: GraphbackObjectID!) {
+    getModelWithGraphbackObjectIDPrimaryKey(id: $id) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyExpandedFields
+    }
+  }
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyExpandedFragment}
+\`
+",
+      "name": "getModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const findModelWithAnnotatedPrimaryKeys = gql\`
+  query findModelWithAnnotatedPrimaryKeys($filter: ModelWithAnnotatedPrimaryKeyFilter, $page: PageRequest, $orderBy: OrderByInput) {
+    findModelWithAnnotatedPrimaryKeys(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...ModelWithAnnotatedPrimaryKeyExpandedFields
+      }
+      offset
+      limit
+      count
+    }
+  }
+
+  \${ModelWithAnnotatedPrimaryKeyExpandedFragment}
+\`
+",
+      "name": "findModelWithAnnotatedPrimaryKeys",
+    },
+    Object {
+      "implementation": "export const getModelWithAnnotatedPrimaryKey = gql\`
+  query getModelWithAnnotatedPrimaryKey($id: String!) {
+    getModelWithAnnotatedPrimaryKey(id: $id) {
+      ...ModelWithAnnotatedPrimaryKeyExpandedFields
+    }
+  }
+
+  \${ModelWithAnnotatedPrimaryKeyExpandedFragment}
+\`
+",
+      "name": "getModelWithAnnotatedPrimaryKey",
     },
   ],
   "subscriptions": Array [
@@ -493,6 +859,84 @@ export const CommentFragment = gql\`
 \`
 ",
       "name": "deletedComment",
+    },
+    Object {
+      "implementation": "export const newModelWithGraphbackObjectIDPrimaryKey = gql\`
+  subscription newModelWithGraphbackObjectIDPrimaryKey($filter: ModelWithGraphbackObjectIDPrimaryKeySubscriptionFilter) {
+  newModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+} 
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
+\`
+",
+      "name": "newModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const updatedModelWithGraphbackObjectIDPrimaryKey = gql\`
+  subscription updatedModelWithGraphbackObjectIDPrimaryKey($filter: ModelWithGraphbackObjectIDPrimaryKeySubscriptionFilter) {
+  updatedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+} 
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
+\`
+",
+      "name": "updatedModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const deletedModelWithGraphbackObjectIDPrimaryKey = gql\`
+  subscription deletedModelWithGraphbackObjectIDPrimaryKey($filter: ModelWithGraphbackObjectIDPrimaryKeySubscriptionFilter) {
+  deletedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
+      ...ModelWithGraphbackObjectIDPrimaryKeyFields
+  }
+} 
+
+  \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
+\`
+",
+      "name": "deletedModelWithGraphbackObjectIDPrimaryKey",
+    },
+    Object {
+      "implementation": "export const newModelWithAnnotatedPrimaryKey = gql\`
+  subscription newModelWithAnnotatedPrimaryKey($filter: ModelWithAnnotatedPrimaryKeySubscriptionFilter) {
+  newModelWithAnnotatedPrimaryKey(filter: $filter) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+} 
+
+  \${ModelWithAnnotatedPrimaryKeyFragment}
+\`
+",
+      "name": "newModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "export const updatedModelWithAnnotatedPrimaryKey = gql\`
+  subscription updatedModelWithAnnotatedPrimaryKey($filter: ModelWithAnnotatedPrimaryKeySubscriptionFilter) {
+  updatedModelWithAnnotatedPrimaryKey(filter: $filter) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+} 
+
+  \${ModelWithAnnotatedPrimaryKeyFragment}
+\`
+",
+      "name": "updatedModelWithAnnotatedPrimaryKey",
+    },
+    Object {
+      "implementation": "export const deletedModelWithAnnotatedPrimaryKey = gql\`
+  subscription deletedModelWithAnnotatedPrimaryKey($filter: ModelWithAnnotatedPrimaryKeySubscriptionFilter) {
+  deletedModelWithAnnotatedPrimaryKey(filter: $filter) {
+      ...ModelWithAnnotatedPrimaryKeyFields
+  }
+} 
+
+  \${ModelWithAnnotatedPrimaryKeyFragment}
+\`
+",
+      "name": "deletedModelWithAnnotatedPrimaryKey",
     },
   ],
 }

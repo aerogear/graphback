@@ -33,7 +33,7 @@ export const getSelectedFieldsFromResolverInfo = (info: GraphQLResolveInfo, mode
           if (foundRelationship.kind !== "oneToMany") {
             selectedField = foundRelationship.relationForeignKey;
           } else {
-            selectedField = model.primaryKey;
+            selectedField = model.primaryKey.name;
           }
         } else {
           selectedField = entry[0];

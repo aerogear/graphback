@@ -1,6 +1,5 @@
-import { GraphQLObjectType } from 'graphql';
 import { ObjectId, Db, Cursor } from "mongodb"
-import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError } from '@graphback/core';
+import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, PrimaryKeyDescriptor } from '@graphback/core';
 import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
 import { findAndCreateIndexes } from "./utils/createIndexes";
@@ -19,13 +18,14 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   protected fieldTransformMap: FieldTransformMap;
   protected coerceTSFields: boolean;
 
-  public constructor(baseType: GraphQLObjectType, db: any) {
+  public constructor(model: ModelDefinition, db: any) {
+    this.verifyMongoDBPrimaryKey(model.graphqlType.name, model.primaryKey);
     this.db = db;
-    this.tableMap = buildModelTableMap(baseType);
+    this.tableMap = buildModelTableMap(model.graphqlType);
     this.collectionName = this.tableMap.tableName;
-    this.fieldTransformMap = getFieldTransformations(baseType);
-    this.coerceTSFields = parseMetadata("versioned", baseType)
-    findAndCreateIndexes(baseType, this.db.collection(this.collectionName)).catch((e: Error) => {
+    this.fieldTransformMap = getFieldTransformations(model.graphqlType);
+    this.coerceTSFields = parseMetadata("versioned", model.graphqlType);
+    findAndCreateIndexes(model.graphqlType, this.db.collection(this.collectionName)).catch((e: Error) => {
       throw e
     })
   }
@@ -45,8 +45,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
     const result = await this.db.collection(this.collectionName).insertOne(data);
     if (result && result.ops) {
-
-      return this.mapFields(result.ops[0]);
+      return result.ops[0];
     }
     throw new NoDataError(`Cannot create ${this.collectionName}`);
   }
@@ -69,8 +68,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       const projection = this.buildProjectionOption(context);
       const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId }, { projection }).toArray();
       if (queryResult && queryResult[0]) {
-
-        return this.mapFields(queryResult[0]);
+        return queryResult[0];
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -83,30 +81,27 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
     }
 
-    const objectId = new ObjectId(idField.value);
     const projection = this.buildProjectionOption(context);
+    const objectId = new ObjectId(idField.value);
     const queryResult = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection });
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: objectId });
       if (result.result.ok) {
-
-        return this.mapFields(queryResult);
+        return queryResult;
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
   public async findOne(filter: any, context: GraphbackContext): Promise<Type> {
-    if (filter.id) {
-      filter = { _id: new ObjectId(filter.id) }
-    }
     const projection = this.buildProjectionOption(context);
     const query = this.db.collection(this.collectionName).findOne(filter, { projection });
     const data = await query;
 
     if (data) {
-      return this.mapFields(data);
+      return data;
     }
+
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
@@ -116,10 +111,9 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     const data = await this.usePage(this.sortQuery(query, orderBy), page);
 
     if (data) {
-      return data.map((one: any) => {
-        return this.mapFields(one);
-      });
+      return data;
     }
+
     throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
@@ -128,35 +122,18 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   }
 
   public async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]> {
-    let result: any;
-
-    const { idField } = getDatabaseArguments(this.tableMap);
     const projection = this.buildProjectionOption(context);
+    filter = filter || {};
+    filter[relationField] = { $in: ids };
 
-    if (relationField === idField.name) {
-      relationField = "_id";
-      const array = ids.map((value: string) => {
-        return new ObjectId(value);
-      });
-      result = await this.db.collection(this.collectionName).find(buildQuery({ _id: { $in: array }, ...filter }, this.coerceTSFields), { projection }).toArray();
-    } else {
-      let query: any = {};
-      const array = ids.map((value: any) => {
-        return value.toString();
-      });
-      query = {
-        ...filter
-      }
-      query[relationField] = { $in: array };
-      result = await this.db.collection(this.collectionName).find(buildQuery(query, this.coerceTSFields), { projection }).toArray();
-    }
+    const result = await this.db.collection(this.collectionName).find(buildQuery(filter, this.coerceTSFields), { projection }).toArray();
 
     if (result) {
       const resultsById = ids.map((objId: string) => {
         const objectsForId: any = [];
         for (const data of result) {
           if (data[relationField].toString() === objId.toString()) {
-            objectsForId.push(this.mapFields(data));
+            objectsForId.push(data);
           }
         }
 
@@ -168,14 +145,6 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
     throw new NoDataError(`No results for ${this.collectionName} query and batch read with filter: ${JSON.stringify(filter)}`);
 
-  }
-
-  protected mapFields(document: any): any {
-    if (document?._id) {
-      document.id = document._id;
-    }
-
-    return document;
   }
 
   protected buildProjectionOption(context: GraphbackContext) {
@@ -190,6 +159,13 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
           [field]: 1
         }
       }, {});
+  }
+
+  private verifyMongoDBPrimaryKey(modelName: string, primaryKeyDesriptor: PrimaryKeyDescriptor ) {
+    if (primaryKeyDesriptor.name === "_id" && primaryKeyDesriptor.type === "GraphbackObjectID") {
+      return;
+    }
+    throw Error(`Model "${modelName}" must contain a "_id: GraphbackObjectID" primary key. Visit https://graphback.dev/docs/model/datamodel#mongodb to see how to set up one for your MongoDB model.`);
   }
 
   private sortQuery(query: Cursor<any>, orderBy: GraphbackOrderBy): Cursor<any> {
@@ -208,7 +184,6 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
     return query.sort(sortOrder);
   }
-
 
   private usePage(query: Cursor<any>, page?: GraphbackPage) {
     if (!page) {

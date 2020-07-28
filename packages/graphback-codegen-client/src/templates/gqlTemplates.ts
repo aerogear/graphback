@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getPrimaryKey, getInputTypeName } from '@graphback/core'
+import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition, getInputTypeName } from '@graphback/core'
 import { GraphQLObjectType } from 'graphql';
 import { ClientTemplate } from './ClientTemplates';
 import { buildReturnFields, printReturnFields } from './fragmentFields';
@@ -21,12 +21,12 @@ ${returnFieldsString}
 } `
 }
 
-export const findOneQuery = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ONE)
+export const findOneQuery = (t: ModelDefinition) => {
+  const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ONE)
 
-  return `query ${fieldName}($id: ID!) {
+  return `query ${fieldName}($id: ${t.primaryKey.type}!) {
     ${fieldName}(id: $id) {
-      ...${t.name}ExpandedFields
+      ...${t.graphqlType.name}ExpandedFields
     }
   }`
 }
@@ -123,7 +123,7 @@ export const createQueries = (types: ModelDefinition[]) => {
     if (t.crudOptions.findOne) {
       queries.push({
         name: getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ONE),
-        implementation: findOneQuery(t.graphqlType)
+        implementation: findOneQuery(t)
       })
     }
   })

@@ -64,7 +64,7 @@ type Note {
 
 ### MongoDB
 
-If you are using MongoDB you should use `_id: ObjectID`, as `_id` in MongoDB documents is reserved for the primary key.
+If you are using MongoDB you should use `_id: GraphbackObjectID`, as `_id` in MongoDB documents is reserved for the primary key.
 
 ```graphql
 """
@@ -72,11 +72,11 @@ If you are using MongoDB you should use `_id: ObjectID`, as `_id` in MongoDB doc
 """
 type Note {
   """Primary key format for MongoDB"""
-  _id: ObjectID!
+  _id: GraphbackObjectID!
   ...
 }
 
-scalar ObjectID
+scalar GraphbackObjectID
 ```
 
 ## Relationships

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType, ModelDefinition } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -136,11 +136,13 @@ function getModelInputFields(schemaComposer: SchemaComposer<any>, modelType: Gra
   return inputFields;
 }
 
-export function buildFindOneFieldMap(modelType: GraphQLObjectType): GraphQLInputFieldMap {
+export function buildFindOneFieldMap(modelType: ModelDefinition, schemaComposer: SchemaComposer<any>): GraphQLInputFieldMap {
+  const { type } = modelType.primaryKey;
+
   return {
     id: {
       name: "id",
-      type: GraphQLNonNull(GraphQLID),
+      type: GraphQLNonNull(schemaComposer.getAnyTC(type).getType()),
       description: undefined,
       extensions: undefined
     }

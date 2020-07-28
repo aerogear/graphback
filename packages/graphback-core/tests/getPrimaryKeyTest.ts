@@ -21,6 +21,25 @@ test('should get primary from id: ID field', () => {
     expect(primaryKey.name).toEqual('id');
 });
 
+test('should get primary from _id: GraphbackObjectID field', () => {
+  const schema = buildSchema(`
+  """ @model """
+  type User {
+      _id: GraphbackObjectID!
+      email: String!
+  }
+  scalar GraphbackObjectID
+  `);
+
+  const models = getUserTypesFromSchema(schema);
+
+  const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
+
+  const primaryKey = getPrimaryKey(userModel);
+
+  expect(primaryKey.name).toEqual('_id');
+});
+
 test('should get primary key from @id annotation', () => {
     const schema = buildSchema(`
     """ @model """
@@ -32,7 +51,7 @@ test('should get primary key from @id annotation', () => {
         email: String!
         name: String
     }
-    
+
     """ @model """
     type Note {
         """
@@ -86,4 +105,23 @@ test('should throw an error if multiple @id annotations', () => {
     const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
 
     expect(() => getPrimaryKey(userModel)).toThrow()
+});
+
+test('should throw an error if multiple @id annotations', () => {
+  const schema = buildSchema(`
+  """ @model """
+  type User {
+      id: ID!
+      _id: GraphbackObjectID!
+      email: String!
+      name: String
+  }
+  scalar GraphbackObjectID
+  `);
+
+  const models = getUserTypesFromSchema(schema);
+
+  const userModel = models.find((graphqlType: GraphQLObjectType) => graphqlType.name === 'User');
+
+  expect(() => getPrimaryKey(userModel)).toThrow()
 });

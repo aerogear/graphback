@@ -1,12 +1,20 @@
-import { GraphQLObjectType, GraphQLField } from "graphql";
+import { GraphQLObjectType } from "graphql";
 import { FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
 import { GraphbackCRUDGeneratorConfig } from "./GraphbackCRUDGeneratorConfig"
+
+/**
+ * Describe the name and type of primary key
+ */
+export type PrimaryKeyDescriptor = {
+  name: string,
+  type: string
+}
 
 /**
  * Used to encapsulate configuration for the type
  */
 export type ModelDefinition = {
-  primaryKey: string
+  primaryKey: PrimaryKeyDescriptor,
   graphqlType: GraphQLObjectType,
   relationships: FieldRelationshipMetadata[]
   crudOptions: GraphbackCRUDGeneratorConfig,

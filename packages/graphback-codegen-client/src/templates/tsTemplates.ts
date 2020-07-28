@@ -3,13 +3,13 @@ import { GraphQLObjectType } from 'graphql'
 import { ClientTemplate } from './ClientTemplates'
 import { createMutation, deleteMutation, expandedFragment, findOneQuery, findQuery, fragment, subscription, updateMutation } from './gqlTemplates'
 
-const findOneQueryTS = (t: GraphQLObjectType) => {
-  const fieldName = getFieldName(t.name, GraphbackOperationType.FIND_ONE)
+const findOneQueryTS = (t: ModelDefinition) => {
+  const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ONE)
 
   return `export const ${fieldName} = gql\`
   ${findOneQuery(t)}
 
-  \$\{${t.name}ExpandedFragment}
+  \$\{${t.graphqlType.name}ExpandedFragment}
 \`
 `
 }
@@ -115,7 +115,7 @@ export const createQueriesTS = (types: ModelDefinition[]) => {
     if (model.crudOptions.findOne) {
       queries.push({
         name: getFieldName(t.name, GraphbackOperationType.FIND_ONE),
-        implementation: findOneQueryTS(t)
+        implementation: findOneQueryTS(model)
       })
     }
   })

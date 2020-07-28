@@ -5,7 +5,7 @@ import { createTestingContext, Context } from "./__util__";
 describe('MongoDBDataProvider Advanced Filtering', () => {
 
     interface Post {
-      id: ObjectID;
+      _id: ObjectID;
       text: string;
       likes: number;
     }
@@ -18,10 +18,12 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
       @model
       """
       type Post {
-      id: ID!
+      _id: GraphbackObjectID
       text: String
       likes: Int
       }
+
+      scalar GraphbackObjectID
       `;
 
     const defaultPostSeed = [
@@ -281,9 +283,11 @@ describe('queryBuilder scalar filtering', () => {
     @versioned
     """
     type Post {
-    id: ID!
+    _id: GraphbackObjectID
     text: String
     }
+
+    scalar GraphbackObjectID
     `)
     const startTime = 1590679886048;
     advanceTo(startTime);

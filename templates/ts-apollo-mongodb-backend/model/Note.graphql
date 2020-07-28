@@ -1,6 +1,6 @@
 """ @model """
 type Note {
-  id: ID!
+  _id: GraphbackObjectID!
   title: String!
   description: String
   """
@@ -11,7 +11,9 @@ type Note {
 
 """ @model """
 type Comment {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   description: String
 }
+
+scalar GraphbackObjectID

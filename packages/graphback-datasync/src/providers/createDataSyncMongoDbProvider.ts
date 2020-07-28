@@ -12,9 +12,9 @@ import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
 export function createDataSyncMongoDbProvider(db: Db): (...args: any[]) => GraphbackDataProvider {
   return (model: ModelDefinition): GraphbackDataProvider => {
     if (isDataSyncModel(model)) {
-      return new DataSyncMongoDBDataProvider(model.graphqlType, db)
+      return new DataSyncMongoDBDataProvider(model, db);
     } else {
-      return new MongoDBDataProvider(model.graphqlType, db)
+      return new MongoDBDataProvider(model, db);
     }
   }
 }

@@ -9,6 +9,6 @@ import { KnexDBDataProvider } from './KnexDBDataProvider';
  */
 export function createKnexDbProvider(db: Knex) {
   return (model: ModelDefinition): GraphbackDataProvider => {
-    return new KnexDBDataProvider(model.graphqlType, db)
+    return new KnexDBDataProvider(model, db);
   }
 }

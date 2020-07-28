@@ -29,7 +29,7 @@ const notesId = [];
 const commentId = [];
 const metadataId = [];
 
-const modelText = readFileSync("./mock.graphql").toString();
+const modelText = readFileSync("./mongodb-model.graphql").toString();
 const createdAt = new Date();
 const objectId = new ObjectID("507f191e810c19729de860ea");
 
@@ -84,8 +84,6 @@ afterAll(async () => {
   return mongoClient.close();
 });
 
-const date = new Date();
-
 async function seedDatabase(db: Db) {
   const notes = [
     {
@@ -111,7 +109,7 @@ async function seedDatabase(db: Db) {
 
   for (const note of notes) {
     const { ops } = await db.collection("note").insertOne(note);
-    notesId.push(ops[0]._id.toString());
+    notesId.push(ops[0]._id);
   }
 
   const commentMetadata = [
@@ -125,7 +123,7 @@ async function seedDatabase(db: Db) {
 
   for (const metadata of commentMetadata) {
     const { ops } = await db.collection('commentmetadata').insertOne(metadata);
-    metadataId.push(ops[0]._id.toString());
+    metadataId.push(ops[0]._id);
   }
 
   const comments = [
@@ -134,8 +132,8 @@ async function seedDatabase(db: Db) {
       description: 'Note A Comment Description',
       createdAt,
       objectId,
-      noteId: notesId[0],
-      metadataId: metadataId[0],
+      noteId:  notesId[0],
+      metadataId:  metadataId[0],
       ratings: [4, 4, 5, 2]
     },
     {
@@ -144,14 +142,14 @@ async function seedDatabase(db: Db) {
       createdAt,
       objectId,
       ratings: null,
-      noteId: notesId[0],
-      metadataId: metadataId[1]
+      noteId:  notesId[0],
+      metadataId:  metadataId[1]
     }
   ]
 
   for (const comment of comments) {
     const { ops } = await db.collection('comment').insertOne(comment);
-    commentId.push(ops[0]._id.toString())
+    commentId.push(ops[0]._id);
   }
 }
 
@@ -161,14 +159,14 @@ test('Find all notes', async () => {
   expect(data.findNotes).toEqual({
     items: [
       {
-        id: notesId[0],
+        _id:  notesId[0],
         createdAt,
         title: 'Note A',
         description: 'Note A Description',
         tasks: [],
         comments: [
           {
-            id: commentId[0],
+            _id:  commentId[0],
             objectId,
             createdAt: createdAt.getTime(),
             text: 'Note A Comment',
@@ -176,7 +174,7 @@ test('Find all notes', async () => {
             ratings: [4, 4, 5, 2]
           },
           {
-            id: commentId[1],
+            _id:  commentId[1],
             objectId,
             createdAt: createdAt.getTime(),
             text: 'Note A Comment 2',
@@ -186,7 +184,7 @@ test('Find all notes', async () => {
         ]
       },
       {
-        id: notesId[1],
+        _id:  notesId[1],
         title: 'Note B',
         createdAt,
         description: 'Note B Description',
@@ -218,7 +216,7 @@ test('Find all notes except the first', async () => {
   expect(data.findNotes).toEqual({
     items: [
       {
-        id: notesId[1],
+        _id:  notesId[1],
         createdAt,
         title: 'Note B',
         description: 'Note B Description',
@@ -250,14 +248,14 @@ test('Find at most one note', async () => {
   expect(data.findNotes).toEqual({
     items: [
       {
-        id: notesId[0],
+        _id:  notesId[0],
         createdAt,
         title: 'Note A',
         description: 'Note A Description',
         tasks: [],
         comments: [
           {
-            id: commentId[0],
+            _id:  commentId[0],
             objectId,
             createdAt: createdAt.getTime(),
             text: 'Note A Comment',
@@ -265,7 +263,7 @@ test('Find at most one note', async () => {
             ratings: [4, 4, 5, 2]
           },
           {
-            id: commentId[1],
+            _id:  commentId[1],
             objectId,
             createdAt: createdAt.getTime(),
             text: 'Note A Comment 2',
@@ -288,38 +286,38 @@ test('Find all comments', async () => {
   expect(data.findComments).toEqual({
     items: [
       {
-        id: commentId[0],
+        _id:  commentId[0],
         objectId,
         createdAt: createdAt.getTime(),
         text: 'Note A Comment',
         description: 'Note A Comment Description',
         ratings: [4, 4, 5, 2],
         note: {
-          id: notesId[0],
+          _id:  notesId[0],
           createdAt,
           title: 'Note A',
           description: 'Note A Description'
         },
         metadata: {
-          id: metadataId[0],
+          _id:  metadataId[0],
           opened: true
         }
       },
       {
-        id: commentId[1],
+        _id:  commentId[1],
         objectId,
         createdAt: createdAt.getTime(),
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
         ratings: null,
         note: {
-          id: notesId[0],
+          _id:  notesId[0],
           createdAt,
           title: 'Note A',
           description: 'Note A Description'
         },
         metadata: {
-          id: metadataId[1],
+          _id:  metadataId[1],
           opened: false
         }
       }
@@ -344,38 +342,38 @@ test('filter comments using built in scalars', async () => {
   expect(data.findComments).toEqual({
     items: [
       {
-        id: commentId[0],
+        _id:  commentId[0],
         createdAt: createdAt.getTime(),
         objectId,
         text: 'Note A Comment',
         description: 'Note A Comment Description',
         ratings: [4, 4, 5, 2],
         note: {
-          id: notesId[0],
+          _id:  notesId[0],
           createdAt,
           title: 'Note A',
           description: 'Note A Description'
         },
         metadata: {
-          id: metadataId[0],
+          _id:  metadataId[0],
           opened: true
         }
       },
       {
-        id: commentId[1],
+        _id:  commentId[1],
         createdAt: createdAt.getTime(),
         objectId,
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
         ratings: null,
         note: {
-          id: notesId[0],
+          _id:  notesId[0],
           createdAt,
           title: 'Note A',
           description: 'Note A Description'
         },
         metadata: {
-          id: metadataId[1],
+          _id:  metadataId[1],
           opened: false
         }
       }
@@ -391,14 +389,14 @@ test('Note 1 should be defined', async () => {
   expect(response.data).toBeDefined();
   const notes = response.data.getNote;
   expect(notes).toEqual({
-    id: notesId[0],
+    _id:  notesId[0],
     title: 'Note A',
     createdAt,
     description: 'Note A Description',
     tasks: [],
     comments: [
       {
-        id: commentId[0],
+        _id:  commentId[0],
         createdAt: createdAt.getTime(),
         objectId,
         text: 'Note A Comment',
@@ -406,7 +404,7 @@ test('Note 1 should be defined', async () => {
         ratings: [4, 4, 5, 2]
       },
       {
-        id: commentId[1],
+        _id:  commentId[1],
         createdAt: createdAt.getTime(),
         objectId,
         text: 'Note A Comment 2',
@@ -421,7 +419,7 @@ test('Find at most one comment on Note 1', async () => {
   const response = await client.query({
     operationName: "findComments",
     query: documents,
-    variables: { filter: { noteId: { eq: notesId[0] } }, page: { limit: 1 } }
+    variables: { filter: { noteId:  { eq: notesId[0] } }, page: { limit: 1 } }
   });
 
   expect(response.data).toBeDefined()
@@ -429,19 +427,19 @@ test('Find at most one comment on Note 1', async () => {
   expect(comments.items).toHaveLength(1);
   expect(comments.items).toEqual([
     {
-      id: commentId[0],
+      _id:  commentId[0],
       createdAt: createdAt.getTime(),
       objectId,
       text: 'Note A Comment',
       description: 'Note A Comment Description',
       ratings: [4, 4, 5, 2],
       metadata: {
-        id: metadataId[0],
+        _id:  metadataId[0],
         opened: true,
       },
       note: {
         description: "Note A Description",
-        id: notesId[0],
+        _id:  notesId[0],
         createdAt,
         title: "Note A",
       },
@@ -453,7 +451,7 @@ test('Find comments on Note 1 except first', async () => {
   const response = await client.query({
     operationName: "findComments",
     query: documents,
-    variables: { filter: { noteId: { eq: notesId[0] } }, page: { offset: 1 } }
+    variables: { filter: { noteId:  { eq: notesId[0] } }, page: { offset: 1 } }
   });
 
   expect(response.data).toBeDefined()
@@ -462,21 +460,21 @@ test('Find comments on Note 1 except first', async () => {
   expect(notes).toEqual({
     items: [
       {
-        id: commentId[1],
+        _id:  commentId[1],
         createdAt: createdAt.getTime(),
         objectId,
         text: 'Note A Comment 2',
         description: 'Note A Comment Description',
         ratings: null,
         metadata: {
-          "id": metadataId[1],
-          "opened": false,
+          _id: metadataId[1],
+          opened: false,
         },
         note: {
-          "description": "Note A Description",
-          "id": notesId[0],
+          description: "Note A Description",
+          _id: notesId[0],
           createdAt,
-          "title": "Note A",
+          title: "Note A",
         },
       }
     ],
@@ -487,7 +485,7 @@ test('Find comments on Note 1 except first', async () => {
 })
 
 test('Should update Note 1 title', async () => {
-  const response = await updateNote({ id: notesId[0], title: 'Note 1 New Title' }, client);
+  const response = await updateNote({ _id:  notesId[0], title: 'Note 1 New Title' }, client);
   expect(response.data).toBeDefined();
   expect(response.data.updateNote.title).toBe('Note 1 New Title');
 });
@@ -496,16 +494,16 @@ test('Should create a new Note', async () => {
   const createdAt = new Date();
   const response = await createNote(client, { title: 'New note', createdAt: createdAt.toJSON(), description: 'New note description', tasks: [{ title: "new task title" }] });
   expect(response.data).toBeDefined();
-  expect(response.data.createNote).toEqual({ id: response.data.createNote.id, createdAt, title: 'New note', description: 'New note description' });
+  expect(response.data.createNote).toEqual({ _id:  response.data.createNote._id, createdAt, title: 'New note', description: 'New note description' });
 
-  const { data } = await getNote(response.data.createNote.id, client);
+  const { data } = await getNote(response.data.createNote._id, client);
   expect(data.getNote.tasks).toEqual([{ title: "new task title" }]);
 })
 
 test('Delete Note 1', async () => {
   const response = await deleteNote(client, notesId[1]);
   expect(response.data).toBeDefined();
-  expect(response.data.deleteNote).toEqual({ id: notesId[1], createdAt, description: 'Note B Description', title: 'Note B' });
+  expect(response.data.deleteNote).toEqual({ _id:  notesId[1], createdAt, description: 'Note B Description', title: 'Note B' });
 });
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
@@ -527,17 +525,17 @@ async function createNote(client: ApolloServerTestClient, input: any) {
   return response;
 }
 
-async function deleteNote(client: ApolloServerTestClient, id: string | number) {
+async function deleteNote(client: ApolloServerTestClient, _id:  string | number) {
   const response = await client.mutate({
     operationName: "deleteNote",
     mutation: documents,
-    variables: { input: { id } }
+    variables: { input: { _id } }
   });
 
   return response;
 }
 
-async function getNote(id: string | number, client: ApolloServerTestClient) {
+async function getNote(id:  string | number, client: ApolloServerTestClient) {
   const response = await client.query({
     operationName: "getNote",
     query: documents,

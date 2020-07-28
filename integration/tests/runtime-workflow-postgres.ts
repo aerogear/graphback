@@ -27,7 +27,7 @@ let graphbackApi: GraphbackAPI;
 
 let documents: DocumentNode;
 
-const modelText = readFileSync('./mock.graphql').toString();
+const modelText = readFileSync('./postgres-model.graphql').toString();
 const createdAt = new Date();
 const objectId = new ObjectID("507f191e810c19729de860ea");
 

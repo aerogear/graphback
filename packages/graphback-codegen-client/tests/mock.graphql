@@ -20,6 +20,20 @@ type Comment {
   noteComment: Note!
 }
 
+""" @model """
+type ModelWithGraphbackObjectIDPrimaryKey {
+  _id: GraphbackObjectID!
+  metadata: GraphbackJSON!
+}
+
+""" @model """
+type ModelWithAnnotatedPrimaryKey {
+  """
+  @id
+  """
+  email: String!
+}
+
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
 }
@@ -27,3 +41,6 @@ type Query {
 type Mutation {
   likeNote(id: ID!): Note!
 }
+
+scalar GraphbackObjectID
+scalar GraphbackJSON
