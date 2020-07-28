@@ -13,7 +13,12 @@ Please follow individual releases for more information.
 #### New Features
 
 * add support for common scalar types ([#1749](https://github.com/aerogear/graphback/pull/1749))
-  
+
+### Bug Fixes
+
+* throw an error if relationship annotation are missing ([#1766](https://github.com/aerogear/graphback/pull/1766)). This fixes [#1604](https://github.com/aerogear/graphback/issues/1604) where when no relationship annotation is defined, invalid input fields are added to input type.
+   
+When no relationship annotation is defined, invalid input fields are added to input type  
 # 0.14.1
 
 ### Bug Fixes

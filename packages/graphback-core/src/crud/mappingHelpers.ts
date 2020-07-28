@@ -1,8 +1,7 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNamedType, isObjectType, isScalarType, GraphQLInputType, isEnumType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNamedType, isObjectType, isScalarType, isEnumType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
-import * as pluralize from 'pluralize'
+import * as pluralize from 'pluralize';
 import { getUserTypesFromSchema } from '@graphql-toolkit/common';
-import { SchemaComposer } from 'graphql-compose';
 import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
@@ -157,17 +156,24 @@ export function getInputFieldName(field: GraphQLField<any, any>): string {
   return relationshipAnnotation.key || transformForeignKeyName(field.name);
 }
 
-export function getInputFieldNamedType(schemaComposer: SchemaComposer<any>, field: GraphQLField<any, any>, operation: GraphbackOperationType): GraphQLInputType {
+export function getInputFieldTypeName(modelName: string, field: GraphQLField<any, any>, operation: GraphbackOperationType): string {
   const fieldType = getNamedType(field.type);
 
   if (isObjectType(fieldType) && isModelType(fieldType)) {
+
+    const relationshipAnnotation = parseRelationshipAnnotation(field.description);
+
+    if (!relationshipAnnotation) {
+      throw new Error(`Missing relationship definition on: "${modelName}.${field.name}". Visit https://graphback.dev/docs/model/datamodel#relationships to see how you can define relationship in your business model.`);
+    }
+
     const idField = getPrimaryKey(fieldType);
 
-    return getNamedType(idField.type) as GraphQLInputType
+    return getNamedType(idField.type).name;
   }
 
   if (isScalarType(fieldType) || isEnumType(fieldType)) {
-    return fieldType
+    return fieldType.name;
   }
 
   if (isObjectType(fieldType) && !isModelType(fieldType)) {
@@ -177,9 +183,7 @@ export function getInputFieldNamedType(schemaComposer: SchemaComposer<any>, fiel
       // return GraphQLJSON
     }
 
-    const typeName = getInputTypeName(fieldType.name, operation)
-
-    return schemaComposer.getITC(typeName).getType()
+    return getInputTypeName(fieldType.name, operation)
   }
 
   return undefined;

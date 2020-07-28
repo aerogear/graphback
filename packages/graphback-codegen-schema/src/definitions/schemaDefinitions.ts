@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldNamedType, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -113,17 +113,19 @@ function getModelInputFields(schemaComposer: SchemaComposer<any>, modelType: Gra
       continue;
     }
 
-    const type = getInputFieldNamedType(schemaComposer, field, operationType);
+    const typeName = getInputFieldTypeName(modelType.name, field, operationType);
 
-    if (!type) {
+    if (!typeName) {
       continue;
     }
 
     const name = getInputFieldName(field);
+    const type = schemaComposer.getAnyTC(typeName).getType();
+    const wrappedType = copyWrappingType(field.type, type) as GraphQLInputType;
 
     const inputField: GraphQLInputField = {
       name,
-      type: copyWrappingType(field.type, type) as GraphQLInputType,
+      type: wrappedType,
       description: undefined,
       extensions: []
     }
