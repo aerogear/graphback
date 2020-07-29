@@ -10,7 +10,9 @@ module.exports = {
   organizationName: 'aerogear', // Usually your GitHub org/user name.
   projectName: 'graphback', // Usually your repo name.
   themeConfig: {
-    disableDarkMode: true,
+    colorMode: {
+      disableSwitch: true
+    },
     prism: {
       theme: require('prism-react-renderer/themes/dracula'),
       // darkTheme: require('prism-react-renderer/themes/dracula'),
@@ -22,7 +24,7 @@ module.exports = {
         alt: 'Graphback Logo',
         src: 'img/logo.png',
       },
-      links: [
+      items: [
         {
           to: 'docs/next/introduction',
           activeBasePath: 'docs',
