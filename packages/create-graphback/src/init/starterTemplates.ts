@@ -164,8 +164,7 @@ export async function extractTemplate(template: Template, name: string) {
       mkdirSync(output);
     }
 
-    return extractStarterFromRepository(file, tarInfo, output);
+    await extractStarterFromRepository(file, tarInfo, output);
   }
-
 
 }
