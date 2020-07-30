@@ -23,12 +23,12 @@
     "apollo-server-testing": "2.16.1",
     "jest": "26.1.0",
     "knex": "0.21.2",
-    "mongodb": "3.5.9",
+    "mongodb": "3.6.0",
     "node-fetch": "2.6.0",
     "rimraf": "3.0.2",
     "ts-node": "8.10.2",
     "tsutils": "3.17.1",
-    "typescript": "3.9.6"
+    "typescript": "3.9.7"
   },
   "license": "Apache-2.0"
 }
