@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -11,6 +12,13 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  GraphbackJSON: any;
+  GraphbackJSONObject: { [key: string]: any };
+  GraphbackObjectID: string;
+  GraphbackTimestamp: number;
+  GraphbackTime: string;
+  GraphbackDate: Date;
+  GraphbackDateTime: Date;
 };
 
 /**  @model  */
@@ -19,7 +27,7 @@ export type Comment = {
   id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  /** @manyToOne field: 'comments', key: 'noteId' */
+  /** @manyToOne(field: 'comments', key: 'noteId') */
   note?: Maybe<Note>;
 };
 
@@ -28,8 +36,8 @@ export type CommentFilter = {
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   noteId?: Maybe<IdInput>;
-  and?: Maybe<Array<Maybe<CommentFilter>>>;
-  or?: Maybe<Array<Maybe<CommentFilter>>>;
+  and?: Maybe<Array<CommentFilter>>;
+  or?: Maybe<Array<CommentFilter>>;
   not?: Maybe<CommentFilter>;
 };
 
@@ -67,10 +75,7 @@ export type IdInput = {
   lt?: Maybe<Scalars['ID']>;
   ge?: Maybe<Scalars['ID']>;
   gt?: Maybe<Scalars['ID']>;
-  in?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  contains?: Maybe<Scalars['ID']>;
-  startsWith?: Maybe<Scalars['ID']>;
-  endsWith?: Maybe<Scalars['ID']>;
+  in?: Maybe<Array<Scalars['ID']>>;
 };
 
 export type MutateCommentInput = {
@@ -88,12 +93,12 @@ export type MutateNoteInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createNote: Note;
-  updateNote: Note;
-  deleteNote: Note;
-  createComment: Comment;
-  updateComment: Comment;
-  deleteComment: Comment;
+  createNote?: Maybe<Note>;
+  updateNote?: Maybe<Note>;
+  deleteNote?: Maybe<Note>;
+  createComment?: Maybe<Comment>;
+  updateComment?: Maybe<Comment>;
+  deleteComment?: Maybe<Comment>;
 };
 
 
@@ -146,8 +151,8 @@ export type NoteFilter = {
   id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
-  and?: Maybe<Array<Maybe<NoteFilter>>>;
-  or?: Maybe<Array<Maybe<NoteFilter>>>;
+  and?: Maybe<Array<NoteFilter>>;
+  or?: Maybe<Array<NoteFilter>>;
   not?: Maybe<NoteFilter>;
 };
 
@@ -219,7 +224,7 @@ export type StringInput = {
   lt?: Maybe<Scalars['String']>;
   ge?: Maybe<Scalars['String']>;
   gt?: Maybe<Scalars['String']>;
-  in?: Maybe<Array<Maybe<Scalars['String']>>>;
+  in?: Maybe<Array<Scalars['String']>>;
   contains?: Maybe<Scalars['String']>;
   startsWith?: Maybe<Scalars['String']>;
   endsWith?: Maybe<Scalars['String']>;
@@ -265,6 +270,13 @@ export type SubscriptionDeletedCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
 
+
+
+
+
+
+
+
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
   & Pick<Note, 'id' | 'title' | 'description'>
@@ -293,18 +305,18 @@ export type CommentExpandedFieldsFragment = (
   )> }
 );
 
-export type FindNotesQueryVariables = {
+export type FindNotesQueryVariables = Exact<{
   filter?: Maybe<NoteFilter>;
   page?: Maybe<PageRequest>;
   orderBy?: Maybe<OrderByInput>;
-};
+}>;
 
 
 export type FindNotesQuery = (
   { __typename?: 'Query' }
   & { findNotes: (
     { __typename?: 'NoteResultList' }
-    & Pick<NoteResultList, 'offset' | 'limit'>
+    & Pick<NoteResultList, 'offset' | 'limit' | 'count'>
     & { items: Array<Maybe<(
       { __typename?: 'Note' }
       & NoteExpandedFieldsFragment
@@ -312,9 +324,9 @@ export type FindNotesQuery = (
   ) }
 );
 
-export type GetNoteQueryVariables = {
+export type GetNoteQueryVariables = Exact<{
   id: Scalars['ID'];
-};
+}>;
 
 
 export type GetNoteQuery = (
@@ -325,18 +337,18 @@ export type GetNoteQuery = (
   )> }
 );
 
-export type FindCommentsQueryVariables = {
+export type FindCommentsQueryVariables = Exact<{
   filter?: Maybe<CommentFilter>;
   page?: Maybe<PageRequest>;
   orderBy?: Maybe<OrderByInput>;
-};
+}>;
 
 
 export type FindCommentsQuery = (
   { __typename?: 'Query' }
   & { findComments: (
     { __typename?: 'CommentResultList' }
-    & Pick<CommentResultList, 'offset' | 'limit'>
+    & Pick<CommentResultList, 'offset' | 'limit' | 'count'>
     & { items: Array<Maybe<(
       { __typename?: 'Comment' }
       & CommentExpandedFieldsFragment
@@ -344,9 +356,9 @@ export type FindCommentsQuery = (
   ) }
 );
 
-export type GetCommentQueryVariables = {
+export type GetCommentQueryVariables = Exact<{
   id: Scalars['ID'];
-};
+}>;
 
 
 export type GetCommentQuery = (
@@ -357,87 +369,87 @@ export type GetCommentQuery = (
   )> }
 );
 
-export type CreateNoteMutationVariables = {
+export type CreateNoteMutationVariables = Exact<{
   input: CreateNoteInput;
-};
+}>;
 
 
 export type CreateNoteMutation = (
   { __typename?: 'Mutation' }
-  & { createNote: (
+  & { createNote?: Maybe<(
     { __typename?: 'Note' }
     & NoteFieldsFragment
-  ) }
+  )> }
 );
 
-export type UpdateNoteMutationVariables = {
+export type UpdateNoteMutationVariables = Exact<{
   input: MutateNoteInput;
-};
+}>;
 
 
 export type UpdateNoteMutation = (
   { __typename?: 'Mutation' }
-  & { updateNote: (
+  & { updateNote?: Maybe<(
     { __typename?: 'Note' }
     & NoteFieldsFragment
-  ) }
+  )> }
 );
 
-export type DeleteNoteMutationVariables = {
+export type DeleteNoteMutationVariables = Exact<{
   input: MutateNoteInput;
-};
+}>;
 
 
 export type DeleteNoteMutation = (
   { __typename?: 'Mutation' }
-  & { deleteNote: (
+  & { deleteNote?: Maybe<(
     { __typename?: 'Note' }
     & NoteFieldsFragment
-  ) }
+  )> }
 );
 
-export type CreateCommentMutationVariables = {
+export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
-};
+}>;
 
 
 export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
-  & { createComment: (
+  & { createComment?: Maybe<(
     { __typename?: 'Comment' }
     & CommentFieldsFragment
-  ) }
+  )> }
 );
 
-export type UpdateCommentMutationVariables = {
+export type UpdateCommentMutationVariables = Exact<{
   input: MutateCommentInput;
-};
+}>;
 
 
 export type UpdateCommentMutation = (
   { __typename?: 'Mutation' }
-  & { updateComment: (
+  & { updateComment?: Maybe<(
     { __typename?: 'Comment' }
     & CommentFieldsFragment
-  ) }
+  )> }
 );
 
-export type DeleteCommentMutationVariables = {
+export type DeleteCommentMutationVariables = Exact<{
   input: MutateCommentInput;
-};
+}>;
 
 
 export type DeleteCommentMutation = (
   { __typename?: 'Mutation' }
-  & { deleteComment: (
+  & { deleteComment?: Maybe<(
     { __typename?: 'Comment' }
     & CommentFieldsFragment
-  ) }
+  )> }
 );
 
-export type NewNoteSubscriptionVariables = {
+export type NewNoteSubscriptionVariables = Exact<{
   filter?: Maybe<NoteSubscriptionFilter>;
-};
+}>;
 
 
 export type NewNoteSubscription = (
@@ -448,9 +460,9 @@ export type NewNoteSubscription = (
   ) }
 );
 
-export type UpdatedNoteSubscriptionVariables = {
+export type UpdatedNoteSubscriptionVariables = Exact<{
   filter?: Maybe<NoteSubscriptionFilter>;
-};
+}>;
 
 
 export type UpdatedNoteSubscription = (
@@ -461,9 +473,9 @@ export type UpdatedNoteSubscription = (
   ) }
 );
 
-export type DeletedNoteSubscriptionVariables = {
+export type DeletedNoteSubscriptionVariables = Exact<{
   filter?: Maybe<NoteSubscriptionFilter>;
-};
+}>;
 
 
 export type DeletedNoteSubscription = (
@@ -474,9 +486,9 @@ export type DeletedNoteSubscription = (
   ) }
 );
 
-export type NewCommentSubscriptionVariables = {
+export type NewCommentSubscriptionVariables = Exact<{
   filter?: Maybe<CommentSubscriptionFilter>;
-};
+}>;
 
 
 export type NewCommentSubscription = (
@@ -487,9 +499,9 @@ export type NewCommentSubscription = (
   ) }
 );
 
-export type UpdatedCommentSubscriptionVariables = {
+export type UpdatedCommentSubscriptionVariables = Exact<{
   filter?: Maybe<CommentSubscriptionFilter>;
-};
+}>;
 
 
 export type UpdatedCommentSubscription = (
@@ -500,9 +512,9 @@ export type UpdatedCommentSubscription = (
   ) }
 );
 
-export type DeletedCommentSubscriptionVariables = {
+export type DeletedCommentSubscriptionVariables = Exact<{
   filter?: Maybe<CommentSubscriptionFilter>;
-};
+}>;
 
 
 export type DeletedCommentSubscription = (
@@ -559,6 +571,7 @@ export const FindNotesDocument = gql`
     }
     offset
     limit
+    count
   }
 }
     ${NoteExpandedFieldsFragmentDoc}`;
@@ -631,6 +644,7 @@ export const FindCommentsDocument = gql`
     }
     offset
     limit
+    count
   }
 }
     ${CommentExpandedFieldsFragmentDoc}`;

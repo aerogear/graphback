@@ -12,3 +12,11 @@ generates:
       withHOC: false
       withHooks: true
       skipDocumentsValidation: false
+      scalars:
+        GraphbackTime: string
+        GraphbackDate: Date
+        GraphbackDateTime: Date
+        GraphbackTimestamp: number
+        GraphbackObjectID: string
+        GraphbackJSON: any
+        GraphbackJSONObject: "{ [key: string]: any }"
