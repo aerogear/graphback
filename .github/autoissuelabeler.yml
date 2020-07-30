@@ -1,0 +1,5 @@
+## docs: https://github.com/maxandersen/jbang-issuelabeler
+- labels: [triage]
+  title: "(?i).*.*"
+  description: "(?i).*.*"
+  notify: [craicoverflow,machi1990,wtrocki]
