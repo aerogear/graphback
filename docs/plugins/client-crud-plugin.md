@@ -4,7 +4,7 @@ title: ClientCRUD Plugin
 sidebar_label: ClientCRUD
 ---
 
-The `ClientCRUDPlugin` plugin uses your GraphQL schema to generate queries, mutations, subscriptions and fragments for use in your client-side application. The generated documents are compatible with all major GraphQL providers, such as [Apollo GraphQL](https://www.apollographql.com/) and [urql](https://formidable.com/open-source/urql/).
+The [`ClientCRUDPlugin`](../api/graphback-codegen-client/classes/_clientcrudplugin_.clientcrudplugin.md) plugin uses your GraphQL schema to generate queries, mutations, subscriptions and fragments for use in your client-side application. The generated documents are compatible with all major GraphQL providers, such as [Apollo GraphQL](https://www.apollographql.com/) and [urql](https://formidable.com/open-source/urql/).
 
 ## Installation
 

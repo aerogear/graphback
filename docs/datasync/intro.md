@@ -4,7 +4,7 @@ title: Data Synchronization
 sidebar_label: What is Data Synchronization?
 ---
 
-The `@graphback/datasync` package consists of the Data Synchronization Schema plugin and compatible data sources, provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). 
+The `@graphback/datasync` package consists of the [Data Synchronization Schema plugin](../api/graphback-datasync/classes/_datasyncplugin_.datasyncplugin.md) and [compatible data sources](../api/graphback-datasync/classes/_providers_datasyncmongodbdataprovider_.datasyncmongodbdataprovider.md), provides out of the box Data Synchronization strategies for GraphQL clients with offline functionality e.g. [Offix](https://offix.dev). 
 
 :::note
 Currently this plugin **only** supports MongoDB data sources, with support for other kinds of data sources coming in a future release.

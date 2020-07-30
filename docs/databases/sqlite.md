@@ -45,9 +45,9 @@ Visit [Knex Connection Options](http://knexjs.org/#Installation-client) to learn
 
 ## Using Knex Provider
 
-The provider exposes a [`SQLiteKnexDBDataProvider`](https://github.com/aerogear/graphback/blob/master/packages/graphback-runtime-knex/src/SQLiteKnexDBDataProvider.ts) API, which can be used to create a SQLite data providers for each of your data models. 
+The provider exposes a [`SQLiteKnexDBDataProvider`](../api/graphback-runtime-knex/classes/_sqliteknexdbdataprovider_.sqliteknexdbdataprovider.md) API, which can be used to create a SQLite data providers for each of your data models. 
 
-The code below shows how to create a data provider creator for a SQLite database and how to use it in [`buildGraphbackAPI`](../api/build-graphback-api.md).
+The code below shows how to create a data provider creator for a SQLite database and how to use it in [`buildGraphbackAPI`](../api/graphback/modules/_buildgraphbackapi_.md).
 
 ```ts
 import Knex from 'knex';
@@ -97,8 +97,8 @@ The highlighted code does the following:
  - Create a connection to SQLite database using Knex.
  - Define the user model.
  - Perform the migrations using [GraphQL Migrations](../graphql-migrations/intro.md) to create the `user` table.
- - And finally, create a data provider creator which will be applied to our model, using the [`SQLiteKnexDBDataProvider`](https://github.com/aerogear/graphback/blob/master/packages/graphback-runtime-knex/src/SQLiteKnexDBDataProvider.ts) API. 
+ - And finally, create a data provider creator which will be applied to our model, using the [`SQLiteKnexDBDataProvider`](../api/graphback-runtime-knex/classes/_sqliteknexdbdataprovider_.sqliteknexdbdataprovider.md) API. 
   
-The rest of the code uses [`buildGraphbackAPI`](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
+The rest of the code uses [`buildGraphbackAPI`](../api/graphback/modules/_buildgraphbackapi_.md) to create Graphback CRUD API based on the defined `userModel` model.
 
 Visit [Data Models](../model/datamodel.md) to learn more about how to design your business models.

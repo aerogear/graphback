@@ -27,11 +27,21 @@
     ],
     "Authentication": [
       "authentication/intro",
-      "authentication/keycloak"
+      "authentication/keycloak",
+      "api/graphback-keycloak-authz/classes/_keycloakcrudservice_.keycloakcrudservice",
+      "api/graphback-keycloak-authz/modules/_createkeycloakcrudservice_",
+      "api/graphback-keycloak-authz/modules/_keycloakconfig_"
     ],
     "Data Sync": [
       "datasync/intro",
-      "datasync/soft-delete"
+      "datasync/soft-delete",
+      "api/graphback-datasync/interfaces/_providers_datasyncprovider_.datasyncprovider",
+      "api/graphback-datasync/interfaces/_services_datasynccrudservice_.synclist",
+      "api/graphback-datasync/interfaces/_services_createdatasyncservice_.createdatasynccrudserviceoptions",
+      "api/graphback-datasync/classes/_providers_datasyncmongodbdataprovider_.datasyncmongodbdataprovider",
+      "api/graphback-datasync/classes/_services_datasynccrudservice_.datasynccrudservice",
+      "api/graphback-datasync/classes/_datasyncplugin_.datasyncplugin",
+      "api/graphback-datasync/classes/_util_.conflicterror"
     ],
     "GraphQL Migrations": [
       "graphql-migrations/intro",
@@ -49,17 +59,35 @@
       "plugins/crud-client",
       "plugins/create"
     ],
-    "API Reference": [
-      "api/build-graphback-api",
-      "api/create-crud-service",
-      "api/create-knexdb-provider",
-      "api/create-mongodb-provider",
-      "api/graphback-crud-service",
-      "api/graphback-data-provider"
-    ],
     "CLI Reference": [
       "cli/create-graphback",
       "cli/graphback-cli"
+    ],
+    "API Reference": [
+      "api/graphback/modules/_buildgraphbackapi_",
+      "api/graphback/interfaces/_buildgraphbackapi_.graphbackapi",
+      "api/graphback/interfaces/_buildgraphbackapi_.graphbackapiconfig",
+      "api/graphback-core/interfaces/_runtime_createcrudservice_.createcrudserviceoptions",
+      "api/graphback-runtime-knex/modules/_createknexdbprovider_",
+      "api/graphback-runtime-knex/classes/_knexdbdataprovider_.knexdbdataprovider",
+      "api/graphback-runtime-knex/classes/_sqliteknexdbdataprovider_.sqliteknexdbdataprovider",
+      "api/graphback-runtime-mongodb/modules/_createmongodbprovider_",
+      "api/graphback-runtime-mongodb/classes/_mongodbdataprovider_.mongodbdataprovider",
+      "api/graphback-core/interfaces/_runtime_graphbackdataprovider_.graphbackdataprovider",
+      "api/graphback-core/interfaces/_plugin_graphbackpluginengine_.graphbackpluginengineoptions",
+      "api/graphback-core/interfaces/_plugin_graphbackcrudgeneratorconfig_.graphbackcrudgeneratorconfig",
+      "api/graphback-core/interfaces/_runtime_createcrudservice_.createcrudserviceoptions",
+      "api/graphback-core/interfaces/_runtime_interfaces_.graphbackcontext",
+      "api/graphback-core/interfaces/_runtime_graphbackcrudservice_.resultlist",
+      "api/graphback-core/classes/_plugin_graphbackplugin_.graphbackplugin",
+      "api/graphback-core/classes/_runtime_crudservice_.crudservice",
+      "api/graphback-core/classes/_runtime_graphbackproxyservice_.graphbackproxyservice",
+      "api/graphback-core/modules/_runtime_createcrudservice_",
+      "api/graphback-core/interfaces/_runtime_graphbackcrudservice_.graphbackcrudservice",
+      "api/graphback-core/classes/_runtime_crudservice_.crudservice",
+      "api/graphback-core/classes/_runtime_graphbackproxyservice_.graphbackproxyservice",
+      "api/graphback-codegen-schema/classes/_schemacrudplugin_.schemacrudplugin",
+      "api/graphback-codegen-client/classes/_clientcrudplugin_.clientcrudplugin"
     ],
     "Release Notes":[
       "releases"

@@ -58,9 +58,9 @@ Visit [Knex Connection Options](http://knexjs.org/#Installation-client) to learn
 
 # Using Knex Provider
 
-The provider exposes a [`createKnexDbProvider`](../api/create-knexdb-provider.md) method, which can be used to create data providers for each of your data models. 
+The provider exposes a [`createKnexDbProvider`](../api/graphback-runtime-knex/modules/_createknexdbprovider_.md) method, which can be used to create data providers for each of your data models. 
 
-The code below shows how you can create such a data provider creator and how it can be passed to [`buildGraphbackAPI`](../api/build-graphback-api.md).
+The code below shows how you can create such a data provider creator and how it can be passed to [`buildGraphbackAPI`](./api/graphback/modules/_buildgraphbackapi_.md).
 
 ```ts
 import Knex from 'knex';
@@ -114,8 +114,8 @@ The highlighted code does the following:
  - Create a connection to PostgreSQL database using Knex.
  - Define the user model.
  - Perform the migrations using [GraphQL Migrations](../graphql-migrations/intro.md) to create the `user` table.
- - And finally, create a data provider creator by using the `createKnexDbProvider` API. 
+ - And finally, create a data provider creator by using the [`createKnexDbProvider`](../api/graphback-runtime-knex/modules/_createknexdbprovider_.md) API. 
   
-The rest of the code uses [`buildGraphbackAPI`](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
+The rest of the code uses [`buildGraphbackAPI`](../api/graphback/modules/_buildgraphbackapi_.md) to create Graphback CRUD API based on the defined `userModel` model.
 
 Visit [Data Models](../model/datamodel.md) pages to learn more about how to design your business models.

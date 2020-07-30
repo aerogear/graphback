@@ -4,7 +4,7 @@ title: SchemaCRUD Plugin
 sidebar_label: SchemaCRUD
 ---
 
-The `SchemaCRUDPlugin` plugin creates your GraphQL schema with all input types, Query, Mutation and Subscription fields following recommended patterns from [GraphQL CRUD](https://graphqlcrud.org/).
+The [`SchemaCRUDPlugin`](../api/graphback-codegen-schema/classes/_schemacrudplugin_.schemacrudplugin.md) plugin creates your GraphQL schema with all input types, Query, Mutation and Subscription fields following recommended patterns from [GraphQL CRUD](https://graphqlcrud.org/).
 The plugin also creates your CRUD resolvers to use with your GraphQL schema.
 
 ## Installation

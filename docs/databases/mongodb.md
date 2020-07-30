@@ -55,9 +55,9 @@ To learn more about the accepted configuration, visit the [MongoDB Driver Connec
 
 ## Using MongoDB Provider
 
-The Graphback MongoDB provider exposes a [`createMongoDbProvider`](../api/create-mongodb-provider.md) method, which can be used to create data providers for each of your  data models. 
+The Graphback MongoDB provider exposes a [`createMongoDbProvider`](../api/graphback-runtime-mongodb/modules/_createmongodbprovider_.md) method, which can be used to create data providers for each of your  data models. 
 
-The code below shows how you can create such a data provider creator and how it can be passed to [`buildGraphbackAPI`](../api/build-graphback-api.md).
+The code below shows how you can create such a data provider creator and how it can be passed to [`buildGraphbackAPI`](./api/graphback/modules/_buildgraphbackapi_.md).
 
 ```ts
 import { Db, MongoClient } from "mongodb";
@@ -99,6 +99,6 @@ The highlighted code does the following:
  - Select the `users` database.
  - And finally, create a data provider creator by using the `createMongoDbProvider` API. 
   
-The rest of the code uses [`buildGraphbackAPI`](../api/build-graphback-api) to create Graphback CRUD API based on the defined `userModel` model.
+The rest of the code uses [`buildGraphbackAPI`](./api/graphback/modules/_buildgraphbackapi_.md) to create Graphback CRUD API based on the defined `userModel` model.
 
 Visit [Data Models](../model/datamodel.md) to learn more about how to design your business models.
