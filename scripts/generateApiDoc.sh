@@ -6,13 +6,9 @@ PACKAGES=$(lerna --loglevel=silent ls | awk -F ' ' '{print $1}')
 # generate docs for each package
 for package in $PACKAGES; do
   echo $package
-  # Ignore the "graphback/runtime" package since it is deprecated
-  # Remove this line once https://github.com/aerogear/graphback/issues/1768 is resolved
-  if [ "@graphback/runtime" == "$package" ]; then
-    continue
-  # graphback appears in many of our package hence searching using that pattern will show duplicates results
+  # "graphback" prefix appears in many of our package hence searching using that pattern will show duplicates results
   # so let's handle the "graphback" package differently from the rest of our packages
-  elif [ "graphback" == "$package" ]; then
+  if [ "graphback" == "$package" ]; then
     outputDirName=$package
     inputDirName="packages/graphback"
   else
