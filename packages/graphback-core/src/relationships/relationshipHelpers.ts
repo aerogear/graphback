@@ -1,8 +1,9 @@
 import { parseMetadata } from 'graphql-metadata';
 import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
+import { ObjMap, ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer, ObjectTypeComposer, ObjectTypeComposerFieldConfigMapDefinition } from 'graphql-compose';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { getInputTypeName, GraphbackOperationType } from '../crud';
-import { RelationshipAnnotation, FieldRelationshipMetadata } from './RelationshipMetadataBuilder';
+import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
 
 /**
  * Parse relationship metadata string to strongly-typed interface
@@ -98,38 +99,6 @@ export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription:
 }
 
 /**
- * Creates an object of relationship fields if fields do not already exist on the model type.
- *
- * @param model
- */
-export function buildRelationshipFilterFieldMap(model: ModelDefinition) {
-  const modelType = model.graphqlType;
-  const modelFields = modelType.getFields();
-
-  const fieldsObj = {};
-
-  for (const current of model.relationships) {
-    if (modelFields[current.ownerField.name]) {
-      const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType
-
-      if (current.kind !== 'oneToMany') {
-        continue
-      }
-
-      fieldsObj[current.ownerField.name] = {
-        type: current.ownerField.type,
-        args: {
-          filter: getInputTypeName(fieldNamedType.name, GraphbackOperationType.FIND)
-        },
-        description: current.ownerField.description,
-      };
-    }
-  }
-
-  return fieldsObj;
-}
-
-/**
  * Generic template for relationship annotations
  *
  * @param relationshipKind
@@ -152,15 +121,17 @@ export const relationshipOneToOneFieldDescriptionTemplate = (relationshipKind: '
 }
 
 /**
- * Creates an object of relationship fields if fields do not already exist on the model type.
+ * Generate relationship fields inferred from metadata
+ * and add to the model type
  *
- * @param model
+ * @param {ModelDefinition} model - Graphback model definition
+ * @param {ObjectTypeComposer} typeComposer - GraphQL Compose Type composer for the model
  */
-export function buildGeneratedRelationshipsFieldObject(model: ModelDefinition) {
+export function addRelationshipFields(model: ModelDefinition, typeComposer: ObjectTypeComposer): void {
   const modelType = model.graphqlType;
   const modelFields = modelType.getFields();
 
-  const fieldsObj = {};
+  const fieldsObj: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};
   for (const current of model.relationships) {
 
     if (!modelFields[current.ownerField.name]) {
@@ -171,31 +142,60 @@ export function buildGeneratedRelationshipsFieldObject(model: ModelDefinition) {
     }
   }
 
-  return fieldsObj;
+  typeComposer.addFields(fieldsObj)
 }
 
 /**
- * Creates an object of relationship fields which already exist on a model type.
+ * Extends an existing relationship field by adding metadata such as annotations
  *
- * @param model
+ * @param {ModelDefinition} model - Graphback model definition
+ * @param {ObjectTypeComposer} typeComposer - GraphQL Compose Type composer for the model
  */
-export function buildModifiedRelationshipsFieldObject(model: ModelDefinition) {
+export function extendRelationshipFields(model: ModelDefinition, typeComposer: ObjectTypeComposer): void {
   const modelType = model.graphqlType;
 
   const modelFields = modelType.getFields();
 
-  const fieldsObj = {};
   for (const fieldRelationship of model.relationships) {
 
     if (modelFields[fieldRelationship.ownerField.name]) {
       const modelField = modelFields[fieldRelationship.ownerField.name];
 
-      fieldsObj[fieldRelationship.ownerField.name] = {
+      const partialConfig: Partial<ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {
         type: modelField.type,
         description: fieldRelationship.ownerField.description
-      };
+      }
+
+      typeComposer.extendField(fieldRelationship.ownerField.name, partialConfig)
     }
   }
+}
 
-  return fieldsObj;
+/**
+ * Extend one-to-many field by adding filter arguments
+ *
+ * @param {ModelDefinition} model - Graphback model definition
+ * @param {ObjectTypeComposer} typeComposer - GraphQL Compose Type composer for the model
+ */
+export function extendOneToManyFieldArguments(model: ModelDefinition, typeComposer: ObjectTypeComposer): void {
+  const modelType = model.graphqlType;
+  const modelFields = modelType.getFields();
+
+  for (const current of model.relationships) {
+    if (modelFields[current.ownerField.name]) {
+      const fieldNamedType = getNamedType(current.ownerField.type) as GraphQLObjectType
+
+      if (current.kind !== 'oneToMany') {
+        continue
+      }
+
+      const partialConfig: Partial<ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>> = {
+        args: {
+          filter: getInputTypeName(fieldNamedType.name, GraphbackOperationType.FIND)
+        }
+      };
+
+      typeComposer.extendField(current.ownerField.name, partialConfig)
+    }
+  }
 }
