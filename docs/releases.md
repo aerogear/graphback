@@ -8,17 +8,20 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
-# 0.15
+# 0.15.0
 
 #### New Features
 
+* add in-memory subscription filtering ([#1748](https://github.com/aerogear/graphback/pull/1748)
 * add support for common scalar types ([#1749](https://github.com/aerogear/graphback/pull/1749))
 
 ### Bug Fixes
 
+* `create-graphback` was not correctly creating a fullstack application ([#1778](https://github.com/aerogear/graphback/pull/1778)) ([685aa4c](https://github.com/aerogear/graphback/commit/685aa4c8a359111d87a5e54079ee4be2922be5f6))
 * throw an error if relationship annotation are missing ([#1766](https://github.com/aerogear/graphback/pull/1766)). This fixes [#1604](https://github.com/aerogear/graphback/issues/1604) where when no relationship annotation is defined, invalid input fields are added to input type.
    
 When no relationship annotation is defined, invalid input fields are added to input type  
+
 # 0.14.1
 
 ### Bug Fixes
