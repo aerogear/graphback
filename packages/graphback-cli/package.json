@@ -1,6 +1,6 @@
 {
   "name": "graphback-cli",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "description": "Auto generate resolvers on top of the graphql and database of your choice",
   "main": "dist/index.js",
   "bin": {
@@ -40,7 +40,7 @@
     "chalk": "2.4.2",
     "chokidar": "3.4.0",
     "debounce": "1.2.0",
-    "graphback": "0.14.1",
+    "graphback": "0.15.0",
     "graphql-config": "3.0.3",
     "node-emoji": "1.10.0",
     "yargs": "15.4.1"
