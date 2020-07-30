@@ -1,0 +1,16 @@
+name: "Auto label new issues"
+on:
+    issues:
+      types: [opened]
+
+jobs:
+    autolabel:
+      runs-on: ubuntu-latest
+      name: auto label
+      steps:
+      - name: issuelabeler
+        continue-on-error: true
+        uses: docker://maxandersen/jbang-issuelabeler
+        env:
+          GITHUB_TOKEN: ${{ secrets.LABELER_TOKEN }}
+          CONFIG: https://raw.githubusercontent.com/aerogear/graphback/master/.github/autoissuelabeler.yml
