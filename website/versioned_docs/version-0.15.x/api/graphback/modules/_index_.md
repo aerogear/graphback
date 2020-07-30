@@ -65,11 +65,11 @@ sidebar_label: "index"
 * [TableDataMap](_index_.md#tabledatamap)
 * [TableID](_index_.md#tableid)
 * [TransformType](_index_.md#transformtype)
-* [buildGeneratedRelationshipsFieldObject](_index_.md#buildgeneratedrelationshipsfieldobject)
+* [addRelationshipFields](_index_.md#addRelationshipFields)
 * [buildGraphbackAPI](_index_.md#buildgraphbackapi)
 * [buildModelTableMap](_index_.md#buildmodeltablemap)
-* [buildModifiedRelationshipsFieldObject](_index_.md#buildmodifiedrelationshipsfieldobject)
-* [buildRelationshipFilterFieldMap](_index_.md#buildrelationshipfilterfieldmap)
+* [extendRelationshipFields](_index_.md#extendRelationshipFields)
+* [extendOneToManyFieldArguments](_index_.md#extendOneToManyFieldArguments)
 * [createCRUDService](_index_.md#createcrudservice)
 * [defaultTableNameTransform](_index_.md#defaulttablenametransform)
 * [filterModelTypes](_index_.md#filtermodeltypes)
@@ -452,9 +452,9 @@ ___
 
 ___
 
-###  buildGeneratedRelationshipsFieldObject
+###  addRelationshipFields
 
-• **buildGeneratedRelationshipsFieldObject**:
+• **addRelationshipFields**:
 
 ___
 
@@ -470,15 +470,15 @@ ___
 
 ___
 
-###  buildModifiedRelationshipsFieldObject
+###  extendRelationshipFields
 
-• **buildModifiedRelationshipsFieldObject**:
+• **extendRelationshipFields**:
 
 ___
 
-###  buildRelationshipFilterFieldMap
+###  extendOneToManyFieldArguments
 
-• **buildRelationshipFilterFieldMap**:
+• **extendOneToManyFieldArguments**:
 
 ___
 

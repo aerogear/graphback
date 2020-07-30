@@ -8,9 +8,9 @@ sidebar_label: "relationships/relationshipHelpers"
 
 ### Functions
 
-* [buildGeneratedRelationshipsFieldObject](_relationships_relationshiphelpers_.md#buildgeneratedrelationshipsfieldobject)
-* [buildModifiedRelationshipsFieldObject](_relationships_relationshiphelpers_.md#buildmodifiedrelationshipsfieldobject)
-* [buildRelationshipFilterFieldMap](_relationships_relationshiphelpers_.md#buildrelationshipfilterfieldmap)
+* [addRelationshipFields](_relationships_relationshiphelpers_.md#addRelationshipFields)
+* [extendRelationshipFields](_relationships_relationshiphelpers_.md#extendRelationshipFields)
+* [extendOneToManyFieldArguments](_relationships_relationshiphelpers_.md#extendOneToManyFieldArguments)
 * [getRelationshipAnnotationString](_relationships_relationshiphelpers_.md#const-getrelationshipannotationstring)
 * [isOneToManyField](_relationships_relationshiphelpers_.md#isonetomanyfield)
 * [mergeDescriptionWithRelationshipAnnotation](_relationships_relationshiphelpers_.md#const-mergedescriptionwithrelationshipannotation)
@@ -21,9 +21,9 @@ sidebar_label: "relationships/relationshipHelpers"
 
 ## Functions
 
-###  buildGeneratedRelationshipsFieldObject
+###  addRelationshipFields
 
-▸ **buildGeneratedRelationshipsFieldObject**(`model`: [ModelDefinition](_plugin_modeldefinition_.md#modeldefinition)): *object*
+▸ **addRelationshipFields**(`model`: [ModelDefinition](_plugin_modeldefinition_.md#modeldefinition)): *object*
 
 *Defined in [packages/graphback-core/src/relationships/relationshipHelpers.ts:159](https://github.com/aerogear/graphback/blob/b39280e7/packages/graphback-core/src/relationships/relationshipHelpers.ts#L159)*
 
@@ -39,9 +39,9 @@ Name | Type | Description |
 
 ___
 
-###  buildModifiedRelationshipsFieldObject
+###  extendRelationshipFields
 
-▸ **buildModifiedRelationshipsFieldObject**(`model`: [ModelDefinition](_plugin_modeldefinition_.md#modeldefinition)): *object*
+▸ **extendRelationshipFields**(`model`: [ModelDefinition](_plugin_modeldefinition_.md#modeldefinition)): *object*
 
 *Defined in [packages/graphback-core/src/relationships/relationshipHelpers.ts:182](https://github.com/aerogear/graphback/blob/b39280e7/packages/graphback-core/src/relationships/relationshipHelpers.ts#L182)*
 
@@ -57,9 +57,9 @@ Name | Type | Description |
 
 ___
 
-###  buildRelationshipFilterFieldMap
+###  extendOneToManyFieldArguments
 
-▸ **buildRelationshipFilterFieldMap**(`model`: [ModelDefinition](_plugin_modeldefinition_.md#modeldefinition)): *object*
+▸ **extendOneToManyFieldArguments**(`model`: [ModelDefinition](_plugin_modeldefinition_.md#modeldefinition)): *object*
 
 *Defined in [packages/graphback-core/src/relationships/relationshipHelpers.ts:105](https://github.com/aerogear/graphback/blob/b39280e7/packages/graphback-core/src/relationships/relationshipHelpers.ts#L105)*
 

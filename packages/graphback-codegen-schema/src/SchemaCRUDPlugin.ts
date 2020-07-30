@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, buildGeneratedRelationshipsFieldObject, buildModifiedRelationshipsFieldObject, buildRelationshipFilterFieldMap, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType } from 'graphql';
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes } from '@graphback/core'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLField } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMetadata } from "graphql-metadata";
@@ -153,9 +153,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     for (const model of Object.values(models)) {
       const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
-      const modelRelationshipFilterFields = buildRelationshipFilterFieldMap(model);
-
-      modifiedType.addFields(modelRelationshipFilterFields)
+      extendOneToManyFieldArguments(model, modifiedType);
     }
   }
 
@@ -754,17 +752,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     for (const model of models) {
       const modifiedType = schemaComposer.getOTC(model.graphqlType.name);
 
-      const newRelationshipFields = buildGeneratedRelationshipsFieldObject(model);
-      const modifiedRelationshipFields = buildModifiedRelationshipsFieldObject(model);
-
-      // update existing model fields
-      for (const [fieldName, fieldConfig] of Object.entries(modifiedRelationshipFields)) {
-        modifiedType.removeField(fieldName);
-        // TODO: Remove as any here
-        modifiedType.addFields({ [fieldName]: fieldConfig as any });
-      }
-
-      modifiedType.addFields(newRelationshipFields);
+      addRelationshipFields(model, modifiedType);
+      extendRelationshipFields(model, modifiedType);
     }
   }
 }
