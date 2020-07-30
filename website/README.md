@@ -53,6 +53,16 @@ my-docusaurus/
 1. Execute `yarn doc yourVersion` 
 2. Review docusaurus config and swap any occurence of old version
 
+# Generating API documentation
+
+On `Graphback` project root directory, run the command:
+
+```bash
+yarn generate:doc
+```
+
+This will generate API documentation by leveraging code comments. The generated documentations will be located in
+`docs/api/` folder. 
 
 # Editing Content
 

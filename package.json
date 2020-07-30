@@ -28,6 +28,7 @@
     "tslint-config-prettier": "1.18.0",
     "tslint-microsoft-contrib": "6.2.0",
     "typedoc": "0.17.8",
+    "typedoc-plugin-markdown": "2.3.1",
     "typescript": "3.9.6"
   },
   "scripts": {
@@ -42,6 +43,7 @@
     "watch": "lerna run watch",
     "release:prep": "./scripts/prepareRelease.sh",
     "release:validate": "./scripts/validateRelease.sh",
+    "generate:doc": "./scripts/generateApiDoc.sh",
     "publish:canary": "lerna publish --canary",
     "publish": "./scripts/publishRelease.sh",
     "link": "lerna exec npm link .",

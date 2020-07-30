@@ -117,7 +117,7 @@ const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(schema, {
 });
 ```
 
-Check out the [buildGraphbackAPI](../api/build-graphback-api) for more advanced use cases like CRUD configuration and plugin extensions.
+Check out the [buildGraphbackAPI](./api/graphback/modules/_buildgraphbackapi_.md) for more advanced use cases like CRUD configuration and plugin extensions.
 
 ### Finish setup
 

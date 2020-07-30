@@ -1,7 +1,7 @@
 ## Grapback Client Generator Plugin
 
 <p align="center">
-  <img width="400" src="https://raw.githubusercontent.com/aerogear/graphback/master/website/static/img/logo.png">
+  <img width="400" src="https://raw.githubusercontent.com/aerogear/graphback/master/website/static/img/logo.png"/>
   <br/>
   Auto generate database structure, <br/>
   GraphQL Resolvers and Queries from GraphQL types 🚀
