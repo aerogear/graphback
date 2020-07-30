@@ -46,7 +46,7 @@ module.exports = {
         },
         {
           to: 'versions',
-          label: `v0.14.x`,
+          label: `v0.15.x`,
           position: 'right',
         },
         {
