@@ -17,12 +17,12 @@ export const allTemplates: Template[] = [
     repos: [
       {
         uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-0.14.0',
+        branch: 'templates-0.15.0',
         path: '/templates/ts-react-apollo-client',
         mountpath: "client"
       }, {
         uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-0.14.0',
+        branch: 'templates-0.15.0',
         path: '/templates/ts-apollo-postgres-backend',
       }]
   },
@@ -32,12 +32,12 @@ export const allTemplates: Template[] = [
     repos: [
       {
         uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-0.14.0',
+        branch: 'templates-0.15.0',
         path: '/templates/ts-react-apollo-client',
         mountpath: "client"
       },{
         uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-0.14.0',
+        branch: 'templates-0.15.0',
         path: '/templates/ts-apollo-mongodb-backend',
       }]
   },
@@ -46,7 +46,7 @@ export const allTemplates: Template[] = [
     description: 'Apollo GraphQL Server connecting to Mongo database using TypeScript',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
+      branch: 'templates-0.15.0',
       path: '/templates/ts-apollo-mongodb-backend',
     }]
   },
@@ -55,7 +55,7 @@ export const allTemplates: Template[] = [
     description: 'Apollo GraphQL Server connecting to Mongo database using TypeScript. Contains Data Synchronization features.',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
+      branch: 'templates-0.15.0',
       path: '/templates/ts-apollo-mongodb-datasync-backend',
     }]
   },
@@ -64,7 +64,7 @@ export const allTemplates: Template[] = [
     description: 'Apollo GraphQL Server connecting to Postgres database using TypeScript',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-0.14.0',
+      branch: 'templates-0.15.0',
       path: '/templates/ts-apollo-postgres-backend',
     }]
   }
