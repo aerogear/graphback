@@ -9,6 +9,7 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'aerogear', // Usually your GitHub org/user name.
   projectName: 'graphback', // Usually your repo name.
+  onBrokenLinks: 'ignore',
   themeConfig: {
     colorMode: {
       disableSwitch: true
@@ -31,10 +32,8 @@ module.exports = {
           label: 'Docs',
           position: 'left',
           items: [
-            {
-              label: '0.14.x',
-              to: 'docs/introduction',
-            },
+            { label: '0.15.x', to: 'docs/next/introduction' },
+            { label: '0.14.x', to: 'docs/0.14.x/introduction' },
             { label: '0.12.x', to: 'docs/0.12.x/gettingstarted' },
             { label: '0.11.x', to: 'docs/0.11.x/gettingstarted' },
             { label: '0.10.x', to: 'docs/0.10.x/gettingstarted' },
@@ -50,7 +49,8 @@ module.exports = {
           label: `v0.14.x`,
           position: 'right',
         },
-        { to: 'blog',
+        {
+          to: 'blog',
           label: 'Blog',
           position: 'right'
         },
