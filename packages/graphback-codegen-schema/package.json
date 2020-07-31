@@ -39,7 +39,7 @@
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-toolkit/schema-merging": "0.10.7",
     "@graphql-tools/utils": "6.0.10",
-    "graphql-compose-extended": "7.18.2",
+    "graphql-compose-extended": "7.18.3",
     "graphql-metadata": "0.7.3",
     "pluralize": "8.0.0"
   },

@@ -41,7 +41,7 @@
     "@graphql-tools/utils": "6.0.10",
     "dataloader": "2.0.0",
     "glob": "7.1.6",
-    "graphql-compose-extended": "7.18.2",
+    "graphql-compose-extended": "7.18.3",
     "graphql-fields-list": "2.1.3",
     "graphql-metadata": "0.7.3",
     "graphql-scalars": "1.2.6",
