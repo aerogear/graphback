@@ -20,7 +20,7 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/jest": "26.0.7",
+    "@types/jest": "26.0.8",
     "@types/node": "12.12.53",
     "@types/pino": "6.3.0",
     "graphql": "15.3.0",
