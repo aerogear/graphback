@@ -2,4 +2,5 @@
 - labels: [triage]
   title: "(?i).*.*"
   description: "(?i).*.*"
+  addcomment: "Automatically generated comment to notify maintainers"
   notify: [craicoverflow,machi1990,wtrocki]
