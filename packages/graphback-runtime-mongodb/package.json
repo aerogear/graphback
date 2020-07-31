@@ -27,7 +27,7 @@
     "@types/jest": "26.0.8",
     "@types/node": "12.12.53",
     "graphql": "15.3.0",
-    "jest": "26.2.1",
+    "jest": "26.2.2",
     "jest-date-mock": "1.0.8",
     "mongodb-memory-server-global": "6.6.3",
     "rimraf": "3.0.2",
