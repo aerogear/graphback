@@ -48,7 +48,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const projection = this.buildProjectionOption(context);
     const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });
     if (result?.value) {
-      return this.mapFields(result.value);
+      return result.value;
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }

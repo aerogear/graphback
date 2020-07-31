@@ -173,6 +173,39 @@ describe('Delta Queries', () => {
   let context: Context;
   afterEach(async () => context.server.stop());
 
+  it('sets lastUpdatedAt on creation', async () => {
+    context = await createTestingContext(postSchema);
+
+    const { Post } = context.providers;
+
+    const startTime = 1596124093173;
+    advanceTo(startTime);
+    // Create some posts
+
+    const createdPost = await Post.create({ text: 'do you remember' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+
+    expect(createdPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(startTime);
+  });
+
+  it('sets lastUpdatedAt on update', async () => {
+    context = await createTestingContext(postSchema);
+
+    const { Post } = context.providers;
+
+    const startTime = 1596124093173;
+    advanceTo(startTime);
+    // Create a posts
+
+    const createdPost = await Post.create({ text: 'the 21st night' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+
+    const updateTime = 1593263130987
+    advanceTo(updateTime);
+
+    // Update the post
+    const updatedPost = await Post.update({ _id: createdPost._id, text: 'of september' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
+    expect(updatedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
+  });
+
   it('sets lastUpdatedAt field when absent', async () => {
     context = await createTestingContext(postSchema);
 
@@ -183,8 +216,8 @@ describe('Delta Queries', () => {
 
     const updateTime = 1593263130987
     advanceTo(updateTime);
-    const deletedPost = await Post.update({ _id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
-    expect(deletedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
+    const updatedPost = await Post.update({ _id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
+    expect(updatedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
   })
 
   it('can sync', async () => {
@@ -240,6 +273,4 @@ describe('Delta Queries', () => {
     });
     expect(count).toEqual(2);
   })
-
-  // TODO add tests for setting of lastUpdatedAt
 })
