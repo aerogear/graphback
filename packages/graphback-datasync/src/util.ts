@@ -3,12 +3,7 @@ import { parseMetadata } from 'graphql-metadata';
 import { DataSyncCRUDService } from "./services";
 
 export function isDataSyncModel(model: ModelDefinition): boolean {
-  // (Both delta and versioned) or (just datasync)
-  return (
-    (parseMetadata("delta", model.graphqlType) && parseMetadata("versioned", model.graphqlType))
-    ||
-    (parseMetadata('datasync', model.graphqlType))
-  )
+  return (parseMetadata('datasync', model.graphqlType))
 }
 
 export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDService {
@@ -37,4 +32,10 @@ export class ConflictError extends Error {
     super();
     this.conflictInfo = stateMap;
   }
+}
+
+export const DataSyncFieldNames = {
+  version: '_version',
+  lastUpdatedAt: '_lastUpdatedAt',
+  deleted: '_deleted'
 }
