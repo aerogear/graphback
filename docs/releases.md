@@ -8,6 +8,13 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.15.1
+
+### Bug Fixes
+
+* ensure field directives are mapped to the schema on relationship fields ([#1797](https://github.com/aerogear/graphback/pull/1797)) ([e8bf5c8](https://github.com/aerogear/graphback/commit/e8bf5c80633e51c3c9365a92f4f1ae6271ed6d2c))
+
+
 # 0.15.0
 
 #### New Features

@@ -1,6 +1,6 @@
 {
   "name": "@graphback/datasync",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "Datasync Plugin for Graphback",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -36,9 +36,9 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
-    "@graphback/codegen-schema": "0.15.0",
-    "@graphback/core": "0.15.0",
-    "@graphback/runtime-mongo": "0.15.0",
+    "@graphback/codegen-schema": "0.15.1",
+    "@graphback/core": "0.15.1",
+    "@graphback/runtime-mongo": "0.15.1",
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-tools/utils": "6.0.10",
