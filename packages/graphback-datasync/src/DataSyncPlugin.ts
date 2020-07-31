@@ -169,7 +169,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       name: getDeltaListType(modelName),
       fields: {
         items: `[${getDeltaType(modelName)}]!`,
-        lastSync: `String`
+        lastSync: GraphQLNonNull(GraphbackTimestamp)
       }
     });
 
