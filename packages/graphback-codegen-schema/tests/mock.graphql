@@ -1,7 +1,7 @@
-directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE | OBJECT
 
 """ @model """
-type Note @deprecated( reason: String = "Test" ) {
+type Note @test(description: "mock directive"){
   id: ID!
   title: String! @test(description: "mock directive")
   description: String!
