@@ -1,6 +1,6 @@
 import { parseMetadata } from 'graphql-metadata';
 import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
-import { ObjMap, ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer, ObjectTypeComposer, ObjectTypeComposerFieldConfigMapDefinition } from 'graphql-compose';
+import { ObjMap, ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer, ObjectTypeComposer, ObjectTypeComposerFieldConfigMapDefinition } from 'graphql-compose-extended';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { getInputTypeName, GraphbackOperationType } from '../crud';
 import { RelationshipAnnotation } from './RelationshipMetadataBuilder';

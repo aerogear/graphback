@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
 import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType, ModelDefinition } from '@graphback/core';
-import { SchemaComposer } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose-extended';
 import { copyWrappingType } from './copyWrappingType';
 
 const PageRequestTypeName = 'PageRequest';

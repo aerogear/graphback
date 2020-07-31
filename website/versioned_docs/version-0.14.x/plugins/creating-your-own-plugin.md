@@ -56,7 +56,7 @@ As the `GraphQLSchema` and its types are immutable we highly recommend you to in
 // highlight-start
 import { GraphbackPlugin, GraphbackCoreMetadata } from 'graphback';
 import { GraphQLSchema, GraphQLSchema, GraphQLList, GraphQLNonNull } from 'graphql';
-import { SchemaComposer } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose-extended';
 // highlight-end
 
 export class MyGraphbackPlugin extends GraphbackPlugin {

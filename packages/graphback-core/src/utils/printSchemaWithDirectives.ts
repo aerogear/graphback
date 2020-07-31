@@ -1,5 +1,5 @@
 import { GraphQLSchema } from 'graphql';
-import { SchemaComposer } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose-extended';
 
 export function printSchemaWithDirectives(schemaOrSDL: GraphQLSchema | string): string {
   const schemaComposer = new SchemaComposer(schemaOrSDL)

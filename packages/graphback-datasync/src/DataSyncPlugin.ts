@@ -2,7 +2,7 @@ import { createVersionedInputFields,createVersionedFields } from "@graphback/cod
 import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
 import { parseMetadata } from "graphql-metadata";
-import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
+import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose-extended';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";

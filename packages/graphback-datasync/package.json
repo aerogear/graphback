@@ -42,7 +42,7 @@
     "@graphql-toolkit/common": "0.10.7",
     "@graphql-toolkit/core": "0.10.7",
     "@graphql-tools/utils": "6.0.10",
-    "graphql-compose": "7.18.1",
+    "graphql-compose-extended": "7.18.2",
     "graphql-metadata": "0.7.3",
     "graphql-subscriptions": "1.1.0",
     "mongodb": "3.6.0",
