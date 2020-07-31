@@ -204,7 +204,7 @@ describe('Delta Queries', () => {
     await Post.create({ text: 'the second post' }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     // Sync query
-    const deltaPosts = await Post.sync(startTime, {graphback: {services: {}, options: { selectedFields: fields}}});
+    const deltaPosts = await Post.sync(t1, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     expect(deltaPosts.length).toEqual(1);
   });

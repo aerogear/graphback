@@ -25,7 +25,7 @@ type CommentDelta {
 
 type CommentDeltaList {
   items: [CommentDelta]!
-  lastSync: String
+  lastSync: GraphbackTimestamp!
 }
 
 input CommentFilter {
@@ -126,7 +126,7 @@ type NoteDelta {
 
 type NoteDeltaList {
   items: [NoteDelta]!
-  lastSync: String
+  lastSync: GraphbackTimestamp!
 }
 
 input NoteFilter {

@@ -116,40 +116,8 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     return super.findBy({
       ...filter,
       [DataSyncFieldNames.lastUpdatedAt]: {
-        gt: lastSync
+        ge: lastSync
       }
     }, context, undefined, undefined);
-  }
-
-  protected async checkForConflicts(clientData: any, context: GraphbackContext): Promise<ConflictStateMap> {
-    const { idField } = getDatabaseArguments(this.tableMap, clientData);
-    const { fieldNames } = metadataMap;
-
-    if (!idField.value) {
-      throw new NoDataError(`Couldn't get document from ${this.collectionName} - missing ID field`)
-    }
-
-    const projection = this.buildProjectionOption(context);
-
-    if (projection) {
-      projection._version = 1;
-      projection._deleted = 1
-    }
-
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: new ObjectId(idField.value), _deleted: { $ne: true } }, { projection });
-    if (queryResult) {
-      queryResult[idField.name] = queryResult._id;
-      if (
-        queryResult._version !== undefined &&
-        clientData._version !== queryResult._version
-      ) {
-
-        return { serverState: queryResult, clientState: clientData };
-      }
-
-      return undefined;
-    }
-
-    throw new NoDataError(`Could not find any such documents from ${this.collectionName}`);
   }
 }
