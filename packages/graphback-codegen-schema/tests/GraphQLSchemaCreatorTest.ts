@@ -234,8 +234,8 @@ test('field directives on relationship fields are mapped to schema', () => {
   const schemaGenerator = new SchemaCRUDPlugin();
   const modelAST = `directive @test on FIELD_DEFINITION
 
-  """ @model """
-type Note @test {
+""" @model """
+type Note {
   id: ID!
   title: String!
   description: String
@@ -248,7 +248,7 @@ type Note @test {
 }
 
 """ @model """
-type Comment @test {
+type Comment {
   id: ID!
   text: String
   description: String
