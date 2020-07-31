@@ -1,7 +1,7 @@
 import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput, ModelDefinition } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
-import { ConflictError, ConflictStateMap } from "../util";
+import { ConflictError, ConflictStateMap, DataSyncFieldNames } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
@@ -14,7 +14,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     applyIndexes([
       {
         key: {
-          _deleted: 1
+          [DataSyncFieldNames.deleted]: 1
         }
       }
     ], this.db.collection(this.collectionName)).catch((e: any) => {
@@ -24,40 +24,39 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
   }
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
-    data._deleted = false;
-    data._version = 1;
+    data[DataSyncFieldNames.deleted] = false;
+    data[DataSyncFieldNames.lastUpdatedAt] = Date.now();
 
     return super.create(data, context);
   }
 
   public async update(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
+    
+    const { idField } = getDatabaseArguments(this.tableMap, data);
+    
+    if (!idField.value) {
+      throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
-
-    const currentVersion = data._version;
-    if (typeof (currentVersion) === "number") {
-      data._version = currentVersion + 1;
+    
+    this.fieldTransformMap[TransformType.UPDATE]
+      .forEach((f: FieldTransform) => {
+        data[f.fieldName] = f.transform(f.fieldName);
+      });
+    
+    data[DataSyncFieldNames.lastUpdatedAt] = Date.now();
+    const objectId = new ObjectId(idField.value);
+    const projection = this.buildProjectionOption(context);
+    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });
+    if (result?.value) {
+      return this.mapFields(result.value);
     }
-
-    // TODO use findOneAndUpdate to check consistency afterwards
-    return super.update(data, context);
+    throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async delete(data: any, context: GraphbackContext): Promise<Type> {
-    const conflict = await this.checkForConflicts(data, context);
-    if (conflict !== undefined) {
-      throw new ConflictError(conflict);
-    }
-
+  public async delete(data: any, context: GraphbackContext): Promise<Type> {    
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    const currentVersion = data._version;
     data = {};
-    if (typeof (currentVersion) === "number") {
-      data._version = currentVersion + 1;
-    }
+    data[DataSyncFieldNames.lastUpdatedAt] = Date.now();
 
     this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
@@ -67,8 +66,8 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     data._deleted = true;
     const objectId = new ObjectId(idField.value);
     const projection = this.buildProjectionOption(context);
-    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, { projection, returnOriginal: false });
-    if (result.ok) {
+    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });
+    if (result?.value) {
       return result.value;
     }
 
@@ -82,7 +81,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const projection = this.buildProjectionOption(context);
     const query = this.db.collection(this.collectionName).findOne({
       ...filter,
-      _deleted: { $ne: true }
+      [DataSyncFieldNames.deleted]: { $ne: true }
     }, { projection });
     const data = await query;
 
@@ -97,7 +96,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       filter = {};
     }
 
-    filter._deleted = { ne: true };
+    filter[DataSyncFieldNames.deleted] = { ne: true };
 
     return super.findBy(filter, context, page, orderBy);
   }
@@ -107,16 +106,16 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       filter = {};
     }
 
-    filter._deleted = { ne: true };
+    filter[DataSyncFieldNames.deleted] = { ne: true };
 
     return super.count(filter);
   }
 
-  public sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<Type[]> {
+  public sync(lastSync: number, context: GraphbackContext, filter?: any): Promise<Type[]> {
 
     return super.findBy({
       ...filter,
-      updatedAt: {
+      [DataSyncFieldNames.lastUpdatedAt]: {
         gt: lastSync
       }
     }, context, undefined, undefined);

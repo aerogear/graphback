@@ -1,12 +1,12 @@
-import { createVersionedInputFields,createVersionedFields } from "@graphback/codegen-schema";
+import { createVersionedInputFields,createVersionedFields, createInputTypeForScalar } from "@graphback/codegen-schema";
 import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo, GraphQLInt } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo } from '@graphback/core'
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo, GraphbackTimestamp } from '@graphback/core'
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
-import { isDataSyncService, isDataSyncModel } from "./util";
+import { isDataSyncService, isDataSyncModel, DataSyncFieldNames } from "./util";
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -22,7 +22,12 @@ export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
  * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
-  protected conflictField: string = "_version";
+  protected addVersion: boolean;
+
+  public constructor(addVersion: boolean = false) {
+    super()
+    this.addVersion = addVersion
+  }
 
   public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
     const schema = metadata.getSchema()
@@ -35,56 +40,16 @@ export class DataSyncPlugin extends GraphbackPlugin {
     }
     let dataSyncModelCount = 0;
     models.forEach((model: ModelDefinition) => {
-
-      this.addDataSyncMetadataFields(schemaComposer, model);
-      const modelName = model.graphqlType.name;
-      const modifiedType = schemaComposer.getOTC(modelName);
-      const entries = Object.entries(modifiedType.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
-        // Remove relationship fields from delta Types
-        return parseRelationshipAnnotation(e[1].description) === undefined
-      })
-
-      const fields = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
-
-      schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
-        ...fields,
-        _deleted: 'Boolean',
-      })
-
-      schemaComposer.createObjectTC({
-        name: getDeltaListType(modelName),
-        fields: {
-          items: `[${getDeltaType(modelName)}]!`,
-          lastSync: `String`
-        }
-      })
       // Diff queries
       if (isDataSyncModel(model)) {
 
         dataSyncModelCount+= 1;
 
-        const deltaQuery = getDeltaQuery(model.graphqlType.name)
-        schemaComposer.Query.addFields({
-          [deltaQuery]: `${getDeltaListType(modelName)}!`
-        });
-        const filterTypeName = getInputTypeName(modelName, GraphbackOperationType.FIND);
-        schemaComposer.Query.addFieldArgs(deltaQuery, {
-          lastSync: GraphQLNonNull(GraphQLString),
-          filter: filterTypeName
-        })
+        this.addDataSyncFieldsToModel(schemaComposer, model);
 
-        // Add updatedAt arg to update and delete input types
-        // for conflict resolution
-        const { fieldNames } = metadataMap;
+        this.addDataSyncFieldsToInputTypes(schemaComposer, model);
 
-        const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
-        if (inputType) {
-          inputType.addFields({
-            [this.conflictField]: {
-              type: GraphQLNonNull(GraphQLInt)
-            }
-          });
-        }
+        this.addDeltaQuery(schemaComposer, model);
       }
     })
 
@@ -150,26 +115,74 @@ export class DataSyncPlugin extends GraphbackPlugin {
     }
   }
 
-  protected addDataSyncMetadataFields(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
+  protected addDataSyncFieldsToModel(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
     const name = model.graphqlType.name;
     const modelTC = schemaComposer.getOTC(name);
-    const desc = model.graphqlType.description;
-    if (parseMetadata("datasync", desc)) {
-      const metadataFields = createVersionedFields();
-      // metadata fields needed for @versioned
 
-      modelTC.addFields(metadataFields);
+    modelTC.addFields({
+      [DataSyncFieldNames.lastUpdatedAt]: {
+        type: GraphbackTimestamp
+      }
+    });
+
+    if (this.addVersion) {
       modelTC.addFields({
-        [this.conflictField]: {
+        [DataSyncFieldNames.version]: {
           type: GraphQLInt
         }
-      })
-
-      const inputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.FIND))
-      if (inputType) {
-        const metadataInputFields = createVersionedInputFields();
-        inputType.addFields(metadataInputFields);
-      }
+      });
     }
+  }
+
+  protected addDataSyncFieldsToInputTypes(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
+
+    // Add _version argument to UpdateInputType
+    const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
+    if (this.addVersion && updateInputType) {
+      updateInputType.addFields({
+        [DataSyncFieldNames.version]: {
+          type: GraphQLNonNull(GraphQLInt)
+        }
+      });
+    }
+  }
+
+  protected addDeltaQuery(schemaComposer: SchemaComposer<unknown>, model: ModelDefinition) {
+    // Create Delta Type
+    const modelName = model.graphqlType.name;
+    const modelTC = schemaComposer.getOTC(modelName);
+    const allowedFieldEntries = Object.entries(modelTC.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
+      // Remove relationship fields from delta Types
+      return parseRelationshipAnnotation(e[1].description) === undefined;
+    });
+
+    const allowedFields = Object.assign({}, ...Array.from(allowedFieldEntries, ([k, v]: [string, any]) => ({ [k]: v })));
+
+    // Add Delta Type to schema
+    schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
+      ...allowedFields,
+      [DataSyncFieldNames.deleted]: 'Boolean',
+    });
+
+    // Create and Add Delta List type to schema
+    schemaComposer.createObjectTC({
+      name: getDeltaListType(modelName),
+      fields: {
+        items: `[${getDeltaType(modelName)}]!`,
+        lastSync: `String`
+      }
+    });
+
+    // Add Delta Queries
+    const deltaQuery = getDeltaQuery(model.graphqlType.name);
+    schemaComposer.Query.addFields({
+      [deltaQuery]: `${getDeltaListType(modelName)}!`
+    });
+
+    const findFilterTypeName = getInputTypeName(modelName, GraphbackOperationType.FIND);
+    schemaComposer.Query.addFieldArgs(deltaQuery, {
+      lastSync: GraphQLNonNull(GraphbackTimestamp),
+      filter: findFilterTypeName
+    });
   }
 }

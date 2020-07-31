@@ -18,7 +18,7 @@ export class DataSyncCRUDService<T = any> extends CRUDService<T> {
    * sync
    * For delta queries
    */
-  public async sync(lastSync: string, context: GraphbackContext, filter?: any): Promise<SyncList<T>> {
+  public async sync(lastSync: number, context: GraphbackContext, filter?: any): Promise<SyncList<T>> {
 
     const res = await (this.db as DataSyncProvider).sync(lastSync, context, filter);
 

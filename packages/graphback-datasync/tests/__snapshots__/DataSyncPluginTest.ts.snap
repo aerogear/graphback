@@ -12,38 +12,14 @@ type Comment {
 
   \\"\\"\\"@manyToOne(field: 'comments', key: 'noteId')\\"\\"\\"
   noteComment: Note!
-
-  \\"\\"\\"
-  @createdAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  createdAt: String
-
-  \\"\\"\\"
-  @updatedAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  updatedAt: String
-  _version: Int
+  _lastUpdatedAt: GraphbackTimestamp
 }
 
 type CommentDelta {
   id: ID!
   title: String!
   description: String!
-
-  \\"\\"\\"
-  @createdAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  createdAt: String
-
-  \\"\\"\\"
-  @updatedAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  updatedAt: String
-  _version: Int
+  _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
 
@@ -60,8 +36,6 @@ input CommentFilter {
   and: [CommentFilter!]
   or: [CommentFilter!]
   not: CommentFilter
-  createdAt: StringInput
-  updatedAt: StringInput
 }
 
 type CommentResultList {
@@ -90,6 +64,11 @@ input CreateNoteInput {
   description: String!
 }
 
+\\"\\"\\"
+The javascript \`Date\` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+\\"\\"\\"
+scalar GraphbackTimestamp
+
 input IDInput {
   ne: ID
   eq: ID
@@ -105,14 +84,12 @@ input MutateCommentInput {
   title: String
   description: String
   noteId: ID
-  _version: Int!
 }
 
 input MutateNoteInput {
   id: ID!
   title: String
   description: String
-  _version: Int!
 }
 
 type Mutation {
@@ -136,38 +113,14 @@ type Note {
 
   \\"\\"\\"@oneToMany(field: 'noteComment', key: 'noteId')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
-
-  \\"\\"\\"
-  @createdAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  createdAt: String
-
-  \\"\\"\\"
-  @updatedAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  updatedAt: String
-  _version: Int
+  _lastUpdatedAt: GraphbackTimestamp
 }
 
 type NoteDelta {
   id: ID!
   title: String!
   description: String!
-
-  \\"\\"\\"
-  @createdAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  createdAt: String
-
-  \\"\\"\\"
-  @updatedAt
-  @db(type: 'timestamp')
-  \\"\\"\\"
-  updatedAt: String
-  _version: Int
+  _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
 
@@ -183,8 +136,6 @@ input NoteFilter {
   and: [NoteFilter!]
   or: [NoteFilter!]
   not: NoteFilter
-  createdAt: StringInput
-  updatedAt: StringInput
 }
 
 type NoteResultList {
@@ -216,8 +167,8 @@ type Query {
   findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
-  syncNotes(lastSync: String!, filter: NoteFilter): NoteDeltaList!
-  syncComments(lastSync: String!, filter: CommentFilter): CommentDeltaList!
+  syncNotes(lastSync: GraphbackTimestamp!, filter: NoteFilter): NoteDeltaList!
+  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter): CommentDeltaList!
 }
 
 enum SortDirectionEnum {
