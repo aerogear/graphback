@@ -40,7 +40,7 @@
     "glob": "7.1.6",
     "graphql-subscriptions": "1.1.0",
     "pg": "8.3.0",
-    "pino": "6.4.1",
+    "pino": "6.5.0",
     "tslib": "2.0.0"
   },
   "peerDependencies": {

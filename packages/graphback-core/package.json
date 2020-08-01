@@ -46,7 +46,7 @@
     "graphql-metadata": "0.7.3",
     "graphql-scalars": "1.2.6",
     "graphql-subscriptions": "1.1.0",
-    "pino": "6.4.1",
+    "pino": "6.5.0",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
