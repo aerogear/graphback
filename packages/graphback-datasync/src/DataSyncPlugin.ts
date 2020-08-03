@@ -1,19 +1,16 @@
-import { createVersionedInputFields,createVersionedFields, createInputTypeForScalar } from "@graphback/codegen-schema";
-import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLString, GraphQLResolveInfo, GraphQLInt } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, metadataMap, GraphbackContext, getSelectedFieldsFromResolverInfo, GraphbackTimestamp } from '@graphback/core'
-import { parseMetadata } from "graphql-metadata";
-import { SchemaComposer, ObjectTypeComposerFieldConfig } from 'graphql-compose';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, getSelectedFieldsFromResolverInfo, GraphbackTimestamp, isSpecifiedGraphbackScalarType } from '@graphback/core'
+import { SchemaComposer, ObjectTypeComposerFieldConfig, ObjectTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel, DataSyncFieldNames } from "./util";
 
-/**
- * Configuration for Schema generator CRUD plugin
- */
-
-
 export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
+
+export interface DataSyncPluginConfig {
+  useVersion: boolean
+}
 
 /**
  * DataSync plugin
@@ -22,16 +19,21 @@ export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
  * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
-  protected addVersion: boolean;
+  protected useVersion: boolean;
 
-  public constructor(addVersion: boolean = false) {
+  public constructor(config: DataSyncPluginConfig = {
+    useVersion: false
+  }) {
     super()
-    this.addVersion = addVersion
+    this.useVersion = config.useVersion
   }
 
   public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
     const schema = metadata.getSchema()
     const schemaComposer = new SchemaComposer(schema);
+    if (!schemaComposer.has(GraphbackTimestamp.name)) {
+      schemaComposer.createScalarTC(GraphbackTimestamp);
+    }
     const models = metadata.getModelDefinitions();
     if (models.length === 0) {
       this.logWarning("Provided schema has no models. Returning original schema without any changes.")
@@ -118,14 +120,15 @@ export class DataSyncPlugin extends GraphbackPlugin {
   protected addDataSyncFieldsToModel(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
     const name = model.graphqlType.name;
     const modelTC = schemaComposer.getOTC(name);
+    const TimestampSTC = schemaComposer.getSTC(GraphbackTimestamp.name);
 
     modelTC.addFields({
       [DataSyncFieldNames.lastUpdatedAt]: {
-        type: GraphbackTimestamp
+        type: TimestampSTC.getType()
       }
     });
 
-    if (this.addVersion) {
+    if (this.useVersion) {
       modelTC.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLInt
@@ -138,7 +141,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
     // Add _version argument to UpdateInputType
     const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
-    if (this.addVersion && updateInputType) {
+    if (this.useVersion && updateInputType) {
       updateInputType.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLNonNull(GraphQLInt)
@@ -151,38 +154,47 @@ export class DataSyncPlugin extends GraphbackPlugin {
     // Create Delta Type
     const modelName = model.graphqlType.name;
     const modelTC = schemaComposer.getOTC(modelName);
-    const allowedFieldEntries = Object.entries(modelTC.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
-      // Remove relationship fields from delta Types
-      return parseRelationshipAnnotation(e[1].description) === undefined;
-    });
+    const TimestampSTC = schemaComposer.getSTC(GraphbackTimestamp.name);
 
-    const allowedFields = Object.assign({}, ...Array.from(allowedFieldEntries, ([k, v]: [string, any]) => ({ [k]: v })));
+    const DeltaTypeFields = this.getDeltaTypeFields(modelTC);
 
     // Add Delta Type to schema
-    schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
-      ...allowedFields,
-      [DataSyncFieldNames.deleted]: 'Boolean',
+    const DeltaOTC = schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
+      ...DeltaTypeFields,
+      [DataSyncFieldNames.deleted]: GraphQLBoolean,
     });
 
+
     // Create and Add Delta List type to schema
-    schemaComposer.createObjectTC({
+    const DeltaListOTC = schemaComposer.createObjectTC({
       name: getDeltaListType(modelName),
       fields: {
-        items: `[${getDeltaType(modelName)}]!`,
-        lastSync: GraphQLNonNull(GraphbackTimestamp)
+        items: GraphQLNonNull(GraphQLList(DeltaOTC.getType())),
+        lastSync: GraphQLNonNull(TimestampSTC.getType())
       }
     });
 
     // Add Delta Queries
     const deltaQuery = getDeltaQuery(model.graphqlType.name);
     schemaComposer.Query.addFields({
-      [deltaQuery]: `${getDeltaListType(modelName)}!`
+      [deltaQuery]: GraphQLNonNull(DeltaListOTC.getType())
     });
 
-    const findFilterTypeName = getInputTypeName(modelName, GraphbackOperationType.FIND);
+    const findFilterITC = schemaComposer.getITC(getInputTypeName(modelName, GraphbackOperationType.FIND));
     schemaComposer.Query.addFieldArgs(deltaQuery, {
-      lastSync: GraphQLNonNull(GraphbackTimestamp),
-      filter: findFilterTypeName
+      lastSync: GraphQLNonNull(TimestampSTC.getType()),
+      filter: findFilterITC.getType()
     });
+  }
+
+  private getDeltaTypeFields(modelTC: ObjectTypeComposer) {
+    const DeltaTypeFieldEntries = Object.entries(modelTC.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
+      // Remove relationship fields from delta Type
+      return parseRelationshipAnnotation(e[1].description) === undefined;
+    });
+
+    const DeltaTypeFields = Object.assign({}, ...Array.from(DeltaTypeFieldEntries, ([k, v]: [string, any]) => ({ [k]: v })));
+
+    return DeltaTypeFields;
   }
 }

@@ -182,7 +182,7 @@ describe('Delta Queries', () => {
     advanceTo(startTime);
     // Create some posts
 
-    const createdPost = await Post.create({ text: 'do you remember' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'Test Post' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
 
     expect(createdPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(startTime);
   });
@@ -196,13 +196,13 @@ describe('Delta Queries', () => {
     advanceTo(startTime);
     // Create a posts
 
-    const createdPost = await Post.create({ text: 'the 21st night' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'Test Post' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
 
     const updateTime = 1593263130987
     advanceTo(updateTime);
 
     // Update the post
-    const updatedPost = await Post.update({ _id: createdPost._id, text: 'of september' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
+    const updatedPost = await Post.update({ _id: createdPost._id, text: 'Test Post' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
     expect(updatedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
   });
 
@@ -237,7 +237,7 @@ describe('Delta Queries', () => {
     await Post.create({ text: 'the second post' }, {graphback: {services: {}, options: { selectedFields: fields}}});
 
     // Sync query
-    const deltaPosts = await Post.sync(t1, {graphback: {services: {}, options: { selectedFields: fields}}});
+    const deltaPosts = await Post.sync(new Date(t1), {graphback: {services: {}, options: { selectedFields: fields}}});
 
     expect(deltaPosts.length).toEqual(1);
   });
@@ -253,7 +253,7 @@ describe('Delta Queries', () => {
     }
 
     // Sync query
-    const deltaPosts = await Post.sync(0, {graphback: {services: {}, options: { selectedFields: fields}}}, {
+    const deltaPosts = await Post.sync(new Date(0), {graphback: {services: {}, options: { selectedFields: fields}}}, {
       text: {
         startsWith: 'post'
       }

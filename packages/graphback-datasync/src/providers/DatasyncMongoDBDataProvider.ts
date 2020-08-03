@@ -111,12 +111,12 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     return super.count(filter);
   }
 
-  public sync(lastSync: number, context: GraphbackContext, filter?: any): Promise<Type[]> {
+  public sync(lastSync: Date, context: GraphbackContext, filter?: any): Promise<Type[]> {
 
     return super.findBy({
       ...filter,
       [DataSyncFieldNames.lastUpdatedAt]: {
-        ge: lastSync
+        ge: lastSync.valueOf()
       }
     }, context, undefined, undefined);
   }
