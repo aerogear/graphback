@@ -1,7 +1,7 @@
-directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE
+directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE | OBJECT
 
 """ @model """
-type Note {
+type Note @test(description: " Directive added following a fix for https://github.com/aerogear/graphback/issues/1767") {
   id: ID!
   title: String! @test(description: "mock directive")
   description: String!
@@ -73,7 +73,7 @@ enum IssueCategory {
  FEATURE_REQUEST
 }
 
-type CustomType {
+type CustomType @test(description: "Directive added following a fix for https://github.com/aerogear/graphback/issues/1767") {
   issue1432: String
 }
 
