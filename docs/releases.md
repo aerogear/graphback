@@ -18,7 +18,13 @@ Please follow individual releases for more information.
   - [#1625](https://github.com/aerogear/graphback/issues/1625) Filters on "id: ID" field not working
   
   > NOTE: If you are migrating from [0.15](#0150) or previous versions of Graphback, you may be required to update relationship fields so that their values (previous stored as `String`) are of type [`ObjectID`](https://docs.mongodb.com/manual/reference/method/ObjectId/).
- 
+
+### Bug Fixes
+
+* Do not remove directives on Object Types in generated schema ([#1767](https://github.com/aerogear/graphback/issues/1767)), fixed by ([22c7a1da62e2752a21db4e4552e970aa93ba37ae](https://github.com/aerogear/graphback/pull/1810/commits/22c7a1da62e2752a21db4e4552e970aa93ba37ae))
+
+
+
 # 0.15.1
 
 ### Bug Fixes
