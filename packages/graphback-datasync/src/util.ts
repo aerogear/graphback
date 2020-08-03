@@ -3,7 +3,7 @@ import { parseMetadata } from 'graphql-metadata';
 import { DataSyncCRUDService } from "./services";
 
 export function isDataSyncModel(model: ModelDefinition): boolean {
-  return (parseMetadata('datasync', model.graphqlType))
+  return !!(parseMetadata('datasync', model.graphqlType))
 }
 
 export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDService {

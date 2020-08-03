@@ -199,3 +199,125 @@ type Subscription {
 }
 "
 `;
+
+exports[`uses existing GraphbackTimestamp scalars 1`] = `
+"\\"\\"\\"
+@model
+@datasync
+\\"\\"\\"
+type Comment {
+  id: ID!
+  title: String!
+  description: String!
+  _lastUpdatedAt: GraphbackTimestamp
+}
+
+type CommentDelta {
+  id: ID!
+  title: String!
+  description: String!
+  _lastUpdatedAt: GraphbackTimestamp
+  _deleted: Boolean
+}
+
+type CommentDeltaList {
+  items: [CommentDelta]!
+  lastSync: GraphbackTimestamp!
+}
+
+input CommentFilter {
+  id: IDInput
+  title: StringInput
+  description: StringInput
+  and: [CommentFilter!]
+  or: [CommentFilter!]
+  not: CommentFilter
+}
+
+type CommentResultList {
+  items: [Comment]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input CommentSubscriptionFilter {
+  id: ID
+  title: String
+  description: String
+}
+
+input CreateCommentInput {
+  id: ID
+  title: String!
+  description: String!
+}
+
+\\"\\"\\"
+The javascript \`Date\` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+\\"\\"\\"
+scalar GraphbackTimestamp
+
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID!]
+}
+
+input MutateCommentInput {
+  id: ID!
+  title: String
+  description: String
+}
+
+type Mutation {
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: MutateCommentInput!): Comment
+  deleteComment(input: MutateCommentInput!): Comment
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
+type Query {
+  getComment(id: ID!): Comment
+  findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter): CommentDeltaList!
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String!]
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type Subscription {
+  newComment(filter: CommentSubscriptionFilter): Comment!
+  updatedComment(filter: CommentSubscriptionFilter): Comment!
+  deletedComment(filter: CommentSubscriptionFilter): Comment!
+}
+"
+`;
