@@ -1,10 +1,10 @@
 /* eslint-disable max-lines */
-import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, isScalarType, getNamedType, isListType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType } from 'graphql';
+import * as pluralize from 'pluralize';
 import { isModelType, lowerCaseFirstChar } from '../crud';
 import { transformForeignKeyName } from '../db';
 import { hasListType } from '../utils/hasListType';
-import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, relationshipOneToOneFieldDescriptionTemplate, mergeDescriptionWithRelationshipAnnotation } from './relationshipHelpers';
-import { pluralize } from 'graphql-compose';
+import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, mergeDescriptionWithRelationshipAnnotation, relationshipOneToOneFieldDescriptionTemplate } from './relationshipHelpers';
 
 export interface FieldRelationshipMetadata {
   kind: 'oneToMany' | 'oneToOne' | 'manyToOne'
@@ -89,16 +89,16 @@ export class RelationshipMetadataBuilder {
         field = this.updateOneToManyField(field, annotation.field, annotation.key)
 
         if (!relationField) {
-          relationField = this.createOneToOneField(annotation.field, modelType, field.name, annotation.key);
+          relationField = this.createManyToOneField(annotation.field, modelType, field.name, annotation.key);
         } else {
-          relationField = this.updateOneToOneField(relationField, field.name, annotation.key);
+          relationField = this.updateManyToOneField(relationField, field.name, annotation.key);
         }
 
         this.addOneToMany(modelType, field);
-        this.addOneToOne(relationType, relationField);
+        this.addManyToOne(relationType, relationField);
 
       } else if (annotation.kind === 'oneToOne') {
-        field = this.updateOneToOneField(field, undefined, annotation.key);
+        field = this.updateOneToOneField(field, annotation.key);
 
         this.addOneToOne(modelType, field);
       }
@@ -134,9 +134,9 @@ export class RelationshipMetadataBuilder {
       })
 
       outputFields.push({
-        kind: 'oneToOne',
+        kind: 'manyToOne',
         owner: fieldType,
-        ownerField: fieldType.getFields()[relationFieldName] || this.createOneToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
+        ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
         relationType: owner,
         relationFieldName: field.name,
         relationForeignKey
@@ -173,9 +173,9 @@ export class RelationshipMetadataBuilder {
     }
   }
 
-  private createOneToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+  private createManyToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
     const columnField = columnName || transformForeignKeyName(fieldName);
-    const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', relationFieldName, columnField);
+    const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', relationFieldName, columnField);
 
     return {
       name: fieldName,
@@ -188,9 +188,9 @@ export class RelationshipMetadataBuilder {
     }
   }
 
-  private updateOneToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+  private updateOneToOneField(field: GraphQLField<any, any>, columnName?: string): GraphQLField<any, any> {
     const columnField = columnName || transformForeignKeyName(field.name);
-    const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', relationFieldName, columnField);
+    const fieldDescription = relationshipOneToOneFieldDescriptionTemplate('oneToOne', columnField);
     const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
     return {
