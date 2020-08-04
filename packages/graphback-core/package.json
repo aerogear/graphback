@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@graphql-toolkit/common": "0.10.7",
-    "@graphql-tools/merge": "6.0.10",
-    "@graphql-tools/utils": "6.0.10",
+    "@graphql-tools/merge": "6.0.15",
+    "@graphql-tools/utils": "6.0.15",
     "dataloader": "2.0.0",
     "glob": "7.1.6",
     "graphql-compose": "7.19.1",
