@@ -92,7 +92,7 @@ export const getSubscriptionName = (typeName: string, action: GraphbackOperation
 }
 
 export function isModelType(graphqlNamedType: GraphQLNamedType): boolean {
-  return isObjectType(graphqlNamedType) && !!parseMetadata('model', graphqlNamedType.description);
+  return !!parseMetadata('model', graphqlNamedType.description);
 }
 
 /**
