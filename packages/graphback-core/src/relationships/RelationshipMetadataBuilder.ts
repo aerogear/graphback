@@ -69,7 +69,7 @@ export class RelationshipMetadataBuilder {
   private buildModelRelationshipContext(modelType: GraphQLObjectType) {
     const fields = this.getRelationshipFields(modelType);
 
-    for (const field of fields) {
+    for (let field of fields) {
       const relationMetadata = this.getRelationshipMetadata(field, modelType);
 
       if (relationMetadata?.length) {
@@ -77,40 +77,31 @@ export class RelationshipMetadataBuilder {
         continue
       }
 
-      // const annotation = parseRelationshipAnnotation(field.description);
+      const annotation = parseRelationshipAnnotation(field.description);
 
-      // this.validateRelationshipField(modelType.name, field);
+      this.validateRelationshipField(modelType.name, field);
 
-      // const relationType = getNamedType(field.type) as GraphQLObjectType;
+      const relationType = getNamedType(field.type) as GraphQLObjectType;
 
-      // let relationField = relationType.getFields()[annotation.field];
+      let relationField = relationType.getFields()[annotation.field];
 
-      // if (annotation.kind === 'oneToMany') {
-      //   field = this.updateOneToManyField(field, annotation.field, annotation.key)
+      if (annotation.kind === 'oneToMany') {
+        field = this.updateOneToManyField(field, annotation.field, annotation.key)
 
-      //   if (!relationField) {
-      //     relationField = this.createManyToOneField(annotation.field, modelType, field.name, annotation.key);
-      //   } else {
-      //     relationField = this.updateManyToOneField(relationField, field.name, annotation.key);
-      //   }
+        if (!relationField) {
+          relationField = this.createOneToOneField(annotation.field, modelType, field.name, annotation.key);
+        } else {
+          relationField = this.updateOneToOneField(relationField, field.name, annotation.key);
+        }
 
-      //   this.addOneToMany(modelType, field);
-      //   this.addManyToOne(relationType, relationField);
+        this.addOneToMany(modelType, field);
+        this.addOneToOne(relationType, relationField);
 
-      // } else if (annotation.kind === 'manyToOne') {
+      } else if (annotation.kind === 'oneToOne') {
+        field = this.updateOneToOneField(field, undefined, annotation.key);
 
-      //   if (!relationField) {
-      //     relationField = this.createOneToManyField(annotation.field, modelType, field.name, annotation.key);
-      //   }
-
-      //   this.addManyToOne(modelType, field);
-      //   this.addOneToMany(relationType, relationField);
-
-      // } else if (annotation.kind === 'oneToOne') {
-      //   field = this.updateOneToOneField(field, annotation.key);
-
-      //   this.addOneToOne(modelType, field);
-      // }
+        this.addOneToOne(modelType, field);
+      }
     }
   }
 
@@ -143,12 +134,22 @@ export class RelationshipMetadataBuilder {
       })
 
       outputFields.push({
-        kind: 'manyToOne',
+        kind: 'oneToOne',
         owner: fieldType,
-        ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
+        ownerField: fieldType.getFields()[relationFieldName] || this.createOneToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
         relationType: owner,
         relationFieldName: field.name,
         relationForeignKey
+      })
+    } else {
+      const foreignKeyName = transformForeignKeyName(lowerCaseFirstChar(field.name))
+
+      outputFields.push({
+        kind: 'oneToOne',
+        owner,
+        ownerField: this.updateOneToOneField(field, foreignKeyName),
+        relationType: fieldType,
+        relationFieldName: foreignKeyName
       })
     }
 
@@ -172,9 +173,9 @@ export class RelationshipMetadataBuilder {
     }
   }
 
-  private createManyToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+  private createOneToOneField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
     const columnField = columnName || transformForeignKeyName(fieldName);
-    const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', relationFieldName, columnField);
+    const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', relationFieldName, columnField);
 
     return {
       name: fieldName,
@@ -184,6 +185,17 @@ export class RelationshipMetadataBuilder {
       extensions: [],
       isDeprecated: false,
       deprecationReason: undefined
+    }
+  }
+
+  private updateOneToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
+    const columnField = columnName || transformForeignKeyName(field.name);
+    const fieldDescription = relationshipFieldDescriptionTemplate('oneToOne', relationFieldName, columnField);
+    const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
+
+    return {
+      ...field,
+      description: finalDescription
     }
   }
 
@@ -201,17 +213,6 @@ export class RelationshipMetadataBuilder {
   private updateManyToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
     const columnField = columnName || transformForeignKeyName(field.name);
     const fieldDescription = relationshipFieldDescriptionTemplate('manyToOne', relationFieldName, columnField);
-    const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
-
-    return {
-      ...field,
-      description: finalDescription
-    }
-  }
-
-  private updateOneToOneField(field: GraphQLField<any, any>, columnName?: string): GraphQLField<any, any> {
-    const columnField = columnName || transformForeignKeyName(field.name);
-    const fieldDescription = relationshipOneToOneFieldDescriptionTemplate('oneToOne', columnField);
     const finalDescription = mergeDescriptionWithRelationshipAnnotation(fieldDescription, field.description);
 
     return {
