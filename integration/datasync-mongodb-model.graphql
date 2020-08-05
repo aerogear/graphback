@@ -1,0 +1,11 @@
+"""
+@model
+@datasync
+"""
+type Note {
+  _id: GraphbackObjectID!
+  title: String!
+  description: String
+}
+
+scalar GraphbackObjectID
