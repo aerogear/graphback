@@ -34,7 +34,7 @@
     "@types/lodash": "4.14.158",
     "@types/node": "12.12.53",
     "graphql": "15.3.0",
-    "graphql-tools": "6.0.15",
+    "graphql-tools": "6.0.16",
     "jest": "26.2.2",
     "pg": "8.3.0",
     "rimraf": "3.0.2",
