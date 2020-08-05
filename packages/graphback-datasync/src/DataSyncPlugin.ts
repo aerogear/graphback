@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList } from 'graphql';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, getSelectedFieldsFromResolverInfo, GraphbackTimestamp, isSpecifiedGraphbackScalarType } from '@graphback/core'
 import { SchemaComposer, ObjectTypeComposerFieldConfig, ObjectTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
@@ -9,7 +9,7 @@ import { isDataSyncService, isDataSyncModel, DataSyncFieldNames } from "./util";
 export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
 
 export interface DataSyncPluginConfig {
-  useVersion: boolean
+  useVersion?: boolean
 }
 
 /**
@@ -19,13 +19,16 @@ export interface DataSyncPluginConfig {
  * It will generate delta queries
  */
 export class DataSyncPlugin extends GraphbackPlugin {
-  protected useVersion: boolean;
+  protected config: DataSyncPluginConfig;
 
   public constructor(config: DataSyncPluginConfig = {
     useVersion: false
   }) {
     super()
-    this.useVersion = config.useVersion
+    this.config = {
+      useVersion: false,
+      ...config
+    }
   }
 
   public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -128,7 +131,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       }
     });
 
-    if (this.useVersion) {
+    if (this.config.useVersion) {
       modelTC.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLInt
@@ -141,7 +144,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
     // Add _version argument to UpdateInputType
     const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
-    if (this.useVersion && updateInputType) {
+    if (this.config.useVersion && updateInputType) {
       updateInputType.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLNonNull(GraphQLInt)
@@ -156,14 +159,18 @@ export class DataSyncPlugin extends GraphbackPlugin {
     const modelTC = schemaComposer.getOTC(modelName);
     const TimestampSTC = schemaComposer.getSTC(GraphbackTimestamp.name);
 
-    const DeltaTypeFields = this.getDeltaTypeFields(modelTC);
-
+    const DeltaTypeFieldNames = this.getDeltaTypeFieldNames(modelTC.getType());
+    
     // Add Delta Type to schema
-    const DeltaOTC = schemaComposer.createObjectTC(getDeltaType(modelName)).addFields({
-      ...DeltaTypeFields,
-      [DataSyncFieldNames.deleted]: GraphQLBoolean,
-    });
+    const DeltaOTC = modelTC.clone(getDeltaType(modelName));
 
+    DeltaOTC.removeOtherFields(DeltaTypeFieldNames);
+
+    DeltaOTC.setDescription(undefined);
+
+    DeltaOTC.addFields({
+      [DataSyncFieldNames.deleted]: GraphQLBoolean
+    })
 
     // Create and Add Delta List type to schema
     const DeltaListOTC = schemaComposer.createObjectTC({
@@ -187,14 +194,14 @@ export class DataSyncPlugin extends GraphbackPlugin {
     });
   }
 
-  private getDeltaTypeFields(modelTC: ObjectTypeComposer) {
-    const DeltaTypeFieldEntries = Object.entries(modelTC.getFields()).filter((e: [string, ObjectTypeComposerFieldConfig<any, unknown, any>]) => {
+  private getDeltaTypeFieldNames(modelTC: GraphQLObjectType): string[] {
+    const DeltaTypeFieldEntries = Object.entries(modelTC.getFields()).filter((e: [string, GraphQLField<any, any>]) => {
       // Remove relationship fields from delta Type
       return parseRelationshipAnnotation(e[1].description) === undefined;
     });
 
-    const DeltaTypeFields = Object.assign({}, ...Array.from(DeltaTypeFieldEntries, ([k, v]: [string, any]) => ({ [k]: v })));
-
-    return DeltaTypeFields;
+    return DeltaTypeFieldEntries.map(([fieldName, _]: [string, GraphQLField<any, any>]) => {
+      return fieldName
+    });
   }
 }
