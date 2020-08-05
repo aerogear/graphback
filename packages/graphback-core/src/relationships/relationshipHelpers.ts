@@ -1,6 +1,6 @@
 import { parseMetadata } from 'graphql-metadata';
 import { GraphQLObjectType, getNamedType, GraphQLField } from 'graphql';
-import { ObjMap, ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer, ObjectTypeComposer, ObjectTypeComposerFieldConfigMapDefinition } from 'graphql-compose';
+import { ObjectTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, ObjectTypeComposerFieldConfigMapDefinition } from 'graphql-compose';
 import { ModelDefinition } from '../plugin/ModelDefinition';
 import { getInputTypeName, GraphbackOperationType } from '../crud';
 import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
@@ -43,59 +43,6 @@ export function isOneToManyField(field: GraphQLField<any, any>): boolean {
   const oneToManyAnnotation: any = parseMetadata('oneToMany', field.description)
 
   return !!oneToManyAnnotation
-}
-
-/**
- * Strips all relationship annotations from a string
- * @param fieldDescription
- */
-export const stripRelationshipAnnotation = (fieldDescription: string = '') => {
-  if (!fieldDescription.includes('\n')) {
-    return '';
-  }
-
-  const strippedDescription = fieldDescription.split('\n').filter((line: string) => !parseRelationshipAnnotation(line));
-
-  return strippedDescription.join('\n');
-}
-
-/**
- * Strips all non-relationship annotations from a string
- *
- * @param fieldDescription
- */
-export const getRelationshipAnnotationString = (fieldDescription: string = '') => {
-  if (!fieldDescription.includes('\n') && !parseRelationshipAnnotation(fieldDescription)) {
-    return '';
-  }
-
-  const filteredDescription = fieldDescription.split('\n').filter(parseRelationshipAnnotation);
-
-  return filteredDescription.join('\n').trim();
-}
-
-/**
- * Helper to merge two description strings which may or may not have a relationship annotation.
- * This helper keeps non-relationship annotations and merges them together.
- * It chooses the relationship annotation with the `key` field when merging.
- *
- * @param generatedDescription
- * @param customDescription
- */
-export const mergeDescriptionWithRelationshipAnnotation = (generatedDescription: string, customDescription: string) => {
-  const descriptionLines = [stripRelationshipAnnotation(generatedDescription), stripRelationshipAnnotation(customDescription)];
-
-  for (const description of [customDescription, generatedDescription]) {
-    const relationshipDescription = getRelationshipAnnotationString(description);
-    const parsedAnnotation = parseRelationshipAnnotation(description);
-
-    if (parsedAnnotation && parsedAnnotation.key) {
-      descriptionLines.push(relationshipDescription);
-      break;
-    }
-  }
-
-  return descriptionLines.join('\n').trim();
 }
 
 /**

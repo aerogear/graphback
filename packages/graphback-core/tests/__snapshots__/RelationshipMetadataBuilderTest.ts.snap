@@ -7,7 +7,7 @@ exports[`should build one-to-many and many-to-one relationships from both fields
   \\"owner\\": \\"User\\",
   \\"ownerField\\": {
    \\"name\\": \\"sentMessages\\",
-   \\"description\\": \\"some extra description\\\\n@oneToMany(field: 'sender', key: 'senderId')\\",
+   \\"description\\": \\"@oneToMany(field: 'sender', key: 'senderId')\\\\nsome extra description\\\\n@oneToMany(field: 'sender')\\",
    \\"type\\": \\"[Message!]!\\",
    \\"args\\": [],
    \\"isDeprecated\\": false,
@@ -83,7 +83,7 @@ exports[`should build one-to-many and many-to-one relationships from both fields
   \\"owner\\": \\"Message\\",
   \\"ownerField\\": {
    \\"name\\": \\"sender\\",
-   \\"description\\": \\"@manyToOne(field: 'sentMessages', key: 'senderId')\\",
+   \\"description\\": \\"@manyToOne(field: 'sentMessages', key: 'senderId')\\\\n@manyToOne(field: 'sentMessages')\\",
    \\"type\\": \\"User\\",
    \\"args\\": [],
    \\"isDeprecated\\": false,
@@ -143,7 +143,7 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
   \\"owner\\": \\"Address\\",
   \\"ownerField\\": {
    \\"name\\": \\"resident\\",
-   \\"description\\": \\"@oneToOne(key: 'residentId')\\",
+   \\"description\\": \\"@oneToOne(key: 'residentId')\\\\n@oneToOne\\",
    \\"type\\": \\"User!\\",
    \\"args\\": [],
    \\"isDeprecated\\": false,
