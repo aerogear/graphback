@@ -36,6 +36,7 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
+    "graphback": "0.15.1",
     "@graphback/codegen-schema": "0.15.1",
     "@graphback/core": "0.15.1",
     "@graphback/runtime-mongo": "0.15.1",

@@ -1,6 +1,7 @@
-import { ModelDefinition, GraphbackCRUDService } from '@graphback/core';
+import { ModelDefinition, GraphbackCRUDService, GraphbackOperationType } from '@graphback/core';
 import { parseMetadata } from 'graphql-metadata';
 import { DataSyncCRUDService } from "./services";
+import { MongoDeltaHelper } from './deltaHelper';
 
 export function isDataSyncModel(model: ModelDefinition): boolean {
   return !!(parseMetadata('datasync', model.graphqlType))
@@ -18,17 +19,22 @@ export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDSe
  * Interface for holding the conflicting states
  * between server and client
  */
-export interface ConflictStateMap {
-  serverState: any,
-  clientState: any
+export interface ConflictMetadata {
+  base: any;
+  server: any;
+  serverDiff: any;
+  client: any;
+  clientDiff: any;
+  operation: GraphbackOperationType;
 }
+
 
 /**
  * Error that signifies conflict between server-side and client-side data
  */
 export class ConflictError extends Error {
-  public conflictInfo: ConflictStateMap;
-  public constructor(stateMap: ConflictStateMap) {
+  public conflictInfo: ConflictMetadata;
+  public constructor(stateMap: ConflictMetadata) {
     super();
     this.conflictInfo = stateMap;
   }
@@ -39,3 +45,31 @@ export const DataSyncFieldNames = {
   lastUpdatedAt: '_lastUpdatedAt',
   deleted: '_deleted'
 }
+
+
+
+export interface DataSyncModelConflictConfig {
+  enabled: boolean
+  conflictResolution?: ConflictResolutionStrategy
+}
+
+export interface ConflictResolutionStrategy {
+  resolveUpdate(conflict: ConflictMetadata): any
+}
+
+export const ServerSideConflictResolution: ConflictResolutionStrategy = {
+  resolveUpdate(conflict: ConflictMetadata): any {
+    const { serverDiff, clientDiff } = conflict;
+
+    const resolved: any = {};
+
+    Object.keys(clientDiff).forEach((fieldName: string) => {
+      if (!serverDiff[fieldName]) {
+        resolved[fieldName] = clientDiff[fieldName];
+      }
+    });
+
+    return resolved
+  }
+}
+
