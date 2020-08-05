@@ -1,7 +1,7 @@
 import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput, ModelDefinition } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
-import { ConflictError, ConflictStateMap, DataSyncFieldNames } from "../util";
+import { DataSyncFieldNames } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**

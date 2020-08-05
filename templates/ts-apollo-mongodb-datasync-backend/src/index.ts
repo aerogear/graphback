@@ -6,7 +6,7 @@ import { ApolloServer } from "apollo-server-express"
 import { buildGraphbackAPI } from 'graphback'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin } from '@graphback/datasync'
+import { createDataSyncAPI, ServerSideConflictResolution } from '@graphback/datasync'
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import cors from "cors"
 // eslint-disable-next-line @typescript-eslint/tslint/config
@@ -27,13 +27,7 @@ async function start() {
 
   const db = await connectDB()
 
-  const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
-    dataProviderCreator: createDataSyncMongoDbProvider(db),
-    serviceCreator: createDataSyncCRUDService({ pubSub: new PubSub() }),
-    plugins: [
-      new DataSyncPlugin()
-    ]
-  });
+  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, db, { Comment: { enabled: true, conflictResolution: ServerSideConflictResolution }});
 
   const apolloServer = new ApolloServer({
     typeDefs,

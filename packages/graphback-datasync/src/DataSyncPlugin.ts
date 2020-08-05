@@ -4,12 +4,14 @@ import { SchemaComposer, ObjectTypeComposerFieldConfig, ObjectTypeComposer } fro
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
-import { isDataSyncService, isDataSyncModel, DataSyncFieldNames } from "./util";
+import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, DataSyncModelConflictConfig } from "./util";
 
 export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
 
 export interface DataSyncPluginConfig {
-  useVersion?: boolean
+  modelConfigMap: {
+    [modelName: string]: DataSyncModelConflictConfig
+  }
 }
 
 /**
@@ -21,14 +23,12 @@ export interface DataSyncPluginConfig {
 export class DataSyncPlugin extends GraphbackPlugin {
   protected config: DataSyncPluginConfig;
 
-  public constructor(config: DataSyncPluginConfig = {
-    useVersion: false
-  }) {
+  public constructor(config?: DataSyncPluginConfig) {
     super()
-    this.config = {
-      useVersion: false,
+    this.config = { 
+      modelConfigMap: {},
       ...config
-    }
+    };
   }
 
   public transformSchema(metadata: GraphbackCoreMetadata): GraphQLSchema {
@@ -132,7 +132,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
       }
     });
 
-    if (this.config.useVersion) {
+    const modelUsesVersion = !!this.config.modelConfigMap[model.graphqlType.name]?.enabled;
+    if (modelUsesVersion) {
       modelTC.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLInt
@@ -145,7 +146,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
     // Add _version argument to UpdateInputType
     const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
-    if (this.config.useVersion && updateInputType) {
+    const modelUsesVersion = this.config.modelConfigMap[model.graphqlType.name]?.enabled;
+    if ((modelUsesVersion) && updateInputType) {
       updateInputType.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLNonNull(GraphQLInt)
