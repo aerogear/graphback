@@ -67,7 +67,7 @@ export class RelationshipMetadataBuilder {
    * @param modelType
    */
   private buildModelRelationshipContext(modelType: GraphQLObjectType) {
-    const fields = this.getRelationshipFields(modelType);
+    const fields = this.getRelationshipFields(modelType)
 
     for (let field of fields) {
       const relationMetadata = this.getRelationshipMetadata(field, modelType);
@@ -349,7 +349,7 @@ export class RelationshipMetadataBuilder {
   private getRelationshipFields(modelType: GraphQLObjectType): GraphQLField<any, any>[] {
     const fields = Object.values(modelType.getFields());
 
-    return fields.filter((f: GraphQLField<any, any>) => !!isModelType(getNamedType(f.type)));
+    return fields.filter((f: GraphQLField<any, any>) => !!parseRelationshipAnnotation(f.description));
   }
 
   private validateOneToManyRelationship(modelName: string, field: GraphQLField<any, any>) {
