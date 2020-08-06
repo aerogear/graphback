@@ -9,9 +9,7 @@ sidebar_label: Keycloak
 Graphback Keycloak Authz enables [Keycloak](https://www.keycloak.org/) integration in [Graphback](https://graphback.dev) based applications. This enables you to declaratively add authorization capabilities like role based access on top of the CRUD model that is used within Graphback.
 
 This package is designed to work with [`keycloak-connect`](https://www.npmjs.com/package/keycloak-connect) and [`keycloak-connect-graphql`](https://www.npmjs.com/package/keycloak-connect-graphql). `keycloak-connect` is the official Keycloak middleware for Express applications. `keycloak-connect-graphql` provides deeper Keycloak integration into GraphQL servers.
-:::note
-This package is an early alpha and not officially supported by Graphback
-:::
+
 
 ## Getting Started
 
