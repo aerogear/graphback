@@ -63,7 +63,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
         data[f.fieldName] = f.transform();
       });
 
-    data._deleted = true;
+    data[DataSyncFieldNames.deleted] = true;
     const objectId = new ObjectId(idField.value);
     const projection = this.buildProjectionOption(context);
     const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });
@@ -111,13 +111,13 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     return super.count(filter);
   }
 
-  public sync(lastSync: Date, context: GraphbackContext, filter?: any): Promise<Type[]> {
+  public sync(lastSync: Date, context: GraphbackContext, filter?: any, limit?: number): Promise<Type[]> {
 
     return super.findBy({
       ...filter,
       [DataSyncFieldNames.lastUpdatedAt]: {
         ge: lastSync.valueOf()
       }
-    }, context, undefined, undefined);
+    }, context, { limit }, undefined);
   }
 }

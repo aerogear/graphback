@@ -116,7 +116,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
         options: { selectedFields }
       };
 
-      return dataSyncService.sync(args.lastSync, {...context, graphback }, args.filter);
+      return dataSyncService.sync(args.lastSync, {...context, graphback }, args.filter, args.limit);
     }
   }
 
@@ -177,7 +177,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
       name: getDeltaListType(modelName),
       fields: {
         items: GraphQLNonNull(GraphQLList(DeltaOTC.getType())),
-        lastSync: GraphQLNonNull(TimestampSTC.getType())
+        lastSync: GraphQLNonNull(TimestampSTC.getType()),
+        limit: GraphQLInt
       }
     });
 
@@ -190,7 +191,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
     const findFilterITC = schemaComposer.getITC(getInputTypeName(modelName, GraphbackOperationType.FIND));
     schemaComposer.Query.addFieldArgs(deltaQuery, {
       lastSync: GraphQLNonNull(TimestampSTC.getType()),
-      filter: findFilterITC.getType()
+      filter: findFilterITC.getType(),
+      limit: GraphQLInt
     });
   }
 

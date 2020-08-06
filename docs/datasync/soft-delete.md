@@ -20,7 +20,7 @@ Add the `@datasync` annotation to your model(s) in your GraphQL SDL found in the
 @datasync
 """
 type Comment {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   description: String
 }
@@ -36,7 +36,7 @@ The `@datasync` annotation gives you data synchronization using delta queries.
 @datasync 
 """
 type Comment {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   description: String
   _lastUpdatedAt: GraphbackTimestamp
@@ -46,20 +46,20 @@ type Comment {
 The `@datasync` annotation adds a `sync` query or a delta query:
 ```graphql
 type Query {
-  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter): CommentDeltaList!
+  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter, limit: Int): CommentDeltaList!
 }
 ```
 
 This allows you to get all the changed documents (updated and deleted) in a collection since the `lastSync` timestamp. Internally this uses the `_lastUpdatedAt` database field to check if any documents in the database have been modified, by comparing client provided `lastSync` timestamp value.
 
 :::note
-The `sync` query also accepts a filter argument for filtering
+The `sync` query also accepts a filter argument for filtering as well as a limit argument for limiting the number of items retrieved
 :::
 
 The `@datasync` annotation also adds a `Delta` type and a `DeltaList` type:
 ```graphql
 type CommentDelta {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   description: String
   _lastUpdatedAt: GraphbackTimestamp
@@ -69,6 +69,7 @@ type CommentDelta {
 type CommentDeltaList {
   items: [CommentDelta]!
   lastSync: GraphbackTimestamp!
+  limit: Int
 }
 ```
 
@@ -105,11 +106,15 @@ As an example consider the usecase when your application has stayed offline for 
 ```graphql
 query {
   syncComments(lastSync: 1590679886048) {
-      id
-      text
-      description
-      _lastUpdatedAt
-      _deleted
+      items {
+        _id
+        text
+        description
+        _lastUpdatedAt
+        _deleted
+      },
+      lastSync,
+      limit
   }
 }
 ```
@@ -136,7 +141,8 @@ As an example response you might get:
           "_deleted": false
         }
       ],
-      "lastSync": "1591852700920"
+      "lastSync": "1591852700920",
+      "limit": null
     }
   }
 }
@@ -155,7 +161,7 @@ Taking an example model definition with a `oneToMany` relationship from the `Not
 ```graphql
 """ @model """
 type Note {
-  id: ID!
+  _id: GraphbackObjectID!
   title: String!
   """
   @oneToMany(field: 'note')
@@ -168,7 +174,7 @@ type Note {
 @datasync
 """
 type Comment {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
 }
 ```
@@ -177,7 +183,7 @@ Since the `Comment` type has a `@datasync` annotation, Graphback will construct 
 
 ```graphql
 type CommentDelta {
-  id: ID!
+  _id: GraphbackObjectID!
   text: String
   description: String
   _lastUpdatedAt: GraphbackTimestamp
