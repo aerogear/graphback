@@ -3,7 +3,8 @@ import { DataSyncProvider } from "../providers";
 
 export interface SyncList<T> {
   items: T[],
-  lastSync: Date
+  lastSync: Date,
+  limit: number
 }
 
 /**
@@ -18,13 +19,14 @@ export class DataSyncCRUDService<T = any> extends CRUDService<T> {
    * sync
    * For delta queries
    */
-  public async sync(lastSync: Date, context: GraphbackContext, filter?: any): Promise<SyncList<T>> {
+  public async sync(lastSync: Date, context: GraphbackContext, filter?: any, limit?: number): Promise<SyncList<T>> {
 
-    const res = await (this.db as DataSyncProvider).sync(lastSync, context, filter);
+    const res = await (this.db as DataSyncProvider).sync(lastSync, context, filter, limit);
 
     return {
       items: res,
-      lastSync: new Date()
+      lastSync: new Date(),
+      limit
     }
   }
 }

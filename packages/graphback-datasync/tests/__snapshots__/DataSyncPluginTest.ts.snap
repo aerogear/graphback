@@ -26,6 +26,7 @@ type CommentDelta {
 type CommentDeltaList {
   items: [CommentDelta]!
   lastSync: GraphbackTimestamp!
+  limit: Int
 }
 
 input CommentFilter {
@@ -127,6 +128,7 @@ type NoteDelta {
 type NoteDeltaList {
   items: [NoteDelta]!
   lastSync: GraphbackTimestamp!
+  limit: Int
 }
 
 input NoteFilter {
@@ -167,8 +169,8 @@ type Query {
   findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
-  syncNotes(lastSync: GraphbackTimestamp!, filter: NoteFilter): NoteDeltaList!
-  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter): CommentDeltaList!
+  syncNotes(lastSync: GraphbackTimestamp!, filter: NoteFilter, limit: Int): NoteDeltaList!
+  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter, limit: Int): CommentDeltaList!
 }
 
 enum SortDirectionEnum {
@@ -223,6 +225,7 @@ type CommentDelta {
 type CommentDeltaList {
   items: [CommentDelta]!
   lastSync: GraphbackTimestamp!
+  limit: Int
 }
 
 input CommentFilter {
@@ -293,7 +296,7 @@ input PageRequest {
 type Query {
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
-  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter): CommentDeltaList!
+  syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter, limit: Int): CommentDeltaList!
 }
 
 enum SortDirectionEnum {

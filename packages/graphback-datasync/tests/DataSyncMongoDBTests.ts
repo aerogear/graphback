@@ -273,4 +273,20 @@ describe('Delta Queries', () => {
     });
     expect(count).toEqual(2);
   })
+
+  it('can limit sync queries', async () => {
+    context = await createTestingContext(postSchema);
+
+    const { Post } = context.providers;
+
+    // Create some posts
+    for (const postTitle of ["post", "post2", "trains"]) {
+      await Post.create({ text: postTitle }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    }
+
+    // Sync query
+    const deltaPosts = await Post.sync(new Date(0), {graphback: {services: {}, options: { selectedFields: fields}}}, undefined, 1);
+
+    expect(deltaPosts.length).toEqual(1);
+  })
 })

@@ -37,8 +37,8 @@ const updatedTS2 = new Date(1596622363886);
 const objectId = new ObjectID("507f191e810c19729de860ea");
 
 const SYNC_NOTES = gql`
-query syncNotes($lastSync: GraphbackTimestamp!, $filter: NoteFilter) {
-    syncNotes(lastSync: $lastSync, filter: $filter) {
+query syncNotes($lastSync: GraphbackTimestamp!, $filter: NoteFilter, $limit: Int) {
+    syncNotes(lastSync: $lastSync, filter: $filter, limit: $limit) {
         items {
           _id
           title
@@ -160,6 +160,27 @@ test('Sync all notes with filtering', async () => {
         eq: 'Note A'
       }
     }
+  }});
+
+  expect(data).toBeDefined();
+  expect(data.syncNotes.items).toHaveLength(1);
+  expect(data.syncNotes.items).toEqual([
+    {
+      _id: notesId[0],
+      title: 'Note A',
+      description: 'Note A Description',
+      [DataSyncFieldNames.lastUpdatedAt]: startTS.valueOf(),
+      [DataSyncFieldNames.deleted]: false
+    }
+  ])
+  expect(typeof data.syncNotes.lastSync).toEqual('number')
+})
+
+test('Sync all notes with limit', async () => {
+
+  const { data } = await client.query({ query: SYNC_NOTES , variables: {
+    lastSync: 0,
+    limit: 1
   }});
 
   expect(data).toBeDefined();
