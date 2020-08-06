@@ -151,7 +151,17 @@ export class RelationshipMetadataBuilder {
       })
     } else if (this.isManyToOne(field, owner)) {
       const relationFieldName = lowerCaseFirstChar(owner.name)
-      const foreignKeyName = transformForeignKeyName(lowerCaseFirstChar(field.name))
+
+      const oneToManyFieldType = getNamedType(field.type) as GraphQLObjectType
+
+      const oneToManyField = Object.values((oneToManyFieldType.getFields())).find((f: GraphQLField<any, any>) => {
+        const relationshipAnnotation = parseRelationshipAnnotation(f.description)
+
+        return (relationshipAnnotation?.kind === 'oneToMany' && relationshipAnnotation.field === field.name)
+      });
+      const oneToManyFieldAnnotation = parseRelationshipAnnotation(oneToManyField.description)
+
+      const foreignKeyName = oneToManyFieldAnnotation.key || transformForeignKeyName(field.name)
 
       outputFields.push({
         kind: 'manyToOne',
