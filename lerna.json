@@ -2,7 +2,8 @@
   "packages": [
     "templates/**/*",
     "integration",
-    "packages/*"
+    "packages/*",
+    "performance"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

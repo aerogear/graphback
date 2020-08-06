@@ -69,7 +69,8 @@
     "templates/ts-apollo-mongodb-datasync-backend",
     "templates/ts-apollo-postgres-backend",
     "templates/ts-react-apollo-client",
-    "integration"
+    "integration",
+    "performance"
   ],
   "husky": {
     "hooks": {
