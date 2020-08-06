@@ -17,7 +17,7 @@
   "dependencies": {
     "@graphback/core": "0.15.1",
     "@graphql-inspector/core": "2.1.0",
-    "@types/jest": "26.0.8",
+    "@types/jest": "26.0.9",
     "case": "1.6.3",
     "chalk": "3.0.0",
     "glob": "7.1.6",
@@ -30,9 +30,9 @@
     "ts-jest": "26.1.4"
   },
   "devDependencies": {
-    "@types/jest": "26.0.8",
-    "@types/lodash": "4.14.158",
-    "@types/node": "12.12.53",
+    "@types/jest": "26.0.9",
+    "@types/lodash": "4.14.159",
+    "@types/node": "12.12.54",
     "graphql": "15.3.0",
     "graphql-tools": "6.0.16",
     "jest": "26.2.2",
