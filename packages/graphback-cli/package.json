@@ -38,7 +38,7 @@
   "dependencies": {
     "@graphql-toolkit/code-file-loader": "0.10.7",
     "chalk": "2.4.2",
-    "chokidar": "3.4.1",
+    "chokidar": "3.4.2",
     "debounce": "1.2.0",
     "graphback": "0.15.1",
     "graphql-config": "3.0.3",
