@@ -1,0 +1,53 @@
+{
+  "name": "graphback-benchmarks",
+  "version": "0.15.1",
+  "description": "Benchmarks for Graphback, a fast and low-overhead web framework.",
+  "scripts": {
+    "start": "yarn bench && yarn compare:stats",
+    "bench": "node benchmark.js",
+    "compare": "node benchmark.js compare --",
+    "compare:stats": "node benchmark.js compare -t",
+    "update-readme": "sed -n '1,21p' README.md > tmp.md && mv tmp.md README.md && node benchmark.js compare -tc >> README.md"
+  },
+  "bin": {
+    "benchmark": "./benchmark.js"
+  },
+  "repository": "https://github.com/aerogear/graphback.git",
+  "dependencies": {
+    "@hapi/hapi": "18.3.0",
+    "apollo-fetch": "0.7.0",
+    "apollo-opentracing": "1.4.2",
+    "apollo-server-express": "2.9.15",
+    "apollo-server-fastify": "2.9.15",
+    "apollo-server-hapi": "2.16.1",
+    "apollo-server-koa": "2.12.0",
+    "autocannon": "4.4.2",
+    "autocannon-compare": "0.4.0",
+    "chalk": "3.0.0",
+    "cli-table": "0.3.1",
+    "commander": "4.0.1",
+    "express": "4.16.4",
+    "faker": "4.1.0",
+    "fastify": "2.11.0",
+    "graphback": "0.15.1",
+    "graphql-api-koa": "4.1.0",
+    "hapi": "18.1.0",
+    "inquirer": "7.0.1",
+    "koa": "2.11.0",
+    "md5": "2.2.1",
+    "ora": "4.0.3",
+    "ps-tree": "1.2.0",
+    "sqlite3": "5.0.0",
+    "wait-on": "5.0.1"
+  },
+  "devDependencies": {
+    "@types/autocannon": "4.1.0",
+    "@types/cli-table": "0.3.0",
+    "@types/express": "4.17.2",
+    "@types/faker": "4.1.8",
+    "@types/hapi__hapi": "18.2.6",
+    "@types/inquirer": "6.5.0",
+    "@types/koa": "2.11.0",
+    "@types/md5": "2.1.33"
+  }
+}
