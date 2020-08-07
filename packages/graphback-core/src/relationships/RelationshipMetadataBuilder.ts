@@ -289,7 +289,7 @@ export class RelationshipMetadataBuilder {
       throw new Error(`${modelName}.${field.name} relationship field maps to ${relationModelType.name}.${relationField.name} (${relationFieldBaseType.name} type) which should be ${modelName} type.`);
     }
 
-    if (corresspondingManyToOneMetadata && oneToManyMetadata.key && corresspondingManyToOneMetadata.key && oneToManyMetadata.key !== corresspondingManyToOneMetadata.key) {
+    if (oneToManyMetadata?.key !== corresspondingManyToOneMetadata?.key) {
       throw new Error(`${modelName}.${field.name} and ${relationModelType.name}.${relationField.name} 'key' annotations are different. Ensure both are the same, or remove one so that it can be generated.`);
     }
   }
