@@ -1,7 +1,7 @@
 import * as DataLoader from "dataloader";
-import { PubSubEngine } from 'graphql-subscriptions';
+import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar, getSubscriptionName } from '..';
-import { withSubscriptionFilter } from './withSubscriptionFilter';
+import { createSubscriptionFilterPredicate } from './subscriptionFilter';
 import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList, QueryFilter } from '.';
 
 /**
@@ -127,7 +127,9 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(createSubKey)
 
-    return withSubscriptionFilter(() => asyncIterator, filter, subscriptionName)()
+    const subscriptionFilter = createSubscriptionFilterPredicate<Type>(filter)
+
+    return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
 
   public subscribeToUpdate(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
@@ -141,7 +143,9 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(updateSubKey)
 
-    return withSubscriptionFilter(() => asyncIterator, filter, subscriptionName)()
+    const subscriptionFilter = createSubscriptionFilterPredicate<Type>(filter)
+
+    return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
 
   public subscribeToDelete(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
@@ -155,9 +159,10 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(deleteSubKey)
 
-    return withSubscriptionFilter(() => asyncIterator, filter, subscriptionName)()
-  }
+    const subscriptionFilter = createSubscriptionFilterPredicate<Type>(filter)
 
+    return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
+  }
 
   public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext) {
     // TODO use relationfield mapping

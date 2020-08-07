@@ -51,9 +51,12 @@ type CommentResultList {
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input CreateCommentInput {
@@ -156,9 +159,12 @@ type NoteResultList {
 }
 
 input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input OrderByInput {
@@ -257,9 +263,12 @@ type CommentResultList {
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input CreateCommentInput {

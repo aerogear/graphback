@@ -94,7 +94,10 @@ type UserResultList {
 }
 
 input UserSubscriptionFilter {
-  id: ID
-  name: String
+  and: [UserSubscriptionFilter!]
+  or: [UserSubscriptionFilter!]
+  not: UserSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }"
 `;
