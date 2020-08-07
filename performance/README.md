@@ -39,6 +39,7 @@ kill $(lsof -t -i:29128)
 # TODO
 
 - [x] Add other server e.g fastify, hapi and see how they fare.
+- [ ] Add more statistics details e.g 99th percentile, median etc in the descriptive table
 - [ ] Benchmark create
 - [ ] Benchmark delete
 - [ ] Benchmark update
