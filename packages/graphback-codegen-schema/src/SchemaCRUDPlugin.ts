@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
+import * as DataLoader from "dataloader";
 import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLField } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
@@ -701,18 +702,31 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const relationOwner = relationship.ownerField.name;
     const model = modelNameToModelDefinition[modelName];
 
+    // construct a unique key to identify the dataloader
+    const dataLoaderName = `${modelName}-${relationship.kind}-${relationIdField.name}-${relationship.relationForeignKey}-DataLoader`;
     resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
       if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
+      if (!context[dataLoaderName]) {
+        context[dataLoaderName] = new DataLoader<string, any>(async (keys: string[]) => {
+          const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+          const graphback = {
+            services: context.graphback.services,
+            options: { selectedFields }
+          };
 
-      return context.graphback.services[modelName].findOne({ [relationIdField.name]: parent[relationship.relationForeignKey] }, { ...context, graphback });
+          const service = context.graphback.services[modelName];
+          const results = await service.findBy({ [relationIdField.name]: { in: keys } }, { ...context, graphback });
+
+          return keys.map((key: string) => {
+            return results.items.find((item : any) => item[relationIdField.name].toString() === key.toString());
+          });
+        });
+      }
+
+      return context[dataLoaderName].load(parent[relationship.relationForeignKey])
     }
   }
 
