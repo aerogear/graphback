@@ -285,9 +285,10 @@ type Fix {
   id: ID!
 
   \\"\\"\\"
+  @oneToMany(field: 'bugFix', key: 'bugFixId')
   Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany(field: 'bugFix', key: 'bugFixId')
+  @oneToMany(field: 'bugFix')
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }
@@ -776,9 +777,10 @@ type Fix {
   id: ID!
 
   \\"\\"\\"
+  @oneToMany(field: 'bugFix', key: 'bugFixId')
   Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany(field: 'bugFix', key: 'bugFixId')
+  @oneToMany(field: 'bugFix')
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }
@@ -1115,9 +1117,10 @@ type Fix {
   id: ID!
 
   \\"\\"\\"
+  @oneToMany(field: 'bugFix', key: 'bugFixId')
   Added as part of fixing https://github.com/aerogear/graphback/issues/1452 showing that even if filtering is disabled on a model level,
   we should have filter type created as it can be used on the relationship level without throwing an error.
-  @oneToMany(field: 'bugFix', key: 'bugFixId')
+  @oneToMany(field: 'bugFix')
   \\"\\"\\"
   issues(filter: IssueFilter): [Issue]
 }
@@ -1286,10 +1289,16 @@ type Note {
   title: String!
   description: String
 
-  \\"\\"\\"@oneToMany(field: 'note', key: 'noteId')\\"\\"\\"
+  \\"\\"\\"
+  @oneToMany(field: 'note', key: 'noteId')
+  @oneToMany(field: 'note')
+  \\"\\"\\"
   comments(filter: CommentFilter): [Comment]! @test
 
-  \\"\\"\\"@oneToOne(key: 'commentId')\\"\\"\\"
+  \\"\\"\\"
+  @oneToOne(key: 'commentId')
+  @oneToOne
+  \\"\\"\\"
   comment: Comment @test
 }
 
