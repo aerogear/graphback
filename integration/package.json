@@ -22,7 +22,7 @@
     "apollo-server": "2.16.1",
     "apollo-server-testing": "2.16.1",
     "jest": "26.2.2",
-    "knex": "0.21.2",
+    "knex": "0.21.3",
     "mongodb": "3.6.0",
     "node-fetch": "2.6.0",
     "rimraf": "3.0.2",
