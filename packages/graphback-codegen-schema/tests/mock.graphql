@@ -1,5 +1,16 @@
 directive @test(description: String) on FIELD_DEFINITION | ENUM_VALUE | OBJECT
 
+"""
+ Test case for https://github.com/aerogear/graphback/issues/1462.
+ Added to verify that https://github.com/aerogear/graphback/pull/1840 fixes the issue.
+"""
+directive @read(roles: [AUTH_ROLE!]!) on FIELD_DEFINITION
+
+enum AUTH_ROLE {
+    ANONYMOUS
+    PRIVATE
+}
+
 """ @model """
 type Note @test(description: " Directive added following a fix for https://github.com/aerogear/graphback/issues/1767") {
   id: ID!
@@ -27,7 +38,7 @@ type Test {
 """ @model """
 type Comment {
   id: ID!
-  createdAt: GraphbackDate
+  createdAt: GraphbackDate @read(roles: [ANONYMOUS])
   title: String!
   description: String!
   noteComment: Note!
