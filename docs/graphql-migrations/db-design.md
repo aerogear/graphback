@@ -410,8 +410,14 @@ When using custom name in database we need to map it directly inside resolver or
 
 ## Index
 
-The `@index` annotation can be used to create an index on a specific field. This annotation takes `name` as argument representing 
-the name of the created index. If the name argument is left out, GraphQL Migrations will create one for you using the `<tablename>_<columnName>_index` format.
+The `@index` annotation can be used to create an index on a specific field. This annotation optionally takes the following arguments 
+
+### Arguments
+
+| Argument | Description |
+| ------------- |:--:|
+| `name` | The name of the created index. If the name argument is left out, GraphQL Migrations will create one for you using the `<tablename>_<columnName>_index` format |
+| `type` | The type of the index e.g `btree`, `hash`, `brin` etc. Defaults to `btree` |
 
 For example:
 
@@ -447,12 +453,21 @@ Indexes:
     "comment_description_index" btree (description)
     "title-index" btree (text)
 ```
+:::info
+Use the same index name in order to create compound index on two or more columns.  
+:::
 
 
 ## Unique
 
-The `@unique` annotation can be used to create an unique constraint on a specific field. GraphQL Migrations will create the constraint name
-using the `<tablename>_<columnName>_unique` format.
+The `@unique` annotation can be used to create a unique constraint on a specific field. This annotation optionally takes the following arguments
+
+### Arguments
+
+| Argument | Description |
+| ------------- |:--:|
+| `name` | The name of the created unique constraint. If the name argument is left out, GraphQL Migrations will create one for you using the `<tablename>_<columnName>_unique` format |
+ 
 
 For example:
 
@@ -482,3 +497,7 @@ Indexes:
     "comment_pkey" PRIMARY KEY, btree (id)
     "comment_text_unique" UNIQUE CONSTRAINT, btree (text)
 ```
+
+:::info
+Use the same unique constraint `name` in order to create composite unique columns.  
+:::
