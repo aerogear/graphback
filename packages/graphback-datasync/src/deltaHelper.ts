@@ -18,8 +18,7 @@ export class MongoDeltaHelper {
   }
 
   public async insertDiff(updatedDocument: any) {
-    const version = updatedDocument[DataSyncFieldNames.version];
-    const { _id } = updatedDocument;
+const { _id, [DataSyncFieldNames.version]: version } = updatedDocument;
 
     const diff: any = {
       docId: _id,
@@ -30,8 +29,8 @@ export class MongoDeltaHelper {
   }
 
   public async findBaseForConflicts(updateDocument: any) {
-    if (updateDocument._id === undefined || updateDocument[DataSyncFieldNames.version] === undefined) {
-      throw new Error('Both _id and version field are needed for finding base');
+    if (!updateDocument._id || !updateDocument[DataSyncFieldNames.version]) {
+      throw new Error(`Both _id and ${DataSyncFieldNames.version} field are needed for finding base`);
     }
 
     const filter = {

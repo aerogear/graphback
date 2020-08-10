@@ -53,7 +53,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
       let resolvedUpdate = Object.assign({}, updateDocument);
 
-      const updateFilter: any = { _id, [DataSyncFieldNames.version]: serverData[DataSyncFieldNames.version] }
+      const updateFilter = { _id, [DataSyncFieldNames.version]: serverData[DataSyncFieldNames.version] }
 
       if (serverData[DataSyncFieldNames.version] !== clientData[DataSyncFieldNames.version]){
         const conflict = this.checkForConflict(clientData, base, serverData, GraphbackOperationType.UPDATE);

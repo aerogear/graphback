@@ -147,7 +147,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     // Add _version argument to UpdateInputType
     const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
     const modelUsesVersion = this.config.modelConfigMap[model.graphqlType.name]?.enabled;
-    if ((modelUsesVersion) && updateInputType) {
+    if (modelUsesVersion && updateInputType) {
       updateInputType.addFields({
         [DataSyncFieldNames.version]: {
           type: GraphQLNonNull(GraphQLInt)
