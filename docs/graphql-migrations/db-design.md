@@ -417,7 +417,7 @@ The `@index` annotation can be used to create an index on a specific field. This
 | Argument | Description |
 | ------------- |:--:|
 | `name` | The name of the created index. If the name argument is left out, GraphQL Migrations will create one for you using the `<tablename>_<columnName>_index` format |
-| `type` | The type od the index e.g `btree`, `hash`, `brin` etc. Defaults to `btree` |
+| `type` | The type of the index e.g `btree`, `hash`, `brin` etc. Defaults to `btree` |
 
 For example:
 
