@@ -57,3 +57,37 @@ test('should map to default custom ID field from annotations', () => {
 
     expect(args.idField).toEqual({ name: 'email', value: 'johndoe@gmail.com' })
 });
+
+test('should stringify object values', () => {
+  const schema = buildSchema(`
+  """
+  @model
+  """
+  type User {
+    id: ID!
+    name: String
+    profile: Profile
+  }
+
+  type Profile {
+    email: String
+  }
+
+  `);
+
+  const userModel = schema.getType("User") as GraphQLObjectType;
+
+  const modelTableMap = buildModelTableMap(userModel);
+
+  const data = {
+      id: 1,
+      profile: {
+        email: 'johndoe@gmail.com',
+      },
+      name: null
+  }
+
+  const { data: mappedData } = getDatabaseArguments(modelTableMap, data);
+
+  expect(mappedData).toEqual({ id: 1, name: null, profile: JSON.stringify(data.profile) })
+});
