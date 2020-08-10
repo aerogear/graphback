@@ -409,17 +409,13 @@ class AbstractDatabaseBuilder {
       const annotation = parseMetadata(indexTypeDef.annotation, field.description)
 
       if (this.currentTable && annotation) {
-        let indexName: string | undefined
-        let indexType: string | undefined
-        if (typeof annotation === 'string') {
-          indexName = annotation
-        } else if (indexTypeDef.hasType && typeof annotation === 'object') {
-          indexName = annotation.name
-          indexType = annotation.type
-        }
+        const indexName = annotation.name
+        const indexType = annotation.type
+
         //@ts-ignore
-        const list: any[] = this.currentTable[indexTypeDef.list]
-        let index = indexName ? list.find((i: any) => i.name === indexName) : undefined
+        const list: any[] = this.currentTable[indexTypeDef.list];
+        let index = indexName ? list.find((i: any) => i.name === indexName) : undefined;
+
         if (!index) {
           index = indexTypeDef.hasType ? {
             name: indexName,
@@ -428,12 +424,14 @@ class AbstractDatabaseBuilder {
           } : {
             name: indexName,
             columns: [],
-          }
-          list.push(index)
+          };
+
+          list.push(index);
         }
-        index.columns.push(columnName)
+        index.columns.push(columnName);
+
         if (!index.name) {
-          index.name = indexTypeDef.defaultName(this.currentTable.name, columnName).substr(0, 63)
+          index.name = indexTypeDef.defaultName(this.currentTable.name, columnName).substr(0, 63);
         }
       }
     }
