@@ -4,10 +4,9 @@
 import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
-import { filterModelTypes, GraphbackDataProvider, GraphbackCoreMetadata } from '@graphback/core';
+import { GraphbackDataProvider, GraphbackCoreMetadata } from '@graphback/core';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
-import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
@@ -96,12 +95,16 @@ type Todo {
  text: String
 }`)
 
-  const todo = await providers.Todo.create({
-    text: 'create a todo',
-  }, { graphback: { services: {}, options: { selectedFields: fields } } });
+  const context = { graphback: { services: {}, options: { selectedFields: fields } } };
 
-  expect(todo.id === 4);
-  expect(todo.text === 'create a todo');
+  const fullTodo = await providers.Todo.create({ text: 'create a todo' }, context);
+  expect(fullTodo.id).toEqual(1);
+  expect(fullTodo.text).toEqual('create a todo');
+
+  const todoWithNullText = await providers.Todo.create({}, context);
+
+  expect(todoWithNullText.id).toEqual(2);
+  expect(todoWithNullText.text).toBeNull();
 });
 
 test('update Todo', async () => {
