@@ -35,7 +35,7 @@ export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any): Table
     transFormedData = {};
     for (const key of keys) {
       const value: any = data[key];
-      transFormedData[key] = typeof value === 'object'? JSON.stringify(value) : value;
+      transFormedData[key] = value && typeof value === 'object' ? JSON.stringify(value) : value;
     }
   };
 
