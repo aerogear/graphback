@@ -28,7 +28,7 @@ export function createDataSyncMongoDbProvider(db: Db): (...args: any[]) => Graph
  * @param {Db} db - MongoDB Db object
  * @param {DataSyncModelConfigMap} datasyncConfigMap - Object for configuring conflicts for individual models
  */
-export function createDataSyncConflictProviderCreator(db: Db, datasyncConfigMap: DataSyncModelConfigMap = {}) : (...args: any[]) => GraphbackDataProvider {
+export function createDataSyncConflictProviderCreator(db: Db, datasyncConfigMap: DataSyncModelConfigMap = {}) : (model: ModelDefinition) => GraphbackDataProvider {
   return (model: ModelDefinition): GraphbackDataProvider => {
     if (isDataSyncModel(model)) {
       const dataSyncModelConfig = datasyncConfigMap[model.graphqlType.name];

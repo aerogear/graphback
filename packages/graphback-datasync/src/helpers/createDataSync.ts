@@ -10,7 +10,10 @@ import { DataSyncPlugin } from '../DataSyncPlugin';
 type DataSyncGraphbackAPIConfig = Omit<GraphbackAPIConfig, "dataProviderCreator">
 
 export function createDataSyncAPI(model: string | GraphQLSchema, createDataSyncConfig: { db: Db,  dataSyncConflictMap?: DataSyncModelConfigMap, graphbackAPIConfig?: DataSyncGraphbackAPIConfig }): GraphbackAPI {
-  const { db, dataSyncConflictMap, graphbackAPIConfig } = createDataSyncConfig
+  const { db, dataSyncConflictMap, graphbackAPIConfig } = {
+    dataSyncConflictMap: {},
+    ...createDataSyncConfig
+  }
 
   return buildGraphbackAPI(model, {
     ...graphbackAPIConfig,
