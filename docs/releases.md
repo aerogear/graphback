@@ -12,6 +12,8 @@ Please follow individual releases for more information.
 
 ### New Features
 
+* Ability to specify composite unique columns in GraphQL Migrations ([#1658](https://github.com/aerogear/graphback/issues/1658)), fixed by ([9c6f34a231e2645c34533d58ea4427ff8f8f634e](https://github.com/aerogear/graphback/commit/9c6f34a231e2645c34533d58ea4427ff8f8f634e))
+
 * Requiring `_id: GraphbackObjectID` primary key for MongoDB ([#1769](https://github.com/aerogear/graphback/pull/1769)). 
   This fixes issues below related to primary key in MongoDB:
   - [#1731](https://github.com/aerogear/graphback/issues/1732), [#1626](https://github.com/aerogear/graphback/issues/1626) Ineffecient and wrong mapping of the `id` field
@@ -29,8 +31,11 @@ Please follow individual releases for more information.
 
 ### Bug Fixes
 
-* Do not remove directives on Object Types in generated schema ([#1767](https://github.com/aerogear/graphback/issues/1767)), fixed by ([22c7a1da62e2752a21db4e4552e970aa93ba37ae](https://github.com/aerogear/graphback/pull/1810/commits/22c7a1da62e2752a21db4e4552e970aa93ba37ae))
+* Failure to map enum values in field directives ([#1767](https://github.com/aerogear/graphback/issues/1462)), fixed by ([a9ca21e1405dba14dab249af2f8d146ac2306803](https://github.com/aerogear/graphback/commit/a9ca21e1405dba14dab249af2f8d146ac2306803))
 
+* invalid input syntax for type timestamp: "null" ([#1837](https://github.com/aerogear/graphback/issues/1837)), fixed by ([37cdc1d12410a1fafb27877b97b54ea308acecb1](https://github.com/aerogear/graphback/commit/37cdc1d12410a1fafb27877b97b54ea308acecb1))
+
+* Do not remove directives on Object Types in generated schema ([#1767](https://github.com/aerogear/graphback/issues/1767)), fixed by ([22c7a1da62e2752a21db4e4552e970aa93ba37ae](https://github.com/aerogear/graphback/pull/1810/commits/22c7a1da62e2752a21db4e4552e970aa93ba37ae))
 
 
 # 0.15.1
