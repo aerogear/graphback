@@ -20,9 +20,9 @@ export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDSe
  */
 export interface ConflictMetadata {
   base: any;
-  server: any;
+  serverData: any;
   serverDiff: any;
-  client: any;
+  clientData: any;
   clientDiff: any;
   operation: GraphbackOperationType;
 }
@@ -60,19 +60,31 @@ export interface ConflictResolutionStrategy {
   resolveUpdate(conflict: ConflictMetadata): any
 }
 
-export const ServerSideConflictResolution: ConflictResolutionStrategy = {
+export const ServerSideWins: ConflictResolutionStrategy = {
   resolveUpdate(conflict: ConflictMetadata): any {
-    const { serverDiff, clientDiff } = conflict;
+    const { serverData, serverDiff, clientDiff } = conflict;
 
-    const resolved: any = {};
+    if (serverData[DataSyncFieldNames.deleted] === true) {
+      throw new ConflictError(conflict);
+    }
 
-    Object.keys(clientDiff).forEach((fieldName: string) => {
-      if (!serverDiff[fieldName]) {
-        resolved[fieldName] = clientDiff[fieldName];
-      }
-    });
+    const resolved = Object.assign(serverData, clientDiff, serverDiff);
 
     return resolved
+  }
+}
+
+export const ClientSideWins: ConflictResolutionStrategy = {
+  resolveUpdate(conflict: ConflictMetadata): any {
+    const { serverData, clientDiff } = conflict
+    
+    if (serverData[DataSyncFieldNames.deleted] === true) {
+      throw new ConflictError(conflict);
+    }
+
+    const resolved = Object.assign(serverData, clientDiff);
+
+    return resolved;
   }
 }
 

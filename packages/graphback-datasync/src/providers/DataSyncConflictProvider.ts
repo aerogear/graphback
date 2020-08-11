@@ -1,5 +1,5 @@
 import { ModelDefinition, GraphbackContext, TransformType, FieldTransform, NoDataError, GraphbackOperationType } from '@graphback/core';
-import { DataSyncModelConflictConfig, DataSyncFieldNames, ConflictMetadata, ConflictError } from '../util';
+import { DataSyncModelConflictConfig, DataSyncFieldNames, ConflictMetadata, ConflictError, ClientSideWins } from '../util';
 import { MongoDeltaSource } from '../deltaSource';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
 
@@ -17,12 +17,8 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     super(model, client);
     this.conflictConfig = dataSyncConflictConfig;
 
-    if (!this.conflictConfig.conflictResolution?.resolveUpdate) {
-      this.conflictConfig.conflictResolution = {
-        resolveUpdate(conflict: ConflictMetadata) {
-          throw new ConflictError(conflict)
-        }
-      }
+    if (!this.conflictConfig.conflictResolution) {
+      this.conflictConfig.conflictResolution = ClientSideWins;
     }
 
     this.deltaSource = new MongoDeltaSource(model, client);
@@ -47,7 +43,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
     for(let i = 0; i < MAX_RETRIES; i++) {
       
-      const serverData = await this.db.collection(this.collectionName).findOne({ _id, [DataSyncFieldNames.deleted]: false});
+      const serverData = await this.db.collection(this.collectionName).findOne({ _id });
       const base = await this.deltaSource.findBaseForConflicts(updateDocument);
 
       let resolvedUpdate = Object.assign({}, updateDocument);
@@ -70,6 +66,8 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       resolvedUpdate[DataSyncFieldNames.version] = serverData[DataSyncFieldNames.version] + 1
 
+      resolvedUpdate[DataSyncFieldNames.lastUpdatedAt] = new Date();
+
       const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedUpdate }, { returnOriginal: false });
       if (value) {
         await this.deltaSource.insertDiff(value);
@@ -82,7 +80,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
   }
 
   public checkForConflict(clientData: any, base: any, serverData: any, operation: GraphbackOperationType): ConflictMetadata|undefined {
-    const ignoredKeys = [DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.version, DataSyncFieldNames.deleted];
+    const ignoredKeys = [DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.version];
 
     const clientDiff: any = {};
     const serverDiff: any = {};
@@ -106,11 +104,15 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     }
 
 
+    if (serverData[DataSyncFieldNames.deleted] === true) {
+      conflictFound = true;
+    }
+    
     if (conflictFound) {
       return {
         base,
-        server: serverData,
-        client: clientData,
+        serverData,
+        clientData,
         serverDiff,
         clientDiff,
         operation
