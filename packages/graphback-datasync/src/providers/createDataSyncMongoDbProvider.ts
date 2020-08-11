@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
 import { ModelDefinition, GraphbackDataProvider } from '@graphback/core';
 import { MongoDBDataProvider } from "@graphback/runtime-mongo"
-import { isDataSyncModel, DataSyncModelConflictConfig } from '../util';
+import { isDataSyncModel, DataSyncModelConfigMap } from '../util';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
 import { DataSyncConflictMongoDBDataProvider } from "./DataSyncConflictProvider";
 
@@ -20,7 +20,15 @@ export function createDataSyncMongoDbProvider(db: Db): (...args: any[]) => Graph
   }
 }
 
-export function createDataSyncConflictProviderCreator(db: Db, datasyncConfigMap: { [modelName: string]: DataSyncModelConflictConfig } = {}) : (...args: any[]) => GraphbackDataProvider {
+
+/**
+ * Creates a new Data Synchronization data provider creator for MongoDB with
+ * optionally specified per-model conflict configuration
+ * 
+ * @param {Db} db - MongoDB Db object
+ * @param {DataSyncModelConfigMap} datasyncConfigMap - Object for configuring conflicts for individual models
+ */
+export function createDataSyncConflictProviderCreator(db: Db, datasyncConfigMap: DataSyncModelConfigMap = {}) : (...args: any[]) => GraphbackDataProvider {
   return (model: ModelDefinition): GraphbackDataProvider => {
     if (isDataSyncModel(model)) {
       const dataSyncModelConfig = datasyncConfigMap[model.graphqlType.name];

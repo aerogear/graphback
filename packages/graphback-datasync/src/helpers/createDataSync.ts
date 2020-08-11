@@ -1,23 +1,24 @@
 import { GraphQLSchema } from 'graphql';
 import { Db } from 'mongodb';
-import { GraphbackAPIConfig, GraphbackAPI, buildGraphbackAPI, GraphbackConfig } from "graphback";
+import { GraphbackAPIConfig, GraphbackAPI, buildGraphbackAPI } from "graphback";
 import { PubSub } from 'graphql-subscriptions';
 import { createDataSyncMongoDbProvider, createDataSyncConflictProviderCreator } from '../providers';
-import { ConflictError, ConflictMetadata, DataSyncModelConflictConfig } from "../util";
+import { ConflictError, ConflictMetadata, DataSyncModelConflictConfig, DataSyncModelConfigMap } from "../util";
 import { createDataSyncCRUDService } from '../services';
 import { DataSyncPlugin } from '../DataSyncPlugin';
 
-type DataSyncGraphbackConfig = Partial<GraphbackConfig>
+type DataSyncGraphbackAPIConfig = Omit<GraphbackAPIConfig, "dataProviderCreator">
 
-export function createDataSyncAPI(model: string | GraphQLSchema, db: Db, dataSyncConfigMap: { [modelName: string]: DataSyncModelConflictConfig} = {}, graphbackConfig: DataSyncGraphbackConfig = {}): GraphbackAPI {
+export function createDataSyncAPI(model: string | GraphQLSchema, createDataSyncConfig: { db: Db,  dataSyncConflictMap?: DataSyncModelConfigMap, graphbackAPIConfig?: DataSyncGraphbackAPIConfig }): GraphbackAPI {
+  const { db, dataSyncConflictMap, graphbackAPIConfig } = createDataSyncConfig
 
   return buildGraphbackAPI(model, {
-    serviceCreator: createDataSyncCRUDService({ pubSub: new PubSub() }),
-    ...graphbackConfig,
-    dataProviderCreator: createDataSyncConflictProviderCreator(db, dataSyncConfigMap),
+    ...graphbackAPIConfig,
+    serviceCreator: graphbackAPIConfig?.serviceCreator || createDataSyncCRUDService(),
+    dataProviderCreator: createDataSyncConflictProviderCreator(db, dataSyncConflictMap),
     plugins:[
-      ...graphbackConfig.plugins || [],
-      new DataSyncPlugin({ modelConfigMap: dataSyncConfigMap })
+      ...(graphbackAPIConfig?.plugins || []),
+      new DataSyncPlugin({ modelConfigMap: dataSyncConflictMap })
     ]
   });
 }

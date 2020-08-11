@@ -1,7 +1,6 @@
 import { ModelDefinition, GraphbackCRUDService, GraphbackOperationType } from '@graphback/core';
 import { parseMetadata } from 'graphql-metadata';
 import { DataSyncCRUDService } from "./services";
-import { MongoDeltaHelper } from './deltaHelper';
 
 export function isDataSyncModel(model: ModelDefinition): boolean {
   return !!(parseMetadata('datasync', model.graphqlType))
@@ -51,6 +50,10 @@ export const DataSyncFieldNames = {
 export interface DataSyncModelConflictConfig {
   enabled: boolean
   conflictResolution?: ConflictResolutionStrategy
+}
+
+export interface DataSyncModelConfigMap {
+  [modelName: string]: DataSyncModelConflictConfig
 }
 
 export interface ConflictResolutionStrategy {
