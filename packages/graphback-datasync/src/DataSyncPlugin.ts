@@ -132,7 +132,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       }
     });
 
-    const modelUsesVersion = !!this.config.modelConfigMap[model.graphqlType.name]?.enabled;
+    const modelUsesVersion = this.config.modelConfigMap[model.graphqlType.name]?.enabled;
     if (modelUsesVersion) {
       modelTC.addFields({
         [DataSyncFieldNames.version]: {
