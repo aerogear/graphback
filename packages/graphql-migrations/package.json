@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@graphback/core": "0.15.1",
-    "@graphql-inspector/core": "2.1.0",
+    "@graphql-inspector/core": "2.2.0",
     "@types/jest": "26.0.9",
     "case": "1.6.3",
     "chalk": "3.0.0",
