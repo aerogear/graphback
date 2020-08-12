@@ -712,6 +712,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       if (!context[dataLoaderName]) {
         context[dataLoaderName] = new DataLoader<string, any>(async (keys: string[]) => {
           const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+          selectedFields.push(relationIdField.name);
+
           const graphback = {
             services: context.graphback.services,
             options: { selectedFields }
