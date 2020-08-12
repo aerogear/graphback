@@ -168,6 +168,11 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
       });
     }
 
+    // eslint-disable-next-line no-null/no-null
+    if (id === undefined || id === null) {
+      return [];
+    }
+
     return context[keyName].load(id);
   }
 
