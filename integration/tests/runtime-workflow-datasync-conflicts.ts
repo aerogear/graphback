@@ -40,7 +40,7 @@ beforeAll(async () => {
     mkdirSync("./output-datasync-conflict-mongo");
     mkdirSync("./output-datasync-conflict-mongo/client")
 
-    mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27018/users?authSource=admin', { useUnifiedTopology: true });
+    mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27017/users?authSource=admin', { useUnifiedTopology: true });
     await mongoClient.connect();
     db = mongoClient.db('users');
     graphbackApi = createDataSyncAPI(modelText, { db, dataSyncConflictMap: { Note: { enabled: true } }, graphbackAPIConfig: {
