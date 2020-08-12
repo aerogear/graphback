@@ -10,6 +10,7 @@ Object {
   },
   "GraphbackDate": "GraphbackDate",
   "GraphbackJSON": "GraphbackJSON",
+  "GraphbackTimestamp": "GraphbackTimestamp",
   "Issue": Object {
     "bugFix": [Function],
   },
@@ -19,12 +20,14 @@ Object {
     "createIssue": [Function],
     "createNote": [Function],
     "createTest": [Function],
+    "createVersioned": [Function],
     "deleteComment": [Function],
     "deleteNote": [Function],
     "deleteTest": [Function],
     "updateComment": [Function],
     "updateNote": [Function],
     "updateTest": [Function],
+    "updateVersioned": [Function],
   },
   "Note": Object {
     "comments": [Function],
@@ -34,6 +37,7 @@ Object {
     "findComments": [Function],
     "findNotes": [Function],
     "findTests": [Function],
+    "findVersioneds": [Function],
     "getComment": [Function],
     "getNote": [Function],
     "getTest": [Function],
@@ -262,6 +266,11 @@ input CreateTestInput {
   metadata: GraphbackJSON
 }
 
+input CreateVersionedInput {
+  id: ID
+  name: String
+}
+
 type CustomType @test(description: \\"Directive added following a fix for https://github.com/aerogear/graphback/issues/1767\\") {
   issue1432: String
 }
@@ -319,6 +328,22 @@ input GraphbackDateInput {
 
 scalar GraphbackJSON
 
+\\"\\"\\"
+The javascript \`Date\` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+\\"\\"\\"
+scalar GraphbackTimestamp
+
+input GraphbackTimestampInput {
+  ne: GraphbackTimestamp
+  eq: GraphbackTimestamp
+  le: GraphbackTimestamp
+  lt: GraphbackTimestamp
+  ge: GraphbackTimestamp
+  gt: GraphbackTimestamp
+  in: [GraphbackTimestamp!]
+  between: [GraphbackTimestamp!]
+}
+
 input IDInput {
   ne: ID
   eq: ID
@@ -396,6 +421,11 @@ input MutateTestInput {
   metadata: GraphbackJSON
 }
 
+input MutateVersionedInput {
+  id: ID!
+  name: String
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -409,6 +439,8 @@ type Mutation {
   deleteComment(input: MutateCommentInput!): Comment
   createIssue(input: CreateIssueInput!): Issue
   createFix(input: CreateFixInput!): Fix
+  createVersioned(input: CreateVersionedInput!): Versioned
+  updateVersioned(input: MutateVersionedInput!): Versioned
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -465,6 +497,7 @@ type Query {
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+  findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
 }
 
 enum SortDirectionEnum {
@@ -522,6 +555,48 @@ type TestResultList {
 input TestSubscriptionFilter {
   id: ID
   name: String
+}
+
+\\"\\"\\"
+@model(
+  find: true,
+  findOne: false,
+  create: true,
+  update: true,
+  delete: false,
+  subCreate: false,
+  subUpdate: false,
+  subDelete: false
+)
+@versioned
+Test case for https://github.com/aerogear/graphback/issues/1349
+\\"\\"\\"
+type Versioned {
+  id: ID!
+  name: String
+
+  \\"\\"\\"@createdAt\\"\\"\\"
+  createdAt: GraphbackTimestamp
+
+  \\"\\"\\"@updatedAt\\"\\"\\"
+  updatedAt: GraphbackTimestamp
+}
+
+input VersionedFilter {
+  id: IDInput
+  name: StringInput
+  and: [VersionedFilter!]
+  or: [VersionedFilter!]
+  not: VersionedFilter
+  createdAt: GraphbackTimestampInput
+  updatedAt: GraphbackTimestampInput
+}
+
+type VersionedResultList {
+  items: [Versioned]!
+  offset: Int
+  limit: Int
+  count: Int
 }"
 `;
 
@@ -542,6 +617,7 @@ type Query {
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+  findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -678,6 +754,64 @@ type CommentResultList {
   count: Int
 }
 
+type VersionedResultList {
+  items: [Versioned]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+\\"\\"\\"
+@model(
+  find: true,
+  findOne: false,
+  create: true,
+  update: true,
+  delete: false,
+  subCreate: false,
+  subUpdate: false,
+  subDelete: false
+)
+@versioned
+Test case for https://github.com/aerogear/graphback/issues/1349
+\\"\\"\\"
+type Versioned {
+  id: ID!
+  name: String
+
+  \\"\\"\\"@createdAt\\"\\"\\"
+  createdAt: GraphbackTimestamp
+
+  \\"\\"\\"@updatedAt\\"\\"\\"
+  updatedAt: GraphbackTimestamp
+}
+
+\\"\\"\\"
+The javascript \`Date\` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+\\"\\"\\"
+scalar GraphbackTimestamp
+
+input VersionedFilter {
+  id: IDInput
+  name: StringInput
+  and: [VersionedFilter!]
+  or: [VersionedFilter!]
+  not: VersionedFilter
+  createdAt: GraphbackTimestampInput
+  updatedAt: GraphbackTimestampInput
+}
+
+input GraphbackTimestampInput {
+  ne: GraphbackTimestamp
+  eq: GraphbackTimestamp
+  le: GraphbackTimestamp
+  lt: GraphbackTimestamp
+  ge: GraphbackTimestamp
+  gt: GraphbackTimestamp
+  in: [GraphbackTimestamp!]
+  between: [GraphbackTimestamp!]
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -691,6 +825,8 @@ type Mutation {
   deleteComment(input: MutateCommentInput!): Comment
   createIssue(input: CreateIssueInput!): Issue
   createFix(input: CreateFixInput!): Fix
+  createVersioned(input: CreateVersionedInput!): Versioned
+  updateVersioned(input: MutateVersionedInput!): Versioned
 }
 
 input CreateNoteInput {
@@ -837,6 +973,16 @@ input CreateCustomTypeInput {
 
 input CreateFixInput {
   id: ID
+}
+
+input CreateVersionedInput {
+  id: ID
+  name: String
+}
+
+input MutateVersionedInput {
+  id: ID!
+  name: String
 }
 
 type Subscription {
@@ -893,6 +1039,7 @@ type Query {
   findTests(filter: TestFilter, page: PageRequest, orderBy: OrderByInput): TestResultList!
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
+  findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -1029,6 +1176,64 @@ type CommentResultList {
   count: Int
 }
 
+type VersionedResultList {
+  items: [Versioned]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+\\"\\"\\"
+@model(
+  find: true,
+  findOne: false,
+  create: true,
+  update: true,
+  delete: false,
+  subCreate: false,
+  subUpdate: false,
+  subDelete: false
+)
+@versioned
+Test case for https://github.com/aerogear/graphback/issues/1349
+\\"\\"\\"
+type Versioned {
+  id: ID!
+  name: String
+
+  \\"\\"\\"@createdAt\\"\\"\\"
+  createdAt: GraphbackTimestamp
+
+  \\"\\"\\"@updatedAt\\"\\"\\"
+  updatedAt: GraphbackTimestamp
+}
+
+\\"\\"\\"
+The javascript \`Date\` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+\\"\\"\\"
+scalar GraphbackTimestamp
+
+input VersionedFilter {
+  id: IDInput
+  name: StringInput
+  and: [VersionedFilter!]
+  or: [VersionedFilter!]
+  not: VersionedFilter
+  createdAt: GraphbackTimestampInput
+  updatedAt: GraphbackTimestampInput
+}
+
+input GraphbackTimestampInput {
+  ne: GraphbackTimestamp
+  eq: GraphbackTimestamp
+  le: GraphbackTimestamp
+  lt: GraphbackTimestamp
+  ge: GraphbackTimestamp
+  gt: GraphbackTimestamp
+  in: [GraphbackTimestamp!]
+  between: [GraphbackTimestamp!]
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -1042,6 +1247,8 @@ type Mutation {
   deleteComment(input: MutateCommentInput!): Comment
   createIssue(input: CreateIssueInput!): Issue
   createFix(input: CreateFixInput!): Fix
+  createVersioned(input: CreateVersionedInput!): Versioned
+  updateVersioned(input: MutateVersionedInput!): Versioned
 }
 
 input CreateNoteInput {
@@ -1188,6 +1395,16 @@ input CreateCustomTypeInput {
 
 input CreateFixInput {
   id: ID
+}
+
+input CreateVersionedInput {
+  id: ID
+  name: String
+}
+
+input MutateVersionedInput {
+  id: ID!
+  name: String
 }
 
 type Subscription {

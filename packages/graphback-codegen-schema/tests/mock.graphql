@@ -112,6 +112,25 @@ type Fix {
   issues: [Issue]
 }
 
+"""
+@model(
+  find: true,
+  findOne: false,
+  create: true,
+  update: true,
+  delete: false,
+  subCreate: false,
+  subUpdate: false,
+  subDelete: false
+)
+@versioned
+Test case for https://github.com/aerogear/graphback/issues/1349
+"""
+type Versioned {
+  id: ID!
+  name: String
+}
+
 scalar DateTime
 scalar GraphbackDate
 scalar GraphbackJSON

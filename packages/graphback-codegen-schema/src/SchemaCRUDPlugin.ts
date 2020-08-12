@@ -2,13 +2,13 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import * as DataLoader from "dataloader";
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes } from '@graphback/core'
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLField } from 'graphql';
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes, GraphbackTimestamp } from '@graphback/core'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLField, GraphQLInputObjectType, GraphQLNamedType, GraphQLScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 import { parseMetadata } from "graphql-metadata";
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType } from './definitions/schemaDefinitions';
+import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, getInputName } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -349,20 +349,35 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   protected addVersionedMetadataFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
+    const timeStampInputName = getInputName(GraphbackTimestamp);
+    let timestampInputType: GraphQLInputObjectType; let timestampType: GraphQLScalarType;
+
     models.forEach((model: ModelDefinition) => {
       const name = model.graphqlType.name;
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
       const { markers } = metadataMap;
       if (parseMetadata(markers.versioned, desc)) {
-        const metadataFields = createVersionedFields();
+        if (!timestampInputType) {
+          if (schemaComposer.has(GraphbackTimestamp.name)) {
+            timestampInputType = schemaComposer.getITC(timeStampInputName).getType();
+          } else {
+            schemaComposer.createScalarTC(GraphbackTimestamp);
+            timestampInputType = createInputTypeForScalar(GraphbackTimestamp);
+            schemaComposer.add(timestampInputType);
+          }
+
+          timestampType = schemaComposer.getSTC(GraphbackTimestamp.name).getType();
+        }
+
+        const metadataFields = createVersionedFields(timestampType);
         // metadata fields needed for @versioned
 
         modelTC.addFields(metadataFields);
 
         const inputType = schemaComposer.getITC(getInputTypeName(name, GraphbackOperationType.FIND))
         if (inputType) {
-          const metadataInputFields = createVersionedInputFields();
+          const metadataInputFields = createVersionedInputFields(timestampInputType);
           inputType.addFields(metadataInputFields);
         }
       }

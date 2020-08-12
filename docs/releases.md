@@ -37,6 +37,9 @@ Please follow individual releases for more information.
 
 * Do not remove directives on Object Types in generated schema ([#1767](https://github.com/aerogear/graphback/issues/1767)), fixed by ([22c7a1da62e2752a21db4e4552e970aa93ba37ae](https://github.com/aerogear/graphback/pull/1810/commits/22c7a1da62e2752a21db4e4552e970aa93ba37ae))
 
+### Breaking Change
+
+* Use `GraphbackDateTime` scalar for generated createdAt updatedAt fields ([#1349](https://github.com/aerogear/graphback/issues/1349), fixed by [#1862](https://github.com/aerogear/graphback/pull/1862)) 
 
 # 0.15.1
 
