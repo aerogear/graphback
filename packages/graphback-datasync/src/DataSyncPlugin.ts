@@ -127,7 +127,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
     modelTC.addFields({
       [DataSyncFieldNames.lastUpdatedAt]: {
-        type: TimestampSTC.getType()
+        type: TimestampSTC.getType(),
+        description: "@index(name: 'Datasync_lastUpdatedAt')"
       }
     });
 
@@ -160,7 +161,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     const TimestampSTC = schemaComposer.getSTC(GraphbackTimestamp.name);
 
     const DeltaTypeFieldNames = this.getDeltaTypeFieldNames(modelTC.getType());
-    
+
     // Add Delta Type to schema
     const DeltaOTC = modelTC.clone(getDeltaType(modelName));
 
