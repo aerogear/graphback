@@ -5,7 +5,7 @@ import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata, metadataMap, NoDataError, defaultTableNameTransform } from '@graphback/core';
 import { advanceTo } from "jest-date-mock";
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { DataSyncMongoDBDataProvider, DataSyncPlugin, ConflictError, DataSyncFieldNames } from '../src';
+import { DataSyncMongoDBDataProvider, DataSyncPlugin, DataSyncFieldNames } from '../src';
 
 const {fieldNames} = metadataMap;
 export interface Context {
@@ -172,6 +172,23 @@ describe('Soft deletion test', () => {
 describe('Delta Queries', () => {
   let context: Context;
   afterEach(async () => context.server.stop());
+
+  it('creates index for the lastUpdateAt field', async () => {
+
+    context = await createTestingContext(postSchema);
+
+    const indexes = await context.db.collection('post').indexes();
+
+    expect(indexes[1]).toMatchObject(
+      {
+        "key": {
+          [DataSyncFieldNames.lastUpdatedAt]: 1
+        },
+        "name": "Datasync_lastUpdatedAt",
+        "ns": "test.post"
+      }
+    )
+  })
 
   it('sets lastUpdatedAt on creation', async () => {
     context = await createTestingContext(postSchema);

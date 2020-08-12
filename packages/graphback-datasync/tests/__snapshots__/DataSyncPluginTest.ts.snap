@@ -12,6 +12,8 @@ type Comment {
 
   \\"\\"\\"@manyToOne(field: 'comments', key: 'noteId')\\"\\"\\"
   noteComment: Note!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
 }
 
@@ -19,6 +21,8 @@ type CommentDelta {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
@@ -114,6 +118,8 @@ type Note {
 
   \\"\\"\\"@oneToMany(field: 'noteComment', key: 'noteId')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
 }
 
@@ -121,6 +127,8 @@ type NoteDelta {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
@@ -211,6 +219,8 @@ type Comment {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
 }
 
@@ -218,6 +228,8 @@ type CommentDelta {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
