@@ -66,7 +66,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       resolvedUpdate[DataSyncFieldNames.version] = serverData[DataSyncFieldNames.version] + 1
 
-      resolvedUpdate[DataSyncFieldNames.lastUpdatedAt] = new Date();
+      resolvedUpdate[DataSyncFieldNames.lastUpdatedAt] = Date.now();
 
       const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedUpdate }, { returnOriginal: false });
       if (value) {
