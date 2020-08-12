@@ -3,10 +3,9 @@ require('dotenv').config()
 import path from 'path'
 import http from "http"
 import { ApolloServer } from "apollo-server-express"
-import { buildGraphbackAPI } from 'graphback'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import { createDataSyncAPI, ServerSideConflictResolution } from '@graphback/datasync'
+import { createDataSyncAPI } from '@graphback/datasync'
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import cors from "cors"
 // eslint-disable-next-line @typescript-eslint/tslint/config
@@ -27,7 +26,7 @@ async function start() {
 
   const db = await connectDB()
 
-  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, db, { Comment: { enabled: true, conflictResolution: ServerSideConflictResolution }});
+  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, dataSyncConflictMap:{ Comment: { enabled: true }}});
 
   const apolloServer = new ApolloServer({
     typeDefs,

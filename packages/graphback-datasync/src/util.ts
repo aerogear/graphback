@@ -58,6 +58,7 @@ export interface DataSyncModelConfigMap {
 
 export interface ConflictResolutionStrategy {
   resolveUpdate(conflict: ConflictMetadata): any
+  resolveDelete(conflict: ConflictMetadata): any
 }
 
 export const ServerSideWins: ConflictResolutionStrategy = {
@@ -71,20 +72,38 @@ export const ServerSideWins: ConflictResolutionStrategy = {
     const resolved = Object.assign(serverData, clientDiff, serverDiff);
 
     return resolved
+  },
+  resolveDelete(conflict: ConflictMetadata): any {
+    const { serverData } = conflict;
+
+    if (serverData[DataSyncFieldNames.deleted] === true) {
+      throw new ConflictError(conflict);
+    }
+
+    const resolved = serverData;
+
+    return resolved
   }
 }
 
 export const ClientSideWins: ConflictResolutionStrategy = {
   resolveUpdate(conflict: ConflictMetadata): any {
     const { serverData, clientDiff } = conflict
-    
-    if (serverData[DataSyncFieldNames.deleted] === true) {
-      throw new ConflictError(conflict);
-    }
 
     const resolved = Object.assign(serverData, clientDiff);
 
+    if (serverData[DataSyncFieldNames.deleted] === true) {
+      resolved[DataSyncFieldNames.deleted] = false;
+    }
+
     return resolved;
+  },
+  resolveDelete(conflict: ConflictMetadata): any {
+    const { serverData, clientData } = conflict;
+
+    if (serverData[DataSyncFieldNames.deleted] === true || clientData[DataSyncFieldNames.deleted] === true) {
+      throw new ConflictError(conflict);
+    }
   }
 }
 
