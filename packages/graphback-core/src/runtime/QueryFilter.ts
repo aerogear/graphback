@@ -1,7 +1,5 @@
-
-
 /**
- * Filter mapping for scalars that exit
+ * Filter mapping for scalars that exist 
  */
 export type Scalars = {
   ID: string;
@@ -9,7 +7,13 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  DateTime: any;
+  GraphbackJSON: any;
+  GraphbackJSONObject: { [key: string]: any };
+  GraphbackObjectID: string;
+  GraphbackTimestamp: number;
+  GraphbackTime: string;
+  GraphbackDate: Date;
+  GraphbackDateTime: Date;
 };
 
 export type Maybe<T> = T | null;
@@ -64,20 +68,66 @@ export type StringInput = {
   endsWith?: Maybe<Scalars['String']>;
 };
 
-export type DateTimeInput = {
-  ne?: Maybe<Scalars['DateTime']>;
-  eq?: Maybe<Scalars['DateTime']>;
-  le?: Maybe<Scalars['DateTime']>;
-  lt?: Maybe<Scalars['DateTime']>;
-  ge?: Maybe<Scalars['DateTime']>;
-  gt?: Maybe<Scalars['DateTime']>;
-  in?: Maybe<Scalars['DateTime'][]>;
-  between?: Maybe<Scalars['DateTime'][]>;
+export type GraphbackDateInput = {
+  ne?: Maybe<Scalars['GraphbackDate']>;
+  eq?: Maybe<Scalars['GraphbackDate']>;
+  le?: Maybe<Scalars['GraphbackDate']>;
+  lt?: Maybe<Scalars['GraphbackDate']>;
+  ge?: Maybe<Scalars['GraphbackDate']>;
+  gt?: Maybe<Scalars['GraphbackDate']>;
+  in?: Maybe<Scalars['GraphbackDate'][]>;
+  between?: Maybe<Scalars['GraphbackDate'][]>;
 };
+
+export type GraphbackDateTimeInput = {
+  ne?: Maybe<Scalars['GraphbackDateTime']>;
+  eq?: Maybe<Scalars['GraphbackDateTime']>;
+  le?: Maybe<Scalars['GraphbackDateTime']>;
+  lt?: Maybe<Scalars['GraphbackDateTime']>;
+  ge?: Maybe<Scalars['GraphbackDateTime']>;
+  gt?: Maybe<Scalars['GraphbackDateTime']>;
+  in?: Maybe<Scalars['GraphbackDateTime'][]>;
+  between?: Maybe<Scalars['GraphbackDateTime'][]>;
+};
+
+export type GraphbackObjectIdInput = {
+  ne?: Maybe<Scalars['GraphbackObjectID']>;
+  eq?: Maybe<Scalars['GraphbackObjectID']>;
+  le?: Maybe<Scalars['GraphbackObjectID']>;
+  lt?: Maybe<Scalars['GraphbackObjectID']>;
+  ge?: Maybe<Scalars['GraphbackObjectID']>;
+  gt?: Maybe<Scalars['GraphbackObjectID']>;
+  in?: Maybe<Scalars['GraphbackObjectID'][]>;
+  between?: Maybe<Scalars['GraphbackObjectID'][]>;
+};
+
+export type GraphbackTimeInput = {
+  ne?: Maybe<Scalars['GraphbackTime']>;
+  eq?: Maybe<Scalars['GraphbackTime']>;
+  le?: Maybe<Scalars['GraphbackTime']>;
+  lt?: Maybe<Scalars['GraphbackTime']>;
+  ge?: Maybe<Scalars['GraphbackTime']>;
+  gt?: Maybe<Scalars['GraphbackTime']>;
+  in?: Maybe<Scalars['GraphbackTime'][]>;
+  between?: Maybe<Scalars['GraphbackTime'][]>;
+};
+
+export type GraphbackTimestampInput = {
+  ne?: Maybe<Scalars['GraphbackTimestamp']>;
+  eq?: Maybe<Scalars['GraphbackTimestamp']>;
+  le?: Maybe<Scalars['GraphbackTimestamp']>;
+  lt?: Maybe<Scalars['GraphbackTimestamp']>;
+  ge?: Maybe<Scalars['GraphbackTimestamp']>;
+  gt?: Maybe<Scalars['GraphbackTimestamp']>;
+  in?: Maybe<Scalars['GraphbackTimestamp'][]>;
+  between?: Maybe<Scalars['GraphbackTimestamp'][]>;
+};
+
+type GraphbackScalar = GraphbackDateInput | GraphbackDateTimeInput | GraphbackObjectIdInput | GraphbackTimeInput | GraphbackTimestampInput;
 
 /**
  * Query filter used in Graphback services and data providers
  */
 export type QueryFilter<T = any> = {
-  [P in keyof T]?: any | Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput | DateTimeInput>;
+  [P in keyof T]?: Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput | GraphbackScalar | T | T[]>;
 };

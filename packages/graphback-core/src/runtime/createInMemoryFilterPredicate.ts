@@ -164,7 +164,7 @@ function getAndPredicateResult<T>(and: QueryFilter | QueryFilter[], payload: Par
  * @param {QueryFilter|QueryFilter[]} or - Or query filter 
  * @param {Partial<T>} payload - Subscription payload
  */
-function getOrPredicateResult<T>(or: any | any[], payload: Partial<T>): boolean {
+function getOrPredicateResult<T>(or: QueryFilter | QueryFilter[], payload: Partial<T>): boolean {
   let orResult = true;
   if (Array.isArray(or)) {
     for (const orItem of or) {

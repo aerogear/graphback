@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Scalars, Maybe, QueryFilter, StringInput, IdInput, BooleanInput, IntInput, FloatInput, DateTimeInput } from '../src/runtime/QueryFilter';
+import { Scalars, Maybe, QueryFilter, StringInput, IdInput, BooleanInput, IntInput, FloatInput, GraphbackDateTimeInput } from '../src/runtime/QueryFilter';
 import { createInMemoryFilterPredicate } from '../src/runtime/createInMemoryFilterPredicate';
 
 type User = {
@@ -9,7 +9,7 @@ type User = {
   verified?: Maybe<Scalars['Boolean']>;
   age?: Scalars['Int'];
   score?: Scalars['Float'];
-  createdAt?: Scalars['DateTime'];
+  createdAt?: Scalars['GraphbackDateTime'];
 };
 
 export type UserSubscriptionFilter = {
@@ -18,7 +18,7 @@ export type UserSubscriptionFilter = {
   verified?: Maybe<BooleanInput>;
   age?: Maybe<IntInput>;
   score?: Maybe<FloatInput>;
-  createdAt?: Maybe<DateTimeInput>;
+  createdAt?: Maybe<GraphbackDateTimeInput>;
   and?: Maybe<UserSubscriptionFilter[]>;
   or?: Maybe<UserSubscriptionFilter[]>;
   not?: Maybe<UserSubscriptionFilter>;
