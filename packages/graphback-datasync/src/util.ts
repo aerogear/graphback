@@ -74,15 +74,8 @@ export const ServerSideWins: ConflictResolutionStrategy = {
     return resolved
   },
   resolveDelete(conflict: ConflictMetadata): any {
-    const { serverData } = conflict;
 
-    if (serverData[DataSyncFieldNames.deleted] === true) {
-      throw new ConflictError(conflict);
-    }
-
-    const resolved = serverData;
-
-    return resolved
+    throw new ConflictError(conflict);
   }
 }
 
