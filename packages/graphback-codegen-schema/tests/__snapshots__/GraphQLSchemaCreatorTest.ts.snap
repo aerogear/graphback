@@ -559,8 +559,11 @@ type TestResultList {
 }
 
 input TestSubscriptionFilter {
-  id: ID
-  name: String
+  and: [TestSubscriptionFilter!]
+  or: [TestSubscriptionFilter!]
+  not: TestSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }
 
 \\"\\"\\"

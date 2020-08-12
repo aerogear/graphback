@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { Scalars, Maybe, QueryFilter, StringInput, IdInput, BooleanInput, IntInput, FloatInput, DateTimeInput } from '../src/runtime/QueryFilter';
-import { createSubscriptionFilterPredicate } from '../src/runtime/subscriptionFilter';
+import { createInMemoryFilterPredicate } from '../src/runtime/createInMemoryFilterPredicate';
 
 type User = {
   __typename?: 'User';
@@ -24,7 +24,7 @@ export type UserSubscriptionFilter = {
   not?: Maybe<UserSubscriptionFilter>;
 };
 
-describe('subscriptionFilter', () => {
+describe('inMemoryFilter', () => {
 
   describe('ID', () => {
     test('id eq', () => {
@@ -33,7 +33,7 @@ describe('subscriptionFilter', () => {
           eq: 1
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ id: '1' })).toEqual(true);
       expect(filterSubscription({ id: '0' })).toEqual(false);
@@ -46,7 +46,7 @@ describe('subscriptionFilter', () => {
         }
       }
 
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ id: '2' })).toEqual(true);
       expect(filterSubscription({ id: '1' })).toEqual(false);
@@ -59,7 +59,7 @@ describe('subscriptionFilter', () => {
         }
       }
 
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ id: '9' })).toEqual(true);
       expect(filterSubscription({ id: '10' })).toEqual(true);
@@ -72,7 +72,7 @@ describe('subscriptionFilter', () => {
         }
       }
 
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ id: '9' })).toEqual(true);
       expect(filterSubscription({ id: '10' })).toEqual(false);
@@ -85,7 +85,7 @@ describe('subscriptionFilter', () => {
         }
       }
 
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ id: '0' })).toEqual(false);
       expect(filterSubscription({ id: '1' })).toEqual(true);
@@ -102,7 +102,7 @@ describe('subscriptionFilter', () => {
           eq: 'Homer Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false)
       expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(false);
@@ -115,7 +115,7 @@ describe('subscriptionFilter', () => {
           ne: 'Homer Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(true)
       expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true);
@@ -128,7 +128,7 @@ describe('subscriptionFilter', () => {
           le: 'Bart Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false)
       expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(true);
@@ -142,7 +142,7 @@ describe('subscriptionFilter', () => {
           lt: 'Bart Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false)
       expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(false);
@@ -156,7 +156,7 @@ describe('subscriptionFilter', () => {
           gt: 'Bart Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false);
       expect(filterSubscription({ name: 'Apu Nahasapeemapetilon' })).toEqual(false);
@@ -170,7 +170,7 @@ describe('subscriptionFilter', () => {
           ge: 'Bart Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false);
       expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(true);
@@ -184,7 +184,7 @@ describe('subscriptionFilter', () => {
           in: ['Bart Simpson', 'Homer Simpson']
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(true);
       expect(filterSubscription({ name: 'Bumblebee Man' })).toEqual(false);
@@ -197,7 +197,7 @@ describe('subscriptionFilter', () => {
           contains: 'Bart'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false);
       expect(filterSubscription({ name: 'Bart' })).toEqual(true);
@@ -214,7 +214,7 @@ describe('subscriptionFilter', () => {
           startsWith: 'Bart'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false);
       expect(filterSubscription({ name: 'Bart' })).toEqual(true);
@@ -230,7 +230,7 @@ describe('subscriptionFilter', () => {
           endsWith: 'Simpson'
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: undefined })).toEqual(false);
       expect(filterSubscription({ name: 'Maggie' })).toEqual(false);
@@ -247,7 +247,7 @@ describe('subscriptionFilter', () => {
           eq: true
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ verified: true })).toEqual(true);
       expect(filterSubscription({ verified: false })).toEqual(false);
@@ -261,7 +261,7 @@ describe('subscriptionFilter', () => {
           eq: 38
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Lenny', age: 38 })).toEqual(true)
       expect(filterSubscription({ name: 'Carl', age: 39 })).toEqual(false)
@@ -273,7 +273,7 @@ describe('subscriptionFilter', () => {
           ne: 38
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Lenny', age: 38 })).toEqual(false)
       expect(filterSubscription({ name: 'Carl', age: 39 })).toEqual(true)
@@ -285,7 +285,7 @@ describe('subscriptionFilter', () => {
           lt: 8
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Maggie', age: 1 })).toEqual(true)
       expect(filterSubscription({ name: 'Lisa', age: 8 })).toEqual(false)
@@ -298,7 +298,7 @@ describe('subscriptionFilter', () => {
           le: 8
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Maggie', age: 1 })).toEqual(true)
       expect(filterSubscription({ name: 'Lisa', age: 8 })).toEqual(true)
@@ -311,7 +311,7 @@ describe('subscriptionFilter', () => {
           gt: 8
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Maggie', age: 1 })).toEqual(false)
       expect(filterSubscription({ name: 'Lisa', age: 8 })).toEqual(false)
@@ -324,7 +324,7 @@ describe('subscriptionFilter', () => {
           ge: 8
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ name: 'Maggie', age: 1 })).toEqual(false)
       expect(filterSubscription({ name: 'Lisa', age: 8 })).toEqual(true)
@@ -337,7 +337,7 @@ describe('subscriptionFilter', () => {
           in: [1, 8, 10]
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ age: 1 })).toEqual(true)
       expect(filterSubscription({ age: 10 })).toEqual(true)
@@ -350,7 +350,7 @@ describe('subscriptionFilter', () => {
           between: [1, 10]
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ age: 0 })).toEqual(false)
       expect(filterSubscription({ age: 1 })).toEqual(true)
@@ -367,7 +367,7 @@ describe('subscriptionFilter', () => {
           eq: 90
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 89.99 })).toEqual(false)
@@ -382,7 +382,7 @@ describe('subscriptionFilter', () => {
           ne: 90
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(true);
       expect(filterSubscription({ score: 89.99 })).toEqual(true)
@@ -395,7 +395,7 @@ describe('subscriptionFilter', () => {
           lt: 90.01
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 89.99 })).toEqual(true)
@@ -409,7 +409,7 @@ describe('subscriptionFilter', () => {
           le: 90.05
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 89.99 })).toEqual(true)
@@ -424,7 +424,7 @@ describe('subscriptionFilter', () => {
           gt: 90.50
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 89 })).toEqual(false)
@@ -438,7 +438,7 @@ describe('subscriptionFilter', () => {
           ge: 90.50
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 89.99 })).toEqual(false)
@@ -452,7 +452,7 @@ describe('subscriptionFilter', () => {
           in: [50, 55, 75, 90, 95]
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 49 })).toEqual(false)
@@ -467,7 +467,7 @@ describe('subscriptionFilter', () => {
           between: [75, 95]
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ score: undefined })).toEqual(false);
       expect(filterSubscription({ score: 74 })).toEqual(false)
@@ -489,7 +489,7 @@ describe('subscriptionFilter', () => {
           eq: now
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toBe(true);
@@ -506,7 +506,7 @@ describe('subscriptionFilter', () => {
           ne: now
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(true);
       expect(filterSubscription({ createdAt: now })).toEqual(false);
@@ -523,7 +523,7 @@ describe('subscriptionFilter', () => {
           lt: now
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toBe(false);
@@ -540,7 +540,7 @@ describe('subscriptionFilter', () => {
           le: now
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toBe(true);
@@ -557,7 +557,7 @@ describe('subscriptionFilter', () => {
           gt: now
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toBe(false);
@@ -573,7 +573,7 @@ describe('subscriptionFilter', () => {
           ge: now
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toEqual(true);
@@ -589,7 +589,7 @@ describe('subscriptionFilter', () => {
           in: [now, new Date(now.getTime() - 1000 * 60), new Date(now.getTime() + 1000 * 60)]
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toEqual(true);
@@ -606,7 +606,7 @@ describe('subscriptionFilter', () => {
           between: [now, new Date(now.getTime() + 1000 * 600)]
         }
       }
-      const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+      const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
       expect(filterSubscription({ createdAt: undefined })).toEqual(false);
       expect(filterSubscription({ createdAt: now })).toEqual(true);
@@ -629,7 +629,7 @@ describe('subscriptionFilter', () => {
       }
     }
 
-    const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
 
     expect(filterSubscription({ name: 'Homer Simpson', age: 39, verified: true })).toEqual(true)
     expect(filterSubscription({ name: 'Homer Simpson', age: 38, verified: false })).toEqual(false)
@@ -650,7 +650,7 @@ describe('subscriptionFilter', () => {
       }
     }
 
-    const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
     expect(filterSubscription({ name: 'Homer Simpson', age: 39, verified: true })).toEqual(true)
     expect(filterSubscription({ name: 'Homer Simpson', age: 38, verified: false })).toEqual(false)
   });
@@ -674,7 +674,7 @@ describe('subscriptionFilter', () => {
       ]
     }
 
-    const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
     expect(filterSubscription({ name: 'Homer Simpson', age: 39, verified: true })).toEqual(true)
     expect(filterSubscription({ name: 'Homer Simpson', age: 38, verified: false })).toEqual(false)
   });
@@ -688,7 +688,7 @@ describe('subscriptionFilter', () => {
       }
     }
 
-    const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
     expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
     expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(false)
   });
@@ -705,9 +705,10 @@ describe('subscriptionFilter', () => {
       }
     }
 
-    const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
     expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
     expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
+    expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(false)
   });
 
   test('or multiple', () => {
@@ -729,8 +730,9 @@ describe('subscriptionFilter', () => {
       ]
     }
 
-    const filterSubscription = createSubscriptionFilterPredicate<User>(filter)
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
     expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
     expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
+    expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(false)
   });
 });

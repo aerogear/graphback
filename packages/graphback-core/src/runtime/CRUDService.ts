@@ -1,7 +1,7 @@
 import * as DataLoader from "dataloader";
 import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar, getSubscriptionName } from '..';
-import { createSubscriptionFilterPredicate } from './subscriptionFilter';
+import { createInMemoryFilterPredicate } from './createInMemoryFilterPredicate';
 import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList, QueryFilter } from '.';
 
 /**
@@ -127,7 +127,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(createSubKey)
 
-    const subscriptionFilter = createSubscriptionFilterPredicate<Type>(filter)
+    const subscriptionFilter = createInMemoryFilterPredicate<Type>(filter)
 
     return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
@@ -143,7 +143,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(updateSubKey)
 
-    const subscriptionFilter = createSubscriptionFilterPredicate<Type>(filter)
+    const subscriptionFilter = createInMemoryFilterPredicate<Type>(filter)
 
     return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
@@ -159,7 +159,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(deleteSubKey)
 
-    const subscriptionFilter = createSubscriptionFilterPredicate<Type>(filter)
+    const subscriptionFilter = createInMemoryFilterPredicate<Type>(filter)
 
     return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }

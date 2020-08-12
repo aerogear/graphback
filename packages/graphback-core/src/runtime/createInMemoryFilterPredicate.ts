@@ -87,7 +87,7 @@ const predicateMap: IPredicate = {
  * 
  * @param {QueryFilter} filter - subscription filter input object
  */
-export function createSubscriptionFilterPredicate<T = any>(filter: QueryFilter): (input: Partial<T>) => boolean {
+export function createInMemoryFilterPredicate<T = any>(filter: QueryFilter): (input: Partial<T>) => boolean {
   const andFilter = filter.and;
   const orFilter = filter.or;
   const notFilter = filter.not;
@@ -97,27 +97,37 @@ export function createSubscriptionFilterPredicate<T = any>(filter: QueryFilter):
   return (payload: Partial<T>): boolean => {
     let predicateResult = true;
     for (const fieldName of filterFields) {
+      // skip these filter expressions
+      if (['and', 'or', 'not'].includes(fieldName)) {
+        continue;
+      }
 
       const fieldFilter = filter[fieldName];
 
       for (const [expr, exprVal] of Object.entries(fieldFilter)) {
         const predicateFn: PredicateFn = predicateMap[expr](exprVal)
 
-        predicateResult = predicateFn(payload[fieldName])
+        if (!predicateFn(payload[fieldName])) {
+          predicateResult = false;
+          break;
+        }
       }
     }
 
+    if (orFilter) {
+      const orPredicateResult = getOrPredicateResult<T>(orFilter, payload);
+      predicateResult = predicateResult || orPredicateResult;
+      if (!predicateResult) {
+        return false;
+      }
+    }
     if (andFilter) {
       const andPredicateResult = getAndPredicateResult(andFilter, payload);
       predicateResult = predicateResult && andPredicateResult;
     }
     if (notFilter) {
-      const notPredicateResult = createSubscriptionFilterPredicate<T>(notFilter)(payload);
+      const notPredicateResult = createInMemoryFilterPredicate<T>(notFilter)(payload);
       predicateResult = predicateResult && !notPredicateResult;
-    }
-    if (orFilter) {
-      const orPredicateResult = getOrPredicateResult<T>(orFilter, payload);
-      predicateResult = predicateResult || orPredicateResult;
     }
 
     return predicateResult;
@@ -135,14 +145,14 @@ function getAndPredicateResult<T>(and: QueryFilter | QueryFilter[], payload: Par
 
   if (Array.isArray(and)) {
     for (const andItem of and) {
-      andResult = createSubscriptionFilterPredicate<T>(andItem)(payload);
+      andResult = createInMemoryFilterPredicate<T>(andItem)(payload);
 
       if (!andResult) {
         break;
       }
     }
   } else {
-    andResult = createSubscriptionFilterPredicate<T>(and)(payload);
+    andResult = createInMemoryFilterPredicate<T>(and)(payload);
   }
 
   return andResult;
@@ -158,14 +168,14 @@ function getOrPredicateResult<T>(or: any | any[], payload: Partial<T>): boolean 
   let orResult = true;
   if (Array.isArray(or)) {
     for (const orItem of or) {
-      orResult = createSubscriptionFilterPredicate<T>(orItem)(payload);
+      orResult = createInMemoryFilterPredicate<T>(orItem)(payload);
 
       if (orResult) {
         break;
       }
     }
   } else {
-    orResult = createSubscriptionFilterPredicate<T>(or)(payload);
+    orResult = createInMemoryFilterPredicate<T>(or)(payload);
   }
 
   return orResult;
