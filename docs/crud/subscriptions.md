@@ -22,9 +22,12 @@ type Note {
 
 // highlight-start
 input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  likes: Int
+  id: IDInput
+  title: StringInput
+  likes: IntInput
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
 }
 
 type Subscription {
@@ -49,11 +52,18 @@ subscription {
 }
 ```
 
-You can apply field-equality filters to the subscription:
+You can apply filters to the subscription like so:
 
 ```graphql
 subscription {
-  newNote(filter: {likes: 100}) {
+  newNote(filter: {
+    likes: {
+      gt: 100
+    },
+    title: {
+      contains: 'football'
+    }
+  }) {
     id
     title
     likes
@@ -73,11 +83,18 @@ subscription {
 }
 ```
 
-You can apply field-equality filters to the subscription:
+You can apply filters to the subscription like so:
 
 ```graphql
 subscription {
-  updatedNote(filter: {likes: 100}) {
+  updatedNote(filter: {
+    likes: {
+      gt: 100
+    },
+    title: {
+      contains: 'football'
+    }
+  }) {
     id
     title
     likes
@@ -97,11 +114,18 @@ subscription {
 }
 ```
 
-You can apply field-equality filters to the subscription:
+You can apply filters to the subscription like so:
 
 ```graphql
 subscription {
-  updatedNote(filter: {likes: 100}) {
+  updatedNote(filter: {
+    likes: {
+      gt: 100
+    },
+    title: {
+      contains: 'football'
+    }
+  }) {
     id
     title
     likes

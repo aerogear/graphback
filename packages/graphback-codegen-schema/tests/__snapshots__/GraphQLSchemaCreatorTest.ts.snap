@@ -223,10 +223,13 @@ type CommentResultList {
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  createdAt: GraphbackDate
-  title: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  createdAt: GraphbackDateInput
+  title: StringInput
+  description: StringInput
 }
 
 input CreateCommentInput {
@@ -474,9 +477,12 @@ type NoteResultList {
 }
 
 input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input OrderByInput {
@@ -553,8 +559,11 @@ type TestResultList {
 }
 
 input TestSubscriptionFilter {
-  id: ID
-  name: String
+  and: [TestSubscriptionFilter!]
+  or: [TestSubscriptionFilter!]
+  not: TestSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }
 
 \\"\\"\\"
@@ -998,21 +1007,30 @@ type Subscription {
 }
 
 input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input TestSubscriptionFilter {
-  id: ID
-  name: String
+  and: [TestSubscriptionFilter!]
+  or: [TestSubscriptionFilter!]
+  not: TestSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  createdAt: GraphbackDate
-  title: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  createdAt: GraphbackDateInput
+  title: StringInput
+  description: StringInput
 }
 
 enum AUTH_ROLE {
@@ -1420,21 +1438,30 @@ type Subscription {
 }
 
 input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input TestSubscriptionFilter {
-  id: ID
-  name: String
+  and: [TestSubscriptionFilter!]
+  or: [TestSubscriptionFilter!]
+  not: TestSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  createdAt: GraphbackDate
-  title: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  createdAt: GraphbackDateInput
+  title: StringInput
+  description: StringInput
 }
 
 enum AUTH_ROLE {
@@ -1481,9 +1508,12 @@ type CommentResultList {
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  text: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  text: StringInput
+  description: StringInput
 }
 
 input CreateCommentInput {
@@ -1570,9 +1600,12 @@ type NoteResultList {
 }
 
 input NoteSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input OrderByInput {

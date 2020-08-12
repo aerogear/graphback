@@ -7,4 +7,4 @@ export * from "./createCRUDService"
 export * from "./NoDataError"
 export * from "./GraphbackProxyService"
 export * from "./QueryFilter"
-export * from './withSubscriptionFilter'
+export * from './createInMemoryFilterPredicate'

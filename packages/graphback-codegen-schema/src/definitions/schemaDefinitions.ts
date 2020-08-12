@@ -205,7 +205,7 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
     name: inputTypeName,
     fields: () => {
       const fields: any = {};
-      for (const {name, type} of allModelFields) {
+      for (const { name, type } of allModelFields) {
         let fieldType: GraphQLNamedType;
         // Remove required from ID
         if (name === idField.name) {
@@ -234,23 +234,31 @@ export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>,
     return (isScalarType(namedType) && !TYPES_IGNORED_FOR_FILTERING.includes(namedType.name)) || isEnumType(namedType);
   });
 
-  const filterInputType = new GraphQLInputObjectType({
-    name: inputTypeName,
-    fields: () => {
-      const fields: any = {};
-      for (const {name, type} of scalarFields) {
-        const fieldType: GraphQLNamedType = getNamedType(type);
-        fields[name] = {
-          name,
-          type: fieldType || type
-        };
-      }
-
-      return fields;
+  const fields = {
+    and: {
+      type: `[${inputTypeName}!]`
+    },
+    or: {
+      type: `[${inputTypeName}!]`
+    },
+    not: {
+      type: `${inputTypeName}`
     }
-  });
+  }
+  for (const { name, type } of scalarFields) {
+    const fieldType: GraphQLNamedType = getNamedType(type);
+    const inputFilterName = getInputName(fieldType);
 
-  schemaComposer.add(filterInputType)
+    fields[name] = {
+      name,
+      type: schemaComposer.get(inputFilterName)
+    };
+  }
+
+  schemaComposer.createInputTC({
+    name: inputTypeName,
+    fields
+  })
 }
 
 export const buildMutationInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
@@ -264,7 +272,7 @@ export const buildMutationInputType = (schemaComposer: SchemaComposer<any>, mode
     name: inputTypeName,
     fields: () => {
       const fields: any = {};
-      for (const {name, type} of allModelFields) {
+      for (const { name, type } of allModelFields) {
         let fieldType: GraphQLNamedType
 
         if (name !== idField.name) {
