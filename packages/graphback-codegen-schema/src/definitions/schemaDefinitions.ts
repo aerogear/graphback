@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, GraphbackJSON, GraphbackJSONObject, isModelType, ModelDefinition } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, GraphbackDateTime } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -8,7 +8,7 @@ const PageRequestTypeName = 'PageRequest';
 const SortDirectionEnumName = 'SortDirectionEnum';
 const OrderByInputTypeName = 'OrderByInput';
 
-const getInputName = (type: GraphQLNamedType) => {
+export const getInputName = (type: GraphQLNamedType) => {
   if (isEnumType(type)) {
     return `StringInput`
   }
@@ -353,26 +353,26 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
   })
 }
 
-export function createVersionedInputFields() {
+export function createVersionedInputFields(versionedInputType: GraphQLInputObjectType) {
   return {
     [metadataMap.fieldNames.createdAt]: {
-      type: StringScalarInputType
+      type: versionedInputType
     },
     [metadataMap.fieldNames.updatedAt]: {
-      type: StringScalarInputType
+      type: versionedInputType
     }
   };
 }
 
-export function createVersionedFields() {
+export function createVersionedFields(type: GraphQLScalarType) {
   return {
     [metadataMap.fieldNames.createdAt]: {
-      type: GraphQLString,
-      description: `@${metadataMap.markers.createdAt}\n@db(type: 'timestamp')`
+      type,
+      description: `@${metadataMap.markers.createdAt}`
     },
     [metadataMap.fieldNames.updatedAt]: {
-      type: GraphQLString,
-      description: `@${metadataMap.markers.updatedAt}\n@db(type: 'timestamp')`
+      type,
+      description: `@${metadataMap.markers.updatedAt}`
     }
   };
 }
