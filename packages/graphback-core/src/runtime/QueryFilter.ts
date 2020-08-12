@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 /**
  * Filter mapping for scalars that exist 
  */
@@ -9,7 +10,7 @@ export type Scalars = {
   Float: number;
   GraphbackJSON: any;
   GraphbackJSONObject: { [key: string]: any };
-  GraphbackObjectID: string;
+  GraphbackObjectID: ObjectId | number | string;
   GraphbackTimestamp: number;
   GraphbackTime: string;
   GraphbackDate: Date;
@@ -129,5 +130,5 @@ type GraphbackScalar = GraphbackDateInput | GraphbackDateTimeInput | GraphbackOb
  * Query filter used in Graphback services and data providers
  */
 export type QueryFilter<T = any> = {
-  [P in keyof T]?: Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput | GraphbackScalar | T | T[]>;
+  [P in keyof T | 'not' | 'and' | 'or']?: Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput | GraphbackScalar | T | T[]>;
 };
