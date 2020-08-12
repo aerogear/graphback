@@ -94,9 +94,13 @@ export const ClientSideWins: ConflictResolutionStrategy = {
   resolveDelete(conflict: ConflictMetadata): any {
     const { serverData, clientData } = conflict;
 
-    if (serverData[DataSyncFieldNames.deleted] === true || clientData[DataSyncFieldNames.deleted] === true) {
+    if (serverData[DataSyncFieldNames.deleted] === true) {
       throw new ConflictError(conflict);
     }
+
+    const resolved = Object.assign(serverData, { [DataSyncFieldNames.deleted]: true });
+
+    return resolved
   }
 }
 
