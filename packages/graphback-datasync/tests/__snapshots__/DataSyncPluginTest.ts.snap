@@ -265,9 +265,12 @@ type CommentResultList {
 }
 
 input CommentSubscriptionFilter {
-  id: ID
-  title: String
-  description: String
+  and: [CommentSubscriptionFilter!]
+  or: [CommentSubscriptionFilter!]
+  not: CommentSubscriptionFilter
+  id: IDInput
+  title: StringInput
+  description: StringInput
 }
 
 input CreateCommentInput {

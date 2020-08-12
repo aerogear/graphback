@@ -142,7 +142,7 @@ describe('Client Side wins Conflict resolution', () => {
     expect(updatedPost.content).toEqual(updatedContent);
   });
 
-  it ('throw error on deletes if conflict occurs', async () => {
+  it ('force deletes if conflict occurs', async () => {
     context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true } } });
 
     const { Post } = context.providers;
@@ -150,9 +150,11 @@ describe('Client Side wins Conflict resolution', () => {
     const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
 
     const updatedTitle = "Post 1 v2";
-    await Post.update({ _id, title: updatedTitle,  [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}})
+    await Post.update({ _id, title: updatedTitle,  [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}});
 
-    await expect(Post.delete({ _id, [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+    const deletedPost = await Post.delete({ _id, [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}});
+
+    expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
   });
 });
 
