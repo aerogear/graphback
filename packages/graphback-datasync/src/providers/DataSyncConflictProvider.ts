@@ -79,6 +79,47 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     throw new Error(`Cannot update ${this.collectionName}`);
   }
 
+  public async delete(data: any, context: GraphbackContext): Promise<Type> {
+    const { _id } = data;
+
+    for(let i = 0; i < MAX_RETRIES; i++) {
+      
+      const serverData = await this.db.collection(this.collectionName).findOne({ _id });
+      const base = await this.deltaSource.findBaseForConflicts(data);
+
+      let resolvedData = Object.assign(data, base, { [DataSyncFieldNames.deleted]: true });
+
+      const updateFilter = { _id, [DataSyncFieldNames.version]: serverData[DataSyncFieldNames.version] }
+
+      if (serverData[DataSyncFieldNames.version] !== data[DataSyncFieldNames.version]){
+        const conflict = this.checkForConflict(data, base, serverData, GraphbackOperationType.DELETE);
+
+        if (conflict) {
+          resolvedData = this.conflictConfig.conflictResolution.resolveDelete(conflict);
+        }
+
+      }
+
+      if (Object.keys(resolvedData).length === 0) {
+        return serverData;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      resolvedData[DataSyncFieldNames.version] = serverData[DataSyncFieldNames.version] + 1
+
+      resolvedData[DataSyncFieldNames.lastUpdatedAt] = Date.now();
+
+      const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedData }, { returnOriginal: false });
+      if (value) {
+        await this.deltaSource.insertDiff(value);
+
+        return value;
+      }
+    }
+
+    throw new Error(`Cannot update ${this.collectionName}`);
+  }
+
   public checkForConflict(clientData: any, base: any, serverData: any, operation: GraphbackOperationType): ConflictMetadata|undefined {
     const ignoredKeys = [DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.version];
 
@@ -90,11 +131,13 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     // Calculate clientDiff and serverDiff
     for (const key of Object.keys(clientData)) {
       if (!ignoredKeys.includes(key)) {
-        if (base[key] !== clientData[key]) {
+        //                                    If client sends a delete mutation, insert all fields into diff
+        if (base[key] !== clientData[key] || clientData[DataSyncFieldNames.deleted] === true) {
           clientDiff[key] = clientData[key];
         }
 
-        if (base[key] !== serverData[key]) {
+        //                                    If server side document is deleted, insert all fields into diff
+        if (base[key] !== serverData[key] || serverData[DataSyncFieldNames.deleted] === true) {
           serverDiff[key] = serverData[key];
           if (clientDiff[key]) {
             conflictFound = true;
@@ -103,10 +146,6 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
       }
     }
 
-
-    if (serverData[DataSyncFieldNames.deleted] === true) {
-      conflictFound = true;
-    }
     
     if (conflictFound) {
       return {
