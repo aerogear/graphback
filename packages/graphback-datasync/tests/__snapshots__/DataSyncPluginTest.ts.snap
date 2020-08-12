@@ -225,6 +225,8 @@ type Comment {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
   _version: Int
 }
@@ -233,6 +235,8 @@ type CommentDelta {
   id: ID!
   title: String!
   description: String!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
   _lastUpdatedAt: GraphbackTimestamp
   _version: Int
   _deleted: Boolean
