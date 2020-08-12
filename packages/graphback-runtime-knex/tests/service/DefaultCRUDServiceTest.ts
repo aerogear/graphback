@@ -3,7 +3,7 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, filterModelTypes, GraphbackCoreMetadata } from '@graphback/core';
+import { CRUDService, GraphbackCoreMetadata } from '@graphback/core';
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 

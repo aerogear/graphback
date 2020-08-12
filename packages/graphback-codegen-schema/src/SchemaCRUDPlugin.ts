@@ -726,7 +726,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         });
       }
 
-      return context[dataLoaderName].load(parent[relationship.relationForeignKey])
+      const relationForeignKey = parent[relationship.relationForeignKey];
+
+      // eslint-disable-next-line no-null/no-null
+      if (relationForeignKey === undefined || relationForeignKey === null) {
+        // eslint-disable-next-line no-null/no-null
+        return null;
+      }
+
+      return context[dataLoaderName].load(relationForeignKey)
     }
   }
 
