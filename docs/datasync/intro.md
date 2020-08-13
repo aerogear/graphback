@@ -40,3 +40,4 @@ There are two steps to implementing a data synchronization strategy:
 Currently the supported strategies are:
 
 - [Soft deletes with delta queries for MongoDB](soft-delete.md)
+- [Delta Tables for server-side Conflict Resolution](delta-table.md)
