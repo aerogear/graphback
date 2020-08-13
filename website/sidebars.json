@@ -35,13 +35,17 @@
     "Data Sync": [
       "datasync/intro",
       "datasync/soft-delete",
+      "datasync/delta-table",
+      "datasync/conflict-resolution",
       "api/graphback-datasync/interfaces/_providers_datasyncprovider_.datasyncprovider",
       "api/graphback-datasync/interfaces/_services_datasynccrudservice_.synclist",
       "api/graphback-datasync/interfaces/_services_createdatasyncservice_.createdatasynccrudserviceoptions",
       "api/graphback-datasync/classes/_providers_datasyncmongodbdataprovider_.datasyncmongodbdataprovider",
       "api/graphback-datasync/classes/_services_datasynccrudservice_.datasynccrudservice",
       "api/graphback-datasync/classes/_datasyncplugin_.datasyncplugin",
-      "api/graphback-datasync/classes/_util_.conflicterror"
+      "api/graphback-datasync/classes/_util_.conflicterror",
+      "api/graphback-datasync/interfaces/_util_.conflictresolutionstrategy",
+      "api/graphback-datasync/interfaces/_util_.conflictmetadata"
     ],
     "GraphQL Migrations": [
       "graphql-migrations/intro",

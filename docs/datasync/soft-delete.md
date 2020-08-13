@@ -8,7 +8,7 @@ This is the simplest strategy for Data Synchronization that is also quite straig
 
 ## Setup
 
-Start off with the official Graphback template for MongoDB [*here*](https://GitHub.com/aerogear/graphback/tree/master/templates/ts-apollo-mongodb-backend) to follow along or pick up the official Graphback DataSync template [*here*](https://GitHub.com/aerogear/graphback/tree/master/templates/ts-apollo-mongodb-datasync-backend) that has out of the box Data Synchronization. Adding this strategy is relatively simple, consisting of the following two steps:
+Start off with the official Graphback template for MongoDB [*here*](https://GitHub.com/aerogear/graphback/tree/master/templates/ts-apollo-mongodb-backend) to follow along. Adding this strategy is relatively simple, consisting of the following two steps:
 
 ### Annotate the required models
 
@@ -42,6 +42,10 @@ type Comment {
   _lastUpdatedAt: GraphbackTimestamp
 }
 ```
+
+:::note
+The `_lastUpdatedAt` field is automatically indexed by Graphback for faster delta queries
+:::
 
 The `@datasync` annotation adds a `sync` query or a delta query:
 ```graphql
@@ -83,19 +87,13 @@ The `DeltaList` is a container for `Delta` type, which also returns a `lastSync`
 
 ### Modify the template to support Data Synchronization
 
-In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `DataSyncPlugin` and compliant data sources in `buildGraphbackAPI`:
+In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
 
 ```typescript
-import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin } from '@graphback/datasync'
+import { createDataSyncAPI } from '@graphback/datasync'
 
 
-const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
-    dataProviderCreator: createDataSyncMongoDbProvider(db),
-    serviceCreator: createDataSyncCRUDService({ pubSub: new PubSub() }),
-    plugins: [
-        new DataSyncPlugin()
-    ]
-});
+const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db });;
 ```
 The data sources provided by `@graphback/datasync` ensure that the documents are only marked with `_deleted: true` instead of being removed from the database, meaning that a compatible client can issue a `sync` query to obtain information about this deletion.
 
