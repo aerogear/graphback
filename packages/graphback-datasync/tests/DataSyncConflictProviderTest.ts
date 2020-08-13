@@ -4,7 +4,7 @@ import { MongoClient, Db } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins } from '../src';
+import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata } from '../src';
 
 export interface Context {
   providers: { [modelname: string]: DataSyncProvider };
@@ -60,6 +60,48 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
 
   return { server, providers, db }
 }
+
+describe('DataSyncConflictMongoDBDataProvider', () => {
+  let context: Context;
+  afterEach(async () => context.server.stop());
+  const fields = ["_id", "title"];
+  const postSchema = `
+  """
+  @model
+  @datasync
+  """
+  type Post {
+    _id: GraphbackObjectID!
+    title: String!
+    content: String
+  }
+
+  scalar GraphbackObjectID
+  `;
+
+  test('conflict does not occur when changes can be merged', async () => {
+    const resolveUpdate = jest.fn((_: ConflictMetadata) => {return {}});
+    const resolveDelete = jest.fn((_: ConflictMetadata) => {return {}});
+    const mockConflictStrategy:ConflictResolutionStrategy = {
+      resolveUpdate,
+      resolveDelete
+    }
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: mockConflictStrategy } } });
+
+    const { Post } = context.providers;
+
+    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
+
+    const updatedContent = "Post 1 content v2";
+    await Post.update({ _id, content: updatedContent, [DataSyncFieldNames.version]: version },{graphback: {services: {}, options: { selectedFields: fields}}})
+
+    const updateTitle = "Post 1 v2";
+    await Post.update({ _id, title: updateTitle, [DataSyncFieldNames.version]: version },{graphback: {services: {}, options: { selectedFields: fields}}});
+
+    expect(resolveUpdate.mock.calls.length).toEqual(0);
+    expect(resolveDelete.mock.calls.length).toEqual(0);
+  })
+})
 
 
 describe('Client Side wins Conflict resolution', () => {
