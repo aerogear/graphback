@@ -17,6 +17,7 @@ export * from './annotations/DefaultValueAnnotation';
 export * from './utils/printSchemaWithDirectives';
 export * from './utils/metadataAnnotations';
 export * from './utils/fieldTransformHelpers';
+export * from './utils/copyWrappingType';
 
 export * from './runtime';
 export * from './db';
