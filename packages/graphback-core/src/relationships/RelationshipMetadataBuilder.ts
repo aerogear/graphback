@@ -182,7 +182,7 @@ export class RelationshipMetadataBuilder {
 
       modelRelationshipConfigMap[fieldType.name][relationFieldName] = {
         kind: 'manyToOne',
-        owner,
+        owner: getNamedType(field.type) as GraphQLObjectType,
         ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
         relationType: owner,
         relationFieldName: field.name,

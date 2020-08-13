@@ -21,11 +21,9 @@ test('should have no relationship metadata', () => {
         name: String
     }`)
 
-    builder.build();
+    const { User: userRelationships } = builder.build();
 
-    const userRelationships = builder.getModelRelationships('User');
-
-    expect(userRelationships.length).toEqual(0);
+    expect(Object.keys(userRelationships.length)).toHaveLength(0);
 });
 
 test('should create many-to-one relationship metadata from one-to-many field', () => {
@@ -50,23 +48,25 @@ test('should create many-to-one relationship metadata from one-to-many field', (
     }
     `)
 
-    const relationshipMetadataConfig = builder.build();
+    const { User: userRelationships, Message: messageRelationships } = builder.build();
 
-    const userRelationships = relationshipMetadataConfig.User;
-    expect(userRelationships.length).toEqual(1);
-    expect(userRelationships[0].kind).toEqual('oneToMany');
-    expect(userRelationships[0].ownerField.name).toEqual('sentMessages');
-    expect(userRelationships[0].relationFieldName).toEqual('sender');
-    expect(userRelationships[0].relationForeignKey).toEqual('sender_id');
-    expect(userRelationships[0].relationType.name).toEqual('Message');
+    expect(Object.keys(userRelationships)).toHaveLength(1);
+    const sentMessagesFieldMetadata = userRelationships.sentMessages;
+    expect(sentMessagesFieldMetadata).toBeDefined()
+    expect(sentMessagesFieldMetadata.kind).toEqual('oneToMany');
+    expect(sentMessagesFieldMetadata.ownerField.name).toEqual('sentMessages');
+    expect(sentMessagesFieldMetadata.relationFieldName).toEqual('sender');
+    expect(sentMessagesFieldMetadata.relationForeignKey).toEqual('sender_id');
+    expect(sentMessagesFieldMetadata.relationType.name).toEqual('Message');
 
-    const messageRelationships = builder.getModelRelationships('Message');
-    expect(messageRelationships.length).toEqual(1);
-    expect(messageRelationships[0].kind).toEqual('manyToOne');
-    expect(messageRelationships[0].ownerField.name).toEqual('sender');
-    expect(messageRelationships[0].relationFieldName).toEqual('sentMessages');
-    expect(userRelationships[0].relationForeignKey).toEqual('sender_id');
-    expect(messageRelationships[0].relationType.name).toEqual('User');
+    expect(Object.keys(messageRelationships)).toHaveLength(1)
+    const senderFieldMetadata = messageRelationships.sender;
+    expect(senderFieldMetadata).toBeDefined()
+    expect(senderFieldMetadata.kind).toEqual('manyToOne');
+    expect(senderFieldMetadata.ownerField.name).toEqual('sender');
+    expect(senderFieldMetadata.relationFieldName).toEqual('sentMessages');
+    expect(sentMessagesFieldMetadata.relationForeignKey).toEqual('sender_id');
+    expect(senderFieldMetadata.relationType.name).toEqual('User');
 });
 
 test('should build one-to-one relationship metadata from one-to-one field', () => {
@@ -90,15 +90,16 @@ test('should build one-to-one relationship metadata from one-to-one field', () =
     }
     `)
 
-    const relationshipMetadataConfig = builder.build();
+    const { Address: addressRelationships } = builder.build();
 
-    const addressRelationships = relationshipMetadataConfig.Address;
-    expect(addressRelationships.length).toEqual(1);
-    expect(addressRelationships[0].kind).toEqual('oneToOne');
-    expect(addressRelationships[0].ownerField.name).toEqual('resident');
-    expect(addressRelationships[0].relationForeignKey).toEqual('residentId');
-    expect(addressRelationships[0].relationType.name).toEqual('User');
-    expect(addressRelationships[0].relationFieldName).toBeUndefined();
+    expect(Object.keys(addressRelationships)).toHaveLength(1);
+    const residentFieldMetadata = addressRelationships.resident;
+    
+    expect(residentFieldMetadata.kind).toEqual('oneToOne');
+    expect(residentFieldMetadata.ownerField.name).toEqual('resident');
+    expect(residentFieldMetadata.relationForeignKey).toEqual('residentId');
+    expect(residentFieldMetadata.relationType.name).toEqual('User');
+    expect(residentFieldMetadata.relationFieldName).toBeUndefined();
 
     expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
 });
@@ -129,23 +130,24 @@ test('should build one-to-many and many-to-one relationships from both fields', 
     }
     `)
 
-    const relationshipMetadataConfig = builder.build();
+    const { User: userRelationships, Message: messageRelationships } = builder.build();
 
-    const userRelationships = relationshipMetadataConfig.User;
-    expect(userRelationships.length).toEqual(1);
-    expect(userRelationships[0].kind).toEqual('oneToMany');
-    expect(userRelationships[0].ownerField.name).toEqual('sentMessages')
-    expect(userRelationships[0].relationFieldName).toEqual('sender');
-    expect(userRelationships[0].relationForeignKey).toEqual('senderId')
-    expect(userRelationships[0].relationType.name).toEqual('Message');
+    expect(Object.keys(userRelationships)).toHaveLength(1);
+    const sentMessagesFieldMetadata = userRelationships.sentMessages;
+    expect(sentMessagesFieldMetadata.kind).toEqual('oneToMany');
+    expect(sentMessagesFieldMetadata.ownerField.name).toEqual('sentMessages')
+    expect(sentMessagesFieldMetadata.relationFieldName).toEqual('sender');
+    expect(sentMessagesFieldMetadata.relationForeignKey).toEqual('senderId')
+    expect(sentMessagesFieldMetadata.relationType.name).toEqual('Message');
 
-    const messageRelationships = builder.getModelRelationships('Message');
-    expect(messageRelationships.length).toEqual(1);
-    expect(messageRelationships[0].kind).toEqual('manyToOne');
-    expect(messageRelationships[0].ownerField.name).toEqual('sender');
-    expect(messageRelationships[0].relationFieldName).toEqual('sentMessages');
-    expect(userRelationships[0].relationForeignKey).toEqual('senderId')
-    expect(messageRelationships[0].relationType.name).toEqual('User');
+    expect(Object.keys(messageRelationships)).toHaveLength(1);
+    const senderFieldMetadata = messageRelationships.sender;
+    expect(senderFieldMetadata).toBeDefined();
+    expect(senderFieldMetadata.kind).toEqual('manyToOne');
+    expect(senderFieldMetadata.ownerField.name).toEqual('sender');
+    expect(senderFieldMetadata.relationFieldName).toEqual('sentMessages');
+    expect(sentMessagesFieldMetadata.relationForeignKey).toEqual('senderId')
+    expect(senderFieldMetadata.relationType.name).toEqual('User');
 
     expect(JSON.stringify(builder.getRelationships(), undefined, 1)).toMatchSnapshot();
 });
@@ -394,3 +396,4 @@ type Comment {
     expect(CommentNoteFieldMetadata.relationForeignKey).toEqual('noteId')
     expect(CommentNoteFieldMetadata.ownerField.name).toEqual('note')
 })
+
