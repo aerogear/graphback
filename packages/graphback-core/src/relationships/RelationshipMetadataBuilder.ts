@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
-import { isModelType } from '../crud';
+import * as pluralize from 'pluralize';
+import { isModelType, lowerCaseFirstChar } from '../crud';
 import { transformForeignKeyName } from '../db';
 import { hasListType } from '../utils/hasListType';
 import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, relationshipOneToOneFieldDescriptionTemplate } from './relationshipHelpers';
@@ -72,6 +73,11 @@ export class RelationshipMetadataBuilder {
     for (let field of fields) {
       const annotation = parseRelationshipAnnotation(field.description);
       if (!annotation) {
+
+        const relationMetadata = this.getRelationshipMetadata(field, modelType);
+        if (relationMetadata?.length) {
+          this.relationships.push(...relationMetadata)
+        }
         continue;
       }
 
@@ -82,7 +88,9 @@ export class RelationshipMetadataBuilder {
       let relationField = relationType.getFields()[annotation.field];
 
       if (annotation.kind === 'oneToMany') {
-        field = this.updateOneToManyField(field, annotation.field, annotation.key)
+        if (!annotation.key) {
+          field = this.updateOneToManyField(field, annotation.fieldy)
+        }
 
         if (!relationField) {
           relationField = this.createManyToOneField(annotation.field, modelType, field.name, annotation.key);
@@ -119,6 +127,97 @@ export class RelationshipMetadataBuilder {
     }
   }
 
+  private getRelationshipMetadata(field: GraphQLField<any, any>, owner: GraphQLObjectType): FieldRelationshipMetadata[] {
+    const fieldType = getNamedType(field.type)
+
+    const outputFields: FieldRelationshipMetadata[] = []
+
+    if (!isObjectType(fieldType) || !isModelType(fieldType)) {
+      return undefined
+    }
+
+    if (parseRelationshipAnnotation(field.description)) {
+      return undefined
+    }
+
+    // oneToMany
+    if (hasListType(field.type)) {
+      const ownerName = owner.name;
+      const relationFieldName = lowerCaseFirstChar(ownerName)
+      const relationForeignKey = transformForeignKeyName(relationFieldName)
+
+      outputFields.push({
+        kind: 'oneToMany',
+        owner,
+        ownerField: this.updateOneToManyField(field, relationFieldName),
+        relationType: fieldType,
+        relationFieldName,
+        relationForeignKey
+      })
+
+      outputFields.push({
+        kind: 'manyToOne',
+        owner: fieldType,
+        ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
+        relationType: owner,
+        relationFieldName: field.name,
+        relationForeignKey
+      })
+    } else if (this.isManyToOne(field, owner)) {
+      const relationFieldName = lowerCaseFirstChar(owner.name)
+
+      const oneToManyFieldType = getNamedType(field.type) as GraphQLObjectType
+
+      const oneToManyField = Object.values((oneToManyFieldType.getFields())).find((f: GraphQLField<any, any>) => {
+        const relationshipAnnotation = parseRelationshipAnnotation(f.description)
+
+        return (relationshipAnnotation?.kind === 'oneToMany' && relationshipAnnotation.field === field.name)
+      });
+      const oneToManyFieldAnnotation = parseRelationshipAnnotation(oneToManyField.description)
+
+      const foreignKeyName = oneToManyFieldAnnotation.key || transformForeignKeyName(field.name)
+
+      outputFields.push({
+        kind: 'manyToOne',
+        owner,
+        ownerField: this.updateManyToOneField(field, pluralize(relationFieldName), foreignKeyName),
+        relationType: fieldType,
+        relationFieldName: foreignKeyName
+      })
+
+    } else {
+      const foreignKeyName = transformForeignKeyName(lowerCaseFirstChar(field.name))
+
+      outputFields.push({
+        kind: 'oneToOne',
+        owner,
+        ownerField: this.updateOneToOneField(field, foreignKeyName),
+        relationType: fieldType,
+        relationFieldName: foreignKeyName
+      })
+    }
+
+    return outputFields
+  }
+
+  private isManyToOne(field: GraphQLField<any, any>, owner: GraphQLObjectType): boolean {
+    const relationType = getNamedType(field.type)
+
+    if (!isObjectType(relationType) || !isModelType(relationType)) {
+      return false
+    }
+
+    const relationFields = Object.values(relationType.getFields())
+
+    const oneToManyField = relationFields.find((f: GraphQLField<any, any>) => {
+      const annotation = parseRelationshipAnnotation(f.description)
+
+      return annotation && annotation?.kind === 'oneToMany' && annotation.field === field.name;
+    })
+
+    return Boolean(oneToManyField)
+  }
+
   private createOneToManyField(fieldName: string, baseType: GraphQLOutputType, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
     const columnField = columnName || transformForeignKeyName(relationFieldName);
     const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', relationFieldName, columnField);
@@ -151,19 +250,15 @@ export class RelationshipMetadataBuilder {
     }
   }
 
-  private updateOneToManyField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {
-    if (!columnName) {
-      const columnField = transformForeignKeyName(relationFieldName);
-      const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', relationFieldName, columnField);
-      const oldDescription = field.description ? `\n${field.description}` : '';
+  private updateOneToManyField(field: GraphQLField<any, any>, relationFieldName: string): GraphQLField<any, any> {
+    const columnField = transformForeignKeyName(relationFieldName);
+    const fieldDescription = relationshipFieldDescriptionTemplate('oneToMany', relationFieldName, columnField);
+    const oldDescription = field.description ? `\n${field.description}` : '';
 
-      return {
-        ...field,
-        description: `${fieldDescription}${oldDescription}`
-      }
+    return {
+      ...field,
+      description: `${fieldDescription}${oldDescription}`
     }
-
-    return field;
   }
 
   private updateManyToOneField(field: GraphQLField<any, any>, relationFieldName: string, columnName?: string): GraphQLField<any, any> {

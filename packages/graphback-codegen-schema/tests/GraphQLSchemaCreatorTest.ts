@@ -1,6 +1,7 @@
+/* eslint-disable max-lines */
 import { readFileSync } from 'fs';
-import { buildSchema, printSchema, GraphQLObjectType } from 'graphql';
-import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine } from '@graphback/core';
+import { buildSchema, printSchema, GraphQLObjectType, GraphQLID } from 'graphql';
+import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine, ModelDefinition, FieldRelationshipMetadata } from '@graphback/core';
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -277,4 +278,53 @@ type Comment {
   expect(note.astNode?.directives[0].name.value).toBe('test')
 
   expect(printSchemaWithDirectives(schema)).toMatchSnapshot()
+})
+
+test.only('implicit one-to-many relationships', () => {
+  const modelAST = `
+ """ @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  comments: [Comment]!
+}
+
+""" @model """
+type Comment {
+  id: ID!
+  text: String
+  description: String
+}`
+
+  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+  const schemaGenerator = new SchemaCRUDPlugin();
+  const schema = schemaGenerator.transformSchema(metadata)
+  const modelDefinitions = metadata.getModelDefinitions()
+
+  const NoteModelDefinition = modelDefinitions.find((m: ModelDefinition) => m.graphqlType.name === 'Note')
+  const CommentModelDefinition = modelDefinitions.find((m: ModelDefinition) => m.graphqlType.name === 'Comment')
+  expect(NoteModelDefinition.relationships).toHaveLength(1)
+  const noteRelationField = NoteModelDefinition.relationships[0]
+
+  expect(noteRelationField).toEqual({
+    kind: 'oneToMany',
+    owner: NoteModelDefinition.graphqlType,
+    ownerField: NoteModelDefinition.graphqlType.getFields().comments,
+    relationType: CommentModelDefinition.graphqlType,
+    relationFieldName: 'note',
+    relationForeignKey: 'noteId'
+  });
+
+  expect(CommentModelDefinition.relationships).toHaveLength(1)
+  const commentRelationField = CommentModelDefinition.relationships[0]
+
+  expect(commentRelationField).toEqual({
+    kind: 'manyToOne',
+    owner: CommentModelDefinition.graphqlType,
+    ownerField: CommentModelDefinition.graphqlType.getFields().note,
+    relationType: NoteModelDefinition.graphqlType,
+    relationFieldName: 'comments',
+    relationForeignKey: 'noteId'
+  });
 })
