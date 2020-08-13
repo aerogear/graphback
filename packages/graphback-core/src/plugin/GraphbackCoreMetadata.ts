@@ -66,13 +66,13 @@ export class GraphbackCoreMetadata {
     //Get actual user types
     const modelTypes = this.getGraphQLTypesWithModel();
 
-    const relationshipBuilder = new RelationshipMetadataBuilder(modelTypes);
-    relationshipBuilder.build();
-
     for (const modelType of modelTypes) {
-      const model = this.buildModel(modelType, relationshipBuilder.getModelRelationships(modelType.name));
+      const model = this.buildModel(modelType);
       this.models.push(model);
     }
+
+    const relationshipBuilder = new RelationshipMetadataBuilder(this.models);
+    relationshipBuilder.build()
 
     return this.models;
   }
@@ -90,7 +90,7 @@ export class GraphbackCoreMetadata {
     return types.filter((modelType: GraphQLObjectType) => parseMetadata('model', modelType))
   }
 
-  private buildModel(modelType: GraphQLObjectType, relationships: FieldRelationshipMetadata[]): ModelDefinition {
+  private buildModel(modelType: GraphQLObjectType): ModelDefinition {
     let crudOptions = parseMetadata('model', modelType)
     //Merge CRUD options from type with global ones
     crudOptions = Object.assign({}, this.supportedCrudMethods, crudOptions)
@@ -99,7 +99,7 @@ export class GraphbackCoreMetadata {
     const primaryKeyField = getPrimaryKey(modelType);
 
     return {
-      relationships,
+      relationships: [],
       crudOptions,
       graphqlType: modelType,
       config: { deltaSync },

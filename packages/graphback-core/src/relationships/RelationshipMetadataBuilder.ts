@@ -1,10 +1,11 @@
 /* eslint-disable max-lines */
-import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType, assertObjectType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
 import * as pluralize from 'pluralize';
 import { isModelType, lowerCaseFirstChar } from '../crud';
 import { transformForeignKeyName } from '../db';
 import { hasListType } from '../utils/hasListType';
+import { ModelDefinition } from '../plugin/ModelDefinition';
 import { parseRelationshipAnnotation, relationshipFieldDescriptionTemplate, relationshipOneToOneFieldDescriptionTemplate } from './relationshipHelpers';
 
 export interface FieldRelationshipMetadata {
@@ -23,42 +24,54 @@ export interface RelationshipAnnotation {
   key?: string
 }
 
+interface ModelRelationshipConfigMap {
+  [modelName: string]: ModelFieldRelationshipConfigMap
+}
+
+interface ModelFieldRelationshipConfigMap {
+  [fieldName: string]: FieldRelationshipMetadata
+}
+
 /**
  * Builds relationship context for entire data model.
  * Performs validation on relationship fields and metadata
  * Dynamically creates relationship fields and maps values to data layer.
  */
 export class RelationshipMetadataBuilder {
-  private modelTypes: GraphQLObjectType[];
-  private relationships: FieldRelationshipMetadata[];
-  public constructor(modelTypes: GraphQLObjectType[]) {
-    this.relationships = [];
-    this.modelTypes = modelTypes;
+  private models: ModelDefinition[];
+  private relationshipMetadataConfigMap: ModelRelationshipConfigMap = {}
+  public constructor(models: ModelDefinition[]) {
+    this.models = models;
+    for (const model of models) {
+      this.relationshipMetadataConfigMap[model.graphqlType.name] = {}
+    }
   }
 
   /**
    * Builds relationship context for entire data model
    * Generates fields and anotations
    */
-  public build() {
-    for (const modelType of this.modelTypes) {
-      this.buildModelRelationshipContext(modelType);
+  public build(): ModelRelationshipConfigMap {
+    for (const model of this.models) {
+      this.buildModelRelationshipContext(model);
     }
+
+    return this.relationshipMetadataConfigMap;
   }
 
   /**
    * Get all relationships
    */
   public getRelationships() {
-    return this.relationships;
+    return this.relationshipMetadataConfigMap;
   }
 
   /**
    * Get all relationships where the model is the parent.
    * @param modelName
    */
-  public getModelRelationships(modelName: string): FieldRelationshipMetadata[] {
-    return this.relationships.filter((relationship: FieldRelationshipMetadata) => relationship.owner.name === modelName);
+  public getModelRelationships(modelName: string): ModelFieldRelationshipConfigMap {
+    return this.relationshipMetadataConfigMap[modelName]
   }
 
   /**
@@ -67,7 +80,9 @@ export class RelationshipMetadataBuilder {
    *
    * @param modelType
    */
-  private buildModelRelationshipContext(modelType: GraphQLObjectType) {
+  private buildModelRelationshipContext(model: ModelDefinition) {
+    const modelType = model.graphqlType;
+
     const fields = Object.values(modelType.getFields());
 
     for (let field of fields) {
@@ -75,21 +90,23 @@ export class RelationshipMetadataBuilder {
       if (!annotation) {
 
         const relationMetadata = this.getRelationshipMetadata(field, modelType);
-        if (relationMetadata?.length) {
-          this.relationships.push(...relationMetadata)
+        if (relationMetadata) {
+          this.relationshipMetadataConfigMap = {
+            ...relationMetadata
+          }
         }
         continue;
       }
 
       this.validateRelationshipField(modelType.name, field, annotation);
 
-      const relationType = getNamedType(field.type) as GraphQLObjectType;
+      const relationType = assertObjectType(getNamedType(field.type));
 
       let relationField = relationType.getFields()[annotation.field];
 
       if (annotation.kind === 'oneToMany') {
         if (!annotation.key) {
-          field = this.updateOneToManyField(field, annotation.fieldy)
+          field = this.updateOneToManyField(field, annotation.field)
         }
 
         if (!relationField) {
@@ -125,12 +142,20 @@ export class RelationshipMetadataBuilder {
         this.addOneToOne(modelType, field, oneToOneAnnotation);
       }
     }
+
+    const modelRelationshipMap = this.relationshipMetadataConfigMap[modelType.name]
+    const modelRelationships = Object.values(modelRelationshipMap)
+
+    model.relationships.push(...modelRelationships)
   }
 
-  private getRelationshipMetadata(field: GraphQLField<any, any>, owner: GraphQLObjectType): FieldRelationshipMetadata[] {
+  private getRelationshipMetadata(field: GraphQLField<any, any>, owner: GraphQLObjectType): ModelRelationshipConfigMap {
     const fieldType = getNamedType(field.type)
 
-    const outputFields: FieldRelationshipMetadata[] = []
+    const modelRelationshipConfigMap: ModelRelationshipConfigMap = {
+      [owner.name]: {},
+      [fieldType.name]: {}
+    }
 
     if (!isObjectType(fieldType) || !isModelType(fieldType)) {
       return undefined
@@ -146,27 +171,28 @@ export class RelationshipMetadataBuilder {
       const relationFieldName = lowerCaseFirstChar(ownerName)
       const relationForeignKey = transformForeignKeyName(relationFieldName)
 
-      outputFields.push({
+      modelRelationshipConfigMap[owner.name][field.name] = {
         kind: 'oneToMany',
         owner,
         ownerField: this.updateOneToManyField(field, relationFieldName),
         relationType: fieldType,
         relationFieldName,
         relationForeignKey
-      })
+      };
 
-      outputFields.push({
+      modelRelationshipConfigMap[fieldType.name][relationFieldName] = {
         kind: 'manyToOne',
         owner: fieldType,
         ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
         relationType: owner,
         relationFieldName: field.name,
         relationForeignKey
-      })
+      };
+
     } else if (this.isManyToOne(field, owner)) {
       const relationFieldName = lowerCaseFirstChar(owner.name)
 
-      const oneToManyFieldType = getNamedType(field.type) as GraphQLObjectType
+      const oneToManyFieldType = assertObjectType(getNamedType(field.type));
 
       const oneToManyField = Object.values((oneToManyFieldType.getFields())).find((f: GraphQLField<any, any>) => {
         const relationshipAnnotation = parseRelationshipAnnotation(f.description)
@@ -177,27 +203,27 @@ export class RelationshipMetadataBuilder {
 
       const foreignKeyName = oneToManyFieldAnnotation.key || transformForeignKeyName(field.name)
 
-      outputFields.push({
+      modelRelationshipConfigMap[owner.name][field.name] = {
         kind: 'manyToOne',
         owner,
         ownerField: this.updateManyToOneField(field, pluralize(relationFieldName), foreignKeyName),
         relationType: fieldType,
         relationFieldName: foreignKeyName
-      })
+      }
 
     } else {
       const foreignKeyName = transformForeignKeyName(lowerCaseFirstChar(field.name))
 
-      outputFields.push({
+      modelRelationshipConfigMap[owner.name][field.name] = {
         kind: 'oneToOne',
         owner,
         ownerField: this.updateOneToOneField(field, foreignKeyName),
         relationType: fieldType,
         relationFieldName: foreignKeyName
-      })
+      }
     }
 
-    return outputFields
+    return modelRelationshipConfigMap;
   }
 
   private isManyToOne(field: GraphQLField<any, any>, owner: GraphQLObjectType): boolean {
@@ -301,9 +327,9 @@ export class RelationshipMetadataBuilder {
       return;
     }
 
-    const relationType = getNamedType(field.type) as GraphQLObjectType;
+    const relationType = assertObjectType(getNamedType(field.type));
 
-    const oneToMany: FieldRelationshipMetadata = {
+    this.relationshipMetadataConfigMap[ownerType.name][field.name] = {
       kind: 'oneToMany',
       owner: ownerType,
       ownerField: field,
@@ -311,8 +337,6 @@ export class RelationshipMetadataBuilder {
       relationFieldName: oneToManyAnnotation.field,
       relationForeignKey: oneToManyAnnotation.key
     };
-
-    this.relationships.push(oneToMany);
   }
 
   private addManyToOne(ownerType: GraphQLObjectType, field: GraphQLField<any, any>, manyToOneAnnotation: RelationshipAnnotation) {
@@ -323,9 +347,9 @@ export class RelationshipMetadataBuilder {
       return;
     }
 
-    const relationType = getNamedType(field.type) as GraphQLObjectType;
+    const relationType = assertObjectType(getNamedType(field.type));
 
-    const manyToOne: FieldRelationshipMetadata = {
+    this.relationshipMetadataConfigMap[ownerType.name][field.name] = {
       kind: 'manyToOne',
       owner: ownerType,
       ownerField: field,
@@ -333,8 +357,6 @@ export class RelationshipMetadataBuilder {
       relationFieldName: manyToOneAnnotation.field,
       relationForeignKey: manyToOneAnnotation.key
     }
-
-    this.relationships.push(manyToOne);
   }
 
   private addOneToOne(ownerType: GraphQLObjectType, field: GraphQLField<any, any>, oneToOneAnnotation: RelationshipAnnotation) {
@@ -345,9 +367,9 @@ export class RelationshipMetadataBuilder {
       return;
     }
 
-    const relationType = getNamedType(field.type) as GraphQLObjectType;
+    const relationType = assertObjectType(getNamedType(field.type));
 
-    const oneToOne: FieldRelationshipMetadata = {
+    this.relationshipMetadataConfigMap[ownerType.name][field.name] = {
       kind: 'oneToOne',
       owner: ownerType,
       ownerField: field,
@@ -355,8 +377,6 @@ export class RelationshipMetadataBuilder {
       relationFieldName: oneToOneAnnotation.field,
       relationForeignKey: oneToOneAnnotation.key
     };
-
-    this.relationships.push(oneToOne);
   }
 
   private validateOneToManyRelationship(modelName: string, field: GraphQLField<any, any>, oneToManyMetadata: RelationshipAnnotation, corresspondingManyToOneMetadata: RelationshipAnnotation) {
@@ -366,7 +386,7 @@ export class RelationshipMetadataBuilder {
       throw new Error(`${modelName}.${field.name} should be a @oneToMany field, but has a @${oneToManyMetadata.kind} annotation`);
     }
 
-    const relationModelType = getNamedType(field.type) as GraphQLObjectType;
+    const relationModelType = assertObjectType(getNamedType(field.type));
     const relationField = relationModelType.getFields()[oneToManyMetadata.field];
 
     // field will be generated, no need to validate

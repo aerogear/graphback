@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable max-lines */
 // eslint-disable-next-line @typescript-eslint/tslint/config
-import { buildSchema, GraphQLSchema } from 'graphql';
-import { getUserTypesFromSchema } from '@graphql-toolkit/common'
-import { RelationshipMetadataBuilder } from '../src';
+import { buildSchema, GraphQLSchema, getNamedType } from 'graphql';
+import { RelationshipMetadataBuilder, GraphbackCoreMetadata } from '../src';
+import { ModelDefinition } from '../types';
 
-const setup = (schemaText: string): { builder: RelationshipMetadataBuilder, schema: GraphQLSchema } => {
+const setup = (schemaText: string): { builder: RelationshipMetadataBuilder, schema: GraphQLSchema, models: ModelDefinition[] } => {
     const schema = buildSchema(schemaText);
-    const modelTypes = getUserTypesFromSchema(schema);
-    const builder = new RelationshipMetadataBuilder(modelTypes);
+    const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, schema);
+    const models = metadata.getModelDefinitions()
+    const builder = new RelationshipMetadataBuilder(models);
 
-    return { builder, schema };
+    return { builder, schema, models };
 }
 
 test('should have no relationship metadata', () => {
@@ -47,9 +50,9 @@ test('should create many-to-one relationship metadata from one-to-many field', (
     }
     `)
 
-    builder.build();
+    const relationshipMetadataConfig = builder.build();
 
-    const userRelationships = builder.getModelRelationships('User');
+    const userRelationships = relationshipMetadataConfig.User;
     expect(userRelationships.length).toEqual(1);
     expect(userRelationships[0].kind).toEqual('oneToMany');
     expect(userRelationships[0].ownerField.name).toEqual('sentMessages');
@@ -87,9 +90,9 @@ test('should build one-to-one relationship metadata from one-to-one field', () =
     }
     `)
 
-    builder.build();
+    const relationshipMetadataConfig = builder.build();
 
-    const addressRelationships = builder.getModelRelationships('Address');
+    const addressRelationships = relationshipMetadataConfig.Address;
     expect(addressRelationships.length).toEqual(1);
     expect(addressRelationships[0].kind).toEqual('oneToOne');
     expect(addressRelationships[0].ownerField.name).toEqual('resident');
@@ -126,9 +129,9 @@ test('should build one-to-many and many-to-one relationships from both fields', 
     }
     `)
 
-    builder.build();
+    const relationshipMetadataConfig = builder.build();
 
-    const userRelationships = builder.getModelRelationships('User');
+    const userRelationships = relationshipMetadataConfig.User;
     expect(userRelationships.length).toEqual(1);
     expect(userRelationships[0].kind).toEqual('oneToMany');
     expect(userRelationships[0].ownerField.name).toEqual('sentMessages')
@@ -297,3 +300,97 @@ test('should throw error when relationship field in one-to-one is not a single o
     expect(() => builder.build()).toThrow();
 });
 
+test('implicit one-to-many relationship with generated many-to-one field', () => {
+
+    const { builder } = setup(`
+ """ @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  comments: [Comment]!
+}
+
+""" @model """
+type Comment {
+  id: ID!
+  text: String
+  description: String
+}`)
+
+    const relationshipMetadataConfig = builder.build();
+
+    const noteRelationshipMetadata = relationshipMetadataConfig.Note;
+    const commentRelationshipMetadata = relationshipMetadataConfig.Comment;
+
+    expect(Object.keys(noteRelationshipMetadata)).toHaveLength(1);
+    expect(Object.keys(commentRelationshipMetadata)).toHaveLength(1);
+
+    const NoteCommentsFieldMetadata = noteRelationshipMetadata.comments;
+    const CommentNoteFieldMetadata = commentRelationshipMetadata.note;
+
+    expect(NoteCommentsFieldMetadata).toBeDefined()
+    expect(CommentNoteFieldMetadata).toBeDefined()
+
+    expect(NoteCommentsFieldMetadata.kind).toEqual('oneToMany')
+    expect(NoteCommentsFieldMetadata.owner).toEqual(CommentNoteFieldMetadata.ownerField.type)
+    expect(getNamedType(NoteCommentsFieldMetadata.ownerField.type)).toEqual(CommentNoteFieldMetadata.owner)
+    expect(NoteCommentsFieldMetadata.relationFieldName).toEqual('note')
+    expect(NoteCommentsFieldMetadata.relationForeignKey).toEqual('noteId')
+    expect(NoteCommentsFieldMetadata.ownerField.name).toEqual('comments')
+
+    expect(CommentNoteFieldMetadata.kind).toEqual('manyToOne')
+    expect(getNamedType(CommentNoteFieldMetadata.owner)).toEqual(getNamedType(NoteCommentsFieldMetadata.ownerField.type))
+    expect(getNamedType(CommentNoteFieldMetadata.ownerField.type)).toEqual(NoteCommentsFieldMetadata.owner)
+    expect(CommentNoteFieldMetadata.relationFieldName).toEqual('comments')
+    expect(CommentNoteFieldMetadata.relationForeignKey).toEqual('noteId')
+    expect(CommentNoteFieldMetadata.ownerField.name).toEqual('note')
+})
+
+test.only('implicit one-to-many relationship with user defined many-to-one field', () => {
+
+    const { builder } = setup(`
+ """ @model """
+type Note {
+  id: ID!
+  title: String!
+  description: String
+  comments: [Comment]!
+}
+
+""" @model """
+type Comment {
+  id: ID!
+  text: String
+  description: String
+  note: Note!
+}`)
+
+    const relationshipMetadataConfig = builder.build();
+
+    const noteRelationshipMetadata = relationshipMetadataConfig.Note;
+    const commentRelationshipMetadata = relationshipMetadataConfig.Comment;
+
+    expect(Object.keys(noteRelationshipMetadata)).toHaveLength(1);
+    expect(Object.keys(commentRelationshipMetadata)).toHaveLength(1);
+
+    const NoteCommentsFieldMetadata = noteRelationshipMetadata.comments;
+    const CommentNoteFieldMetadata = commentRelationshipMetadata.note;
+
+    expect(NoteCommentsFieldMetadata).toBeDefined()
+    expect(CommentNoteFieldMetadata).toBeDefined()
+
+    expect(NoteCommentsFieldMetadata.kind).toEqual('oneToMany')
+    expect(NoteCommentsFieldMetadata.owner).toEqual(CommentNoteFieldMetadata.ownerField.type)
+    expect(getNamedType(NoteCommentsFieldMetadata.ownerField.type)).toEqual(CommentNoteFieldMetadata.owner)
+    expect(NoteCommentsFieldMetadata.relationFieldName).toEqual('note')
+    expect(NoteCommentsFieldMetadata.relationForeignKey).toEqual('noteId')
+    expect(NoteCommentsFieldMetadata.ownerField.name).toEqual('comments')
+
+    expect(CommentNoteFieldMetadata.kind).toEqual('manyToOne')
+    expect(getNamedType(CommentNoteFieldMetadata.owner)).toEqual(getNamedType(NoteCommentsFieldMetadata.ownerField.type))
+    expect(getNamedType(CommentNoteFieldMetadata.ownerField.type)).toEqual(NoteCommentsFieldMetadata.owner)
+    expect(CommentNoteFieldMetadata.relationFieldName).toEqual('comments')
+    expect(CommentNoteFieldMetadata.relationForeignKey).toEqual('noteId')
+    expect(CommentNoteFieldMetadata.ownerField.name).toEqual('note')
+})
