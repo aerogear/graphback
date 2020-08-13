@@ -23,7 +23,7 @@
     "glob": "7.1.6",
     "graphql-metadata": "0.7.3",
     "knex": "0.21.4",
-    "lodash": "4.17.19",
+    "lodash": "4.17.20",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
     "pino": "6.5.0",
