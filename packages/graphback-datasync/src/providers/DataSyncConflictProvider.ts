@@ -120,8 +120,8 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     throw new Error(`Cannot update ${this.collectionName}`);
   }
 
-  public checkForConflict(clientData: any, base: any, serverData: any, operation: GraphbackOperationType): ConflictMetadata|undefined {
-    const ignoredKeys = [DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.version];
+  protected checkForConflict(clientData: any, base: any, serverData: any, operation: GraphbackOperationType): ConflictMetadata|undefined {
+    const ignoredKeys = ["_id", DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.version];
 
     const clientDiff: any = {};
     const serverDiff: any = {};
