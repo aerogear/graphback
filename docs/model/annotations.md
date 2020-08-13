@@ -350,8 +350,8 @@ type Comment {
   text: String
   description: String
   // highlight-start
-  createdAt: String
-  updatedAt: String
+  createdAt: GraphbackDateTime
+  updatedAt: GraphbackDateTime
   // highlight-end
 }
 ```
