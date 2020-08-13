@@ -280,17 +280,6 @@ type CustomType @test(description: \\"Directive added following a fix for https:
 
 scalar DateTime
 
-input DateTimeInput {
-  ne: DateTime
-  eq: DateTime
-  le: DateTime
-  lt: DateTime
-  ge: DateTime
-  gt: DateTime
-  in: [DateTime!]
-  between: [DateTime!]
-}
-
 \\"\\"\\"
 A model added as part of fixing https://github.com/aerogear/graphback/issues/1452, disable some crud operations to decreate noises.
 @model(
@@ -396,7 +385,6 @@ enum IssueCategory {
 input IssueFilter {
   id: IDInput
   category: StringInput
-  createdAt: DateTimeInput
   bugFixId: IDInput
   and: [IssueFilter!]
   or: [IssueFilter!]
@@ -950,22 +938,10 @@ type Fix {
 input IssueFilter {
   id: IDInput
   category: StringInput
-  createdAt: DateTimeInput
   bugFixId: IDInput
   and: [IssueFilter!]
   or: [IssueFilter!]
   not: IssueFilter
-}
-
-input DateTimeInput {
-  ne: DateTime
-  eq: DateTime
-  le: DateTime
-  lt: DateTime
-  ge: DateTime
-  gt: DateTime
-  in: [DateTime!]
-  between: [DateTime!]
 }
 
 input CreateIssueInput {
@@ -1381,22 +1357,10 @@ type Fix {
 input IssueFilter {
   id: IDInput
   category: StringInput
-  createdAt: DateTimeInput
   bugFixId: IDInput
   and: [IssueFilter!]
   or: [IssueFilter!]
   not: IssueFilter
-}
-
-input DateTimeInput {
-  ne: DateTime
-  eq: DateTime
-  le: DateTime
-  lt: DateTime
-  ge: DateTime
-  gt: DateTime
-  in: [DateTime!]
-  between: [DateTime!]
 }
 
 input CreateIssueInput {
