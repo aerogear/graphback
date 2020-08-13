@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, GraphbackDateTime } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -37,7 +37,6 @@ export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
 
   return newInput;
 }
-
 
 export const StringScalarInputType = new GraphQLInputObjectType({
   name: getInputName(GraphQLString),
@@ -149,10 +148,6 @@ export function buildFindOneFieldMap(modelType: ModelDefinition, schemaComposer:
   }
 }
 
-// We need to ignore JSON filtering for now as database query does not work.
-// https://github.com/aerogear/graphback/issues/1761
-const TYPES_IGNORED_FOR_FILTERING = ["GraphbackJSON", "GraphbackJSONObject", 'JSON', 'JSONObject'];
-
 export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const operationType = GraphbackOperationType.FIND
 
@@ -164,14 +159,13 @@ export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelT
 
   for (const field of inputFields) {
     const namedType = getNamedType(field.type)
-    if (TYPES_IGNORED_FOR_FILTERING.includes(namedType.name)) {
-      continue;
-    }
 
-    const type = getInputName(namedType);
-    scalarInputFields[field.name] = {
-      name: field.name,
-      type
+    if (FILTER_SUPPORTED_SCALARS.includes(namedType.name) || isEnumType(namedType)) {
+      const type = getInputName(namedType);
+      scalarInputFields[field.name] = {
+        name: field.name,
+        type
+      }
     }
   }
 
@@ -231,7 +225,7 @@ export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>,
   const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => {
     const namedType = getNamedType(f.type);
 
-    return (isScalarType(namedType) && !TYPES_IGNORED_FOR_FILTERING.includes(namedType.name)) || isEnumType(namedType);
+    return (isScalarType(namedType) && FILTER_SUPPORTED_SCALARS.includes(namedType.name)) || isEnumType(namedType);
   });
 
   const fields = {

@@ -2,7 +2,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import * as DataLoader from "dataloader";
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes, GraphbackTimestamp } from '@graphback/core'
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, isSpecifiedGraphbackJSONScalarType, graphbackScalarsTypes, GraphbackTimestamp, isSpecifiedGraphbackScalarType, FILTER_SUPPORTED_SCALARS } from '@graphback/core'
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLField, GraphQLInputObjectType, GraphQLNamedType, GraphQLScalarType } from 'graphql';
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
@@ -766,10 +766,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     schemaComposer.forEach((tc: NamedTypeComposer<any>) => {
       const namedType = tc.getType();
-      if (isScalarType(namedType) && !isSpecifiedScalarType(namedType) && !isSpecifiedGraphbackJSONScalarType(namedType)) {
+      if (isScalarType(namedType) && !isSpecifiedScalarType(namedType) && FILTER_SUPPORTED_SCALARS.includes(namedType.name)) {
         schemaComposer.add(createInputTypeForScalar(namedType));
-
-        return;
       }
 
       const isRootType = ['Query', 'Subscription', 'Mutation'].includes(namedType.name)

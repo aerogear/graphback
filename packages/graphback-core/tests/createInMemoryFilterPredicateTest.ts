@@ -1,17 +1,17 @@
 /* eslint-disable max-lines */
 import { ObjectId } from 'mongodb';
-import { Scalars, Maybe, QueryFilter, StringInput, IdInput, BooleanInput, IntInput, FloatInput, GraphbackDateTimeInput, GraphbackObjectIdInput } from '../src/runtime/QueryFilter';
+import { FilterableScalars, Maybe, QueryFilter, StringInput, IdInput, BooleanInput, IntInput, FloatInput, GraphbackDateTimeInput, GraphbackObjectIdInput } from '../src/runtime/QueryFilter';
 import { createInMemoryFilterPredicate } from '../src/runtime/createInMemoryFilterPredicate';
 
 type User = {
   __typename?: 'User';
-  id?: Scalars['ID'];
-  name?: Scalars['String'];
-  verified?: Maybe<Scalars['Boolean']>;
-  age?: Scalars['Int'];
-  score?: Scalars['Float'];
-  createdAt?: Scalars['GraphbackDateTime'];
-  objectId?: Scalars['GraphbackObjectID'];
+  id?: FilterableScalars['ID'];
+  name?: FilterableScalars['String'];
+  verified?: Maybe<FilterableScalars['Boolean']>;
+  age?: FilterableScalars['Int'];
+  score?: FilterableScalars['Float'];
+  createdAt?: FilterableScalars['GraphbackDateTime'];
+  objectId?: FilterableScalars['GraphbackObjectID'];
 };
 
 export type UserSubscriptionFilter = {
@@ -28,7 +28,7 @@ export type UserSubscriptionFilter = {
 };
 
 describe('createInMemoryFilterPredicate', () => {
-  describe('Default scalars', () => {
+  describe('Default FilterableScalars', () => {
     describe('ID', () => {
       test('id eq', () => {
         const filter: QueryFilter<UserSubscriptionFilter> = {
@@ -507,7 +507,7 @@ describe('createInMemoryFilterPredicate', () => {
     });
   })
 
-  describe('Graphback scalars', () => {
+  describe('Graphback FilterableScalars', () => {
     describe('GraphbackDateTime', () => {
       test('createdAt eq', () => {
 
