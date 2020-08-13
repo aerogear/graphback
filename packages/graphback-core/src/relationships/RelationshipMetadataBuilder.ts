@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType, assertObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLField, isObjectType, GraphQLScalarType, GraphQLOutputType, GraphQLNonNull, GraphQLList, getNamedType, assertObjectType, assertListType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
 import * as pluralize from 'pluralize';
 import { isModelType, lowerCaseFirstChar } from '../crud';
@@ -182,7 +182,7 @@ export class RelationshipMetadataBuilder {
 
       modelRelationshipConfigMap[fieldType.name][relationFieldName] = {
         kind: 'manyToOne',
-        owner: fieldType,
+        owner,
         ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
         relationType: owner,
         relationFieldName: field.name,
@@ -190,25 +190,26 @@ export class RelationshipMetadataBuilder {
       };
 
     } else if (this.isManyToOne(field, owner)) {
-      const relationFieldName = lowerCaseFirstChar(owner.name)
+      const relationFieldName = pluralize(lowerCaseFirstChar(owner.name))
 
-      const oneToManyFieldType = assertObjectType(getNamedType(field.type));
-
-      const oneToManyField = Object.values((oneToManyFieldType.getFields())).find((f: GraphQLField<any, any>) => {
-        const relationshipAnnotation = parseRelationshipAnnotation(f.description)
-
-        return (relationshipAnnotation?.kind === 'oneToMany' && relationshipAnnotation.field === field.name)
-      });
-      const oneToManyFieldAnnotation = parseRelationshipAnnotation(oneToManyField.description)
-
-      const foreignKeyName = oneToManyFieldAnnotation.key || transformForeignKeyName(field.name)
+      const foreignKeyName = transformForeignKeyName(field.name)
 
       modelRelationshipConfigMap[owner.name][field.name] = {
         kind: 'manyToOne',
         owner,
-        ownerField: this.updateManyToOneField(field, pluralize(relationFieldName), foreignKeyName),
+        ownerField: this.updateManyToOneField(field, relationFieldName, foreignKeyName),
         relationType: fieldType,
-        relationFieldName: foreignKeyName
+        relationFieldName,
+        relationForeignKey: foreignKeyName
+      }
+
+      modelRelationshipConfigMap[fieldType.name][relationFieldName] = {
+        kind: 'oneToMany',
+        owner: fieldType,
+        ownerField: fieldType.getFields()[relationFieldName] || this.createOneToManyField(relationFieldName, owner, fieldType.name),
+        relationType: owner,
+        relationFieldName: field.name,
+        relationForeignKey: foreignKeyName
       }
 
     } else {
@@ -236,9 +237,7 @@ export class RelationshipMetadataBuilder {
     const relationFields = Object.values(relationType.getFields())
 
     const oneToManyField = relationFields.find((f: GraphQLField<any, any>) => {
-      const annotation = parseRelationshipAnnotation(f.description)
-
-      return annotation && annotation?.kind === 'oneToMany' && annotation.field === field.name;
+      return getNamedType(f.type).name === owner.name && hasListType(f.type)
     })
 
     return Boolean(oneToManyField)

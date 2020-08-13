@@ -340,14 +340,14 @@ type Comment {
     expect(NoteCommentsFieldMetadata.ownerField.name).toEqual('comments')
 
     expect(CommentNoteFieldMetadata.kind).toEqual('manyToOne')
-    expect(getNamedType(CommentNoteFieldMetadata.owner)).toEqual(getNamedType(NoteCommentsFieldMetadata.ownerField.type))
+    expect(CommentNoteFieldMetadata.owner).toEqual(getNamedType(NoteCommentsFieldMetadata.ownerField.type))
     expect(getNamedType(CommentNoteFieldMetadata.ownerField.type)).toEqual(NoteCommentsFieldMetadata.owner)
     expect(CommentNoteFieldMetadata.relationFieldName).toEqual('comments')
     expect(CommentNoteFieldMetadata.relationForeignKey).toEqual('noteId')
     expect(CommentNoteFieldMetadata.ownerField.name).toEqual('note')
 })
 
-test.only('implicit one-to-many relationship with user defined many-to-one field', () => {
+test('implicit one-to-many relationship with user defined many-to-one field', () => {
 
     const { builder } = setup(`
  """ @model """
@@ -381,14 +381,14 @@ type Comment {
     expect(CommentNoteFieldMetadata).toBeDefined()
 
     expect(NoteCommentsFieldMetadata.kind).toEqual('oneToMany')
-    expect(NoteCommentsFieldMetadata.owner).toEqual(CommentNoteFieldMetadata.ownerField.type)
+    expect(NoteCommentsFieldMetadata.owner).toEqual(getNamedType(CommentNoteFieldMetadata.ownerField.type))
     expect(getNamedType(NoteCommentsFieldMetadata.ownerField.type)).toEqual(CommentNoteFieldMetadata.owner)
     expect(NoteCommentsFieldMetadata.relationFieldName).toEqual('note')
     expect(NoteCommentsFieldMetadata.relationForeignKey).toEqual('noteId')
     expect(NoteCommentsFieldMetadata.ownerField.name).toEqual('comments')
 
     expect(CommentNoteFieldMetadata.kind).toEqual('manyToOne')
-    expect(getNamedType(CommentNoteFieldMetadata.owner)).toEqual(getNamedType(NoteCommentsFieldMetadata.ownerField.type))
+    expect(CommentNoteFieldMetadata.owner).toEqual(getNamedType(NoteCommentsFieldMetadata.ownerField.type))
     expect(getNamedType(CommentNoteFieldMetadata.ownerField.type)).toEqual(NoteCommentsFieldMetadata.owner)
     expect(CommentNoteFieldMetadata.relationFieldName).toEqual('comments')
     expect(CommentNoteFieldMetadata.relationForeignKey).toEqual('noteId')
