@@ -4,11 +4,11 @@ title: Delta Tables with server-side Conflict resolution
 sidebar_label: Setting up server-side Conflict Resolution
 ---
 
-This is a more involved strategy for data synchronization that includes server-side conflict resolution
+This is a more involved strategy for data synchronization that includes server-side conflict resolution.
 
 ## Setup
 
-Feel free to grab the official Graphback template for this strategy [here](https://GitHub.com/aerogear/graphback/tree/master/templates/ts-apollo-mongodb-datasync-backend). Otherwise, It is fairly easy to set this up with the official Graphback template for MongoDB (found [here](https://GitHub.com/aerogear/graphback/tree/master/templates/ts-apollo-mongodb-backend)).
+Feel free to grab the official Graphback template for this strategy [here](https://GitHub.com/aerogear/graphback/tree/templates-release/templates/ts-apollo-mongodb-datasync-backend). Otherwise, It is fairly easy to set this up with the official Graphback template for MongoDB (found [here](https://GitHub.com/aerogear/graphback/tree/templates-release/templates/ts-apollo-mongodb-backend)).
 
 ### Annotate the required models
 
@@ -31,7 +31,7 @@ This part retains the features from [Soft-Deletes](soft-delete.md) with the addi
 1. A `_version` field in the model type used for fetching base document in conflict resolution.
 2. A `_version` field in the corresponding Mutation Input Type.
 
-The model type then, becomes:
+The model type then becomes:
 ```graphql {9,10}
 """ 
 @model
@@ -60,13 +60,27 @@ An example mutation can be found at the end of this page.
 
 ### Modify the template to support Data Synchronization
 
-In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
+In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-release/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
 
 ```typescript
 import { createDataSyncAPI } from '@graphback/datasync'
 
 
-const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, dataSyncConflictMap: { Comment: { enabled: true }}})
+const {
+  typeDefs,
+  resolvers,
+  contextCreator
+} = createDataSyncAPI(
+  modelDefs,
+  {
+    db,
+    dataSyncConflictMap: {
+      Comment: {
+        enabled: true
+      }
+    }
+  }
+);
 ```
 
 The `dataSyncConflictMap` is used to tell `createDataSyncAPI` about which models need server-side Conflict Resolution and hence delta tables. It can also be used to specify custom server-side Conflict resolution strategies.
@@ -168,7 +182,7 @@ And receive a response like so:
 ```
 
 :::note
-To issue mutations for a model with server-side Conflict resolution, the current value of the `_version` field must be passed in the input argument as is required by the corresponding Mutation Input Type
+To issue mutations for a model with server-side Conflict resolution, the current value of the `_version` field must be passed in the input argument as is required by the corresponding Mutation Input Type.
 :::
 
 Conflicts usually happen when a client does not have the most recent version of the data and tries to issue mutations. The server detects this using the aforementioned `_version` field and checks to see if fields that the client is trying to update have changed since the client last fetched the data.
