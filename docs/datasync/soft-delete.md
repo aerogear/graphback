@@ -8,7 +8,7 @@ This is the simplest strategy for Data Synchronization that is also quite straig
 
 ## Setup
 
-Start off with the official Graphback template for MongoDB [*here*](https://GitHub.com/aerogear/graphback/tree/master/templates/ts-apollo-mongodb-backend) to follow along. Adding this strategy is relatively simple, consisting of the following two steps:
+Start off with the official Graphback template for MongoDB [*here*](https://github.com/aerogear/graphback/tree/templates-release/templates/ts-apollo-mongodb-backend) to follow along. Adding this strategy is relatively simple, consisting of the following two steps:
 
 ### Annotate the required models
 
@@ -44,7 +44,7 @@ type Comment {
 ```
 
 :::note
-The `_lastUpdatedAt` field is automatically indexed by Graphback for faster delta queries
+The `_lastUpdatedAt` field is automatically indexed by Graphback for faster delta queries.
 :::
 
 The `@datasync` annotation adds a `sync` query or a delta query:
@@ -57,7 +57,7 @@ type Query {
 This allows you to get all the changed documents (updated and deleted) in a collection since the `lastSync` timestamp. Internally this uses the `_lastUpdatedAt` database field to check if any documents in the database have been modified, by comparing client provided `lastSync` timestamp value.
 
 :::note
-The `sync` query also accepts a filter argument for filtering as well as a limit argument for limiting the number of items retrieved
+The `sync` query also accepts a filter argument for filtering as well as a limit argument for limiting the number of items retrieved.
 :::
 
 The `@datasync` annotation also adds a `Delta` type and a `DeltaList` type:
@@ -87,7 +87,7 @@ The `DeltaList` is a container for `Delta` type, which also returns a `lastSync`
 
 ### Modify the template to support Data Synchronization
 
-In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
+In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-release/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
 
 ```typescript
 import { createDataSyncAPI } from '@graphback/datasync'
