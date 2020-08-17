@@ -1,13 +1,14 @@
 import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput, ModelDefinition } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
-import { DataSyncFieldNames } from "../util";
+import { DataSyncFieldNames, getDataSyncAnnotationData } from "../util";
 import { DataSyncProvider } from "./DataSyncProvider";
 
 /**
  * Mongo provider that attains data synchronization using soft deletes
  */
 export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider<Type> implements DataSyncProvider {
+  protected TTLinSeconds: number;
 
   public constructor(model: ModelDefinition, client: any) {
     super(model, client);
@@ -16,10 +17,21 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
         key: {
           [DataSyncFieldNames.deleted]: 1
         }
+      },
+      {
+        key: {
+          [DataSyncFieldNames.ttl]: 1
+        },
+        expireAfterSeconds: 0
       }
     ], this.db.collection(this.collectionName)).catch((e: any) => {
       throw e;
     });
+    const DataSyncAnnotationData = getDataSyncAnnotationData(model);
+    this.TTLinSeconds = parseInt(DataSyncAnnotationData.ttl, 10);
+    if (isNaN(this.TTLinSeconds)) {
+      throw Error(`TTL for model:"${model.graphqlType.name}" not found in the schema`);
+    }
     this.coerceTSFields = true;
   }
 
@@ -64,6 +76,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       });
 
     data[DataSyncFieldNames.deleted] = true;
+    data[DataSyncFieldNames.ttl] = new Date(Date.now() + (this.TTLinSeconds * 1000));
     const objectId = new ObjectId(idField.value);
     const projection = this.buildProjectionOption(context);
     const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });

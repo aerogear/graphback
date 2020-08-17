@@ -6,6 +6,10 @@ export function isDataSyncModel(model: ModelDefinition): boolean {
   return !!(parseMetadata('datasync', model.graphqlType))
 }
 
+export function getDataSyncAnnotationData(model: ModelDefinition): any {
+  return parseMetadata('datasync', model.graphqlType);
+}
+
 export function isDataSyncService(service: GraphbackCRUDService): DataSyncCRUDService {
   if (service instanceof DataSyncCRUDService) {
     return service;
@@ -42,7 +46,8 @@ export class ConflictError extends Error {
 export const DataSyncFieldNames = {
   version: '_version',
   lastUpdatedAt: '_lastUpdatedAt',
-  deleted: '_deleted'
+  deleted: '_deleted',
+  ttl:"_ttl"
 }
 
 
@@ -50,6 +55,7 @@ export const DataSyncFieldNames = {
 export interface DataSyncModelConflictConfig {
   enabled: boolean
   conflictResolution?: ConflictResolutionStrategy
+  deltaTTL: number
 }
 
 export interface DataSyncModelConfigMap {
@@ -63,9 +69,9 @@ export interface ConflictResolutionStrategy {
 
 export const ServerSideWins: ConflictResolutionStrategy = {
   resolveUpdate(conflict: ConflictMetadata): any {
-    const { serverData, serverDiff, clientDiff } = conflict;
+    const { serverData, serverDiff, clientDiff, base } = conflict;
 
-    if (serverData[DataSyncFieldNames.deleted] === true) {
+    if (!base || !serverData || serverData[DataSyncFieldNames.deleted] === true) {
       throw new ConflictError(conflict);
     }
 
@@ -98,7 +104,7 @@ export const ClientSideWins: ConflictResolutionStrategy = {
       throw new ConflictError(conflict);
     }
 
-    const resolved = Object.assign(serverData, { [DataSyncFieldNames.deleted]: true });
+    const resolved = Object.assign({}, serverData, { [DataSyncFieldNames.deleted]: true });
 
     return resolved
   }

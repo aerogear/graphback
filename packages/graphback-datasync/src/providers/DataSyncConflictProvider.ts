@@ -1,4 +1,5 @@
 import { ModelDefinition, GraphbackContext, TransformType, FieldTransform, NoDataError, GraphbackOperationType } from '@graphback/core';
+import { applyIndexes } from '@graphback/runtime-mongo';
 import { DataSyncModelConflictConfig, DataSyncFieldNames, ConflictMetadata, ConflictError, ClientSideWins } from '../util';
 import { MongoDeltaSource } from '../deltaSource';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
@@ -21,8 +22,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
       this.conflictConfig.conflictResolution = ClientSideWins;
     }
 
-    this.deltaSource = new MongoDeltaSource(model, client);
-
+    this.deltaSource = new MongoDeltaSource(model, client, this.conflictConfig.deltaTTL);
   }
 
   public async create(data: any, context: GraphbackContext): Promise<Type> {
@@ -108,6 +108,8 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
       resolvedData[DataSyncFieldNames.version] = serverData[DataSyncFieldNames.version] + 1
 
       resolvedData[DataSyncFieldNames.lastUpdatedAt] = Date.now();
+
+      resolvedData[DataSyncFieldNames.ttl] = new Date(Date.now() + (this.TTLinSeconds * 1000));
 
       const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedData }, { returnOriginal: false });
       if (value) {

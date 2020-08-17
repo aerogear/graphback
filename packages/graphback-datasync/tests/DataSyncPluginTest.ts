@@ -50,7 +50,9 @@ it('uses existing GraphbackTimestamp scalars', async () => {
     `
     """
     @model
-    @datasync
+    @datasync(
+      ttl: 5184000
+    )
     """
     type Comment {
       id: ID!
@@ -79,14 +81,16 @@ it('adds version when conflicts are enabled', async () => {
   }
 
   const schemaPlugin =  new SchemaCRUDPlugin();
-  const datasync = new DataSyncPlugin({ modelConfigMap: { Comment: { enabled: true } } })
+  const datasync = new DataSyncPlugin({ modelConfigMap: { Comment: { enabled: true, deltaTTL: 604800 } } })
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(
     `
     """
     @model
-    @datasync
+    @datasync(
+      ttl: 5184000
+    )
     """
     type Comment {
       id: ID!

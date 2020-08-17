@@ -1,5 +1,6 @@
 import { ModelDefinition, getTableName } from '@graphback/core';
-import { Db, Collection, ObjectId } from "mongodb";
+import { Db } from "mongodb";
+import { applyIndexes } from '@graphback/runtime-mongo';
 import { DataSyncFieldNames } from './util';
 
 export function getDeltaTableName(tableName: string) {
@@ -13,9 +14,21 @@ export function getDeltaTableName(tableName: string) {
 export class MongoDeltaSource<Type = any> {
   protected db: Db;
   protected collectionName: string;
-  public constructor(model: ModelDefinition, db: Db) {
+  protected deltaTTL: number;
+  public constructor(model: ModelDefinition, db: Db, deltaTTL: number) {
     this.db = db;
     this.collectionName = getDeltaTableName(getTableName(model.graphqlType));
+    this.deltaTTL = deltaTTL;
+    applyIndexes([
+      {
+        key: {
+          [DataSyncFieldNames.ttl]: 1
+        },
+        expireAfterSeconds: 0
+      }
+    ], this.db.collection(this.collectionName)).catch((e: any) => {
+      console.log(`Could not create TTL Index for delta table: ${this.collectionName}: ${e}`)
+    })
   }
 
   public async insertDiff(updatedDocument: Type) {
@@ -24,7 +37,8 @@ export class MongoDeltaSource<Type = any> {
     const diff: any = {
       docId: _id,
       [DataSyncFieldNames.version]: version,
-      document: updatedDocument
+      document: updatedDocument,
+      [DataSyncFieldNames.ttl]: new Date(Date.now() + (this.deltaTTL * 1000))
     }
     await this.db.collection(this.collectionName).insertOne(diff);
   }
