@@ -1,4 +1,4 @@
-import { CodeFileLoader } from '@graphql-toolkit/code-file-loader';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { GraphQLExtensionDeclaration } from 'graphql-config';
 
 
@@ -11,7 +11,7 @@ export const graphbackExtension = 'graphback';
 // eslint-disable-next-line @typescript-eslint/tslint/config
 export const graphbackConfigExtension: GraphQLExtensionDeclaration = api => {
   //Schema
-  api.loaders.schema.register(new CodeFileLoader());
+  api.loaders.schema.register(new GraphQLFileLoader());
 
   return {
     name: graphbackExtension

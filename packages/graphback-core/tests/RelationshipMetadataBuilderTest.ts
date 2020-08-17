@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { getUserTypesFromSchema } from '@graphql-toolkit/common'
+import { getUserTypesFromSchema } from '@graphql-tools/utils';
 import { RelationshipMetadataBuilder } from '../src';
 
 const setup = (schemaText: string): { builder: RelationshipMetadataBuilder, schema: GraphQLSchema } => {
