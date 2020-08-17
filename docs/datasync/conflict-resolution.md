@@ -4,7 +4,7 @@ title: Conflict Resolution strategies
 sidebar_label: Conflict Resolution strategies
 ---
 
-A conflict resolution strategy is a JavaScript Object with two properties: `resolveUpdate` and `resolveDelete`, and is used to resolve conflicts during Update and Delete Mutations respectively. In order to use a specific strategy, one has to specify it in the call to `createDataSyncAPI` for every model that they want to use the strategy with:
+A conflict resolution strategy is used to resolve conflicts during Update and Delete Mutations respectively. In order to use a specific strategy, one has to specify it in the call to `createDataSyncAPI` for every model that they want to use the strategy with:
 ```typescript
 import {
   createDataSyncAPI,
