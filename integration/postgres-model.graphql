@@ -18,7 +18,7 @@ type Note {
 """ @model """
 type Comment {
   id: ID!
-  text: String
+  text: String!
   createdAt: GraphbackTimestamp
   description: String
   """

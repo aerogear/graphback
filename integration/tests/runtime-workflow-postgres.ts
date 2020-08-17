@@ -6,7 +6,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
-import { ApolloServer } from "apollo-server";
+import { ApolloServer, gql } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadDocuments } from '@graphql-tools/load';
@@ -30,6 +30,30 @@ let documents: DocumentNode;
 const modelText = readFileSync('./postgres-model.graphql').toString();
 const createdAt = new Date();
 const objectId = new ObjectID("507f191e810c19729de860ea");
+
+
+const GET_COMMENTS = gql`
+query getCommentDetailsAtOnce($id: ID!) {
+    firstQuery: getComment(id: $id) {
+        id,
+        note {
+          id,
+          comments {
+            text
+          }
+        }
+    },
+    secondQuery: getComment(id: $id) {
+        id,
+        note {
+          title,
+          comments {
+            id
+          }
+        }
+    }
+}
+`
 
 beforeAll(async () => {
   try {
@@ -500,6 +524,43 @@ test('Delete Note 1', async () => {
   expect(response.data).toBeDefined();
   expect(response.data.deleteNote).toEqual({ id: '2', createdAt, description: 'Note B Description', title: 'Note B' });
 });
+
+test('getComment in simultaneous with different resolvers pinfo', async () => {
+  const { data } = await client.query({ operationName:"getCommentDetailsAtOnce", query: GET_COMMENTS , variables: {
+    id: 1
+  }});
+
+  expect(data).toEqual({
+       firstQuery:{
+          id: "1",
+          note:{
+             id:"1",
+             comments:[
+                {
+                   text:"Note A Comment"
+                },
+                {
+                   text:"Note A Comment 2"
+                }
+             ]
+          }
+       },
+       secondQuery:{
+          id: "1",
+          note:{
+             title:"Note 1 New Title",
+             comments:[
+                {
+                   id:"1"
+                },
+                {
+                   id:"2"
+                }
+             ]
+          }
+       }
+ });
+})
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
   const response = await client.mutate({

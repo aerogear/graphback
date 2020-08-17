@@ -718,16 +718,21 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const model = modelNameToModelDefinition[modelName];
 
     // construct a unique key to identify the dataloader
-    const dataLoaderName = `${modelName}-${relationship.kind}-${relationIdField.name}-${relationship.relationForeignKey}-DataLoader`;
     resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
       if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
+
+      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
+      selectedFields.push(relationIdField.name);
+
+      const fetchedKeys = selectedFields.join('-');
+
+      const dataLoaderName = `${modelName}-${relationship.kind}-${relationIdField.name}-${relationship.relationForeignKey}-${fetchedKeys}-DataLoader`;
+
       if (!context[dataLoaderName]) {
         context[dataLoaderName] = new DataLoader<string, any>(async (keys: string[]) => {
-          const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-          selectedFields.push(relationIdField.name);
 
           const graphback = {
             services: context.graphback.services,
