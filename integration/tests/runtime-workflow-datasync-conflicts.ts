@@ -54,7 +54,7 @@ beforeAll(async () => {
     mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27017/users?authSource=admin', { useUnifiedTopology: true });
     await mongoClient.connect();
     db = mongoClient.db('users');
-    graphbackApi = createDataSyncAPI(modelText, { db, dataSyncConflictMap: { Note: { enabled: true } }, graphbackAPIConfig: {
+    graphbackApi = createDataSyncAPI(modelText, { db, dataSyncConflictMap: { Note: { enabled: true, deltaTTL: 604800 } }, graphbackAPIConfig: {
       plugins: [
         new SchemaCRUDPlugin({ outputPath: "./output-datasync-conflict-mongo/schema/schema.graphql" }),
         new ClientCRUDPlugin({ outputFile: './output-datasync-conflict-mongo/client/graphback.graphql' }),
@@ -116,7 +116,7 @@ async function seedDatabase(db: Db) {
   for (const note of notes) {
     const { ops } = await db.collection("note").insertOne(note);
     notesId.push(ops[0]._id);
-    await db.collection(getDeltaTableName('note')).insert({
+    await db.collection(getDeltaTableName('note')).insertOne({
       docId: ops[0]._id,
       [DataSyncFieldNames.version]: 1,
       document: ops[0]

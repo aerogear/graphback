@@ -4,7 +4,7 @@ import { MongoClient, Db } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata } from '../src';
+import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName } from '../src';
 
 export interface Context {
   providers: { [modelname: string]: DataSyncProvider };
@@ -68,7 +68,9 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
   const postSchema = `
   """
   @model
-  @datasync
+  @datasync(
+    ttl: 5184000
+  )
   """
   type Post {
     _id: GraphbackObjectID!
@@ -86,7 +88,7 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
       resolveUpdate,
       resolveDelete
     }
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: mockConflictStrategy } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: mockConflictStrategy, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -101,6 +103,54 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
     expect(resolveUpdate.mock.calls.length).toEqual(0);
     expect(resolveDelete.mock.calls.length).toEqual(0);
   })
+
+  it('creates TTL Indexes', async () => {
+    context = await createTestingContext(`
+      """
+      @model
+      @datasync(
+        ttl: 5184000
+      )
+      """
+      type Note {
+        _id: GraphbackObjectID!
+        text: String
+      }
+
+      scalar GraphbackObjectID
+      `, { conflictConfigMap: { Note: { enabled: true, deltaTTL: 604800}}});
+
+    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db('test');
+
+    const indexes = await db.collection('note').indexes();
+
+    expect(indexes[3]).toMatchObject(
+      {
+        "key": {
+          [DataSyncFieldNames.ttl]: 1
+        },
+        "name": `${DataSyncFieldNames.ttl}_1`,
+        "ns": "test.note",
+        "expireAfterSeconds": 0
+      }
+    )
+
+    const deltaCollectionName = getDeltaTableName("note");
+
+    const deltaIndexes = await db.collection(deltaCollectionName).indexes();
+    expect(deltaIndexes[1]).toMatchObject(
+      {
+        "key": {
+          [DataSyncFieldNames.ttl]: 1
+        },
+        "name": `${DataSyncFieldNames.ttl}_1`,
+        "ns": `test.${deltaCollectionName}`,
+        "expireAfterSeconds": 0
+      }
+    )
+  })
 })
 
 
@@ -111,7 +161,9 @@ describe('Client Side wins Conflict resolution', () => {
   const postSchema = `
   """
   @model
-  @datasync
+  @datasync(
+    ttl: 5184000
+  )
   """
   type Post {
     _id: GraphbackObjectID!
@@ -123,7 +175,7 @@ describe('Client Side wins Conflict resolution', () => {
   `;
 
   it ('updates successfully when correct version passed', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -137,7 +189,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it ('client data wins when conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -152,7 +204,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it('restore document on update when server-side deleted', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -168,7 +220,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it ('merges changes when no conflict', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -185,7 +237,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it ('force deletes if conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -207,7 +259,9 @@ describe('Server Side wins Conflict resolution', () => {
   const postSchema = `
   """
   @model
-  @datasync
+  @datasync(
+    ttl: 5184000
+  )
   """
   type Post {
     _id: GraphbackObjectID!
@@ -219,7 +273,7 @@ describe('Server Side wins Conflict resolution', () => {
   `;
 
   it ('updates successfully when correct version passed', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -233,7 +287,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it ('server data wins when conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -249,7 +303,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it('throws error on update when server-side deleted', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -262,7 +316,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it ('merges changes when no conflict', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 
@@ -279,7 +333,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it ('throw error on deletes if conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins } } });
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
 
     const { Post } = context.providers;
 

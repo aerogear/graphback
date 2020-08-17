@@ -65,7 +65,9 @@ const fields = ["_id", "text"];
 const postSchema = `
 """
 @model
-@datasync
+@datasync(
+  ttl: 604800
+)
 """
 type Post {
   _id: GraphbackObjectID!
@@ -109,6 +111,22 @@ describe('Soft deletion test', () => {
     // Tests that we cannot find, update or delete it anymore
     // This test fails if we can still can
     await expect(Post.findOne({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(NoDataError);
+  })
+
+  it('sets ttl field on deletion', async () => {
+    context = await createTestingContext(postSchema);
+
+    const { Post } = context.providers;
+    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+
+    // check count
+    const count = await Post.count({});
+    expect(count).toEqual(1);
+
+    // delete the Post
+    const deletedPost = await Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: [DataSyncFieldNames.deleted, DataSyncFieldNames.ttl]}}});
+    expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
+    expect(deletedPost[DataSyncFieldNames.ttl] instanceof Date).toEqual(true);
   })
 
   it('cannot update a deleted document', async () => {
@@ -186,6 +204,41 @@ describe('Delta Queries', () => {
         },
         "name": "Datasync_lastUpdatedAt",
         "ns": "test.post"
+      }
+    )
+  })
+
+  it('creates index for the deleted field', async () => {
+
+    context = await createTestingContext(postSchema);
+
+    const indexes = await context.db.collection('post').indexes();
+
+    expect(indexes[2]).toMatchObject(
+      {
+        "key": {
+          [DataSyncFieldNames.deleted]: 1
+        },
+        "name": `${DataSyncFieldNames.deleted}_1`,
+        "ns": "test.post"
+      }
+    )
+  })
+
+  it('creates index for the ttl field', async () => {
+
+    context = await createTestingContext(postSchema);
+
+    const indexes = await context.db.collection('post').indexes();
+
+    expect(indexes[3]).toMatchObject(
+      {
+        "key": {
+          [DataSyncFieldNames.ttl]: 1
+        },
+        "name": `${DataSyncFieldNames.ttl}_1`,
+        "ns": "test.post",
+        "expireAfterSeconds": 0
       }
     )
   })

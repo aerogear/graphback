@@ -1,6 +1,8 @@
 """
 @model
-@datasync
+@datasync(
+  ttl: 5184000
+)
 """
 type Note {
   _id: GraphbackObjectID!
