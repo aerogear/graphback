@@ -1,14 +1,18 @@
 ---
-id: soft-delete
-title: Soft Deletes with delta queries
-sidebar_label: Setting up Soft Deletion
+id: delta-queries
+title: Setting up Delta Queries
+sidebar_label: Setting up Delta Queries
 ---
 
-This is the simplest strategy for Data Synchronization that is also quite straightforward to set up.
+It is quite straightforward to setup Delta Queries with an existing Graphback template, by following the steps outlined below:
 
 ## Setup
 
-Start off with the official Graphback template for MongoDB [*here*](https://github.com/aerogear/graphback/tree/templates-release/templates/ts-apollo-mongodb-backend) to follow along. Adding this strategy is relatively simple, consisting of the following two steps:
+Create a new Graphback project using:
+```bash
+$ npx create-graphback datasync-project
+```
+When asked, choose the `apollo-mongo-server-ts` template and proceed to the next step when the CLI has finished bootstrapping the project.
 
 ### Annotate the required models
 
@@ -26,9 +30,9 @@ type Comment {
 }
 ```
 
-The `@datasync` annotation gives you data synchronization using delta queries.
+The `@datasync` annotation is used infer if a given model requires Delta Queries.
 
-`@datasync` transforms your model by adding a `_lastUpdatedAt` field to it:
+In the default configuration, `@datasync` transforms your model by adding a `_lastUpdatedAt` field to it:
 
 ```graphql {9}
 """ 
@@ -47,7 +51,7 @@ type Comment {
 The `_lastUpdatedAt` field is automatically indexed by Graphback for faster delta queries.
 :::
 
-The `@datasync` annotation adds a `sync` query or a delta query:
+The `@datasync` annotation adds a `sync` query or the delta query:
 ```graphql
 type Query {
   syncComments(lastSync: GraphbackTimestamp!, filter: CommentFilter, limit: Int): CommentDeltaList!
@@ -81,11 +85,7 @@ The `Delta` type for a model consists of all of the model's transformed properti
 
 The `DeltaList` is a container for `Delta` type, which also returns a `lastSync` timestamp, that can be used in a subsequent `sync` query.
 
-:::note
-`Soft Deletes` strategy can only get you the latest version of changed documents ignoring any in-between states that may have transpired between `lastSync` and now.
-:::
-
-### Modify the template to support Data Synchronization
+### Modify the template to use `createDataSyncAPI`
 
 In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-release/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
 
@@ -95,7 +95,9 @@ import { createDataSyncAPI } from '@graphback/datasync'
 
 const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db });;
 ```
-The data sources provided by `@graphback/datasync` ensure that the documents are only marked with `_deleted: true` instead of being removed from the database, meaning that a compatible client can issue a `sync` query to obtain information about this deletion.
+The data sources provided by `createDataSyncAPI` ensure that:
+- The documents are always soft deleted
+- In the current configuration, provides out of the box delta queries for models that are annotated with `@datasync`
 
 ## Issuing Delta/Sync queries from client
 
