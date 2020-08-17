@@ -10,7 +10,7 @@ jobs:
       steps:
       - name: issuelabeler
         continue-on-error: true
-        uses: docker://maxandersen/jbang-issuelabeler
+        uses: docker://maxandersen/jbang-issuelabeler@sha256:b8b3ede423d3935894296e5f3e63bd45242d3341cdd648dda3442e09f805e5e9
         env:
           GITHUB_TOKEN: ${{ secrets.LABELER_TOKEN }}
           CONFIG: https://raw.githubusercontent.com/aerogear/graphback/master/.github/autoissuelabeler.yml
