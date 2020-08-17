@@ -20,5 +20,6 @@ simple and free of external dependencies as you can.
 * **Module**:
 * **Version**:
 * **Node.js / npm versions:**
+* Example/snippet of the model that is causing issue
 
 <!-- Please provide more details and steps to reproduce the issue below this comment. -->
