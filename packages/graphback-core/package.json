@@ -36,7 +36,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@graphql-toolkit/common": "0.10.7",
     "@graphql-tools/merge": "6.0.18",
     "@graphql-tools/utils": "6.0.18",
     "dataloader": "2.0.0",

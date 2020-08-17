@@ -11,9 +11,8 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { loadDocuments } from '@graphql-tools/load'
 import { buildGraphbackAPI, GraphbackAPI } from "graphback";
 import { DocumentNode } from 'graphql';
-import { MongoClient, Db, ObjectID } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import { PubSub } from "graphql-subscriptions";
-import { advanceTo } from "jest-date-mock";
 import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin, DataSyncFieldNames } from "../../packages/graphback-datasync";
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
@@ -28,13 +27,9 @@ let graphbackApi: GraphbackAPI;
 let documents: DocumentNode;
 
 const notesId = [];
-const commentId = [];
-const metadataId = [];
 
 const modelText = readFileSync("./datasync-mongodb-model.graphql").toString();
 const startTS = new Date(1596622318448);
-const updatedTS2 = new Date(1596622363886);
-const objectId = new ObjectID("507f191e810c19729de860ea");
 
 const SYNC_NOTES = gql`
 query syncNotes($lastSync: GraphbackTimestamp!, $filter: NoteFilter, $limit: Int) {
@@ -68,9 +63,9 @@ beforeAll(async () => {
         new DataSyncPlugin()
       ]
     });
-    
+
     await seedDatabase(db);
-    
+
     const source = await loadDocuments(path.resolve(`./output-datasync-mongo/client/graphback.graphql`), {
       loaders: [
         new GraphQLFileLoader()
@@ -89,7 +84,7 @@ beforeEach(() => {
     resolvers,
     context: contextCreator
   });
-  
+
   client = createTestClient(server);
 })
 
@@ -123,7 +118,7 @@ async function seedDatabase(db: Db) {
     notesId.push(ops[0]._id);
   }
 
-  
+
 }
 
 test('Sync all notes', async () => {

@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema, GraphQLField, getNamedType, isObjectType, isScalarType, isEnumType } from 'graphql';
 import { parseMetadata } from 'graphql-metadata';
 import * as pluralize from 'pluralize';
-import { getUserTypesFromSchema } from '@graphql-toolkit/common';
+import { getUserTypesFromSchema } from '@graphql-tools/utils';
 import { parseRelationshipAnnotation, transformForeignKeyName, getPrimaryKey } from '..';
 import { GraphbackOperationType } from './GraphbackOperationType';
 

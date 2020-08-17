@@ -16,7 +16,6 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@graphql-toolkit/file-loading": "0.10.7",
     "@graphql-tools/graphql-file-loader": "6.0.18",
     "apollo-boost": "0.4.9",
     "apollo-server": "2.16.1",

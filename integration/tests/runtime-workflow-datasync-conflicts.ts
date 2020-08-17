@@ -7,12 +7,11 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer, gql } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadDocuments } from '@graphql-tools/load'
-import { buildGraphbackAPI, GraphbackAPI } from "graphback";
+import { GraphbackAPI } from "graphback";
 import { DocumentNode } from 'graphql';
-import { MongoClient, Db, ObjectID } from 'mongodb';
-import { PubSub } from "graphql-subscriptions";
+import { MongoClient, Db } from 'mongodb';
 import { getDeltaTableName, DataSyncFieldNames, createDataSyncAPI } from "../../packages/graphback-datasync";
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
@@ -43,13 +42,9 @@ query syncNotes($lastSync: GraphbackTimestamp!, $filter: NoteFilter, $limit: Int
 `
 
 const notesId = [];
-const commentId = [];
-const metadataId = [];
 
 const modelText = readFileSync("./datasync-mongodb-model.graphql").toString();
 const startTS = new Date(1596622318448);
-const updatedTS2 = new Date(1596622363886);
-const objectId = new ObjectID("507f191e810c19729de860ea");
 
 beforeAll(async () => {
   try {
@@ -65,9 +60,9 @@ beforeAll(async () => {
         new ClientCRUDPlugin({ outputFile: './output-datasync-conflict-mongo/client/graphback.graphql' }),
       ]
     } });
-    
+
     await seedDatabase(db);
-    
+
     const source = await loadDocuments(path.resolve(`./output-datasync-conflict-mongo/client/graphback.graphql`), {
       loaders: [
         new GraphQLFileLoader()
@@ -86,7 +81,7 @@ beforeEach(() => {
     resolvers,
     context: contextCreator
   });
-  
+
   client = createTestClient(server);
 })
 
@@ -151,7 +146,7 @@ test('Client side should win when conflict occurs', async () => {
   expect(firstUpdateResponse.data?.updateNote).toBeDefined();
   expect(firstUpdateResponse.data.updateNote.title).toEqual(updatedTitle);
 
-  
+
   const secondUpdateTitle = "Note B v3";
   const secondUpdateResponse = await updateNote({ _id: notesId[0], title: secondUpdateTitle, [DataSyncFieldNames.version]: 1 }, client);
 
@@ -168,7 +163,7 @@ test('force deletes on delete conflicts', async () => {
   expect(createResponse.data.createNote.title).toEqual(noteTitle);
 
   const {_id} = createResponse.data.createNote;
-  
+
   const updatedTitle = "Note C v2";
   await updateNote({ _id, title: updatedTitle, [DataSyncFieldNames.version]: 1 }, client);
 
@@ -197,7 +192,7 @@ test('deletes document when no conflicts occur', async () => {
   expect(createResponse.data.createNote.title).toEqual(noteTitle);
 
   const { _id, [DataSyncFieldNames.version]: version } = createResponse.data.createNote;
-  
+
   const updatedTitle = "Note D v2";
   const updateResponse = await updateNote({ _id, title: updatedTitle, [DataSyncFieldNames.version]: version }, client);
 
@@ -231,7 +226,7 @@ test('restores document when server-side deleted', async () => {
   expect(createResponse.data.createNote.title).toEqual(noteTitle);
 
   const { _id, [DataSyncFieldNames.version]: version } = createResponse.data.createNote;
-  
+
   const deleteResponse = await deleteNote(client, { _id, [DataSyncFieldNames.version]: version })
   expect(deleteResponse.data.deleteNote).toBeDefined();
 

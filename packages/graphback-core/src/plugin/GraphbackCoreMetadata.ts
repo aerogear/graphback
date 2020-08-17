@@ -1,12 +1,11 @@
-import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql'
-import { parseMetadata } from 'graphql-metadata'
-import { getUserTypesFromSchema } from '@graphql-toolkit/common'
-import { IResolvers } from '@graphql-tools/utils'
+import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql';
+import { parseMetadata } from 'graphql-metadata';
+import { getUserTypesFromSchema, IResolvers } from '@graphql-tools/utils';
 import { mergeResolvers } from '@graphql-tools/merge';
-import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder'
+import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
 import { getPrimaryKey } from '../db';
-import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig'
-import { GraphbackGlobalConfig } from './GraphbackGlobalConfig'
+import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
+import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
 import { ModelDefinition } from './ModelDefinition';
 
 const defaultCRUDGeneratorConfig = {
