@@ -219,7 +219,9 @@ type Subscription {
 exports[`adds version when conflicts are enabled 1`] = `
 "\\"\\"\\"
 @model
-@datasync
+@datasync(
+  ttl: 5184000
+)
 \\"\\"\\"
 type Comment {
   id: ID!
@@ -352,7 +354,9 @@ type Subscription {
 exports[`uses existing GraphbackTimestamp scalars 1`] = `
 "\\"\\"\\"
 @model
-@datasync
+@datasync(
+  ttl: 5184000
+)
 \\"\\"\\"
 type Comment {
   id: ID!
