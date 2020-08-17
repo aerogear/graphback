@@ -8,8 +8,8 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import { loadDocuments } from '@graphql-tools/load'
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import { loadDocuments } from '@graphql-tools/load';
 import * as Knex from 'knex';
 import { buildGraphbackAPI, GraphbackAPI } from "graphback/src";
 import { DocumentNode } from 'graphql';

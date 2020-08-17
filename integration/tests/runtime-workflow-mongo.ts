@@ -7,8 +7,8 @@ import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
 import { ApolloServer } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import { loadDocuments } from '@graphql-tools/load'
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import { loadDocuments } from '@graphql-tools/load';
 import { buildGraphbackAPI, GraphbackAPI } from "graphback";
 import { DocumentNode } from 'graphql';
 import { MongoClient, Db, ObjectID } from 'mongodb';

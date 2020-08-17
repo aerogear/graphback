@@ -1,7 +1,7 @@
 //eslint-disable-next-line @typescript-eslint/tslint/config
 import { buildSchema, GraphQLObjectType } from 'graphql';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { getUserTypesFromSchema } from '@graphql-toolkit/common';
+import { getUserTypesFromSchema } from '@graphql-tools/utils';
 import { getPrimaryKey } from '../src/db/getPrimaryKey'
 
 test('should get primary from id: ID field', () => {
