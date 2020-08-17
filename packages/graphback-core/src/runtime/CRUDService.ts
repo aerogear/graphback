@@ -166,7 +166,9 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
   public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext) {
     // TODO use relationfield mapping
-    const keyName = `${this.modelName}${upperCaseFirstChar(relationField)}DataLoader`;
+    const selectedFields = context.graphback.options?.selectedFields || [];
+    const fetchedKeys = selectedFields.join('-');
+    const keyName = `${this.modelName}-${upperCaseFirstChar(relationField)}-${fetchedKeys}-${JSON.stringify(filter)}-DataLoader`;
     if (!context[keyName]) {
       context[keyName] = new DataLoader<string, any>((keys: string[]) => {
         return this.db.batchRead(relationField, keys, filter, context);
