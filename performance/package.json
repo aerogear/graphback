@@ -14,7 +14,7 @@
   },
   "repository": "https://github.com/aerogear/graphback.git",
   "dependencies": {
-    "@hapi/hapi": "18.4.1",
+    "@hapi/hapi": "20.0.0",
     "apollo-fetch": "0.7.0",
     "apollo-opentracing": "1.5.0",
     "apollo-server-express": "2.16.1",
