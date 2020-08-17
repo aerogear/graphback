@@ -1,6 +1,6 @@
 ---
 id: intro
-title: Data Synchronization
+title: Introduction to Data Synchronization
 sidebar_label: What is Data Synchronization?
 ---
 
@@ -24,7 +24,7 @@ It achieves this by:
 
 ## Installation
 
-The Graphback Data Synchronization package provides schema plugins as well as data sources for all supported data synchronization patterns.
+The Graphback Data Synchronization package provides schema plugins as well as data sources for all supported data synchronization features.
 
 ```bash
 npm install @graphback/datasync
@@ -32,12 +32,9 @@ npm install @graphback/datasync
 
 ## Usage
 
-There are two steps to implementing a data synchronization strategy:
+In order to use data synchronization features, there are two steps to be followed:
 
 - Add metadata to schema
-- Use the relevant plugin and data source
+- Use `createDataSyncAPI` to create the API using Graphback
 
-Currently the supported strategies are:
-
-- [Soft deletes with delta queries for MongoDB](soft-delete.md)
-- [Delta Tables for server-side Conflict Resolution](delta-table.md)
+For a more in-depth guide to setting up data synchronization features, check [this](delta-queries.md) page.

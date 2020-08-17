@@ -1,5 +1,5 @@
 ---
-id: conflict-resolution
+id: conflict-resolution-strategies
 title: Conflict Resolution strategies
 sidebar_label: Conflict Resolution strategies
 ---
@@ -45,7 +45,7 @@ This strategy ensures that updates always resolve to whatever the client had sen
 
 ### ServerSideWins
 
-This strategy ensures that in the event of a update conflict, the client's update will never overwrite any field that has changed since the client last fetched it. If the object has been deleted in the database, the client will be notified of it by way of a [`ConflictError`](../api/graphback-datasync/classes/_util_.conflicterror.md). For delete conflicts, the client is informed of the conflict via a [`ConflictError`](../api/graphback-datasync/classes/_util_.conflicterror.md).
+This strategy ensures that in the event of a update conflict, the client's update will never overwrite any field that has changed since the client last fetched it. If the object has been deleted in the database, the client will be notified of it by way of a `ConflictError`. For delete conflicts, the client is informed of the conflict via a `ConflictError`.
 
 
 ### Custom Conflict Strategy
@@ -91,3 +91,41 @@ In the `resolveUpdate` function, it can be seen that the resolved object's field
 #### `resolveDelete`
 
 In the `resolveDelete` function, it can be seen that in the event of a delete conflict, the object is always deleted.
+
+### ConflictError
+
+This error is thrown when a Conflict Resolution Strategy is unable to resolve the conflict, and needs the client to resolve it instead. It is a subclass of `Error` with a `conflictInfo` property which is of the `ConflictMetadata` type. It can be created by passing a `ConflictMetadata` object in it's constructor:
+```typescript
+const conflictError = new ConflictError({
+
+  /**
+   * This is the common base object for conflicts i.e. the object that the 
+   * client had fetched in the past.
+   */
+  base,
+
+  /**
+   * This is the object as currently present in the database 
+   */
+  serverData,
+
+  /**
+   * This is a map of the fields that have changed on the server since the
+   * client fetched it i.e. it is the diff of the `serverData` object against
+   * the `base` object
+   */
+  serverDiff,
+
+  /**
+   * This is the object sent by the client in the mutation
+   */
+  clientData,
+
+  /**
+   * This is a map of the fields that the client has changed i.e it is the diff
+   * of the `clientData` object against the `base` object
+   */
+  clientDiff,
+  operation: GraphbackOperationType.UPDATE;
+})
+```

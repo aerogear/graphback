@@ -1,14 +1,24 @@
 ---
-id: delta-table
-title: Delta Tables with server-side Conflict resolution
+id: conflict-resolution-intro
+title: Setting up Conflict Resolution
 sidebar_label: Setting up server-side Conflict Resolution
 ---
 
-This is a more involved strategy for data synchronization that includes server-side conflict resolution.
+Server-side conflict resolution is an additional feature which is meant to be used alongisde Delta Queries. 
 
 ## Setup
 
-Feel free to grab the official Graphback template for this strategy [here](https://GitHub.com/aerogear/graphback/tree/templates-release/templates/ts-apollo-mongodb-datasync-backend). Otherwise, It is fairly easy to set this up with the official Graphback template for MongoDB (found [here](https://GitHub.com/aerogear/graphback/tree/templates-release/templates/ts-apollo-mongodb-backend)).
+Create a new Graphback Project with:
+```bash
+$ npx create-graphback datasync-project
+```
+
+When the CLI asks you to pick a template, you may either:
+
+1. Pick the `apollo-mongo-datasync-server-ts` template which has out-of-the-box delta queries and server-side conflict resolution
+2. Pick the `apollo-mongo-server-ts` template and follow along with the rest of the tutorial
+
+When the CLI has finished bootstrapping your project, you may follow along with the rest of the tutorial (if you picked `apollo-mongo-server-ts`) or you may skip to the end of the tutorial.
 
 ### Annotate the required models
 
@@ -26,7 +36,7 @@ type Comment {
 }
 ```
 
-This part retains the features from [Soft-Deletes](soft-delete.md) with the addition of some extras:
+This configuration transforms your model for Delta Queries (adding `_lastUpdatedAt`) as well as the following for Conflict resolution:
 
 1. A `_version` field in the model type used for fetching base document in conflict resolution.
 2. A `_version` field in the corresponding Mutation Input Type.
@@ -58,7 +68,7 @@ input MutateCommentInput {
 
 An example mutation can be found at the end of this page.
 
-### Modify the template to support Data Synchronization
+### Modify the template to use `createDataSyncAPI`
 
 In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-release/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
 
@@ -83,16 +93,15 @@ const {
 );
 ```
 
-The `dataSyncConflictMap` is used to tell `createDataSyncAPI` about which models need server-side Conflict Resolution and hence delta tables. It can also be used to specify custom server-side Conflict resolution strategies.
-<!-- TODO: Add link to conflict resolution docs -->
+The `dataSyncConflictMap` argument is used to `enable` the server-side Conflict resolution feature for specific models, in addition to Delta Queries. In the current configuration, a default strategy of `ClientSideWins` is used. Please check the [docs](conflict-resolution-strategies.md) for more information on using different strategies as well as implementing custom Conflict Resolution strategies.
 
 :::note
-Any model can use either strategy, without conflicting with each other e.g. you may have just delta queries for one model while having full-blown delta tables with server-side conflict resolution for another.
+You may have just delta queries for one model while having full-blown server-side conflict resolution for another.
 :::
 
 ## Example of Issuing Delta Query
 
-Delta Queries remain the same but with the addition of a `_version` field:
+Delta Queries remain the same but with the addition of a `_version` field as outlined in the above sections:
 
 ```graphql
 query {
@@ -187,7 +196,7 @@ To issue mutations for a model with server-side Conflict resolution, the current
 
 Conflicts usually happen when a client does not have the most recent version of the data and tries to issue mutations. The server detects this using the aforementioned `_version` field and checks to see if fields that the client is trying to update have changed since the client last fetched the data.
 
-In case they have, the server calls upon the conflict resolution strategy to resolve the conflict. See [Conflict Resolution Strategies](conflict-resolution.md) for more info on these strategies.
+In case they have, the server calls upon the conflict resolution strategy to resolve the conflict. See [Conflict Resolution Strategies](conflict-resolution-strategies.md) for more info on these strategies.
 
 Following the previous example, if another client did not receive the above update, and tries to issue another update like so:
 ```graphql {6}
