@@ -3,11 +3,11 @@
   "version": "0.15.1",
   "private": true,
   "devDependencies": {
-    "@graphql-codegen/add": "1.17.7",
+    "@graphql-codegen/add": "2.0.1",
     "@graphql-codegen/cli": "1.17.8",
     "@graphql-codegen/typescript": "1.17.8",
     "@graphql-codegen/typescript-operations": "1.17.8",
-    "@graphql-codegen/typescript-react-apollo": "1.17.7",
+    "@graphql-codegen/typescript-react-apollo": "2.0.6",
     "graphback-cli": "0.15.1",
     "graphql": "15.3.0",
     "tslint": "6.1.3",
