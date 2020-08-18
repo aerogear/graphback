@@ -27,10 +27,7 @@
     ],
     "Authentication": [
       "authentication/intro",
-      "authentication/keycloak",
-      "api/graphback-keycloak-authz/classes/_keycloakcrudservice_.keycloakcrudservice",
-      "api/graphback-keycloak-authz/modules/_createkeycloakcrudservice_",
-      "api/graphback-keycloak-authz/modules/_keycloakconfig_"
+      "authentication/keycloak"
     ],
     "Data Sync": [
       "datasync/intro",
@@ -59,30 +56,52 @@
       "cli/graphback-cli"
     ],
     "API Reference": [
-      "api/graphback/modules/_buildgraphbackapi_",
-      "api/graphback/interfaces/_buildgraphbackapi_.graphbackapi",
-      "api/graphback/interfaces/_buildgraphbackapi_.graphbackapiconfig",
-      "api/graphback-core/interfaces/_runtime_createcrudservice_.createcrudserviceoptions",
-      "api/graphback-runtime-knex/modules/_createknexdbprovider_",
-      "api/graphback-runtime-knex/classes/_knexdbdataprovider_.knexdbdataprovider",
-      "api/graphback-runtime-knex/classes/_sqliteknexdbdataprovider_.sqliteknexdbdataprovider",
-      "api/graphback-runtime-mongodb/modules/_createmongodbprovider_",
-      "api/graphback-runtime-mongodb/classes/_mongodbdataprovider_.mongodbdataprovider",
-      "api/graphback-core/interfaces/_runtime_graphbackdataprovider_.graphbackdataprovider",
-      "api/graphback-core/interfaces/_plugin_graphbackpluginengine_.graphbackpluginengineoptions",
-      "api/graphback-core/interfaces/_plugin_graphbackcrudgeneratorconfig_.graphbackcrudgeneratorconfig",
-      "api/graphback-core/interfaces/_runtime_createcrudservice_.createcrudserviceoptions",
-      "api/graphback-core/interfaces/_runtime_interfaces_.graphbackcontext",
-      "api/graphback-core/interfaces/_runtime_graphbackcrudservice_.resultlist",
-      "api/graphback-core/classes/_plugin_graphbackplugin_.graphbackplugin",
-      "api/graphback-core/classes/_runtime_crudservice_.crudservice",
-      "api/graphback-core/classes/_runtime_graphbackproxyservice_.graphbackproxyservice",
-      "api/graphback-core/modules/_runtime_createcrudservice_",
-      "api/graphback-core/interfaces/_runtime_graphbackcrudservice_.graphbackcrudservice",
-      "api/graphback-core/classes/_runtime_crudservice_.crudservice",
-      "api/graphback-core/classes/_runtime_graphbackproxyservice_.graphbackproxyservice",
-      "api/graphback-codegen-schema/classes/_schemacrudplugin_.schemacrudplugin",
-      "api/graphback-codegen-client/classes/_clientcrudplugin_.clientcrudplugin",
+      {
+        "Build Graphback": [
+          "api/graphback/modules/_buildgraphbackapi_",
+          "api/graphback/interfaces/_buildgraphbackapi_.graphbackapi",
+          "api/graphback/interfaces/_buildgraphbackapi_.graphbackapiconfig",
+          "api/graphback-core/interfaces/_runtime_graphbackdataprovider_.graphbackdataprovider",
+          "api/graphback-core/interfaces/_plugin_graphbackpluginengine_.graphbackpluginengineoptions",
+          "api/graphback-core/interfaces/_plugin_graphbackcrudgeneratorconfig_.graphbackcrudgeneratorconfig",
+          "api/graphback-core/interfaces/_runtime_createcrudservice_.createcrudserviceoptions",
+          "api/graphback-core/interfaces/_runtime_interfaces_.graphbackcontext",
+          "api/graphback-core/interfaces/_runtime_graphbackcrudservice_.resultlist",
+          "api/graphback-core/classes/_plugin_graphbackplugin_.graphbackplugin",
+          "api/graphback-core/classes/_runtime_crudservice_.crudservice",
+          "api/graphback-core/classes/_runtime_graphbackproxyservice_.graphbackproxyservice",
+          "api/graphback-core/modules/_runtime_createcrudservice_",
+          "api/graphback-core/interfaces/_runtime_graphbackcrudservice_.graphbackcrudservice",
+          "api/graphback-core/classes/_runtime_crudservice_.crudservice",
+          "api/graphback-core/classes/_runtime_graphbackproxyservice_.graphbackproxyservice",
+          "api/graphback-core/interfaces/_runtime_createcrudservice_.createcrudserviceoptions"
+        ]
+      },
+      {
+        "Relational Databases": [
+          "api/graphback-runtime-knex/modules/_createknexdbprovider_",
+          "api/graphback-runtime-knex/classes/_knexdbdataprovider_.knexdbdataprovider",
+          "api/graphback-runtime-knex/classes/_sqliteknexdbdataprovider_.sqliteknexdbdataprovider"
+          ]
+      },
+      {
+        "MongoDB": [
+          "api/graphback-runtime-mongodb/modules/_createmongodbprovider_",
+          "api/graphback-runtime-mongodb/classes/_mongodbdataprovider_.mongodbdataprovider"
+        ]
+      },
+      {
+        "Plugins": [
+          "api/graphback-codegen-schema/classes/_schemacrudplugin_.schemacrudplugin",
+          "api/graphback-codegen-client/classes/_clientcrudplugin_.clientcrudplugin"
+        ]
+      },
+      {
+        "Authentication": [
+          "api/graphback-keycloak-authz/classes/_keycloakcrudservice_.keycloakcrudservice",
+          "api/graphback-keycloak-authz/modules/_createkeycloakcrudservice_",
+          "api/graphback-keycloak-authz/modules/_keycloakconfig_"]
+      },
       {
         "DataSync":[
           "api/graphback-datasync/interfaces/_providers_datasyncprovider_.datasyncprovider",
