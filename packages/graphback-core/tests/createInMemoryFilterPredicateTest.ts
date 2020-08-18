@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { ObjectId } from 'mongodb';
+import { ObjectId } from 'bson';
 import { Scalars, Maybe, QueryFilter, StringInput, IdInput, BooleanInput, IntInput, FloatInput, GraphbackDateTimeInput, GraphbackObjectIdInput } from '../src/runtime/QueryFilter';
 import { createInMemoryFilterPredicate } from '../src/runtime/createInMemoryFilterPredicate';
 

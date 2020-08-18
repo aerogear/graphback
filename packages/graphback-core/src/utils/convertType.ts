@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectID } from 'bson';
 
 /**
  * Helper function to convert a value to another type

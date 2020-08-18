@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb'
+import { ObjectID } from 'bson'
 
 /**
  * Filter mapping for scalars that exit
@@ -11,7 +11,7 @@ export type Scalars = {
   Float: number;
   GraphbackJSON: any;
   GraphbackJSONObject: { [key: string]: any };
-  GraphbackObjectID: ObjectId | string;
+  GraphbackObjectID: ObjectID | string;
   GraphbackTimestamp: number;
   GraphbackTime: string;
   GraphbackDate: Date;

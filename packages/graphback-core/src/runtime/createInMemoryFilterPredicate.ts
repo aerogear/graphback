@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectID } from 'bson';
 import { convertType, isDateObject } from '../utils/convertType';
 import { QueryFilter } from './QueryFilter';
 
