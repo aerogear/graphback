@@ -1,47 +1,53 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should build one-to-many and many-to-one relationships from both fields 1`] = `
-"[
- {
-  \\"kind\\": \\"oneToMany\\",
-  \\"owner\\": \\"User\\",
-  \\"ownerField\\": {
-   \\"name\\": \\"sentMessages\\",
-   \\"description\\": \\"@oneToMany(field: 'sender', key: 'senderId')\\\\nsome extra description\\\\n@oneToMany(field: 'sender')\\",
-   \\"type\\": \\"[Message!]!\\",
-   \\"args\\": [],
-   \\"isDeprecated\\": false,
-   \\"astNode\\": {
-    \\"kind\\": \\"FieldDefinition\\",
-    \\"description\\": {
-     \\"kind\\": \\"StringValue\\",
-     \\"value\\": \\"some extra description\\\\n@oneToMany(field: 'sender')\\",
-     \\"block\\": true,
-     \\"loc\\": {
-      \\"start\\": 89,
-      \\"end\\": 171
-     }
-    },
-    \\"name\\": {
-     \\"kind\\": \\"Name\\",
-     \\"value\\": \\"sentMessages\\",
-     \\"loc\\": {
-      \\"start\\": 180,
-      \\"end\\": 192
-     }
-    },
-    \\"arguments\\": [],
-    \\"type\\": {
-     \\"kind\\": \\"NonNullType\\",
+"{
+ \\"User\\": {
+  \\"sentMessages\\": {
+   \\"kind\\": \\"oneToMany\\",
+   \\"owner\\": \\"User\\",
+   \\"ownerField\\": {
+    \\"name\\": \\"sentMessages\\",
+    \\"description\\": \\"@oneToMany(field: 'sender', key: 'senderId')\\\\nsome extra description\\\\n@oneToMany(field: 'sender')\\",
+    \\"type\\": \\"[Message!]!\\",
+    \\"args\\": [],
+    \\"isDeprecated\\": false,
+    \\"astNode\\": {
+     \\"kind\\": \\"FieldDefinition\\",
+     \\"description\\": {
+      \\"kind\\": \\"StringValue\\",
+      \\"value\\": \\"some extra description\\\\n@oneToMany(field: 'sender')\\",
+      \\"block\\": true,
+      \\"loc\\": {
+       \\"start\\": 89,
+       \\"end\\": 171
+      }
+     },
+     \\"name\\": {
+      \\"kind\\": \\"Name\\",
+      \\"value\\": \\"sentMessages\\",
+      \\"loc\\": {
+       \\"start\\": 180,
+       \\"end\\": 192
+      }
+     },
+     \\"arguments\\": [],
      \\"type\\": {
-      \\"kind\\": \\"ListType\\",
+      \\"kind\\": \\"NonNullType\\",
       \\"type\\": {
-       \\"kind\\": \\"NonNullType\\",
+       \\"kind\\": \\"ListType\\",
        \\"type\\": {
-        \\"kind\\": \\"NamedType\\",
-        \\"name\\": {
-         \\"kind\\": \\"Name\\",
-         \\"value\\": \\"Message\\",
+        \\"kind\\": \\"NonNullType\\",
+        \\"type\\": {
+         \\"kind\\": \\"NamedType\\",
+         \\"name\\": {
+          \\"kind\\": \\"Name\\",
+          \\"value\\": \\"Message\\",
+          \\"loc\\": {
+           \\"start\\": 195,
+           \\"end\\": 202
+          }
+         },
          \\"loc\\": {
           \\"start\\": 195,
           \\"end\\": 202
@@ -49,131 +55,136 @@ exports[`should build one-to-many and many-to-one relationships from both fields
         },
         \\"loc\\": {
          \\"start\\": 195,
-         \\"end\\": 202
+         \\"end\\": 203
         }
        },
        \\"loc\\": {
-        \\"start\\": 195,
-        \\"end\\": 203
+        \\"start\\": 194,
+        \\"end\\": 204
        }
       },
       \\"loc\\": {
        \\"start\\": 194,
-       \\"end\\": 204
+       \\"end\\": 205
       }
      },
+     \\"directives\\": [],
      \\"loc\\": {
-      \\"start\\": 194,
+      \\"start\\": 89,
       \\"end\\": 205
      }
-    },
-    \\"directives\\": [],
-    \\"loc\\": {
-     \\"start\\": 89,
-     \\"end\\": 205
     }
-   }
-  },
-  \\"relationType\\": \\"Message\\",
-  \\"relationFieldName\\": \\"sender\\",
-  \\"relationForeignKey\\": \\"senderId\\"
+   },
+   \\"relationType\\": \\"Message\\",
+   \\"relationFieldName\\": \\"sender\\",
+   \\"relationForeignKey\\": \\"senderId\\"
+  }
  },
- {
-  \\"kind\\": \\"manyToOne\\",
-  \\"owner\\": \\"Message\\",
-  \\"ownerField\\": {
-   \\"name\\": \\"sender\\",
-   \\"description\\": \\"@manyToOne(field: 'sentMessages', key: 'senderId')\\\\n@manyToOne(field: 'sentMessages')\\",
-   \\"type\\": \\"User\\",
-   \\"args\\": [],
-   \\"isDeprecated\\": false,
-   \\"astNode\\": {
-    \\"kind\\": \\"FieldDefinition\\",
-    \\"description\\": {
-     \\"kind\\": \\"StringValue\\",
-     \\"value\\": \\"@manyToOne(field: 'sentMessages')\\",
-     \\"block\\": true,
-     \\"loc\\": {
-      \\"start\\": 301,
-      \\"end\\": 358
-     }
-    },
-    \\"name\\": {
-     \\"kind\\": \\"Name\\",
-     \\"value\\": \\"sender\\",
-     \\"loc\\": {
-      \\"start\\": 367,
-      \\"end\\": 373
-     }
-    },
-    \\"arguments\\": [],
-    \\"type\\": {
-     \\"kind\\": \\"NamedType\\",
-     \\"name\\": {
-      \\"kind\\": \\"Name\\",
-      \\"value\\": \\"User\\",
+ \\"Message\\": {
+  \\"sender\\": {
+   \\"kind\\": \\"manyToOne\\",
+   \\"owner\\": \\"Message\\",
+   \\"ownerField\\": {
+    \\"name\\": \\"sender\\",
+    \\"description\\": \\"@manyToOne(field: 'sentMessages', key: 'senderId')\\\\n@manyToOne(field: 'sentMessages')\\",
+    \\"type\\": \\"User\\",
+    \\"args\\": [],
+    \\"isDeprecated\\": false,
+    \\"astNode\\": {
+     \\"kind\\": \\"FieldDefinition\\",
+     \\"description\\": {
+      \\"kind\\": \\"StringValue\\",
+      \\"value\\": \\"@manyToOne(field: 'sentMessages')\\",
+      \\"block\\": true,
       \\"loc\\": {
-       \\"start\\": 375,
-       \\"end\\": 379
+       \\"start\\": 301,
+       \\"end\\": 358
       }
      },
-     \\"loc\\": {
-      \\"start\\": 375,
-      \\"end\\": 379
-     }
-    },
-    \\"directives\\": [],
-    \\"loc\\": {
-     \\"start\\": 301,
-     \\"end\\": 379
-    }
-   }
-  },
-  \\"relationType\\": \\"User\\",
-  \\"relationFieldName\\": \\"sentMessages\\",
-  \\"relationForeignKey\\": \\"senderId\\"
- }
-]"
-`;
-
-exports[`should build one-to-one relationship metadata from one-to-one field 1`] = `
-"[
- {
-  \\"kind\\": \\"oneToOne\\",
-  \\"owner\\": \\"Address\\",
-  \\"ownerField\\": {
-   \\"name\\": \\"resident\\",
-   \\"description\\": \\"@oneToOne(key: 'residentId')\\\\n@oneToOne\\",
-   \\"type\\": \\"User!\\",
-   \\"args\\": [],
-   \\"isDeprecated\\": false,
-   \\"astNode\\": {
-    \\"kind\\": \\"FieldDefinition\\",
-    \\"description\\": {
-     \\"kind\\": \\"StringValue\\",
-     \\"value\\": \\"@oneToOne\\",
-     \\"block\\": true,
-     \\"loc\\": {
-      \\"start\\": 176,
-      \\"end\\": 209
-     }
-    },
-    \\"name\\": {
-     \\"kind\\": \\"Name\\",
-     \\"value\\": \\"resident\\",
-     \\"loc\\": {
-      \\"start\\": 218,
-      \\"end\\": 226
-     }
-    },
-    \\"arguments\\": [],
-    \\"type\\": {
-     \\"kind\\": \\"NonNullType\\",
+     \\"name\\": {
+      \\"kind\\": \\"Name\\",
+      \\"value\\": \\"sender\\",
+      \\"loc\\": {
+       \\"start\\": 367,
+       \\"end\\": 373
+      }
+     },
+     \\"arguments\\": [],
      \\"type\\": {
       \\"kind\\": \\"NamedType\\",
       \\"name\\": {
        \\"kind\\": \\"Name\\",
        \\"value\\": \\"User\\",
+       \\"loc\\": {
+        \\"start\\": 375,
+        \\"end\\": 379
+       }
+      },
+      \\"loc\\": {
+       \\"start\\": 375,
+       \\"end\\": 379
+      }
+     },
+     \\"directives\\": [],
+     \\"loc\\": {
+      \\"start\\": 301,
+      \\"end\\": 379
+     }
+    }
+   },
+   \\"relationType\\": \\"User\\",
+   \\"relationFieldName\\": \\"sentMessages\\",
+   \\"relationForeignKey\\": \\"senderId\\"
+  }
+ }
+}"
+`;
+
+exports[`should build one-to-one relationship metadata from one-to-one field 1`] = `
+"{
+ \\"User\\": {},
+ \\"Address\\": {
+  \\"resident\\": {
+   \\"kind\\": \\"oneToOne\\",
+   \\"owner\\": \\"Address\\",
+   \\"ownerField\\": {
+    \\"name\\": \\"resident\\",
+    \\"description\\": \\"@oneToOne(key: 'residentId')\\\\n@oneToOne\\",
+    \\"type\\": \\"User!\\",
+    \\"args\\": [],
+    \\"isDeprecated\\": false,
+    \\"astNode\\": {
+     \\"kind\\": \\"FieldDefinition\\",
+     \\"description\\": {
+      \\"kind\\": \\"StringValue\\",
+      \\"value\\": \\"@oneToOne\\",
+      \\"block\\": true,
+      \\"loc\\": {
+       \\"start\\": 176,
+       \\"end\\": 209
+      }
+     },
+     \\"name\\": {
+      \\"kind\\": \\"Name\\",
+      \\"value\\": \\"resident\\",
+      \\"loc\\": {
+       \\"start\\": 218,
+       \\"end\\": 226
+      }
+     },
+     \\"arguments\\": [],
+     \\"type\\": {
+      \\"kind\\": \\"NonNullType\\",
+      \\"type\\": {
+       \\"kind\\": \\"NamedType\\",
+       \\"name\\": {
+        \\"kind\\": \\"Name\\",
+        \\"value\\": \\"User\\",
+        \\"loc\\": {
+         \\"start\\": 228,
+         \\"end\\": 232
+        }
+       },
        \\"loc\\": {
         \\"start\\": 228,
         \\"end\\": 232
@@ -181,23 +192,19 @@ exports[`should build one-to-one relationship metadata from one-to-one field 1`]
       },
       \\"loc\\": {
        \\"start\\": 228,
-       \\"end\\": 232
+       \\"end\\": 233
       }
      },
+     \\"directives\\": [],
      \\"loc\\": {
-      \\"start\\": 228,
+      \\"start\\": 176,
       \\"end\\": 233
      }
-    },
-    \\"directives\\": [],
-    \\"loc\\": {
-     \\"start\\": 176,
-     \\"end\\": 233
     }
-   }
-  },
-  \\"relationType\\": \\"User\\",
-  \\"relationForeignKey\\": \\"residentId\\"
+   },
+   \\"relationType\\": \\"User\\",
+   \\"relationForeignKey\\": \\"residentId\\"
+  }
  }
-]"
+}"
 `;
