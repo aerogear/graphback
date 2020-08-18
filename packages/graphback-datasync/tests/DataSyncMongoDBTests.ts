@@ -129,6 +129,31 @@ describe('Soft deletion test', () => {
     expect(deletedPost[DataSyncFieldNames.ttl] instanceof Date).toEqual(true);
   })
 
+  it('can function without specified TTL when delete mutations are disabled', async () => {
+    context = await createTestingContext(`
+    """
+    @model(
+      delete: false
+    )
+    @datasync
+    """
+    type Post {
+      _id: GraphbackObjectID!
+      text: String
+      description: String
+    }
+
+    scalar GraphbackObjectID
+    `);
+
+    const { Post } = context.providers;
+    await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+
+    // check count
+    const count = await Post.count({});
+    expect(count).toEqual(1);
+  })
+
   it('cannot update a deleted document', async () => {
     context = await createTestingContext(postSchema);
 
