@@ -32,7 +32,7 @@ type Comment {
 }
 ```
 
-The `@datasync` annotation is used infer if a given model requires Delta Queries. If your business logic requires delete mutations, @datasync also ensures that deleted objects are maintained in the database for a given amount of time. This can either be specified by the *optional* `ttl` argument (given in seconds) otherwise defaults to a duration of 2 days (or 172800 seconds) This is done so clients can be informed about deletions in a delta query. The items are eventually deleted using a MongoDB TTL Index.
+The `@datasync` annotation is used infer if a given model requires Delta Queries. If your business logic requires delete mutations, `@datasync` also ensures that deleted objects are maintained in the database for a given amount of time. This can either be specified by the *optional* `ttl` argument (given in seconds) otherwise defaults to a duration of 2 days (or 172800 seconds) This is done so clients can be informed about deletions in a delta query. The items are eventually deleted using a MongoDB TTL Index.
 
 In the default configuration, `@datasync` transforms your model by adding a `_lastUpdatedAt` field to it:
 
