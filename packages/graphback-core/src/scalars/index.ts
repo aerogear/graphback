@@ -1,3 +1,4 @@
+import { ObjectID } from "bson";
 import { GraphQLNamedType, GraphQLScalarType, ValueNode } from 'graphql';
 import { TimeResolver, TimestampResolver, DateResolver, DateTimeResolver, ObjectIDResolver, JSONResolver, JSONObjectResolver } from 'graphql-scalars';
 
@@ -27,12 +28,18 @@ const { parseLiteral, parseValue, ...objectIDConfig } = extractConfig(ObjectIDRe
 export const GraphbackObjectID = new GraphQLScalarType({
   ...objectIDConfig,
   parseLiteral: (ast: ValueNode, variables: { [key: string]: any}) => {
-    const { ObjectID } = require('mongodb');
+    let ObjectIDFinal = ObjectID;
+    try {
+      ObjectIDFinal = require('bson-ext').ObjectID;
+    } catch {}
 
-    return new ObjectID(parseLiteral(ast, variables));
+    return new ObjectIDFinal(parseLiteral(ast, variables));
   },
   parseValue: (value: any) => {
-    const { ObjectID } = require('mongodb');
+    let ObjectIDFinal = ObjectID;
+    try {
+      ObjectIDFinal = require('bson-ext').ObjectID;
+    } catch {}
 
     return new ObjectID(parseValue(value));
   },
