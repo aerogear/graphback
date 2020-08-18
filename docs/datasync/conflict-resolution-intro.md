@@ -132,7 +132,7 @@ To improve efficiency of queries on the `delta` table, a `deltaTTL` argument (in
 You may only have delta queries for one model while having both delta queries and server-side conflict resolution for another model without them interfering with each other.
 :::
 
-## Example of Issuing Delta Query
+## Example of Issuing a Delta Query
 
 Delta Queries remain the same but with the addition of a `_version` field as outlined in the above sections:
 
@@ -259,6 +259,5 @@ No conflict will occur, even if the version field is out-of-date because the `ti
   }
 }
 ```
-
 
 
