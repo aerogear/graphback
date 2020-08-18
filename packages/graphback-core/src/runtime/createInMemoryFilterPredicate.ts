@@ -1,3 +1,4 @@
+import { ObjectID } from 'bson';
 import { convertType, isDateObject } from '../utils/convertType';
 import { QueryFilter } from './QueryFilter';
 
@@ -20,38 +21,53 @@ interface IPredicate {
 
 const predicateMap: IPredicate = {
   eq: (filterValue: InputType) => (fieldValue: InputType) => {
-    const parsedFieldValue = convertType(fieldValue, typeof filterValue);
-    const parsedFilterValue = convertType(filterValue, typeof parsedFieldValue)
+    const parsedFieldValue = convertType(fieldValue, filterValue);
+    const parsedFilterValue = convertType(filterValue, parsedFieldValue)
 
-    return parsedFieldValue === parsedFilterValue;
+    return parsedFieldValue?.toString() === parsedFilterValue?.toString();
   },
   ne: (filterValue: InputType) => (fieldValue: InputType) => {
-    const parsedFieldValue = convertType(fieldValue, typeof filterValue);
-    const parsedFilterValue = convertType(filterValue, typeof parsedFieldValue)
+    const parsedFieldValue = convertType(fieldValue, filterValue);
+    const parsedFilterValue = convertType(filterValue, parsedFieldValue)
 
-    return parsedFilterValue !== parsedFieldValue;
+    return parsedFilterValue?.toString() !== parsedFieldValue?.toString();
   },
   gt: (filterValue: InputType) => (fieldValue: InputType) => {
-    const parsedFieldValue = convertType(fieldValue, typeof filterValue);
-    const parsedFilterValue = convertType(filterValue, typeof parsedFieldValue)
+    const parsedFieldValue = convertType(fieldValue, filterValue);
+    const parsedFilterValue = convertType(filterValue, parsedFieldValue);
 
     return parsedFieldValue > parsedFilterValue;
   },
   ge: (filterValue: InputType) => (fieldValue: InputType) => {
-    const parsedFieldValue = convertType(fieldValue, typeof filterValue);
-    const parsedFilterValue = convertType(filterValue, typeof parsedFieldValue)
+    const parsedFieldValue = convertType(fieldValue, filterValue);
+    const parsedFilterValue = convertType(filterValue, parsedFieldValue);
+
+    // if values are of MongoDb ObjectID, convert to timestamp before comparison
+    if (parsedFieldValue instanceof ObjectID && parsedFilterValue instanceof ObjectID) {
+      return parsedFieldValue.getTimestamp() >= parsedFilterValue.getTimestamp()
+    }
 
     return parsedFieldValue >= parsedFilterValue;
   },
   le: (filterValue: InputType) => (fieldValue: InputType) => {
-    const parsedFieldValue = convertType(fieldValue, typeof filterValue);
-    const parsedFilterValue = convertType(filterValue, typeof parsedFieldValue)
+    const parsedFieldValue = convertType(fieldValue, filterValue);
+    const parsedFilterValue = convertType(filterValue, parsedFieldValue)
+
+    // if values are of MongoDb ObjectID, convert to timestamp before comparison
+    if (parsedFieldValue instanceof ObjectID && parsedFilterValue instanceof ObjectID) {
+      return parsedFieldValue.getTimestamp() <= parsedFilterValue.getTimestamp()
+    }
 
     return parsedFieldValue <= parsedFilterValue;
   },
   lt: (filterValue: InputType) => (fieldValue: InputType) => {
-    const parsedFieldValue = convertType(fieldValue, typeof filterValue);
-    const parsedFilterValue = convertType(filterValue, typeof parsedFieldValue)
+    const parsedFieldValue = convertType(fieldValue, filterValue);
+    const parsedFilterValue = convertType(filterValue, parsedFieldValue);
+
+    // if values are of MongoDb ObjectID, convert to timestamp before comparison
+    if (parsedFieldValue instanceof ObjectID && parsedFilterValue instanceof ObjectID) {
+      return parsedFieldValue.getTimestamp() < parsedFilterValue.getTimestamp()
+    }
 
     return parsedFieldValue < parsedFilterValue;
   },
@@ -60,11 +76,22 @@ const predicateMap: IPredicate = {
   },
   between: ([fromVal, toVal]: InputType[]) => (fieldValue: InputType) => {
     if (isDateObject(fieldValue)) {
-      const fieldValDate = convertType(fieldValue, typeof fieldValue)
-      const fromValDate = convertType(fromVal, typeof fieldValue)
-      const toValDate = convertType(toVal, typeof fieldValue)
+      const fieldValDate = convertType(fieldValue, fieldValue)
+      const fromValDate = convertType(fromVal, fieldValue)
+      const toValDate = convertType(toVal, fieldValue)
 
       return fieldValDate >= fromValDate && fieldValDate <= toValDate;
+    }
+
+    // if values are of MongoDb ObjectID, convert to timestamp before comparison
+    if (fromVal instanceof ObjectID || toVal instanceof ObjectID || fieldValue instanceof ObjectID) {
+      const toValObjectId = new ObjectID(toVal.toString());
+      const fromValObjectId = new ObjectID(fromVal.toString());
+      const fieldValObjectId = new ObjectID(fieldValue.toString());
+      const fieldValTimestamp = fieldValObjectId.getTimestamp();
+
+      return fieldValTimestamp >= fromValObjectId.getTimestamp() &&
+        fieldValTimestamp <= toValObjectId.getTimestamp();
     }
 
     const parsedFieldValue = Number(fieldValue)

@@ -38,6 +38,7 @@
   "dependencies": {
     "@graphql-tools/merge": "6.0.18",
     "@graphql-tools/utils": "6.0.18",
+    "bson": "4.1.0",
     "dataloader": "2.0.0",
     "glob": "7.1.6",
     "graphql-compose": "7.19.4",
@@ -50,6 +51,6 @@
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",
-    "mongodb": "3.6.0"
+    "bson-ext": "2.0.5"
   }
 }

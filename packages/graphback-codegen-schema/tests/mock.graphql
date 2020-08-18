@@ -67,7 +67,7 @@ See issue https://github.com/aerogear/graphback/issues/1299
   subDelete: false
 )
 """
-type  Issue {
+type Issue {
   id: ID!
   category: IssueCategory
   createdAt: DateTime,

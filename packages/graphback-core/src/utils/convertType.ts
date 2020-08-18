@@ -1,15 +1,21 @@
+import { ObjectID } from 'bson';
+
 /**
  * Helper function to convert a value to another type
  * 
  * @param {any} value - Value to convert
- * @param {string} typeOf - convert value to this type
+ * @param {any} toType - convert value to this type
  */
-export function convertType(value: any, typeOf: "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function"): string | number | boolean | BigInt {
+export function convertType(value: any, toType: any): string | number | boolean | BigInt | ObjectID {
   if (!value) {
     return undefined;
   }
-  
-  switch (typeOf) {
+
+  if (toType instanceof ObjectID || value instanceof ObjectID) {
+    return new ObjectID(value);
+  }
+
+  switch (typeof toType) {
     case 'string':
       return String(value);
     case 'number':

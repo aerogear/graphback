@@ -276,5 +276,23 @@ type Comment {
   expect(note.astNode?.directives).toHaveLength(1)
   expect(note.astNode?.directives[0].name.value).toBe('test')
 
-  expect(printSchemaWithDirectives(schema)).toMatchSnapshot()
+  expect(printSchemaWithDirectives(schema)).toMatchSnapshot();
+})
+
+test('schema does not generate filter input for unknown custom scalar', () => {
+  const modelAST = `
+scalar MyCustomScalar
+"""
+@model
+"""
+type TypeWithCustomScalar {
+  id: ID!
+  customField: MyCustomScalar
+}`
+
+  const schemaGenerator = new SchemaCRUDPlugin();
+  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+  const schema = schemaGenerator.transformSchema(metadata);
+
+  expect(schema.getType('MyCustomScalarInput')).toBeUndefined()
 })
