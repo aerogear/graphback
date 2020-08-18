@@ -72,7 +72,17 @@ export class GraphbackCoreMetadata {
     }
 
     const relationshipBuilder = new RelationshipMetadataBuilder(this.models);
-    relationshipBuilder.build()
+    const meta = relationshipBuilder.build()
+
+    for (const model of this.models) {
+      const modelRelationshipMetadata = meta[model.graphqlType.name]
+      if (modelRelationshipMetadata) {
+        const modelFieldRelationshipMetadata = Object.values(modelRelationshipMetadata)
+        if (modelFieldRelationshipMetadata) {
+          model.relationships.push(...modelFieldRelationshipMetadata)
+        }
+      }
+    }
 
     return this.models;
   }

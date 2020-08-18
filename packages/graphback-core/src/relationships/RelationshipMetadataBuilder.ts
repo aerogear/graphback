@@ -91,9 +91,7 @@ export class RelationshipMetadataBuilder {
 
         const relationMetadata = this.getRelationshipMetadata(field, modelType);
         if (relationMetadata) {
-          this.relationshipMetadataConfigMap = {
-            ...relationMetadata
-          }
+          this.relationshipMetadataConfigMap = Object.assign({}, this.relationshipMetadataConfigMap, relationMetadata)
         }
         continue;
       }
@@ -142,11 +140,6 @@ export class RelationshipMetadataBuilder {
         this.addOneToOne(modelType, field, oneToOneAnnotation);
       }
     }
-
-    const modelRelationshipMap = this.relationshipMetadataConfigMap[modelType.name]
-    const modelRelationships = Object.values(modelRelationshipMap)
-
-    model.relationships.push(...modelRelationships)
   }
 
   private getRelationshipMetadata(field: GraphQLField<any, any>, owner: GraphQLObjectType): ModelRelationshipConfigMap {
@@ -171,6 +164,8 @@ export class RelationshipMetadataBuilder {
       const relationFieldName = lowerCaseFirstChar(ownerName)
       const relationForeignKey = transformForeignKeyName(relationFieldName)
 
+      const manyToOneField = fieldType.getFields()[relationFieldName]
+
       modelRelationshipConfigMap[owner.name][field.name] = {
         kind: 'oneToMany',
         owner,
@@ -183,7 +178,7 @@ export class RelationshipMetadataBuilder {
       modelRelationshipConfigMap[fieldType.name][relationFieldName] = {
         kind: 'manyToOne',
         owner: getNamedType(field.type) as GraphQLObjectType,
-        ownerField: fieldType.getFields()[relationFieldName] || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
+        ownerField: manyToOneField || this.createManyToOneField(relationFieldName, owner, pluralize(lowerCaseFirstChar(fieldType.name))),
         relationType: owner,
         relationFieldName: field.name,
         relationForeignKey
@@ -193,11 +188,13 @@ export class RelationshipMetadataBuilder {
       const relationFieldName = pluralize(lowerCaseFirstChar(owner.name))
 
       const foreignKeyName = transformForeignKeyName(field.name)
+      const oneToManyField = fieldType.getFields()[relationFieldName]
+      const oneToManyAnnotation = parseRelationshipAnnotation(oneToManyField?.description)
 
       modelRelationshipConfigMap[owner.name][field.name] = {
         kind: 'manyToOne',
         owner,
-        ownerField: this.updateManyToOneField(field, relationFieldName, foreignKeyName),
+        ownerField: this.updateManyToOneField(field, relationFieldName, oneToManyAnnotation?.key || foreignKeyName),
         relationType: fieldType,
         relationFieldName,
         relationForeignKey: foreignKeyName
@@ -206,7 +203,7 @@ export class RelationshipMetadataBuilder {
       modelRelationshipConfigMap[fieldType.name][relationFieldName] = {
         kind: 'oneToMany',
         owner: fieldType,
-        ownerField: fieldType.getFields()[relationFieldName] || this.createOneToManyField(relationFieldName, owner, fieldType.name),
+        ownerField: oneToManyField || this.createOneToManyField(relationFieldName, owner, fieldType.name),
         relationType: owner,
         relationFieldName: field.name,
         relationForeignKey: foreignKeyName
