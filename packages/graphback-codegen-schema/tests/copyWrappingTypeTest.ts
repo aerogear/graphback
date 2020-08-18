@@ -1,5 +1,5 @@
 import { GraphQLNonNull, GraphQLString, GraphQLBoolean, GraphQLList, GraphQLFloat, GraphQLInt, GraphQLObjectType } from 'graphql'
-import { copyWrappingType } from '../src/definitions/copyWrappingType'
+import { copyWrappingType } from '@graphback/core'
 
 describe('copyWrappingType', () => {
   test('Boolean should become Boolean!', () => {
