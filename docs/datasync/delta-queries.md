@@ -21,7 +21,9 @@ Add the `@datasync` annotation to your model(s) in your GraphQL SDL found in the
 ```graphql {3}
 """ 
 @model
-@datasync
+@datasync(
+  ttl: 5184000
+)
 """
 type Comment {
   _id: GraphbackObjectID!
@@ -30,14 +32,16 @@ type Comment {
 }
 ```
 
-The `@datasync` annotation is used infer if a given model requires Delta Queries.
+The `@datasync` annotation is used infer if a given model requires Delta Queries. If your business logic requires delete mutations, you must specify the `ttl` argument of the `@datasync` annotation as this ensures that deleted objects are maintained in the database for a given amount of time (`ttl` is specified in seconds), before being permanently deleted. This is done so clients can be informed about deletions in a delta query. The items are eventually deleted using a MongoDB TTL Index.
 
 In the default configuration, `@datasync` transforms your model by adding a `_lastUpdatedAt` field to it:
 
 ```graphql {9}
 """ 
 @model
-@datasync 
+@datasync(
+  ttl: 5184000
+)
 """
 type Comment {
   _id: GraphbackObjectID!
