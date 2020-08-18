@@ -29,8 +29,9 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     });
     const DataSyncAnnotationData = getDataSyncAnnotationData(model);
     this.TTLinSeconds = parseInt(DataSyncAnnotationData.ttl, 10);
-    if (model.crudOptions.delete && isNaN(this.TTLinSeconds)) {
-      throw Error(`TTL for model:"${model.graphqlType.name}" not found in the schema`);
+    if (isNaN(this.TTLinSeconds)) {
+      // Default TTL of 2 days
+      this.TTLinSeconds = 172800
     }
     this.coerceTSFields = true;
   }
