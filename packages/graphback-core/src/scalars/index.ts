@@ -1,6 +1,6 @@
-import { ObjectID } from "bson";
 import { GraphQLNamedType, GraphQLScalarType, ValueNode } from 'graphql';
 import { TimeResolver, TimestampResolver, DateResolver, DateTimeResolver, ObjectIDResolver, JSONResolver, JSONObjectResolver } from 'graphql-scalars';
+import { parseObjectID } from "./objectId";
 
 export const GraphbackTime = new GraphQLScalarType({
   ...extractConfig(TimeResolver),
@@ -22,31 +22,14 @@ export const GraphbackDateTime = new GraphQLScalarType({
   name: "GraphbackDateTime"
 });
 
-const { parseLiteral, parseValue, ...objectIDConfig } = extractConfig(ObjectIDResolver);
 
-/* eslint-disable */
+const { parseLiteral, parseValue, ...objectIDConfig } = extractConfig(ObjectIDResolver);
 export const GraphbackObjectID = new GraphQLScalarType({
   ...objectIDConfig,
-  parseLiteral: (ast: ValueNode, variables: { [key: string]: any}) => {
-    let ObjectIDFinal = ObjectID;
-    try {
-      ObjectIDFinal = require('bson-ext').ObjectID;
-    } catch {}
-
-    return new ObjectIDFinal(parseLiteral(ast, variables));
-  },
-  parseValue: (value: any) => {
-    let ObjectIDFinal = ObjectID;
-    try {
-      ObjectIDFinal = require('bson-ext').ObjectID;
-    } catch {}
-
-    return new ObjectID(parseValue(value));
-  },
-  name: "GraphbackObjectID"
+  name: "GraphbackObjectID",
+  parseValue: (value: any) => parseObjectID(parseValue(value)),
+  parseLiteral: (ast: ValueNode, variables: { [key: string]: any}) => parseObjectID(parseLiteral(ast, variables))
 });
-
-/* eslint-enable */
 
 export const GraphbackJSON = new GraphQLScalarType({
   ...extractConfig(JSONResolver),

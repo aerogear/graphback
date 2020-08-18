@@ -1,5 +1,5 @@
-import { ObjectID } from 'bson';
 import { convertType, isDateObject } from '../utils/convertType';
+import { parseObjectID, isObjectID, getObjectIDTimestamp } from '../scalars/objectId';
 import { QueryFilter } from './QueryFilter';
 
 type PredicateFn = (input: any) => boolean;
@@ -43,8 +43,8 @@ const predicateMap: IPredicate = {
     const parsedFilterValue = convertType(filterValue, parsedFieldValue);
 
     // if values are of MongoDb ObjectID, convert to timestamp before comparison
-    if (parsedFieldValue instanceof ObjectID && parsedFilterValue instanceof ObjectID) {
-      return parsedFieldValue.getTimestamp() >= parsedFilterValue.getTimestamp()
+    if (isObjectID(parsedFieldValue) && isObjectID(parsedFilterValue)) {
+      return getObjectIDTimestamp(parsedFieldValue) >= getObjectIDTimestamp(parsedFilterValue)
     }
 
     return parsedFieldValue >= parsedFilterValue;
@@ -54,8 +54,8 @@ const predicateMap: IPredicate = {
     const parsedFilterValue = convertType(filterValue, parsedFieldValue)
 
     // if values are of MongoDb ObjectID, convert to timestamp before comparison
-    if (parsedFieldValue instanceof ObjectID && parsedFilterValue instanceof ObjectID) {
-      return parsedFieldValue.getTimestamp() <= parsedFilterValue.getTimestamp()
+    if (isObjectID(parsedFieldValue) && isObjectID(parsedFilterValue)) {
+      return getObjectIDTimestamp(parsedFieldValue) <= getObjectIDTimestamp(parsedFilterValue)
     }
 
     return parsedFieldValue <= parsedFilterValue;
@@ -65,8 +65,8 @@ const predicateMap: IPredicate = {
     const parsedFilterValue = convertType(filterValue, parsedFieldValue);
 
     // if values are of MongoDb ObjectID, convert to timestamp before comparison
-    if (parsedFieldValue instanceof ObjectID && parsedFilterValue instanceof ObjectID) {
-      return parsedFieldValue.getTimestamp() < parsedFilterValue.getTimestamp()
+    if (isObjectID(parsedFieldValue) && isObjectID(parsedFilterValue)) {
+      return getObjectIDTimestamp(parsedFieldValue) < getObjectIDTimestamp(parsedFilterValue);
     }
 
     return parsedFieldValue < parsedFilterValue;
@@ -84,14 +84,13 @@ const predicateMap: IPredicate = {
     }
 
     // if values are of MongoDb ObjectID, convert to timestamp before comparison
-    if (fromVal instanceof ObjectID || toVal instanceof ObjectID || fieldValue instanceof ObjectID) {
-      const toValObjectId = new ObjectID(toVal.toString());
-      const fromValObjectId = new ObjectID(fromVal.toString());
-      const fieldValObjectId = new ObjectID(fieldValue.toString());
-      const fieldValTimestamp = fieldValObjectId.getTimestamp();
+    if (isObjectID(fromVal) || isObjectID(toVal)|| isObjectID(fieldValue)) {
+      const toValTimestamp = getObjectIDTimestamp(parseObjectID(toVal.toString()));
+      const fromValTimestamp = getObjectIDTimestamp(parseObjectID(fromVal.toString()));
+      const fieldValTimestamp = getObjectIDTimestamp(parseObjectID(fieldValue.toString()));
 
-      return fieldValTimestamp >= fromValObjectId.getTimestamp() &&
-        fieldValTimestamp <= toValObjectId.getTimestamp();
+
+      return fieldValTimestamp >= fromValTimestamp && fieldValTimestamp <= toValTimestamp;
     }
 
     const parsedFieldValue = Number(fieldValue)
@@ -111,7 +110,7 @@ const predicateMap: IPredicate = {
 
 /**
  * Dynamically creates a subscription filter predicate using the filter object values
- * 
+ *
  * @param {QueryFilter} filter - subscription filter input object
  */
 export function createInMemoryFilterPredicate<T = any>(filter: QueryFilter): (input: Partial<T>) => boolean {
@@ -163,7 +162,7 @@ export function createInMemoryFilterPredicate<T = any>(filter: QueryFilter): (in
 
 /**
  * Get the predicate result of an `and` filter expression
- * 
+ *
  * @param {QueryFilter|QueryFilter[]} and - And filter
  * @param {Partial<T>} payload - Subscription payload
  */
@@ -187,8 +186,8 @@ function getAndPredicateResult<T>(and: QueryFilter | QueryFilter[], payload: Par
 
 /**
  * Get the boolean result of an `or` filter expression
- * 
- * @param {QueryFilter|QueryFilter[]} or - Or query filter 
+ *
+ * @param {QueryFilter|QueryFilter[]} or - Or query filter
  * @param {Partial<T>} payload - Subscription payload
  */
 function getOrPredicateResult<T>(or: any | any[], payload: Partial<T>): boolean {
