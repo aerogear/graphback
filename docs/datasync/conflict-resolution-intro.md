@@ -126,7 +126,7 @@ An example entry in the delta table would look as follows:
 }
 ```
 
-To improve efficiency of queries on the `delta` table, a `deltaTTL` argument (in seconds) is used along with a MongoDB TTL Index to prune older entries from the delta table. In the current configuration, a default strategy of `ClientSideWins` is used. Please check the [docs](conflict-resolution-strategies.md) for more information on using different strategies as well as implementing custom Conflict Resolution strategies.
+To improve efficiency of queries on the `delta` table, a `deltaTTL` argument (in seconds) is used along with a MongoDB TTL Index to prune older entries from the delta table. In the current configuration, a default strategy of `ClientSideWins` is used. Please check the [Conflict Resolution Strategies](conflict-resolution-strategies.md) documentation for more information on using different strategies as well as implementing custom Conflict Resolution strategies.
 
 :::note
 You may only have delta queries for one model while having both delta queries and server-side conflict resolution for another model without them interfering with each other.
@@ -259,5 +259,4 @@ No conflict will occur, even if the version field is out-of-date because the `ti
   }
 }
 ```
-
 
