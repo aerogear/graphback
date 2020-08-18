@@ -44,6 +44,9 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     for(let i = 0; i < MAX_RETRIES; i++) {
       
       const serverData = await this.db.collection(this.collectionName).findOne({ _id });
+      if (!serverData) {
+        throw new NoDataError(`Cannot update ${this.collectionName}`)
+      }
       const base = await this.deltaSource.findBaseForConflicts(updateDocument);
 
       let resolvedUpdate = Object.assign({}, updateDocument);
@@ -85,6 +88,9 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     for(let i = 0; i < MAX_RETRIES; i++) {
       
       const serverData = await this.db.collection(this.collectionName).findOne({ _id });
+      if (!serverData) {
+        throw new NoDataError(`Cannot update ${this.collectionName}`)
+      }
       const base = await this.deltaSource.findBaseForConflicts(data);
 
       let resolvedData = Object.assign(data, base, { [DataSyncFieldNames.deleted]: true });
@@ -128,6 +134,19 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     const clientDiff: any = {};
     const serverDiff: any = {};
 
+    const metadata: ConflictMetadata = {
+      base,
+      serverData,
+      clientData,
+      serverDiff,
+      clientDiff,
+      operation
+    }
+
+    if (!base) {
+      throw new ConflictError(metadata);
+    }
+
     let conflictFound = false;
 
     // Calculate clientDiff and serverDiff
@@ -150,14 +169,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
     
     if (conflictFound) {
-      return {
-        base,
-        serverData,
-        clientData,
-        serverDiff,
-        clientDiff,
-        operation
-      }
+      return metadata
     }
 
     return undefined;

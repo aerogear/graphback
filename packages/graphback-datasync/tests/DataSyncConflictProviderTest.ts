@@ -2,7 +2,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db } from 'mongodb';
 import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata } from '@graphback/core';
+import { GraphbackCoreMetadata, NoDataError } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName } from '../src';
 
@@ -151,6 +151,26 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
       }
     )
   })
+
+  test('throws conflict error when base cannot be found', async () => {
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+
+    const { Post } = context.providers;
+
+    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
+
+    const updatedContent = "Post 1 content v2";
+    await expect(Post.update({ _id, content: updatedContent, [DataSyncFieldNames.version]: 0.5 },{graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+  });
+
+  test('throws NoDataError when serverData cannot be found', async () => {
+    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+
+    const { Post } = context.providers;
+
+    const updatedContent = "Post 1 content v2";
+    await expect(Post.update({ _id: "NotAValidObjectId", content: updatedContent, [DataSyncFieldNames.version]: 1 },{graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(NoDataError);
+  });
 })
 
 
