@@ -27,7 +27,9 @@ Add the `@datasync` annotation to your model(s) in your GraphQL SDL found in the
 ```graphql {3}
 """ 
 @model
-@datasync
+@datasync(
+  ttl: 5184000
+)
 """
 type Comment {
   _id: GraphbackObjectID!
@@ -45,7 +47,9 @@ The model type then becomes:
 ```graphql {9,10}
 """ 
 @model
-@datasync
+@datasync(
+  ttl: 5184000
+)
 """
 type Comment {
   _id: GraphbackObjectID!
@@ -86,17 +90,46 @@ const {
     db,
     dataSyncConflictMap: {
       Comment: {
-        enabled: true
+        enabled: true,
+        deltaTTL: 604800
       }
     }
   }
 );
 ```
 
-The `dataSyncConflictMap` argument is used to `enable` the server-side Conflict resolution feature for specific models, in addition to Delta Queries. In the current configuration, a default strategy of `ClientSideWins` is used. Please check the [docs](conflict-resolution-strategies.md) for more information on using different strategies as well as implementing custom Conflict Resolution strategies.
+The `dataSyncConflictMap` argument is used to `enable` the server-side Conflict resolution feature for specific models, in addition to Delta Queries. When it is enabled, a `delta` table is maintained for each model which uses it. 
+
+An example entry in the delta table would look as follows:
+```json
+{
+    "_id": {
+        "$oid": "5f3b87ffcb1377481c391046"
+    },
+    "docId": {
+        "$oid": "5f3b87ffcb1377481c391045"
+    },
+    "_version": 1,
+    "document": {
+        "text": "Bizarre",
+        "description": "Who merged this stuff?",
+        "_version": 1,
+        "_deleted": false,
+        "_lastUpdatedAt": 1597736959165,
+        "_id": {
+            "$oid": "5f3b87ffcb1377481c391045"
+        }
+    },
+    "_ttl": {
+        "$date": "2020-08-25T07:49:19.181Z"
+    }
+}
+```
+
+To improve efficiency of queries on the `delta` table, a `deltaTTL` argument (in seconds) is used along with a MongoDB TTL Index to prune older entries from the delta table. In the current configuration, a default strategy of `ClientSideWins` is used. Please check the [docs](conflict-resolution-strategies.md) for more information on using different strategies as well as implementing custom Conflict Resolution strategies.
 
 :::note
-You may have just delta queries for one model while having full-blown server-side conflict resolution for another.
+You may only have delta queries for one model while having both delta queries and server-side conflict resolution for another model without them interfering with each other.
 :::
 
 ## Example of Issuing Delta Query
