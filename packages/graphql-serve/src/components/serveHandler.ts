@@ -1,7 +1,11 @@
 import { buildGraphbackServer, GraphbackServer } from "../GraphbackServer";
+import { ConflictResolutionStrategyName, DataSyncServeConfig } from "../runtime";
 
-export const serveHandler = async (argv: { model?: string, port?: number, datasync }): Promise<GraphbackServer> => {
-  const server = await buildGraphbackServer(argv.model, !!argv.datasync);
+export type GraphQLServeParams = { model?: string, port?: number, datasync: boolean, conflict?: ConflictResolutionStrategyName, deltaTTL?: number };
+
+export const serveHandler = async (argv: GraphQLServeParams): Promise<GraphbackServer> => {
+  const datasyncServeConfig: DataSyncServeConfig = { datasync: !!argv.datasync, conflict: argv.conflict, deltaTTL: argv.deltaTTL}
+  const server = await buildGraphbackServer(argv.model, datasyncServeConfig);
 
   if ('port' in argv) {
     const portNumber = argv.port;

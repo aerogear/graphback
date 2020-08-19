@@ -1,9 +1,14 @@
 import { ModelDefinition, GraphbackCRUDService, GraphbackOperationType } from '@graphback/core';
 import { parseMetadata } from 'graphql-metadata';
+import { GraphQLObjectType } from 'graphql';
 import { DataSyncCRUDService } from "./services";
 
 export function isDataSyncModel(model: ModelDefinition): boolean {
-  return !!(parseMetadata('datasync', model.graphqlType))
+  return isDataSyncType(model.graphqlType);
+}
+
+export function isDataSyncType(graphqlType: GraphQLObjectType) {
+  return !!(parseMetadata('datasync', graphqlType))
 }
 
 export function getDataSyncAnnotationData(model: ModelDefinition): any {
