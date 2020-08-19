@@ -4,3 +4,46 @@
   description: "(?i).*.*"
   addcomment: "Automatically generated comment to notify maintainers"
   notify: [craicoverflow,machi1990,wtrocki]
+- labels: [datasync]
+  title: "(?i).datasync.*"
+  description: "(?i).datasync.*"
+  notify: [ssd71]
+- labels: [postgres, database]
+  title: "(?i).postgres.*"
+  description: "(?i).postgres.*"
+- labels: [mongodb, database]
+  title: "(?i).mongo.*"
+  description: "(?i).mongo.*"
+- labels: [database]
+  title: "(?i).database.*"
+  description: "(?i).database.*"
+- labels: [tests]
+  title: "(?i).test.*"
+  description: "(?i).test.*"
+- labels: [graphql-migrations]
+  title: "(?i).migration.*"
+  description: "(?i).migration.*"
+- labels: [templates]
+  title: "(?i).template.*"
+  description: "(?i).templates.*"
+- labels: [services-crud]
+  title: "(?i).service.*"
+  description: "(?i).service.*"
+- labels: [resolvers]
+  title: "(?i).resolver.*"
+  description: "(?i).resolver.*"
+- labels: [plugins]
+  title: "(?i).plugin.*"
+  description: "(?i).plugin.*"
+- labels: [docs]
+  title: "(?i).doc.*"
+  description: "(?i).doc.*"
+- labels: [docs]
+  title: "(?i).guide.*"
+  description: "(?i).guide.*"
+- labels: [docs]
+  title: "(?i).website.*"
+  description: "(?i).website.*"
+- labels: [graphql-serve]
+  title: "(?i).serve.*"
+  description: "(?i).serve.*"
