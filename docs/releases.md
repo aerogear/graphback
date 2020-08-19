@@ -12,6 +12,8 @@ Please follow individual releases for more information.
 
 ### New Features
 
+* Use any `knex` 0.20.x or 0.21.x version in your application ([d826b6f](https://github.com/aerogear/graphback/commit/d826b6fcb3ffb753140f5135d53c56c032cb2503)[#1903](https://github.com/aerogear/graphback/pull/1903))
+
 * Ability to specify composite unique columns in GraphQL Migrations ([#1658](https://github.com/aerogear/graphback/issues/1658)), fixed by ([9c6f34a231e2645c34533d58ea4427ff8f8f634e](https://github.com/aerogear/graphback/commit/9c6f34a231e2645c34533d58ea4427ff8f8f634e))
 
 * Requiring `_id: GraphbackObjectID` primary key for MongoDB ([#1769](https://github.com/aerogear/graphback/pull/1769)). 
