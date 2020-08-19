@@ -1,7 +1,5 @@
 import yargs from 'yargs';
-import { serveHandler } from '../components/serveHandler';
-
-type Params = { model?: string, port?: number, datasync: boolean };
+import { serveHandler, GraphQLServeParams } from '../components/serveHandler';
 
 export const command = 'serve [modelDir] [options]';
 
@@ -25,9 +23,20 @@ export const builder = (args: yargs.Argv): void => {
     type: 'boolean',
     alias: 'ds'
   })
+
+  args.option('conflict', {
+    describe:"Specify a conflict resolution strategy with --datasync",
+    type: 'string',
+    choices: ["clientSideWins", "serverSideWins"]
+  })
+
+  args.option('deltaTTL', {
+    describe: "Specify a TTL for delta tables with --datasync",
+    type: "number"
+  })
   args.example('$0 serve . -p 8080', 'generate schema from data model files in current directory and start GraphQL server on port 8080')
 }
 
-export async function handler(args: Params): Promise<void> {
+export async function handler(args: GraphQLServeParams): Promise<void> {
   await serveHandler(args);
 }

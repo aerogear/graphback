@@ -4,7 +4,7 @@ import * as getPort from "get-port";
 import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
-import { createRuntime, createMongoDBClient } from './runtime';
+import { createRuntime, createMongoDBClient, DataSyncServeConfig } from './runtime';
 import { MongoClient } from 'mongodb';
 import { GraphbackDataProvider, GraphbackCRUDService } from 'graphback';
 
@@ -100,7 +100,7 @@ export class GraphbackServer {
   }
 }
 
-export async function buildGraphbackServer(modelDir: string, enableDataSync: boolean): Promise<GraphbackServer> {
+export async function buildGraphbackServer(modelDir: string, dataSyncServeConfig: DataSyncServeConfig): Promise<GraphbackServer> {
   const app = express();
 
   app.use(cors());
@@ -108,7 +108,7 @@ export async function buildGraphbackServer(modelDir: string, enableDataSync: boo
   const dbClient = await createMongoDBClient();
   const db = dbClient.db('test')
 
-  const { typeDefs, resolvers, contextCreator } = await createRuntime(modelDir, db, enableDataSync);
+  const { typeDefs, resolvers, contextCreator } = await createRuntime(modelDir, db, dataSyncServeConfig);
 
   const apolloConfig = {
     typeDefs,

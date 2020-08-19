@@ -107,6 +107,21 @@ Once we have a model with datasync capabilities, we can run our GraphQL server b
 ```bash
 gqlserve serve Note.graphql --datasync
 ```
+
+Conflict resolution strategies for datasync enabled models can be specified via the --conflict option:
+
+```bash
+gqlserve serve Note.graphql --datasync --conflict=clientSideWins
+```
+
+This defaults to ClientSideWins, if unset.
+
+The TTL for delta tables, can also be set using the --deltaTTL option:
+```bash
+gqlserve serve Note.graphql --datasync --deltaTTL=172800
+```
+
+This value defaults to `172800` when unused
  
 ### Printing your GraphQL schema
 
