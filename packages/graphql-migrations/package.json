@@ -22,7 +22,6 @@
     "chalk": "3.0.0",
     "glob": "7.1.6",
     "graphql-metadata": "0.7.3",
-    "knex": "0.21.4",
     "lodash": "4.17.20",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
@@ -44,6 +43,7 @@
     "typescript": "3.9.7"
   },
   "peerDependencies": {
+    "knex": "0.20.x || 0.21.x",
     "graphql": "^14.0.0 || ^15.0.0"
   },
   "engines": {
