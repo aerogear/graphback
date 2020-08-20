@@ -26,7 +26,7 @@ async function start() {
 
   const db = await connectDB()
 
-  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, conflictConfig: { configMap: { Comment: { enabled: true } } } });
+  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, conflictConfig: { models: { Comment: { enabled: true } } } });
 
   const apolloServer = new ApolloServer({
     typeDefs,
