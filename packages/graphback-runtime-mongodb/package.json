@@ -49,7 +49,7 @@
     "@types/mongodb": "3.5.25",
     "dataloader": "2.0.0",
     "escape-string-regexp": "4.0.0",
-    "graphql-metadata": "0.7.3",
+    "graphql-metadata": "0.7.4",
     "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
