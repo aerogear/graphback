@@ -59,7 +59,7 @@
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
-    "bson-ext": "2.0.5",
+    "bson-ext": "2.x.x",
     "graphql": "^14.0.0 || ^15.0.0"
   }
 }
