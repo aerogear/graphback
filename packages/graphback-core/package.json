@@ -28,6 +28,7 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
+    "@types/bson": "4.0.2",
     "@types/jest": "26.0.9",
     "@types/node": "12.12.54",
     "@types/pino": "6.3.0",
@@ -58,7 +59,7 @@
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0",
-    "bson-ext": "2.0.5"
+    "bson-ext": "2.0.5",
+    "graphql": "^14.0.0 || ^15.0.0"
   }
 }
