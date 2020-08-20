@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/aerogear/graphback/issues"
   },
-  "homepage": "https://github.com/aerogear/graphback#readme",
+  "homepage": "https://github.com/aerogear/graphback/tree/master/packages/create-graphback#readme",
   "types": "types/index.d.ts",
   "typescript": {
     "definition": "types/index.d.ts"

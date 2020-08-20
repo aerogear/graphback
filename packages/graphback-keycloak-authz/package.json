@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/aerogear/graphback/issues"
   },
-  "homepage": "https://github.com/aerogear/graphback#readme",
+  "homepage": "https://github.com/aerogear/graphback/tree/master/packages/graphback-keycloak-authz#readme",
   "scripts": {
     "clean": "rimraf coverage dist types",
     "build": "tsc",

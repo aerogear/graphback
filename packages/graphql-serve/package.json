@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/aerogear/graphback/issues"
   },
-  "homepage": "https://github.com/aerogear/graphback#readme",
+  "homepage": "https://github.com/aerogear/graphback/tree/master/packages/graphql-serve#readme",
   "bin": {
     "gqlserve": "dist/index.js"
   },
