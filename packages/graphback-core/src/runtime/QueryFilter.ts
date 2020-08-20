@@ -29,7 +29,11 @@ export const FILTER_SUPPORTED_SCALARS = [
   'GraphbackTimestamp',
   'GraphbackTime',
   'GraphbackDate',
-  'GraphbackDateTime'
+  'GraphbackDateTime',
+  'Timestamp',
+  'Time',
+  'Date',
+  'DateTime'
 ];
 
 export type Maybe<T> = T | null;
