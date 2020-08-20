@@ -6,6 +6,14 @@
   "bin": {
     "create-graphback": "dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aerogear/graphback.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aerogear/graphback/issues"
+  },
+  "homepage": "https://github.com/aerogear/graphback/tree/master/packages/create-graphback#readme",
   "types": "types/index.d.ts",
   "typescript": {
     "definition": "types/index.d.ts"

@@ -7,6 +7,14 @@
   "typescript": {
     "definition": "types/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aerogear/graphback.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aerogear/graphback/issues"
+  },
+  "homepage": "https://github.com/aerogear/graphback/tree/master/packages/graphback-core#readme",
   "author": "wtrocki@redhat.com",
   "scripts": {
     "clean": "rimraf coverage dist types",
