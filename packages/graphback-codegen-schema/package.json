@@ -46,7 +46,7 @@
     "@graphback/core": "0.15.1",
     "@graphql-tools/utils": "6.0.18",
     "graphql-compose": "7.19.4",
-    "graphql-metadata": "0.7.3",
+    "graphql-metadata": "0.7.4",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {
