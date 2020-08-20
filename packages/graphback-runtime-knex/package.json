@@ -27,7 +27,7 @@
     "@types/node": "12.12.54",
     "graphql": "15.3.0",
     "graphql-migrations": "0.15.1",
-    "jest": "26.4.0",
+    "jest": "26.4.1",
     "@graphback/codegen-schema": "0.15.0",
     "sqlite3": "5.0.0",
     "rimraf": "3.0.2",
