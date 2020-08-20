@@ -43,6 +43,12 @@ Please follow individual releases for more information.
 
 * Use `GraphbackDateTime` scalar for generated createdAt updatedAt fields ([#1349](https://github.com/aerogear/graphback/issues/1349), fixed by [#1862](https://github.com/aerogear/graphback/pull/1862)) 
 
+#### Disable filter input generation for unknown custom scalars
+
+Graphback disabled generation of unknown custom scalars, except for `Timestamp`, `Time`, `Date`, `DateTime`, as we cannot reliably support scalars we do not know.
+
+See [Graphback Scalars](https://graphback.dev/docs/model/scalars/) for the list of officially supported scalars.
+
 # 0.15.1
 
 ### Bug Fixes
