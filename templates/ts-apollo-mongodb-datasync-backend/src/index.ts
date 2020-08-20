@@ -10,7 +10,6 @@ import { createDataSyncAPI } from '@graphback/datasync'
 import cors from "cors"
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import express from "express"
-import { PubSub } from "graphql-subscriptions";
 import { connectDB } from './db'
 
 async function start() {
