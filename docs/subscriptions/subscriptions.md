@@ -32,6 +32,34 @@ Subscriptions can be also suppressed by developers by enabling or disabling subs
     }
 ```
 
+## Configuration
+
+By default, Graphback uses an in-memory PubSub mechanism. You can configure your own in `buildGraphbackAPI` through the `serviceCreator`.
+
+In this example, we are using a MQTT enabled broker with [`@aerogear/graphql-mqtt-subscriptions`](https://www.npmjs.com/package/@aerogear/graphql-mqtt-subscriptions).
+
+```ts
+import { buildGraphbackAPI, createCRUDService } from 'graphback'
+import { MQTTPubSub } from '@aerogear/graphql-mqtt-subscriptions';
+
+const mqttConfig = {...};
+
+const client = mqtt.connect(mqttConfig.mqttHost, mqttConfig);
+
+// creates a schema, CRUD resolvers, services and data providers
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(schema, {
+  // highlight-start
+  serviceCreator: createCRUDService({
+    pubSub: new MQTTPubSub({ client })
+  })
+  // highlight-end
+});
+```
+
+:::info
+In this example the default `createCRUDService` service creator is used. There can be variations in how to configure your PubSub mechanism depending on what service creator you choose to use.
+:::
+
 ## Changing Subscription Topics
 
 Some of the pub sub mechanism will require different format of the topic. 

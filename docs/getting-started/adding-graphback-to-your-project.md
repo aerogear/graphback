@@ -117,6 +117,19 @@ const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(schema, {
 });
 ```
 
+Graphback automatically creates a `CRUDService` with default configuration values. You can override this with the `serviceCreator` option:
+
+```ts
+import { buildGraphbackAPI, createCRUDService } from 'graphback';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(schema, {
+  // highlight-start
+  serviceCreator: createCRUDService({ pubSub: new RedisPubSub() }),
+  ...
+});
+```
+
 Check out the [buildGraphbackAPI](./api/graphback/modules/_buildgraphbackapi_.md) for more advanced use cases like CRUD configuration and plugin extensions.
 
 ### Finish setup
