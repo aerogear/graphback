@@ -54,7 +54,7 @@ beforeAll(async () => {
     mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27017/users?authSource=admin', { useUnifiedTopology: true });
     await mongoClient.connect();
     db = mongoClient.db('users');
-    graphbackApi = createDataSyncAPI(modelText, { db, dataSyncConflictMap: { Note: { enabled: true, deltaTTL: 604800 } }, graphbackAPIConfig: {
+    graphbackApi = createDataSyncAPI(modelText, { db, conflictConfig: { models: { Note: { enabled: true } } }, graphbackAPIConfig: {
       plugins: [
         new SchemaCRUDPlugin({ outputPath: "./output-datasync-conflict-mongo/schema/schema.graphql" }),
         new ClientCRUDPlugin({ outputFile: './output-datasync-conflict-mongo/client/graphback.graphql' }),
@@ -177,7 +177,6 @@ test('force deletes on delete conflicts', async () => {
       }
     }
   }});
-  console.log(errors);
   expect(data.syncNotes.items).toBeDefined();
   expect(data.syncNotes.items[0]._id).toEqual(_id);
   expect(data.syncNotes.items[0][DataSyncFieldNames.deleted]).toEqual(true);

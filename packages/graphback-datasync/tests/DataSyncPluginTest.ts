@@ -81,7 +81,7 @@ it('adds version when conflicts are enabled', async () => {
   }
 
   const schemaPlugin =  new SchemaCRUDPlugin();
-  const datasync = new DataSyncPlugin({ modelConfigMap: { Comment: { enabled: true, deltaTTL: 604800 } } })
+  const datasync = new DataSyncPlugin({ conflictConfig: { enabled: true } })
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, buildSchema(
