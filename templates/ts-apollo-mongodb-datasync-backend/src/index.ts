@@ -10,7 +10,6 @@ import { createDataSyncAPI } from '@graphback/datasync'
 import cors from "cors"
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import express from "express"
-import { PubSub } from "graphql-subscriptions";
 import { connectDB } from './db'
 
 async function start() {
@@ -26,7 +25,7 @@ async function start() {
 
   const db = await connectDB()
 
-  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, dataSyncConflictMap:{ Comment: { enabled: true, deltaTTL: 604800 }}});
+  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, conflictConfig: { models: { Comment: { enabled: true } } } });
 
   const apolloServer = new ApolloServer({
     typeDefs,

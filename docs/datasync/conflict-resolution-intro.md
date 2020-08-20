@@ -88,17 +88,14 @@ const {
   modelDefs,
   {
     db,
-    dataSyncConflictMap: {
-      Comment: {
-        enabled: true,
-        deltaTTL: 604800
-      }
+    conflictConfig: {
+      enabled: true
     }
   }
 );
 ```
 
-The `dataSyncConflictMap` argument is used to `enable` the server-side Conflict resolution feature for specific models, in addition to Delta Queries. When it is enabled, a `delta` table is maintained for each model which uses it. 
+The `conflictConfig` argument is used to either configure conflicts for all `@datasync` enabled models by directly setting global conflict parameters like `enabled` or configuring specific models via a `models` property. When conflicts are enabled for a specific model, a delta table is maintained for that model.
 
 An example entry in the delta table would look as follows:
 ```json
