@@ -4,7 +4,7 @@ title: Graphback Scalars
 sidebar_label: Graphback Scalars
 ---
 
-Graphback supports common used [`Int`, `Float`, `String`, `Boolean`, `ID` GraphQL scalars](https://graphql.org/learn/schema/#scalar-types) types. On top of these scalars, Graphback goes a step further by bringing in support of [additional integration of scalar types](#table-summary) making writing modern applications easy. This integration, offers 
+Graphback supports commonly used [`Int`, `Float`, `String`, `Boolean`, `ID` GraphQL scalars](https://graphql.org/learn/schema/#scalar-types) types. On top of these scalars, Graphback goes a step further by bringing in support of [additional integration of scalar types](#table-summary) making writing modern applications easy. This integration, offers 
 - Out of the box proven scalar resolvers thanks to [GraphQL Scalars](https://www.npmjs.com/package/graphql-scalars) library. 
 - Generation of the required input types for filtering except for `GraphbackJSONObject` and `GraphbackJSON`.   
 - Automatic inferring of the required underlying database when using the [GraphQL Migrations](../graphql-migrations/intro.md) package.
@@ -101,3 +101,7 @@ query {
   }
 }
 ```
+
+:::info
+For your convenience, Graphback generates a filter input for `Date`, `DateTime`, `Time`, `Timestamp` scalars. However we only fully support the scalars outlined above and we recommend you to use these.
+:::

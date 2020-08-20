@@ -203,6 +203,8 @@ input BooleanInput {
 }
 ```
 
+Graphback generates a filter input for the [Graphback scalars](../model/scalars.md) too. For convenience, a filter input for `Date`, `DateTime`, `Time`, `Timestamp` scalars is also generated; however we do not officially support these scalars and recommend you to use the Graphback scalars.
+
 ### Pagination
 
 You can perform pagination with the `page` argument.
