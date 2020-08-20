@@ -20,17 +20,18 @@ const {
 } = createDataSyncAPI(
   modelDefs, 
   { 
-    db, 
-    dataSyncConflictMap: {
-      Comment: {
-        enabled: true,
-        // highlight-next-line
-        conflictResolution: ClientSideWins
-      },
-      Note: {
-        enabled: true,
-        // highlight-next-line
-        conflictResolution: ServerSideWins
+    db,
+    conflictConfig: {
+      enabled: true,
+      models: {
+        Comment: {
+          // highlight-next-line
+          conflictResolution: ClientSideWins
+        },
+        Note: {
+          // highlight-next-line
+          conflictResolution: ServerSideWins
+        }
       }
     }
   }

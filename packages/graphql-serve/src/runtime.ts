@@ -1,11 +1,11 @@
 
-import { GraphbackAPI, buildGraphbackAPI, filterModelTypes } from 'graphback'
+import { GraphbackAPI, buildGraphbackAPI } from 'graphback'
 import { createMongoDbProvider } from '@graphback/runtime-mongo'
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db } from 'mongodb';
 import { loadModel } from './loadModel';
-import { GraphQLSchema, GraphQLObjectType } from 'graphql';
-import { createDataSyncAPI, DataSyncModelConfigMap, ClientSideWins, ServerSideWins, ConflictResolutionStrategy, isDataSyncType } from "@graphback/datasync"
+import { GraphQLSchema } from 'graphql';
+import { createDataSyncAPI, ClientSideWins, ServerSideWins } from "@graphback/datasync"
 
 
 export type ConflictResolutionStrategyName = "clientSideWins"|"serverSideWins";
@@ -33,22 +33,6 @@ export const createMongoDBClient = async (): Promise<MongoClient> => {
   return client
 }
 
-export function getConflictMapForModels(model: GraphQLSchema, conflictResolutionStrategy: ConflictResolutionStrategy, deltaTTL: number): DataSyncModelConfigMap {
-  const map: DataSyncModelConfigMap = {};
-
-  const dataSyncModelTypes = filterModelTypes(model).filter(isDataSyncType);
-
-  dataSyncModelTypes.forEach((type: GraphQLObjectType) => {
-    map[type.name] = {
-      enabled: true,
-      deltaTTL: deltaTTL,
-      conflictResolution: conflictResolutionStrategy
-    }
-  })
-
-  return map
-}
-
 /**
  * Method used to create runtime schema
  * It will be part of the integration tests
@@ -70,11 +54,14 @@ export const createRuntime = async (modelDir: string, db: Db, datasyncServeConfi
     if (datasyncServeConfig.deltaTTL !== undefined && datasyncServeConfig.deltaTTL !== null) {
       deltaTTL = datasyncServeConfig.deltaTTL
     }
-    const modelConflictMap = getConflictMapForModels(model, conflictResolutionStrategy, deltaTTL);
 
     graphbackAPI = createDataSyncAPI(model, {
       db,
-      dataSyncConflictMap: modelConflictMap
+      conflictConfig: {
+        enabled: true,
+        conflictResolution: conflictResolutionStrategy,
+        deltaTTL
+      }
     })
 
   } else {

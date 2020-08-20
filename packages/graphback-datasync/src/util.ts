@@ -36,6 +36,35 @@ export interface ConflictMetadata {
   operation: GraphbackOperationType;
 }
 
+/**
+ * Interface for global configuration of conflicts
+ */
+export interface GlobalConflictConfig extends DataSyncModelConflictConfig {
+  models?: DataSyncModelConfigMap
+}
+
+/**
+ * Function to get conflict configuration of specific model from specified global configuration
+ * @param {string} modelName Name of the model's GraphQL type
+ * @param {GlobalConflictConfig} globalConfig Specified global config
+ */
+export function getModelConfigFromGlobal(modelName: string, globalConfig: GlobalConflictConfig = {}): DataSyncModelConflictConfig {
+  const {models, ...defaultConfig} = {
+    enabled: false,
+    conflictResolution: ClientSideWins,
+    deltaTTL: 172800,
+    ...globalConfig
+  }
+  if (models) {
+    return {
+      ...defaultConfig,
+      ...models[modelName]
+    };
+  } else {
+    return defaultConfig;
+  }
+}
+
 
 /**
  * Error that signifies conflict between server-side and client-side data
@@ -56,22 +85,33 @@ export const DataSyncFieldNames = {
 }
 
 
-
+/**
+ * Interface for specifying conflict configuration of a model
+ */
 export interface DataSyncModelConflictConfig {
-  enabled: boolean
+  enabled?: boolean
   conflictResolution?: ConflictResolutionStrategy
-  deltaTTL: number
+  deltaTTL?: number
 }
 
+/**
+ * Interface for creating a map of modelName to conflict configuration
+ */
 export interface DataSyncModelConfigMap {
   [modelName: string]: DataSyncModelConflictConfig
 }
 
+/**
+ * Interface for implementing conflict resolution strategies
+ */
 export interface ConflictResolutionStrategy {
   resolveUpdate(conflict: ConflictMetadata): any
   resolveDelete(conflict: ConflictMetadata): any
 }
 
+/**
+ * The ServerSideWins conflict resolution strategy
+ */
 export const ServerSideWins: ConflictResolutionStrategy = {
   resolveUpdate(conflict: ConflictMetadata): any {
     const { serverData, serverDiff, clientDiff, base } = conflict;
@@ -90,6 +130,9 @@ export const ServerSideWins: ConflictResolutionStrategy = {
   }
 }
 
+/**
+ * The ClientSideWins conflict resolution strategy
+ */
 export const ClientSideWins: ConflictResolutionStrategy = {
   resolveUpdate(conflict: ConflictMetadata): any {
     const { serverData, clientDiff } = conflict

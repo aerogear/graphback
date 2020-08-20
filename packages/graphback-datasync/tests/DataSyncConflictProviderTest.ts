@@ -4,7 +4,7 @@ import { MongoClient, Db } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata, NoDataError } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName } from '../src';
+import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName, GlobalConflictConfig } from '../src';
 
 export interface Context {
   providers: { [modelname: string]: DataSyncProvider };
@@ -12,7 +12,7 @@ export interface Context {
   db: Db
 }
 
-export async function createTestingContext(schemaStr: string, config?: { seedData?: { [collection: string]: any[] }, conflictConfigMap?: DataSyncModelConfigMap }): Promise<Context> {
+export async function createTestingContext(schemaStr: string, config?: { seedData?: { [collection: string]: any[] }, conflictConfig?: GlobalConflictConfig }): Promise<Context> {
   // Setup graphback
   const schema = buildSchema(schemaStr);
 
@@ -33,14 +33,14 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
   }
 
   const schemaGenerator = new SchemaCRUDPlugin();
-  const DataSyncGenerator = new DataSyncPlugin({ modelConfigMap: config?.conflictConfigMap || {}});
+  const DataSyncGenerator = new DataSyncPlugin({ conflictConfig: config?.conflictConfig });
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
   }, schema)
   metadata.setSchema(schemaGenerator.transformSchema(metadata));
   metadata.setSchema(DataSyncGenerator.transformSchema(metadata));
 
-  const createProvider = createDataSyncConflictProviderCreator(db, config?.conflictConfigMap);
+  const createProvider = createDataSyncConflictProviderCreator(db, config?.conflictConfig);
 
   const providers: { [name: string]: DataSyncProvider } = {}
   const models = metadata.getModelDefinitions();
@@ -88,7 +88,7 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
       resolveUpdate,
       resolveDelete
     }
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: mockConflictStrategy, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true, conflictResolution: mockConflictStrategy } }} });
 
     const { Post } = context.providers;
 
@@ -118,7 +118,7 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
       }
 
       scalar GraphbackObjectID
-      `, { conflictConfigMap: { Note: { enabled: true, deltaTTL: 604800}}});
+      `, {conflictConfig: { models: { Note: { enabled: true }}}});
 
     const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
     await client.connect();
@@ -153,7 +153,7 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
   })
 
   test('throws conflict error when base cannot be found', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -164,7 +164,7 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
   });
 
   test('throws NoDataError when serverData cannot be found', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -195,7 +195,7 @@ describe('Client Side wins Conflict resolution', () => {
   `;
 
   it ('updates successfully when correct version passed', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -209,7 +209,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it ('client data wins when conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -224,7 +224,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it('restore document on update when server-side deleted', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -240,7 +240,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it ('merges changes when no conflict', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -257,7 +257,7 @@ describe('Client Side wins Conflict resolution', () => {
   });
 
   it ('force deletes if conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } } } });
 
     const { Post } = context.providers;
 
@@ -293,7 +293,7 @@ describe('Server Side wins Conflict resolution', () => {
   `;
 
   it ('updates successfully when correct version passed', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true, } }, conflictResolution: ServerSideWins }});
 
     const { Post } = context.providers;
 
@@ -307,7 +307,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it ('server data wins when conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } }, conflictResolution: ServerSideWins } });
 
     const { Post } = context.providers;
 
@@ -323,7 +323,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it('throws error on update when server-side deleted', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } }, conflictResolution: ServerSideWins } });
 
     const { Post } = context.providers;
 
@@ -336,7 +336,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it ('merges changes when no conflict', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } }, conflictResolution: ServerSideWins } });
 
     const { Post } = context.providers;
 
@@ -353,7 +353,7 @@ describe('Server Side wins Conflict resolution', () => {
   });
 
   it ('throw error on deletes if conflict occurs', async () => {
-    context = await createTestingContext(postSchema, { conflictConfigMap: { Post: { enabled: true, conflictResolution: ServerSideWins, deltaTTL: 604800 } } });
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true } }, conflictResolution: ServerSideWins } });
 
     const { Post } = context.providers;
 

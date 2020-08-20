@@ -1,17 +1,15 @@
 import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
 import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, getSelectedFieldsFromResolverInfo, GraphbackTimestamp, isSpecifiedGraphbackScalarType } from '@graphback/core'
-import { SchemaComposer, ObjectTypeComposerFieldConfig, ObjectTypeComposer } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils'
 
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
-import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, DataSyncModelConflictConfig } from "./util";
+import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, GlobalConflictConfig, getModelConfigFromGlobal } from "./util";
 
 export const DATASYNC_PLUGIN_NAME = "DataSyncPlugin";
 
 export interface DataSyncPluginConfig {
-  modelConfigMap: {
-    [modelName: string]: DataSyncModelConflictConfig
-  }
+  conflictConfig: GlobalConflictConfig
 }
 
 /**
@@ -25,8 +23,8 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
   public constructor(config?: DataSyncPluginConfig) {
     super()
-    this.config = { 
-      modelConfigMap: {},
+    this.config = {
+      conflictConfig: {},
       ...config
     };
   }
@@ -132,7 +130,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
       }
     });
 
-    const modelUsesVersion = this.config.modelConfigMap[model.graphqlType.name]?.enabled;
+    const modelUsesVersion = getModelConfigFromGlobal(model.graphqlType.name, this.config.conflictConfig).enabled;
     if (modelUsesVersion) {
       modelTC.addFields({
         [DataSyncFieldNames.version]: {
@@ -146,7 +144,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
     // Add _version argument to UpdateInputType
     const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
-    const modelUsesVersion = this.config.modelConfigMap[model.graphqlType.name]?.enabled;
+    const modelUsesVersion = getModelConfigFromGlobal(model.graphqlType.name, this.config.conflictConfig).enabled;
     if (modelUsesVersion && updateInputType) {
       updateInputType.addFields({
         [DataSyncFieldNames.version]: {
