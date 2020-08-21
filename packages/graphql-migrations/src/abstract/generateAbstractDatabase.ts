@@ -214,7 +214,7 @@ class AbstractDatabaseBuilder {
     const annotations: any = parseAnnotationsCompat(ANNOTATIONS.db, field.description || undefined)
     const relationshipMarker = parseRelationshipAnnotation(field.description);
 
-    if (annotations.skip) {
+    if (isTransientField(field)) {
       return undefined
     }
 
