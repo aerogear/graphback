@@ -350,13 +350,24 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   protected addVersionedMetadataFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
     const timeStampInputName = getInputName(GraphbackTimestamp);
     let timestampInputType: GraphQLInputObjectType; let timestampType: GraphQLScalarType;
-
-    models.forEach((model: ModelDefinition) => {
+    for (const model of models) {
       const name = model.graphqlType.name;
       const modelTC = schemaComposer.getOTC(name);
       const desc = model.graphqlType.description;
       const { markers } = metadataMap;
       if (parseMetadata(markers.versioned, desc)) {
+        const updateField = model.fields[metadataMap.fieldNames.updatedAt];
+        const createAtField = model.fields[metadataMap.fieldNames.createdAt];
+        const errorMessage = (field: string) => `Type "${model.graphqlType.name}" annotated with @versioned, cannot contain custom "${field}" field since it is generated automatically. Either remove the @versioned annotation, change the type of the field to "${GraphbackTimestamp.name}" or remove the field.`
+
+        if (createAtField && createAtField.type !== GraphbackTimestamp.name) {
+          throw new Error(errorMessage(metadataMap.fieldNames.createdAt));
+        }
+
+        if (updateField && updateField.type !== GraphbackTimestamp.name) {
+          throw new Error(errorMessage(metadataMap.fieldNames.updatedAt));
+        }
+
         if (!timestampInputType) {
           if (schemaComposer.has(GraphbackTimestamp.name)) {
             timestampInputType = schemaComposer.getITC(timeStampInputName).getType();
@@ -380,7 +391,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
           inputType.addFields(metadataInputFields);
         }
       }
-    });
+    };
   }
 
   /**
