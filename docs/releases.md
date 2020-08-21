@@ -22,6 +22,8 @@ Please follow individual releases for more information.
   - [#1625](https://github.com/aerogear/graphback/issues/1625) Filters on "id: ID" field not working
   
   > NOTE: If you are migrating from [0.15](#0150) or previous versions of Graphback, you may be required to update relationship fields so that their values (previous stored as `String`) are of type [`ObjectID`](https://docs.mongodb.com/manual/reference/method/ObjectId/).
+
+* Add a `@transient` field annotation to ignore fields during input type creation and migrations [4076fa26](https://github.com/aerogear/graphback/commit/4076fa26ae9b770d5c38d6b21ebf8251578643b7)
   
 #### DataSync
 
@@ -50,6 +52,8 @@ Please follow individual releases for more information.
 Graphback disabled generation of unknown custom scalars, except for `Timestamp`, `Time`, `Date`, `DateTime`, as we cannot reliably support scalars we do not know.
 
 See [Graphback Scalars](https://graphback.dev/docs/model/scalars/) for the list of officially supported scalars.
+
+* Replace `@db(skip: true)` field annotation with `@transient` [85d50f3c](https://github.com/aerogear/graphback/commit/85d50f3c332ee35c46fbe8e6c3e81d97ae60db7b)
 
 # 0.15.1
 
