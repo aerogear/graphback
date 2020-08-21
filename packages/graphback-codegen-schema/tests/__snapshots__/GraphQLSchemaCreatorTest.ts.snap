@@ -18,13 +18,16 @@ Object {
     "createComment": [Function],
     "createFix": [Function],
     "createIssue": [Function],
+    "createModelWithTransientField": [Function],
     "createNote": [Function],
     "createTest": [Function],
     "createVersioned": [Function],
     "deleteComment": [Function],
+    "deleteModelWithTransientField": [Function],
     "deleteNote": [Function],
     "deleteTest": [Function],
     "updateComment": [Function],
+    "updateModelWithTransientField": [Function],
     "updateNote": [Function],
     "updateTest": [Function],
     "updateVersioned": [Function],
@@ -35,15 +38,20 @@ Object {
   },
   "Query": Object {
     "findComments": [Function],
+    "findModelWithTransientFields": [Function],
     "findNotes": [Function],
     "findTests": [Function],
     "findVersioneds": [Function],
     "getComment": [Function],
+    "getModelWithTransientField": [Function],
     "getNote": [Function],
     "getTest": [Function],
   },
   "Subscription": Object {
     "deletedComment": Object {
+      "subscribe": [Function],
+    },
+    "deletedModelWithTransientField": Object {
       "subscribe": [Function],
     },
     "deletedNote": Object {
@@ -55,6 +63,9 @@ Object {
     "newComment": Object {
       "subscribe": [Function],
     },
+    "newModelWithTransientField": Object {
+      "subscribe": [Function],
+    },
     "newNote": Object {
       "subscribe": [Function],
     },
@@ -62,6 +73,9 @@ Object {
       "subscribe": [Function],
     },
     "updatedComment": Object {
+      "subscribe": [Function],
+    },
+    "updatedModelWithTransientField": Object {
       "subscribe": [Function],
     },
     "updatedNote": Object {
@@ -256,6 +270,11 @@ input CreateIssueInput {
   bugFixId: ID
 }
 
+input CreateModelWithTransientFieldInput {
+  id: ID
+  name: String
+}
+
 input CreateNoteInput {
   id: ID
   title: String!
@@ -403,12 +422,49 @@ input IssueFilter {
   not: IssueFilter
 }
 
+\\"\\"\\"@model\\"\\"\\"
+type ModelWithTransientField {
+  id: ID!
+  name: String
+
+  \\"\\"\\"@transient\\"\\"\\"
+  generatedFullName: String
+}
+
+input ModelWithTransientFieldFilter {
+  id: IDInput
+  name: StringInput
+  and: [ModelWithTransientFieldFilter!]
+  or: [ModelWithTransientFieldFilter!]
+  not: ModelWithTransientFieldFilter
+}
+
+type ModelWithTransientFieldResultList {
+  items: [ModelWithTransientField]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input ModelWithTransientFieldSubscriptionFilter {
+  and: [ModelWithTransientFieldSubscriptionFilter!]
+  or: [ModelWithTransientFieldSubscriptionFilter!]
+  not: ModelWithTransientFieldSubscriptionFilter
+  id: IDInput
+  name: StringInput
+}
+
 input MutateCommentInput {
   id: ID!
   createdAt: GraphbackDate
   title: String
   description: String
   note_id: ID
+}
+
+input MutateModelWithTransientFieldInput {
+  id: ID!
+  name: String
 }
 
 input MutateNoteInput {
@@ -444,6 +500,9 @@ type Mutation {
   createFix(input: CreateFixInput!): Fix
   createVersioned(input: CreateVersionedInput!): Versioned
   updateVersioned(input: MutateVersionedInput!): Versioned
+  createModelWithTransientField(input: CreateModelWithTransientFieldInput!): ModelWithTransientField
+  updateModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
+  deleteModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -504,6 +563,8 @@ type Query {
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
+  getModelWithTransientField(id: ID!): ModelWithTransientField
+  findModelWithTransientFields(filter: ModelWithTransientFieldFilter, page: PageRequest, orderBy: OrderByInput): ModelWithTransientFieldResultList!
 }
 
 enum SortDirectionEnum {
@@ -534,6 +595,9 @@ type Subscription {
   newComment(filter: CommentSubscriptionFilter): Comment!
   updatedComment(filter: CommentSubscriptionFilter): Comment!
   deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  updatedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  deletedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -627,6 +691,8 @@ type Query {
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
+  getModelWithTransientField(id: ID!): ModelWithTransientField
+  findModelWithTransientFields(filter: ModelWithTransientFieldFilter, page: PageRequest, orderBy: OrderByInput): ModelWithTransientFieldResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -821,6 +887,30 @@ input GraphbackTimestampInput {
   between: [GraphbackTimestamp!]
 }
 
+\\"\\"\\"@model\\"\\"\\"
+type ModelWithTransientField {
+  id: ID!
+  name: String
+
+  \\"\\"\\"@transient\\"\\"\\"
+  generatedFullName: String
+}
+
+type ModelWithTransientFieldResultList {
+  items: [ModelWithTransientField]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input ModelWithTransientFieldFilter {
+  id: IDInput
+  name: StringInput
+  and: [ModelWithTransientFieldFilter!]
+  or: [ModelWithTransientFieldFilter!]
+  not: ModelWithTransientFieldFilter
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -836,6 +926,9 @@ type Mutation {
   createFix(input: CreateFixInput!): Fix
   createVersioned(input: CreateVersionedInput!): Versioned
   updateVersioned(input: MutateVersionedInput!): Versioned
+  createModelWithTransientField(input: CreateModelWithTransientFieldInput!): ModelWithTransientField
+  updateModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
+  deleteModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
 }
 
 input CreateNoteInput {
@@ -994,6 +1087,16 @@ input MutateVersionedInput {
   name: String
 }
 
+input CreateModelWithTransientFieldInput {
+  id: ID
+  name: String
+}
+
+input MutateModelWithTransientFieldInput {
+  id: ID!
+  name: String
+}
+
 type Subscription {
   newNote(filter: NoteSubscriptionFilter): Note!
   updatedNote(filter: NoteSubscriptionFilter): Note!
@@ -1004,6 +1107,9 @@ type Subscription {
   newComment(filter: CommentSubscriptionFilter): Comment!
   updatedComment(filter: CommentSubscriptionFilter): Comment!
   deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  updatedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  deletedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
 }
 
 input NoteSubscriptionFilter {
@@ -1031,6 +1137,14 @@ input CommentSubscriptionFilter {
   createdAt: GraphbackDateInput
   title: StringInput
   description: StringInput
+}
+
+input ModelWithTransientFieldSubscriptionFilter {
+  and: [ModelWithTransientFieldSubscriptionFilter!]
+  or: [ModelWithTransientFieldSubscriptionFilter!]
+  not: ModelWithTransientFieldSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }
 
 enum AUTH_ROLE {
@@ -1058,6 +1172,8 @@ type Query {
   getComment(id: ID!): Comment
   findComments(filter: CommentFilter, page: PageRequest, orderBy: OrderByInput): CommentResultList!
   findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
+  getModelWithTransientField(id: ID!): ModelWithTransientField
+  findModelWithTransientFields(filter: ModelWithTransientFieldFilter, page: PageRequest, orderBy: OrderByInput): ModelWithTransientFieldResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -1252,6 +1368,30 @@ input GraphbackTimestampInput {
   between: [GraphbackTimestamp!]
 }
 
+\\"\\"\\"@model\\"\\"\\"
+type ModelWithTransientField {
+  id: ID!
+  name: String
+
+  \\"\\"\\"@transient\\"\\"\\"
+  generatedFullName: String
+}
+
+type ModelWithTransientFieldResultList {
+  items: [ModelWithTransientField]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input ModelWithTransientFieldFilter {
+  id: IDInput
+  name: StringInput
+  and: [ModelWithTransientFieldFilter!]
+  or: [ModelWithTransientFieldFilter!]
+  not: ModelWithTransientFieldFilter
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -1267,6 +1407,9 @@ type Mutation {
   createFix(input: CreateFixInput!): Fix
   createVersioned(input: CreateVersionedInput!): Versioned
   updateVersioned(input: MutateVersionedInput!): Versioned
+  createModelWithTransientField(input: CreateModelWithTransientFieldInput!): ModelWithTransientField
+  updateModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
+  deleteModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
 }
 
 input CreateNoteInput {
@@ -1425,6 +1568,16 @@ input MutateVersionedInput {
   name: String
 }
 
+input CreateModelWithTransientFieldInput {
+  id: ID
+  name: String
+}
+
+input MutateModelWithTransientFieldInput {
+  id: ID!
+  name: String
+}
+
 type Subscription {
   newNote(filter: NoteSubscriptionFilter): Note!
   updatedNote(filter: NoteSubscriptionFilter): Note!
@@ -1435,6 +1588,9 @@ type Subscription {
   newComment(filter: CommentSubscriptionFilter): Comment!
   updatedComment(filter: CommentSubscriptionFilter): Comment!
   deletedComment(filter: CommentSubscriptionFilter): Comment!
+  newModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  updatedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  deletedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
 }
 
 input NoteSubscriptionFilter {
@@ -1462,6 +1618,14 @@ input CommentSubscriptionFilter {
   createdAt: GraphbackDateInput
   title: StringInput
   description: StringInput
+}
+
+input ModelWithTransientFieldSubscriptionFilter {
+  and: [ModelWithTransientFieldSubscriptionFilter!]
+  or: [ModelWithTransientFieldSubscriptionFilter!]
+  not: ModelWithTransientFieldSubscriptionFilter
+  id: IDInput
+  name: StringInput
 }
 
 enum AUTH_ROLE {

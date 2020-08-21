@@ -131,6 +131,14 @@ type Versioned {
   name: String
 }
 
+"""@model"""
+type ModelWithTransientField {
+  id: ID!
+  name: String
+  """@transient"""
+  generatedFullName: String
+}
+
 scalar DateTime
 scalar GraphbackDate
 scalar GraphbackJSON

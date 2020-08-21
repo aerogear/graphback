@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS, isTransientField } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -108,7 +108,7 @@ function getModelInputFields(schemaComposer: SchemaComposer<any>, modelType: Gra
   const fields: GraphQLField<any, any>[] = Object.values(modelType.getFields());
 
   for (const field of fields) {
-    if (isOneToManyField(field)) {
+    if (isTransientField(field) || isOneToManyField(field)) {
       continue;
     }
 
@@ -222,10 +222,10 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
 export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.SUBSCRIPTION_CREATE);
   const modelFields = Object.values(modelType.getFields());
-  const scalarFields = modelFields.filter((f: GraphQLField<any, any>) => {
+  const subscriptionFilterFields = modelFields.filter((f: GraphQLField<any, any>) => {
     const namedType = getNamedType(f.type);
 
-    return (isScalarType(namedType) && FILTER_SUPPORTED_SCALARS.includes(namedType.name)) || isEnumType(namedType);
+    return !isTransientField(f) && (isScalarType(namedType) && FILTER_SUPPORTED_SCALARS.includes(namedType.name)) || isEnumType(namedType);
   });
 
   const fields = {
@@ -239,7 +239,7 @@ export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>,
       type: `${inputTypeName}`
     }
   }
-  for (const { name, type } of scalarFields) {
+  for (const { name, type } of subscriptionFilterFields) {
     const fieldType: GraphQLNamedType = getNamedType(type);
     const inputFilterName = getInputName(fieldType);
 

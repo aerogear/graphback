@@ -365,21 +365,18 @@ This will rename the `text` to `title` and the table name to `note` without data
 ## Ignore a field 
 
 Sometimes our business model can contain more fields and some of these fields may only be there for representation purposes.
-We can safely ignore generating columns for these fields using the `@db(skip: true)` annotation on the corresponding field. 
+We can safely ignore generating columns for these fields using the `@transient` annotation on the corresponding field. 
 
 ```graphql
 type Note {
   id: ID!
   """
   Define custom column length
-  @db(skip: true)
+  @transient
   """
   title: String!
 }
 ```
-:::caution
-This annotation is not supported by Graphback CRUD.
-:::
 
 ## Column name
 

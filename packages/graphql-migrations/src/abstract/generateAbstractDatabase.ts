@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType, DefaultValueAnnotation } from '@graphback/core';
+import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType, DefaultValueAnnotation, isTransientField } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -165,7 +165,9 @@ class AbstractDatabaseBuilder {
         continue;
       }
 
-      this.buildColumn(table, field)
+      if (!isTransientField(field)) {
+        this.buildColumn(table, field)
+      }
     }
 
     this.currentTable = undefined
