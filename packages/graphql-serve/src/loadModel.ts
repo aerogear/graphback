@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { loadSchema } from '@graphql-tools/load'
+import { loadSchemaSync } from '@graphql-tools/load'
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { GraphQLSchema } from 'graphql';
 import { existsSync, lstatSync } from 'fs';
@@ -12,10 +12,10 @@ import { join } from 'path';
  * @param {string} modelDir
  * @returns {string}
  */
-export async function loadModel(modelPath: string): Promise<GraphQLSchema> {
+export function loadModel(modelPath: string): GraphQLSchema {
   modelPath = resolveModelPath(modelPath)
 
-  const modelDefs = await loadSchema(modelPath, {
+  const modelDefs = loadSchemaSync(modelPath, {
     loaders: [
       new GraphQLFileLoader()
     ]

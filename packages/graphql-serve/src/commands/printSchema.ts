@@ -18,8 +18,8 @@ export const builder = (args: yargs.Argv): void => {
   args.example('$0 print-schema modelDir', 'only display generated schema from data model files in modelDir directory and quit')
 }
 
-export async function handler(args: Params): Promise<void> {
-  const schemaSDL = await printSchemaHandler(args);
+export function handler(args: Params): void {
+  const schemaSDL = printSchemaHandler(args);
 
   console.log("Generated schema:\n");
   console.log(cyan(schemaSDL));
