@@ -63,28 +63,6 @@ test('skip table', async () => {
   expect(adb.tables.length).toEqual(0);
 })
 
-test('skip field', async () => {
-  const schema = buildSchema(`
-      """
-      @model
-      """
-      type User {
-        id: ID!
-        """
-        @db(skip: true)
-        """
-        name: String!
-      }
-    `)
-  const adb = await generateAbstractDatabase(schema)
-  expect(adb.tables.length).toEqual(1);
-  const [User] = adb.tables
-  expect(User.name).toEqual('user');
-  expect(User.columns.length).toEqual(1);
-  const [colId] = User.columns
-  expect(colId.name).toEqual('id');
-})
-
 test('skip transient field', async () => {
   const schema = buildSchema(`
       """
