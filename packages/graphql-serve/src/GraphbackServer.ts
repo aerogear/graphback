@@ -6,7 +6,7 @@ import * as express from "express";
 import * as http from "http";
 import { createRuntime, createMongoDBClient, DataSyncServeConfig } from './runtime';
 import { MongoClient } from 'mongodb';
-import { GraphbackDataProvider, GraphbackCRUDService } from 'graphback';
+import { GraphbackDataProvider, GraphbackCRUDService, GraphbackAPI } from 'graphback';
 
 const ENDPOINT = "/graphql";
 
@@ -108,12 +108,13 @@ export async function buildGraphbackServer(modelDir: string, dataSyncServeConfig
   const dbClient = await createMongoDBClient();
   const db = dbClient.db('test')
 
-  const { typeDefs, resolvers, contextCreator } = await createRuntime(modelDir, db, dataSyncServeConfig);
+  const graphbackApi: GraphbackAPI = await createRuntime(modelDir, db, dataSyncServeConfig);
 
   const apolloConfig = {
-    typeDefs,
-    resolvers,
-    context: contextCreator,
+    typeDefs: graphbackApi.typeDefs,
+    resolvers: graphbackApi.resolvers,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    context: graphbackApi.contextCreator,
     playground: true,
     resolverValidationOptions: {
       requireResolversForResolveType: false
@@ -127,5 +128,5 @@ export async function buildGraphbackServer(modelDir: string, dataSyncServeConfig
   const httpServer = http.createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);
 
-  return new GraphbackServer(httpServer, typeDefs, dbClient);
+  return new GraphbackServer(httpServer, graphbackApi.typeDefs, dbClient);
 }
