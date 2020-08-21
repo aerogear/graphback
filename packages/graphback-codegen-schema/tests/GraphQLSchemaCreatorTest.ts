@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { buildSchema, printSchema, GraphQLObjectType } from 'graphql';
-import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine } from '@graphback/core';
+import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine, metadataMap } from '@graphback/core';
+
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
@@ -281,18 +282,82 @@ type Comment {
 
 test('schema does not generate filter input for unknown custom scalar', () => {
   const modelAST = `
-scalar MyCustomScalar
-"""
-@model
-"""
-type TypeWithCustomScalar {
-  id: ID!
-  customField: MyCustomScalar
-}`
+  scalar MyCustomScalar
+  """
+  @model
+  """
+  type TypeWithCustomScalar {
+    id: ID!
+    customField: MyCustomScalar
+  }`
 
   const schemaGenerator = new SchemaCRUDPlugin();
   const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
   const schema = schemaGenerator.transformSchema(metadata);
 
   expect(schema.getType('MyCustomScalarInput')).toBeUndefined()
+})
+
+test('schema does not override custom createdAt and updatedAt fields when model has @versioned annotation', () => {
+  const fields = Object.values(metadataMap.fieldNames);
+  for (const field of fields) {
+    const modelAST = `
+    """
+    @model
+    @versioned
+    """
+    type Entity {
+      id: ID!
+      ${field}: Int
+    }`;
+
+    const schemaGenerator = new SchemaCRUDPlugin();
+    const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+
+    try {
+      schemaGenerator.transformSchema(metadata);
+      expect(true).toBeFalsy(); // should not reach here
+    } catch (error) {
+      expect(error.message).toEqual(`Type "Entity" annotated with @versioned, cannot contain custom "${field}" field since it is generated automatically. Either remove the @versioned annotation, change the type of the field to "GraphbackTimestamp" or remove the field.`)
+    }
+  }
+})
+
+test('schema does throw an error when model annotated with @versioned contain custom createdAt or updatedAt fields having GraphbackTimestamp type', () => {
+  const modelAST = `
+    scalar GraphbackTimestamp
+    """
+    @model
+    @versioned
+    """
+    type Entity1 {
+      id: ID!
+      createdAt: GraphbackTimestamp
+      updatedAt: GraphbackTimestamp
+    }
+
+    """
+    @model
+    @versioned
+    """
+    type Entity2 {
+      id: ID!
+      createdAt: GraphbackTimestamp
+    }
+
+    """
+    @model
+    @versioned
+    """
+    type Entity3 {
+      id: ID!
+      updatedAt: GraphbackTimestamp
+    }
+    `;
+
+  const schemaGenerator = new SchemaCRUDPlugin();
+  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+
+  const schema = schemaGenerator.transformSchema(metadata);
+  expect(schema).toBeDefined()
 })
