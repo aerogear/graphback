@@ -22,11 +22,7 @@ export type ModelDefinition = {
   fields: ModelFieldMap
   graphqlType: GraphQLObjectType,
   relationships: FieldRelationshipMetadata[]
-  crudOptions: GraphbackCRUDGeneratorConfig,
-  config: {
-    // Whether to add delta queries; requires datasync package
-    deltaSync: boolean
-  }
+  crudOptions: GraphbackCRUDGeneratorConfig
 };
 
 export function getModelByName(name: string, models: ModelDefinition[]): ModelDefinition | undefined {

@@ -34,11 +34,28 @@ type Note {
 
   const models = metadata.getModelDefinitions();
 
-  const { crudOptions, config, relationships } = getModelByName('Note', models)
+  const { crudOptions, fields, relationships, primaryKey } = getModelByName('Note', models)
 
   expect(crudOptions).toBeDefined()
-  expect(config.deltaSync).toBe(true)
   expect(relationships).toHaveLength(1)
+  expect(fields).toEqual({
+    id: {
+      name: 'id',
+      type: 'ID'
+    },
+    title: {
+      name: 'title',
+      type: 'String'
+    },
+    comments: {
+      name: 'id', // indicates that the id field should be selected
+      type: 'ID'
+    }
+  })
+  expect(primaryKey).toEqual({
+    name: 'id',
+    type: 'ID'
+  })
 });
 
 test('Model has default crud configuration', async () => {
