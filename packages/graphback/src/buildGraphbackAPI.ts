@@ -1,8 +1,9 @@
 import { GraphQLSchema } from 'graphql';
-import { ServiceCreator, DataProviderCreator, GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition, GraphbackServiceConfigMap, GraphbackContext, createCRUDService } from '@graphback/core';
+import { ServiceCreator, DataProviderCreator, GraphbackPlugin, GraphbackPluginEngine, GraphbackCRUDGeneratorConfig, printSchemaWithDirectives, ModelDefinition, GraphbackServiceConfigMap, GraphbackContext, createCRUDService, GraphbackDataProvider, GraphbackCRUDService } from '@graphback/core';
 import { SchemaCRUDPlugin, SCHEMA_CRUD_PLUGIN_NAME } from '@graphback/codegen-schema';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { PubSub } from 'graphql-subscriptions';
+
 
 export interface GraphbackAPIConfig {
   /**
@@ -40,7 +41,7 @@ export interface GraphbackAPI {
   /**
    * CRUD resolvers for every data model
    */
-  resolvers: any
+  resolvers: Record<string, any>
   /**
    * Model:Service map of CRUD services for every data model
    */
@@ -52,7 +53,10 @@ export interface GraphbackAPI {
   contextCreator(context?: any): GraphbackContext
 }
 
-function createServices(models: ModelDefinition[], createService: Function, createProvider: Function) {
+export type GraphbackServiceCreator = (model: ModelDefinition, dataProvider: GraphbackDataProvider) => GraphbackCRUDService;
+export type GraphbackDataProviderCreator = (model: ModelDefinition) => GraphbackDataProvider
+
+function createServices(models: ModelDefinition[], createService: GraphbackServiceCreator, createProvider: GraphbackDataProviderCreator) {
   const services: GraphbackServiceConfigMap = {}
 
   for (const model of models) {
@@ -98,8 +102,8 @@ function getPlugins(plugins?: GraphbackPlugin[]): GraphbackPlugin[] {
  *
  * @param {GraphQLSchema|string} model - Data model as a string or GraphQL schema. Used to generate the Graphback API resolvers, services and database
  * @param {GraphbackAPIConfig} config
- * @param {Function} [config.serviceCreator] - Creator class specifying which default CRUD service should be created for each model.
- * @param {Function} config.dataProviderCreator - Creator class specifying which default database provider should be created for each model.
+ * @param {GraphbackServiceCreator} [config.serviceCreator] - Creator class specifying which default CRUD service should be created for each model.
+ * @param {GraphbackDataProviderCreator} config.dataProviderCreator - Creator class specifying which default database provider should be created for each model.
  * @param {GraphbackCRUDGeneratorConfig} [config.crud] - Global CRUD configuration for the Graphback API.
  * @param {GraphbackPlugin[]} [config.plugins] - Schema plugins to perform automatic changes to the generated schema
  *
