@@ -14,7 +14,7 @@ export const getSelectedFieldsFromResolverInfo = (info: GraphQLResolveInfo, mode
 
   for (const key of resolverFields) {
     const correspondingFieldInDatabase = model.fields[key];
-    if (correspondingFieldInDatabase) {
+    if (correspondingFieldInDatabase && !correspondingFieldInDatabase.transient) {
       selectedFields.add(correspondingFieldInDatabase.name);
     }
   }

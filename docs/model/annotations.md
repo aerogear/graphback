@@ -151,6 +151,21 @@ This example generates an `character` field on the `Actor` type with a `Characte
 
 The `@index` annotation can be used to create an index on a specific field or a set of fields at runtime. The supported arguments are different between the different databases. See the variations for [PostgreSQL](#index-1) and [MongoDB](#index-2).
 
+
+### @transient
+
+The `@transient` **field** annotation omits this field from the generated inputs `Create<T>Input`, `<T>Filter`, `<T>SubscriptionFilter` and `Mutate<T>Input`. 
+
+```graphql
+"""@model"""
+type User {
+  id: ID!
+  name: String
+  """@transient"""
+  computedField: String
+}
+```
+
 ## PostgreSQL
 
 ### @id

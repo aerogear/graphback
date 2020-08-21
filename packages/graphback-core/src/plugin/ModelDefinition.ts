@@ -7,11 +7,12 @@ import { GraphbackCRUDGeneratorConfig } from "./GraphbackCRUDGeneratorConfig";
  */
 export type FieldDescriptor = {
   name: string,
-  type: string
+  type: string,
+  transient?: boolean | undefined
 }
 
 export type ModelFieldMap = {
-  [key : string]: FieldDescriptor
+  [key: string]: FieldDescriptor
 }
 
 /**

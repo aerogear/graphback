@@ -4,6 +4,7 @@ import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql';
 import { getUserTypesFromSchema, IResolvers } from '@graphql-tools/utils';
 import { getPrimaryKey } from '../db';
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
+import { isTransientField } from '../utils/isTransientField';
 import { GraphbackCRUDGeneratorConfig } from './GraphbackCRUDGeneratorConfig';
 import { ModelDefinition, ModelFieldMap } from './ModelDefinition';
 import { GraphbackGlobalConfig } from './GraphbackGlobalConfig';
@@ -107,6 +108,17 @@ export class GraphbackCoreMetadata {
       let fieldName = field;
       let type: string = '';
 
+      const graphqlField = modelFields[field]
+
+      if (isTransientField(graphqlField)) {
+        fields[field] = {
+          name: field,
+          transient: true,
+          type: getNamedType(graphqlField.type).name
+        }
+        continue;
+      }
+
       const foundRelationship = relationships.find((relationship: FieldRelationshipMetadata) => relationship.ownerField.name === field);
 
       if (foundRelationship) {
@@ -123,7 +135,8 @@ export class GraphbackCoreMetadata {
 
       fields[field] = {
         name: fieldName,
-        type
+        type,
+        transient: false
       };
     }
 

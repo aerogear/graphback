@@ -85,6 +85,26 @@ test('skip field', async () => {
   expect(colId.name).toEqual('id');
 })
 
+test('skip transient field', async () => {
+  const schema = buildSchema(`
+      """
+      @model
+      """
+      type User {
+        id: ID!
+        """@transient"""
+        name: String!
+      }
+    `)
+  const adb = await generateAbstractDatabase(schema)
+  expect(adb.tables.length).toEqual(1);
+  const [User] = adb.tables
+  expect(User.name).toEqual('user');
+  expect(User.columns.length).toEqual(1);
+  const [colId] = User.columns
+  expect(colId.name).toEqual('id');
+})
+
 test('not null', async () => {
   const schema = buildSchema(`
       """
@@ -353,7 +373,7 @@ test('graphback scalars', async () => {
     `)
   const adb = await generateAbstractDatabase(schema)
   const [{ columns }] = adb.tables
-  const columnTypes = columns.map(({ type }) => type);
+  const columnTypes = columns.map(({ type }: { type: string }) => type);
   expect(columnTypes).toEqual(["increments", "json", "json", "time", "timestamp", "date", "datetime", "string"])
 })
 

@@ -41,15 +41,18 @@ type Note {
   expect(fields).toEqual({
     id: {
       name: 'id',
-      type: 'ID'
+      type: 'ID',
+      transient: false
     },
     title: {
       name: 'title',
-      type: 'String'
+      type: 'String',
+      transient: false
     },
     comments: {
       name: 'id', // indicates that the id field should be selected
-      type: 'ID'
+      type: 'ID',
+      transient: false
     }
   })
   expect(primaryKey).toEqual({

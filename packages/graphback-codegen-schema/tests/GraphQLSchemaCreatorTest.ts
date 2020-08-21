@@ -1,5 +1,6 @@
+/* eslint-disable max-lines */
 import { readFileSync } from 'fs';
-import { buildSchema, printSchema, GraphQLObjectType } from 'graphql';
+import { buildSchema, printSchema, GraphQLObjectType, assertInputObjectType } from 'graphql';
 import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine, metadataMap } from '@graphback/core';
 
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
@@ -360,4 +361,35 @@ test('schema does throw an error when model annotated with @versioned contain cu
 
   const schema = schemaGenerator.transformSchema(metadata);
   expect(schema).toBeDefined()
+})
+
+test('Transient field is excluded from input types', () => {
+  const modelAST = `
+    """
+    @model
+    """
+    type User {
+      id: ID!
+      name: String!
+      """@transient"""
+      generatedFullName: String
+    }
+    `;
+
+  const schemaGenerator = new SchemaCRUDPlugin();
+  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+
+  const schema = schemaGenerator.transformSchema(metadata);
+
+  const createUserInput = assertInputObjectType(schema.getType('CreateUserInput'))
+  expect(Object.keys(createUserInput.getFields())).toEqual(['id', 'name'])
+
+  const mutateUserInput = assertInputObjectType(schema.getType('MutateUserInput'))
+  expect(Object.keys(mutateUserInput.getFields())).toEqual(['id', 'name'])
+
+  const userFilterInput = assertInputObjectType(schema.getType('UserFilter'))
+  expect(Object.keys(userFilterInput.getFields())).toEqual(['id', 'name', 'and', 'or', 'not'])
+
+  const userSubscriptionInput = assertInputObjectType(schema.getType('UserFilter'))
+  expect(Object.keys(userSubscriptionInput.getFields())).toEqual(['id', 'name', 'and', 'or', 'not'])
 })
