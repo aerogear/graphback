@@ -1,17 +1,16 @@
-import { GraphbackPlugin, GraphbackPluginEngine, printSchemaWithDirectives } from 'graphback'
+import { GraphbackPluginEngine, printSchemaWithDirectives } from 'graphback';
 import { loadModel } from '../loadModel';
 import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 
-export const printSchemaHandler = async (argv: { model?: string }): Promise<string> => {
-  const schemaText = await loadModel(argv.model);
-
-  const schemaPlugins: GraphbackPlugin[] = [
-    new SchemaCRUDPlugin
-  ]
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+export function printSchemaHandler (argv: { model?: string }): string {
+  const schemaText = loadModel(argv.model);
 
   const pluginEngine = new GraphbackPluginEngine({
     schema: schemaText,
-    plugins: schemaPlugins,
+    plugins: [ new SchemaCRUDPlugin() ],
     config: { crudMethods: {} }
   })
 
@@ -19,7 +18,10 @@ export const printSchemaHandler = async (argv: { model?: string }): Promise<stri
 
   const schema = metadata.getSchema();
 
-  const printedSchema = printSchemaWithDirectives(schema)
+  const printedSchema: string = printSchemaWithDirectives(schema)
 
   return printedSchema
 }
+/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+/* eslint-enable @typescript-eslint/no-unsafe-member-access */
+/* eslint-enable @typescript-eslint/no-unsafe-call */

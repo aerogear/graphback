@@ -100,6 +100,8 @@ export class GraphbackServer {
   }
 }
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 export async function buildGraphbackServer(modelDir: string, dataSyncServeConfig: DataSyncServeConfig): Promise<GraphbackServer> {
   const app = express();
 
@@ -108,7 +110,7 @@ export async function buildGraphbackServer(modelDir: string, dataSyncServeConfig
   const dbClient = await createMongoDBClient();
   const db = dbClient.db('test')
 
-  const graphbackApi: GraphbackAPI = await createRuntime(modelDir, db, dataSyncServeConfig);
+  const graphbackApi: GraphbackAPI = createRuntime(modelDir, db, dataSyncServeConfig);
 
   const apolloConfig = {
     typeDefs: graphbackApi.typeDefs,
@@ -130,3 +132,6 @@ export async function buildGraphbackServer(modelDir: string, dataSyncServeConfig
 
   return new GraphbackServer(httpServer, graphbackApi.typeDefs, dbClient);
 }
+
+/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+/* eslint-enable @typescript-eslint/no-unsafe-member-access */

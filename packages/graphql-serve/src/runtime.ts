@@ -5,7 +5,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db } from 'mongodb';
 import { loadModel } from './loadModel';
 import { GraphQLSchema } from 'graphql';
-import { createDataSyncAPI, ClientSideWins, ServerSideWins } from "@graphback/datasync"
+import { createDataSyncAPI, ClientSideWins, ServerSideWins, ConflictResolutionStrategy } from "@graphback/datasync"
 import { IResolverObject } from 'apollo-server-express';
 
 
@@ -34,16 +34,19 @@ export const createMongoDBClient = async (): Promise<MongoClient> => {
   return client
 }
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /**
  * Method used to create runtime schema
  * It will be part of the integration tests
  */
-export const createRuntime = async (modelDir: string, db: Db, datasyncServeConfig: DataSyncServeConfig): Promise<GraphbackAPI> => {
-  const model = await loadModel(modelDir);
+export function createRuntime (modelDir: string, db: Db, datasyncServeConfig: DataSyncServeConfig): GraphbackAPI {
+  const model = loadModel(modelDir);
 
-  let graphbackAPI: GraphbackAPI;
   if (datasyncServeConfig.datasync) {
-    let conflictResolutionStrategy = ClientSideWins;
+    let conflictResolutionStrategy: ConflictResolutionStrategy = ClientSideWins;
     let deltaTTL = 172800;
     if (datasyncServeConfig.conflict === "clientSideWins") {
       conflictResolutionStrategy = ClientSideWins;
@@ -56,20 +59,20 @@ export const createRuntime = async (modelDir: string, db: Db, datasyncServeConfi
       deltaTTL = datasyncServeConfig.deltaTTL
     }
 
-    graphbackAPI = createDataSyncAPI(model, {
+    return createDataSyncAPI(model, {
       db,
       conflictConfig: {
         enabled: true,
         conflictResolution: conflictResolutionStrategy,
         deltaTTL
       }
-    })
+    });
 
-  } else {
-    graphbackAPI = buildGraphbackAPI(model, {
-      dataProviderCreator: createMongoDbProvider(db)
-    })
   }
 
-  return graphbackAPI;
+  return buildGraphbackAPI(model, { dataProviderCreator: createMongoDbProvider(db) });
 }
+/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+/* eslint-enable @typescript-eslint/no-unsafe-member-access */
+/* eslint-enable @typescript-eslint/no-unsafe-call */
+/* eslint-enable @typescript-eslint/no-unsafe-return */
