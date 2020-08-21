@@ -20,9 +20,9 @@ export interface DataSyncServeConfig {
 export interface Runtime {
   schema: GraphQLSchema;
   resolvers: {
-    Query: Record<string, IResolverObject>;
-    Mutation: Record<string, IResolverObject>;
-    Subscription: Record<string, IResolverObject>;
+    Query: IResolverObject;
+    Mutation: IResolverObject;
+    Subscription: IResolverObject;
   }
 };
 
