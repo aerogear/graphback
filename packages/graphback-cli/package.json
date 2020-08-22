@@ -35,7 +35,7 @@
     "@types/node": "12.12.54",
     "@types/node-emoji": "1.8.1",
     "@types/yargs": "15.0.5",
-    "jest": "26.4.0",
+    "jest": "26.4.2",
     "lint-staged": "10.2.11",
     "rimraf": "3.0.2",
     "ts-jest": "26.2.0",
