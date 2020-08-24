@@ -1,18 +1,18 @@
-import { MongoMemoryServer } from 'mongodb-memory-server-global';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db, Collection } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { GraphbackCoreMetadata } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
+import { createDataSyncConflictProviderCreator, DataSyncPlugin, DataSyncProvider, GlobalConflictConfig } from '../src';
 
 export interface Context {
-  providers: { [modelname: string]: MongoDBDataProvider };
+  providers: { [modelname: string]: DataSyncProvider };
   server: MongoMemoryServer,
   db: Db,
-  findIndex: (collectionName: string, indexName: string) => Promise<any>
+  findIndex: (collectionName: string, indexName) => Promise<any>
 }
 
-export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
+export async function createTestingContext(schemaStr: string, config?: { seedData?: { [collection: string]: any[] }, conflictConfig?: GlobalConflictConfig }): Promise<Context> {
   // Setup graphback
   const schema = buildSchema(schemaStr);
 
@@ -32,17 +32,20 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     "subDelete": true
   }
 
+  const schemaGenerator = new SchemaCRUDPlugin();
+  const DataSyncGenerator = new DataSyncPlugin({ conflictConfig: config?.conflictConfig });
   const metadata = new GraphbackCoreMetadata({
     crudMethods: defautConfig
-  }, schema);
+  }, schema)
+  metadata.setSchema(schemaGenerator.transformSchema(metadata));
+  metadata.setSchema(DataSyncGenerator.transformSchema(metadata));
 
-  const schemaGenerator = new SchemaCRUDPlugin();
-  schemaGenerator.transformSchema(metadata)
+  const createProvider = createDataSyncConflictProviderCreator(db, config?.conflictConfig);
 
-  const providers: { [name: string]: MongoDBDataProvider } = {}
-  const models = metadata.getModelDefinitions()
+  const providers: { [name: string]: DataSyncProvider } = {}
+  const models = metadata.getModelDefinitions();
   for (const model of models) {
-    providers[model.graphqlType.name] = new MongoDBDataProvider(model, db);
+    providers[model.graphqlType.name] = createProvider(model) as DataSyncProvider;
   }
 
   // if seed data is supplied, insert it into collections
@@ -50,7 +53,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     const collectionNames = Object.keys(config.seedData);
     for (const collectionName of collectionNames) {
       for (const element of config.seedData[collectionName]) {
-        await providers[collectionName].create(element, {graphback: {services: {}, options: {selectedFields: [""]}}});
+        await providers[collectionName].create(element, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
       }
     };
   }

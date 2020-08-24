@@ -1,4 +1,3 @@
-import { MongoClient } from 'mongodb';
 import { Context, createTestingContext } from "./__util__";
 
 describe('MongoDB indexing', () => {
@@ -23,13 +22,10 @@ describe('MongoDB indexing', () => {
       scalar GraphbackObjectID
       `);
 
-    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db('test');
 
-    const indexes = await db.collection('note').indexes();
+    const index = await context.findIndex('note', 'text');
 
-    expect(indexes[1]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           "text": 1
@@ -65,13 +61,9 @@ describe('MongoDB indexing', () => {
       scalar GraphbackObjectID
       `);
 
-    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db('test');
+    const index = await context.findIndex('note', 'meta');
 
-    const indexes = await db.collection('note').indexes();
-
-    expect(indexes[1]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           "meta": 1,
@@ -108,13 +100,9 @@ describe('MongoDB indexing', () => {
       scalar GraphbackObjectID
       `);
 
-    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db('test');
+    const index = await context.findIndex('comment', 'noteId');
 
-    const indexes = await db.collection('comment').indexes();
-
-    expect(indexes[1]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           "noteId": 1,

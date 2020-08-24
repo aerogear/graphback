@@ -1,65 +1,8 @@
 /* eslint-disable max-lines */
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoClient, Db } from 'mongodb';
-import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata, metadataMap, NoDataError, defaultTableNameTransform } from '@graphback/core';
+import { NoDataError, defaultTableNameTransform } from '@graphback/core';
 import { advanceTo } from "jest-date-mock";
-import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { DataSyncMongoDBDataProvider, DataSyncPlugin, DataSyncFieldNames } from '../src';
-
-const {fieldNames} = metadataMap;
-export interface Context {
-  providers: { [modelname: string]: DataSyncMongoDBDataProvider };
-  server: MongoMemoryServer,
-  db: Db
-}
-
-export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
-  // Setup graphback
-  const schema = buildSchema(schemaStr);
-
-  const server = new MongoMemoryServer();
-  const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
-  await client.connect();
-  const db = client.db('test');
-
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const schemaGenerator = new SchemaCRUDPlugin();
-  const DataSyncGenerator = new DataSyncPlugin();
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, schema)
-  metadata.setSchema(schemaGenerator.transformSchema(metadata));
-  metadata.setSchema(DataSyncGenerator.transformSchema(metadata));
-
-  const providers: { [name: string]: DataSyncMongoDBDataProvider } = {}
-  const models = metadata.getModelDefinitions();
-  for (const model of models) {
-    providers[model.graphqlType.name] = new DataSyncMongoDBDataProvider(model, db);
-  }
-
-  // if seed data is supplied, insert it into collections
-  if (config?.seedData) {
-    const collectionNames = Object.keys(config.seedData);
-    for (const collectionName of collectionNames) {
-      for (const element of config.seedData[collectionName]) {
-        await providers[collectionName].create(element, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
-      }
-    };
-  }
-
-  return { server, providers, db }
-}
+import { DataSyncFieldNames } from '../src';
+import { Context, createTestingContext } from './__util__';
 
 const fields = ["_id", "text"];
 const postSchema = `
@@ -228,9 +171,9 @@ describe('Delta Queries', () => {
 
     context = await createTestingContext(postSchema);
 
-    const indexes = await context.db.collection('post').indexes();
+    const index = await context.findIndex('post', DataSyncFieldNames.lastUpdatedAt);
 
-    expect(indexes[1]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           [DataSyncFieldNames.lastUpdatedAt]: 1
@@ -244,10 +187,9 @@ describe('Delta Queries', () => {
   it('creates index for the deleted field', async () => {
 
     context = await createTestingContext(postSchema);
+    const index = await context.findIndex('post', DataSyncFieldNames.deleted );
 
-    const indexes = await context.db.collection('post').indexes();
-
-    expect(indexes[2]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           [DataSyncFieldNames.deleted]: 1
@@ -262,9 +204,9 @@ describe('Delta Queries', () => {
 
     context = await createTestingContext(postSchema);
 
-    const indexes = await context.db.collection('post').indexes();
+    const index = await context.findIndex('post', DataSyncFieldNames.ttl );
 
-    expect(indexes[3]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           [DataSyncFieldNames.ttl]: 1
@@ -393,3 +335,5 @@ describe('Delta Queries', () => {
     expect(deltaPosts.length).toEqual(1);
   })
 })
+
+
