@@ -42,7 +42,8 @@ type Task {
 }
 
 type Query {
-  helloWorld: String
+  helloWorld: String,
+  getNoteWithFullDataSet: Note
 }
 
 scalar GraphbackTimestamp

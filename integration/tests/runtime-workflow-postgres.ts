@@ -31,6 +31,30 @@ const modelText = readFileSync('./postgres-model.graphql').toString();
 const createdAt = new Date();
 const objectId = new ObjectID("507f191e810c19729de860ea");
 
+const customNoteWithFullDataSet = {
+  id: Date.now().toString(),
+  title: "title",
+  description: "description",
+  tasks: [{
+    title: "mambo"
+  }],
+  comments: [{
+    id: Date.now().toString(),
+    text: "text",
+    description: "comment-description",
+    metadata: {
+      id: Date.now().toString(),
+      opened: true
+    },
+    ratings: [3, 9, 10]
+  }]
+};
+
+const customResolvers = {
+  Query: {
+    getNoteWithFullDataSet: () => customNoteWithFullDataSet
+  }
+};
 
 const GET_COMMENTS = gql`
 query getCommentDetailsAtOnce($id: ID!) {
@@ -53,7 +77,29 @@ query getCommentDetailsAtOnce($id: ID!) {
         }
     }
 }
-`
+`;
+
+const GET_NOTE_WITH_CUSTOM_QUERY = gql`
+query getNoteWithFullDataSet {
+  getNoteWithFullDataSet {
+      id,
+      title,
+      description,
+      tasks {
+        title
+      },
+      comments {
+        id,
+        text,
+        description,
+        metadata {
+          id,
+          opened
+        },
+        ratings
+      }
+    }
+}`;
 
 beforeAll(async () => {
   try {
@@ -101,8 +147,8 @@ beforeEach(() => {
   const { typeDefs, resolvers, contextCreator } = graphbackApi;
   server = new ApolloServer({
     typeDefs,
-    resolvers,
-    context: contextCreator
+    context: contextCreator,
+    resolvers: [resolvers, customResolvers]
   });
 
   client = createTestClient(server);
@@ -560,6 +606,11 @@ test('getComment in simultaneous with different resolvers pinfo', async () => {
           }
        }
  });
+})
+
+test('get full dataset from custom query without querying the database again', async () => {
+  const { data } = await client.query({ operationName:"getNoteWithFullDataSet", query: GET_NOTE_WITH_CUSTOM_QUERY });
+  expect(data.getNoteWithFullDataSet).toEqual(customNoteWithFullDataSet);
 })
 
 async function updateNote(input: any, client: ApolloServerTestClient) {

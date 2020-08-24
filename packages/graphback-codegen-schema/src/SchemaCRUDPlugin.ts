@@ -694,6 +694,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const model = modelNameToModelDefinition[modelName];
 
     resolverObj[relationOwner] = (parent: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      if (parent[relationOwner]) {
+        return parent[relationOwner];
+      }
+
       if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -727,8 +731,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const relationOwner = relationship.ownerField.name;
     const model = modelNameToModelDefinition[modelName];
 
-    // construct a unique key to identify the dataloader
     resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      if (parent[relationOwner]) {
+        return parent[relationOwner];
+      }
+
       if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -739,6 +746,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
       const fetchedKeys = selectedFields.join('-');
 
+      // construct a unique key to identify the dataloader
       const dataLoaderName = `${modelName}-${relationship.kind}-${relationIdField.name}-${relationship.relationForeignKey}-${fetchedKeys}-DataLoader`;
 
       if (!context[dataLoaderName]) {

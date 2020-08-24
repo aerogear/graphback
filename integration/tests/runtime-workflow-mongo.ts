@@ -5,7 +5,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mkdirSync, readFileSync, rmdirSync } from 'fs';
 import * as path from 'path';
-import { ApolloServer } from "apollo-server";
+import { ApolloServer, gql } from "apollo-server";
 import { createTestClient, ApolloServerTestClient } from 'apollo-server-testing';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadDocuments } from '@graphql-tools/load';
@@ -32,6 +32,54 @@ const metadataId = [];
 const modelText = readFileSync("./mongodb-model.graphql").toString();
 const createdAt = new Date();
 const objectId = new ObjectID("507f191e810c19729de860ea");
+
+const customNoteWithFullDataSet = {
+  _id: new ObjectID("507f191e810c19729de860ea").toString(),
+  title: "title",
+  description: "description",
+  tasks: [{
+    title: "mambo"
+  }],
+  comments: [{
+    _id: new ObjectID("507f191e810c19729de860ea").toString(),
+    text: "text",
+    description: "comment-description",
+    metadata: {
+      _id: new ObjectID("507f191e810c19729de860ea").toString(),
+      opened: true
+    },
+    ratings: [3, 9, 10]
+  }]
+};
+
+const customResolvers = {
+  Query: {
+    getNoteWithFullDataSet: () => customNoteWithFullDataSet
+  }
+};
+
+
+const GET_NOTE_WITH_CUSTOM_QUERY = gql`
+query getNoteWithFullDataSet {
+  getNoteWithFullDataSet {
+      _id,
+      title,
+      description,
+      tasks {
+        title
+      },
+      comments {
+        _id,
+        text,
+        description,
+        metadata {
+          _id,
+          opened
+        },
+        ratings
+      }
+    }
+}`;
 
 beforeAll(async () => {
   try {
@@ -67,8 +115,8 @@ beforeEach(() => {
   const { typeDefs, resolvers, contextCreator } = graphbackApi;
   server = new ApolloServer({
     typeDefs,
-    resolvers,
-    context: contextCreator
+    context: contextCreator,
+    resolvers: [resolvers, customResolvers]
   });
 
   client = createTestClient(server);
@@ -505,6 +553,11 @@ test('Delete Note 1', async () => {
   expect(response.data).toBeDefined();
   expect(response.data.deleteNote).toEqual({ _id:  notesId[1], createdAt, description: 'Note B Description', title: 'Note B' });
 });
+
+test('get full dataset from custom query without querying the database again', async () => {
+  const { data } = await client.query({ operationName:"getNoteWithFullDataSet", query: GET_NOTE_WITH_CUSTOM_QUERY });
+  expect(data.getNoteWithFullDataSet).toEqual(customNoteWithFullDataSet);
+})
 
 async function updateNote(input: any, client: ApolloServerTestClient) {
   const response = await client.mutate({
