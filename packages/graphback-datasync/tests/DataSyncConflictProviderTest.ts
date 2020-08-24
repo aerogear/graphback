@@ -1,65 +1,7 @@
 /* eslint-disable max-lines */
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoClient, Db } from 'mongodb';
-import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata, NoDataError } from '@graphback/core';
-import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
-import { createDataSyncConflictProviderCreator, DataSyncPlugin, ConflictError, DataSyncFieldNames, DataSyncModelConfigMap, DataSyncProvider, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName, GlobalConflictConfig } from '../src';
-
-export interface Context {
-  providers: { [modelname: string]: DataSyncProvider };
-  server: MongoMemoryServer,
-  db: Db
-}
-
-export async function createTestingContext(schemaStr: string, config?: { seedData?: { [collection: string]: any[] }, conflictConfig?: GlobalConflictConfig }): Promise<Context> {
-  // Setup graphback
-  const schema = buildSchema(schemaStr);
-
-  const server = new MongoMemoryServer();
-  const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
-  await client.connect();
-  const db = client.db('test');
-
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const schemaGenerator = new SchemaCRUDPlugin();
-  const DataSyncGenerator = new DataSyncPlugin({ conflictConfig: config?.conflictConfig });
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, schema)
-  metadata.setSchema(schemaGenerator.transformSchema(metadata));
-  metadata.setSchema(DataSyncGenerator.transformSchema(metadata));
-
-  const createProvider = createDataSyncConflictProviderCreator(db, config?.conflictConfig);
-
-  const providers: { [name: string]: DataSyncProvider } = {}
-  const models = metadata.getModelDefinitions();
-  for (const model of models) {
-    providers[model.graphqlType.name] = createProvider(model) as DataSyncProvider;
-  }
-
-  // if seed data is supplied, insert it into collections
-  if (config?.seedData) {
-    const collectionNames = Object.keys(config.seedData);
-    for (const collectionName of collectionNames) {
-      for (const element of config.seedData[collectionName]) {
-        await providers[collectionName].create(element, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
-      }
-    };
-  }
-
-  return { server, providers, db }
-}
+import { NoDataError } from '@graphback/core';
+import { Context, createTestingContext } from './__util__';
+import { ConflictError, DataSyncFieldNames, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName } from '../src';
 
 describe('DataSyncConflictMongoDBDataProvider', () => {
   let context: Context;
@@ -120,13 +62,10 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
       scalar GraphbackObjectID
       `, {conflictConfig: { models: { Note: { enabled: true }}}});
 
-    const client = new MongoClient(await context.server.getConnectionString(), { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db('test');
 
-    const indexes = await db.collection('note').indexes();
+    const index = await context.findIndex('note', DataSyncFieldNames.ttl);
 
-    expect(indexes[3]).toMatchObject(
+    expect(index).toMatchObject(
       {
         "key": {
           [DataSyncFieldNames.ttl]: 1
@@ -139,8 +78,8 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
 
     const deltaCollectionName = getDeltaTableName("note");
 
-    const deltaIndexes = await db.collection(deltaCollectionName).indexes();
-    expect(deltaIndexes[1]).toMatchObject(
+    const deltaIndex = await context.findIndex(deltaCollectionName, DataSyncFieldNames.ttl);
+    expect(deltaIndex).toMatchObject(
       {
         "key": {
           [DataSyncFieldNames.ttl]: 1

@@ -32,4 +32,7 @@ module.exports = {
   name: packageName,
   displayName: packageName,
   rootDir: '../..',
+  testPathIgnorePatterns: [
+    `<rootDir>/packages/${packageName}/tests/__util__\\.ts`
+  ]
 };
