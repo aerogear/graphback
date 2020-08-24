@@ -17,7 +17,7 @@ export function createKeycloakCRUDService(authConfigList: CrudServicesAuthConfig
   return (model: ModelDefinition, dataProvider: GraphbackDataProvider): GraphbackCRUDService => {
     const service = serviceCreator(model, dataProvider);
     const objConfig = authConfigList[model.graphqlType.name];
-    const keycloakService = new KeycloakCrudService({ service, authConfig: objConfig });
+    const keycloakService = new KeycloakCrudService(model, { service, authConfig: objConfig });
 
     return keycloakService;
   }

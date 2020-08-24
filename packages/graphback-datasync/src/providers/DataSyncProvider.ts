@@ -1,6 +1,6 @@
-import { GraphbackDataProvider, GraphbackContext } from "@graphback/core";
+import { GraphbackDataProvider, GraphbackContext, QueryFilter } from "@graphback/core";
 
 export interface DataSyncProvider<Type = any> extends GraphbackDataProvider<Type> {
 
-  sync(lastSync: Date, context: GraphbackContext, filter?: any, limit?: number): Promise<Type[]>;
+  sync(lastSync: Date, selectedFields?: string[], filter?: QueryFilter, limit?: number): Promise<Type[]>;
 }

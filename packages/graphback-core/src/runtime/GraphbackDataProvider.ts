@@ -1,4 +1,4 @@
-import { GraphbackPage, GraphbackOrderBy } from "./interfaces"
+import { GraphbackPage, GraphbackOrderBy, FindByArgs } from "./interfaces"
 import { QueryFilter } from './QueryFilter';
 
 /**
@@ -14,7 +14,7 @@ import { QueryFilter } from './QueryFilter';
  * @see GraphbackCRUDService
  */
 //tslint:disable-next-line: no-any
-export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
+export interface GraphbackDataProvider<Type = any> {
 
   /**
    * Implementation for object creation
@@ -23,7 +23,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param data input data
    * @param context context object passed from graphql or rest layer
    */
-  create(data: Type, context: GraphbackContext): Promise<Type>;
+  create(data: Type, selectedFields?: string[]): Promise<Type>;
 
   /**
    * Implementation for object updates
@@ -32,7 +32,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param data input data
    * @param context context object passed from graphql or rest layer
    */
-  update(data: Type, context: GraphbackContext): Promise<Type>;
+  update(data: Partial<Type>, selectedFields?: string[]): Promise<Type>;
 
   /**
    * Implementation for object deletes
@@ -41,7 +41,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param data data used for checking consistency
    * @param context context object passed from graphql or rest layer
    */
-  delete(data: Type, context: GraphbackContext): Promise<Type>;
+  delete(data: Partial<Type>, selectedFields?: string[]): Promise<Type>;
 
   /**
    * Implementation for finding a single unique object
@@ -49,7 +49,7 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param args filter by unique attriburtes
    * @param context context object passed from graphql or rest layer
    */
-  findOne(args: Partial<Type>, context: GraphbackContext): Promise<Type>;
+  findOne(args: Partial<Type>, selectedFields?: string[]): Promise<Type>;
   /**
    * Implementation for reading objects with filtering capabilities
    *
@@ -58,14 +58,14 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param page paging context
    * @param orderBy gives the ability to order the results based on a field in ascending or descending order
    */
-  findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]>;
+  findBy(args?: FindByArgs, selectedFields?: string[]): Promise<Type[]>;
 
   /**
    * Implementation for counting number of objects with filtering capabilities
    *
    * @param filter filter by specific type
    */
-  count(filter: any): Promise<number>;
+  count(filter: QueryFilter): Promise<number>;
 
   /**
    * Read multiple items by their id's (used for lazy data loading purposes)
@@ -75,5 +75,5 @@ export interface GraphbackDataProvider<Type = any, GraphbackContext = any> {
    * @param context fields to select from datasource
    * @param filter filter by specific type
    */
-  batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]>
+  batchRead(relationField: string, ids: string[], filter: QueryFilter, selectedFields?: string[]): Promise<Type[][]>
 }

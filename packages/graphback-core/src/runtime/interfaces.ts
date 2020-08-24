@@ -1,5 +1,6 @@
 import { ModelDefinition } from '..';
 import { GraphbackCRUDService } from './GraphbackCRUDService';
+import { QueryFilter } from './QueryFilter';
 import { GraphbackDataProvider } from '.';
 
 /**
@@ -8,23 +9,13 @@ import { GraphbackDataProvider } from '.';
 export interface GraphbackServiceConfigMap {
   [modelName: string]: GraphbackCRUDService
 }
-/**
- * Contains resolver options
- */
-export interface GraphbackResolverOptions {
-  selectedFields: string[],
-  aggregations?: { // A map that indicates the type of aggreation that can be perfomed withing the current context
-    count?: boolean
-  }
-}
 
 /**
  * GraphQL context interface according to Graphback runtime layer format
  */
 export interface GraphbackContext {
   graphback: {
-    services: GraphbackServiceConfigMap,
-    options: GraphbackResolverOptions
+    services: GraphbackServiceConfigMap
   }
 }
 
@@ -44,6 +35,15 @@ export type SortDirection = 'asc' | 'desc'
 export interface GraphbackOrderBy {
   order?: SortDirection
   field: string
+}
+
+/**
+ * Arguments interface for the `findBy` CRUD query
+ */
+export interface FindByArgs {
+  filter?: QueryFilter
+  page?: GraphbackPage
+  orderBy?: GraphbackOrderBy
 }
 
 /**

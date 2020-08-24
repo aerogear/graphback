@@ -29,7 +29,7 @@ describe('Soft deletion test', () => {
 
     const { Post } = context.providers;
 
-    const first = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [DataSyncFieldNames.deleted]}}});
+    const first = await Post.create({ text: 'TestPost' });
     expect(first[DataSyncFieldNames.deleted]).toEqual(false)
   })
 
@@ -37,14 +37,14 @@ describe('Soft deletion test', () => {
     context = await createTestingContext(postSchema);
 
     const { Post } = context.providers;
-    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'TestPost' });
 
     // check count
     let count = await Post.count({});
     expect(count).toEqual(1);
 
     // delete the Post
-    const deletedPost = await Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: [DataSyncFieldNames.deleted]}}});
+    const deletedPost = await Post.delete({ _id: createdPost._id });
     expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
 
     // re check count after deletion
@@ -53,21 +53,21 @@ describe('Soft deletion test', () => {
 
     // Tests that we cannot find, update or delete it anymore
     // This test fails if we can still can
-    await expect(Post.findOne({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(NoDataError);
+    await expect(Post.findOne({ _id: createdPost._id })).rejects.toThrowError(NoDataError);
   })
 
   it('sets ttl field on deletion', async () => {
     context = await createTestingContext(postSchema);
 
     const { Post } = context.providers;
-    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'TestPost' });
 
     // check count
     const count = await Post.count({});
     expect(count).toEqual(1);
 
     // delete the Post
-    const deletedPost = await Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: [DataSyncFieldNames.deleted, DataSyncFieldNames.ttl]}}});
+    const deletedPost = await Post.delete({ _id: createdPost._id });
     expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
     expect(deletedPost[DataSyncFieldNames.ttl] instanceof Date).toEqual(true);
   })
@@ -88,14 +88,14 @@ describe('Soft deletion test', () => {
     `);
 
     const { Post } = context.providers;
-    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'TestPost' });
 
     // check count
     let count = await Post.count({});
     expect(count).toEqual(1);
 
     // delete the Post
-    const deletedPost = await Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: []}}});
+    const deletedPost = await Post.delete({ _id: createdPost._id });
     expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
 
     // check count again
@@ -109,42 +109,42 @@ describe('Soft deletion test', () => {
     context = await createTestingContext(postSchema);
 
     const { Post } = context.providers;
-    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'TestPost' });
 
     // check count
     let count = await Post.count({});
     expect(count).toEqual(1);
 
     // delete the Post
-    const deletedPost = await Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: [DataSyncFieldNames.deleted]}}});
+    const deletedPost = await Post.delete({ _id: createdPost._id });
     expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
 
     // re check count after deletion
     count = await Post.count({});
     expect(count).toEqual(0);
 
-    await expect(Post.update({ _id: createdPost._id, text: 'an update too late' }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(NoDataError);
+    await expect(Post.update({ _id: createdPost._id, text: 'an update too late' })).rejects.toThrowError(NoDataError);
   })
 
   it('cannot delete a deleted document', async () => {
     context = await createTestingContext(postSchema);
 
     const { Post } = context.providers;
-    const createdPost = await Post.create({ text: 'TestPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'TestPost' });
 
     // check count
     let count = await Post.count({});
     expect(count).toEqual(1);
 
     // delete the Post
-    const deletedPost = await Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: [DataSyncFieldNames.deleted]}}});
+    const deletedPost = await Post.delete({ _id: createdPost._id });
     expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
 
     // re check count after deletion
     count = await Post.count({});
     expect(count).toEqual(0);
 
-    await expect(Post.delete({ _id: createdPost._id }, {graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(NoDataError);
+    await expect(Post.delete({ _id: createdPost._id })).rejects.toThrowError(NoDataError);
   })
 
   it('sets _deleted when field absent', async () => {
@@ -153,11 +153,11 @@ describe('Soft deletion test', () => {
     const { db, providers } = context;
     const { Post } = providers;
 
-    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost'})).insertedId
+    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost' })).insertedId
 
     const updateTime = 1593263130987
     advanceTo(updateTime);
-    const deletedPost = await Post.delete({ _id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
+    const deletedPost = await Post.delete({ _id: postid, text: 'SeriousPost' });
     expect(deletedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
     expect(deletedPost[DataSyncFieldNames.deleted]).toEqual(true);
   })
@@ -227,7 +227,7 @@ describe('Delta Queries', () => {
     advanceTo(startTime);
     // Create some posts
 
-    const createdPost = await Post.create({ text: 'Test Post' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'Test Post' });
 
     expect(createdPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(startTime);
   });
@@ -241,13 +241,13 @@ describe('Delta Queries', () => {
     advanceTo(startTime);
     // Create a posts
 
-    const createdPost = await Post.create({ text: 'Test Post' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt]}}});
+    const createdPost = await Post.create({ text: 'Test Post' });
 
     const updateTime = 1593263130987
     advanceTo(updateTime);
 
     // Update the post
-    const updatedPost = await Post.update({ _id: createdPost._id, text: 'Test Post' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
+    const updatedPost = await Post.update({ _id: createdPost._id, text: 'Test Post' });
     expect(updatedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
   });
 
@@ -257,11 +257,11 @@ describe('Delta Queries', () => {
     const { db, providers } = context;
     const { Post } = providers;
 
-    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost'})).insertedId
+    const postid = await (await db.collection(defaultTableNameTransform('Post', 'to-db')).insertOne({ text: 'TestPost' })).insertedId
 
     const updateTime = 1593263130987
     advanceTo(updateTime);
-    const updatedPost = await Post.update({ _id: postid, text: 'SeriousPost' }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.deleted]}}});
+    const updatedPost = await Post.update({ _id: postid, text: 'SeriousPost' });
     expect(updatedPost[DataSyncFieldNames.lastUpdatedAt]).toEqual(updateTime)
   })
 
@@ -274,15 +274,15 @@ describe('Delta Queries', () => {
     advanceTo(startTime);
     // Create some posts
 
-    await Post.create({ text: 'the first post' }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    await Post.create({ text: 'the first post' });
 
     const t1 = 1596124171069
     advanceTo(t1)
 
-    await Post.create({ text: 'the second post' }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    await Post.create({ text: 'the second post' });
 
     // Sync query
-    const deltaPosts = await Post.sync(new Date(t1), {graphback: {services: {}, options: { selectedFields: fields}}});
+    const deltaPosts = await Post.sync(new Date(t1));
 
     expect(deltaPosts.length).toEqual(1);
   });
@@ -294,11 +294,11 @@ describe('Delta Queries', () => {
 
     // Create some posts
     for (const postTitle of ["post", "post2", "trains"]) {
-      await Post.create({ text: postTitle }, {graphback: {services: {}, options: { selectedFields: fields}}});
+      await Post.create({ text: postTitle });
     }
 
     // Sync query
-    const deltaPosts = await Post.sync(new Date(0), {graphback: {services: {}, options: { selectedFields: fields}}}, {
+    const deltaPosts = await Post.sync(new Date(0), undefined, {
       text: {
         startsWith: 'post'
       }
@@ -326,11 +326,11 @@ describe('Delta Queries', () => {
 
     // Create some posts
     for (const postTitle of ["post", "post2", "trains"]) {
-      await Post.create({ text: postTitle }, {graphback: {services: {}, options: { selectedFields: fields}}});
+      await Post.create({ text: postTitle });
     }
 
     // Sync query
-    const deltaPosts = await Post.sync(new Date(0), {graphback: {services: {}, options: { selectedFields: fields}}}, undefined, 1);
+    const deltaPosts = await Post.sync(new Date(0), undefined, undefined, 1);
 
     expect(deltaPosts.length).toEqual(1);
   })

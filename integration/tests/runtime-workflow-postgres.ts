@@ -13,11 +13,11 @@ import { loadDocuments } from '@graphql-tools/load';
 import * as Knex from 'knex';
 import { buildGraphbackAPI, GraphbackAPI } from "graphback/src";
 import { DocumentNode } from 'graphql';
+import { ObjectID } from 'mongodb';
 import { migrateDB } from '../../packages/graphql-migrations/src';
 import { createKnexDbProvider } from "../../packages/graphback-runtime-knex";
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
-import { ObjectID } from 'mongodb';
 
 /** global config */
 let db: Knex;
@@ -113,6 +113,25 @@ query getNoteWithFullDataSet {
         ratings
       }
     }
+}`;
+
+const FIND_NOTES_WITH_COUNT = gql`
+query findNotes {
+  findNotes {
+    items {
+      id
+    }
+    count
+  }
+}`;
+
+const FIND_NOTES_WITHOUT_COUNT = gql`
+query findNotes {
+  findNotes {
+    items {
+      id
+    }
+  }
 }`;
 
 beforeAll(async () => {
@@ -283,6 +302,26 @@ test('Find all notes', async () => {
   })
 })
 
+test('Find all notes with count', async () => {
+  const { data, errors } = await client.query({
+    operationName: 'findNotes',
+    query: FIND_NOTES_WITH_COUNT
+  })
+
+  expect(data).toBeDefined()
+  expect(data.findNotes.count).toBeDefined()
+})
+
+test('Find all notes without count', async () => {
+  const { data } = await client.query({
+    operationName: 'findNotes',
+    query: FIND_NOTES_WITHOUT_COUNT
+  })
+
+  expect(data).toBeDefined()
+  expect(data.findNotes.count).toBeUndefined()
+})
+
 test('Find all notes except the first', async () => {
   const { data } = await client.query({
     operationName: 'findNotes',
@@ -407,15 +446,16 @@ test('Find all comments', async () => {
 })
 
 test('filter comments using built in scalars', async () => {
-  const { data } = await client.query({ operationName: "findComments", query: documents,
-  variables: {
-    filter: {
-      createdAt: {
-        eq: createdAt.getTime()
+  const { data } = await client.query({
+    operationName: "findComments", query: documents,
+    variables: {
+      filter: {
+        createdAt: {
+          eq: createdAt.getTime()
+        }
       }
     }
-  }
-});
+  });
 
   expect(data).toBeDefined();
   expect(data.findComments).toEqual({
@@ -586,44 +626,46 @@ test('Delete Note 1', async () => {
 });
 
 test('getComment in simultaneous with different resolvers pinfo', async () => {
-  const { data } = await client.query({ operationName:"getCommentDetailsAtOnce", query: GET_COMMENTS , variables: {
-    id: 1
-  }});
+  const { data } = await client.query({
+    operationName: "getCommentDetailsAtOnce", query: GET_COMMENTS, variables: {
+      id: 1
+    }
+  });
 
   expect(data).toEqual({
-       firstQuery:{
-          id: "1",
-          note:{
-             id:"1",
-             comments:[
-                {
-                   text:"Note A Comment"
-                },
-                {
-                   text:"Note A Comment 2"
-                }
-             ]
+    firstQuery: {
+      id: "1",
+      note: {
+        id: "1",
+        comments: [
+          {
+            text: "Note A Comment"
+          },
+          {
+            text: "Note A Comment 2"
           }
-       },
-       secondQuery:{
-          id: "1",
-          note:{
-             title:"Note 1 New Title",
-             comments:[
-                {
-                   id:"1"
-                },
-                {
-                   id:"2"
-                }
-             ]
+        ]
+      }
+    },
+    secondQuery: {
+      id: "1",
+      note: {
+        title: "Note 1 New Title",
+        comments: [
+          {
+            id: "1"
+          },
+          {
+            id: "2"
           }
-       }
- });
+        ]
+      }
+    }
+  });
 })
 
 test('get full dataset from custom query without querying the database again', async () => {
-  const { data } = await client.query({ operationName:"getNoteWithFullDataSet", query: GET_NOTE_WITH_CUSTOM_QUERY });
+  const { data } = await client.query({ operationName: "getNoteWithFullDataSet", query: GET_NOTE_WITH_CUSTOM_QUERY });
   customNoteWithFullDataSet.comments[2].metadata = null;
   expect(data.getNoteWithFullDataSet).toEqual(customNoteWithFullDataSet);
 })

@@ -173,6 +173,25 @@
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest",
       }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Integration Test File",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "--runInBand"
+      ],
+      "env": {
+        "PORT": "55432"
+      },
+      "cwd": "${workspaceFolder}/integration",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      }
     }
   ]
 }

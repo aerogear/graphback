@@ -1,4 +1,4 @@
-import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError, QueryFilter, ModelDefinition } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError, QueryFilter, ModelDefinition, FindByArgs } from '@graphback/core';
 import * as Knex from 'knex';
 import { buildQuery } from './knexQueryMapper';
 
@@ -25,24 +25,24 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     this.tableName = this.tableMap.tableName;
   }
 
-  public async create(data: Type, context: GraphbackContext): Promise<Type> {
+  public async create(data: Type, selectedFields?: string[]): Promise<Type> {
     const { data: createData } = getDatabaseArguments(this.tableMap, data);
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db(this.tableName).insert(createData).returning(this.getSelectedFields(context));
+    const dbResult = await this.db(this.tableName).insert(createData).returning(this.getSelectedFields(selectedFields));
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }
     throw new NoDataError(`Cannot create ${this.tableName}`);
   }
 
-  public async update(data: Type, context: GraphbackContext): Promise<Type> {
+  public async update(data: Partial<Type>, selectedFields?: string[]): Promise<Type> {
     const { idField, data: updateData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
     const updateResult = await this.db(this.tableName).update(updateData).where(idField.name, '=', idField.value);
     if (updateResult === 1) {
       //tslint:disable-next-line: await-promise
-      const dbResult = await this.db.select(this.getSelectedFields(context)).from(this.tableName).where(idField.name, '=', idField.value);
+      const dbResult = await this.db.select(this.getSelectedFields(selectedFields)).from(this.tableName).where(idField.name, '=', idField.value);
       if (dbResult && dbResult[0]) {
         return dbResult[0]
       }
@@ -50,12 +50,11 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     throw new NoDataError(`Cannot update ${this.tableName}`);
   }
 
-  //tslint:disable-next-line: no-reserved-keywords
-  public async delete(data: Type, context: GraphbackContext): Promise<Type> {
+  public async delete(data: Partial<Type>, selectedFields?: string[]): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
-    const beforeDelete = await this.db.select(this.getSelectedFields(context)).from(this.tableName).where(idField.name, '=', idField.value);
+    const beforeDelete = await this.db.select(this.getSelectedFields(selectedFields)).from(this.tableName).where(idField.name, '=', idField.value);
     //tslint:disable-next-line: await-promise
     const dbResult = await this.db(this.tableName).where(idField.name, '=', idField.value).del()
     if (dbResult && beforeDelete[0]) {
@@ -64,10 +63,10 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(data)}`);
   }
 
-  public async findOne(args: Partial<Type>, context: GraphbackContext): Promise<Type> {
+  public async findOne(args: Partial<Type>, selectedFields?: string[]): Promise<Type> {
     let result: Type
     try {
-      result = await this.db.select(this.getSelectedFields(context)).from(this.tableName).where(args).first();
+      result = await this.db.select(this.getSelectedFields(selectedFields)).from(this.tableName).where(args).first();
     } catch (err) {
       throw new NoDataError(`Cannot find a result for ${this.tableName} with filter: ${JSON.stringify(args)}`)
     }
@@ -75,36 +74,33 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     return result
   }
 
-  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
-    let query = buildQuery(this.db, filter).select(this.getSelectedFields(context)).from(this.tableName)
+  public async findBy(args?: FindByArgs, selectedFields?: string[]): Promise<Type[]> {
+    let query = buildQuery(this.db, args?.filter).select(this.getSelectedFields(selectedFields)).from(this.tableName)
 
-    if (orderBy) {
-      query = query.orderBy(orderBy.field, orderBy.order)
+    if (args?.orderBy) {
+      query = query.orderBy(args.orderBy.field, args.orderBy.order)
     }
 
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.usePage(query, page);
+    const dbResult = await this.usePage(query, args?.page);
 
     if (dbResult) {
       return dbResult;
     }
-    throw new NoDataError(`No results for ${this.tableName} query and filter: ${JSON.stringify(filter)}`);
+    throw new NoDataError(`No results for ${this.tableName} query and filter: ${JSON.stringify(args?.filter)}`);
   }
 
-  public async count(filter: any): Promise<number> {
+  public async count(filter?: QueryFilter): Promise<number> {
     const dbResult = await buildQuery(this.db, filter).from(this.tableName).count();
     const count: any = Object.values(dbResult[0])[0];
 
     return parseInt(count, 10);
   }
 
-  public async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]> {
-    //TODO: Use mapping when relationships are done
-    //tslint:disable-next-line: await-promise
-    const dbResult = await buildQuery(this.db, filter).select(this.getSelectedFields(context)).from(this.tableName).whereIn(relationField, ids);
+  public async batchRead(relationField: string, ids: string[], filter?: QueryFilter, selectedFields?: string[]): Promise<Type[][]> {
+    const dbResult = await buildQuery(this.db, filter).select(this.getSelectedFields(selectedFields)).from(this.tableName).whereIn(relationField, ids);
 
     if (dbResult) {
-
       const resultsById = ids.map((id: string) => dbResult.filter((data: any) => {
         return data[relationField].toString() === id.toString();
       }))
@@ -115,10 +111,8 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     throw new NoDataError(`No results for ${this.tableName} and id: ${JSON.stringify(ids)}`);
   }
 
-  protected getSelectedFields(context: GraphbackContext) {
-    const selectedFields = context.graphback.options?.selectedFields || [];
-
-    return selectedFields.length ? selectedFields : "*";
+  protected getSelectedFields(selectedFields: string[]) {
+    return selectedFields?.length ? selectedFields : "*";
   }
 
   private usePage(query: Knex.QueryBuilder, page?: GraphbackPage) {

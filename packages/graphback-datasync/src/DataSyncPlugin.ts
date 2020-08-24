@@ -107,7 +107,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
         throw Error("Service is not a DataSyncCRUDService. Please use DataSyncCRUDService and DataSync-compliant DataProvider with DataSync Plugin to get Delta Queries.")
       }
 
-      return dataSyncService.sync(args.lastSync, context, args.filter, args.limit);
+      return dataSyncService.sync(args.lastSync, info, args.filter, args.limit);
     }
   }
 
