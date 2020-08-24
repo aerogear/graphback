@@ -1,6 +1,7 @@
 {
   "name": "graphback-benchmarks",
   "version": "0.15.1",
+  "private": true,
   "description": "Benchmarks for Graphback, a fast and low-overhead web framework.",
   "scripts": {
     "start": "yarn bench && yarn compare:stats",
