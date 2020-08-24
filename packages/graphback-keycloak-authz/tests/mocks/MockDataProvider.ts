@@ -1,32 +1,32 @@
 /* eslint-disable */
-import { GraphbackDataProvider, GraphbackPage, GraphbackOrderBy } from '@graphback/core';
+import { GraphbackDataProvider, GraphbackPage, GraphbackOrderBy, FindByArgs, QueryFilter } from '@graphback/core';
 
-export class MockDataProvider<Type = any, GraphbackContext = any> implements GraphbackDataProvider<any, any> {
-  async create(data: Type, context: GraphbackContext) {
+export class MockDataProvider<Type = any> implements GraphbackDataProvider<Type> {
+  async create(data: Type, selectedFields: string[]) {
     return data
   }
 
-  async update(data: Type, context: GraphbackContext) {
+  async update(data: Type, selectedFields: string[]) {
     return data
   }
 
-  async delete(data: Type, context: GraphbackContext) {
+  async delete(data: Type, selectedFields: string[]) {
     return data
   }
 
-  async findOne(args: Partial<Type>, context: GraphbackContext) {
-    return args
+  async findOne(args: Partial<Type>, selectedFields: string[]) {
+    return args as Type
   }
 
-  async findBy(filter: any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy) {
+  async findBy(args: FindByArgs, selectedFields: string[], page?: GraphbackPage, orderBy?: GraphbackOrderBy) {
     return []
   }
 
-  async count(filter: any) {
+  async count(filter: QueryFilter) {
     return 1
   }
 
-  async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext) {
+  async batchRead(relationField: string, ids: string[], filter: QueryFilter, selectedFields: string[]) {
     return []
   }
 }

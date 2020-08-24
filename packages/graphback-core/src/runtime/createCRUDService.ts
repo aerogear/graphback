@@ -18,6 +18,6 @@ export function createCRUDService(config?: CreateCRUDServiceOptions): ServiceCre
       crudOptions: model.crudOptions
     }
 
-    return new CRUDService(model.graphqlType.name, dataProvider, serviceConfig)
+    return new CRUDService(model, dataProvider, serviceConfig)
   }
 }

@@ -6,7 +6,7 @@ import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IObjectTypeResolver } from '@graphql-tools/utils';
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLInputObjectType, GraphQLScalarType } from 'graphql';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, graphbackScalarsTypes, getResolverInfoFieldsList, GraphbackTimestamp, FILTER_SUPPORTED_SCALARS } from '@graphback/core';
+import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, graphbackScalarsTypes, getResolverInfoFieldsList, GraphbackTimestamp, FILTER_SUPPORTED_SCALARS, FindByArgs } from '@graphback/core';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
 import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, getInputName } from './definitions/schemaDefinitions';
 
@@ -508,13 +508,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
-
-      return context.graphback.services[modelName].create(args.input, { ...context, graphback });
+      return context.graphback.services[modelName].create(args.input, context, info);
     }
   }
 
@@ -533,13 +527,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
-
-      return context.graphback.services[modelName].update(args.input, { ...context, graphback })
+      return context.graphback.services[modelName].update(args.input, context, info)
     }
   }
 
@@ -558,13 +546,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
-
-      return context.graphback.services[modelName].delete(args.input, { ...context, graphback })
+      return context.graphback.services[modelName].delete(args.input, context, info)
     }
   }
 
@@ -579,15 +561,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelName = modelType.name;
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
-    queryObj[findField] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model, "items");
-      const count = getResolverInfoFieldsList(info).some((field: string) => field === "count");
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields, aggregations: { count } }
-      };
-
-      return context.graphback.services[modelName].findBy(args.filter, { ...context, graphback }, args.page, args.orderBy)
+    queryObj[findField] = async (_: any, args: FindByArgs, context: GraphbackContext, info: GraphQLResolveInfo) => {
+      return context.graphback.services[modelName].findBy(args, context, info)
     }
   }
 
@@ -608,13 +583,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
-
-      return context.graphback.services[modelName].findOne({ [primaryKeyLabel]: args.id }, { ...context, graphback })
+      return context.graphback.services[modelName].findOne({ [primaryKeyLabel]: args.id }, context, info)
     }
   }
 
@@ -702,18 +671,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-      selectedFields.push(relationship.relationForeignKey);
-      const graphback = {
-        services: context.graphback.services,
-        options: { selectedFields }
-      };
-
       return context.graphback.services[modelName].batchLoadData(
         relationship.relationForeignKey,
         parent[model.primaryKey.name],
         args.filter,
-        { ...context, graphback }
+        context,
+        info
       );
     }
   }
@@ -740,7 +703,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-
       const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
       selectedFields.push(relationIdField.name);
 
@@ -752,13 +714,8 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       if (!context[dataLoaderName]) {
         context[dataLoaderName] = new DataLoader<string, any>(async (keys: string[]) => {
 
-          const graphback = {
-            services: context.graphback.services,
-            options: { selectedFields }
-          };
-
           const service = context.graphback.services[modelName];
-          const results = await service.findBy({ [relationIdField.name]: { in: keys } }, { ...context, graphback });
+          const results = await service.findBy({ [relationIdField.name]: { in: keys }, }, context, info);
 
           return keys.map((key: string) => {
             return results.items.find((item: any) => item[relationIdField.name].toString() === key.toString());

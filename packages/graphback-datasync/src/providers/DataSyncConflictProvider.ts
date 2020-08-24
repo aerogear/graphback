@@ -25,12 +25,10 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     this.deltaSource = new MongoDeltaSource(model, client, this.conflictConfig.deltaTTL);
   }
 
-  public async create(data: any, context: GraphbackContext): Promise<Type> {
-    context.graphback.options.selectedFields = []
-
+  public async create(data: any): Promise<Type> {
     data[DataSyncFieldNames.version] = 1;
 
-    const result = await super.create(data, context);
+    const result = await super.create(data);
 
     await this.deltaSource.insertDiff(result).catch((e: any) => { console.error(`Error in inserting delta: ${e}`) });
 
@@ -38,7 +36,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     return result;
   }
 
-  public async update(updateDocument: any, context: GraphbackContext): Promise<Type> {
+  public async update(updateDocument: any, selectedFields: string[]): Promise<Type> {
     const { _id } = updateDocument;
 
     for(let i = 0; i < MAX_RETRIES; i++) {
@@ -59,7 +57,6 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
         if (conflict) {
           resolvedUpdate = this.conflictConfig.conflictResolution.resolveUpdate(conflict);
         }
-
       }
 
       if (Object.keys(resolvedUpdate).length === 0) {
@@ -71,7 +68,9 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
       resolvedUpdate[DataSyncFieldNames.lastUpdatedAt] = Date.now();
 
-      const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedUpdate }, { returnOriginal: false });
+      const projection = this.buildProjectionOption(selectedFields)
+
+      const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedUpdate }, { projection, returnOriginal: false });
       if (value) {
         await this.deltaSource.insertDiff(value);
 
@@ -82,7 +81,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     throw new Error(`Cannot update ${this.collectionName}`);
   }
 
-  public async delete(data: any, context: GraphbackContext): Promise<Type> {
+  public async delete(data: any, selectedFields: string[]): Promise<Type> {
     const { _id } = data;
 
     for(let i = 0; i < MAX_RETRIES; i++) {
@@ -117,7 +116,9 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
       resolvedData[DataSyncFieldNames.ttl] = new Date(Date.now() + (this.TTLinSeconds * 1000));
 
-      const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedData }, { returnOriginal: false });
+      const projection = this.buildProjectionOption(selectedFields)
+
+      const { value } = await this.db.collection(this.collectionName).findOneAndUpdate(updateFilter, { $set: resolvedData }, { projection, returnOriginal: false });
       if (value) {
         await this.deltaSource.insertDiff(value);
 

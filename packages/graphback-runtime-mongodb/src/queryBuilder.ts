@@ -1,5 +1,5 @@
 import * as escapeRegex from "escape-string-regexp";
-import { metadataMap } from "@graphback/core";
+import { metadataMap, QueryFilter } from "@graphback/core";
 
 const { fieldNames } =  metadataMap;
 
@@ -112,7 +112,7 @@ function stringTimestampsToInt(filter: any, key: string): any {
   return filter;
 }
 
-function traverse(filter: any, coerceTSFields: boolean): any {
+function traverse(filter: QueryFilter, coerceTSFields: boolean): any {
 
   Object.keys(filter).forEach((key: string) => {
 
@@ -166,7 +166,7 @@ function traverse(filter: any, coerceTSFields: boolean): any {
   return filter
 }
 
-export function buildQuery(filter: any, coerceTSFields: boolean) {
+export function buildQuery(filter: QueryFilter, coerceTSFields: boolean) {
   let query = {};
   if (filter) { query = traverse(filter, coerceTSFields); }
 

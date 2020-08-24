@@ -14,13 +14,13 @@ export class SQLiteKnexDBDataProvider<Type = any> extends KnexDBDataProvider<Typ
     super(model, db);
   }
 
-  public async create(data: Type, context: GraphbackContext): Promise<Type> {
+  public async create(data: Type, selectedFields?: string[]): Promise<Type> {
     const { data: createData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
     const [id] = await this.db(this.tableName).insert(createData);
     //tslint:disable-next-line: await-promise
-    const dbResult = await this.db.select(this.getSelectedFields(context)).from(this.tableName).where(this.tableMap.idField, '=', id)
+    const dbResult = await this.db.select(this.getSelectedFields(selectedFields)).from(this.tableName).where(this.tableMap.idField, '=', id)
     if (dbResult && dbResult[0]) {
       return dbResult[0]
     }

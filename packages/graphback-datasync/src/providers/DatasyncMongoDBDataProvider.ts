@@ -1,4 +1,4 @@
-import { getDatabaseArguments, metadataMap, GraphbackContext, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, StringInput, ModelDefinition } from '@graphback/core';
+import { getDatabaseArguments, NoDataError, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, QueryFilter, ModelDefinition, FindByArgs } from '@graphback/core';
 import { ObjectId } from 'mongodb';
 import { MongoDBDataProvider, applyIndexes } from '@graphback/runtime-mongo';
 import { DataSyncFieldNames, getDataSyncAnnotationData } from "../util";
@@ -36,29 +36,28 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     this.coerceTSFields = true;
   }
 
-  public async create(data: any, context: GraphbackContext): Promise<Type> {
+  public async create(data: any): Promise<Type> {
     data[DataSyncFieldNames.deleted] = false;
     data[DataSyncFieldNames.lastUpdatedAt] = Date.now();
 
-    return super.create(data, context);
+    return super.create(data);
   }
 
-  public async update(data: any, context: GraphbackContext): Promise<Type> {
-    
+  public async update(data: any, selectedFields?: string[]): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
-    
+
     if (!idField.value) {
       throw new NoDataError(`Cannot update ${this.collectionName} - missing ID field`)
     }
-    
+
     this.fieldTransformMap[TransformType.UPDATE]
       .forEach((f: FieldTransform) => {
         data[f.fieldName] = f.transform(f.fieldName);
       });
-    
+
     data[DataSyncFieldNames.lastUpdatedAt] = Date.now();
     const objectId = new ObjectId(idField.value);
-    const projection = this.buildProjectionOption(context);
+    const projection = this.buildProjectionOption(selectedFields);
     const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });
     if (result?.value) {
       return result.value;
@@ -66,7 +65,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async delete(data: any, context: GraphbackContext): Promise<Type> {    
+  public async delete(data: any, selectedFields?: string[]): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
     data = {};
     data[DataSyncFieldNames.lastUpdatedAt] = Date.now();
@@ -79,7 +78,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     data[DataSyncFieldNames.deleted] = true;
     data[DataSyncFieldNames.ttl] = new Date(Date.now() + (this.TTLinSeconds * 1000));
     const objectId = new ObjectId(idField.value);
-    const projection = this.buildProjectionOption(context);
+    const projection = this.buildProjectionOption(selectedFields);
     const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId, [DataSyncFieldNames.deleted]: { $ne: true } }, { $set: data }, { returnOriginal: false, projection });
     if (result?.value) {
       return result.value;
@@ -88,11 +87,11 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Could not delete from ${this.collectionName}`);
   }
 
-  public async findOne(filter: any, context: GraphbackContext): Promise<Type> {
+  public async findOne(filter: any, selectedFields?: string[]): Promise<Type> {
     if (filter.id) {
       filter = { _id: new ObjectId(filter.id) }
     }
-    const projection = this.buildProjectionOption(context);
+    const projection = this.buildProjectionOption(selectedFields);
     const query = this.db.collection(this.collectionName).findOne({
       ...filter,
       [DataSyncFieldNames.deleted]: { $ne: true }
@@ -105,33 +104,43 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: QueryFilter<Type> | any, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
-    if (filter === undefined) {
-      filter = {};
+  public async findBy(args?: FindByArgs, selectedFields?: string[]): Promise<Type[]> {
+    if (!args) {
+      args = {
+        filter: {}
+      }
+    } else if (!args.filter) {
+      args.filter = {};
     }
 
-    filter[DataSyncFieldNames.deleted] = { ne: true };
+    args.filter[DataSyncFieldNames.deleted] = { ne: true };
 
-    return super.findBy(filter, context, page, orderBy);
+    return super.findBy(args, selectedFields);
   }
 
-  public async count(filter: any): Promise<number> {
-    if (filter === undefined) {
-      filter = {};
-    }
+  public async count(filter: QueryFilter): Promise<number> {
+    filter = filter || {}
 
     filter[DataSyncFieldNames.deleted] = { ne: true };
 
     return super.count(filter);
   }
 
-  public sync(lastSync: Date, context: GraphbackContext, filter?: any, limit?: number): Promise<Type[]> {
-
-    return super.findBy({
-      ...filter,
-      [DataSyncFieldNames.lastUpdatedAt]: {
-        ge: lastSync.valueOf()
+  public sync(lastSync: Date, selectedFields?: string[], filter?: QueryFilter, limit?: number): Promise<Type[]> {
+    filter = filter || {};
+    
+    const args: FindByArgs = {
+      filter: {
+        ...filter,
+        [DataSyncFieldNames.lastUpdatedAt]: {
+          ge: lastSync.valueOf()
+        }
+      },
+      page: {
+        limit
       }
-    }, context, { limit }, undefined);
+    }
+
+    return super.findBy(args, selectedFields);
   }
 }

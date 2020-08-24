@@ -1,10 +1,11 @@
+/* eslint-disable max-lines */
 //tslint:disable-next-line: match-default-export-name
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
-import { Context,createTestingContext } from "./__util__";
 import { GraphbackCoreMetadata } from '@graphback/core';
 import { buildSchema } from 'graphql';
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
+import { Context, createTestingContext } from "./__util__";
 
 describe('MongoDBDataProvider Basic CRUD', () => {
   interface Todo {
@@ -41,6 +42,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
   //all tests can run parallel
 
 
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   afterEach(async (done) => {
     if (context) {
       await context.server.stop();
@@ -74,9 +76,9 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
     try {
       const metadata = new GraphbackCoreMetadata({ crudMethods: defautConfig }, buildSchema(schema));
-      const  models = metadata.getModelDefinitions()
+      const models = metadata.getModelDefinitions()
       for (const model of models) {
-        new MongoDBDataProvider(model, null);
+        new MongoDBDataProvider(model, undefined);
       }
       expect(true).toBeFalsy(); // should not reach here
     } catch (error) {
@@ -92,18 +94,18 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     });
     let todo: Todo = await context.providers.Todos.create({
       text: 'create a todo',
-    }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    });
 
     expect(todo.text).toEqual('create a todo');
 
     todo = await context.providers.Todos.update({
       _id: todo._id,
       text: 'my updated first todo',
-    }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    }, fields);
 
     expect(todo.text).toEqual('my updated first todo');
 
-    const data = await context.providers.Todos.delete({ _id: todo._id }, {graphback: {services: {}, options: { selectedFields: fields}}});
+    const data = await context.providers.Todos.delete({ _id: todo._id }, fields);
 
     expect(data._id).toEqual(todo._id);
   });
@@ -115,7 +117,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
         Todos: defaultTodoSeed
       }
     });
-    const todos = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: ["text"]}}}, { limit: 1, offset: 1 });
+    const todos = await context.providers.Todos.findBy({ page: { limit: 1, offset: 1 } }, ["text"]);
 
     // check that count is total number of seeded Todos
     const count = await context.providers.Todos.count({});
@@ -133,10 +135,12 @@ describe('MongoDBDataProvider Basic CRUD', () => {
         Todos: defaultTodoSeed
       }
     });
-    const all = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: []}}});
+    const all = await context.providers.Todos.findBy();
     const todos: Todo[] = await context.providers.Todos.findBy({
-      text: { eq: all[0].text },
-    }, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
+      filter: {
+        text: { eq: all[0].text },
+      }
+    }, ["_id"]);
     expect(todos.length).toBeGreaterThan(0);
     const count = await context.providers.Todos.count({
       text: { eq: all[0].text }
@@ -154,9 +158,9 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     for (let i = 0; i < 11; i++) {
       await context.providers.Todos.create({
         text,
-      }, {graphback: {services: {}, options: { selectedFields: fields}}});
+      });
     }
-    const todos: Todo[] = await context.providers.Todos.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: fields}}}, { offset: 0 });
+    const todos: Todo[] = await context.providers.Todos.findBy({ filter: { text: { eq: text } }, page: { offset: 0 } }, fields);
 
     expect(todos.length).toEqual(11);
 
@@ -174,9 +178,9 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     for (let i = 0; i < 2; i++) {
       await context.providers.Todos.create({
         text,
-      }, {graphback: {services: {}, options: { selectedFields: fields}}});
+      });
     }
-    const todos: Todo[] = await context.providers.Todos.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: fields}}}, { limit: 1 });
+    const todos: Todo[] = await context.providers.Todos.findBy({ filter: { text: { eq: text } }, page: { limit: 1 } }, fields);
     expect(todos[0].text).toEqual(text);
   });
 
@@ -190,10 +194,15 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     for (let i = 0; i < 2; i++) {
       await context.providers.Todos.create({
         text,
-      }, {graphback: {services: {}, options: { selectedFields: fields}}});
+      });
     }
 
-    const todos: Todo[] = await context.providers.Todos.findBy({ text: { eq: text } }, {graphback: {services: {}, options: { selectedFields: fields}}}, { limit: 1, offset: 0 });
+    const todos: Todo[] = await context.providers.Todos.findBy({
+      filter: {
+        text: { eq: text }
+      },
+      page: { limit: 1, offset: 0 }
+    }, fields);
     expect(todos.length).toEqual(1);
     expect(todos[0].text).toEqual(text);
   });
@@ -211,7 +220,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       }
     });
 
-    const todos = await context.providers.Todos.findBy({ text: { contains: 'todo' } }, {graphback: {services: {}, options: { selectedFields: fields}}}, undefined, { field: 'text' });
+    const todos = await context.providers.Todos.findBy({ filter: { text: { contains: 'todo' } }, orderBy: { field: 'text' } }, fields);
     for (let t = 0; t < todos.length; t++) {
       expect(todos[t].text).toEqual(`todo${t + 1}`);
     }
@@ -230,7 +239,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       }
     });
 
-    const todos = await context.providers.Todos.findBy({ text: { contains: 'todo' } }, {graphback: {services: {}, options: { selectedFields: fields}}}, undefined, { field: 'text', order: 'desc' });
+    const todos = await context.providers.Todos.findBy({ filter: { text: { contains: 'todo' } }, orderBy: { field: 'text', order: 'desc' } }, fields);
     for (let t = 0; t < todos.length; t++) {
       expect(todos[t].text).toEqual(`todo${5 - t}`);
     }
@@ -252,7 +261,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     const cDate = new Date(2020, 5, 26, 18, 29, 23);
     advanceTo(cDate);
 
-    const res = await context.providers.Note.create({ text: 'asdf' }, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
+    const res = await context.providers.Note.create({ text: 'asdf' });
     expect(res.createdAt).toEqual(cDate.getTime());
     expect(res.createdAt).toEqual(res.updatedAt);
   })
@@ -273,14 +282,14 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     const createDate = new Date(2020, 5, 26, 18, 29, 23);
     advanceTo(createDate);
 
-    const res = await context.providers.Note.create({ text: 'asdf' }, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
+    const res = await context.providers.Note.create({ text: 'asdf' });
     expect(res.updatedAt).toEqual(createDate.getTime());
 
     advanceBy(3000);
     const next = await context.providers.Note.update({
       ...res,
       text: 'asdftrains'
-    }, {graphback: {services: {}, options: { selectedFields: ["updatedAt", "createdAt"]}}});
+    }, ["updatedAt", "createdAt"]);
 
     const updateDate = new Date();
     expect(next.updatedAt).toEqual(updateDate.getTime());
@@ -308,7 +317,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       }
     });
 
-    const todos = await context.providers.Todos.findBy({}, {graphback: {services: {}, options: { selectedFields: ["_id", "text"]}}});
+    const todos = await context.providers.Todos.findBy({}, ["_id", "text"]);
 
     expect(todos.length).toEqual(3);
     todos.forEach((todo: any) => {
@@ -317,14 +326,14 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       expect(todo.description).toBeUndefined(); // should be undefined since not selected
     });
 
-    const createdTodo = await context.providers.Todos.create({text: "new todo", description: "todo add description"}, {graphback: {services: {}, options: { selectedFields: ["_id"]}}});
+    const createdTodo = await context.providers.Todos.create({ text: "new todo", description: "todo add description" });
     expect(createdTodo._id).toBeDefined();
 
-    const updatedTodo = await context.providers.Todos.update({_id: createdTodo._id, text: "updated todo"}, {graphback: {services: {}, options: { selectedFields: ["text"]}}});
+    const updatedTodo = await context.providers.Todos.update({ _id: createdTodo._id, text: "updated todo" }, ["text"]);
     expect(updatedTodo.description).toBeUndefined();
     expect(updatedTodo.text).toEqual("updated todo");
 
-    const deletedTodo = await context.providers.Todos.update({_id: createdTodo._id}, {graphback: {services: {}, options: { selectedFields: ["_id", "text", "description"]}}});
+    const deletedTodo = await context.providers.Todos.update({ _id: createdTodo._id }, ["_id", "text", "description"]);
     expect(deletedTodo._id).toEqual(createdTodo._id);
     expect(deletedTodo.text).toEqual("updated todo");
     expect(deletedTodo.description).toEqual("todo add description");
@@ -369,25 +378,27 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
 
     const { providers } = context;
-    const queryContext = { graphback: { services: {}, options: { selectedFields: ["_id"] } } }
+    const selectedFields = ['_id'];
 
     // verify that not in operator works
-    const allTodos = await providers.Todo.findBy({ }, queryContext);
+    const allTodos = await providers.Todo.findBy({}, selectedFields);
     const newTodoItems = 2709;
-    await providers.Todo.create({items: newTodoItems }, queryContext);
-    const allTodosAfterCreation = await providers.Todo.findBy({ }, queryContext);
+    await providers.Todo.create({ items: newTodoItems });
+    const allTodosAfterCreation = await providers.Todo.findBy({}, selectedFields);
 
     expect(allTodosAfterCreation.length).toEqual(allTodos.length + 1); // verify that a new todo was created
 
     // retrieve all todo that do not have the newTodoItems using the in operator and verify
 
     const oldTodos = await providers.Todo.findBy({
-      not: {
-        items: {
-          in: [ newTodoItems ]
+      filter: {
+        not: {
+          items: {
+            in: [newTodoItems]
+          }
         }
       }
-    }, queryContext);
+    }, selectedFields);
 
     expect(oldTodos).toEqual(allTodos); // assert that we did not retrieve the newly added todo item
   });

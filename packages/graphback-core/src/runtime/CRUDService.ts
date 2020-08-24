@@ -1,8 +1,13 @@
 import * as DataLoader from "dataloader";
 import { PubSubEngine, withFilter } from 'graphql-subscriptions';
+import { GraphQLResolveInfo } from 'graphql';
 import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar, getSubscriptionName } from '..';
+import { ModelDefinition } from '../plugin/ModelDefinition';
+import { getSelectedFieldsFromResolverInfo, getResolverInfoFieldsList } from '../plugin/getSelectedFieldsFromResolverInfo';
 import { createInMemoryFilterPredicate } from './createInMemoryFilterPredicate';
-import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, GraphbackOrderBy, GraphbackPage, ResultList, QueryFilter } from '.';
+import { FindByArgs } from './interfaces';
+import { QueryFilter } from './QueryFilter';
+import { GraphbackCRUDService, GraphbackDataProvider, GraphbackContext, ResultList } from '.';
 
 /**
  * Configurations necessary to create a CRUDService
@@ -27,26 +32,27 @@ export interface CRUDServiceConfig {
 //tslint:disable-next-line: no-any
 export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
   protected db: GraphbackDataProvider;
-  private pubSub: PubSubEngine;
-  private modelName: string;
-  private crudOptions: GraphbackCRUDGeneratorConfig;
+  protected model: ModelDefinition;
+  protected pubSub: PubSubEngine;
+  protected crudOptions: GraphbackCRUDGeneratorConfig;
 
-  public constructor(modelName: string, db: GraphbackDataProvider, config: CRUDServiceConfig) {
-    this.modelName = modelName;
+  public constructor(model: ModelDefinition, db: GraphbackDataProvider, config: CRUDServiceConfig) {
+    this.model = model;
     this.crudOptions = config.crudOptions;
     this.db = db;
     this.pubSub = config.pubSub;
   }
 
-  public async create(data: Type, context: GraphbackContext): Promise<Type> {
-    if (this.crudOptions.subCreate) {
-      context.graphback.options.selectedFields = [];
+  public async create(data: Type, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<Type> {
+    let selectedFields: string[];
+    if (info && !this.crudOptions.subCreate) {
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model);
     }
 
-    const result = await this.db.create(data, context);
+    const result = await this.db.create(data, selectedFields);
 
     if (this.pubSub && this.crudOptions.subCreate) {
-      const topic = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.modelName);
+      const topic = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.model.graphqlType.name);
       //TODO use subscription name mapping
       const payload = this.buildEventPayload('new', result);
       await this.pubSub.publish(topic, payload);
@@ -55,15 +61,16 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return result;
   }
 
-  public async update(data: Type, context: GraphbackContext): Promise<Type> {
-    if (this.crudOptions.subUpdate) {
-      context.graphback.options.selectedFields = [];
+  public async update(data: Type, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<Type> {
+    let selectedFields: string[];
+    if (info && !this.crudOptions.subUpdate) {
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model);
     }
 
-    const result = await this.db.update(data, context);
+    const result = await this.db.update(data, selectedFields);
 
     if (this.pubSub && this.crudOptions.subUpdate) {
-      const topic = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.modelName);
+      const topic = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.model.graphqlType.name);
       //TODO use subscription name mapping
       const payload = this.buildEventPayload('updated', result);
       await this.pubSub.publish(topic, payload);
@@ -72,16 +79,16 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return result;
   }
 
-  //tslint:disable-next-line: no-reserved-keywords
-  public async delete(data: Type, context: GraphbackContext): Promise<Type> {
-    if (this.crudOptions.subDelete) {
-      context.graphback.options.selectedFields = [];
+  public async delete(data: Type, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<Type> {
+    let selectedFields: string[];
+    if (info && !this.crudOptions.subDelete) {
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model);
     }
 
-    const result = await this.db.delete(data, context);
+    const result = await this.db.delete(data, selectedFields);
 
     if (this.pubSub && this.crudOptions.subDelete) {
-      const topic = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.modelName);
+      const topic = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.model.graphqlType.name);
       const payload = this.buildEventPayload('deleted', result);
       await this.pubSub.publish(topic, payload);
     }
@@ -89,23 +96,34 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return result;
   }
 
-  public findOne(args: Partial<Type>, context: GraphbackContext): Promise<Type> {
-    return this.db.findOne(args, context)
-  }
-
-  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<ResultList<Type>> {
-    let count: number;
-
-    if (context.graphback.options?.aggregations?.count) {
-      count = await this.db.count(filter);
+  public findOne(args: Partial<Type>, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<Type> {
+    let selectedFields: string[];
+    if (info) {
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model);
     }
 
-    const items: Type[] = await this.db.findBy(filter, context, page, orderBy);
+    return this.db.findOne(args, selectedFields);
+  }
+
+  public async findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<ResultList<Type>> {
+    let selectedFields: string[];
+    let requestedCount: boolean = false;
+    if (info) {
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model, 'items');
+      requestedCount = getResolverInfoFieldsList(info).some((field: string) => field === "count");
+    }
+
+    const items: Type[] = await this.db.findBy(args, selectedFields);
 
     // set page values for returned object
     const resultPageInfo = {
       offset: 0,
-      ...page
+      ...args.page
+    }
+
+    let count: number;
+    if (requestedCount) {
+      count = await this.db.count(args.filter);
     }
 
     return {
@@ -116,14 +134,14 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     }
   }
 
-  public subscribeToCreate(filter: any, _context?: GraphbackContext): AsyncIterator<Type> | undefined {
+  public subscribeToCreate(filter?: QueryFilter): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
 
     const operationType = GraphbackOperationType.CREATE
-    const createSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
-    const subscriptionName = getSubscriptionName(this.modelName, operationType)
+    const createSubKey = this.subscriptionTopicMapping(operationType, this.model.graphqlType.name);
+    const subscriptionName = getSubscriptionName(this.model.graphqlType.name, operationType)
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(createSubKey)
 
@@ -132,14 +150,14 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
 
-  public subscribeToUpdate(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
+  public subscribeToUpdate(filter?: QueryFilter): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
 
     const operationType = GraphbackOperationType.UPDATE
-    const updateSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
-    const subscriptionName = getSubscriptionName(this.modelName, operationType)
+    const updateSubKey = this.subscriptionTopicMapping(operationType, this.model.graphqlType.name);
+    const subscriptionName = getSubscriptionName(this.model.graphqlType.name, operationType)
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(updateSubKey)
 
@@ -148,14 +166,14 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
 
-  public subscribeToDelete(filter: any, context: GraphbackContext): AsyncIterator<Type> | undefined {
+  public subscribeToDelete(filter?: QueryFilter): AsyncIterator<Type> | undefined {
     if (!this.pubSub) {
       throw Error(`Missing PubSub implementation in CRUDService`);
     }
 
     const operationType = GraphbackOperationType.DELETE
-    const deleteSubKey = this.subscriptionTopicMapping(operationType, this.modelName);
-    const subscriptionName = getSubscriptionName(this.modelName, operationType)
+    const deleteSubKey = this.subscriptionTopicMapping(operationType, this.model.graphqlType.name);
+    const subscriptionName = getSubscriptionName(this.model.graphqlType.name, operationType)
 
     const asyncIterator = this.pubSub.asyncIterator<Type>(deleteSubKey)
 
@@ -164,14 +182,24 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return withFilter(() => asyncIterator, (payload: any) => subscriptionFilter(payload[subscriptionName]))()
   }
 
-  public batchLoadData(relationField: string, id: string | number, filter: any, context: GraphbackContext) {
-    // TODO use relationfield mapping
-    const selectedFields = context.graphback.options?.selectedFields || [];
+  public batchLoadData(relationField: string, id: string | number, filter: QueryFilter, context: GraphbackContext, info?: GraphQLResolveInfo) {
+    const selectedFields = [];
+    if (info) {
+      const selectedFieldsFromInfo = getSelectedFieldsFromResolverInfo(info, this.model);
+      selectedFields.push(...selectedFieldsFromInfo);
+
+      // only push the relation field if there are fields selected
+      // because all fields will be selected otherwise
+      if (selectedFields.length) {
+        selectedFields.push(relationField);
+      }
+    }
+
     const fetchedKeys = selectedFields.join('-');
-    const keyName = `${this.modelName}-${upperCaseFirstChar(relationField)}-${fetchedKeys}-${JSON.stringify(filter)}-DataLoader`;
+    const keyName = `${this.model.graphqlType.name}-${upperCaseFirstChar(relationField)}-${fetchedKeys}-${JSON.stringify(filter)}-DataLoader`;
     if (!context[keyName]) {
       context[keyName] = new DataLoader<string, any>((keys: string[]) => {
-        return this.db.batchRead(relationField, keys, filter, context);
+        return this.db.batchRead(relationField, keys, filter, selectedFields);
       });
     }
 
@@ -192,7 +220,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
 
   private buildEventPayload(action: string, result: any) {
     const payload = {};
-    payload[`${action}${this.modelName}`] = result;
+    payload[`${action}${this.model.graphqlType.name}`] = result;
 
     return payload;
   }

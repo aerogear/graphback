@@ -55,6 +55,115 @@ See [Graphback Scalars](https://graphback.dev/docs/model/scalars/) for the list 
 
 * Replace `@db(skip: true)` field annotation with `@transient` [85d50f3c](https://github.com/aerogear/graphback/commit/85d50f3c332ee35c46fbe8e6c3e81d97ae60db7b)
 
+#### Changed GraphbackCRUDService `findBy` method signature. This also applies to all services that implement this interface.
+
+```patch
+- findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: any): Promise<ResultList<Type>>;
++ findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<ResultList<Type>>;
+```
+
+**args**
+
+`findBy` now accepts a new interface, `FindByArgs`, which wraps the `filter`, `page` and `orderBy` optional arguments.
+
+```ts
+await noteService.findBy({
+  filter: {
+    id: {
+      gt: 100
+    }
+  },
+  page: {
+    offset: 0,
+    limit: 10
+  },
+  orderBy: {
+    field: 'id'
+  }
+})
+```
+
+**context**
+
+The context parameter is now optional.
+
+**info**
+
+You can now optionally pass the `GraphQLResolveInfo` info object to the CRUD service, to perform extra optimizations like retrieving only the selected fields from the query.
+
+```ts
+await noteService.findBy(filter, context, info);
+```
+
+#### `context` parameter removed from `subscribeToCreate`, `subscribeToDelete`, `subscribeToUpdate` methods in GraphbackCRUDService.
+
+This method was unused.
+
+#### Removed `context` parameter from all GraphbackDataProvider methods. This also applies to all providers that implement this interface.
+
+All CRUD methods in `GraphbackDataProvider` had a `context` parameter used to get the selected fields. 
+These have been replaced with (optional) `selectedFields` - you can pass a string array of the fields you want to select from the database.
+
+```ts
+await noteProvider.findBy(filter, ['id', 'name']);
+```
+
+#### Changed GraphbackDataProvider `findBy` method signature. This also applies to all providers that implement this interface.
+
+**args**
+
+`findBy` now accepts a new interface, `FindByArgs`, which wraps the `filter`, `page` and `orderBy` optional arguments.
+
+```ts
+await noteService.findBy({
+  filter: {
+    id: {
+      gt: 100
+    }
+  },
+  page: {
+    offset: 0,
+    limit: 10
+  },
+  orderBy: {
+    field: 'id'
+  }
+})
+```
+
+#### Remove resolver options from GraphbackContext
+
+Resolver options was removed from the context because the `count` aggregation and `selectedFields` extraction logic was moved to the CRUDService method.
+
+#### CRUDService, DataSyncCRUDService now accepts a `ModelDefinition` as the first constructor parameter.
+
+To instantiate a CRUDService you must pass the full `ModelDefinition` instead of the model name.
+
+```ts
+const myService = new CRUDService(modelDefinition, ...);
+```
+
+#### KeycloakCrudService now accepts a `ModelDefinition` as the first constructor parameter.
+
+To instantiate a CRUDService you must pass the full `ModelDefinition` instead of the model name.
+
+```ts
+const myService = new KeycloakCrudService(modelDefinition, ...);
+```
+
+#### DataSyncProvider `sync` method signature has been changed
+
+```patch
+- sync(lastSync: Date, context: GraphbackContext, filter?: any, limit?: number): Promise<Type[]>;
++ sync(lastSync: Date, selectedFields?: string[], filter?: QueryFilter, limit?: number): Promise<Type[]>;
+```
+
+The `context` argument has been replaced with (optional) `selectedFields`.
+
+#### `context` parameter is removed from the `create` method in `MongoDBDataProvider` and `DatasyncMongoDBDataProvider` providers.
+
+This parameter did not do anything.
+
 # 0.15.1
 
 ### Bug Fixes

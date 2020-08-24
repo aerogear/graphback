@@ -1,4 +1,5 @@
-import { CRUDService, CRUDServiceConfig, GraphbackContext } from '@graphback/core';
+import { CRUDService, CRUDServiceConfig, ModelDefinition, getSelectedFieldsFromResolverInfo } from '@graphback/core';
+import { GraphQLResolveInfo } from 'graphql';
 import { DataSyncProvider } from "../providers";
 
 export interface SyncList<T> {
@@ -12,16 +13,16 @@ export interface SyncList<T> {
  */
 export class DataSyncCRUDService<T = any> extends CRUDService<T> {
 
-  public constructor(modelName: string, db: DataSyncProvider, config: CRUDServiceConfig) {
-    super(modelName, db, config);
+  public constructor(model: ModelDefinition, db: DataSyncProvider, config: CRUDServiceConfig) {
+    super(model, db, config);
   }
   /**
    * sync
    * For delta queries
    */
-  public async sync(lastSync: Date, context: GraphbackContext, filter?: any, limit?: number): Promise<SyncList<T>> {
-
-    const res = await (this.db as DataSyncProvider).sync(lastSync, context, filter, limit);
+  public async sync(lastSync: Date, info?: GraphQLResolveInfo, filter?: any, limit?: number): Promise<SyncList<T>> {
+    const selectedFields = getSelectedFieldsFromResolverInfo(info, this.model)
+    const res = await (this.db as DataSyncProvider).sync(lastSync, selectedFields, filter, limit);
 
     return {
       items: res,

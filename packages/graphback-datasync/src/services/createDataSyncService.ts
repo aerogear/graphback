@@ -25,9 +25,9 @@ export function createDataSyncCRUDService(config?: CreateDataSyncCRUDServiceOpti
     }
 
     if (isDataSyncModel(model)) {
-      return new DataSyncCRUDService(model.graphqlType.name, dataProvider as DataSyncProvider, serviceConfig)
+      return new DataSyncCRUDService(model, dataProvider as DataSyncProvider, serviceConfig)
     } else {
-      return new CRUDService(model.graphqlType.name, dataProvider, serviceConfig)
+      return new CRUDService(model, dataProvider, serviceConfig)
     }
   }
 }

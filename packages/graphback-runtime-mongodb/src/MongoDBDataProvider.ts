@@ -1,5 +1,5 @@
 import { ObjectId, Db, Cursor } from "mongodb"
-import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackContext, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, FieldDescriptor } from '@graphback/core';
+import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, FieldDescriptor, FindByArgs } from '@graphback/core';
 import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
 import { findAndCreateIndexes } from "./utils/createIndexes";
@@ -30,7 +30,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     })
   }
 
-  public async create(data: any, context: GraphbackContext): Promise<Type> {
+  public async create(data: Type): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
     if (data && data[idField.name]) {
       // Ignore id passed from client side. In case id is passed it should not be saved
@@ -50,7 +50,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     throw new NoDataError(`Cannot create ${this.collectionName}`);
   }
 
-  public async update(data: Type, context: GraphbackContext): Promise<Type> {
+  public async update(data: Partial<Type>, selectedFields?: string[]): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
 
     if (!idField.value) {
@@ -65,7 +65,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     const objectId = new ObjectId(idField.value);
     const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId }, { $set: data });
     if (result) {
-      const projection = this.buildProjectionOption(context);
+      const projection = this.buildProjectionOption(selectedFields);
       const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId }, { projection }).toArray();
       if (queryResult && queryResult[0]) {
         return queryResult[0];
@@ -74,14 +74,14 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async delete(data: Type, context: GraphbackContext): Promise<Type> {
+  public async delete(data: Partial<Type>, selectedFields?: string[]): Promise<Type> {
     const { idField } = getDatabaseArguments(this.tableMap, data);
 
     if (!idField.value) {
       throw new NoDataError(`Cannot delete ${this.collectionName} - missing ID field`)
     }
 
-    const projection = this.buildProjectionOption(context);
+    const projection = this.buildProjectionOption(selectedFields);
     const objectId = new ObjectId(idField.value);
     const queryResult = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection });
     if (queryResult) {
@@ -93,8 +93,8 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
 
-  public async findOne(filter: any, context: GraphbackContext): Promise<Type> {
-    const projection = this.buildProjectionOption(context);
+  public async findOne(filter: Partial<Type>, selectedFields?: string[]): Promise<Type> {
+    const projection = this.buildProjectionOption(selectedFields);
     const query = this.db.collection(this.collectionName).findOne(filter, { projection });
     const data = await query;
 
@@ -105,24 +105,24 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
 
-  public async findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: GraphbackOrderBy): Promise<Type[]> {
-    const projection = this.buildProjectionOption(context);
-    const query = this.db.collection(this.collectionName).find(buildQuery(filter, this.coerceTSFields), { projection });
-    const data = await this.usePage(this.sortQuery(query, orderBy), page);
+  public async findBy(args?: FindByArgs, selectedFields?: string[]): Promise<Type[]> {
+    const projection = this.buildProjectionOption(selectedFields);
+    const query = this.db.collection(this.collectionName).find(buildQuery(args?.filter, this.coerceTSFields), { projection });
+    const data = await this.usePage(this.sortQuery(query, args?.orderBy), args?.page);
 
     if (data) {
       return data;
     }
 
-    throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
+    throw new NoDataError(`Cannot find all results for ${this.collectionName} with filter: ${JSON.stringify(args?.filter)}`);
   }
 
-  public async count(filter: any): Promise<number> {
+  public async count(filter?: QueryFilter): Promise<number> {
     return this.db.collection(this.collectionName).countDocuments(buildQuery(filter, this.coerceTSFields));
   }
 
-  public async batchRead(relationField: string, ids: string[], filter: any, context: GraphbackContext): Promise<Type[][]> {
-    const projection = this.buildProjectionOption(context);
+  public async batchRead(relationField: string, ids: string[], filter?: QueryFilter, selectedFields?: string[]): Promise<Type[][]> {
+    const projection = this.buildProjectionOption(selectedFields);
     filter = filter || {};
     filter[relationField] = { $in: ids };
 
@@ -147,12 +147,12 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
   }
 
-  protected buildProjectionOption(context: GraphbackContext) {
-    if (!context.graphback.options?.selectedFields?.length) {
+  protected buildProjectionOption(selectedFields: string[]) {
+    if (!selectedFields?.length) {
       return undefined;
     }
 
-    return context.graphback.options.selectedFields
+    return selectedFields
       .reduce((acc: Record<string, any>, field: string) => {
         return {
           ...acc,
@@ -161,7 +161,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       }, {});
   }
 
-  private verifyMongoDBPrimaryKey(modelName: string, primaryKey: FieldDescriptor ) {
+  private verifyMongoDBPrimaryKey(modelName: string, primaryKey: FieldDescriptor) {
     if (primaryKey.name === "_id" && primaryKey.type === "GraphbackObjectID") {
       return;
     }

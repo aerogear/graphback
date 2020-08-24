@@ -133,22 +133,14 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
         const crudService = context.graphback.services[modelName];
 
         // create a filter in the GraphQLCRUD format to retrieve only archived Notes
-        const filter: QueryFilter = {
+        const customFilter: QueryFilter = {
           archived: {
             eq: true
           }
         };
 
-        // retrieve user selected fields from GraphQLResolveInfo which will be used to query the database for specific fields
-        // avoiding overfetching. This is optional, as passing just the context to the database query will retrieve all fields.
-        const selectedFields = getSelectedFieldsFromResolverInfo(info, model);
-        const graphback = {
-          services: context.graphback.services,
-          options: { selectedFields }
-        };
-
         // use the model service created by Graphback to query the database
-        const { items } = await crudService.findBy(filter, { ...context, graphback });
+        const { items } = await crudService.findBy({ filter: customFilter });
 
         return items;
       }
