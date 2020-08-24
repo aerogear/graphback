@@ -1,11 +1,11 @@
 == SDK Release Documentation
 
-The release process results in new versions packages being published on npm. 
+The release process results in new versions packages being published on npm.
 The version numbers on all modules must always be the same.
 
 === How Releases Work
 
-The release process takes place in CircleCI. CircleCI notices a new release being created and kicks off a special release workflow. The following steps take place:
+The release process takes place via Github Actions. GH actions notices a new release being created and kicks off a special release workflow. The following steps take place:
 
 * A standard build job runs, i.e. the code is built and tested.
 * If the build is successful then a release job runs.
@@ -110,6 +110,6 @@ needs to be changed manually for those packages.
 
 To kick off a release to npm, simply link:https://help.github.com/articles/creating-releases/[Create a Release] in Github. **You must use the exact tag you used earlier** or the release will fail.
 
-This will kick off the automatic release process in CircleCI.
+This will kick off the automatic release process in Github actions.
 
 If you prepared a pre-release it is good practice to click the checkbox in Github to indicate this is a pre-release.

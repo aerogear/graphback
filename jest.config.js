@@ -5,5 +5,6 @@ module.exports = {
     "<rootDir>/packages/*/src/**/*.ts"
   ],
   moduleDirectories: ["node_modules"],
-  preset: "ts-jest"
+  preset: "ts-jest",
+  testTimeout: 60000
 };

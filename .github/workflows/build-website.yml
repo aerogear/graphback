@@ -1,0 +1,55 @@
+name: Build Website
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'docs'
+      - 'website'
+      - 'package.json'
+      - 'packages/**/src'
+
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - master
+    paths:
+      - 'docs'
+      - 'website'
+      - 'package.json'
+      - 'packages/**/src'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Allow failure when website build fails. This won't block merging but the status will still be red allowing for investigations
+    continue-on-error: true
+    steps:
+    - name: Cancel Previous Runs
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Dependencies
+      id: cache-dependencies
+      uses: actions/cache@master
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: yarn
+    - name: Build API
+      run: yarn build
+    - name: Generate API Docs
+      run: yarn generate:doc
+    - name: Build Website
+      run: cd website && yarn && yarn build
