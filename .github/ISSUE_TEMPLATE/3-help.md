@@ -1,7 +1,7 @@
 ---
 name: "⁉️ Need help with Graphback?"
 about: Please file an issue in our repo.
-
+labels: question
 ---
 
 
