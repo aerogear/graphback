@@ -16,7 +16,8 @@
     "**/node_modules/**",
     "**/__tests__/**",
     "**/test/**",
-    "**/tests/**"
+    "**/tests/**",
+    "performance"
   ],
   "packageRules": [
     {

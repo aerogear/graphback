@@ -67,7 +67,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
       const collectionFound = collections.find((collection: Collection) => collection.collectionName === collectionName );
       if (collectionFound) {
         const indexes = await collectionFound.indexes();
-        const foundIndex = await indexes.find((index: any) => index.key[indexName]);
+        const foundIndex = indexes.find((index: any) => index.key[indexName]);
         if (foundIndex) return foundIndex;
       };
     } while( Date.now() - startTime < waitTime)

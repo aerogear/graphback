@@ -43,7 +43,7 @@ Please follow individual releases for more information.
 
 * Do not silently overrides createdAt/updatedAt custom fields when model contains @versioned annotation [#1597](https://github.com/aerogear/graphback/issues/1597) 
 
-### Breaking Change
+### Breaking Changes
 
 * Use `GraphbackDateTime` scalar for generated createdAt updatedAt fields ([#1349](https://github.com/aerogear/graphback/issues/1349), fixed by [#1862](https://github.com/aerogear/graphback/pull/1862)) 
 

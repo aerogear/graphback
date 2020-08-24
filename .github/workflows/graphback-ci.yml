@@ -1,0 +1,236 @@
+name: GraphbackCI
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'docs'
+      - '*.md'
+      - 'website'
+      - '.vscode'
+      - 'scripts'
+      - 'templates'
+      - '.gitignore'
+      - 'performance'
+      - '.github/*.yml'
+      - 'packages/**/*md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/workflows/release.yml'
+
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - master
+    paths-ignore:
+      - 'docs'
+      - '*.md'
+      - '.vscode'
+      - 'website'
+      - 'scripts'
+      - '.gitignore'
+      - 'templates'
+      - 'performance'
+      - '.github/*.yml'
+      - 'packages/**/*md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/workflows/release.yml'
+  release:
+      types: [released, prereleased]
+
+env:
+  NODE_OPTIONS: --max_old_space_size=4096
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cancel Previous Runs
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Dependencies
+      id: cache-dependencies
+      uses: actions/cache@master
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: yarn
+    - name: Build
+      run: yarn build
+    - name: Lint
+      run: yarn lint
+
+  unitTest:
+    runs-on: ubuntu-latest
+    needs: lint
+    env:
+      MONGOMS_VERSION: 4.2.8
+      MONGOMS_DOWNLOAD_DIR: mongo-in-memory-dir
+    steps:
+    - name: Cancel Previous Runs
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Dependencies
+      id: cache-dependencies
+      uses: actions/cache@master
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: yarn
+    - name: Build
+      run: yarn build
+    - name: Cache Mongo Binary
+      id: cache-mongo-binary
+      uses: actions/cache@master
+      with:
+        path: mongo-in-memory-dir
+        key: ${{ runner.os }}-mongo-in-memory-dir
+    - name: Test
+      run: yarn test
+    - name: CLI Test
+      run: yarn test:integration -i cli-workflow.ts
+
+  pgTest:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        version: [9, 12]
+    services:
+      postgres:
+        image: postgres:${{ matrix.version }}
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgresql
+          POSTGRES_DB: users
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+    - name: Cancel Previous Runs
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Dependencies
+      id: cache-dependencies
+      uses: actions/cache@master
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: yarn
+    - name: Build
+      run: yarn build
+    - name: Lint
+      run: yarn lint
+    - name: Test
+      run: yarn test:integration -i runtime-workflow-postgres.ts
+
+  mongoTest:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        version: [4.2.9, 3.7.9]
+    services:
+      mongodb:
+        image: mongo:${{ matrix.version }}
+        env:
+          MONGO_INITDB_DATABASE: users
+          MONGO_INITDB_ROOT_USERNAME: mongodb
+          MONGO_INITDB_ROOT_PASSWORD: mongo
+        ports:
+          - 27017:27017
+    steps:
+    - name: Cancel Previous Runs
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Dependencies
+      id: cache-dependencies
+      uses: actions/cache@master
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: yarn
+    - name: Build
+      run: yarn build
+    - name: Lint
+      run: yarn lint
+    - name: Test
+      run: yarn test:integration -i mongo datasync
+  publish:
+    # publish to npm only when doing the release
+    if: ${{ github.event_name == 'release'}}
+    env:
+      CI: true
+    runs-on: ubuntu-latest
+    needs: [mongoTest, pgTest, unitTest]
+    steps:
+    - name: Cancel Previous Runs
+      uses: n1hility/cancel-previous-runs@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Dependencies
+      id: cache-dependencies
+      uses: actions/cache@master
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+    - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      run: yarn
+    - name: Build
+      run: yarn build
+    - name: Publish
+      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_AUTH_TOKEN}}" > ~/.npmrc && TAG=${GITHUB_REF#"refs/tags/"} npm run release:publish

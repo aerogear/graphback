@@ -6,7 +6,6 @@
 /.gitignore
 
 # ci
-/.circleci
 /renovate.json
 
 # logs
