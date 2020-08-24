@@ -47,6 +47,20 @@ const customNoteWithFullDataSet = {
       opened: true
     },
     ratings: [3, 9, 10]
+  },
+  {
+    id: "1",
+    text: "text",
+    description: "second-comment-description",
+    metadata: null, // this should resolve to null
+    ratings: [3, 9, 10]
+  },
+  {
+    id: "2",
+    text: "text",
+    description: "third-comment-description",
+    metadata: undefined, // this should resolve to null
+    ratings: [3, 9, 10]
   }]
 };
 
@@ -610,6 +624,7 @@ test('getComment in simultaneous with different resolvers pinfo', async () => {
 
 test('get full dataset from custom query without querying the database again', async () => {
   const { data } = await client.query({ operationName:"getNoteWithFullDataSet", query: GET_NOTE_WITH_CUSTOM_QUERY });
+  customNoteWithFullDataSet.comments[2].metadata = null;
   expect(data.getNoteWithFullDataSet).toEqual(customNoteWithFullDataSet);
 })
 
