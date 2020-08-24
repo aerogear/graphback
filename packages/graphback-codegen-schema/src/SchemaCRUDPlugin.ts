@@ -694,7 +694,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const model = modelNameToModelDefinition[modelName];
 
     resolverObj[relationOwner] = (parent: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (parent[relationOwner]) {
+      if (Object.keys(parent).includes(relationOwner)) {
         return parent[relationOwner];
       }
 
@@ -732,7 +732,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const model = modelNameToModelDefinition[modelName];
 
     resolverObj[relationOwner] = (parent: any, _: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (parent[relationOwner]) {
+      if (Object.keys(parent).includes(relationOwner)) {
         return parent[relationOwner];
       }
 
