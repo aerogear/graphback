@@ -114,6 +114,7 @@ const predicateMap: IPredicate = {
  * @param {QueryFilter} filter - subscription filter input object
  */
 export function createInMemoryFilterPredicate<T = any>(filter: QueryFilter): (input: Partial<T>) => boolean {
+  filter = filter || {};
   const andFilter = filter.and;
   const orFilter = filter.or;
   const notFilter = filter.not;

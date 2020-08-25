@@ -966,4 +966,24 @@ describe('createInMemoryFilterPredicate', () => {
     expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
     expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(false)
   });
+
+  describe('empty or undefined filter', () => {
+    describe('empty filter', () => {
+      test('should return Predicate that resolves to true', () => {
+        const filterSubscription = createInMemoryFilterPredicate<User>({})
+        expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
+        expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
+        expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(true)
+      })
+    })
+
+    describe('undefined filter', () => {
+      test('should return Predicate that resolves to true', () => {
+        const filterSubscription = createInMemoryFilterPredicate<User>(undefined)
+        expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
+        expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
+        expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(true)
+      })
+    })
+  })
 });
