@@ -45,8 +45,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@graphql-tools/merge": "6.0.18",
-    "@graphql-tools/utils": "6.0.18",
+    "@graphql-tools/merge": "6.1.0",
+    "@graphql-tools/utils": "6.1.0",
     "bson": "4.1.0",
     "dataloader": "2.0.0",
     "glob": "7.1.6",
