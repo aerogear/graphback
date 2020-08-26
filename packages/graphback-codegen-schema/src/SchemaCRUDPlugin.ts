@@ -562,7 +562,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
     queryObj[findField] = async (_: any, args: FindByArgs, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      return context.graphback.services[modelName].findBy(args, context, info)
+      return context.graphback.services[modelName].findBy(args, context, info, 'items')
     }
   }
 

@@ -105,12 +105,12 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     return this.db.findOne(args, selectedFields);
   }
 
-  public async findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<ResultList<Type>> {
+  public async findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo, path?: string): Promise<ResultList<Type>> {
     let selectedFields: string[];
     let requestedCount: boolean = false;
     if (info) {
-      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model, 'items');
-      requestedCount = getResolverInfoFieldsList(info).some((field: string) => field === "count");
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model, path);
+      requestedCount = path === 'items' && getResolverInfoFieldsList(info).some((field: string) => field === "count");
     }
 
     const items: Type[] = await this.db.findBy(args, selectedFields);

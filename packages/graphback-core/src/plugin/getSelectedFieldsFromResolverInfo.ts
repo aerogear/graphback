@@ -8,7 +8,7 @@ import { ModelDefinition } from './ModelDefinition';
  * @param model - the model to find the fields from
  * @param path - the root path to start field resolution from.
  */
-export const getSelectedFieldsFromResolverInfo = (info: GraphQLResolveInfo, model: ModelDefinition, path?: string): string[] => {
+export const getSelectedFieldsFromResolverInfo = (info: GraphQLResolveInfo, model: ModelDefinition, path?: string): string[] => {  
   const resolverFields = Object.keys(fieldsMap(info, { path }));
 
   return getModelFieldsFromResolverFields(resolverFields, model);
