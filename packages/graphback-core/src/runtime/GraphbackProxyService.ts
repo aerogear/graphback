@@ -33,8 +33,8 @@ export class GraphbackProxyService<Type = any> implements GraphbackCRUDService<T
     return this.proxiedService.findOne(args, context, info);
   }
 
-  public findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<ResultList<Type>> {
-    return this.proxiedService.findBy(args, context, info);
+  public findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo, path?: string): Promise<ResultList<Type>> {
+    return this.proxiedService.findBy(args, context, info, path);
   }
 
   public subscribeToCreate(filter?: QueryFilter, context?: GraphbackContext): AsyncIterator<Type> {

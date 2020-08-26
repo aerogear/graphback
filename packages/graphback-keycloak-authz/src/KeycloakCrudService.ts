@@ -98,7 +98,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
     return super.findOne(args, context, info);
   }
 
-  public findBy(args: FindByArgs, context?: GraphbackKeycloakContext | any, info?: GraphQLResolveInfo): Promise<ResultList<Type>> {
+  public findBy(args: FindByArgs, context?: GraphbackKeycloakContext | any, info?: GraphQLResolveInfo, path?: string): Promise<ResultList<Type>> {
     if (this.authConfig.read && this.authConfig.read.roles && this.authConfig.read.roles.length > 0) {
       const { roles } = this.authConfig.read;
       if (!isAuthorizedByRole(roles, context)) {
@@ -116,12 +116,12 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
 
     let selectedFields: string[];
     if (info) {
-      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model)
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model, path)
     }
 
     checkAuthRulesForSelections(context, this.authConfig, selectedFields);
 
-    return super.findBy(args, context, info);
+    return super.findBy(args, context, info, path);
   }
 
   public subscribeToCreate(filter?: QueryFilter, context?: GraphbackKeycloakContext): AsyncIterator<Type> {

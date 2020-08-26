@@ -59,7 +59,7 @@ See [Graphback Scalars](https://graphback.dev/docs/model/scalars/) for the list 
 
 ```patch
 - findBy(filter: QueryFilter<Type>, context: GraphbackContext, page?: GraphbackPage, orderBy?: any): Promise<ResultList<Type>>;
-+ findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<ResultList<Type>>;
++ findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo, path?: string): Promise<ResultList<Type>>;
 ```
 
 **args**
@@ -83,7 +83,7 @@ await noteService.findBy({
 })
 ```
 
-**context**
+**context (optional)**
 
 The context parameter is now optional.
 
@@ -94,6 +94,24 @@ You can now optionally pass the `GraphQLResolveInfo` info object to the CRUD ser
 ```ts
 await noteService.findBy(filter, context, info);
 ```
+
+**path (optional)**
+
+The root path of the query to get the selected fields from. For example, to get `id`, `title`, `description` fields from the following query, you would set the path to `items`.
+
+```graphql
+query findNotes {
+  findNotes {
+    items {
+      id
+      title
+      description
+    }
+  }
+} 
+```
+
+The path variable is optional, as it will automatically resolve to the root field of the entire query.
 
 #### `context` parameter removed from `subscribeToCreate`, `subscribeToDelete`, `subscribeToUpdate` methods in GraphbackCRUDService.
 
@@ -133,7 +151,7 @@ await noteService.findBy({
 
 #### Remove resolver options from GraphbackContext
 
-Resolver options was removed from the context because the `count` aggregation and `selectedFields` extraction logic was moved to the CRUDService method.
+Resolver options (`context.graphback.options`) was removed from the context because the `count` aggregation and `selectedFields` extraction logic was moved to the CRUDService method.
 
 #### CRUDService, DataSyncCRUDService now accepts a `ModelDefinition` as the first constructor parameter.
 

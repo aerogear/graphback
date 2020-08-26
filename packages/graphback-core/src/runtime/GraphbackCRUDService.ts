@@ -65,8 +65,9 @@ export interface GraphbackCRUDService<Type = any, GraphbackContext = any> {
    * @param {GraphbackOrderBy} [args.orderBy] - optionally sort the results by a field
    * @param {GraphbackContext} [context] - context object passed from graphql or rest layer
    * @param {GraphQLResolveInfo} [info] - GraphQL query resolver info
+   * @param {string} [path] - Path to a tree branch which should be mapped during fields extraction
    */
-  findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo): Promise<ResultList<Type>>;
+  findBy(args?: FindByArgs, context?: GraphbackContext, info?: GraphQLResolveInfo, path?: string): Promise<ResultList<Type>>;
 
   /**
    * Subscription for all creation events
