@@ -59,15 +59,13 @@ jobs:
       with:
         path: website/node_modules
         key: ${{ runner.os }}-website-${{ hashFiles('website/package.json') }}
-    - name: Checkout To Website Folder
-      run: cd website && yarn
     - name: Install Website Dependencies
       if: steps.cache-website-dependencies.outputs.cache-hit != 'true'
-      run: yarn
+      run: cd website && yarn
     - name: Test Website Build
       # Test website build for pull request
       if:  ${{ github.event_name == 'pull_request' }}
-      run: yarn build
+      run: cd website && yarn build
     - name: Add key to allow access to repository
       # Prepare SSH credentials for website deploy when trigger is push.
       if:  ${{ github.event_name == 'push' }}
@@ -92,4 +90,4 @@ jobs:
       run: |
         git config --global user.email "actions@aerogear.com"
         git config --global user.name "gh-actions"
-        yarn deploy
+        cd website && yarn deploy
