@@ -53,8 +53,17 @@ jobs:
       run: yarn build
     - name: Generate API Docs
       run: yarn generate:doc
-    - name: Install Website Dependencies
+    - name: Cache Website Dependencies
+      id: cache-website-dependencies
+      uses: actions/cache@master
+      with:
+        path: website/node_modules
+        key: ${{ runner.os }}-website-${{ hashFiles('website/package.json') }}
+    - name: Checkout To Website Folder
       run: cd website && yarn
+    - name: Install Website Dependencies
+      if: steps.cache-website-dependencies.outputs.cache-hit != 'true'
+      run: yarn
     - name: Test Website Build
       # Test website build for pull request
       if:  ${{ github.event_name == 'pull_request' }}
