@@ -5,23 +5,25 @@ on:
     branches:
       - master
     paths:
-      - 'docs'
-      - 'website'
+      - 'docs/**'
+      - 'website/**'
       - 'package.json'
-      - 'packages/**/src'
+      - 'packages/**/src/**'
+      - '.github/workflows/build-website.yml'
 
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - master
     paths:
-      - 'docs'
-      - 'website'
+      - 'docs/**'
+      - 'website/**'
       - 'package.json'
-      - 'packages/**/src'
+      - 'packages/**/src/**'
+      - '.github/workflows/build-website.yml'
 
 jobs:
-  build:
+  buildWebsite:
     runs-on: ubuntu-latest
     # Allow failure when website build fails. This won't block merging but the status will still be red allowing for investigations
     continue-on-error: true
@@ -51,5 +53,34 @@ jobs:
       run: yarn build
     - name: Generate API Docs
       run: yarn generate:doc
-    - name: Build Website
-      run: cd website && yarn && yarn build
+    - name: Install Website Dependencies
+      run: cd website && yarn
+    - name: Test Website Build
+      # Test website build for pull request
+      if:  ${{ github.event_name == 'pull_request' }}
+      run: yarn build
+    - name: Add key to allow access to repository
+      # Prepare SSH credentials for website deploy when trigger is push.
+      if:  ${{ github.event_name == 'push' }}
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        echo "${{ secrets.GH_PAGES_DEPLOY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        cat <<EOT >> ~/.ssh/config
+        Host github.com
+        HostName github.com
+        IdentityFile ~/.ssh/id_rsa
+        EOT
+    - name: Release to GitHub Pages
+      # Deploy website when the trigger is push.
+      if: ${{ github.event_name == 'push' }}
+      env:
+        USE_SSH: true
+        GIT_USER: git
+      run: |
+        git config --global user.email "actions@aerogear.com"
+        git config --global user.name "gh-actions"
+        yarn deploy

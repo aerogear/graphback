@@ -5,36 +5,33 @@ on:
     branches:
       - master
     paths-ignore:
-      - 'docs'
       - '*.md'
-      - 'website'
-      - '.vscode'
-      - 'scripts'
-      - 'templates'
+      - 'docs/**'
       - '.gitignore'
-      - 'performance'
+      - 'website/**'
+      - '.vscode/**'
+      - 'templates/**'
       - '.github/*.yml'
+      - 'performance/**'
       - 'packages/**/*md'
       - '.github/ISSUE_TEMPLATE/**'
-      - '.github/workflows/release.yml'
 
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - master
     paths-ignore:
-      - 'docs'
       - '*.md'
-      - '.vscode'
-      - 'website'
-      - 'scripts'
+      - 'docs/**'
+      - '.vscode/**'
+      - 'website/**'
       - '.gitignore'
-      - 'templates'
-      - 'performance'
+      - 'templates/**'
       - '.github/*.yml'
+      - 'performance/**'
       - 'packages/**/*md'
       - '.github/ISSUE_TEMPLATE/**'
-      - '.github/workflows/release.yml'
+
   release:
       types: [released, prereleased]
 
@@ -201,9 +198,10 @@ jobs:
       run: yarn lint
     - name: Test
       run: yarn test:integration -i mongo datasync
-  publish:
+
+  publishPackages:
     # publish to npm only when doing the release
-    if: ${{ github.event_name == 'release'}}
+    if: ${{ github.event_name == 'release' }}
     env:
       CI: true
     runs-on: ubuntu-latest
