@@ -1,0 +1,16 @@
+schema: ./src/schema/schema.graphql
+generates:
+  ./src/generated-types.ts:
+    plugins:
+      - add: 
+          content: '/* eslint-disable */'
+      - typescript
+    config:
+      scalars:
+        GraphbackTime: string
+        GraphbackDate: Date
+        GraphbackDateTime: Date
+        GraphbackTimestamp: number
+        GraphbackObjectID: string
+        GraphbackJSON: any
+        GraphbackJSONObject: "{ [key: string]: any }"
