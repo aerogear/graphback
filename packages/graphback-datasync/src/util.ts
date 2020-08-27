@@ -158,3 +158,11 @@ export const ClientSideWins: ConflictResolutionStrategy = {
   }
 }
 
+export const ThrowOnConflict: ConflictResolutionStrategy = {
+  resolveUpdate(conflict: ConflictMetadata): any {
+    throw new ConflictError(conflict);
+  },
+  resolveDelete(conflict: ConflictMetadata): any {
+    throw new ConflictError(conflict);
+  }
+}

@@ -1,5 +1,6 @@
 import yargs from 'yargs';
 import { serveHandler, GraphQLServeParams } from '../components/serveHandler';
+import { ConflictStrategyMap } from '../runtime';
 
 export const command = 'serve [modelDir] [options]';
 
@@ -27,7 +28,7 @@ export const builder = (args: yargs.Argv): void => {
   args.option('conflict', {
     describe:"Specify a conflict resolution strategy with --datasync",
     type: 'string',
-    choices: ["clientSideWins", "serverSideWins"]
+    choices: Object.keys(ConflictStrategyMap)
   })
 
   args.option('deltaTTL', {

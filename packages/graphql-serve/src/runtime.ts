@@ -5,11 +5,17 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db } from 'mongodb';
 import { loadModel } from './loadModel';
 import { GraphQLSchema } from 'graphql';
-import { createDataSyncAPI, ClientSideWins, ServerSideWins, ConflictResolutionStrategy } from "@graphback/datasync"
+import { createDataSyncAPI, ClientSideWins, ServerSideWins, ConflictResolutionStrategy, ThrowOnConflict } from "@graphback/datasync"
 import { IResolverObject } from 'apollo-server-express';
 
 
-export type ConflictResolutionStrategyName = "clientSideWins"|"serverSideWins";
+export type ConflictResolutionStrategyName = keyof typeof ConflictStrategyMap;
+
+export const ConflictStrategyMap = {
+  clientSideWins: ClientSideWins,
+  serverSideWins: ServerSideWins,
+  throwOnConflict: ThrowOnConflict
+};
 
 export interface DataSyncServeConfig {
   datasync: boolean,
@@ -48,11 +54,8 @@ export function createRuntime (modelDir: string, db: Db, datasyncServeConfig: Da
   if (datasyncServeConfig.datasync) {
     let conflictResolutionStrategy: ConflictResolutionStrategy = ClientSideWins;
     let deltaTTL = 172800;
-    if (datasyncServeConfig.conflict === "clientSideWins") {
-      conflictResolutionStrategy = ClientSideWins;
-    }
-    if (datasyncServeConfig.conflict === "serverSideWins") {
-      conflictResolutionStrategy = ServerSideWins;
+    if (datasyncServeConfig.conflict) {
+      conflictResolutionStrategy = ConflictStrategyMap[datasyncServeConfig.conflict];
     }
 
     if (datasyncServeConfig.deltaTTL !== undefined && datasyncServeConfig.deltaTTL !== null) {

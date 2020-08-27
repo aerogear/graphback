@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import { NoDataError } from '@graphback/core';
-import { ConflictError, DataSyncFieldNames, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName } from '../src';
+import { ConflictError, DataSyncFieldNames, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName, ThrowOnConflict } from '../src';
 import { Context, createTestingContext } from './__util__';
+
 
 describe('DataSyncConflictMongoDBDataProvider', () => {
   let context: Context;
@@ -303,5 +304,53 @@ describe('Server Side wins Conflict resolution', () => {
     await Post.update({ _id, title: updatedTitle, [DataSyncFieldNames.version]: version })
 
     await expect(Post.delete({ _id, [DataSyncFieldNames.version]: version })).rejects.toThrowError(ConflictError);
+  });
+});
+
+
+describe('Throw on Conflict Strategy', () => {
+  let context: Context;
+  afterEach(async () => context.server.stop());
+  const fields = ["_id", "title"];
+  const postSchema = `
+  """
+  @model
+  @datasync(
+    ttl: 5184000
+  )
+  """
+  type Post {
+    _id: GraphbackObjectID!
+    title: String!
+    content: String
+  }
+
+  scalar GraphbackObjectID
+  `;
+
+  it ('throws when conflict occurs on update', async () => {
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true, conflictResolution: ThrowOnConflict } } } });
+
+    const { Post } = context.providers;
+
+    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
+
+    await Post.update({ _id, title: "Post 1 v2", [DataSyncFieldNames.version]: version },{graphback: {services: {}, options: { selectedFields: fields}}})
+
+    const finalUpdateTitle = "Post 1 v3";
+    await expect(Post.update({ _id, title: finalUpdateTitle, [DataSyncFieldNames.version]: version },{graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+  });
+
+  it ('throws if conflict occurs on deletes', async () => {
+    context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true, conflictResolution: ThrowOnConflict } } } });
+
+    const { Post } = context.providers;
+
+    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
+
+    const updatedTitle = "Post 1 v2";
+    await Post.update({ _id, title: updatedTitle,  [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}});
+
+    await expect(Post.delete({ _id, [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}})).rejects.toThrowError(ConflictError);
   });
 });
