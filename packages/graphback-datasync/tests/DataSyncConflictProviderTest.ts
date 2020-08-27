@@ -333,12 +333,12 @@ describe('Throw on Conflict Strategy', () => {
 
     const { Post } = context.providers;
 
-    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
+    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" });
 
-    await Post.update({ _id, title: "Post 1 v2", [DataSyncFieldNames.version]: version },{graphback: {services: {}, options: { selectedFields: fields}}})
+    await Post.update({ _id, title: "Post 1 v2", [DataSyncFieldNames.version]: version })
 
     const finalUpdateTitle = "Post 1 v3";
-    await expect(Post.update({ _id, title: finalUpdateTitle, [DataSyncFieldNames.version]: version },{graphback: {services: {}, options: { selectedFields: fields}}})).rejects.toThrowError(ConflictError);
+    await expect(Post.update({ _id, title: finalUpdateTitle, [DataSyncFieldNames.version]: version })).rejects.toThrowError(ConflictError);
   });
 
   it ('throws if conflict occurs on deletes', async () => {
@@ -346,11 +346,11 @@ describe('Throw on Conflict Strategy', () => {
 
     const { Post } = context.providers;
 
-    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" }, {graphback: {services: {}, options: { selectedFields: ["_id", DataSyncFieldNames.version]}}});
+    const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" });
 
     const updatedTitle = "Post 1 v2";
-    await Post.update({ _id, title: updatedTitle,  [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}});
+    await Post.update({ _id, title: updatedTitle,  [DataSyncFieldNames.version]: version });
 
-    await expect(Post.delete({ _id, [DataSyncFieldNames.version]: version }, {graphback: {services: {}, options: { selectedFields: [...fields, DataSyncFieldNames.deleted]}}})).rejects.toThrowError(ConflictError);
+    await expect(Post.delete({ _id, [DataSyncFieldNames.version]: version })).rejects.toThrowError(ConflictError);
   });
 });
