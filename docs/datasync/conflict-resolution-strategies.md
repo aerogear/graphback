@@ -37,7 +37,7 @@ const {
   }
 );
 ```
-Graphback DataSync has two built-in conflict resolution strategies that come with it:
+Graphback DataSync has three built-in conflict resolution strategies that come with it:
 
 ### ClientSideWins
 
@@ -47,6 +47,11 @@ This strategy ensures that updates always resolve to whatever the client had sen
 ### ServerSideWins
 
 This strategy ensures that in the event of a update conflict, the client's update will never overwrite any field that has changed since the client last fetched it. If the object has been deleted in the database, the client will be notified of it by way of a `ConflictError`. For delete conflicts, the client is informed of the conflict via a `ConflictError`.
+
+
+### ThrowOnConflict
+
+This strategy throws a `ConflictError` every time a conflict occurs, so that the client can be informed about the conflicts and can possibly resolve the conflicts.
 
 
 ### Custom Conflict Strategy
