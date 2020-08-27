@@ -130,7 +130,7 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
 
       // create a resolver function for every query field created in `transformSchema`
       queryObj[`getArchived${modelName}s`] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-        const crudService = context.graphback.services[modelName];
+        const crudService = context.services[modelName];
 
         // create a filter in the GraphQLCRUD format to retrieve only archived Notes
         const customFilter: QueryFilter = {

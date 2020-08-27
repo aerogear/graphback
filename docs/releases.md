@@ -153,6 +153,21 @@ await noteService.findBy({
 
 Resolver options (`context.graphback.options`) was removed from the context because the `count` aggregation and `selectedFields` extraction logic was moved to the CRUDService method.
 
+### Removed graphback key from GraphbackContext
+
+The `graphback` property has been removed from `GraphbackContext`.
+
+```patch
+export interface GraphbackContext {
+-  graphback: {
+-    services: GraphbackServiceConfigMap
+-  }
++  services: GraphbackServiceConfigMap
+}
+```
+
+Now you can reach the Graphback services by calling `context.services.Note.findBy(...)`.
+
 #### CRUDService, DataSyncCRUDService now accepts a `ModelDefinition` as the first constructor parameter.
 
 To instantiate a CRUDService you must pass the full `ModelDefinition` instead of the model name.
