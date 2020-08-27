@@ -108,10 +108,10 @@ export class DataSyncPlugin extends GraphbackPlugin {
     const deltaQuery = getDeltaQuery(modelName)
 
     queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (!context.services || !context.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
-      const dataSyncService = isDataSyncService(context.services[modelName]);
+      const dataSyncService = isDataSyncService(context.graphback[modelName]);
       if (dataSyncService === undefined) {
         throw Error("Service is not a DataSyncCRUDService. Please use DataSyncCRUDService and DataSync-compliant DataProvider with DataSync Plugin to get Delta Queries.")
       }

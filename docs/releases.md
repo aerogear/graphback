@@ -155,18 +155,18 @@ Resolver options (`context.graphback.options`) was removed from the context beca
 
 ### Removed graphback key from GraphbackContext
 
-The `graphback` property has been removed from `GraphbackContext`.
+The `graphback.services` property has been removed from `GraphbackContext`, and `graphback` is now the service map property.
 
 ```patch
 export interface GraphbackContext {
 -  graphback: {
--    services: GraphbackServiceConfigMap
+-    graphback: GraphbackServiceConfigMap
 -  }
-+  services: GraphbackServiceConfigMap
++  graphback: GraphbackServiceConfigMap
 }
 ```
 
-Now you can reach the Graphback services by calling `context.services.Note.findBy(...)`.
+Now you can reach the Graphback service map by calling `context.graphback.Note.findBy(...)`.
 
 #### CRUDService, DataSyncCRUDService now accepts a `ModelDefinition` as the first constructor parameter.
 

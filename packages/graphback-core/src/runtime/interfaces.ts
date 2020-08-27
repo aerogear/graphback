@@ -14,7 +14,7 @@ export interface GraphbackServiceConfigMap {
  * GraphQL context interface according to Graphback runtime layer format
  */
 export interface GraphbackContext {
-  services: GraphbackServiceConfigMap
+  graphback: GraphbackServiceConfigMap
 }
 
 /**
