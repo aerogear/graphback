@@ -504,11 +504,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const resolverCreateField = getFieldName(modelName, GraphbackOperationType.CREATE);
 
     mutationObj[resolverCreateField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback.services[modelName].create(args.input, context, info);
+      return context.graphback[modelName].create(args.input, context, info);
     }
   }
 
@@ -523,11 +523,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const updateField = getFieldName(modelName, GraphbackOperationType.UPDATE);
 
     mutationObj[updateField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback.services[modelName].update(args.input, context, info)
+      return context.graphback[modelName].update(args.input, context, info)
     }
   }
 
@@ -542,11 +542,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const deleteField = getFieldName(modelName, GraphbackOperationType.DELETE);
 
     mutationObj[deleteField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback.services[modelName].delete(args.input, context, info)
+      return context.graphback[modelName].delete(args.input, context, info)
     }
   }
 
@@ -562,7 +562,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const findField = getFieldName(modelName, GraphbackOperationType.FIND);
 
     queryObj[findField] = async (_: any, args: FindByArgs, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      return context.graphback.services[modelName].findBy(args, context, info, 'items')
+      return context.graphback[modelName].findBy(args, context, info, 'items')
     }
   }
 
@@ -579,11 +579,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const primaryKeyLabel = model.primaryKey.name;
 
     queryObj[findOneField] = (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
-      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback.services[modelName].findOne({ [primaryKeyLabel]: args.id }, context, info)
+      return context.graphback[modelName].findOne({ [primaryKeyLabel]: args.id }, context, info)
     }
   }
 
@@ -599,11 +599,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     subscriptionObj[operation] = {
       subscribe: (_: any, args: any, context: GraphbackContext) => {
-        if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+        if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback.services[modelName].subscribeToCreate(args.filter, context);
+        return context.graphback[modelName].subscribeToCreate(args.filter, context);
       }
     }
   }
@@ -620,11 +620,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     subscriptionObj[operation] = {
       subscribe: (_: any, args: any, context: GraphbackContext) => {
-        if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+        if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback.services[modelName].subscribeToUpdate(args.filter, context);
+        return context.graphback[modelName].subscribeToUpdate(args.filter, context);
       }
     }
   }
@@ -641,11 +641,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
     subscriptionObj[operation] = {
       subscribe: (_: any, args: any, context: GraphbackContext) => {
-        if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+        if (!context.graphback || !context.graphback[modelName]) {
           throw new Error(`Missing service for ${modelName}`);
         }
 
-        return context.graphback.services[modelName].subscribeToDelete(args.filter, context);
+        return context.graphback[modelName].subscribeToDelete(args.filter, context);
       }
     }
   }
@@ -667,11 +667,11 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return parent[relationOwner];
       }
 
-      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
-      return context.graphback.services[modelName].batchLoadData(
+      return context.graphback[modelName].batchLoadData(
         relationship.relationForeignKey,
         parent[model.primaryKey.name],
         args.filter,
@@ -699,7 +699,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         return parent[relationOwner];
       }
 
-      if (!context.graphback || !context.graphback.services || !context.graphback.services[modelName]) {
+      if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
 
@@ -714,7 +714,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       if (!context[dataLoaderName]) {
         context[dataLoaderName] = new DataLoader<string, any>(async (keys: string[]) => {
 
-          const service = context.graphback.services[modelName];
+          const service = context.graphback[modelName];
           const results = await service.findBy({ [relationIdField.name]: { in: keys }, }, context, info);
 
           return keys.map((key: string) => {

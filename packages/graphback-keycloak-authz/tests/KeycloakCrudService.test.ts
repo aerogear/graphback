@@ -64,7 +64,7 @@ test('unauthorized tokens will result in unauthorized errors', async () => {
     }
   } as Keycloak.Token
 
-  const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken), graphback: { services: {} } }
+  const unauthorizedContext = { kauth: new KeycloakContextBase(unauthorizedToken), graphback: {} }
 
   const val = { test: 'value' }
 
@@ -133,7 +133,7 @@ test('authorized tokens will not throw an error and will get a result', async ()
   } as Keycloak.Token
 
 
-  const authorizedContext = { kauth: new KeycloakContextBase(authorizedToken), graphback: { services: {} } }
+  const authorizedContext = { kauth: new KeycloakContextBase(authorizedToken), graphback: {} }
 
   const dbCreateSpy = jest.spyOn(db, "create")
   const dbUpdateSpy = jest.spyOn(db, "update")
@@ -188,7 +188,7 @@ test('passing no authConfig will result in all operations being allowed', async 
     service: new CRUDService(modelDefinition, db, { crudOptions: {}, pubSub })
   })
 
-  const context = { kauth: {}, graphback: { services: {} } }
+  const context = { kauth: {}, graphback: {} }
   const val = { test: 'value' }
 
   await expect(service.create(val, context)).resolves.toEqual(val)
@@ -241,7 +241,7 @@ test('multiple roles can be applied to each operation', async () => {
     }
   } as Keycloak.Token
 
-  const context = { kauth: new KeycloakContextBase(Token), graphback: { services: {} } }
+  const context = { kauth: new KeycloakContextBase(Token), graphback: {} }
 
   const val = { test: 'value' }
 
@@ -294,7 +294,7 @@ test('Subscriptions', async () => {
     }
   } as Keycloak.Token
 
-  const context = { kauth: new KeycloakContextBase(Token), graphback: { services: {} } }
+  const context = { kauth: new KeycloakContextBase(Token), graphback: {} }
 
   const val = { test: 'value' }
 
@@ -353,7 +353,7 @@ test('Batching', async () => {
     }
   } as Keycloak.Token
 
-  const context = { kauth: new KeycloakContextBase(Token), graphback: { services: {} } }
+  const context = { kauth: new KeycloakContextBase(Token), graphback: {} }
 
   expect(() => service.batchLoadData('task', "test", {}, context)).toThrowError('User is not authorized.')
 });
@@ -398,7 +398,7 @@ test('Input filter', async () => {
     }
   } as Keycloak.Token
 
-  const context = { kauth: new KeycloakContextBase(Token), graphback: { services: {} } }
+  const context = { kauth: new KeycloakContextBase(Token), graphback: {} }
 
   expect(() => service.update({ secret: "Tasks only for admins" }, context)).toThrowError('User is not authorized.')
   expect(() => service.create({ secret: "Tasks updates only for admins" }, context)).toThrowError('User is not authorized.')
