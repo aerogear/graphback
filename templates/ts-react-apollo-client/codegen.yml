@@ -3,7 +3,8 @@ documents: ./src/graphql/**/**.graphql
 generates:
   ./src/generated-types.tsx:
     plugins:
-      - add: '/* tslint:disable */'
+      - add: 
+          content: '/* eslint-disable */'
       - typescript
       - typescript-operations
       - typescript-react-apollo

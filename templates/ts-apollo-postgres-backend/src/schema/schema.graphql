@@ -136,6 +136,7 @@ input PageRequest {
 }
 
 type Query {
+  getDraftNotes: [Note]
   getNote(id: ID!): Note
   findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment

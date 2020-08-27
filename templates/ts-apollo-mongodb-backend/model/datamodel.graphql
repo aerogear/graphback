@@ -1,9 +1,4 @@
-"""
-@model
-@datasync(
-  ttl: 5184000
-)
-"""
+""" @model """
 type Note {
   _id: GraphbackObjectID!
   title: String!
@@ -14,16 +9,15 @@ type Note {
   comments: [Comment]!
 }
 
-"""
-@model
-@datasync(
-  ttl: 5184000
-)
-"""
+""" @model """
 type Comment {
   _id: GraphbackObjectID!
   text: String
   description: String
+}
+
+type Query {
+  getDraftNotes: [Note]
 }
 
 scalar GraphbackObjectID

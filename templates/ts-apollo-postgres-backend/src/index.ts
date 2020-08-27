@@ -11,6 +11,7 @@ import path from 'path'
 import { loadDBConfig, connectDB } from './db'
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations'
 import { createKnexDbProvider } from '@graphback/runtime-knex'
+import { noteResolvers } from './resolvers/noteResolvers'
 
 const app = express()
 
@@ -37,7 +38,7 @@ migrateDB(dbConfig, typeDefs, {
 
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers,
+  resolvers: [resolvers, noteResolvers],
   context: contextCreator
 })
 

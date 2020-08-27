@@ -15,3 +15,7 @@ type Comment {
   text: String
   description: String
 }
+
+type Query {
+  getDraftNotes: [Note]
+}
