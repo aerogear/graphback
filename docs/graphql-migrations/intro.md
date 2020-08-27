@@ -5,7 +5,8 @@ sidebar_label: Introduction
 ---
 
 Graphback uses [graphql-migrations](https://www.npmjs.com/package/graphql-migrations) to automatically create and update tables from a GraphQL schema.
-The library compares your database schema to your GraphQL schema and executes the required changes to keep the database structure synchronised with the GraphQL schema.
+The library compares your database schema to your GraphQL schema and executes the required changes to keep the database structure synchronised with the GraphQL schema. The package is built on top of [Knex.js](http://knexjs.org/), a flexible SQL query builder.
+
 
 ## Compatibility
 
@@ -19,13 +20,13 @@ You can install `graphql-migrations` on your existing project using the followin
 With npm: 
 
 ```bash
-npm i graphql-serve
+npm i graphql-migrations knex
 ```
 
 or with yarn:
 
 ```bash
-yarn add graphql-serve
+yarn add graphql-migrations knex
 ```
 
 ## Usage
