@@ -303,13 +303,13 @@ test('Find all notes', async () => {
 })
 
 test('Find all notes with count', async () => {
-  const { data, errors } = await client.query({
+  const { data } = await client.query({
     operationName: 'findNotes',
     query: FIND_NOTES_WITH_COUNT
   })
 
   expect(data).toBeDefined()
-  expect(data.findNotes.count).toBeDefined()
+  expect(data.findNotes.count).toEqual(2)
 })
 
 test('Find all notes without count', async () => {

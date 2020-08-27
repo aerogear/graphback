@@ -293,7 +293,7 @@ test('Find all notes with count', async () => {
   })
 
   expect(data).toBeDefined()
-  expect(data.findNotes.count).toBeDefined()
+  expect(data.findNotes.count).toEqual(2);
 })
 
 test('Find all notes without count', async () => {
