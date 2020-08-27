@@ -86,10 +86,12 @@ Graphback will only process GraphQL types which are annotated with `@model`. Thi
 
 In this scenario, we want `Note` to be processed by Graphback.
 
-```diff
-+"""
-+@model
-+"""
+```graphql
+// highlight-start
+"""
+@model
+"""
+// highlight-end
 type Note {
   id: ID!
   text: String!
