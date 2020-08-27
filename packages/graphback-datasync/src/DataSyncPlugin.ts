@@ -40,7 +40,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
 
       return schema;
     }
-    const modelConflictConfigSet = new Set(Object.keys(this.config.conflictConfig.models))
+    const modelConflictConfigSet = new Set(Object.keys(this.config.conflictConfig?.models || {}))
     let dataSyncModelCount = 0;
     models.forEach((model: ModelDefinition) => {
       // Diff queries
@@ -62,10 +62,7 @@ export class DataSyncPlugin extends GraphbackPlugin {
     }
 
     if (modelConflictConfigSet.size !== 0) {
-      console.log("The following models from conflictConfig could not be found, consider adding them to the schema and/or adding the @datasync annotation if you have not done so: ");
-      modelConflictConfigSet.forEach((modelName: string) => {
-        console.log(modelName)
-      });
+      console.log(`The following models from conflictConfig could not be found, consider adding them to the schema and/or adding the @datasync annotation if you have not done so:\n${Array.from(modelConflictConfigSet).join('\n')} `);
     }
 
     return buildSchema(schemaComposer.toSDL())

@@ -51,7 +51,7 @@ This strategy ensures that in the event of a update conflict, the client's updat
 
 ### ThrowOnConflict
 
-This strategy throws a `ConflictError` every time a conflict occurs, so that the client can be informed about the conflicts and can possibly resolve the conflicts.
+This strategy throws a `ConflictError` whenever a client tries to change a field on a document, that has also been changed on the server since the client last fetched it.
 
 
 ### Custom Conflict Strategy
