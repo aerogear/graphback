@@ -23,7 +23,7 @@ export class DataSyncCRUDService<T = any> extends CRUDService<T> {
   public async sync(lastSync: Date, info?: GraphQLResolveInfo, filter?: any, limit?: number): Promise<SyncList<T>> {
     let selectedFields: string[];
     if (info) {
-      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model)
+      selectedFields = getSelectedFieldsFromResolverInfo(info, this.model, 'items');
     }
     const res = await (this.db as DataSyncProvider).sync(lastSync, selectedFields, filter, limit);
 
