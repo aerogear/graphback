@@ -1,10 +1,8 @@
-/* tslint:disable */
-import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/react-common';
-import * as ApolloReactHooks from '@apollo/react-hooks';
+/* eslint-disable */
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
-
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,13 +10,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  GraphbackJSON: any;
-  GraphbackJSONObject: { [key: string]: any };
-  GraphbackObjectID: string;
-  GraphbackTimestamp: number;
-  GraphbackTime: string;
-  GraphbackDate: Date;
-  GraphbackDateTime: Date;
 };
 
 /**  @model  */
@@ -50,9 +41,12 @@ export type CommentResultList = {
 };
 
 export type CommentSubscriptionFilter = {
-  id?: Maybe<Scalars['ID']>;
-  text?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
+  and?: Maybe<Array<CommentSubscriptionFilter>>;
+  or?: Maybe<Array<CommentSubscriptionFilter>>;
+  not?: Maybe<CommentSubscriptionFilter>;
+  id?: Maybe<IdInput>;
+  text?: Maybe<StringInput>;
+  description?: Maybe<StringInput>;
 };
 
 export type CreateCommentInput = {
@@ -137,7 +131,10 @@ export type Note = {
   id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  /** @oneToMany(field: 'note', key: 'noteId') */
+  /**
+   * @oneToMany(field: 'note', key: 'noteId')
+   * @oneToMany(field: 'note')
+   */
   comments: Array<Maybe<Comment>>;
 };
 
@@ -165,9 +162,12 @@ export type NoteResultList = {
 };
 
 export type NoteSubscriptionFilter = {
-  id?: Maybe<Scalars['ID']>;
-  title?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
+  and?: Maybe<Array<NoteSubscriptionFilter>>;
+  or?: Maybe<Array<NoteSubscriptionFilter>>;
+  not?: Maybe<NoteSubscriptionFilter>;
+  id?: Maybe<IdInput>;
+  title?: Maybe<StringInput>;
+  description?: Maybe<StringInput>;
 };
 
 export type OrderByInput = {
@@ -182,6 +182,7 @@ export type PageRequest = {
 
 export type Query = {
   __typename?: 'Query';
+  getDraftNotes?: Maybe<Array<Maybe<Note>>>;
   getNote?: Maybe<Note>;
   findNotes: NoteResultList;
   getComment?: Maybe<Comment>;
@@ -269,13 +270,6 @@ export type SubscriptionUpdatedCommentArgs = {
 export type SubscriptionDeletedCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
-
-
-
-
-
-
-
 
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
@@ -594,15 +588,15 @@ export const FindNotesDocument = gql`
  *   },
  * });
  */
-export function useFindNotesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
+export function useFindNotesQuery(baseOptions?: Apollo.QueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
+        return Apollo.useQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
       }
-export function useFindNotesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
+export function useFindNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
+          return Apollo.useLazyQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
         }
 export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
 export type FindNotesLazyQueryHookResult = ReturnType<typeof useFindNotesLazyQuery>;
-export type FindNotesQueryResult = ApolloReactCommon.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
+export type FindNotesQueryResult = Apollo.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
 export const GetNoteDocument = gql`
     query getNote($id: ID!) {
   getNote(id: $id) {
@@ -627,15 +621,15 @@ export const GetNoteDocument = gql`
  *   },
  * });
  */
-export function useGetNoteQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
+export function useGetNoteQuery(baseOptions?: Apollo.QueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
+        return Apollo.useQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
       }
-export function useGetNoteLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
+export function useGetNoteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
+          return Apollo.useLazyQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
         }
 export type GetNoteQueryHookResult = ReturnType<typeof useGetNoteQuery>;
 export type GetNoteLazyQueryHookResult = ReturnType<typeof useGetNoteLazyQuery>;
-export type GetNoteQueryResult = ApolloReactCommon.QueryResult<GetNoteQuery, GetNoteQueryVariables>;
+export type GetNoteQueryResult = Apollo.QueryResult<GetNoteQuery, GetNoteQueryVariables>;
 export const FindCommentsDocument = gql`
     query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
   findComments(filter: $filter, page: $page, orderBy: $orderBy) {
@@ -667,15 +661,15 @@ export const FindCommentsDocument = gql`
  *   },
  * });
  */
-export function useFindCommentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-        return ApolloReactHooks.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
+export function useFindCommentsQuery(baseOptions?: Apollo.QueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
+        return Apollo.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
       }
-export function useFindCommentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
+export function useFindCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
+          return Apollo.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
         }
 export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery>;
 export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
-export type FindCommentsQueryResult = ApolloReactCommon.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
+export type FindCommentsQueryResult = Apollo.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
 export const GetCommentDocument = gql`
     query getComment($id: ID!) {
   getComment(id: $id) {
@@ -700,15 +694,15 @@ export const GetCommentDocument = gql`
  *   },
  * });
  */
-export function useGetCommentQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
+export function useGetCommentQuery(baseOptions?: Apollo.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
+        return Apollo.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
       }
-export function useGetCommentLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
+export function useGetCommentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
+          return Apollo.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
         }
 export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
 export type GetCommentLazyQueryHookResult = ReturnType<typeof useGetCommentLazyQuery>;
-export type GetCommentQueryResult = ApolloReactCommon.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
+export type GetCommentQueryResult = Apollo.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
 export const CreateNoteDocument = gql`
     mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
@@ -716,7 +710,7 @@ export const CreateNoteDocument = gql`
   }
 }
     ${NoteFieldsFragmentDoc}`;
-export type CreateNoteMutationFn = ApolloReactCommon.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
+export type CreateNoteMutationFn = Apollo.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
 
 /**
  * __useCreateNoteMutation__
@@ -735,12 +729,12 @@ export type CreateNoteMutationFn = ApolloReactCommon.MutationFunction<CreateNote
  *   },
  * });
  */
-export function useCreateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
+export function useCreateNoteMutation(baseOptions?: Apollo.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
+        return Apollo.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
       }
 export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
-export type CreateNoteMutationResult = ApolloReactCommon.MutationResult<CreateNoteMutation>;
-export type CreateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
+export type CreateNoteMutationResult = Apollo.MutationResult<CreateNoteMutation>;
+export type CreateNoteMutationOptions = Apollo.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
 export const UpdateNoteDocument = gql`
     mutation updateNote($input: MutateNoteInput!) {
   updateNote(input: $input) {
@@ -748,7 +742,7 @@ export const UpdateNoteDocument = gql`
   }
 }
     ${NoteFieldsFragmentDoc}`;
-export type UpdateNoteMutationFn = ApolloReactCommon.MutationFunction<UpdateNoteMutation, UpdateNoteMutationVariables>;
+export type UpdateNoteMutationFn = Apollo.MutationFunction<UpdateNoteMutation, UpdateNoteMutationVariables>;
 
 /**
  * __useUpdateNoteMutation__
@@ -767,12 +761,12 @@ export type UpdateNoteMutationFn = ApolloReactCommon.MutationFunction<UpdateNote
  *   },
  * });
  */
-export function useUpdateNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateNoteMutation, UpdateNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
+export function useUpdateNoteMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNoteMutation, UpdateNoteMutationVariables>) {
+        return Apollo.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
       }
 export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutation>;
-export type UpdateNoteMutationResult = ApolloReactCommon.MutationResult<UpdateNoteMutation>;
-export type UpdateNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
+export type UpdateNoteMutationResult = Apollo.MutationResult<UpdateNoteMutation>;
+export type UpdateNoteMutationOptions = Apollo.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
 export const DeleteNoteDocument = gql`
     mutation deleteNote($input: MutateNoteInput!) {
   deleteNote(input: $input) {
@@ -780,7 +774,7 @@ export const DeleteNoteDocument = gql`
   }
 }
     ${NoteFieldsFragmentDoc}`;
-export type DeleteNoteMutationFn = ApolloReactCommon.MutationFunction<DeleteNoteMutation, DeleteNoteMutationVariables>;
+export type DeleteNoteMutationFn = Apollo.MutationFunction<DeleteNoteMutation, DeleteNoteMutationVariables>;
 
 /**
  * __useDeleteNoteMutation__
@@ -799,12 +793,12 @@ export type DeleteNoteMutationFn = ApolloReactCommon.MutationFunction<DeleteNote
  *   },
  * });
  */
-export function useDeleteNoteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteNoteMutation, DeleteNoteMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, baseOptions);
+export function useDeleteNoteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNoteMutation, DeleteNoteMutationVariables>) {
+        return Apollo.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, baseOptions);
       }
 export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
-export type DeleteNoteMutationResult = ApolloReactCommon.MutationResult<DeleteNoteMutation>;
-export type DeleteNoteMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
+export type DeleteNoteMutationResult = Apollo.MutationResult<DeleteNoteMutation>;
+export type DeleteNoteMutationOptions = Apollo.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation createComment($input: CreateCommentInput!) {
   createComment(input: $input) {
@@ -812,7 +806,7 @@ export const CreateCommentDocument = gql`
   }
 }
     ${CommentFieldsFragmentDoc}`;
-export type CreateCommentMutationFn = ApolloReactCommon.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
 
 /**
  * __useCreateCommentMutation__
@@ -831,12 +825,12 @@ export type CreateCommentMutationFn = ApolloReactCommon.MutationFunction<CreateC
  *   },
  * });
  */
-export function useCreateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
       }
 export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
-export type CreateCommentMutationResult = ApolloReactCommon.MutationResult<CreateCommentMutation>;
-export type CreateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const UpdateCommentDocument = gql`
     mutation updateComment($input: MutateCommentInput!) {
   updateComment(input: $input) {
@@ -844,7 +838,7 @@ export const UpdateCommentDocument = gql`
   }
 }
     ${CommentFieldsFragmentDoc}`;
-export type UpdateCommentMutationFn = ApolloReactCommon.MutationFunction<UpdateCommentMutation, UpdateCommentMutationVariables>;
+export type UpdateCommentMutationFn = Apollo.MutationFunction<UpdateCommentMutation, UpdateCommentMutationVariables>;
 
 /**
  * __useUpdateCommentMutation__
@@ -863,12 +857,12 @@ export type UpdateCommentMutationFn = ApolloReactCommon.MutationFunction<UpdateC
  *   },
  * });
  */
-export function useUpdateCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCommentMutation, UpdateCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
+export function useUpdateCommentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCommentMutation, UpdateCommentMutationVariables>) {
+        return Apollo.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
       }
 export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateCommentMutation>;
-export type UpdateCommentMutationResult = ApolloReactCommon.MutationResult<UpdateCommentMutation>;
-export type UpdateCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
+export type UpdateCommentMutationResult = Apollo.MutationResult<UpdateCommentMutation>;
+export type UpdateCommentMutationOptions = Apollo.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
 export const DeleteCommentDocument = gql`
     mutation deleteComment($input: MutateCommentInput!) {
   deleteComment(input: $input) {
@@ -876,7 +870,7 @@ export const DeleteCommentDocument = gql`
   }
 }
     ${CommentFieldsFragmentDoc}`;
-export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
 
 /**
  * __useDeleteCommentMutation__
@@ -895,12 +889,12 @@ export type DeleteCommentMutationFn = ApolloReactCommon.MutationFunction<DeleteC
  *   },
  * });
  */
-export function useDeleteCommentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
-        return ApolloReactHooks.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
+export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
       }
 export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
-export type DeleteCommentMutationResult = ApolloReactCommon.MutationResult<DeleteCommentMutation>;
-export type DeleteCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const NewNoteDocument = gql`
     subscription newNote($filter: NoteSubscriptionFilter) {
   newNote(filter: $filter) {
@@ -925,11 +919,11 @@ export const NewNoteDocument = gql`
  *   },
  * });
  */
-export function useNewNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewNoteSubscription, NewNoteSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<NewNoteSubscription, NewNoteSubscriptionVariables>(NewNoteDocument, baseOptions);
+export function useNewNoteSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewNoteSubscription, NewNoteSubscriptionVariables>) {
+        return Apollo.useSubscription<NewNoteSubscription, NewNoteSubscriptionVariables>(NewNoteDocument, baseOptions);
       }
 export type NewNoteSubscriptionHookResult = ReturnType<typeof useNewNoteSubscription>;
-export type NewNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewNoteSubscription>;
+export type NewNoteSubscriptionResult = Apollo.SubscriptionResult<NewNoteSubscription>;
 export const UpdatedNoteDocument = gql`
     subscription updatedNote($filter: NoteSubscriptionFilter) {
   updatedNote(filter: $filter) {
@@ -954,11 +948,11 @@ export const UpdatedNoteDocument = gql`
  *   },
  * });
  */
-export function useUpdatedNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>(UpdatedNoteDocument, baseOptions);
+export function useUpdatedNoteSubscription(baseOptions?: Apollo.SubscriptionHookOptions<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>) {
+        return Apollo.useSubscription<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>(UpdatedNoteDocument, baseOptions);
       }
 export type UpdatedNoteSubscriptionHookResult = ReturnType<typeof useUpdatedNoteSubscription>;
-export type UpdatedNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<UpdatedNoteSubscription>;
+export type UpdatedNoteSubscriptionResult = Apollo.SubscriptionResult<UpdatedNoteSubscription>;
 export const DeletedNoteDocument = gql`
     subscription deletedNote($filter: NoteSubscriptionFilter) {
   deletedNote(filter: $filter) {
@@ -983,11 +977,11 @@ export const DeletedNoteDocument = gql`
  *   },
  * });
  */
-export function useDeletedNoteSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<DeletedNoteSubscription, DeletedNoteSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<DeletedNoteSubscription, DeletedNoteSubscriptionVariables>(DeletedNoteDocument, baseOptions);
+export function useDeletedNoteSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DeletedNoteSubscription, DeletedNoteSubscriptionVariables>) {
+        return Apollo.useSubscription<DeletedNoteSubscription, DeletedNoteSubscriptionVariables>(DeletedNoteDocument, baseOptions);
       }
 export type DeletedNoteSubscriptionHookResult = ReturnType<typeof useDeletedNoteSubscription>;
-export type DeletedNoteSubscriptionResult = ApolloReactCommon.SubscriptionResult<DeletedNoteSubscription>;
+export type DeletedNoteSubscriptionResult = Apollo.SubscriptionResult<DeletedNoteSubscription>;
 export const NewCommentDocument = gql`
     subscription newComment($filter: CommentSubscriptionFilter) {
   newComment(filter: $filter) {
@@ -1012,11 +1006,11 @@ export const NewCommentDocument = gql`
  *   },
  * });
  */
-export function useNewCommentSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewCommentSubscription, NewCommentSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<NewCommentSubscription, NewCommentSubscriptionVariables>(NewCommentDocument, baseOptions);
+export function useNewCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewCommentSubscription, NewCommentSubscriptionVariables>) {
+        return Apollo.useSubscription<NewCommentSubscription, NewCommentSubscriptionVariables>(NewCommentDocument, baseOptions);
       }
 export type NewCommentSubscriptionHookResult = ReturnType<typeof useNewCommentSubscription>;
-export type NewCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<NewCommentSubscription>;
+export type NewCommentSubscriptionResult = Apollo.SubscriptionResult<NewCommentSubscription>;
 export const UpdatedCommentDocument = gql`
     subscription updatedComment($filter: CommentSubscriptionFilter) {
   updatedComment(filter: $filter) {
@@ -1041,11 +1035,11 @@ export const UpdatedCommentDocument = gql`
  *   },
  * });
  */
-export function useUpdatedCommentSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<UpdatedCommentSubscription, UpdatedCommentSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<UpdatedCommentSubscription, UpdatedCommentSubscriptionVariables>(UpdatedCommentDocument, baseOptions);
+export function useUpdatedCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<UpdatedCommentSubscription, UpdatedCommentSubscriptionVariables>) {
+        return Apollo.useSubscription<UpdatedCommentSubscription, UpdatedCommentSubscriptionVariables>(UpdatedCommentDocument, baseOptions);
       }
 export type UpdatedCommentSubscriptionHookResult = ReturnType<typeof useUpdatedCommentSubscription>;
-export type UpdatedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<UpdatedCommentSubscription>;
+export type UpdatedCommentSubscriptionResult = Apollo.SubscriptionResult<UpdatedCommentSubscription>;
 export const DeletedCommentDocument = gql`
     subscription deletedComment($filter: CommentSubscriptionFilter) {
   deletedComment(filter: $filter) {
@@ -1070,8 +1064,8 @@ export const DeletedCommentDocument = gql`
  *   },
  * });
  */
-export function useDeletedCommentSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>(DeletedCommentDocument, baseOptions);
+export function useDeletedCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>) {
+        return Apollo.useSubscription<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>(DeletedCommentDocument, baseOptions);
       }
 export type DeletedCommentSubscriptionHookResult = ReturnType<typeof useDeletedCommentSubscription>;
-export type DeletedCommentSubscriptionResult = ApolloReactCommon.SubscriptionResult<DeletedCommentSubscription>;
+export type DeletedCommentSubscriptionResult = Apollo.SubscriptionResult<DeletedCommentSubscription>;

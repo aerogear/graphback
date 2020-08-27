@@ -242,6 +242,7 @@ export type PageRequest = {
 
 export type Query = {
   __typename?: 'Query';
+  getDraftNotes?: Maybe<Array<Maybe<Note>>>;
   getNote?: Maybe<Note>;
   findNotes: NoteResultList;
   getComment?: Maybe<Comment>;
