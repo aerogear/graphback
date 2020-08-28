@@ -84,9 +84,11 @@ const userModel = `
  @model
  """
  type User {
-     id: ID!
+     _id: GraphbackObjectID!
      username: String!
  }
+
+ scalar GraphbackObjectID
 `;
 
 // Use the dataProvider in buildGraphbackAPI
