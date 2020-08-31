@@ -5,8 +5,6 @@ import CreateComment from '../comment/CreateComment';
 import OneComment from '../comment/OneComment';
 import { Button, Card } from '@material-ui/core';
 
-
-
 const OneNote = ({ id, title, description, comments }: Note) => {
     const [noteEdit, setNoteEdit] = useState(false)
     const [addComment, setAddComment] = useState(false)
