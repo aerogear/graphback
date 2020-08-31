@@ -20,6 +20,7 @@
     "apollo-boost": "0.4.9",
     "graphql": "15.3.0",
     "react": "16.13.1",
+    "react-scripts": "3.4.3",
     "react-dom": "16.13.1"
   },
   "scripts": {

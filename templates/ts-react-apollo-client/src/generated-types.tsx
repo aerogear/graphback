@@ -271,6 +271,17 @@ export type SubscriptionDeletedCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
 
+export type GetDraftNotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDraftNotesQuery = (
+  { __typename?: 'Query' }
+  & { getDraftNotes?: Maybe<Array<Maybe<(
+    { __typename?: 'Note' }
+    & NoteExpandedFieldsFragment
+  )>>> }
+);
+
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
   & Pick<Note, 'id' | 'title' | 'description'>
@@ -557,6 +568,38 @@ export const CommentExpandedFieldsFragmentDoc = gql`
   }
 }
     `;
+export const GetDraftNotesDocument = gql`
+    query getDraftNotes {
+  getDraftNotes {
+    ...NoteExpandedFields
+  }
+}
+    ${NoteExpandedFieldsFragmentDoc}`;
+
+/**
+ * __useGetDraftNotesQuery__
+ *
+ * To run a query within a React component, call `useGetDraftNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDraftNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDraftNotesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDraftNotesQuery(baseOptions?: Apollo.QueryHookOptions<GetDraftNotesQuery, GetDraftNotesQueryVariables>) {
+        return Apollo.useQuery<GetDraftNotesQuery, GetDraftNotesQueryVariables>(GetDraftNotesDocument, baseOptions);
+      }
+export function useGetDraftNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDraftNotesQuery, GetDraftNotesQueryVariables>) {
+          return Apollo.useLazyQuery<GetDraftNotesQuery, GetDraftNotesQueryVariables>(GetDraftNotesDocument, baseOptions);
+        }
+export type GetDraftNotesQueryHookResult = ReturnType<typeof useGetDraftNotesQuery>;
+export type GetDraftNotesLazyQueryHookResult = ReturnType<typeof useGetDraftNotesLazyQuery>;
+export type GetDraftNotesQueryResult = Apollo.QueryResult<GetDraftNotesQuery, GetDraftNotesQueryVariables>;
 export const FindNotesDocument = gql`
     query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
   findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
