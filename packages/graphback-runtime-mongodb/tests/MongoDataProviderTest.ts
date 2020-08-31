@@ -378,13 +378,12 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
 
     const { providers } = context;
-    const selectedFields = ['_id'];
 
     // verify that not in operator works
-    const allTodos = await providers.Todo.findBy({}, selectedFields);
+    const allTodos = await providers.Todo.findBy();
     const newTodoItems = 2709;
     await providers.Todo.create({ items: newTodoItems });
-    const allTodosAfterCreation = await providers.Todo.findBy({}, selectedFields);
+    const allTodosAfterCreation = await providers.Todo.findBy();
 
     expect(allTodosAfterCreation.length).toEqual(allTodos.length + 1); // verify that a new todo was created
 
@@ -398,7 +397,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
           }
         }
       }
-    }, selectedFields);
+    });
 
     expect(oldTodos).toEqual(allTodos); // assert that we did not retrieve the newly added todo item
   });

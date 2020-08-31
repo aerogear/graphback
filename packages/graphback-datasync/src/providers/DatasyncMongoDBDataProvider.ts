@@ -33,7 +33,6 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
       // Default TTL of 2 days
       this.TTLinSeconds = 172800
     }
-    this.coerceTSFields = true;
   }
 
   public async create(data: any): Promise<Type> {

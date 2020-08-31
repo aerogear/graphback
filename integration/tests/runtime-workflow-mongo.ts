@@ -157,12 +157,13 @@ beforeEach(() => {
 
 afterEach(() => server.stop())
 
-afterAll(async () => {
+afterAll(async (done) => {
   rmdirSync(path.resolve('./output-mongo'), { recursive: true });
   const dropCollections = ["note", "comment", "commentmetadata"].map((name: string) => db.dropCollection(name));
   await Promise.all(dropCollections);
 
-  return mongoClient.close();
+  await mongoClient.close();
+  done()
 });
 
 async function seedDatabase(db: Db) {

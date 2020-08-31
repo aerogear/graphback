@@ -12,8 +12,6 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
   }
   let context: Context;
 
-  const fields = ["id", "text", "likes"];
-
   const postSchema = `
       """
       @model
@@ -38,6 +36,16 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
   //all tests can run parallel
 
   afterEach(() => context.server.stop());
+
+  it('can filter ObjectID', async () => {
+    context = await createTestingContext(postSchema);
+
+    const newPost = await context.providers.Post.create({ text: 'hello', likes: 100 });
+
+    const findPost = await context.providers.Post.findBy({ filter: { _id: { eq: newPost._id } } });
+    expect(findPost).toHaveLength(1)
+    expect(findPost[0].text).toEqual(newPost.text);
+  })
 
   it('can filter using AND', async () => {
     context = await createTestingContext(postSchema, {
@@ -76,14 +84,10 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
 
     const posts: Post[] = await context.providers.Post.findBy({
       filter: {
-        or: [
-          {
-            text: { eq: 'post2' }
-          },
-          {
-            likes: { eq: 300 }
-          }
-        ]
+        text: { eq: 'post2' },
+        or: [{
+          likes: { eq: 300 }
+        }]
       }
     });
     expect(posts.length).toEqual(2);
@@ -331,9 +335,5 @@ describe('queryBuilder scalar filtering', () => {
     const newPosts = await context.providers.Post.findBy({ filter: { createdAt: { gt: posts[0].createdAt } } });
     expect(newPosts.length).toEqual(2);
     expect(newPosts.map((post: any) => post.text)).toEqual(["not yet", "bye guys"]);
-
-    // Passing invalid timestamp throws
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    expect(context.providers.Post.findBy({ filter: { createdAt: { gt: "break" } } })).rejects.toThrow();
   });
-})
+});
