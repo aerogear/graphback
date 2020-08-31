@@ -68,7 +68,9 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       const projection = this.buildProjectionOption(selectedFields);
       const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId }, { projection }).toArray();
       if (queryResult && queryResult[0]) {
-        return queryResult[0];
+        const res: unknown = queryResult[0];
+
+        return res as Type;
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -87,7 +89,9 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     if (queryResult) {
       const result = await this.db.collection(this.collectionName).deleteOne({ _id: objectId });
       if (result.result.ok) {
-        return queryResult;
+        const res: unknown = queryResult;
+
+        return res as Type;
       }
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
@@ -99,7 +103,9 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     const data = await query;
 
     if (data) {
-      return data;
+      const res: unknown = data;
+
+      return res as Type;
     }
 
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);

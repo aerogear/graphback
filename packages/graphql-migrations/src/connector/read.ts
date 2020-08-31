@@ -85,7 +85,7 @@ class Reader {
         .columnInfo() as any;
       // Primary key
       const primaries = await getPrimaryKey(this.knex, tableName, this.schemaName)
-      
+
       // eslint-disable-next-line no-restricted-syntax
       for (const key in columnInfo) {
         if (columnInfo[key]) {

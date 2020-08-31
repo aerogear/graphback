@@ -27,7 +27,8 @@ export class MongoDeltaSource<Type = any> {
         expireAfterSeconds: 0
       }
     ], this.db.collection(this.collectionName)).catch((e: any) => {
-      console.log(`Could not create TTL Index for delta table: ${this.collectionName}: ${e}`)
+      // eslint-disable-next-line no-console
+      console.error(`Could not create TTL Index for delta table: ${this.collectionName}: ${e}`)
     })
   }
 

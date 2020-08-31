@@ -1,5 +1,4 @@
-import { ModelDefinition, GraphbackContext, TransformType, FieldTransform, NoDataError, GraphbackOperationType } from '@graphback/core';
-import { applyIndexes } from '@graphback/runtime-mongo';
+import { ModelDefinition, NoDataError, GraphbackOperationType } from '@graphback/core';
 import { DataSyncModelConflictConfig, DataSyncFieldNames, ConflictMetadata, ConflictError, ClientSideWins } from '../util';
 import { MongoDeltaSource } from '../deltaSource';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
@@ -30,7 +29,10 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
     const result = await super.create(data);
 
-    await this.deltaSource.insertDiff(result).catch((e: any) => { console.error(`Error in inserting delta: ${e}`) });
+    await this.deltaSource.insertDiff(result).catch((e: any) => {
+      // eslint-disable-next-line no-console
+      console.error(`Error in inserting delta: ${e}`)
+    });
 
 
     return result;
@@ -40,7 +42,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     const { _id } = updateDocument;
 
     for(let i = 0; i < MAX_RETRIES; i++) {
-      
+
       const serverData = await this.db.collection(this.collectionName).findOne({ _id });
       if (!serverData) {
         throw new NoDataError(`Cannot update ${this.collectionName}`)
@@ -85,7 +87,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     const { _id } = data;
 
     for(let i = 0; i < MAX_RETRIES; i++) {
-      
+
       const serverData = await this.db.collection(this.collectionName).findOne({ _id });
       if (!serverData) {
         throw new NoDataError(`Cannot update ${this.collectionName}`)
@@ -168,7 +170,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
       }
     }
 
-    
+
     if (conflictFound) {
       return metadata
     }

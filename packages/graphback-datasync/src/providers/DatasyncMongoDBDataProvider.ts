@@ -99,7 +99,9 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
     const data = await query;
 
     if (data) {
-      return data;
+      const res: unknown = data;
+
+      return res as Type;
     }
     throw new NoDataError(`Cannot find a result for ${this.collectionName} with filter: ${JSON.stringify(filter)}`);
   }
@@ -128,7 +130,7 @@ export class DataSyncMongoDBDataProvider<Type = any> extends MongoDBDataProvider
 
   public sync(lastSync: Date, selectedFields?: string[], filter?: QueryFilter, limit?: number): Promise<Type[]> {
     filter = filter || {};
-    
+
     const args: FindByArgs = {
       filter: {
         ...filter,
