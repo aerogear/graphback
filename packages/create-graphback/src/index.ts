@@ -8,10 +8,10 @@ type Params = { name?: string, templateName?: string, templateUrl: string };
 
 const command = '$0 <name>';
 
-const desc = 'Create Graphback project from available templates';
+export const desc = 'Create Graphback project from available templates';
 
 // tslint:disable-next-line: typedef
-const builder = (args: yargs.Argv) => {
+export const builder = (args: yargs.Argv) => {
   args.positional('name', {
     describe: 'Project name',
     type: 'string',
