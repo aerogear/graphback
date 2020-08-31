@@ -58,11 +58,13 @@ export class DataSyncPlugin extends GraphbackPlugin {
     })
 
     if (dataSyncModelCount === 0) {
+      // eslint-disable-next-line no-console
       console.warn("No DataSync Models detected, ensure that your models are properly annotated.")
     }
 
     if (modelConflictConfigSet.size !== 0) {
-      console.log(`The following models from conflictConfig could not be found, consider adding them to the schema and/or adding the @datasync annotation if you have not done so:\n${Array.from(modelConflictConfigSet).join('\n')} `);
+      // eslint-disable-next-line no-console
+      console.info(`The following models from conflictConfig could not be found, consider adding them to the schema and/or adding the @datasync annotation if you have not done so:\n${Array.from(modelConflictConfigSet).join('\n')} `);
     }
 
     return buildSchema(schemaComposer.toSDL())

@@ -108,10 +108,14 @@ export async function migrateDB(
     scalarMap: finalOptions.scalarMap,
     mapListToJson: finalOptions.mapListToJson
   })
+
   if (finalOptions.debug) {
+    // eslint-disable-next-line no-console
     console.log('BEFORE', JSON.stringify(existingAdb.tables, undefined, 2))
+    // eslint-disable-next-line no-console
     console.log('AFTER', JSON.stringify(newAdb.tables, undefined, 2))
   }
+
   //Diff
   let ops = await computeDiff(existingAdb, newAdb, {
     updateComments: finalOptions.updateComments,
@@ -122,6 +126,7 @@ export async function migrateDB(
   }
 
   if (finalOptions.debug) {
+    // eslint-disable-next-line no-console
     console.log('OPERATIONS', ops)
   }
 

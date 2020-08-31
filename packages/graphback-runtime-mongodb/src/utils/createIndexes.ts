@@ -32,6 +32,7 @@ export async function applyIndexes(indexes: IndexSpecification[], collection: Co
       message = `Graphback was unable to create the specified indexes: ${error.message}.`
     }
 
+    // eslint-disable-next-line no-console
     console.error(`${message} If all else fails, try recreating the index manually.`)
   })
 }
