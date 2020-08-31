@@ -21,11 +21,13 @@ docker-compose up -d
 
 - Define your schema in the `model/datamodel.graphql` file. Or use the default:
 
-```
+```graphql
 type User {
-  id: ID!
+  _id: GraphbackObjectID!
   name: String
 }
+
+scalar GraphbackObjectID
 ```
 
 - Start the server
