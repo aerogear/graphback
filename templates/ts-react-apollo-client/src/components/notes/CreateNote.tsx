@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useCreateNoteMutation } from '../../generated-types';
 import {Button, TextField, Card} from '@material-ui/core';
-import './Note.css';
 
 const CreateNote: React.FC = () => {
     const [createNote] = useCreateNoteMutation();
