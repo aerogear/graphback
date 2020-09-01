@@ -1,5 +1,5 @@
-import { printSchemaHandler } from '../src/components/printSchemaHandler'
-import { buildSchema } from 'graphql'
+import { printSchemaHandler } from '../src/components/printSchemaHandler';
+import { buildSchema } from 'graphql';
 
 export const expectedUserSchema = `"""
 Directs the executor to skip this field or fragment when the \`if\` argument is true.
@@ -123,9 +123,7 @@ input UserSubscriptionFilter {
 }
 `
 
-beforeEach(() => {
-  process.chdir(__dirname)
-})
+beforeEach(() => process.chdir(__dirname))
 
 test('printSchema from GraphQL file', async () => {
   const modelFile = './files/user-model.graphql'

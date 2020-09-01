@@ -28,10 +28,6 @@ jobs:
     # Allow failure when website build fails. This won't block merging but the status will still be red allowing for investigations
     continue-on-error: true
     steps:
-    - name: Cancel Previous Runs
-      uses: n1hility/cancel-previous-runs@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Checkout master
       uses: actions/checkout@v2
     - name: Use Node.js
