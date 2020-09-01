@@ -32,7 +32,8 @@ module.exports = {
           label: 'Docs',
           position: 'left',
           items: [
-            { label: '0.15.x', to: 'docs/introduction' },
+            { label: '0.16.x', to: 'docs/introduction' },
+            { label: '0.15.x', to: 'docs/0.15.x/introduction' },
             { label: '0.14.x', to: 'docs/0.14.x/introduction' },
             { label: '0.12.x', to: 'docs/0.12.x/gettingstarted' },
             { label: '0.11.x', to: 'docs/0.11.x/gettingstarted' },
@@ -46,7 +47,7 @@ module.exports = {
         },
         {
           to: 'versions',
-          label: `v0.15.x`,
+          label: `v0.16.x`,
           position: 'right',
         },
         {
