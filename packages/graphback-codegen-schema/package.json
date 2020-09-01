@@ -31,7 +31,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/jest": "26.0.10",
+    "@types/jest": "26.0.12",
     "@types/node": "12.12.54",
     "dataloader": "2.0.0",
     "graphql": "15.3.0",
