@@ -8,7 +8,7 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
-# 0.16
+# 0.16.0
 
 ### New Features
 
