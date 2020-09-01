@@ -1,6 +1,6 @@
 {
   "name": "@graphback/core",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "description": "Api for building Graphback generator metadata",
   "main": "dist/index.js",
   "types": "types/index.d.ts",

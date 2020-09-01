@@ -1,6 +1,6 @@
 {
   "name": "@graphback/runtime-knex",
-  "version": "0.15.1",
+  "version": "0.16.0",
   "description": "Graphback Runtime Knex.js integration",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
@@ -31,26 +31,26 @@
     "access": "public"
   },
   "devDependencies": {
+    "@graphback/codegen-schema": "0.15.0",
     "@types/jest": "26.0.12",
     "@types/node": "12.12.54",
     "graphql": "15.3.0",
-    "graphql-migrations": "0.15.1",
+    "graphql-migrations": "0.16.0",
     "jest": "26.4.2",
-    "@graphback/codegen-schema": "0.15.0",
-    "sqlite3": "5.0.0",
     "rimraf": "3.0.2",
+    "sqlite3": "5.0.0",
     "ts-jest": "26.3.0",
     "ts-node": "9.0.0",
     "tsutils": "3.17.1",
     "typescript": "4.0.2"
   },
   "dependencies": {
-    "@graphback/core": "0.15.1",
+    "@graphback/core": "0.16.0",
     "dataloader": "2.0.0",
     "graphql-subscriptions": "1.1.0"
   },
   "peerDependencies": {
-    "knex": "0.20.x || 0.21.x",
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": "^14.0.0 || ^15.0.0",
+    "knex": "0.20.x || 0.21.x"
   }
 }
