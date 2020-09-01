@@ -17,12 +17,12 @@ export const allTemplates: Template[] = [
     repos: [
       {
         uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-0.15.0',
+        branch: 'templates-0.16.0',
         path: '/templates/ts-react-apollo-client',
         mountpath: "client"
       }, {
         uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-0.15.0',
+        branch: 'templates-0.16.0',
         path: '/templates/ts-apollo-postgres-backend',
       }]
   },
