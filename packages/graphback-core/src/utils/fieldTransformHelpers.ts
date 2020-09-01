@@ -9,10 +9,12 @@ export interface FieldTransform {
   transform: FieldTransformer
 }
 
+/* eslint-disable no-shadow */
 export enum TransformType {
   UPDATE = "onUpdateFieldTransform",
   CREATE = "onCreateFieldTransform"
 }
+/* eslint-enable no-shadow */
 
 export type FieldTransformMap = {
   [TransformType.CREATE]: FieldTransform[],
