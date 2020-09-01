@@ -16,6 +16,9 @@
       "crud/mutations",
       "crud/subscriptions"
     ],
+    "Resolvers": [
+      "resolvers/custom-resolvers"
+    ],
     "Databases": [
       "databases/overview",
       "databases/mongodb",
