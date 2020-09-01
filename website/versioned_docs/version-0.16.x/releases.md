@@ -8,6 +8,13 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.16.1
+
+### Bug Fixes
+
+* Correct main file and types paths of `graphql-serve` package ([d4d918e](https://github.com/aerogear/graphback/commit/d4d918e189b9dd03b84d9a8d29194664fe8a898f
+)).
+ 
 # 0.16.0
 
 ### New Features
