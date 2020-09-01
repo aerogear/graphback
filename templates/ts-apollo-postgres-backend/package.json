@@ -25,6 +25,7 @@
     "graphql-migrations": "0.16.0",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.11.0",
+    "pg": "8.3.3",
     "knex": "0.21.5"
   },
   "devDependencies": {
