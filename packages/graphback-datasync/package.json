@@ -31,8 +31,8 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/jest": "26.0.12",
-    "@types/node": "12.12.54",
+    "@types/jest": "26.0.13",
+    "@types/node": "12.12.55",
     "graphql": "15.3.0",
     "jest": "26.4.2",
     "jest-date-mock": "1.0.8",
