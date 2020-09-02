@@ -35,11 +35,13 @@ The bare minimum you need is a GraphQL file with your data models. Create a file
 ```graphql
 """ @model """
 type Note {
-  id: ID!
+  _id: GraphbackObjectID!
   title: String!
   description: String
   likes: Int
 }
+
+scalar GraphbackObjectID
 ```
 
 The `@model` annotation indicates that `Note` is a data model and Graphback will generate resolvers, a CRUD service and data source for it. You can learn how to build more complex data models in [Data Model](../model/datamodel#model).
@@ -95,11 +97,13 @@ For the `Note` model defined above, this would look like:
 @datasync 
 """
 type Note {
-  id: ID!
+  _id: GraphbackObjectID!
   title: String!
   description: String
   likes: Int
 }
+
+scalar GraphbackObjectID
 ```
 
 Once we have a model with datasync capabilities, we can run our GraphQL server by enabling data synchronization as shown below:
