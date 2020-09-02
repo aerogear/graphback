@@ -52,7 +52,7 @@
     "graphql-compose": "7.20.1",
     "graphql-metadata": "0.7.6",
     "graphql-subscriptions": "1.1.0",
-    "mongodb": "3.6.0",
+    "mongodb": "3.6.1",
     "pluralize": "8.0.0"
   },
   "peerDependencies": {

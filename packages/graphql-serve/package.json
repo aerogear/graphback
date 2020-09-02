@@ -63,7 +63,7 @@
     "graphql-migrations": "0.16.1",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.11.0",
-    "mongodb": "3.6.0",
+    "mongodb": "3.6.1",
     "mongodb-memory-server": "6.6.7",
     "yargs": "15.4.1"
   },
