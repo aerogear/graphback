@@ -2,6 +2,21 @@
 ## Please review configuration and adjust it for your own project
 schema: ./src/schema/schema.graphql
 extensions:
+  graphback:
+    model: ./model/**/*.graphql
+    crud:
+      create: true
+      update: true
+      findOne: true
+      find: true
+      delete: true
+      subCreate: true
+      subUpdate: true
+      subDelete: true
+    plugins:
+      graphback-schema:
+        format: graphql
+        outputPath: ./src/schema/schema.graphql
   codegen:
     generates:
       ./src/generated-types.ts:
