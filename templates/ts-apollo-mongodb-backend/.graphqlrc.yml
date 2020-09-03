@@ -4,15 +4,6 @@ schema: ./src/schema/schema.graphql
 extensions:
   graphback:
     model: ./model/**/*.graphql
-    crud:
-      create: true
-      update: true
-      findOne: true
-      find: true
-      delete: true
-      subCreate: true
-      subUpdate: true
-      subDelete: true
     plugins:
       graphback-schema:
         format: graphql
