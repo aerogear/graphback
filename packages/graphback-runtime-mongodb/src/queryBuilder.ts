@@ -132,17 +132,26 @@ function mapQueryFilterToMongoFilterQuery(filter: any): FilterQuery<any> {
  * 
  * @param {QueryFilter} filter 
  */
-function mapOrConditions(filter: FilterQuery<any>): void {
-  if (!filter?.$or?.length) {
-    return;
-  }
+export function mapOrConditions(filter: FilterQuery<any>) {
+  const fields = Object.keys(filter);
 
-  for (const field of Object.keys(filter)) {
-    if (field !== '$or') {
-      filter.$or.push({ [field]: filter[field] });
-      // eslint-disable-next-line @typescript-eslint/tslint/config
-      delete filter[field];
+  if (fields.includes('$or')) {
+    filter.$or = filter.$or || [];
+    if (!Array.isArray(filter.$or)) {
+      filter.$or = [filter.$or];
     }
+    const or = {};
+    for (const field of fields) {
+      if (field !== '$or') {
+        or[field] = filter[field];
+        // eslint-disable-next-line @typescript-eslint/tslint/config
+        delete filter[field]
+      }
+    }
+    if (Object.keys(or).length) {
+      filter.$or.push(or);
+    }
+    filter.$or.forEach(mapOrConditions)
   }
 }
 

@@ -1,6 +1,8 @@
 /* eslint-disable max-lines */
-import { ObjectID } from 'mongodb';
+import { ObjectID, FilterQuery } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
+import { QueryFilter } from '@graphback/core';
+import { buildQuery } from '../src/queryBuilder';
 import { createTestingContext, Context } from "./__util__";
 
 describe('MongoDBDataProvider Advanced Filtering', () => {
@@ -94,6 +96,29 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
     for (const post of posts) {
       expect((post.text === 'post2') || (post.likes === 300));
     }
+  });
+
+  it('can filter using list of OR conditions', async () => {
+    context = await createTestingContext(postSchema, {
+      seedData: {
+        Post: defaultPostSeed
+      }
+    });
+
+    const posts: Post[] = await context.providers.Post.findBy({
+      filter: {
+        text: { eq: 'post2' },
+        or: [
+          {
+            likes: { eq: 300 },
+          },
+          {
+            text: { eq: 'post3' }
+          }
+        ]
+      }
+    });
+    expect(posts.length).toEqual(3);
   });
 
   it('can filter using NOT', async () => {
@@ -336,4 +361,275 @@ describe('queryBuilder scalar filtering', () => {
     expect(newPosts.length).toEqual(2);
     expect(newPosts.map((post: any) => post.text)).toEqual(["not yet", "bye guys"]);
   });
+
+  it('a || b || c starting at root of query', () => {
+    const inputQuery: QueryFilter = {
+      a: {
+        eq: 1
+      },
+      or: [
+        {
+          b: {
+            eq: 2
+          }
+        },
+        {
+          c: {
+            eq: 3
+          }
+        }
+      ]
+    };
+
+    const outputQuery = buildQuery(inputQuery);
+    const expected = {
+      $or: [
+        {
+          b: {
+            $eq: 2
+          }
+        },
+        {
+          c: {
+            $eq: 3
+          }
+        },
+        {
+          a: {
+            $eq: 1
+          }
+        }
+      ]
+    };
+
+    expect(outputQuery).toEqual(expected);
+  });
+
+  it('a || b || c starting at root $or operator of query', () => {
+    const inputQuery: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          }
+        },
+        {
+          b: {
+            eq: 2
+          }
+        },
+        {
+          c: {
+            eq: 3
+          }
+        }
+      ]
+    }
+
+    const outputQuery = buildQuery(inputQuery);
+    const expected = [
+      {
+        a: {
+          $eq: 1
+        }
+      },
+      {
+        b: {
+          $eq: 2
+        }
+      },
+      {
+        c: {
+          $eq: 3
+        }
+      }
+    ];
+
+    outputQuery.$or.forEach((q: any) => expect(expected).toContainEqual(q))
+    expect(Object.keys(outputQuery)).toEqual(['$or']);
+  });
+
+  it('should group multiple or conditions into single $or array', () => {
+    const inputQuery: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          },
+          b: {
+            eq: 2
+          },
+          or: [
+            {
+              c: {
+                eq: 2
+              }
+            },
+            {
+              c: {
+                eq: 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    const outputQuery = buildQuery(inputQuery);
+
+    const expected: FilterQuery<any> = {
+      $or: [
+        {
+          $or: [
+            {
+              c: {
+                $eq: 2
+              }
+            },
+            {
+              c: {
+                $eq: 3
+              }
+            },
+            {
+              a: {
+                $eq: 1
+              },
+              b: {
+                $eq: 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    expect(outputQuery).toEqual(expected);
+  });
+
+  it('(a && b) || c from first $or', () => {
+    const inputQuery: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          },
+          b: {
+            eq: 2
+          },
+          or: [{
+            c: {
+              eq: 3
+            }
+          }]
+        }
+      ]
+    }
+
+    const outputQuery = buildQuery(inputQuery);
+
+    const expected: FilterQuery<any> = {
+      $or: [
+        {
+          $or: [
+            {
+              c: {
+                $eq: 3
+              }
+            },
+            {
+              a: {
+                $eq: 1
+              },
+              b: {
+                $eq: 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    expect(outputQuery).toEqual(expected);
+  })
+
+  it('(a && b) || c from query root', () => {
+    const inputQuery: QueryFilter = {
+      a: {
+        eq: 1
+      },
+      b: {
+        eq: 2
+      },
+      or: [{
+        c: {
+          eq: 3
+        }
+      }]
+    }
+
+    const outputQuery = buildQuery(inputQuery);
+
+    const expected: FilterQuery<any> = {
+      $or: [
+        {
+          c: {
+            $eq: 3
+          }
+        },
+        {
+          a: {
+            $eq: 1
+          },
+          b: {
+            $eq: 2
+          }
+        }
+      ]
+    }
+
+    expect(outputQuery).toEqual(expected);
+  })
+
+  it('(a && b) || c from query root (explicit AND)', () => {
+    const inputQuery: QueryFilter = {
+      a: {
+        eq: 1
+      },
+      and: [{
+        b: {
+          eq: 2
+        }
+      }],
+      or: [{
+        c: {
+          eq: 3
+        }
+      }]
+    }
+
+    const outputQuery = buildQuery(inputQuery);
+
+    const expected: FilterQuery<any> = {
+      $or: [
+        {
+          c: {
+            $eq: 3
+          }
+        },
+        {
+          a: {
+            $eq: 1
+          },
+          $and: [{
+            b: {
+              $eq: 2
+            }
+          }]
+        }
+      ]
+    }
+
+    expect(outputQuery).toEqual(expected);
+  })
 });
