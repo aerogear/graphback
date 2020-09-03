@@ -3,12 +3,13 @@
   "version": "0.16.1",
   "private": true,
   "devDependencies": {
+    "@graphql-cli/codegen": "1.17.8",
     "@graphql-codegen/add": "2.0.1",
-    "@graphql-codegen/cli": "1.17.8",
     "@graphql-codegen/typescript": "1.17.9",
     "@graphql-codegen/typescript-operations": "1.17.8",
     "@graphql-codegen/typescript-react-apollo": "2.0.6",
     "graphback-cli": "0.16.1",
+    "graphql-cli": "4.0.0",
     "graphql": "15.3.0",
     "tslint": "6.1.3",
     "typescript": "4.0.2"
@@ -24,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "codegen": "graphql-codegen",
+    "codegen": "graphql codegen",
     "build:react": "react-scripts build",
     "eject:react": "react-scripts eject"
   },

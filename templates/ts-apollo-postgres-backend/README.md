@@ -40,18 +40,22 @@ Or, if using yarn
 yarn develop
 ```
 
-- Start the server (for the first time)
-
-```
-npm run develop
-```
-
-Or, if using yarn
-
-```
-yarn develop
-```
-
 For more on customising your Graphback application, check out [our docs](https://graphback.dev/docs/gettingstarted)
 
 If your project contains client application please follow `./client/README.md` for running client side application
+
+## Re-generating types from schema
+
+If you made made changes to your business model, it's advised to regenerate the `generated-types.ts` which contains Typescript file of your business entities. 
+
+To do so, we'll first need to update the generated `schema.graphql` file with the following command:
+
+```
+yarn graphback generate
+```
+
+Then generate the `generated-types.ts` file with the following command:
+
+```
+yarn codegen
+```

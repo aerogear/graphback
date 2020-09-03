@@ -12,16 +12,24 @@ import { loadDBConfig, connectDB } from './db'
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations'
 import { createKnexDbProvider } from '@graphback/runtime-knex'
 import { noteResolvers } from './resolvers/noteResolvers'
+import { loadConfigSync } from 'graphql-config';
 
 const app = express()
 
 app.use(cors())
 
-const modelDefs = loadSchemaSync(path.resolve('./model/*.graphql'), {
-  loaders: [
-    new GraphQLFileLoader()
+const graphbackExtension = 'graphback';
+const config = loadConfigSync({
+  extensions: [
+    () => ({
+      name: graphbackExtension
+    })
   ]
-})
+});
+const projectConfig = config.getDefault()
+const graphbackConfig = projectConfig.extension(graphbackExtension);
+
+const modelDefs = config.getDefault().loadSchemaSync(graphbackConfig.model);
 
 const db = connectDB()
 const dbConfig = loadDBConfig()
