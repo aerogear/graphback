@@ -9,9 +9,9 @@ import { createMongoDbProvider } from '@graphback/runtime-mongo'
 import cors from "cors"
 import express from "express"
 import http from "http"
+import { loadConfigSync } from 'graphql-config';
 import { connectDB } from './db'
 import { noteResolvers } from './resolvers/noteResolvers'
-import { loadConfigSync } from 'graphql-config';
 
 async function start() {
 
@@ -25,14 +25,10 @@ async function start() {
       name: graphbackExtension
     })
   ]});
+  const projectConfig = config.getDefault()
+  const graphbackConfig = projectConfig.extension(graphbackExtension);
 
-  const modelPath = config.getDefault().extension(graphbackExtension).model;
-
-  const modelDefs = loadSchemaSync(path.resolve(modelPath), {
-    loaders: [
-      new GraphQLFileLoader()
-    ]
-  });
+  const modelDefs = config.getDefault().loadSchemaSync(graphbackConfig.model);
 
   const db = await connectDB()
 

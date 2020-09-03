@@ -19,19 +19,17 @@ const app = express()
 app.use(cors())
 
 const graphbackExtension = 'graphback';
-const config = loadConfigSync({ extensions: [
-  () => ({
-    name: graphbackExtension
-  })
-]});
-
-const modelPath = config.getDefault().extension(graphbackExtension).model;
-
-const modelDefs = loadSchemaSync(path.resolve(modelPath), {
-  loaders: [
-    new GraphQLFileLoader()
+const config = loadConfigSync({
+  extensions: [
+    () => ({
+      name: graphbackExtension
+    })
   ]
 });
+const projectConfig = config.getDefault()
+const graphbackConfig = projectConfig.extension(graphbackExtension);
+
+const modelDefs = config.getDefault().loadSchemaSync(graphbackConfig.model);
 
 const db = connectDB()
 const dbConfig = loadDBConfig()
