@@ -16,6 +16,7 @@ import { PubSub } from "graphql-subscriptions";
 import { createDataSyncMongoDbProvider, createDataSyncCRUDService, DataSyncPlugin, DataSyncFieldNames } from "../../packages/graphback-datasync";
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
+import { MONGO_DB_URL } from '../__util__/mongoUtil';
 
 /** global config */
 let db: Db;
@@ -51,7 +52,7 @@ beforeAll(async () => {
     mkdirSync("./output-datasync-mongo");
     mkdirSync("./output-datasync-mongo/client")
 
-    mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27017/users?authSource=admin', { useUnifiedTopology: true });
+    mongoClient = new MongoClient(MONGO_DB_URL, { useUnifiedTopology: true });
     await mongoClient.connect();
     db = mongoClient.db('users');
     graphbackApi = buildGraphbackAPI(modelText, {

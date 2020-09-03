@@ -15,6 +15,7 @@ import { MongoClient, Db, ObjectID } from 'mongodb';
 import { createMongoDbProvider } from "../../packages/graphback-runtime-mongodb"
 import { SchemaCRUDPlugin } from '../../packages/graphback-codegen-schema';
 import { ClientCRUDPlugin } from '../../packages/graphback-codegen-client';
+import { MONGO_DB_URL } from '../__util__/mongoUtil';
 
 /** global config */
 let db: Db;
@@ -119,7 +120,7 @@ beforeAll(async () => {
     mkdirSync("./output-mongo");
     mkdirSync("./output-mongo/client")
 
-    mongoClient = new MongoClient('mongodb://mongodb:mongo@localhost:27017/users?authSource=admin', { useUnifiedTopology: true });
+    mongoClient = new MongoClient(MONGO_DB_URL, { useUnifiedTopology: true });
     await mongoClient.connect();
     db = mongoClient.db('users');
     graphbackApi = buildGraphbackAPI(modelText, {
@@ -157,13 +158,12 @@ beforeEach(() => {
 
 afterEach(() => server.stop())
 
-afterAll(async (done) => {
+afterAll(async () => {
   rmdirSync(path.resolve('./output-mongo'), { recursive: true });
   const dropCollections = ["note", "comment", "commentmetadata"].map((name: string) => db.dropCollection(name));
   await Promise.all(dropCollections);
 
-  await mongoClient.close();
-  done()
+  return mongoClient.close();
 });
 
 async function seedDatabase(db: Db) {
@@ -236,7 +236,8 @@ async function seedDatabase(db: Db) {
 }
 
 test('Find all notes', async () => {
-  const { data } = await client.query({ operationName: 'findNotes', query: documents });
+  const { data, errors } = await client.query({ operationName: 'findNotes', query: documents });
+  expect(errors).toBeUndefined();
   expect(data).toBeDefined();
   expect(data.findNotes).toEqual({
     items: [

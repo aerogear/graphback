@@ -180,10 +180,12 @@
       "name": "Integration Test File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": [
+        "${fileBasenameNoExtension}",
         "--runInBand"
       ],
       "env": {
-        "PORT": "55432"
+        "POSTGRES_PORT": "55432",
+        "MONGO_PORT": "27018"
       },
       "cwd": "${workspaceFolder}/integration",
       "console": "integratedTerminal",

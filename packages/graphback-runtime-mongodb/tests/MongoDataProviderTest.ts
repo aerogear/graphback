@@ -1,11 +1,10 @@
 /* eslint-disable max-lines */
-//tslint:disable-next-line: match-default-export-name
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
-import { GraphbackCoreMetadata, QueryFilter } from '@graphback/core';
+import { QueryFilter, GraphbackCoreMetadata } from '@graphback/core';
+import { Context, createTestingContext } from "./__util__";
 import { buildSchema } from 'graphql';
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
-import { Context, createTestingContext } from "./__util__";
 
 describe('MongoDBDataProvider Basic CRUD', () => {
   interface Todo {
@@ -37,12 +36,6 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     }
   ]
 
-
-  //Create a new database before each tests so that
-  //all tests can run parallel
-
-
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   afterEach(async (done) => {
     if (context) {
       await context.server.stop();
@@ -50,6 +43,8 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
     done();
   })
+
+  afterEach(async () => context?.server?.stop());
 
   test('Test missing "_id: GraphbackObjectID" primary key', async () => {
     const schema = `
@@ -403,7 +398,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
   });
 
   it('a || b || c starting at root of query', async () => {
-    const { providers: { Todo } } = await createTestingContext(`
+    context = await createTestingContext(`
     scalar GraphbackObjectID
 
     """
@@ -460,13 +455,13 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       ]
     }
 
-    const items = await Todo.findBy({ filter });
+    const items = await context.providers.Todo.findBy({ filter });
 
     expect(items).toHaveLength(3);
   })
 
   it('a || b || c starting at first $or of query', async () => {
-    const { providers: { Todo } } = await createTestingContext(`
+    context = await createTestingContext(`
     scalar GraphbackObjectID
 
     """
@@ -529,13 +524,13 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       ]
     }
 
-    const items = await Todo.findBy({ filter });
+    const items = await context.providers.Todo.findBy({ filter });
 
     expect(items).toHaveLength(3);
   })
 
   it('(a && b) || c', async () => {
-    const { providers: { Todo } } = await createTestingContext(`
+    context = await createTestingContext(`
     scalar GraphbackObjectID
 
     """
@@ -592,7 +587,7 @@ describe('MongoDBDataProvider Basic CRUD', () => {
       ]
     }
 
-    const items = await Todo.findBy({ filter });
+    const items = await context.providers.Todo.findBy({ filter });
 
     expect(items).toHaveLength(2);
   })
