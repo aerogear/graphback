@@ -11,17 +11,28 @@ import express from "express"
 import http from "http"
 import { connectDB } from './db'
 import { noteResolvers } from './resolvers/noteResolvers'
+import { loadConfigSync } from 'graphql-config';
 
 async function start() {
+
   const app = express()
 
   app.use(cors())
 
-  const modelDefs = loadSchemaSync(path.resolve('./model/*.graphql'), {
+  const graphbackExtension = 'graphback';
+  const config = loadConfigSync({ extensions: [
+    () => ({
+      name: graphbackExtension
+    })
+  ]});
+
+  const modelPath = config.getDefault().extension(graphbackExtension).model;
+
+  const modelDefs = loadSchemaSync(path.resolve(modelPath), {
     loaders: [
       new GraphQLFileLoader()
     ]
-  })
+  });
 
   const db = await connectDB()
 
