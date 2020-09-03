@@ -31,6 +31,6 @@ yarn graphback generate
 
 - Generate React components
 ```
-yarn codegen:client
+yarn codegen
 ```
 
