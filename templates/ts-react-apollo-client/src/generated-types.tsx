@@ -15,7 +15,8 @@ export type Scalars = {
 /**  @model  */
 export type Comment = {
   __typename?: 'Comment';
-  id: Scalars['ID'];
+  /**  @id  */
+  _id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   /** @manyToOne(field: 'comments', key: 'noteId') */
@@ -23,7 +24,7 @@ export type Comment = {
 };
 
 export type CommentFilter = {
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   noteId?: Maybe<IdInput>;
@@ -44,20 +45,20 @@ export type CommentSubscriptionFilter = {
   and?: Maybe<Array<CommentSubscriptionFilter>>;
   or?: Maybe<Array<CommentSubscriptionFilter>>;
   not?: Maybe<CommentSubscriptionFilter>;
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
 
 export type CreateCommentInput = {
-  id?: Maybe<Scalars['ID']>;
+  _id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type CreateNoteInput = {
-  id?: Maybe<Scalars['ID']>;
+  _id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
 };
@@ -73,14 +74,14 @@ export type IdInput = {
 };
 
 export type MutateCommentInput = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type MutateNoteInput = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
@@ -128,7 +129,8 @@ export type MutationDeleteCommentArgs = {
 /**  @model  */
 export type Note = {
   __typename?: 'Note';
-  id: Scalars['ID'];
+  /**  @id  */
+  _id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   /**
@@ -145,7 +147,7 @@ export type NoteCommentsArgs = {
 };
 
 export type NoteFilter = {
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   and?: Maybe<Array<NoteFilter>>;
@@ -165,7 +167,7 @@ export type NoteSubscriptionFilter = {
   and?: Maybe<Array<NoteSubscriptionFilter>>;
   or?: Maybe<Array<NoteSubscriptionFilter>>;
   not?: Maybe<NoteSubscriptionFilter>;
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
@@ -284,29 +286,29 @@ export type GetDraftNotesQuery = (
 
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
-  & Pick<Note, 'id' | 'title' | 'description'>
+  & Pick<Note, '_id' | 'title' | 'description'>
 );
 
 export type NoteExpandedFieldsFragment = (
   { __typename?: 'Note' }
-  & Pick<Note, 'id' | 'title' | 'description'>
+  & Pick<Note, '_id' | 'title' | 'description'>
   & { comments: Array<Maybe<(
     { __typename?: 'Comment' }
-    & Pick<Comment, 'id' | 'text' | 'description'>
+    & Pick<Comment, '_id' | 'text' | 'description'>
   )>> }
 );
 
 export type CommentFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description'>
+  & Pick<Comment, '_id' | 'text' | 'description'>
 );
 
 export type CommentExpandedFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'description'>
+  & Pick<Comment, '_id' | 'text' | 'description'>
   & { note?: Maybe<(
     { __typename?: 'Note' }
-    & Pick<Note, 'id' | 'title' | 'description'>
+    & Pick<Note, '_id' | 'title' | 'description'>
   )> }
 );
 
@@ -532,18 +534,18 @@ export type DeletedCommentSubscription = (
 
 export const NoteFieldsFragmentDoc = gql`
     fragment NoteFields on Note {
-  id
+  _id
   title
   description
 }
     `;
 export const NoteExpandedFieldsFragmentDoc = gql`
     fragment NoteExpandedFields on Note {
-  id
+  _id
   title
   description
   comments {
-    id
+    _id
     text
     description
   }
@@ -551,18 +553,18 @@ export const NoteExpandedFieldsFragmentDoc = gql`
     `;
 export const CommentFieldsFragmentDoc = gql`
     fragment CommentFields on Comment {
-  id
+  _id
   text
   description
 }
     `;
 export const CommentExpandedFieldsFragmentDoc = gql`
     fragment CommentExpandedFields on Comment {
-  id
+  _id
   text
   description
   note {
-    id
+    _id
     title
     description
   }

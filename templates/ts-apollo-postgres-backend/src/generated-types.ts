@@ -13,7 +13,8 @@ export type Scalars = {
 /**  @model  */
 export type Comment = {
   __typename?: 'Comment';
-  id: Scalars['ID'];
+  /**  @id  */
+  _id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   /** @manyToOne(field: 'comments', key: 'noteId') */
@@ -21,7 +22,7 @@ export type Comment = {
 };
 
 export type CommentFilter = {
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   noteId?: Maybe<IdInput>;
@@ -42,20 +43,20 @@ export type CommentSubscriptionFilter = {
   and?: Maybe<Array<CommentSubscriptionFilter>>;
   or?: Maybe<Array<CommentSubscriptionFilter>>;
   not?: Maybe<CommentSubscriptionFilter>;
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
 
 export type CreateCommentInput = {
-  id?: Maybe<Scalars['ID']>;
+  _id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type CreateNoteInput = {
-  id?: Maybe<Scalars['ID']>;
+  _id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
 };
@@ -71,14 +72,14 @@ export type IdInput = {
 };
 
 export type MutateCommentInput = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type MutateNoteInput = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
@@ -126,7 +127,8 @@ export type MutationDeleteCommentArgs = {
 /**  @model  */
 export type Note = {
   __typename?: 'Note';
-  id: Scalars['ID'];
+  /**  @id  */
+  _id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   /**
@@ -143,7 +145,7 @@ export type NoteCommentsArgs = {
 };
 
 export type NoteFilter = {
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   and?: Maybe<Array<NoteFilter>>;
@@ -163,7 +165,7 @@ export type NoteSubscriptionFilter = {
   and?: Maybe<Array<NoteSubscriptionFilter>>;
   or?: Maybe<Array<NoteSubscriptionFilter>>;
   not?: Maybe<NoteSubscriptionFilter>;
-  id?: Maybe<IdInput>;
+  _id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
