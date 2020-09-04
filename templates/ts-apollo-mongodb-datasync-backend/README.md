@@ -38,35 +38,7 @@ The project has been created using [`Graphback`](https://graphback.dev/). Run th
 docker-compose up -d
 ```
 
-- Define your schema in the `model/datamodel.graphql` file. Or use the default:
-
-```graphql
-"""
-@model
-@datasync
-"""
-type Note {
-  _id: GraphbackObjectID!
-  title: String!
-  description: String
-  """
-  @oneToMany(field: 'note')
-  """
-  comments: [Comment]!
-}
-
-""" 
-@model
-@datasync
-"""
-type Comment {
-  _id: GraphbackObjectID!
-  text: String
-  description: String
-}
-
-scalar GraphbackObjectID
-```
+- Inpect your schema in the `model/datamodel.graphql` file.
 
 - Start the server
 
