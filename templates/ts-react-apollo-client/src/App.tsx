@@ -24,7 +24,7 @@ const App: React.FC = () => {
           {
             // TODO fix typings
             noteItems && noteItems.map((note: any) => (
-              <OneNote key={note.id} id={note.id} title={note.title} description={note.description} comments={note.comments} />
+              <OneNote key={note._id} _id={note._id} title={note.title} description={note.description} comments={note.comments} />
             ))
           }
         </ul>
