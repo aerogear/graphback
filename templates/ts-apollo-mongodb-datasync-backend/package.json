@@ -9,7 +9,7 @@
     "develop": "ts-node src/index.ts",
     "start": "node dist/src/index.js",
     "watch": "tsc -w",
-    "codegen": "graphql codegen"
+    "generate": "graphback generate && graphql codegen"
   },
   "license": "Apache 2.0",
   "dependencies": {

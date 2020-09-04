@@ -40,14 +40,10 @@ yarn start:client
 Client is designed to work only with the sample schema.
 When changing graphback schema you will need to recompile all the changes.
 
-- Generate client side queries
-```
-yarn graphback generate
-```
-
 - Generate React components
+
 ```
-yarn codegen
+yarn generate
 ```
 
-> NOTE: You hacve to run the above commands on each modification of your business model in the server side. This ensure that the client is kept in sync with changes on the server side. 
+> NOTE: You have to run the above commands on each modification of your business model in the server side. This ensure that the client is kept in sync with changes on the server side. 

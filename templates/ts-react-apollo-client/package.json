@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "codegen": "graphql codegen",
+    "generate": "graphback generate && graphql codegen",
     "build:react": "react-scripts build",
     "eject:react": "react-scripts eject"
   },
