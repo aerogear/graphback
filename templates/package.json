@@ -1,0 +1,26 @@
+{
+  "name": "graphback-templates-monorepository",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mono repository for Graphback templates project",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {},
+  "workspaces": [
+    "ts-apollo-mongodb-backend",
+    "ts-apollo-mongodb-datasync-backend",
+    "ts-apollo-postgres-backend",
+    "ts-react-apollo-client"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aerogear/graphback.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aerogear/graphback/issues"
+  },
+  "homepage": "https://github.com/aerogear/graphback#readme",
+  "resolutions": {
+    "@types/react": "16.9.49"
+  }
+}
