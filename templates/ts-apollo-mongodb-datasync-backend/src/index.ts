@@ -1,24 +1,20 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-require('dotenv').config()
-import path from 'path'
-import http from "http"
-import { ApolloServer } from "apollo-server-express"
-import { loadSchemaSync } from '@graphql-tools/load'
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import { createDataSyncAPI } from '@graphback/datasync'
+require('dotenv').config();
+import http from 'http';
+import { ApolloServer } from 'apollo-server-express';
+import { createDataSyncAPI } from '@graphback/datasync';
 // eslint-disable-next-line @typescript-eslint/tslint/config
-import cors from "cors"
+import cors from 'cors';
 // eslint-disable-next-line @typescript-eslint/tslint/config
-import express from "express"
-import { connectDB } from './db'
-import { noteResolvers } from './resolvers/noteResolvers'
+import express from 'express';
+import { connectDB } from './db';
+import { noteResolvers } from './resolvers/noteResolvers';
 import { loadConfigSync } from 'graphql-config';
 
 async function start() {
+  const app = express();
 
-  const app = express()
-
-  app.use(cors())
+  app.use(cors());
 
   const graphbackExtension = 'graphback';
   const config = loadConfigSync({
@@ -28,29 +24,31 @@ async function start() {
       })
     ]
   });
-  const projectConfig = config.getDefault()
+  const projectConfig = config.getDefault();
   const graphbackConfig = projectConfig.extension(graphbackExtension);
+  const modelDefs = projectConfig.loadSchemaSync(graphbackConfig.model);
 
-  const modelDefs = config.getDefault().loadSchemaSync(graphbackConfig.model);
+  const db = await connectDB();
 
-  const db = await connectDB()
-
-  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db, conflictConfig: { models: { Comment: { enabled: true } } } });
+  const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, {
+    db,
+    conflictConfig: { models: { Comment: { enabled: true } } }
+  });
 
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers: [resolvers, noteResolvers],
     context: contextCreator
-  })
+  });
 
-  apolloServer.applyMiddleware({ app })
+  apolloServer.applyMiddleware({ app });
 
-  const httpServer = http.createServer(app)
-  apolloServer.installSubscriptionHandlers(httpServer)
+  const httpServer = http.createServer(app);
+  apolloServer.installSubscriptionHandlers(httpServer);
 
   httpServer.listen({ port: 4000 }, () => {
-    console.log(`🚀  Server ready at http://localhost:4000/graphql`)
-  })
+    console.log(`🚀  Server ready at http://localhost:4000/graphql`);
+  });
 }
 
-start().catch((err: any) => console.log(err))
+start().catch((err: any) => console.log(err));
