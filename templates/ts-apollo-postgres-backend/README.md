@@ -59,14 +59,8 @@ If your project contains client application please follow `./client/README.md` f
 
 If you made made changes to your business model, it's advised to regenerate the `generated-types.ts` which contains Typescript file of your business entities. 
 
-To do so, we'll first need to update the generated `schema.graphql` file with the following command:
-
 ```
-yarn graphback generate
+yarn generate 
 ```
 
-Then generate the `generated-types.ts` file with the following command:
-
-```
-yarn codegen
-```
+This will update the generated `schema.graphql` file and  then generate the `generated-types.ts` file.
