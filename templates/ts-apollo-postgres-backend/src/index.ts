@@ -1,22 +1,19 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-require('dotenv').config()
-import { ApolloServer } from "apollo-server-express"
-import cors from "cors"
-import express from "express"
-import http from "http"
-import { buildGraphbackAPI } from 'graphback'
-import { loadSchemaSync } from '@graphql-tools/load'
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
-import path from 'path'
-import { loadDBConfig, connectDB } from './db'
-import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations'
-import { createKnexDbProvider } from '@graphback/runtime-knex'
-import { noteResolvers } from './resolvers/noteResolvers'
+require('dotenv').config();
+import { ApolloServer } from 'apollo-server-express';
+import cors from 'cors';
+import express from 'express';
+import http from 'http';
+import { buildGraphbackAPI } from 'graphback';
+import { loadDBConfig, connectDB } from './db';
+import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
+import { createKnexDbProvider } from '@graphback/runtime-knex';
+import { noteResolvers } from './resolvers/noteResolvers';
 import { loadConfigSync } from 'graphql-config';
 
-const app = express()
+const app = express();
 
-app.use(cors())
+app.use(cors());
 
 const graphbackExtension = 'graphback';
 const config = loadConfigSync({
@@ -26,13 +23,13 @@ const config = loadConfigSync({
     })
   ]
 });
-const projectConfig = config.getDefault()
+
+const projectConfig = config.getDefault();
 const graphbackConfig = projectConfig.extension(graphbackExtension);
+const modelDefs = projectConfig.loadSchemaSync(graphbackConfig.model);
 
-const modelDefs = config.getDefault().loadSchemaSync(graphbackConfig.model);
-
-const db = connectDB()
-const dbConfig = loadDBConfig()
+const db = connectDB();
+const dbConfig = loadDBConfig();
 
 const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
   dataProviderCreator: createKnexDbProvider(db)
@@ -41,20 +38,20 @@ const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
 migrateDB(dbConfig, typeDefs, {
   operationFilter: removeNonSafeOperationsFilter
 }).then(() => {
-  console.log("Migrated database");
+  console.log('Migrated database');
 });
 
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers: [resolvers, noteResolvers],
   context: contextCreator
-})
+});
 
-apolloServer.applyMiddleware({ app })
+apolloServer.applyMiddleware({ app });
 
-const httpServer = http.createServer(app)
-apolloServer.installSubscriptionHandlers(httpServer)
+const httpServer = http.createServer(app);
+apolloServer.installSubscriptionHandlers(httpServer);
 
 httpServer.listen({ port: 4000 }, () => {
-  console.log(`🚀  Server ready at http://localhost:4000/graphql`)
-})
+  console.log(`🚀  Server ready at http://localhost:4000/graphql`);
+});
