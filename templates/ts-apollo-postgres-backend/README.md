@@ -38,15 +38,7 @@ The project has been created using `graphback`. Run the project using the follow
 docker-compose up -d
 ```
 
-- Define your schema in the `model/runtime.graphql` file. Or use the default:
-
-```
-type User {
-  id: ID!
-  name: String
-}
-```
-
+- Inspect your schema in the `model/runtime.graphql` file.
 - Start the server
 
 ```
