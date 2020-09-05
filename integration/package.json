@@ -22,7 +22,7 @@
     "jest": "26.4.2",
     "knex": "0.21.5",
     "mongodb": "3.6.1",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "rimraf": "3.0.2",
     "ts-node": "9.0.0",
     "tsutils": "3.17.1",
