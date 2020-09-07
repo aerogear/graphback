@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType, DefaultValueAnnotation, isTransientField } from '@graphback/core';
+import { DatabaseNameTransform, defaultTableNameTransform, lowerCaseFirstChar, parseRelationshipAnnotation, isModelType, DefaultValueAnnotation, isTransientField, getPrimaryKey } from '@graphback/core';
 import {
   GraphQLField,
   GraphQLObjectType,
@@ -28,12 +28,22 @@ import { ForeignKey, TableColumn } from './TableColumn'
 
 const ROOT_TYPES = ['Query', 'Mutation', 'Subscription'];
 
-const ID_TYPE = {
-  list: 'primaries',
-  default: (name: string, type: string) => name === 'id' && type === 'ID',
-  max: 1,
-  defaultName: (table: string) => `${table}_pkey`,
-};
+
+const primaryKeyCache = {};
+// Make sure that primary key computation is cached as this information is static and likely not to change within a migration operation.
+// We cache the result since a given model might have several relationships with other models, but the foreign key constraint will always
+// be pointing to the relationship owner primary key, so let's avoid re-computing it each time it is requested.
+const getCachedPrimaryKey = (type: GraphQLObjectType) => {
+  if (primaryKeyCache[type.name]) {
+
+    return primaryKeyCache[type.name];
+  }
+
+  const primaryKey = getPrimaryKey(type);
+  primaryKeyCache[type.name] = primaryKey;
+
+  return primaryKey;
+}
 
 const INDEX_UNIQUE_TYPES = [
   {
@@ -264,7 +274,7 @@ class AbstractDatabaseBuilder {
 
         return undefined
       }
-      const foreignKey: string = annotations.foreign || 'id'
+      const foreignKey: string = annotations.foreign || getCachedPrimaryKey(fieldType).name
       const foreignField = foreignType.getFields()[foreignKey]
       if (!foreignField) {
         console.warn(`Foreign field ${foreignKey} on type ${fieldType.name} not found on field ${field.name}.`)
@@ -343,7 +353,7 @@ class AbstractDatabaseBuilder {
         }
         let descriptors = []
         if (onSameType) {
-          const key = manyToMany.field || 'id'
+          const key = manyToMany.field || getCachedPrimaryKey(ofType).name
           const sameTypeForeignField = foreignType.getFields()[key]
           if (!sameTypeForeignField) {
             console.warn(`Foreign field ${key} on type ${ofType.name} not found on field ${this.currentType}.${field.name}.`)
@@ -438,8 +448,9 @@ class AbstractDatabaseBuilder {
       }
     }
 
-    const autoIncrementable = isScalarType(fieldType) && ID_TYPE.default(field.name, fieldType.name);
-    const isPrimaryKey = parseMetadata(ANNOTATIONS.id, field) || autoIncrementable;
+    const isScalarIDType = isScalarType(fieldType) && fieldType.name === 'ID';
+    const isPrimaryKey = parseMetadata(ANNOTATIONS.id, field) || (field.name === 'id' && isScalarIDType);
+    const autoIncrementable = isPrimaryKey && isScalarIDType;
     const defaultValue: DefaultValueAnnotation = parseMetadata(ANNOTATIONS.default, field);
 
     return {
