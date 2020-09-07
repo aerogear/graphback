@@ -1,6 +1,6 @@
 {
   "name": "graphql-serve",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "license": "Apache 2.0",
@@ -45,11 +45,11 @@
     "typescript": "4.0.2"
   },
   "dependencies": {
-    "@graphback/codegen-client": "0.16.1",
-    "@graphback/codegen-schema": "0.16.1",
-    "@graphback/core": "0.16.1",
-    "@graphback/datasync": "0.16.1",
-    "@graphback/runtime-mongo": "0.16.1",
+    "@graphback/codegen-client": "0.16.2",
+    "@graphback/codegen-schema": "0.16.2",
+    "@graphback/core": "0.16.2",
+    "@graphback/datasync": "0.16.2",
+    "@graphback/runtime-mongo": "0.16.2",
     "@graphql-tools/graphql-file-loader": "6.2.1",
     "@graphql-tools/load": "6.2.1",
     "apollo-server-express": "2.17.0",
@@ -58,7 +58,7 @@
     "express": "4.17.1",
     "get-port": "5.1.1",
     "glob": "7.1.6",
-    "graphback": "0.16.1",
+    "graphback": "0.16.2",
     "graphql": "15.3.0",
     "mongodb": "3.6.1",
     "mongodb-memory-server": "6.6.7",
