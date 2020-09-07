@@ -25,6 +25,7 @@ on:
 jobs:
   buildWebsite:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     # Allow failure when website build fails. This won't block merging but the status will still be red allowing for investigations
     continue-on-error: true
     steps:

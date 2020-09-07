@@ -43,6 +43,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     services:
       mongodb:
         image: mongo:4.2.9
