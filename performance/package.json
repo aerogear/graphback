@@ -1,6 +1,6 @@
 {
   "name": "graphback-benchmarks",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "private": true,
   "description": "Benchmarks for Graphback, a fast and low-overhead web framework.",
   "scripts": {
@@ -30,7 +30,7 @@
     "express": "4.17.1",
     "faker": "4.1.0",
     "fastify": "3.2.1",
-    "graphback": "0.16.1",
+    "graphback": "0.16.2",
     "graphql-api-koa": "6.0.0",
     "hapi": "18.1.0",
     "inquirer": "7.3.3",
