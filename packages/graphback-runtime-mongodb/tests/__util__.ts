@@ -9,7 +9,7 @@ export interface Context {
   providers: { [modelname: string]: MongoDBDataProvider };
   server: MongoMemoryServer,
   db: Db,
-  findIndex: (collectionName: string, indexName: string) => Promise<any>
+  findIndex(collectionName: string, indexName: string): Promise<any>;
 }
 
 export async function createTestingContext(schemaStr: string, config?: { seedData: { [collection: string]: any[] } }): Promise<Context> {
@@ -56,18 +56,20 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
   }
 
   const waitTime = 2000;
-  const findIndex =  async (collectionName: string, indexName: string) => {
+  const findIndex = async (collectionName: string, indexName: string) => {
     const startTime = Date.now();
 
     do {
       const collections = await db.collections();
-      const collectionFound = collections.find((collection: Collection) => collection.collectionName === collectionName );
+      const collectionFound = collections.find((collection: Collection) => collection.collectionName === collectionName);
       if (collectionFound) {
         const indexes = await collectionFound.indexes();
         const foundIndex = await indexes.find((index: any) => index.key[indexName]);
-        if (foundIndex) return foundIndex;
+        if (foundIndex) {
+          return foundIndex
+        }
       };
-    } while( Date.now() - startTime < waitTime)
+    } while (Date.now() - startTime < waitTime)
 
   }
 

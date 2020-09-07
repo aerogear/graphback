@@ -1,11 +1,10 @@
 /* eslint-disable max-lines */
-//tslint:disable-next-line: match-default-export-name
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
-import { GraphbackCoreMetadata } from '@graphback/core';
+import { QueryFilter, GraphbackCoreMetadata } from '@graphback/core';
+import { Context, createTestingContext } from "./__util__";
 import { buildSchema } from 'graphql';
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
-import { Context, createTestingContext } from "./__util__";
 
 describe('MongoDBDataProvider Basic CRUD', () => {
   interface Todo {
@@ -37,12 +36,6 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     }
   ]
 
-
-  //Create a new database before each tests so that
-  //all tests can run parallel
-
-
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   afterEach(async (done) => {
     if (context) {
       await context.server.stop();
@@ -50,6 +43,8 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
     done();
   })
+
+  afterEach(async () => context?.server?.stop());
 
   test('Test missing "_id: GraphbackObjectID" primary key', async () => {
     const schema = `
@@ -378,13 +373,12 @@ describe('MongoDBDataProvider Basic CRUD', () => {
 
 
     const { providers } = context;
-    const selectedFields = ['_id'];
 
     // verify that not in operator works
-    const allTodos = await providers.Todo.findBy({}, selectedFields);
+    const allTodos = await providers.Todo.findBy();
     const newTodoItems = 2709;
     await providers.Todo.create({ items: newTodoItems });
-    const allTodosAfterCreation = await providers.Todo.findBy({}, selectedFields);
+    const allTodosAfterCreation = await providers.Todo.findBy();
 
     expect(allTodosAfterCreation.length).toEqual(allTodos.length + 1); // verify that a new todo was created
 
@@ -398,9 +392,203 @@ describe('MongoDBDataProvider Basic CRUD', () => {
           }
         }
       }
-    }, selectedFields);
+    });
 
     expect(oldTodos).toEqual(allTodos); // assert that we did not retrieve the newly added todo item
   });
 
+  it('a || b || c starting at root of query', async () => {
+    context = await createTestingContext(`
+    scalar GraphbackObjectID
+
+    """
+    @model
+    """
+    type Todo {
+      _id: GraphbackObjectID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        Todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 6
+          }
+        ]
+      }
+    });
+
+    const filter: QueryFilter = {
+      a: {
+        eq: 1
+      },
+      or: [
+        {
+          b: {
+            eq: 2
+          }
+        },
+        {
+          c: {
+            eq: 3
+          }
+        }
+      ]
+    }
+
+    const items = await context.providers.Todo.findBy({ filter });
+
+    expect(items).toHaveLength(3);
+  })
+
+  it('a || b || c starting at first $or of query', async () => {
+    context = await createTestingContext(`
+    scalar GraphbackObjectID
+
+    """
+    @model
+    """
+    type Todo {
+      _id: GraphbackObjectID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        Todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 6
+          }
+        ]
+      }
+    });
+
+    const filter: QueryFilter = {
+      $or: [
+        {
+          a: {
+            eq: 1
+          },
+        },
+        {
+          or: [
+            {
+              b: {
+                eq: 2
+              }
+            },
+            {
+              c: {
+                eq: 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    const items = await context.providers.Todo.findBy({ filter });
+
+    expect(items).toHaveLength(3);
+  })
+
+  it('(a && b) || c', async () => {
+    context = await createTestingContext(`
+    scalar GraphbackObjectID
+
+    """
+    @model
+    """
+    type Todo {
+      _id: GraphbackObjectID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        Todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 6
+          }
+        ]
+      }
+    });
+
+    const filter: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          },
+          b: {
+            eq: 5
+          },
+          or: [{
+            c: {
+              eq: 6
+            }
+          }]
+        }
+      ]
+    }
+
+    const items = await context.providers.Todo.findBy({ filter });
+
+    expect(items).toHaveLength(2);
+  })
 });

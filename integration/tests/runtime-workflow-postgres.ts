@@ -145,7 +145,7 @@ beforeAll(async () => {
         password: "postgres",
         database: "users",
         host: "localhost",
-        port: process.env.PORT || 5432
+        port: process.env.POSTGRES_PORT || 5432
       }
     }
     db = Knex(dbMigrationsConfig);

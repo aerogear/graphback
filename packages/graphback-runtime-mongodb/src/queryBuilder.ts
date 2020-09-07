@@ -1,27 +1,24 @@
 import * as escapeRegex from "escape-string-regexp";
-import { metadataMap, QueryFilter } from "@graphback/core";
+import { QueryFilter } from "@graphback/core";
+import { FilterQuery } from 'mongodb';
 
-const { fieldNames } =  metadataMap;
+type RootQueryOperator = '$and' | '$or' | '$nor' | '$not';
+const operators = ['$exists', '$le', '$ge', '$gte', '$regex', '$ne', '$eq', '$lte', '$lt', '$gt', '$in'] as const;
+type QueryOperator = typeof operators[number];
 
-const AND_FIELD = 'and';
-const OR_FIELD = 'or';
-const NOT_FIELD = 'not';
-
-// Operators that work with simple substitution :P
-const operatorMap = {
-  [AND_FIELD]: '$and',
-  [OR_FIELD]: '$or',
-  [NOT_FIELD]: '$nor',
+const operatorMap: { [key: string]: QueryOperator | RootQueryOperator } = {
+  and: '$and',
+  or: '$or',
   ne: '$ne',
   eq: '$eq',
   le: '$lte',
   lt: '$lt',
   ge: '$gte',
   gt: '$gt',
-  in: '$in',
+  in: '$in'
 }
 
-type OperatorTransform = [string, any][];
+type OperatorTransform = [QueryOperator | RootQueryOperator, any][];
 
 type OperatorTransformFunction = (value: any) => OperatorTransform;
 
@@ -30,6 +27,15 @@ type OperatorTransformFunction = (value: any) => OperatorTransform;
 const operatorTransform: {
   [operator: string]: OperatorTransformFunction
 } = {
+  not: (value: any): OperatorTransform => {
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      value = [value];
+    }
+
+    return [
+      ['$nor', value]
+    ]
+  },
   between: (values: [any, any]): OperatorTransform => {
     values.sort();
 
@@ -73,102 +79,93 @@ const operatorTransform: {
   },
 }
 
-// Function to check if variable is primitive or a map
 function isPrimitive(test: any): boolean {
   return ((test instanceof RegExp) || (test !== Object(test)));
 };
 
-/**
- * This function is a temporary hack that converts createdAt, updatedAt fields
- * (both passed as string) in a findBy query to Integers so they can be used
- * for advanced filtering
- * @param filter filter object
- * @param key field of filter object to be checked
- */
-function stringTimestampsToInt(filter: any, key: string): any {
-  // If the field is one of 'createdAt' or 'updatedAt',
-  // try to coerce the values passed directly or to 
-  // operators on these fields to Integers
-  if ([fieldNames.createdAt, fieldNames.updatedAt].includes(key)) {
-    if (isPrimitive(filter[key])) {
-      const n = parseInt(filter[key], 10);
-      if (isNaN(n)) {
-        throw Error("Please provide a valid timestamp")
-      }
-      filter[key] = n;
-    } else {
-      const entries = Object.entries(filter[key]).map((entry: [string, string]) => {
-        const n = parseInt(entry[1], 10);
-        if (isNaN(n)) {
-          throw Error("Please provide a valid timestamp")
-        }
+function isOperator(key: string): key is QueryOperator {
+  return operators.includes(key as QueryOperator);
+}
 
-        return [entry[0], n];
-      });
-      filter[key] = Object.assign({}, ...Array.from(entries, ([k, v]: [string, any]) => ({ [k]: v })));
-    }
+/**
+ * Map Graphback Filter to MongoDb QueryFilter
+ * 
+ * @param {any} filter 
+ */
+function mapQueryFilterToMongoFilterQuery(filter: any): FilterQuery<any> {
+  if (filter === undefined) { return undefined };
+
+  if (Array.isArray(filter)) {
+    return filter.map(mapQueryFilterToMongoFilterQuery)
+  } else if (!isPrimitive(filter)) {
+    return Object.keys(filter).reduce((obj: any, key: string) => {
+      const propKey = operatorMap[key] || key;
+      let propVal: any;
+      if (isOperator(propKey)) {
+        propVal = filter[key];
+      } else {
+        propVal = mapQueryFilterToMongoFilterQuery(filter[key]);
+      }
+
+      if (operatorTransform[propKey]) {
+        const transforms = operatorTransform[key](propVal);
+
+        transforms.forEach((t: [QueryOperator, any]) => {
+          const [operator, value] = t;
+          propVal = value;
+          obj[operator] = propVal;
+        });
+      } else {
+        obj[propKey] = propVal;
+      }
+
+      return obj;
+    }, {});
   }
 
   return filter;
 }
 
-function traverse(filter: QueryFilter, coerceTSFields: boolean): any {
+/**
+ * Map or conditions into $or operator
+ * in MongoDB friendly-structure.
+ * 
+ * @param {QueryFilter} filter 
+ */
+export function mapOrConditions(filter: FilterQuery<any>) {
+  const fields = Object.keys(filter);
 
-  Object.keys(filter).forEach((key: string) => {
-
-    // Transform the operators to mongodb operators
-
-    // Check if it can be directly substituted
-    if (operatorMap[key]) {
-
-      // Substitute it with the mongodb operator
-      filter[operatorMap[key]] = filter[key];
-      /*eslint-disable-next-line*/
-      delete filter[key];
-
-    } else if (operatorTransform[key]) {
-
-      // For: n/between, contains, startswith, endswith
-      // Transform into mongodb operator
-      const transforms = operatorTransform[key](filter[key]);
-      // Apply the transformed operators to filter
-      /*eslint-disable-next-line*/
-      delete filter[key];
-      transforms.forEach((t: [string, any]) => {
-        const [operator, value] = t;
-        filter[operator] = value;
-      });
+  if (fields.includes('$or')) {
+    filter.$or = filter.$or || [];
+    if (!Array.isArray(filter.$or)) {
+      filter.$or = [filter.$or];
     }
-  });
-
-  // If there is nesting, recursively transform all operators
-  Object.keys(filter).forEach((key: string) => {
-    if (['$and', '$or', '$nor'].includes(key)) {
-
-      // If AND, OR, NOT do not have an array as their contents
-      // Transform contents to an array(as mongodb only supports
-      // arrays as arguments of these operators)
-      if (!Array.isArray(filter[key])) {
-        filter[key] = [filter[key]];
+    const or = {};
+    for (const field of fields) {
+      if (field !== '$or') {
+        or[field] = filter[field];
+        // eslint-disable-next-line @typescript-eslint/tslint/config
+        delete filter[field]
       }
     }
-
-    if (coerceTSFields === true) {
-      filter = stringTimestampsToInt(filter, key)
+    if (Object.keys(or).length) {
+      filter.$or.push(or);
     }
-
-    // Recursive step
-    if (!isPrimitive(filter[key])) {
-      filter[key] = traverse(filter[key], coerceTSFields);
-    }
-  });
-
-  return filter
+    filter.$or.forEach(mapOrConditions)
+  }
 }
 
-export function buildQuery(filter: QueryFilter, coerceTSFields: boolean) {
-  let query = {};
-  if (filter) { query = traverse(filter, coerceTSFields); }
+/**
+ * Build a MongoDB query from a Graphback filter
+ * 
+ * @param {QueryFilter} filter 
+ */
+export function buildQuery<M = any>(filter: QueryFilter<M>): FilterQuery<any> {
+  const query = mapQueryFilterToMongoFilterQuery(filter);
+
+  if (query) {
+    mapOrConditions(query);
+  }
 
   return query;
 }

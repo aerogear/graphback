@@ -1,4 +1,4 @@
-import { ObjectId, Db, Cursor } from "mongodb"
+import { ObjectId, Db, Cursor, FilterQuery } from "mongodb"
 import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, FieldDescriptor, FindByArgs } from '@graphback/core';
 import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
@@ -16,7 +16,6 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   protected collectionName: string;
   protected tableMap: ModelTableMap;
   protected fieldTransformMap: FieldTransformMap;
-  protected coerceTSFields: boolean;
 
   public constructor(model: ModelDefinition, db: any) {
     this.verifyMongoDBPrimaryKey(model.graphqlType.name, model.primaryKey);
@@ -24,7 +23,6 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     this.tableMap = buildModelTableMap(model.graphqlType);
     this.collectionName = this.tableMap.tableName;
     this.fieldTransformMap = getFieldTransformations(model.graphqlType);
-    this.coerceTSFields = parseMetadata("versioned", model.graphqlType);
     findAndCreateIndexes(model.graphqlType, this.db.collection(this.collectionName)).catch((e: Error) => {
       throw e
     })
@@ -113,7 +111,8 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
   public async findBy(args?: FindByArgs, selectedFields?: string[]): Promise<Type[]> {
     const projection = this.buildProjectionOption(selectedFields);
-    const query = this.db.collection(this.collectionName).find(buildQuery(args?.filter, this.coerceTSFields), { projection });
+    const filterQuery = buildQuery(args?.filter)
+    const query = this.db.collection(this.collectionName).find(filterQuery, { projection });
     const data = await this.usePage(this.sortQuery(query, args?.orderBy), args?.page);
 
     if (data) {
@@ -124,7 +123,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   }
 
   public async count(filter?: QueryFilter): Promise<number> {
-    return this.db.collection(this.collectionName).countDocuments(buildQuery(filter, this.coerceTSFields));
+    return this.db.collection(this.collectionName).countDocuments(buildQuery(filter));
   }
 
   public async batchRead(relationField: string, ids: string[], filter?: QueryFilter, selectedFields?: string[]): Promise<Type[][]> {
@@ -132,7 +131,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
     filter = filter || {};
     filter[relationField] = { $in: ids };
 
-    const result = await this.db.collection(this.collectionName).find(buildQuery(filter, this.coerceTSFields), { projection }).toArray();
+    const result = await this.db.collection(this.collectionName).find(buildQuery(filter), { projection }).toArray();
 
     if (result) {
       const resultsById = ids.map((objId: string) => {
