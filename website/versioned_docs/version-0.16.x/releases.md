@@ -13,6 +13,7 @@ Please follow individual releases for more information.
 ### Bug Fixes
 
 * Primary key with `ID` ScalarType and field name different to `id` isn't auto-incrementable. Fixed in [#1997](https://github.com/aerogear/graphback/pull/1997)
+* Logical OR operator is not working correctly in MongoDB query builder. ([#1963](https://github.com/aerogear/graphback/issues/1963)), fixed by ([059a0ae](https://github.com/aerogear/graphback/commit/059a0aebe36a33477bf87c808086d8c396e75ef9))
 
 # 0.16.1
 
