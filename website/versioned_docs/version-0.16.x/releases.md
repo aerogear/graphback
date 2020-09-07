@@ -8,6 +8,12 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.16.2
+
+### Bug Fixes
+
+* Primary key with `ID` ScalarType and field name different to `id` isn't auto-incrementable. Fixed in [#1997](https://github.com/aerogear/graphback/pull/1997)
+
 # 0.16.1
 
 ### Bug Fixes
