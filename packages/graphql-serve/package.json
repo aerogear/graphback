@@ -30,7 +30,7 @@
     "@types/chalk": "2.2.0",
     "@types/express": "4.17.8",
     "@types/jest": "26.0.13",
-    "@types/node": "12.12.55",
+    "@types/node": "12.12.56",
     "@types/pino": "6.3.0",
     "@typescript-eslint/eslint-plugin": "4.1.0",
     "@typescript-eslint/parser": "4.1.0",
@@ -61,7 +61,7 @@
     "graphback": "0.16.2",
     "graphql": "15.3.0",
     "mongodb": "3.6.1",
-    "mongodb-memory-server": "6.6.8",
+    "mongodb-memory-server": "6.7.0",
     "yargs": "15.4.1"
   },
   "peerDependencies": {
