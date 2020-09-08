@@ -32,7 +32,7 @@ async function chooseTemplate(filter: string = ''): Promise<Template> {
     regex.test(`${chalk.green(template.name)} ${template.description}`)
   );
   if (!displayedTemplates.length) {
-    logInfo(`Graphback init could not find templates matching the given filter: "${filter}".
+    logInfo(`create-graphback could not find templates matching the given filter: "${filter}".
 You can either change the given filter or not pass the option to display the full list.`);
     process.exit(0);
   }
