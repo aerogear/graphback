@@ -1,10 +1,10 @@
-import { accessSync, mkdirSync } from 'fs'
+import { accessSync, mkdirSync } from 'fs';
 import chalk from 'chalk';
-import * as figlet from 'figlet'
-import { prompt as ask } from 'inquirer'
-import { logError, logInfo } from '../utils'
-import { allTemplates, extractTemplate } from './starterTemplates'
-import { Template } from './templateMetadata'
+import * as figlet from 'figlet';
+import { prompt as ask } from 'inquirer';
+import { logError, logInfo } from '../utils';
+import { allTemplates, extractTemplate } from './starterTemplates';
+import { Template } from './templateMetadata';
 
 /**
  * Check if directory exists
@@ -13,33 +13,47 @@ import { Template } from './templateMetadata'
  */
 function checkDirectory(path: string, name: string): void {
   try {
-    accessSync(path)
-    logError(`A folder with name ${name} exists. Remove it or try another name.`)
-    process.exit(0)
+    accessSync(path);
+    logError(
+      `A folder with name ${name} exists. Remove it or try another name.`
+    );
+    process.exit(0);
   } catch (error) {
-    return
+    return;
   }
 }
 
 /**
  * choose a template from available templates
  */
-async function chooseTemplate(): Promise<Template> {
+async function chooseTemplate(filter: string = ''): Promise<Template> {
+  const regex = new RegExp(`.*${filter}.*`, 'i');
+  const displayedTemplates = allTemplates.filter((template: Template) =>
+    regex.test(`${chalk.green(template.name)} ${template.description}`)
+  );
+  if (!displayedTemplates.length) {
+    logInfo(`Graphback init could not find templates matching the given filter: "${filter}".
+You can either change the given filter or not pass the option to display the full list.`);
+    process.exit(0);
+  }
+
   logInfo(`Graphback init can create your app from following templates:
-  ${allTemplates.map((template: Template) => {
-    return `\n${chalk.green(template.name)}: \n${template.description}`
-  }).join("\n")}
-  `)
+  ${displayedTemplates
+    .map((template: Template) => {
+      return `\n${chalk.green(template.name)}: \n${template.description}`;
+    })
+    .join('\n')}
+  `);
   const { templateName } = await ask([
     {
       type: 'list',
       name: 'templateName',
       message: 'Choose a template to bootstrap',
-      choices: allTemplates.map((t: Template) => t.name)
+      choices: displayedTemplates.map((t: Template) => t.name)
     }
-  ])
+  ]);
 
-  return allTemplates.find((t: Template) => t.name === templateName)
+  return displayedTemplates.find((t: Template) => t.name === templateName);
 }
 
 /**
@@ -47,28 +61,33 @@ async function chooseTemplate(): Promise<Template> {
  * @param templateName name of the template provided
  */
 function checkTemplateName(templateName: string): void {
-  const availableTemplates = allTemplates.map((t: Template) => t.name)
+  const availableTemplates = allTemplates.map((t: Template) => t.name);
   if (availableTemplates.includes(templateName)) {
-    return
+    return;
   }
-  logError("Template with given name doesn't exist. Give one of available ones or simply choose by not providing a template name")
-  process.exit(0)
+  logError(
+    "Template with given name doesn't exist. Give one of available ones or simply choose by not providing a template name"
+  );
+  process.exit(0);
 }
 
 /**
  * assign template details from the given input or choice
  * @param templateName name of the template provided(if any)
  */
-async function assignTemplate(templateName: string): Promise<Template> {
-  let template
+async function assignTemplate(
+  templateName: string,
+  filter: string
+): Promise<Template> {
+  let template;
   if (templateName) {
-    checkTemplateName(templateName)
-    template = allTemplates.find((t: Template) => t.name === templateName)
+    checkTemplateName(templateName);
+    template = allTemplates.find((t: Template) => t.name === templateName);
   } else {
-    template = await chooseTemplate()
+    template = await chooseTemplate(filter);
   }
 
-  return template
+  return template;
 }
 
 function postSetupMessage(name: string): string {
@@ -78,23 +97,25 @@ GraphQL server successfully bootstrapped :rocket:
 Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
 2. Follow template README.md to start server
-`
+`;
 }
 
 /**
  * Build template from user provided url
  */
 function buildTemplateFromGithub(templateUrl: string) {
-  const url = templateUrl.split("#")
+  const url = templateUrl.split('#');
 
   return {
-    name: "Users Github template",
-    description: "User provided template",
-    repos: [{
-      uri: url[0],
-      branch: url[1] || "master",
-      path: "/"
-    }]
+    name: 'Users Github template',
+    description: 'User provided template',
+    repos: [
+      {
+        uri: url[0],
+        branch: url[1] || 'master',
+        path: '/'
+      }
+    ]
   };
 }
 
@@ -104,22 +125,27 @@ function buildTemplateFromGithub(templateUrl: string) {
  * @param templateName name of the template provided(if any)
  * @param templateUrl github url to the template
  */
-export async function init(name: string, templateName?: string, templateUrl?: string) {
-  logInfo(chalk.yellow(
-    figlet.textSync('Graphback', { horizontalLayout: 'full' })
-  ))
-  const path: string = `${process.cwd()}/${name}`
-  checkDirectory(path, name)
+export async function init(
+  name: string,
+  templateName?: string,
+  templateUrl?: string,
+  filter?: string
+) {
+  logInfo(
+    chalk.yellow(figlet.textSync('Graphback', { horizontalLayout: 'full' }))
+  );
+  const path: string = `${process.cwd()}/${name}`;
+  checkDirectory(path, name);
   let template: Template;
   if (templateUrl) {
     template = buildTemplateFromGithub(templateUrl);
   } else {
-    template = await assignTemplate(templateName)
+    template = await assignTemplate(templateName, filter);
   }
-  mkdirSync(path)
+  mkdirSync(path);
   logInfo(`
-Bootstraping graphql server :dizzy: :sparkles:`)
-  await extractTemplate(template, name)
-  process.chdir(name)
-  logInfo(postSetupMessage(name))
+Bootstraping graphql server :dizzy: :sparkles:`);
+  await extractTemplate(template, name);
+  process.chdir(name);
+  logInfo(postSetupMessage(name));
 }
