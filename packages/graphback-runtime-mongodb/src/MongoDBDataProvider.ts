@@ -61,15 +61,17 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
       });
 
     const objectId = new ObjectId(idField.value);
-    const result = await this.db.collection(this.collectionName).updateOne({ _id: objectId }, { $set: data });
-    if (result) {
-      const projection = this.buildProjectionOption(selectedFields);
-      const queryResult = await this.db.collection(this.collectionName).find({ _id: objectId }, { projection }).toArray();
-      if (queryResult && queryResult[0]) {
-        const res: unknown = queryResult[0];
+    const projection = this.buildProjectionOption(selectedFields);
+    const result = await this.db.collection(this.collectionName).findOneAndUpdate({ _id: objectId }, { $set: data }, {
+      projection,
+      upsert: false,
+      returnOriginal: false
+    });
 
-        return res as Type;
-      }
+    if (result?.value) {
+      const res: unknown = result.value;
+
+      return res as Type;
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
@@ -83,14 +85,11 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
 
     const projection = this.buildProjectionOption(selectedFields);
     const objectId = new ObjectId(idField.value);
-    const queryResult = await this.db.collection(this.collectionName).findOne({ _id: objectId }, { projection });
-    if (queryResult) {
-      const result = await this.db.collection(this.collectionName).deleteOne({ _id: objectId });
-      if (result.result.ok) {
-        const res: unknown = queryResult;
+    const result = await this.db.collection(this.collectionName).findOneAndDelete({ _id: objectId }, { projection });
+    if (result?.value) {
+      const res: unknown = result.value;
 
-        return res as Type;
-      }
+      return res as Type;
     }
     throw new NoDataError(`Cannot update ${this.collectionName}`);
   }
