@@ -163,7 +163,7 @@ export function getInputFieldTypeName(modelName: string, field: GraphQLField<any
 
     const relationshipAnnotation = parseRelationshipAnnotation(field.description);
 
-    if (!relationshipAnnotation) {
+    if (!relationshipAnnotation && relationshipAnnotation.kind !== 'manyToOne') {
       throw new Error(`Missing relationship definition on: "${modelName}.${field.name}". Visit https://graphback.dev/docs/model/datamodel#relationships to see how you can define relationship in your business model.`);
     }
 
