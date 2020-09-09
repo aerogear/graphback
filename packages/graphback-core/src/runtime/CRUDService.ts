@@ -55,7 +55,10 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
       const topic = this.subscriptionTopicMapping(GraphbackOperationType.CREATE, this.model.graphqlType.name);
       //TODO use subscription name mapping
       const payload = this.buildEventPayload('new', result);
-      await this.pubSub.publish(topic, payload);
+      this.pubSub.publish(topic, payload).catch((error: Error) => {
+        // eslint-disable-next-line no-console
+        console.error(`Publishing of new "${this.model.graphqlType.name}" with id ${result[this.model.primaryKey.name]} failed: ${error.message}`);
+      });
     }
 
     return result;
@@ -73,7 +76,11 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
       const topic = this.subscriptionTopicMapping(GraphbackOperationType.UPDATE, this.model.graphqlType.name);
       //TODO use subscription name mapping
       const payload = this.buildEventPayload('updated', result);
-      await this.pubSub.publish(topic, payload);
+
+      this.pubSub.publish(topic, payload).catch((error: Error) => {
+        // eslint-disable-next-line no-console
+        console.error(`Publishing of updates of "${this.model.graphqlType.name}" with id ${result[this.model.primaryKey.name]} failed: ${error.message}`);
+      });
     }
 
     return result;
@@ -90,7 +97,11 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     if (this.pubSub && this.crudOptions.subDelete) {
       const topic = this.subscriptionTopicMapping(GraphbackOperationType.DELETE, this.model.graphqlType.name);
       const payload = this.buildEventPayload('deleted', result);
-      await this.pubSub.publish(topic, payload);
+
+      this.pubSub.publish(topic, payload).catch((error: Error) => {
+        // eslint-disable-next-line no-console
+        console.error(`Publishing of deletion of "${this.model.graphqlType.name}" with id ${result[this.model.primaryKey.name]} failed: ${error.message}`);
+      });
     }
 
     return result;
