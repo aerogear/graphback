@@ -7,10 +7,7 @@ on:
     paths:
       - 'docs/**'
       - 'website/**'
-      - 'package.json'
-      - 'packages/**/src/**'
-      - '.github/workflows/build-website.yml'
-
+  
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
