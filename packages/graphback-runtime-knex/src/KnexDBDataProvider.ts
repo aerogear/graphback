@@ -39,14 +39,11 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     const { idField, data: updateData } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
-    const updateResult = await this.db(this.tableName).update(updateData).where(idField.name, '=', idField.value);
-    if (updateResult === 1) {
-      //tslint:disable-next-line: await-promise
-      const dbResult = await this.db.select(this.getSelectedFields(selectedFields)).from(this.tableName).where(idField.name, '=', idField.value);
-      if (dbResult && dbResult[0]) {
-        return dbResult[0]
-      }
+    const updateResult = await this.db(this.tableName).update(updateData, this.getSelectedFields(selectedFields)).where(idField.name, '=', idField.value);
+    if (updateResult && updateResult[0]) {
+      return updateResult[0];
     }
+
     throw new NoDataError(`Cannot update ${this.tableName}`);
   }
 
@@ -54,11 +51,9 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
     const { idField } = getDatabaseArguments(this.tableMap, data);
 
     //tslint:disable-next-line: await-promise
-    const beforeDelete = await this.db.select(this.getSelectedFields(selectedFields)).from(this.tableName).where(idField.name, '=', idField.value);
-    //tslint:disable-next-line: await-promise
-    const dbResult = await this.db(this.tableName).where(idField.name, '=', idField.value).del()
-    if (dbResult && beforeDelete[0]) {
-      return beforeDelete[0];
+    const dbResult = await this.db(this.tableName).where(idField.name, '=', idField.value).delete(this.getSelectedFields(selectedFields));
+    if (dbResult && dbResult[0]) {
+      return dbResult[0];
     }
     throw new NoDataError(`Cannot delete ${this.tableName} with ${JSON.stringify(data)}`);
   }
