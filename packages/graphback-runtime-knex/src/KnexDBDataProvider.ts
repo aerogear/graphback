@@ -1,6 +1,6 @@
-import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackContext, GraphbackDataProvider, GraphbackOrderBy, GraphbackPage, NoDataError, QueryFilter, ModelDefinition, FindByArgs } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap, GraphbackDataProvider, NoDataError, QueryFilter, ModelDefinition, FindByArgs, GraphbackPage } from '@graphback/core';
 import * as Knex from 'knex';
-import { buildQuery } from './knexQueryMapper';
+import { CRUDKnexQueryMapper, createKnexQueryMapper } from './knexQueryMapper';
 
 /**
  * Knex.js database data provider exposing basic CRUD operations that works with all databases that knex supports.
@@ -18,9 +18,11 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
   protected db: Knex;
   protected tableName: string;
   protected tableMap: ModelTableMap;
+  protected queryBuilder: CRUDKnexQueryMapper;
 
   public constructor(model: ModelDefinition, db: Knex) {
     this.db = db;
+    this.queryBuilder = createKnexQueryMapper(db);
     this.tableMap = buildModelTableMap(model.graphqlType);
     this.tableName = this.tableMap.tableName;
   }
@@ -70,7 +72,7 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
   }
 
   public async findBy(args?: FindByArgs, selectedFields?: string[]): Promise<Type[]> {
-    let query = buildQuery(this.db, args?.filter).select(this.getSelectedFields(selectedFields)).from(this.tableName)
+    let query = this.queryBuilder.buildQuery(args?.filter).select(this.getSelectedFields(selectedFields)).from(this.tableName)
 
     if (args?.orderBy) {
       query = query.orderBy(args.orderBy.field, args.orderBy.order)
@@ -86,14 +88,14 @@ export class KnexDBDataProvider<Type = any> implements GraphbackDataProvider<Typ
   }
 
   public async count(filter?: QueryFilter): Promise<number> {
-    const dbResult = await buildQuery(this.db, filter).from(this.tableName).count();
+    const dbResult = await this.queryBuilder.buildQuery(filter).from(this.tableName).count();
     const count: any = Object.values(dbResult[0])[0];
 
     return parseInt(count, 10);
   }
 
   public async batchRead(relationField: string, ids: string[], filter?: QueryFilter, selectedFields?: string[]): Promise<Type[][]> {
-    const dbResult = await buildQuery(this.db, filter).select(this.getSelectedFields(selectedFields)).from(this.tableName).whereIn(relationField, ids);
+    const dbResult = await this.queryBuilder.buildQuery(filter).select(this.getSelectedFields(selectedFields)).from(this.tableName).whereIn(relationField, ids);
 
     if (dbResult) {
       const resultsById = ids.map((id: string) => dbResult.filter((data: any) => {
