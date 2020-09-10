@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/jest": "26.0.13",
-    "@types/node": "12.12.56",
+    "@types/node": "12.12.57",
     "graphql": "15.3.0",
     "jest": "26.4.2",
     "keycloak-connect": "11.0.2",
