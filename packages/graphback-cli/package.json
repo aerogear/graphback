@@ -51,7 +51,7 @@
     "graphback": "0.16.2",
     "graphql-config": "3.0.3",
     "node-emoji": "1.10.0",
-    "yargs": "15.4.1"
+    "yargs": "16.0.3"
   },
   "jest": {
     "transform": {
