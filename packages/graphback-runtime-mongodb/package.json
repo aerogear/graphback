@@ -54,6 +54,6 @@
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",
-    "mongodb": "3.6.1"
+    "mongodb": "3.6.2"
   }
 }
