@@ -1,5 +1,5 @@
 import yargs from 'yargs';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import { printSchemaHandler } from '../components';
 
 type Params = { model?: string };
