@@ -32,6 +32,8 @@
     "typescript": "4.0.2"
   },
   "scripts": {
+    "bench": "cd performance && yarn start",
+    "bench:docker": "docker run -it --rm -v \"$PWD\":/usr/src/bench -w /usr/src/bench -m=\"256m\" --cpus=\"2\" --user \"$(id -u):$(id -g)\" node:14.10 npm run bench",
     "test": "jest -w 1",
     "test:integration": "cd integration && yarn && yarn integration",
     "coverage": "jest --coverage",

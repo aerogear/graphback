@@ -2,14 +2,30 @@ Benchmark RSS, Startup time, Latency, Throughput and CPU usage of a GraphQL APIs
 
 # Usage
 
-```
-npm install
-npm start
+Make sure that the project is already built before running the scripts. 
+See the [contributing guide](../CONTRIBUTING.md#build)
+
+## Run in your local machine
+```shell
+yarn
+yarn start
 ```
 
 Follow the instruction and chose one, two or more [benchmarks](./benchmarks) you want to run and compare.
 
 Once the run is complete, results will be generated in the `results` directory and a nice statistics table will be displayed.
+
+## Run inside docker with limited resources
+
+The script to launch this is located in the project root folder. 
+
+```shell
+cd ../
+yarn
+yarn bench:docker
+```
+
+This will constrain the container memory to `256m` and `2` cpu cores. If you are running on Windows or have less than 2 cores, you would need to adapt the command to your environment.
 
 ## Which one is fast ?
 

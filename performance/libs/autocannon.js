@@ -61,9 +61,8 @@ const writeResult = async (handler, result) => {
     await mkdir(resultsDirectory);
   }
 
-  const server = handler.indexOf('graphback') > -1 ? `${version}-${handler}` : handler;
-  result.server = server;
-  const dest = path.join(resultsDirectory, `${server}.json`);
+  result.server = `${version}-${handler}`;
+  const dest = path.join(resultsDirectory, `${result.server}.json`);
   return writeFile(dest, JSON.stringify(result));
 };
 
