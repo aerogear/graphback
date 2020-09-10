@@ -47,3 +47,6 @@
 - labels: [graphql-serve]
   title: "(?i).*serve.*"
   description: "(?i).*serve.*"
+- labels: [perf]
+  title: "(?i).*perf.*"
+  description: "(?i).*perf.*"
