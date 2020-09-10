@@ -55,7 +55,7 @@
     "request": "2.88.2",
     "tar": "6.0.5",
     "tmp": "0.2.1",
-    "yargs": "15.4.1"
+    "yargs": "16.0.3"
   },
   "jest": {
     "transform": {
