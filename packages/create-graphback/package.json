@@ -35,7 +35,7 @@
     "@types/chalk": "0.4.31",
     "@types/inquirer": "7.3.1",
     "@types/jest": "26.0.13",
-    "@types/node": "12.12.57",
+    "@types/node": "12.12.58",
     "@types/node-emoji": "1.8.1",
     "@types/yargs": "15.0.5",
     "jest": "26.4.2",

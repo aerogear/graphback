@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/jest": "26.0.13",
-    "@types/node": "12.12.57",
+    "@types/node": "12.12.58",
     "graphql": "15.3.0",
     "jest": "26.4.2",
     "jest-date-mock": "1.0.8",
