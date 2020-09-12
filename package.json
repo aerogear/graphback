@@ -11,7 +11,7 @@
     "@typescript-eslint/eslint-plugin-tslint": "4.1.0",
     "@typescript-eslint/parser": "4.1.0",
     "del-cli": "3.0.1",
-    "eslint": "7.8.1",
+    "eslint": "7.9.0",
     "eslint-plugin-flowtype": "5.2.0",
     "eslint-plugin-import": "2.22.0",
     "eslint-plugin-jsx-a11y": "6.3.1",
