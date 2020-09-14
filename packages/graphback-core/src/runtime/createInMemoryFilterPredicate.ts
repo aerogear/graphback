@@ -84,7 +84,7 @@ const predicateMap: IPredicate = {
     }
 
     // if values are of MongoDb ObjectID, convert to timestamp before comparison
-    if (isObjectID(fromVal) || isObjectID(toVal)|| isObjectID(fieldValue)) {
+    if (isObjectID(fromVal) || isObjectID(toVal) || isObjectID(fieldValue)) {
       const toValTimestamp = getObjectIDTimestamp(parseObjectID(toVal.toString()));
       const fromValTimestamp = getObjectIDTimestamp(parseObjectID(fromVal.toString()));
       const fieldValTimestamp = getObjectIDTimestamp(parseObjectID(fieldValue.toString()));
@@ -143,7 +143,7 @@ export function createInMemoryFilterPredicate<T = any>(filter: QueryFilter): (in
 
     if (orFilter) {
       const orPredicateResult = getOrPredicateResult<T>(orFilter, payload);
-      predicateResult = predicateResult || orPredicateResult;
+      predicateResult = predicateResult && orPredicateResult;
       if (!predicateResult) {
         return false;
       }
@@ -164,22 +164,18 @@ export function createInMemoryFilterPredicate<T = any>(filter: QueryFilter): (in
 /**
  * Get the predicate result of an `and` filter expression
  *
- * @param {QueryFilter|QueryFilter[]} and - And filter
+ * @param {QueryFilter[]} and - And filter
  * @param {Partial<T>} payload - Subscription payload
  */
-function getAndPredicateResult<T>(and: QueryFilter | QueryFilter[], payload: Partial<T>): boolean {
+function getAndPredicateResult<T>(and: QueryFilter[], payload: Partial<T>): boolean {
   let andResult = true;
 
-  if (Array.isArray(and)) {
-    for (const andItem of and) {
-      andResult = createInMemoryFilterPredicate<T>(andItem)(payload);
+  for (const andItem of and) {
+    andResult = createInMemoryFilterPredicate<T>(andItem)(payload);
 
-      if (!andResult) {
-        break;
-      }
+    if (!andResult) {
+      break;
     }
-  } else {
-    andResult = createInMemoryFilterPredicate<T>(and)(payload);
   }
 
   return andResult;
@@ -188,21 +184,18 @@ function getAndPredicateResult<T>(and: QueryFilter | QueryFilter[], payload: Par
 /**
  * Get the boolean result of an `or` filter expression
  *
- * @param {QueryFilter|QueryFilter[]} or - Or query filter
+ * @param {QueryFilter[]} or - Or query filter
  * @param {Partial<T>} payload - Subscription payload
  */
-function getOrPredicateResult<T>(or: any | any[], payload: Partial<T>): boolean {
+function getOrPredicateResult<T>(or: QueryFilter[], payload: Partial<T>): boolean {
   let orResult = true;
-  if (Array.isArray(or)) {
-    for (const orItem of or) {
-      orResult = createInMemoryFilterPredicate<T>(orItem)(payload);
 
-      if (orResult) {
-        break;
-      }
+  for (const orItem of or) {
+    orResult = createInMemoryFilterPredicate<T>(orItem)(payload);
+
+    if (orResult) {
+      break;
     }
-  } else {
-    orResult = createInMemoryFilterPredicate<T>(or)(payload);
   }
 
   return orResult;

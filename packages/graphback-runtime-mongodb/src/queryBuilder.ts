@@ -83,7 +83,7 @@ function isPrimitive(test: any): boolean {
   return ((test instanceof RegExp) || (test !== Object(test)));
 };
 
-function isOperator(key: string): key is QueryOperator {
+function isQueryOperator(key: string): key is QueryOperator {
   return operators.includes(key as QueryOperator);
 }
 
@@ -101,7 +101,7 @@ function mapQueryFilterToMongoFilterQuery(filter: any): FilterQuery<any> {
     return Object.keys(filter).reduce((obj: any, key: string) => {
       const propKey = operatorMap[key] || key;
       let propVal: any;
-      if (isOperator(propKey)) {
+      if (isQueryOperator(propKey)) {
         propVal = filter[key];
       } else {
         propVal = mapQueryFilterToMongoFilterQuery(filter[key]);
@@ -127,45 +127,10 @@ function mapQueryFilterToMongoFilterQuery(filter: any): FilterQuery<any> {
 }
 
 /**
- * Map or conditions into $or operator
- * in MongoDB friendly-structure.
- * 
- * @param {QueryFilter} filter 
- */
-export function mapOrConditions(filter: FilterQuery<any>) {
-  const fields = Object.keys(filter);
-
-  if (fields.includes('$or')) {
-    filter.$or = filter.$or || [];
-    if (!Array.isArray(filter.$or)) {
-      filter.$or = [filter.$or];
-    }
-    const or = {};
-    for (const field of fields) {
-      if (field !== '$or') {
-        or[field] = filter[field];
-        // eslint-disable-next-line @typescript-eslint/tslint/config
-        delete filter[field]
-      }
-    }
-    if (Object.keys(or).length) {
-      filter.$or.push(or);
-    }
-    filter.$or.forEach(mapOrConditions)
-  }
-}
-
-/**
  * Build a MongoDB query from a Graphback filter
  * 
  * @param {QueryFilter} filter 
  */
 export function buildQuery<M = any>(filter: QueryFilter<M>): FilterQuery<any> {
-  const query = mapQueryFilterToMongoFilterQuery(filter);
-
-  if (query) {
-    mapOrConditions(query);
-  }
-
-  return query;
+  return mapQueryFilterToMongoFilterQuery(filter);
 }

@@ -871,14 +871,14 @@ describe('createInMemoryFilterPredicate', () => {
       name: {
         endsWith: 'Simpson'
       },
-      and: {
+      and: [{
         age: {
           gt: 10
         },
         verified: {
           eq: true
         }
-      }
+      }]
     }
 
     const filterSubscription = createInMemoryFilterPredicate<User>(filter)
@@ -929,42 +929,47 @@ describe('createInMemoryFilterPredicate', () => {
       name: {
         eq: 'Homer Simpson'
       },
-      or: {
-        name: {
-          eq: 'Homer Thompson'
-        }
-      }
-    }
-
-    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
-    expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
-    expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
-    expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(false)
-  });
-
-  test('or multiple', () => {
-    const filter: QueryFilter<UserSubscriptionFilter> = {
-      name: {
-        eq: 'Homer J Simpson'
-      },
       or: [
         {
-          name: {
-            eq: 'Homer Simpson'
-          }
-        },
-        {
-          name: {
-            eq: 'Homer Thompson'
+          age: {
+            eq: 39
           }
         }
       ]
     }
 
     const filterSubscription = createInMemoryFilterPredicate<User>(filter)
-    expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(true)
-    expect(filterSubscription({ name: 'Homer Thompson' })).toEqual(true)
-    expect(filterSubscription({ name: 'Bart Simpson' })).toEqual(false)
+    expect(filterSubscription({ name: 'Homer Simpson', age: 39 })).toEqual(true)
+    expect(filterSubscription({ name: 'Homer Simpson', age: 38 })).toEqual(false)
+    expect(filterSubscription({ name: 'Homer Thompson', age: 39 })).toEqual(false)
+  });
+
+  test('or multiple', () => {
+    const filter: QueryFilter<UserSubscriptionFilter> = {
+      age: {
+        eq: 39
+      },
+      or: [
+        {
+          name: {
+            eq: 'Homer Thompson'
+          }
+        },
+        {
+          name: {
+            eq: 'Homer Simpson'
+          }
+        }
+      ]
+    }
+
+    const filterSubscription = createInMemoryFilterPredicate<User>(filter)
+    expect(filterSubscription({ name: 'Homer Simpson' })).toEqual(false)
+    expect(filterSubscription({ name: 'Homer Simpson', age: 39 })).toEqual(true)
+    expect(filterSubscription({ name: 'Homer Thompson', age: 39 })).toEqual(true)
+    expect(filterSubscription({ name: 'Homer Simpson', age: 38 })).toEqual(false)
+    expect(filterSubscription({ name: 'Homer Thompson', age: 38 })).toEqual(false)
+    expect(filterSubscription({ name: 'Homer J Simpson', age: 39 })).toEqual(false)
   });
 
   describe('empty or undefined filter', () => {

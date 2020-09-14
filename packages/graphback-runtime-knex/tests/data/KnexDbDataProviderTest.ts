@@ -4,19 +4,20 @@
 import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, GraphbackCoreMetadata } from '@graphback/core';
+import { GraphbackDataProvider, GraphbackCoreMetadata, QueryFilter } from '@graphback/core';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
-afterEach(() => {
+beforeEach(() => {
   if (existsSync(dbPath)) {
     unlinkSync(dbPath)
   }
 })
 
 const setup = async (schemaStr: string, config: { seedData?: { [tableName: string]: any[] | any } } = {}) => {
+
   const schema = buildSchema(schemaStr);
   const defautCrudConfig = {
     "create": true,
@@ -314,18 +315,18 @@ type Todo {
 
   const todos = await providers.Todo.findBy({
     filter: {
-      "title": {
-        "eq": "one"
+      title: {
+        eq: "three"
       },
-      "or": {
-        "title": {
-          "eq": "three"
+      or: [{
+        description: {
+          eq: "three description"
         }
-      }
+      }]
     }
   })
 
-  expect(todos).toHaveLength(2)
+  expect(todos).toHaveLength(1)
 });
 
 test('or clause as array', async () => {
@@ -345,46 +346,32 @@ type Todo {
  description: String
 }`, { seedData: { todo: seedData } })
 
-  const todos = await providers.Todo.findBy({
-    filter: {
-      "title": {
-        "eq": "one"
-      },
-      "or": [
-        {
-          "title": {
-            "eq": "three"
-          }
-        },
-        {
-          "description": {
-            "eq": ""
-          }
+  const filter: QueryFilter = {
+    or: [
+      {
+        title: {
+          eq: "one"
         }
-      ]
-    }
-  })
+      },
+      {
+        title: {
+          eq: "three"
+        },
+      },
+      {
+        description: {
+          eq: ""
+        }
+      }
+    ]
+  };
+
+  const todos = await providers.Todo.findBy({ filter })
 
   expect(todos).toHaveLength(3)
 
   // count
-  const count = await providers.Todo.count({
-    "title": {
-      "eq": "one"
-    },
-    "or": [
-      {
-        "title": {
-          "eq": "three"
-        }
-      },
-      {
-        "description": {
-          "eq": ""
-        }
-      }
-    ]
-  });
+  const count = await providers.Todo.count(filter);
 
   expect(count).toEqual(3);
 });
@@ -408,28 +395,31 @@ type Todo {
 
   const todos = await providers.Todo.findBy({
     filter: {
-      "title": {
-        "eq": "two"
+      title: {
+        eq: "two"
       },
-      "and": {
-        "description": {
-          "eq": ""
+      and: [
+        {
+          description: {
+            eq: ""
+          }
         }
-      }
+      ]
     }
   })
 
   expect(todos).toHaveLength(1)
 
   const count = await providers.Todo.count({
-    "title": {
-      "eq": "two"
+    title: {
+      eq: "two"
     },
-    "and": {
-      "description": {
-        "eq": ""
-      }
-    }
+    and: [
+      {
+        description: {
+          eq: ""
+        }
+      }]
   })
 
   expect(count).toEqual(1)
@@ -736,3 +726,379 @@ type Todo {
   expect(deletedTodo.id).toEqual(3);
   expect(deletedTodo.text).toEqual("updated todo");
 });
+
+describe('or', () => {
+  it('a && (b || c)', async () => {
+    const { providers: { Todo } } = await setup(`
+    
+
+    """
+    @model
+    """
+    type Todo {
+      id: ID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 1,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 1,
+            b: 5,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 3
+          }
+        ]
+      }
+    })
+
+    const filter: QueryFilter = {
+      a: {
+        eq: 1
+      },
+      or: [
+        {
+          c: {
+            eq: 6
+          }
+        }, {
+          b: {
+            eq: 5
+          }
+        }
+      ]
+    }
+
+    const items = await Todo.findBy({ filter });
+
+    expect(items).toHaveLength(2);
+  });
+
+  it('a && (b || c) starting at first $or', async () => {
+    const { providers: { Todo } } = await setup(`
+    
+
+    """
+    @model
+    """
+    type Todo {
+      id: ID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 1,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 1,
+            b: 5,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 3
+          }
+        ]
+      }
+    })
+
+    const filter: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          },
+          or: [
+            {
+              c: {
+                eq: 6
+              }
+            }, {
+              b: {
+                eq: 5
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    const items = await Todo.findBy({ filter });
+
+    expect(items).toHaveLength(2);
+  });
+
+  it('a && (c || b) from nested $or', async () => {
+    const { providers: { Todo } } = await setup(`
+    
+
+    """
+    @model
+    """
+    type Todo {
+      id: ID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        todo: [
+          {
+            a: 1,
+            b: 1,
+            c: 8
+          },
+          {
+            a: 9,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 1,
+            b: 5,
+            c: 3
+          },
+          {
+            a: 1,
+            b: 6,
+            c: 6
+          }
+        ]
+      }
+    });
+
+    const filter: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          },
+          or: [
+            {
+              c: {
+                eq: 6
+              }
+            }, {
+              b: {
+                eq: 5
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    const items = await Todo.findBy({ filter });
+
+    expect(items).toHaveLength(2);
+  });
+
+  it('a || a || a', async () => {
+    const { providers: { Todo } } = await setup(`
+    
+
+    """
+    @model
+    """
+    type Todo {
+      id: ID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 2,
+            b: 2,
+            c: 10
+          },
+          {
+            a: 3,
+            b: 5,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 3
+          }
+        ]
+      }
+    });
+
+    const filter: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          }
+        },
+        {
+          a: {
+            eq: 2
+          }
+        },
+        {
+          a: {
+            eq: 3
+          }
+        }
+      ]
+    }
+
+    const items = await Todo.findBy({ filter });
+
+    expect(items).toHaveLength(3)
+  })
+
+  it('a || (a && b)', async () => {
+    const { providers: { Todo } } = await setup(`
+    """
+    @model
+    """
+    type Todo {
+      id: ID
+      a: Int
+      b: Int
+      c: Int
+    }
+    `, {
+      seedData: {
+        todo: [
+          {
+            a: 1,
+            b: 5,
+            c: 8
+          },
+          {
+            a: 2,
+            b: 3,
+            c: 10
+          },
+          {
+            a: 2,
+            b: 3,
+            c: 3
+          },
+          {
+            a: 6,
+            b: 6,
+            c: 3
+          }
+        ]
+      }
+    });
+
+    const filter: QueryFilter = {
+      or: [
+        {
+          a: {
+            eq: 1
+          },
+        },
+        {
+          a: {
+            eq: 2
+          },
+          b: {
+            eq: 3
+          }
+        }
+      ]
+    }
+
+    const items = await Todo.findBy({ filter });
+
+    expect(items).toHaveLength(3)
+  })
+})
+
+test('or > not', async () => {
+
+  const { providers: { Todo } } = await setup(`
+    """
+    @model
+    """
+    type Todo {
+      id: ID
+      a: Int
+    }
+    `, {
+    seedData: {
+      todo: [
+        {
+          a: 1,
+        },
+        {
+          a: 2,
+        },
+        {
+          a: 2,
+        },
+        {
+          a: 3,
+        },
+        {
+          a: 11
+        }
+      ]
+    }
+  });
+
+  const filter: QueryFilter = {
+    or: [
+      {
+        a: {
+          in: [1, 11]
+        }
+      },
+      {
+        not: {
+          a: {
+            eq: 2
+          }
+        }
+      }
+    ]
+  }
+
+  const items = await Todo.findBy({ filter });
+
+  expect(items).toHaveLength(3)
+})

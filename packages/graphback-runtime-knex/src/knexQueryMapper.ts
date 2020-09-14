@@ -1,140 +1,169 @@
 import Knex from 'knex';
+import { QueryFilter, QueryFilterOperator } from '@graphback/core';
 
-interface OperatorMap {
-  ne: '<>',
-  eq: '=',
-  le: '<=',
-  lt: '<',
-  ge: '>=',
-  gt: '>',
-  contains: 'like',
-  startswith: 'like',
-  endswith: 'like',
+const knexOperators = ['=', '<>', '<=', '<', '>', '>=', 'like', 'between', 'in'] as const;
+const knexMethods = ['where', 'orWhere', 'orWhereNot', 'whereNot'] as const;
+
+type KnexQueryOperator = typeof knexOperators[number];
+type KnexMethod = typeof knexMethods[number];
+type KnexWhereConditionMap = [KnexQueryOperator, any];
+type RootQuerySelector = 'and' | 'or' | 'not';
+
+type KnexRootQuerySelectorBuilderFn = (builder: Knex.QueryBuilder, filter: QueryFilter | QueryFilter[], rootSelectorContext: RootQuerySelectorContext) => Knex.QueryBuilder;
+type KnexQueryBuilderMapFn = (builder: Knex.QueryBuilder, filter: QueryFilter | QueryFilter[]) => Knex.QueryBuilder;
+
+interface RootQuerySelectorContext {
+  and?: boolean
+  or?: boolean
+  not?: boolean
 }
 
-const methodMapping = {
-  in: 'whereIn',
-  between: 'whereBetween',
-  default: 'where'
+export interface CRUDKnexQueryMapper {
+  /**
+   * Maps a Graphback QueryFilter to a Knex query
+   * 
+   * @param {QueryFilter} [filter] - input filter
+   */
+  buildQuery(filter?: QueryFilter): Knex.QueryBuilder;
 }
 
-const notMethodMap = {
-  where: 'whereNot',
-  whereNull: 'whereNotNull',
-  between: 'whereNotBetween',
-  in: 'whereNotIn'
+const mapQueryFilterOperatorToKnexWhereCondition = (operator: QueryFilterOperator, value: any): KnexWhereConditionMap => {
+  const operatorToWhereConditionMap: { [key in QueryFilterOperator]: KnexWhereConditionMap } = {
+    eq: ['=', value],
+    ne: ['<>', value],
+    lt: ['<', value],
+    le: ['<=', value],
+    ge: ['>=', value],
+    gt: ['>', value],
+    contains: ['like', `%${value}%`],
+    startsWith: ['like', `${value}%`],
+    endsWith: ['like', `%${value}`],
+    in: ['in', value],
+    between: ['between', value]
+  }
+
+  return operatorToWhereConditionMap[operator];
 }
 
-const AND_FIELD = 'and';
-const OR_FIELD = 'or';
-const NOT_FIELD = 'not';
-
-function mapOperator(operator: any) {
-  const operatorMap: OperatorMap = {
-    ne: '<>',
-    eq: '=',
-    le: '<=',
-    lt: '<',
-    ge: '>=',
-    gt: '>',
-    contains: 'like',
-    startswith: 'like',
-    endswith: 'like'
+function buildKnexMethod(rootSelectorContext: RootQuerySelectorContext): KnexMethod {
+  let method = 'where';
+  if (rootSelectorContext?.not) {
+    method = `${method}Not`
   }
 
-  const oprLower = operator.toLowerCase()
-
-  if (!Object.keys(operatorMap).includes(oprLower)) {
-    throw Error(`Not supported operator: ${operator}`)
+  if (rootSelectorContext?.or) {
+    method = `or${method.charAt(0).toUpperCase()}${method.slice(1)}`;
   }
 
-  return operatorMap[oprLower]
+  return method as KnexMethod
 }
 
-function builderMethod(method: string, or?: boolean, not?: boolean) {
-  if (!not && methodMapping[method]) {
-    method = methodMapping[method]
-  } else if (not && notMethodMap[method]) {
-    method = notMethodMap[method]
-  }
+const rootSelectorMapper: { [key in RootQuerySelector]: KnexRootQuerySelectorBuilderFn } = {
+  and: (builder: Knex.QueryBuilder, filters: QueryFilter[], rootSelectorContext: RootQuerySelectorContext): Knex.QueryBuilder => {
+    builder = builder.where((b: Knex.QueryBuilder) => {
+      filters.forEach((f: QueryFilter) => mapQuery(b, f, { ...rootSelectorContext, and: true }));
+    });
 
-  if (or) {
-    return `or${method.charAt(0).toUpperCase()}${method.slice(1)}`
-  }
+    return builder;
+  },
+  or: (builder: Knex.QueryBuilder, filters: QueryFilter[], rootSelectorContext: RootQuerySelectorContext): Knex.QueryBuilder => {
+    builder = builder.where((b: Knex.QueryBuilder) => {
+      filters.forEach((f: QueryFilter) => mapQuery(b, f, { ...rootSelectorContext, or: true }));
+    });
 
-  return method
+    return builder;
+  },
+  not: (builder: Knex.QueryBuilder, filter: QueryFilter, rootSelectorContext: RootQuerySelectorContext): Knex.QueryBuilder => {
+    const builderMethod = buildKnexMethod(rootSelectorContext);
+    builder = builder[builderMethod]((b: Knex.QueryBuilder) => {
+      builder = mapQuery(b, filter, { ...rootSelectorContext, not: true });
+    });
+
+    return builder;
+  },
 }
 
-function where(builder: Knex.QueryBuilder, filter: any, or: boolean = false, not: boolean = false) {
-  if (!filter) {
-    return builder
+/**
+ * Wraps Knex methods and pipe the QueryFilter conditions into a final Knex condition
+ */
+const methodBuilderMapper: { [key in KnexMethod | 'finally']: KnexQueryBuilderMapFn } = {
+  where: (builder: Knex.QueryBuilder, filter: QueryFilter): Knex.QueryBuilder => {
+    return builder.where((b: Knex.QueryBuilder) => b = methodBuilderMapper.finally(b, filter));
+  },
+  orWhere: (builder: Knex.QueryBuilder, filter: QueryFilter): Knex.QueryBuilder => {
+    return builder.orWhere((b: Knex.QueryBuilder) => b = methodBuilderMapper.finally(b, filter));
+  },
+  whereNot: (builder: Knex.QueryBuilder, filter: QueryFilter): Knex.QueryBuilder => {
+    return builder.whereNot((b: Knex.QueryBuilder) => b = methodBuilderMapper.finally(b, filter));
+  },
+  orWhereNot: (builder: Knex.QueryBuilder, filter: QueryFilter): Knex.QueryBuilder => {
+    return builder.orWhereNot((b: Knex.QueryBuilder) => b = methodBuilderMapper.finally(b, filter));
+  },
+  finally: (builder: Knex.QueryBuilder, filter: QueryFilter): Knex.QueryBuilder => {
+    Object.entries(filter).forEach(([col, expr]: [string, any]) => {
+      Object.entries(expr).forEach(([operator, val]: [any, any]) => {
+        const [mappedOperator, transformedValue] = mapQueryFilterOperatorToKnexWhereCondition(operator, val);
+        builder = builder.where(col, mappedOperator, transformedValue);
+      })
+    });
+
+    return builder;
+  }
+}
+
+function mapQuery(builder: Knex.QueryBuilder, filter: QueryFilter, rootSelectorContext: RootQuerySelectorContext = {}): Knex.QueryBuilder {
+  if (filter === undefined) { return builder };
+
+  const mappedQuery = {
+    rootFieldQueries: {} as QueryFilter,
+    and: [] as QueryFilter[],
+    or: [] as QueryFilter[],
+    not: {} as QueryFilter
   }
 
-  const andQueries = []
-  const orQueries = []
-  const notQueries = []
-  for (const entry of Object.entries(filter)) {
-    const col = entry[0]
-    const expr = entry[1] as any
+  for (const key of Object.keys(filter)) {
+    const rootSelector = rootSelectorMapper[key];
 
-    // collect all AND condition filters
-    if (col === AND_FIELD) {
-      const andExpressions = Array.isArray(expr) ? expr : [expr]
-      andQueries.push(...andExpressions)
-      continue
-    }
-
-    // collect all OR condition filters
-    if (col === OR_FIELD) {
-      const orExpressions = Array.isArray(expr) ? expr : [expr]
-      orQueries.push(...orExpressions)
-      continue
-    }
-
-    // collect all NOT condition filters
-    if (col === NOT_FIELD) {
-      notQueries.push(expr)
-      continue
-    }
-
-    const exprEntry = Object.entries(expr)[0]
-
-    // eslint-disable-next-line no-null/no-null
-    if (exprEntry[1] === null) {
-      builder = builder[builderMethod('whereNull', or, exprEntry[0] === 'ne')](col)
-    } else if (Object.keys(methodMapping).includes(exprEntry[0])) {
-      builder = builder[builderMethod(exprEntry[0], or, not)](col, exprEntry[1])
-    } else if (exprEntry[0] === 'contains') {
-      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), `%${exprEntry[1]}%`)
-    } else if (exprEntry[0] === 'startsWith') {
-      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), `${exprEntry[1]}%`)
-    } else if (exprEntry[0] === 'endsWith') {
-      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), `%${exprEntry[1]}`)
+    if (rootSelector) {
+      mappedQuery[key] = filter[key];
     } else {
-      builder = builder[builderMethod('where', or, not)](col, mapOperator(exprEntry[0]), exprEntry[1])
+      mappedQuery.rootFieldQueries[key] = filter[key];
     }
   }
 
-  // build AND queries
-  for (const andFilter of andQueries) {
-    builder = where(builder, andFilter, false, not)
+  // build conditions for root fields
+  if (Object.keys(mappedQuery.rootFieldQueries).length) {
+    const knexMethodName = buildKnexMethod(rootSelectorContext);
+
+    const wrappedKnexMethod = methodBuilderMapper[knexMethodName];
+
+    if (wrappedKnexMethod) {
+      builder = wrappedKnexMethod(builder, mappedQuery.rootFieldQueries);
+    }
   }
 
-  // build NOT queries
-  for (const notFilter of notQueries) {
-    builder = where(builder, notFilter, or, true)
+  if (mappedQuery.and.length) {
+    builder = rootSelectorMapper.and(builder, mappedQuery.and, rootSelectorContext);
+  }
+  if (mappedQuery.or.length) {
+    builder = rootSelectorMapper.or(builder, mappedQuery.or, rootSelectorContext);
+  }
+  if (Object.keys(mappedQuery.not).length) {
+    builder = rootSelectorMapper.not(builder, mappedQuery.not, rootSelectorContext);
   }
 
-  // build OR queries
-  for (const orFilter of orQueries) {
-    builder = where(builder, orFilter, true, not)
-  }
-
-  return builder
+  return builder;
 }
 
-export function buildQuery(knex: Knex<any, any>, filter: any): Knex.QueryBuilder {
-  const builder = where(knex.queryBuilder(), filter)
-
-  return builder
+/**
+ * Create an instance of a CRUD => Knex query mapper
+ *  * 
+ * @param {Knex} knex - The current Knex connection instance
+ */
+export function createKnexQueryMapper(knex: Knex): CRUDKnexQueryMapper {
+  return {
+    buildQuery: (filter: QueryFilter): Knex.QueryBuilder => {
+      return mapQuery(knex.queryBuilder(), filter);
+    }
+  }
 }

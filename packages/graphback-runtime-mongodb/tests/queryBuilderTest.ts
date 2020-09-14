@@ -37,7 +37,7 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
   //Create a new database before each tests so that
   //all tests can run parallel
 
-  afterEach(() => context.server.stop());
+  afterEach(() => context?.server?.stop());
 
   it('can filter ObjectID', async () => {
     context = await createTestingContext(postSchema);
@@ -86,10 +86,14 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
 
     const posts: Post[] = await context.providers.Post.findBy({
       filter: {
-        text: { eq: 'post2' },
-        or: [{
-          likes: { eq: 300 }
-        }]
+        or: [
+          {
+            likes: { eq: 300 }
+          },
+          {
+            text: { eq: 'post2' },
+          }
+        ]
       }
     });
     expect(posts.length).toEqual(2);
@@ -107,8 +111,10 @@ describe('MongoDBDataProvider Advanced Filtering', () => {
 
     const posts: Post[] = await context.providers.Post.findBy({
       filter: {
-        text: { eq: 'post2' },
         or: [
+          {
+            text: { eq: 'post2' },
+          },
           {
             likes: { eq: 300 },
           },
@@ -362,7 +368,7 @@ describe('queryBuilder scalar filtering', () => {
     expect(newPosts.map((post: any) => post.text)).toEqual(["not yet", "bye guys"]);
   });
 
-  it('a || b || c starting at root of query', () => {
+  it('a && (b || c)', () => {
     const inputQuery: QueryFilter = {
       a: {
         eq: 1
@@ -383,6 +389,9 @@ describe('queryBuilder scalar filtering', () => {
 
     const outputQuery = buildQuery(inputQuery);
     const expected = {
+      a: {
+        $eq: 1
+      },
       $or: [
         {
           b: {
@@ -392,11 +401,6 @@ describe('queryBuilder scalar filtering', () => {
         {
           c: {
             $eq: 3
-          }
-        },
-        {
-          a: {
-            $eq: 1
           }
         }
       ]
@@ -449,7 +453,7 @@ describe('queryBuilder scalar filtering', () => {
     expect(Object.keys(outputQuery)).toEqual(['$or']);
   });
 
-  it('should group multiple or conditions into single $or array', () => {
+  it('(a && b) && (c || c)', () => {
     const inputQuery: QueryFilter = {
       or: [
         {
@@ -462,13 +466,13 @@ describe('queryBuilder scalar filtering', () => {
           or: [
             {
               c: {
-                eq: 2
-              }
-            },
-            {
-              c: {
                 eq: 3
               }
+            },
+            {
+              c: {
+                eq: 2
+              }
             }
           ]
         }
@@ -479,119 +483,33 @@ describe('queryBuilder scalar filtering', () => {
 
     const expected: FilterQuery<any> = {
       $or: [
-        {
-          $or: [
-            {
-              c: {
-                $eq: 2
-              }
-            },
-            {
-              c: {
-                $eq: 3
-              }
-            },
-            {
-              a: {
-                $eq: 1
-              },
-              b: {
-                $eq: 2
-              }
-            }
-          ]
-        }
-      ]
-    }
-
-    expect(outputQuery).toEqual(expected);
-  });
-
-  it('(a && b) || c from first $or', () => {
-    const inputQuery: QueryFilter = {
-      or: [
-        {
-          a: {
-            eq: 1
-          },
-          b: {
-            eq: 2
-          },
-          or: [{
-            c: {
-              eq: 3
-            }
-          }]
-        }
-      ]
-    }
-
-    const outputQuery = buildQuery(inputQuery);
-
-    const expected: FilterQuery<any> = {
-      $or: [
-        {
-          $or: [
-            {
-              c: {
-                $eq: 3
-              }
-            },
-            {
-              a: {
-                $eq: 1
-              },
-              b: {
-                $eq: 2
-              }
-            }
-          ]
-        }
-      ]
-    }
-
-    expect(outputQuery).toEqual(expected);
-  })
-
-  it('(a && b) || c from query root', () => {
-    const inputQuery: QueryFilter = {
-      a: {
-        eq: 1
-      },
-      b: {
-        eq: 2
-      },
-      or: [{
-        c: {
-          eq: 3
-        }
-      }]
-    }
-
-    const outputQuery = buildQuery(inputQuery);
-
-    const expected: FilterQuery<any> = {
-      $or: [
-        {
-          c: {
-            $eq: 3
-          }
-        },
         {
           a: {
             $eq: 1
           },
           b: {
             $eq: 2
-          }
-        }
+          },
+          $or: [
+            {
+              c: {
+                $eq: 3
+              }
+            },
+            {
+              c: {
+                $eq: 2
+              }
+            }
+          ]
+        },
       ]
     }
 
     expect(outputQuery).toEqual(expected);
   })
 
-  it('(a && b) || c from query root (explicit AND)', () => {
+  it('a && b && (c || b) from query root (explicit AND)', () => {
     const inputQuery: QueryFilter = {
       a: {
         eq: 1
@@ -601,16 +519,33 @@ describe('queryBuilder scalar filtering', () => {
           eq: 2
         }
       }],
-      or: [{
-        c: {
-          eq: 3
+      or: [
+        {
+          c: {
+            eq: 3
+          }
+        },
+        {
+          b: {
+            eq: 4
+          }
         }
-      }]
+      ]
     }
 
     const outputQuery = buildQuery(inputQuery);
 
     const expected: FilterQuery<any> = {
+      a: {
+        $eq: 1,
+      },
+      $and: [
+        {
+          b: {
+            $eq: 2
+          }
+        }
+      ],
       $or: [
         {
           c: {
@@ -618,14 +553,9 @@ describe('queryBuilder scalar filtering', () => {
           }
         },
         {
-          a: {
-            $eq: 1
-          },
-          $and: [{
-            b: {
-              $eq: 2
-            }
-          }]
+          b: {
+            $eq: 4
+          }
         }
       ]
     }
