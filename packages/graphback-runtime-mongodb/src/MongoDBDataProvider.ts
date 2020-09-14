@@ -128,7 +128,7 @@ export class MongoDBDataProvider<Type = any> implements GraphbackDataProvider<Ty
   public async batchRead(relationField: string, ids: string[], filter?: QueryFilter, selectedFields?: string[]): Promise<Type[][]> {
     const projection = this.buildProjectionOption(selectedFields);
     filter = filter || {};
-    filter[relationField] = { $in: ids };
+    filter[relationField] = { in: ids };
 
     const result = await this.db.collection(this.collectionName).find(buildQuery(filter), { projection }).toArray();
 
