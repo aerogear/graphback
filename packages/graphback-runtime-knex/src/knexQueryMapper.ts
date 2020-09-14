@@ -84,7 +84,7 @@ const rootSelectorMapper: { [key in RootQuerySelector]: KnexRootQuerySelectorBui
 }
 
 /**
- * Wraps Kne methods and pipe the QueryFilter conditions into a final Knex condition
+ * Wraps Knex methods and pipe the QueryFilter conditions into a final Knex condition
  */
 const methodBuilderMapper: { [key in KnexMethod | 'finally']: KnexQueryBuilderMapFn } = {
   where: (builder: Knex.QueryBuilder, filter: QueryFilter): Knex.QueryBuilder => {

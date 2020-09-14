@@ -145,9 +145,16 @@ export type GraphbackTimestampInput = {
 
 type GraphbackScalarInput = GraphbackDateInput | GraphbackDateTimeInput | GraphbackObjectIdInput | GraphbackTimeInput | GraphbackTimestampInput;
 
+export type QueryFilterOperator = keyof IdInput | keyof BooleanInput | keyof StringInput | keyof FloatInput | keyof IntInput | keyof GraphbackScalarInput;
 /**
  * Query filter used in Graphback services and data providers
  */
 export type QueryFilter<T = any> = {
-  [P in keyof T | 'and' | 'or' | 'not']?: Maybe<IdInput | BooleanInput | StringInput | FloatInput | IntInput | GraphbackScalarInput | T | T[]>;
-};
+  [P in keyof T]: IdInput | BooleanInput | StringInput | FloatInput | IntInput | GraphbackScalarInput | any;
+} & RootQuerySelector<T>;
+
+type RootQuerySelector<T = any> = {
+  and?: QueryFilter<T>[];
+  or?: QueryFilter<T>[];
+  not?: QueryFilter<T>;
+}

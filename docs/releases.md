@@ -8,6 +8,17 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
+# 0.17.0
+
+### Bug Fixes
+
+* Logical `or` filter selector was not mapped correctly in both `graphback-runtime-mongo` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [1ebe7e9](https://github.com/aerogear/graphback/pull/2034/commits/1ebe7e9bc8d3a61f0b3ef65b588881d16b7ae63f))
+* Logical `or` filter selector was not mapped correctly in both `graphback-runtime-knex` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [6d43f28](https://github.com/aerogear/graphback/commit/6d43f288865a2c8c0d441e486a156301ca6cc42a))
+
+### Breaking Changes
+
+* Refactored the Knex Query Mapper ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [6d43f28](https://github.com/aerogear/graphback/commit/6d43f288865a2c8c0d441e486a156301ca6cc42a))
+
 # 0.16.2
 
 ### Bug Fixes

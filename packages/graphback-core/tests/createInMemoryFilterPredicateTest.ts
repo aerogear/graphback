@@ -871,14 +871,14 @@ describe('createInMemoryFilterPredicate', () => {
       name: {
         endsWith: 'Simpson'
       },
-      and: {
+      and: [{
         age: {
           gt: 10
         },
         verified: {
           eq: true
         }
-      }
+      }]
     }
 
     const filterSubscription = createInMemoryFilterPredicate<User>(filter)
@@ -929,11 +929,11 @@ describe('createInMemoryFilterPredicate', () => {
       name: {
         eq: 'Homer Simpson'
       },
-      or: {
+      or: [{
         name: {
           eq: 'Homer Thompson'
         }
-      }
+      }]
     }
 
     const filterSubscription = createInMemoryFilterPredicate<User>(filter)
