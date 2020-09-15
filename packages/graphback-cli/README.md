@@ -18,6 +18,6 @@ by generating backend and client side CRUD layer using your GraphQL data model.
 
 ## CLI commands reference
 
-See: https://graphback.dev/docs/commands
+See: https://graphback.dev/docs/cli/graphback-cli
 
 > NOTE: Graphback CLI is now part of the graphql-cli command line tool. Please consider installing https://github.com/Urigo/graphql-cli for wider set of features
