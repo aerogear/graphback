@@ -30,7 +30,7 @@
     "@types/chalk": "2.2.0",
     "@types/express": "4.17.8",
     "@types/jest": "26.0.13",
-    "@types/node": "12.12.58",
+    "@types/node": "12.12.59",
     "@types/pino": "6.3.0",
     "@typescript-eslint/eslint-plugin": "4.1.1",
     "@typescript-eslint/parser": "4.1.1",
