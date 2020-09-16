@@ -61,7 +61,7 @@
     "graphback": "0.16.2",
     "graphql": "15.3.0",
     "mongodb": "3.6.2",
-    "mongodb-memory-server": "6.7.5",
+    "mongodb-memory-server": "6.7.6",
     "yargs": "16.0.3"
   },
   "peerDependencies": {
