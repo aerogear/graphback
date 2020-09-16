@@ -1,8 +1,8 @@
 import { MongoMemoryServer } from 'mongodb-memory-server-global';
 import { MongoClient, Db, Collection } from 'mongodb';
 import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata } from '@graphback/core';
-import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
+import { GraphbackPluginEngine } from '@graphback/core';
+import { SchemaCRUDPlugin } from "../../graphback-codegen-schema";
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 
 export interface Context {
@@ -32,12 +32,8 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
     "subDelete": true
   }
 
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, schema);
-
-  const schemaGenerator = new SchemaCRUDPlugin();
-  schemaGenerator.transformSchema(metadata)
+  const pluginEngine = new GraphbackPluginEngine({ schema, plugins: [new SchemaCRUDPlugin()] })
+  const metadata = pluginEngine.createResources();
 
   const providers: { [name: string]: MongoDBDataProvider } = {}
   const models = metadata.getModelDefinitions()

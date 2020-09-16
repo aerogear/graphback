@@ -1,53 +1,30 @@
 import { readFileSync } from 'fs';
 import { buildSchema, printSchema } from 'graphql';
-import { GraphbackCoreMetadata } from '@graphback/core';
+import { GraphbackCoreMetadata, GraphbackPluginEngine } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { DataSyncPlugin } from '../src/DataSyncPlugin';
 
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
 test('Test snapshot config gql', async () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const schemaPlugin =  new SchemaCRUDPlugin();
+  const schemaPlugin = new SchemaCRUDPlugin();
   const datasync = new DataSyncPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(schemaText))
-  metadata.setSchema(schemaPlugin.transformSchema(metadata))
-  const schema = datasync.transformSchema(metadata)
+
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(schemaText), plugins: [schemaPlugin, datasync] })
+  const metadata = pluginEngine.createResources();
+  const schema = metadata.getSchema();
+  const resolvers: any = metadata.getResolvers();
+
   expect(printSchema(schema)).toMatchSnapshot();
-  const resolvers: any = datasync.createResolvers(metadata);
   expect(resolvers.Query.syncComments).toBeTruthy()
 });
 
 it('uses existing GraphbackTimestamp scalars', async () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const schemaPlugin =  new SchemaCRUDPlugin();
+  const schemaPlugin = new SchemaCRUDPlugin();
   const datasync = new DataSyncPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(
-    `
+
+  const pluginEngine = new GraphbackPluginEngine({
+    schema: buildSchema(`
     """
     @model
     @datasync(
@@ -61,31 +38,20 @@ it('uses existing GraphbackTimestamp scalars', async () => {
     }
 
     scalar GraphbackTimestamp
-    `
-  ))
-  metadata.setSchema(schemaPlugin.transformSchema(metadata))
-  const schema = datasync.transformSchema(metadata)
+    `), plugins: [schemaPlugin, datasync]
+  })
+  const metadata = pluginEngine.createResources();
+  const schema = metadata.getSchema();
+
   expect(printSchema(schema)).toMatchSnapshot();
 });
 
 it('adds version when conflicts are enabled', async () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const schemaPlugin =  new SchemaCRUDPlugin();
+  const schemaPlugin = new SchemaCRUDPlugin();
   const datasync = new DataSyncPlugin({ conflictConfig: { enabled: true } })
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(
-    `
+
+  const pluginEngine = new GraphbackPluginEngine({
+    schema: buildSchema(`
     """
     @model
     @datasync(
@@ -99,9 +65,10 @@ it('adds version when conflicts are enabled', async () => {
     }
 
     scalar GraphbackTimestamp
-    `
-  ))
-  metadata.setSchema(schemaPlugin.transformSchema(metadata))
-  const schema = datasync.transformSchema(metadata)
+    `), plugins: [schemaPlugin, datasync]
+  })
+  const metadata = pluginEngine.createResources();
+  const schema = metadata.getSchema();
+
   expect(printSchema(schema)).toMatchSnapshot();
 });

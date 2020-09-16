@@ -1,10 +1,10 @@
 /* eslint-disable max-lines */
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
-import { QueryFilter, GraphbackCoreMetadata } from '@graphback/core';
-import { Context, createTestingContext } from "./__util__";
-import { buildSchema } from 'graphql';
+import { QueryFilter, GraphbackPluginEngine } from '@graphback/core';
+import { SchemaCRUDPlugin } from '../../graphback-codegen-schema'
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
+import { Context, createTestingContext } from "./__util__";
 
 describe('MongoDBDataProvider Basic CRUD', () => {
   interface Todo {
@@ -58,20 +58,11 @@ describe('MongoDBDataProvider Basic CRUD', () => {
     `;
 
 
-    const defautConfig = {
-      "create": true,
-      "update": true,
-      "findOne": true,
-      "find": true,
-      "delete": true,
-      "subCreate": true,
-      "subUpdate": true,
-      "subDelete": true
-    }
-
     try {
-      const metadata = new GraphbackCoreMetadata({ crudMethods: defautConfig }, buildSchema(schema));
-      const models = metadata.getModelDefinitions()
+      const pluginEngine = new GraphbackPluginEngine({ schema, plugins: [new SchemaCRUDPlugin()] })
+      const metadata = pluginEngine.createResources();
+      const models = metadata.getModelDefinitions();
+
       for (const model of models) {
         new MongoDBDataProvider(model, undefined);
       }

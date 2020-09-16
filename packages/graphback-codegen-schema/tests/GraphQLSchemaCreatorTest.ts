@@ -8,81 +8,16 @@ import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 const schemaText = readFileSync(`${__dirname}/mock.graphql`, 'utf8')
 
 test('Test snapshot config gql', async () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-
   const schemaGenerator = new SchemaCRUDPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(schemaText))
-  const schema = schemaGenerator.transformSchema(metadata)
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(schemaText), plugins: [schemaGenerator] })
+  const metadata = pluginEngine.createResources()
+  const schema = metadata.getSchema()
+
   expect(printSchemaWithDirectives(schema)).toMatchSnapshot();
 });
 
 
-test('Test snapshot config ts', async () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-
-  const schemaGenerator = new SchemaCRUDPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(schemaText))
-  const schema = schemaGenerator.transformSchema(metadata)
-  expect(printSchema(schema)).toMatchSnapshot();
-});
-
-
-test('Test snapshot config js', async () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-
-  const schemaGenerator = new SchemaCRUDPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(schemaText))
-  const schema = schemaGenerator.transformSchema(metadata)
-  expect(printSchema(schema)).toMatchSnapshot();
-});
-
 test('Test one side relationship schema query type generation', async () => {
-  const defautConfig = {
-    "create": false,
-    "update": false,
-    "findOne": true,
-    "find": true,
-    "delete": false,
-    "subCreate": false,
-    "subUpdate": false,
-    "subDelete": false
-  }
 
   const modelText = `""" @model """
   type Note {
@@ -104,29 +39,32 @@ test('Test one side relationship schema query type generation', async () => {
   }
   `;
 
-  const oneSidedSchema = buildSchema(modelText);
   const schemaGenerator = new SchemaCRUDPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, oneSidedSchema)
+  const pluginEngine = new GraphbackPluginEngine({
+    schema: buildSchema(modelText),
+    plugins: [schemaGenerator],
+    config: {
+      crudMethods: {
+        "create": false,
+        "update": false,
+        "findOne": true,
+        "find": true,
+        "delete": false,
+        "subCreate": false,
+        "subUpdate": false,
+        "subDelete": false
+      }
+    }
+  });
 
-  const transformedSchema = schemaGenerator.transformSchema(metadata)
-  expect(printSchema(transformedSchema)).toMatchSnapshot()
+  const metadata = pluginEngine.createResources()
+  const schema = metadata.getSchema()
+
+  expect(printSchema(schema)).toMatchSnapshot()
 });
 
 
 test('Model has missing relationship annotations', async () => {
-  const defautConfig = {
-    "create": false,
-    "update": false,
-    "findOne": true,
-    "find": true,
-    "delete": false,
-    "subCreate": false,
-    "subUpdate": false,
-    "subDelete": false
-  };
-
   let modelText = `
   """ @model """
   type Note {
@@ -143,12 +81,10 @@ test('Model has missing relationship annotations', async () => {
   }
   `;
 
-  let schema = buildSchema(modelText);
-  let schemaGenerator = new SchemaCRUDPlugin();
-  let metadata = new GraphbackCoreMetadata({ crudMethods: defautConfig }, schema);
-
   try {
-    schemaGenerator.transformSchema(metadata);
+    const schemaGenerator = new SchemaCRUDPlugin()
+    const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelText), plugins: [schemaGenerator] })
+    pluginEngine.createResources()
     expect(true).toBeFalsy(); // should not reach here
   } catch (error) {
     expect(error.message).toEqual(`Missing relationship definition on: "Note.tests". Visit https://graphback.dev/docs/model/datamodel#relationships to see how you can define relationship in your business model.`);
@@ -170,12 +106,10 @@ test('Model has missing relationship annotations', async () => {
   }
   `;
 
-  schema = buildSchema(modelText);
-  schemaGenerator = new SchemaCRUDPlugin();
-  metadata = new GraphbackCoreMetadata({ crudMethods: defautConfig }, schema);
-
   try {
-    schemaGenerator.transformSchema(metadata);
+    const schemaGenerator = new SchemaCRUDPlugin()
+    const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelText), plugins: [schemaGenerator] })
+    pluginEngine.createResources()
     expect(true).toBeFalsy(); // should not reach here
   } catch (error) {
     expect(error.message).toEqual(`Missing relationship definition on: "Note.test". Visit https://graphback.dev/docs/model/datamodel#relationships to see how you can define relationship in your business model.`);
@@ -183,16 +117,6 @@ test('Model has missing relationship annotations', async () => {
 });
 
 test('Non-model type has model-type field', () => {
-  const defautConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
 
   const modelText = `
 type JWTAuthResult {
@@ -212,10 +136,10 @@ type Query {
 }`
 
   const schemaGenerator = new SchemaCRUDPlugin()
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, buildSchema(modelText))
-  const schema = schemaGenerator.transformSchema(metadata)
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelText), plugins: [schemaGenerator] })
+  const metadata = pluginEngine.createResources();
+  const schema = metadata.getSchema();
+
   expect(schema.getType('JWTAuthResult')).toBeDefined()
 })
 
@@ -233,7 +157,6 @@ test('Creates CRUD resolvers for models', async () => {
 });
 
 test('field directives on relationship fields are mapped to schema', () => {
-  const schemaGenerator = new SchemaCRUDPlugin();
   const modelAST = `directive @test on FIELD_DEFINITION
 
 """ @model """
@@ -257,8 +180,10 @@ type Comment {
   note: Note! @test
 }`
 
-  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
-  const schema = schemaGenerator.transformSchema(metadata);
+  const schemaGenerator = new SchemaCRUDPlugin()
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelAST), plugins: [schemaGenerator] })
+  const metadata = pluginEngine.createResources()
+  const schema = metadata.getSchema();
 
   const noteType = schema.getType('Note') as GraphQLObjectType
   const { comments, comment } = noteType.getFields()
@@ -292,9 +217,10 @@ test('schema does not generate filter input for unknown custom scalar', () => {
     customField: MyCustomScalar
   }`
 
-  const schemaGenerator = new SchemaCRUDPlugin();
-  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
-  const schema = schemaGenerator.transformSchema(metadata);
+  const schemaGenerator = new SchemaCRUDPlugin()
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelAST), plugins: [schemaGenerator] })
+  const metadata = pluginEngine.createResources()
+  const schema = metadata.getSchema();
 
   expect(schema.getType('MyCustomScalarInput')).toBeUndefined()
 })
@@ -312,11 +238,11 @@ test('schema does not override custom createdAt and updatedAt fields when model 
       ${field}: Int
     }`;
 
-    const schemaGenerator = new SchemaCRUDPlugin();
-    const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
 
     try {
-      schemaGenerator.transformSchema(metadata);
+      const schemaGenerator = new SchemaCRUDPlugin()
+      const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelAST), plugins: [schemaGenerator] })
+      pluginEngine.createResources()
       expect(true).toBeFalsy(); // should not reach here
     } catch (error) {
       expect(error.message).toEqual(`Type "Entity" annotated with @versioned, cannot contain custom "${field}" field since it is generated automatically. Either remove the @versioned annotation, change the type of the field to "GraphbackTimestamp" or remove the field.`)
@@ -356,10 +282,11 @@ test('schema does throw an error when model annotated with @versioned contain cu
     }
     `;
 
-  const schemaGenerator = new SchemaCRUDPlugin();
-  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+  const schemaGenerator = new SchemaCRUDPlugin()
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelAST), plugins: [schemaGenerator] })
+  const metadata = pluginEngine.createResources()
+  const schema = metadata.getSchema();
 
-  const schema = schemaGenerator.transformSchema(metadata);
   expect(schema).toBeDefined()
 })
 
@@ -376,10 +303,10 @@ test('Transient field is excluded from input types', () => {
     }
     `;
 
-  const schemaGenerator = new SchemaCRUDPlugin();
-  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
-
-  const schema = schemaGenerator.transformSchema(metadata);
+  const schemaGenerator = new SchemaCRUDPlugin()
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(modelAST), plugins: [schemaGenerator] })
+  const metadata = pluginEngine.createResources()
+  const schema = metadata.getSchema();
 
   const createUserInput = assertInputObjectType(schema.getType('CreateUserInput'))
   expect(Object.keys(createUserInput.getFields())).toEqual(['id', 'name'])

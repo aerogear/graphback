@@ -32,6 +32,7 @@ export class GraphbackCoreMetadata {
 
   public constructor(globalConfig: GraphbackGlobalConfig, schema: GraphQLSchema) {
     this.schema = schema;
+    this.models = [];
     this.supportedCrudMethods = Object.assign({}, defaultCRUDGeneratorConfig, globalConfig?.crudMethods)
   }
 
@@ -57,10 +58,14 @@ export class GraphbackCoreMetadata {
     return this.resolvers;
   }
 
+  public getModelDefinitions() {
+    return this.models;
+  }
+
   /**
    * Get Graphback Models - GraphQL Types with additional CRUD configuration
    */
-  public getModelDefinitions() {
+  public setModelDefinitions() {
     //Contains map of the models with their underlying CRUD configuration
     this.models = [];
     //Get actual user types
@@ -73,8 +78,6 @@ export class GraphbackCoreMetadata {
       const model = this.buildModel(modelType, relationshipBuilder.getModelRelationships(modelType.name));
       this.models.push(model);
     }
-
-    return this.models;
   }
 
   /**

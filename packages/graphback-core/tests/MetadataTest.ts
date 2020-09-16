@@ -1,8 +1,9 @@
 import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, getModelByName } from '../src'
+import { GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, getModelByName, GraphbackPluginEngine } from '../src'
 
 const setup = (model: string, config?: { crudMethods?: GraphbackCRUDGeneratorConfig }) => {
-  const metadata = new GraphbackCoreMetadata({ crudMethods: config?.crudMethods }, buildSchema(model))
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(model) })
+  const metadata = pluginEngine.createResources();
 
   return { metadata }
 }

@@ -1,15 +1,16 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient, Db, Collection } from 'mongodb';
-import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata } from '@graphback/core';
+import { buildSchema, GraphQLSchema } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPluginEngine } from '@graphback/core';
 import { SchemaCRUDPlugin } from "@graphback/codegen-schema";
 import { createDataSyncConflictProviderCreator, DataSyncPlugin, DataSyncProvider, GlobalConflictConfig } from '../src';
 
 export interface Context {
+  metadata: GraphbackCoreMetadata;
   providers: { [modelname: string]: DataSyncProvider };
   server: MongoMemoryServer,
   db: Db,
-  findIndex: (collectionName: string, indexName) => Promise<any>
+  findIndex(collectionName: string, indexName: string): Promise<any>;
 }
 
 export async function createTestingContext(schemaStr: string, config?: { seedData?: { [collection: string]: any[] }, conflictConfig?: GlobalConflictConfig }): Promise<Context> {
@@ -34,11 +35,8 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
 
   const schemaGenerator = new SchemaCRUDPlugin();
   const DataSyncGenerator = new DataSyncPlugin({ conflictConfig: config?.conflictConfig });
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautConfig
-  }, schema)
-  metadata.setSchema(schemaGenerator.transformSchema(metadata));
-  metadata.setSchema(DataSyncGenerator.transformSchema(metadata));
+  const pluginEngine = new GraphbackPluginEngine({ schema, config: { crudMethods: defautConfig }, plugins: [schemaGenerator, DataSyncGenerator] })
+  const metadata = pluginEngine.createResources()
 
   const createProvider = createDataSyncConflictProviderCreator(db, config?.conflictConfig);
 
@@ -59,20 +57,20 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
   }
 
   const waitTime = 2000;
-  const findIndex =  async (collectionName: string, indexName: string) => {
+  const findIndex = async (collectionName: string, indexName: string) => {
     const startTime = Date.now();
 
     do {
       const collections = await db.collections();
-      const collectionFound = collections.find((collection: Collection) => collection.collectionName === collectionName );
+      const collectionFound = collections.find((collection: Collection) => collection.collectionName === collectionName);
       if (collectionFound) {
         const indexes = await collectionFound.indexes();
         const foundIndex = indexes.find((index: any) => index.key[indexName]);
-        if (foundIndex) return foundIndex;
+        if (foundIndex) { return foundIndex };
       };
-    } while( Date.now() - startTime < waitTime)
+    } while (Date.now() - startTime < waitTime)
 
   }
 
-  return { server, providers, db, findIndex }
+  return { server, providers, db, findIndex, metadata }
 }

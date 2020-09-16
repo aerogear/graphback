@@ -4,9 +4,10 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
-import { CRUDService, GraphbackCoreMetadata } from '@graphback/core';
+import { CRUDService, GraphbackCoreMetadata, GraphbackPluginEngine } from '@graphback/core';
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
+import { SchemaCRUDPlugin } from '../../../graphback-codegen-schema';
 
 const dbPath = `${__dirname}/db.sqlite`;
 
@@ -40,20 +41,8 @@ type Todo {
 
   const schema = buildSchema(schemaSDL)
 
-  const defautCrudConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautCrudConfig
-  }, schema);
+  const pluginEngine = new GraphbackPluginEngine({ schema, plugins: [new SchemaCRUDPlugin()] })
+  const metadata = pluginEngine.createResources();
 
   await migrateDB(dbConfig, schema, {
     operationFilter: removeNonSafeOperationsFilter

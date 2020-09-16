@@ -2,13 +2,16 @@ import { GraphQLSchema, buildSchema, assertObjectType, GraphQLResolveInfo } from
 import { GraphbackCoreMetadata } from "../src/plugin/GraphbackCoreMetadata";
 import { ModelDefinition } from '../src/plugin/ModelDefinition'
 import { getModelFieldsFromResolverFields } from '../src/plugin/getSelectedFieldsFromResolverInfo';
+import { GraphbackPluginEngine } from "../src";
 
 describe('getSelectedFieldsFromResolverInfo', () => {
 
   const setup = (schemaAST: string): { schema: GraphQLSchema, metadata: GraphbackCoreMetadata } => {
     const schema = buildSchema(schemaAST);
 
-    const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, schema)
+    const pluginEngine = new GraphbackPluginEngine({ schema });
+
+    const metadata = pluginEngine.createResources()
 
     return { metadata, schema }
   }

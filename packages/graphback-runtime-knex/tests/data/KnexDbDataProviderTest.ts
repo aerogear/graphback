@@ -4,7 +4,8 @@
 import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
-import { GraphbackDataProvider, GraphbackCoreMetadata, QueryFilter } from '@graphback/core';
+import { GraphbackDataProvider, GraphbackPluginEngine, QueryFilter } from '@graphback/core';
+import { SchemaCRUDPlugin } from '../../../graphback-codegen-schema/src';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 
@@ -19,20 +20,8 @@ beforeEach(() => {
 const setup = async (schemaStr: string, config: { seedData?: { [tableName: string]: any[] | any } } = {}) => {
 
   const schema = buildSchema(schemaStr);
-  const defautCrudConfig = {
-    "create": true,
-    "update": true,
-    "findOne": true,
-    "find": true,
-    "delete": true,
-    "subCreate": true,
-    "subUpdate": true,
-    "subDelete": true
-  }
-
-  const metadata = new GraphbackCoreMetadata({
-    crudMethods: defautCrudConfig
-  }, schema);
+  const pluginEngine = new GraphbackPluginEngine({ schema, plugins: [new SchemaCRUDPlugin()] })
+  const metadata = pluginEngine.createResources()
 
   const dbConfig = {
     client: 'sqlite3',
