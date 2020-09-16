@@ -29,6 +29,8 @@
     "commander": "6.0.0",
     "express": "4.17.1",
     "fastify": "3.2.1",
+    "fastify-gql": "5.7.0",
+    "fastify-healthcheck": "3.0.0",
     "graphback": "0.16.2",
     "graphql-api-koa": "6.0.0",
     "hapi": "18.1.0",
