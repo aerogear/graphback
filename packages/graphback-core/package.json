@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/bson": "4.0.2",
     "@types/jest": "26.0.14",
-    "@types/node": "12.12.59",
+    "@types/node": "12.12.60",
     "@types/pino": "6.3.0",
     "graphql": "15.3.0",
     "jest": "26.4.2",

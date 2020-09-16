@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/jest": "26.0.14",
     "@types/lodash": "4.14.161",
-    "@types/node": "12.12.59",
+    "@types/node": "12.12.60",
     "graphql": "15.3.0",
     "graphql-tools": "6.2.2",
     "jest": "26.4.2",
