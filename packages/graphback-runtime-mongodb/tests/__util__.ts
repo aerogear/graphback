@@ -2,7 +2,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server-global';
 import { MongoClient, Db, Collection } from 'mongodb';
 import { buildSchema } from 'graphql';
 import { GraphbackPluginEngine } from '@graphback/core';
-import { SchemaCRUDPlugin } from "../../graphback-codegen-schema";
+import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 
 export interface Context {

@@ -8,6 +8,7 @@ import { buildGraphbackAPI } from 'graphback';
 import { loadDBConfig, connectDB } from './db';
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { createKnexDbProvider } from '@graphback/runtime-knex';
+import { SchemaCRUDPlugin } from '@graphback/codegen-schema'
 import { noteResolvers } from './resolvers/noteResolvers';
 import { loadConfigSync } from 'graphql-config';
 
@@ -32,7 +33,10 @@ const db = connectDB();
 const dbConfig = loadDBConfig();
 
 const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
-  dataProviderCreator: createKnexDbProvider(db)
+  dataProviderCreator: createKnexDbProvider(db),
+  plugins: [
+    new SchemaCRUDPlugin()
+  ]
 });
 
 migrateDB(dbConfig, typeDefs, {

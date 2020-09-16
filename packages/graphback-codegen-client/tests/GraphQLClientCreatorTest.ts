@@ -38,8 +38,7 @@ test('Test plugin engine graphql', async () => {
     "delete": true,
   }
 
-  const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText));
-  metadata.setModelDefinitions();
+  const { metadata } = setup(schemaText, { crudMethods, plugins: [new SchemaCRUDPlugin()] })
   const plugin = new ClientCRUDPlugin({ outputFile: './tmp/generated.graphql', fragmentOnly: false });
   expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
@@ -53,7 +52,8 @@ test('Test plugin engine to throw error when no file extension specified', async
     "delete": true,
   }
 
-  const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
+  const { metadata } = setup(schemaText, { crudMethods, plugins: [new SchemaCRUDPlugin()] })
+
   const plugin = new ClientCRUDPlugin({ outputFile: './tmp/generated', fragmentOnly: false });
 
   try {
@@ -72,7 +72,7 @@ test('Test plugin engine to throw error when invalid file extension specified', 
     "delete": true,
   }
 
-  const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
+  const { metadata } = setup(schemaText, { crudMethods, plugins: [new SchemaCRUDPlugin()] })
   const plugin = new ClientCRUDPlugin({ outputFile: './tmp/generated.crazyday', fragmentOnly: false });
 
   try {

@@ -24,8 +24,7 @@ const defaultCRUDGeneratorConfig = {
  * Contains Graphback Core Models
  */
 export class GraphbackCoreMetadata {
-
-  private supportedCrudMethods: GraphbackCRUDGeneratorConfig
+  private supportedCrudMethods: GraphbackCRUDGeneratorConfig;
   private schema: GraphQLSchema;
   private resolvers: IResolvers;
   private models: ModelDefinition[];
@@ -58,14 +57,17 @@ export class GraphbackCoreMetadata {
     return this.resolvers;
   }
 
-  public getModelDefinitions() {
-    return this.models;
-  }
-
   /**
    * Get Graphback Models - GraphQL Types with additional CRUD configuration
    */
-  public setModelDefinitions() {
+  public getModelDefinitions() {
+    return this.models;
+  }
+  
+  /**
+   * Creates and sets the model definitions from the current GraphQL schema
+   */
+  public buildAndSetModelDefinitions() {
     //Contains map of the models with their underlying CRUD configuration
     this.models = [];
     //Get actual user types

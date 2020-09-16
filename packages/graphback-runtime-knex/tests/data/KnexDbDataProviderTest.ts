@@ -5,7 +5,7 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import * as Knex from 'knex';
 import { GraphbackDataProvider, GraphbackPluginEngine, QueryFilter } from '@graphback/core';
-import { SchemaCRUDPlugin } from '../../../graphback-codegen-schema/src';
+import { SchemaCRUDPlugin } from '../../../graphback-codegen-schema';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
 import { migrateDB, removeNonSafeOperationsFilter } from '../../../graphql-migrations/src';
 

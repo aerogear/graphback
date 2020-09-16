@@ -2,7 +2,7 @@
 import { ObjectID } from 'mongodb';
 import { advanceTo, advanceBy } from "jest-date-mock";
 import { QueryFilter, GraphbackPluginEngine } from '@graphback/core';
-import { SchemaCRUDPlugin } from '../../graphback-codegen-schema'
+import { SchemaCRUDPlugin } from '@graphback/codegen-schema'
 import { MongoDBDataProvider } from '../src/MongoDBDataProvider';
 import { Context, createTestingContext } from "./__util__";
 

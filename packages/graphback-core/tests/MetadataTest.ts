@@ -1,8 +1,10 @@
 import { buildSchema } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackCRUDGeneratorConfig, getModelByName, GraphbackPluginEngine } from '../src'
+import { SchemaCRUDPlugin } from '@graphback/codegen-schema';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { GraphbackCRUDGeneratorConfig, getModelByName, GraphbackPluginEngine } from '@graphback/core'
 
 const setup = (model: string, config?: { crudMethods?: GraphbackCRUDGeneratorConfig }) => {
-  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(model) })
+  const pluginEngine = new GraphbackPluginEngine({ schema: buildSchema(model), plugins: [new SchemaCRUDPlugin()] })
   const metadata = pluginEngine.createResources();
 
   return { metadata }

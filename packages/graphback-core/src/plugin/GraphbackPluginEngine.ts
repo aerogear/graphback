@@ -71,11 +71,10 @@ export class GraphbackPluginEngine {
   private createSchema() {
     //We need to apply all required changes to the schema we need
     //This is to ensure that every plugin can add changes to the schema
-    this.metadata.setModelDefinitions();
     for (const plugin of this.plugins) {
+      this.metadata.buildAndSetModelDefinitions();
       const newSchema = plugin.transformSchema(this.metadata);
       this.metadata.setSchema(newSchema);
-      this.metadata.setModelDefinitions();
     }
   }
 
