@@ -36,7 +36,7 @@
     "@types/node-emoji": "1.8.1",
     "@types/yargs": "15.0.5",
     "jest": "26.4.2",
-    "lint-staged": "10.3.0",
+    "lint-staged": "10.4.0",
     "rimraf": "3.0.2",
     "ts-jest": "26.3.0",
     "ts-node": "9.0.0",
