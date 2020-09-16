@@ -11,7 +11,6 @@ const commander = require("commander");
 
 commander
   .option("-t, --table", "table")
-  .option("-p, --percentage", "percentage")
   .option("-c --commandlineMdTable", "Print a table for use in MarkDown")
   .parse(process.argv);
 
@@ -67,7 +66,7 @@ if (!choices.length) {
     data.push(JSON.parse(content.toString()));
   });
   data.sort((a, b) => {
-    return parseFloat(b.requests.mean) - parseFloat(a.requests.mean);
+    return parseFloat(b.requests.p99_999) - parseFloat(a.requests.p99_999);
   });
 
   data.forEach((data, i) => {
@@ -81,66 +80,12 @@ if (!choices.length) {
     const beBold = data.server.indexOf("graphback") > -1;
     table.push([
       bold( beBold, chalk.blue(data.server)),
-      bold(beBold, data.requests.average.toFixed(1)),
-      bold(beBold, data.latency.average.toFixed(2)),
-      bold(beBold, (data.throughput.average / 1024 / 1024).toFixed(2)),
+      bold(beBold, data.requests.p99_999.toFixed(1)),
+      bold(beBold, data.latency.p99_999.toFixed(2)),
+      bold(beBold, (data.throughput.p99_999 / 1024 / 1024).toFixed(2)),
       bold(beBold, data.startupTime.toFixed(2)),
       bold(beBold, data.rss.toFixed(2)),
       bold(beBold, data.cpuPercentage),
-    ]);
-  });
-
-  console.log(table.toString());
-} else if (commander.percentage) {
-  let data = [];
-  choices.forEach((file) => {
-    let content = readFileSync(`${resultsPath}/${file}.json`);
-    data.push(JSON.parse(content.toString()));
-  });
-  data.sort((a, b) => {
-    return parseFloat(b.requests.mean) - parseFloat(a.requests.mean);
-  });
-  const base = Object.assign(
-    {},
-    {
-      name: data[0].server,
-      request: data[0].requests.mean,
-      latency: data[0].latency.mean,
-      throughput: data[0].throughput.mean,
-    }
-  );
-  const table = new Table({
-    head: [
-      "Server",
-      `Requests/s\n(% of ${base.name})`,
-      `Latency\n(% of ${base.name})`,
-      `Throughput/Mb\n(% of ${base.name})`,
-    ],
-  });
-  data.forEach((result) => {
-    const beBold = result.server.indexOf("graphback") > -1;
-    const getPct = (base, value) => ((value / base) * 100).toFixed(2);
-
-    table.push([
-      bold(beBold, chalk.blue(result.server)),
-      bold(
-        beBold,
-        `${result.requests.mean}\n(${getPct(
-          base.request,
-          result.requests.mean
-        )})`
-      ),
-      bold(
-        beBold,
-        `${result.latency.mean}\n(${getPct(base.latency, result.latency.mean)})`
-      ),
-      bold(
-        beBold,
-        `${(result.throughput.mean / 1024 / 1024).toFixed(2)}\n(${getPct(
-          base.throughput,
-          result.throughput.mean
-        )})`
-      ),
     ]);
   });
 
