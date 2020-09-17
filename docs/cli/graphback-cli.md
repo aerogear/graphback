@@ -69,7 +69,7 @@ With yarn:
 yarn generate
 ```
 
-With bash:
+With npm:
 
 ```bash
 npm run generate
