@@ -23,6 +23,10 @@ $ yarn
 $ yarn start
 ```
 
+> NOTE: The above command will launch a server in watch mode.
+> This can sometimes fail with a `Error: ENOSPC: System limit for number of file watchers reached..`. To fix the issue, increase the number
+> of watched files with the above command: `echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p`
+
 ## Directory Structure
 
 Your project file structure should look something like this
