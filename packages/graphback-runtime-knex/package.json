@@ -33,7 +33,7 @@
   "devDependencies": {
     "@graphback/codegen-schema": "0.15.0",
     "@types/jest": "26.0.14",
-    "@types/node": "12.12.61",
+    "@types/node": "12.12.62",
     "graphql": "15.3.0",
     "graphql-migrations": "0.16.2",
     "jest": "26.4.2",
