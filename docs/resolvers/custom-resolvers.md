@@ -108,7 +108,7 @@ await context.Note.findBy(args, context, info);
 ```
 
 ### Usage Of `GraphQLResolveInfo`
-When using the built in `GraphbackCRUDService` such as [CRUDService](../api/graphback-core/classes/_runtime_crudservice_.crudservice.md), Graphback will use the `info` object to map the selected fields from the GraphQL query to the database query. If the requested fields from the GraphQL query are not contained by the `model` held by the service in question, then an empty selection of fields will be sent to the database. For example, if the GraphQL query contains the `Note` model informations, passing the `info` into a
+When using the built an implementation of the `GraphbackCRUDService` interface, such as [CRUDService](../api/graphback-core/classes/_runtime_crudservice_.crudservice.md), Graphback will use the `info` object to map the selected fields from the GraphQL query to the database query. If the requested fields from the GraphQL query are not contained by the `model` held by the service in question, then an empty selection of fields will be sent to the database. For example, if the GraphQL query contains the `Note` model informations, passing the `info` into a
  ```ts
  await context.Comment.findBy(args, context, info)
  ``` 
@@ -118,7 +118,7 @@ In order to avoid such cases, we recommend to pass the `info` object only when t
 
 
 ### Retrieving Nested Fields From `GraphQLResolveInfo`
-If you want to retrieve nested selected fields from the GraphQL query to the database query, you can optionally pass the `nested path` as an argument to the `.findBy(..)` method. 
+If you want to retrieve nested selected fields from the GraphQL query to the database query, you can optionally pass the `nested path` as an argument to the [`findBy`](../api/core/classes/_runtime_crudservice_.crudservice.md#findby) method. 
 
 For example:
 
