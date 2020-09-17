@@ -19,15 +19,15 @@ yarn install
 yarn start:client
 ```
 
-## Dependencies:
+## Dependencies And Tools:
 
 The following tools and technologies have been used to create this template:
 
-\*GraphQL : GraphQL is an open-source data query and manipulation language for APIs which was publically released by Facebook in 2015.
+- [GraphQL](https://graphql.org/): GraphQL is an open-source data query and manipulation language for APIs which was publically released by Facebook in 2015.
 
-\*Apollo Client : Apollo Client provides a neat abstraction layer and an interface to interact with the GraphQL server. It allows easier building of UI components that fetch data via GraphQL.
+- [Apollo Client](https://www.apollographql.com/docs/react/): Apollo Client provides a neat abstraction layer and an interface to interact with the GraphQL server. It allows easier building of UI components that fetch data via GraphQL.
 
-\*Material UI: Material-UI is an open-source project that features React components that implement Google's Material Design. It has been used for styling this sample React template.
+- [Material UI](https://material-ui.com/): Material-UI is an open-source project that features React components that implement Google's Material Design. It has been used for styling this sample React template.
 
 ## Project structure
 
@@ -53,5 +53,7 @@ When changing the graphback schema you will need to recompile all the changes.
 ```
 yarn generate
 ```
+
+Running `yarn generate` executes a script which relies on two things, [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) and [Codegen](https://graphql-code-generator.com/). The Graphback CLI is used to run the `graphback generate` command which executes the generation process that generates the GraphQL server based on your data model. And codegen is used in the `graphql codegen` command which generates code from the GraphQL schema.
 
 > NOTE: You have to run the above commands on each modification of your business model on the server-side. This ensures that the client is kept in sync with changes on the server-side.
