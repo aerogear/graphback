@@ -136,7 +136,7 @@ class Differ {
 
       // Compare columns
       for (const { fromCol, toCol } of sameColumnQueue) {
-        if (toCol.name === 'id') {
+        if (toCol.autoIncrementable || fromCol.autoIncrementable) {
           const fromPrimaryKeyType = getKnexColumnType(fromCol.type);
           const toPrimaryKeyType = getKnexColumnType(toCol.type);
 
