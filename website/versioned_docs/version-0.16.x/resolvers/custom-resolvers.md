@@ -100,9 +100,53 @@ await context.Note.findBy(args, context);
 
 ### info
 
-The `GraphQLResolveInfo` object is available to every resolver and contains information about the GraphQL schema and the current operation.
+The optional `GraphQLResolveInfo` object is available to every resolver and contains information about the GraphQL schema and the current operation.
 You can optionally pass this to the `GraphbackCRUDService` method. A common use for this parameter is mapping the selected fields from the GraphQL query to the database query. 
 
 ```ts
 await context.Note.findBy(args, context, info);
+```
+
+### Usage Of `GraphQLResolveInfo`
+When using the built in `GraphbackCRUDService` such as [CRUDService](../api/graphback-core/classes/_runtime_crudservice_.crudservice.md), Graphback will use the `info` object to map the selected fields from the GraphQL query to the database query. If the requested fields from the GraphQL query are not contained by the `model` held by the service in question, then an empty selection of fields will be sent to the database. For example, if the GraphQL query contains the `Note` model informations, passing the `info` into a
+ ```ts
+ await context.Comment.findBy(args, context, info)
+ ``` 
+ will likely return false results or crash in a relational database. 
+
+In order to avoid such cases, we recommend to pass the `info` object only when the fields requested by the incoming GraphQL query are contained by the model. 
+
+
+### Retrieving Nested Fields From `GraphQLResolveInfo`
+If you want to retrieve nested selected fields from the GraphQL query to the database query, you can optionally pass the `nested path` as an argument to the `.findBy(..)` method. 
+
+For example:
+
+If the incoming query is: 
+
+```graphql
+
+query {
+  getDraftNotes {
+    comments {
+      id, 
+      description
+    }
+  }
+}
+```
+
+And somewhere in your custom resolvers, you'd like to map the `id` and `description` fields for the `Comment` model to the underlying database query, you achieve that with:
+
+```ts
+
+// retrieve all notes using incoming args and info
+const { items: allNotes } = await context.Notes.findBy(args, context, info);
+
+const noteIds = allNotes.map(({ id }) => id);
+
+// retrieves comments owned by notes selected above. Specifying the "comments" path so start selection
+const { items: comments } = await context.Comment.findBy({noteId: {in: noteIds}}, context, info, 'comments');
+
+// ... do the rest
 ```
