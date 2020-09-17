@@ -24,7 +24,7 @@ yarn add --dev graphback-cli
 
 ## Usage
 
-### Pre-requisite
+### Prerequisite
 
 You project must contain the configuration file that follows the format described by the [graphql-config](https://graphql-config.com/introduction).
 
@@ -70,7 +70,7 @@ With yarn:
 yarn generate
 ```
 
-With bash:
+With npm:
 
 ```bash
 npm run generate
