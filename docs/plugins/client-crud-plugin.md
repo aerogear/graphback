@@ -42,7 +42,7 @@ The `SchemaCRUDPlugin` should be defined before `ClientCRUDPlugin` as `graphback
 
 See [SchemaCRUDPlugin](./schema-crud-plugin) for an installation and configuration guide.
 
-Run [`yarn graphback generate`](../graphback-cli#generate) to execute plugins from the `.graphqlrc` config file on-demand.
+Run [`yarn graphback generate`](../cli/graphback-cli#generate) to execute plugins from the `.graphqlrc` config file on-demand.
 
 ```bash
 $ yarn graphback generate

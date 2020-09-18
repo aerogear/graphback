@@ -30,6 +30,20 @@ const { schema, resolvers } = buildGraphbackAPI(modelDefs, {
 });
 ```
 
+Or if you are invoking the plugin with `graphback generate`:
+
+```yaml title=".graphqlrc"
+schema: './src/schema.graphql'
+documents: './client/src/graphql/**/*.graphql'
+extensions:
+  graphback:
+    # path to data mode file(s)
+    model: './model/datamodel.graphql'
+    plugins:
+      graphback-schema:
+        outputPath: './src/schema/schema.graphql'
+```
+
 :::info
 Unless you need the schema to be output to a file you don't need to install or configure it as Graphback will automatically execute it as the default plugin.
 :::

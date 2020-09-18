@@ -202,6 +202,8 @@ export class MyGraphbackPlugin extends GraphbackPlugin {
 
 ## Usage
 
+### At application start-up
+
 To use the plugin, add it to the `plugins` array in [`buildGraphbackAPI`](../api/build-graphback-api#plugins).
 
 ```ts
@@ -248,4 +250,19 @@ query archivedNotesAndComments {
     }
   }
 }
+```
+
+### With `graphback generate`
+
+Some plugins are designed to be invoked through the Graphback CLI, such as those that output files to the local project. See [Plugin Overview](../overview.md#file-generation-with-cli).
+
+`graphback generate` dynamically loads the plugin package by its name defined in the `.graphqlrc`. For plugin packages that begin with `@`, due to a limitation where keys in a YAML object cannot begin with `@`, your plugin documentation should explicitly specify the package name with the `packageName` configuration value.
+
+```yaml
+...
+plugins:
+  my-cool-plugin:
+    format: 'graphql'
+    packageName: '@your-namespace/my-cool-plugin' # Graphabck will load this package instead
+    outputPath: './src/schema/schema.graphql'
 ```
