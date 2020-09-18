@@ -421,7 +421,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    */
   protected addQueryResolvers(model: ModelDefinition, resolvers: IResolvers) {
     if (model.crudOptions.findOne || model.crudOptions.find) {
-      resolvers.Query = {} as IObjectTypeResolver
+      resolvers.Query = (resolvers.Query || {}) as IObjectTypeResolver;
 
       if (model.crudOptions.findOne) {
         this.addFindOneQueryResolver(model, resolvers.Query)
@@ -440,7 +440,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    */
   protected addMutationResolvers(model: ModelDefinition, resolvers: IResolvers) {
     if (model.crudOptions.create || model.crudOptions.update || model.crudOptions.delete) {
-      resolvers.Mutation = {} as IObjectTypeResolver
+      resolvers.Mutation = (resolvers.Mutation || {}) as IObjectTypeResolver
 
       if (model.crudOptions.create) {
         this.addCreateMutationResolver(model, resolvers.Mutation)
@@ -463,20 +463,16 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   protected addSubscriptionResolvers(model: ModelDefinition, resolvers: IResolvers) {
     const modelType = model.graphqlType;
 
-    const createSubEnabled = model.crudOptions.create && model.crudOptions.subCreate;
-    const updateSubEnabled = model.crudOptions.update && model.crudOptions.subUpdate;
-    const deleteSubEnabled = model.crudOptions.delete && model.crudOptions.subDelete;
+    if (model.crudOptions.subCreate || model.crudOptions.subUpdate || model.crudOptions.subDelete) {
+      resolvers.Subscription = (resolvers.Subscription || {}) as IObjectTypeResolver
 
-    if (createSubEnabled || updateSubEnabled || deleteSubEnabled) {
-      resolvers.Subscription = {} as IObjectTypeResolver;
-
-      if (createSubEnabled) {
+      if (model.crudOptions.subCreate) {
         this.addCreateSubscriptionResolver(modelType, resolvers.Subscription)
       }
-      if (updateSubEnabled) {
+      if (model.crudOptions.subUpdate) {
         this.addUpdateSubscriptionResolver(modelType, resolvers.Subscription)
       }
-      if (deleteSubEnabled) {
+      if (model.crudOptions.subDelete) {
         this.addDeleteSubscriptionResolver(modelType, resolvers.Subscription)
       }
     }

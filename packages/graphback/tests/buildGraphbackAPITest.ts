@@ -205,8 +205,9 @@ describe('buildGraphbackAPI', () => {
     });
 
     expect(resolvers.Mutation).toBeUndefined();
-    expect(resolvers.Subscription).toBeUndefined();
+    expect(Object.keys(resolvers.Subscription)).toEqual(['newNote', 'updatedNote', 'deletedNote']);
   });
+  
   test('Do not create query resolver object', () => {
     const model = `
     """
