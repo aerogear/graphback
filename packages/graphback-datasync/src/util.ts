@@ -89,8 +89,20 @@ export const DataSyncFieldNames = {
  * Interface for specifying conflict configuration of a model
  */
 export interface DataSyncModelConflictConfig {
+  /**
+  * Flag that enables conflict resolution
+  */
   enabled?: boolean
+  /**
+  * One of the conflict resolutions strategies:
+  * - ThrowOnConflict, 
+  * - ClientSideWins, 
+  * - ServerSideWins
+  */
   conflictResolution?: ConflictResolutionStrategy
+  /**
+  * Value in seconds used to delete old history entries wth diffs that may no longer be needed.
+  */
   deltaTTL?: number
 }
 
