@@ -15,6 +15,8 @@ Please follow individual releases for more information.
 * Logical `or` filter selector was not mapped correctly in `graphback-runtime-mongo` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [1ebe7e9](https://github.com/aerogear/graphback/pull/2034/commits/1ebe7e9bc8d3a61f0b3ef65b588881d16b7ae63f))
 * Logical `or` filter selector was not mapped correctly in `graphback-runtime-knex` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [6d43f28](https://github.com/aerogear/graphback/commit/6d43f288865a2c8c0d441e486a156301ca6cc42a))
 * Logical `or` predicate was not applied correctly in `createInMemoryPredicateFilter` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [01f9912](https://github.com/aerogear/graphback/commit/01f99121a9462e5a277657359094ab131e6f809c))
+* GraphQL Migrations did not read auto-incrementing info from database column ([#2017](https://github.com/aerogear/graphback/pull/2071), fixed by [83a80cd](https://github.com/aerogear/graphback/commit/83a80cdbb1104da7b36acdfa54b37a871c3ff1a0))
+* Prevent creation of empty `Subscription`, `Query`, `Mutation` resolver objects ([#2073](https://github.com/aerogear/graphback/pull/2073), fixed by [97e826](https://github.com/aerogear/graphback/commit/97e82677257b54783916c3062ed6f0e74f25c038))
 
 ### Breaking Changes
 
