@@ -155,6 +155,84 @@ describe('buildGraphbackAPI', () => {
     expect(Object.keys(Subscription)).toEqual(['newNote', 'deletedNote'])
   })
 
+  test('Do not create subscription resolver object', () => {
+    const model = `
+    """
+    @model
+    """
+    type Note {
+      id: ID!
+      title: String!
+      description: String
+    }
+    `
+
+    const { db } = setup()
+
+    const { resolvers } = buildGraphbackAPI(model, {
+      dataProviderCreator: createKnexDbProvider(db),
+      crud: {
+        subUpdate: false,
+        subCreate: false,
+        subDelete: false
+      }
+    });
+
+    expect(resolvers.Subscription).toBeUndefined();
+  });
+
+  test('Do not create mutation resolver object', () => {
+    const model = `
+    """
+    @model
+    """
+    type Note {
+      id: ID!
+      title: String!
+      description: String
+    }
+    `
+
+    const { db } = setup()
+
+    const { resolvers } = buildGraphbackAPI(model, {
+      dataProviderCreator: createKnexDbProvider(db),
+      crud: {
+        update: false,
+        delete: false,
+        create: false
+      }
+    });
+
+    expect(resolvers.Mutation).toBeUndefined();
+    expect(Object.keys(resolvers.Subscription)).toEqual(['newNote', 'updatedNote', 'deletedNote']);
+  });
+  
+  test('Do not create query resolver object', () => {
+    const model = `
+    """
+    @model
+    """
+    type Note {
+      id: ID!
+      title: String!
+      description: String
+    }
+    `
+
+    const { db } = setup()
+
+    const { resolvers } = buildGraphbackAPI(model, {
+      dataProviderCreator: createKnexDbProvider(db),
+      crud: {
+        find: false,
+        findOne: false
+      }
+    });
+
+    expect(resolvers.Query).toBeUndefined();
+  });
+
   test('Custom plugins are executed', () => {
 
     const model = `

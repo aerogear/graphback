@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import * as DataLoader from "dataloader";
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
-import { IResolvers, IObjectTypeResolver } from '@graphql-tools/utils';
+import { IResolvers, IObjectTypeResolver, IFieldResolver } from '@graphql-tools/utils';
 import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLInputObjectType, GraphQLScalarType } from 'graphql';
 import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, graphbackScalarsTypes, getResolverInfoFieldsList, GraphbackTimestamp, FILTER_SUPPORTED_SCALARS, FindByArgs } from '@graphback/core';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
@@ -79,11 +79,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       return undefined
     }
 
-    const resolvers: IResolvers = {
-      Query: {},
-      Mutation: {},
-      Subscription: {}
-    };
+    const resolvers: IResolvers = {};
 
     // Graphback scalar resolvers
     const schema = metadata.getSchema();
@@ -102,9 +98,9 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
       }, {});
 
     for (const model of models) {
-      this.addQueryResolvers(model, resolvers.Query as IObjectTypeResolver)
-      this.addMutationResolvers(model, resolvers.Mutation as IObjectTypeResolver)
-      this.addSubscriptionResolvers(model, resolvers.Subscription as IObjectTypeResolver)
+      this.addQueryResolvers(model, resolvers)
+      this.addMutationResolvers(model, resolvers)
+      this.addSubscriptionResolvers(model, resolvers)
       this.addRelationshipResolvers(model, resolvers, modelNameToModelDefinition)
     }
 
@@ -421,14 +417,18 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * Create Query resolver fields
    *
    * @param {ModelDefinition} model - The model definition with CRUD config and GraphQL typr
-   * @param {IFieldResolver} queryObj - Query resolver object
+   * @param {IResolvers} resolvers - root resolver object
    */
-  protected addQueryResolvers(model: ModelDefinition, queryObj: IObjectTypeResolver) {
-    if (model.crudOptions.findOne) {
-      this.addFindOneQueryResolver(model, queryObj)
-    }
-    if (model.crudOptions.find) {
-      this.addFindQueryResolver(model, queryObj)
+  protected addQueryResolvers(model: ModelDefinition, resolvers: IResolvers) {
+    if (model.crudOptions.findOne || model.crudOptions.find) {
+      resolvers.Query = (resolvers.Query || {}) as IObjectTypeResolver;
+
+      if (model.crudOptions.findOne) {
+        this.addFindOneQueryResolver(model, resolvers.Query)
+      }
+      if (model.crudOptions.find) {
+        this.addFindQueryResolver(model, resolvers.Query)
+      }
     }
   }
 
@@ -436,17 +436,21 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * Create Mutation resolver fields
    *
    * @param {ModelDefinition} model - The model definition with CRUD config and GraphQL typr
-   * @param {IFieldResolver} mutationObj - Mutation resolver object
+   * @param {IResolvers} resolvers - root resolver object
    */
-  protected addMutationResolvers(model: ModelDefinition, mutationObj: IObjectTypeResolver) {
-    if (model.crudOptions.create) {
-      this.addCreateMutationResolver(model, mutationObj)
-    }
-    if (model.crudOptions.update) {
-      this.addUpdateMutationResolver(model, mutationObj)
-    }
-    if (model.crudOptions.delete) {
-      this.addDeleteMutationResolver(model, mutationObj)
+  protected addMutationResolvers(model: ModelDefinition, resolvers: IResolvers) {
+    if (model.crudOptions.create || model.crudOptions.update || model.crudOptions.delete) {
+      resolvers.Mutation = (resolvers.Mutation || {}) as IObjectTypeResolver
+
+      if (model.crudOptions.create) {
+        this.addCreateMutationResolver(model, resolvers.Mutation)
+      }
+      if (model.crudOptions.update) {
+        this.addUpdateMutationResolver(model, resolvers.Mutation)
+      }
+      if (model.crudOptions.delete) {
+        this.addDeleteMutationResolver(model, resolvers.Mutation)
+      }
     }
   }
 
@@ -454,20 +458,25 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
    * Create Subscription resolver fields
    *
    * @param {ModelDefinition} model - The model definition with CRUD config and GraphQL typr
-   * @param {IFieldResolver} subscriptionObj - Subscription resolver object
+   * @param {IResolvers} resolvers - root resolver object
    */
-  protected addSubscriptionResolvers(model: ModelDefinition, subscriptionObj: IObjectTypeResolver) {
+  protected addSubscriptionResolvers(model: ModelDefinition, resolvers: IResolvers) {
     const modelType = model.graphqlType;
 
-    if (model.crudOptions.create && model.crudOptions.subCreate) {
-      this.addCreateSubscriptionResolver(modelType, subscriptionObj)
+    if (model.crudOptions.subCreate || model.crudOptions.subUpdate || model.crudOptions.subDelete) {
+      resolvers.Subscription = (resolvers.Subscription || {}) as IObjectTypeResolver
+
+      if (model.crudOptions.subCreate) {
+        this.addCreateSubscriptionResolver(modelType, resolvers.Subscription)
+      }
+      if (model.crudOptions.subUpdate) {
+        this.addUpdateSubscriptionResolver(modelType, resolvers.Subscription)
+      }
+      if (model.crudOptions.subDelete) {
+        this.addDeleteSubscriptionResolver(modelType, resolvers.Subscription)
+      }
     }
-    if (model.crudOptions.update && model.crudOptions.subUpdate) {
-      this.addUpdateSubscriptionResolver(modelType, subscriptionObj)
-    }
-    if (model.crudOptions.delete && model.crudOptions.subDelete) {
-      this.addDeleteSubscriptionResolver(modelType, subscriptionObj)
-    }
+
   }
 
   /**
