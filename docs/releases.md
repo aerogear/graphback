@@ -10,6 +10,10 @@ Please follow individual releases for more information.
 
 # 1.0.0
 
+### Features
+
+* Added ability to override package name in plugin config ([#2077](https://github.com/aerogear/graphback/pull/2077), fixed by [4cfd68c](https://github.com/aerogear/graphback/pull/2077/commits/4cfd68c8b3aeec44df610525686eedd7f1920ecb))
+
 ### Bug Fixes
 
 * Logical `or` filter selector was not mapped correctly in `graphback-runtime-mongo` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [1ebe7e9](https://github.com/aerogear/graphback/pull/2034/commits/1ebe7e9bc8d3a61f0b3ef65b588881d16b7ae63f))
