@@ -1,6 +1,5 @@
-import { ObjectId, Db, Cursor, FilterQuery } from "mongodb"
+import { ObjectId, Db, Cursor } from "mongodb"
 import { QueryFilter, ModelTableMap, buildModelTableMap, getDatabaseArguments, GraphbackDataProvider, FieldTransformMap, getFieldTransformations, TransformType, FieldTransform, GraphbackOrderBy, GraphbackPage, NoDataError, ModelDefinition, FieldDescriptor, FindByArgs } from '@graphback/core';
-import { parseMetadata } from "graphql-metadata";
 import { buildQuery } from './queryBuilder'
 import { findAndCreateIndexes } from "./utils/createIndexes";
 
