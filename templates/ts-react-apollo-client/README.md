@@ -19,7 +19,7 @@ yarn install
 yarn start:client
 ```
 
-## Dependencies And Tools:
+## Dependencies And Tools
 
 The following tools and technologies have been used to create this template:
 
@@ -46,7 +46,7 @@ The project contains the following set of source files.
 ## Development and adjustment to schema changes
 
 The client is designed to work only with the sample schema.
-When changing the graphback schema you will need to recompile all the changes.
+When changing the Graphback schema you will need to recompile all the changes.
 
 - Generate React components
 
@@ -54,6 +54,14 @@ When changing the graphback schema you will need to recompile all the changes.
 yarn generate
 ```
 
-Running `yarn generate` executes a script which relies on two things, [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) and [Codegen](https://graphql-code-generator.com/). The Graphback CLI is used to run the `graphback generate` command which executes the generation process that generates the GraphQL server based on your data model. And codegen is used in the `graphql codegen` command which generates code from the GraphQL schema.
+Running `yarn generate` executes a script which relies on two things, [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) and [Codegen](https://graphql-code-generator.com/). It is a two step process which is explained below.
 
 > NOTE: You have to run the above commands on each modification of your business model on the server-side. This ensures that the client is kept in sync with changes on the server-side.
+
+### Step 1: GraphQL Document Generation
+
+A GraphQL schema describes the functionality available to the client applications that connect to it. The [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) is used to run the `graphback generate` command which executes the generation process to create a graphql schema. This schema is stored in the `graphback.graphql` file.
+
+### Step 2: Code Generation
+
+The next step is to use this schema to create the TypeScript types. [Codegen](https://graphql-code-generator.com/) is used in the `graphql codegen` command which generates this code from the GraphQL schema in the `generated-types.tsx` file. This makes sure that whenever you make changes to your data model you don't have to manually change the file because running `yarn generate` does that for you.
