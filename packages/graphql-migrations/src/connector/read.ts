@@ -11,6 +11,7 @@ import getTypeAlias from '../util/getTypeAlias'
 import getUniques from '../util/getUniques'
 import listTables from '../util/listTables'
 import transformDefaultValue from '../util/transformDefaultValue'
+import { isAutoIncrementableColumn } from '../util/isAutoIncrementableColumn'
 
 /**
  * @param {Config} config Knex configuration
@@ -92,13 +93,13 @@ class Reader {
           const columnName = this.getColumnName(key)
           if (!columnName) { continue }
           const info = columnInfo[key];
-          const {args, type} = getTypeAlias(info.type, info.maxLength);
+          const { args, type } = getTypeAlias(info.type, info.maxLength);
           const foreign = foreignKeys.find((k: any) => k.column === key);
-          const isPrimaryKey  = primaries.some((primary:  {column: string, indexName: string }) => primary.column === columnName);
+          const isPrimaryKey = primaries.some((primary: { column: string, indexName: string }) => primary.column === columnName);
           const column: TableColumn = {
             name: columnName,
             isPrimaryKey,
-            autoIncrementable: type === "increments" || type === "bigIncrements", // TODO
+            autoIncrementable: isPrimaryKey && isAutoIncrementableColumn(this.config.client.toString(), info),
             comment: this.getComment(columnComments, key),
             annotations: {},
             args,
@@ -175,7 +176,7 @@ class Reader {
     return undefined
   }
 
-  private getColumnNames(names: string[]): string [] {
+  private getColumnNames(names: string[]): string[] {
     // @ts-ignore
     return names.map((name: string) => this.getColumnName(name)).filter((n: string) => !!n)
   }
