@@ -92,7 +92,7 @@ export function Terminal() {
       </div>
       <div className={styles.terminal}>
         <span>>&nbsp;&nbsp;</span>
-        <TerminalText phrase={'npx graphback-cli init your-app'} />
+        <TerminalText phrase={'npx create-graphback yourserver'} />
         <Underscore />
       </div>
     </div>
