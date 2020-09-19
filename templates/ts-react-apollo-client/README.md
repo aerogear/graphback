@@ -27,7 +27,11 @@ The following tools and technologies have been used to create this template:
 
 - [Apollo Client](https://www.apollographql.com/docs/react/): Apollo Client provides a neat abstraction layer and an interface to interact with the GraphQL server. It allows easier building of UI components that fetch data via GraphQL.
 
+- [React](https://reactjs.org/): React is an open-source JavaScript library for building user interfaces or UI components which is maintained by Facebook and a community of individual developers and companies.
+
 - [Material UI](https://material-ui.com/): Material-UI is an open-source project that features React components that implement Google's Material Design. It has been used for styling this sample React template.
+
+- [Codegen](https://graphql-code-generator.com/): GraphQL Code Generator is a tool that generates code out of your GraphQL schema by analyzing it.
 
 ## Project structure
 
@@ -65,3 +69,5 @@ A GraphQL schema describes the functionality available to the client application
 ### Step 2: Code Generation
 
 The next step is to use this schema to create the TypeScript types. [Codegen](https://graphql-code-generator.com/) is used in the `graphql codegen` command which generates this code from the GraphQL schema in the `generated-types.tsx` file. This makes sure that whenever you make changes to your data model you don't have to manually change the file because running `yarn generate` does that for you.
+
+![Diagram explaining the process](readme-diagram.png)
