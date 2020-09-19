@@ -47,7 +47,7 @@
     "@graphback/codegen-schema": "0.16.2",
     "@graphback/core": "0.16.2",
     "@graphback/runtime-mongo": "0.16.2",
-    "@graphql-tools/utils": "6.2.2",
+    "@graphql-tools/utils": "6.2.3",
     "graphback": "0.16.2",
     "graphql-compose": "7.21.1",
     "graphql-metadata": "0.7.6",
