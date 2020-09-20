@@ -19,6 +19,8 @@ yarn install
 yarn start:client
 ```
 
+> NOTE: The client application has been made for a sample model. When you make changes on the server side, the client side application will change itself automatically.
+
 ## Dependencies And Tools
 
 The following tools and technologies have been used to create this template:
