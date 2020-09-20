@@ -1,6 +1,6 @@
 # Graphback React Sample application
 
-A starter template for React while using one of the Graphback backend templates.
+A starter template for React while using one of the Graphback based backend templates.
 
 ## Quickstart Guide
 
