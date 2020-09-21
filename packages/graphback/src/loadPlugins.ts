@@ -1,23 +1,41 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { GraphbackPlugin } from "@graphback/core";
 
-export function loadPlugins(pluginConfig: any): GraphbackPlugin[] {
-  if (!pluginConfig) {
+interface PluginDefaultProps {
+  packageName?: string
+}
+
+interface PluginConfigMap {
+  [pluginName: string]: PluginConfig
+} 
+
+interface PluginConfig extends PluginDefaultProps {
+  [key: string]: any
+}
+
+export function loadPlugins(pluginConfigMap: PluginConfigMap): GraphbackPlugin[] {
+  if (!pluginConfigMap) {
     return [];
   }
 
   const pluginInstances = [];
-  for (const pluginLabel of Object.keys(pluginConfig)) {
+  for (const pluginLabel of Object.keys(pluginConfigMap)) {
     let pluginName = pluginLabel;
     if (pluginLabel.startsWith('graphback-')) {
       // Internal graphback plugins needs rename
       pluginName = pluginLabel.replace('graphback-', '@graphback/codegen-');
     }
+    const packageName = pluginConfigMap[pluginLabel].packageName;
+    // override package name
+    if(packageName){
+      pluginName = packageName;
+    }
+    
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const plugin = require(pluginName);
       if (plugin.Plugin) {
-        const config = pluginConfig[pluginLabel];
+        const config = pluginConfigMap[pluginLabel];
         pluginInstances.push(new plugin.Plugin(config));
       }
       else {
