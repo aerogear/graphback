@@ -1,4 +1,4 @@
-import { getDatabaseArguments, GraphbackContext, NoDataError, ModelDefinition } from '@graphback/core';
+import { getDatabaseArguments, NoDataError, ModelDefinition } from '@graphback/core';
 import * as Knex from 'knex';
 import { KnexDBDataProvider } from './KnexDBDataProvider';
 

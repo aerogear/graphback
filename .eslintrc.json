@@ -12,6 +12,7 @@
   "plugins": [
     "@typescript-eslint",
     "@typescript-eslint/tslint",
+    "unused-imports",
     "import",
     "no-null"
   ],
@@ -197,6 +198,7 @@
     "no-unsafe-finally": "error",
     "no-unused-expressions": "error",
     "no-unused-labels": "error",
+    "unused-imports/no-unused-imports": "warn",
     "no-var": "error",
     "no-void": "off",
     "object-shorthand": "off",

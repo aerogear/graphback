@@ -1,4 +1,4 @@
-import { GraphbackPage, GraphbackOrderBy, FindByArgs } from "./interfaces"
+import {   FindByArgs } from "./interfaces"
 import { QueryFilter } from './QueryFilter';
 
 /**
