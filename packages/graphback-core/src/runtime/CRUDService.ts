@@ -129,7 +129,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     // set page values for returned object
     const resultPageInfo = {
       offset: 0,
-      ...args.page
+      ...args?.page
     }
 
     let count: number;
