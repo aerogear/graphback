@@ -1,5 +1,5 @@
 import { isAuthorizedByRole, KeycloakContext, KeycloakContextBase } from "keycloak-connect-graphql";
-import { GraphbackCRUDService, ResultList, GraphbackProxyService, GraphbackContext, QueryFilter, FindByArgs, getSelectedFieldsFromResolverInfo, ModelDefinition } from '@graphback/core';
+import { GraphbackCRUDService, ResultList, GraphbackProxyService, GraphbackContext, QueryFilter, FindByArgs, getSelectedFieldsFromResolverInfo, ModelDefinition, FieldRelationshipMetadata } from '@graphback/core';
 import { GraphQLResolveInfo } from 'graphql';
 import { CrudServiceAuthConfig } from './KeycloakConfig';
 import { getEmptyServiceConfig, UnauthorizedError, checkAuthRulesForInput, checkAuthRulesForSelections } from "./utils";
@@ -63,7 +63,7 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
         throw new UnauthorizedError()
       }
     }
-    
+
     checkAuthRulesForInput(context, this.authConfig, Object.keys(data));
 
     return super.update(data, context, info);
@@ -158,8 +158,10 @@ export class KeycloakCrudService<Type = any> extends GraphbackProxyService<Type>
   }
 
   public batchLoadData(relationField: string, id: string | number, filter: QueryFilter, context: GraphbackContext, info?: GraphQLResolveInfo) {
-    if (this.authConfig?.relations && this.authConfig?.relations[relationField]?.roles.length > 0) {
-      const { roles } = this.authConfig?.relations[relationField];
+    const relationshipMetadata = this.model.relationships.find((r: FieldRelationshipMetadata) => r.relationForeignKey === relationField);
+    const modelRelationshipField = relationshipMetadata ? relationshipMetadata.ownerField.name : relationField;
+    if (this.authConfig?.relations && this.authConfig?.relations[modelRelationshipField]?.roles.length > 0) {
+      const { roles } = this.authConfig?.relations[modelRelationshipField];
       if (!isAuthorizedByRole(roles, context)) {
         throw new UnauthorizedError()
       }

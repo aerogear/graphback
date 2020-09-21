@@ -313,7 +313,7 @@ test('Batching', async () => {
       description: String
 
       """ @oneToMany(field: 'task') """
-      comment: Comment
+      comments: [Comment]
     }
 
     """@model"""

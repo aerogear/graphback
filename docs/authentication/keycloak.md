@@ -57,24 +57,23 @@ With this configuration the following rules are in place.
 
 ## Relationships Autorization
 
-Developers can also add authorization rules on sepecific relationships for data fetching purposes.
+Developers can also add authorization rules on specific one-to-many relationships for data fetching purposes.
 Relationship rules will be added on top of the existing rules that are defined for the individual objects.
+
+To apply a relationship field rule to the one-to-many field `Task.users`, you must configure it on the `User.task` configuration object, the inverse field which `Task.users` maps to.
 
 ```ts
 const authConfig = {
-  Task: {
+  User: {
     relations: {
-        taskUsers: { roles: ['admin'] }
-        allTasksComments: { roles: ['commenter'] }
+      task: { roles: ['admin'] }
     },
-
-  },
+  }
 ```
 
-With this configuration the following rules are in place.
+With this configuration the following authorization rule is set:
 
-- Tasks `taskUsers` field has `admin` role applied. Fetching User object will require `admin` role for any user field fetched
-- Tasks `allTasksComments` field has `commenter` role applied. Fetching `Comment` object will require `commenter` role for any user field fetched
+- `User.relations.task.roles` applies the `admin` role on `Task.users`. Users must have the `admin` role in order to query `Task.users`.
 
 :::info
 Due to limitations of the Graphback `relations` authorization works only on `OneToMany` relationships.
