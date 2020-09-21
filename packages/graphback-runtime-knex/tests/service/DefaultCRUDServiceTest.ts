@@ -154,6 +154,14 @@ test('find Todo by text', async () => {
   expect(todoResults.items[0].id).toEqual(2);
 });
 
+test('findBy with no arguments should work', async () => {
+  const { services } = await setup({ seedData: { todo: [{ text: 'my first todo' }, { text: 'the second todo' }] } })
+
+  const todoResults = await services.Todo.findBy();
+
+  expect(todoResults.items).toHaveLength(2);
+})
+
 test('delete User by custom ID field', async () => {
   const { services } = await setup({
     schemaSDL: `
