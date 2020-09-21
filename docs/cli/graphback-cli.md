@@ -22,9 +22,7 @@ Or with yarn:
 yarn add --dev graphback-cli
 ```
 
-## Usage
-
-### Prerequisite
+## Configuration
 
 You project must contain the configuration file that follows the format described by the [graphql-config](https://graphql-config.com/introduction).
 
@@ -44,7 +42,11 @@ extensions:
         outputPath: ./src/schema/schema.graphql
       graphback-client:
         format: 'graphql'
-        outputFile: ./src/graphql/graphback.graphql   
+        outputFile: ./src/graphql/graphback.graphql
+      graphback-datasync:
+        format: 'graphql'
+        packageName: '@graphback/datasync'
+        outputPath: ./src/schema/schema.graphql
 ```
 
 :::note
@@ -52,10 +54,15 @@ If you used [graphql-cli](https://github.com/Urigo/graphql-cli) to initialize
  the project, this file will be automatic setup for you. Otherwise, you can still use the `init` command from the CLI to initialize this configuration setup.
 :::
 
+## Commands
 
-### Using the command
+### generate
 
-To use Graphback generate command. In your `package.json` file, edit the `scripts` parts and add the following line:
+The `generate` command will invoke the plugins defined in your `.graphqlrc` (see [Configuration](#Configuration)). Check out our [Plugin Overview](../plugins/overview.md) for information on what Graphback plugins can do.
+
+The `generate` command can be executed by running `graphback generate` (if installed globally) or `yarn graphback generate`. 
+
+For simplicity you can add it to the `package.json` `scripts` config:
 
 ```json
 "generate": "graphback generate"
@@ -74,8 +81,6 @@ With npm:
 ```bash
 npm run generate
 ```
-
-`generate` command will execute generation process that will generate GraphQL server based on your data model.
 
 :::note
 Graphback CLI is now part of the [graphql-cli](https://github.com/Urigo/graphql-cli) command line tool. Please consider installing it for wider set of features
