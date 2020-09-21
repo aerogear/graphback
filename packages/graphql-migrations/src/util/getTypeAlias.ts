@@ -18,6 +18,7 @@ const ALIAS: any = {
   'bytea': { type: 'binary', args: [] },
 }
 
+// eslint-disable-next-line import/no-default-export
 export default function(dataType: string, maxLength: any): { type: string, args: any[] } {
   let alias = ALIAS[dataType.toLowerCase()]
   if (!alias) {

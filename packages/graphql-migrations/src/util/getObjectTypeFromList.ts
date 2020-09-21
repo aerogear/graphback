@@ -1,5 +1,6 @@
 import { GraphQLField, isListType, isNonNullType, isObjectType } from 'graphql';
 
+// eslint-disable-next-line import/no-default-export
 export default function(field: GraphQLField<any, any, { [key: string]: any; }>) {
   //comments: [Comment]
   if (isListType(field.type) && isObjectType(field.type.ofType)) {
