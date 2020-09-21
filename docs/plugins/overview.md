@@ -35,9 +35,8 @@ const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
 });
 ```
 
-Invoking `DataSyncPlugin` like this will update the in-memory schema and resolvers and return them as `typeDefs` and `resolvers`. 
+Invoking `SchemaCRUDPlugin` like this will update the in-memory schema and resolvers and return them as `typeDefs` and `resolvers`. 
 
 ### File generation with CLI
 
 Some plugins can also create files in your project through the [`createResources`](../api/graphback-core/classes/_plugin_graphbackcoremetadata_.graphbackcoremetadata) hook. Please refer to the plugin documentation to see if this is enabled.
-
