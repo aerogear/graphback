@@ -20,7 +20,9 @@ Please follow individual releases for more information.
 * Logical `or` filter selector was not mapped correctly in `graphback-runtime-knex` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [6d43f28](https://github.com/aerogear/graphback/commit/6d43f288865a2c8c0d441e486a156301ca6cc42a))
 * Logical `or` predicate was not applied correctly in `createInMemoryPredicateFilter` ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [01f9912](https://github.com/aerogear/graphback/commit/01f99121a9462e5a277657359094ab131e6f809c))
 * GraphQL Migrations did not read auto-incrementing info from database column ([#2017](https://github.com/aerogear/graphback/pull/2071), fixed by [83a80cd](https://github.com/aerogear/graphback/commit/83a80cdbb1104da7b36acdfa54b37a871c3ff1a0))
-* Prevent creation of empty `Subscription`, `Query`, `Mutation` resolver objects ([#2073](https://github.com/aerogear/graphback/pull/2073), fixed by [97e826](https://github.com/aerogear/graphback/commit/97e82677257b54783916c3062ed6f0e74f25c038))
+* Prevent creation of empty `Subscription`, `Query`, `Mutation` resolver objects ([#2073](https://github.com/aerogear/graphback/pull/2073), fixed by [97e8267](https://github.com/aerogear/graphback/commit/97e82677257b54783916c3062ed6f0e74f25c038))
+* Fix `TypeError: Cannot read property 'page' of undefined` error in CRUDService ([#2095](https://github.com/aerogear/graphback/pull/2095) fixed by [5143fb6](https://github.com/aerogear/graphback/commit/5143fb6c6a76d20f44b3e79ab25c6922408dd54a))
+* It was not possible to map a `WHERE X IS/IS NOT NULL` query in the Knex query mapper ([#2095](https://github.com/aerogear/graphback/pull/2095) fixed by [d10e918](https://github.com/aerogear/graphback/commit/d10e918714a85c8c6f6ebb4260e9aff0b6b99ffa))
 
 ### Breaking Changes
 

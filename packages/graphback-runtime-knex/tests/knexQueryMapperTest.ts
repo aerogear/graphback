@@ -31,6 +31,28 @@ describe('knexQueryMapper', () => {
     expect(queryBuilder.buildQuery(filter).toQuery()).toEqual("select * where (`name` = 'Enda')")
   });
 
+  test('where name is null', () => {
+    const filter: QueryFilter = {
+      name: {
+        // eslint-disable-next-line no-null/no-null
+        eq: null
+      }
+    }
+
+    expect(queryBuilder.buildQuery(filter).toQuery()).toEqual("select * where (`name` is null)")
+  })
+
+  test('where name is not null', () => {
+    const filter: QueryFilter = {
+      name: {
+        // eslint-disable-next-line no-null/no-null
+        ne: null
+      }
+    }
+
+    expect(queryBuilder.buildQuery(filter).toQuery()).toEqual("select * where (`name` is not null)")
+  })
+
   test('where name <> ?', () => {
     const filter: QueryFilter = {
       name: {
