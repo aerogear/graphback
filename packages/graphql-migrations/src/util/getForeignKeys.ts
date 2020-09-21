@@ -20,6 +20,7 @@ where tc.constraint_type = 'FOREIGN KEY' and tc.table_name = ? and tc.table_sche
   }),
 }
 
+// eslint-disable-next-line import/no-default-export
 export default async function(
   knex: Knex,
   tableName: string,

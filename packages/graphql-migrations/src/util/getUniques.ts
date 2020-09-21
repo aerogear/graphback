@@ -29,6 +29,7 @@ const queries: any = {
   }),
 }
 
+// eslint-disable-next-line import/no-default-export
 export default async function(
   knex: Knex,
   tableName: string,
