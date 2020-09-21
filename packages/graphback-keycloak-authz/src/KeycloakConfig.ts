@@ -1,4 +1,4 @@
-import { KeycloakOptions } from "keycloak-connect"
+
 /**
  * Operations supported by RBAC config
  */
