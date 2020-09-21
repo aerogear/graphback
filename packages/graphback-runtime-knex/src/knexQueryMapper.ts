@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import { QueryFilter, QueryFilterOperator } from '@graphback/core';
 
-const knexOperators = ['=', '<>', '<=', '<', '>', '>=', 'like', 'between', 'in'] as const;
+const knexOperators = ['=', '<>', '<=', '<', '>', '>=', 'like', 'between', 'in', 'is', 'is not'] as const;
 const knexMethods = ['where', 'orWhere', 'orWhereNot', 'whereNot'] as const;
 
 type KnexQueryOperator = typeof knexOperators[number];
@@ -29,8 +29,10 @@ export interface CRUDKnexQueryMapper {
 
 const mapQueryFilterOperatorToKnexWhereCondition = (operator: QueryFilterOperator, value: any): KnexWhereConditionMap => {
   const operatorToWhereConditionMap: { [key in QueryFilterOperator]: KnexWhereConditionMap } = {
-    eq: ['=', value],
-    ne: ['<>', value],
+    // eslint-disable-next-line no-null/no-null
+    eq: [value === null ? 'is' : '=', value],
+    // eslint-disable-next-line no-null/no-null
+    ne: [value === null ? 'is not' : '<>', value],
     lt: ['<', value],
     le: ['<=', value],
     ge: ['>=', value],
