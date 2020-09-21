@@ -29,6 +29,8 @@
   },
   "devDependencies": {
     "@graphql-cli/codegen": "1.17.8",
+    "@graphql-codegen/add": "2.0.1",
+    "@graphql-codegen/typescript": "1.17.9",
     "@types/glob": "7.1.3",
     "@types/graphql": "14.2.3",
     "@types/node-fetch": "2.5.7",
