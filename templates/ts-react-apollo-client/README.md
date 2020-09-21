@@ -33,7 +33,7 @@ The following tools and technologies have been used to create this template:
 
 - [Material UI](https://material-ui.com/): Material-UI is an open-source project that features React components that implement Google's Material Design. It has been used for styling this sample React template.
 
-- [Codegen](https://graphql-code-generator.com/): GraphQL Code Generator is a tool that generates code out of your GraphQL schema by analyzing it.
+- [GraphQL Code Generator](https://graphql-code-generator.com/): GraphQL Code Generator is a tool that generates code out of your GraphQL schema by analyzing it.
 
 ## Project structure
 
