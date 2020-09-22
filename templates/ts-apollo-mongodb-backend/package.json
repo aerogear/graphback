@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Graphback runtime template with Apollo Server and MongoDb",
   "private": true,
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "develop": "ts-node src/index.ts",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "watch": "tsc -w",
     "generate": "graphback generate && graphql codegen"
   },
