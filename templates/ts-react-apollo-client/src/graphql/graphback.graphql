@@ -144,4 +144,4 @@ subscription deletedComment($filter: CommentSubscriptionFilter) {
   deletedComment(filter: $filter) {
       ...CommentFields
   }
-}
+ }
