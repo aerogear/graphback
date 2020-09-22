@@ -1,6 +1,6 @@
-## Graphback MongoDB + Apollo Client Runtime Template
+## Graphback MongoDB + Apollo Server Template
 
-A template which showcases Graphback Runtime capabilities using a resolver layer created in-memory as opposed to codegeneration.
+A template which showcases Graphback Server capabilities as a runtime-only server solution.
 
 Serverless example can be build as docker image with configurable volume for models.
 These models will be processed in the application at startup giving a fully featured GraphQL Server following Graphback CRUD specification.
@@ -30,7 +30,7 @@ yarn develop
 
 For more on customising your Graphback application, check out [our docs](https://graphback.dev/docs/gettingstarted)
 
-If your project contains the client application then please follow `./client/README.md` for info regarding running the client side.
+If your project contains the client application then please follow [`./client/README.md`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/README.md) for info regarding running the client side.
 
 ### Dependencies and Tools
 
@@ -38,7 +38,7 @@ The following tools and technologies have been used to create this template:
 
 - [GraphQL](https://graphql.org/): GraphQL is an open-source data query and manipulation language for APIs which was publically released by Facebook in 2015.
 
-- [Apollo Server](https://www.apollographql.com/docs/apollo-server/): Apollo Server provides a way to simplify buildiing the GraphQL server. It can be used with several popular libraries for Node.js like Express, Koa, Hapi. Here we have used it with Express.
+- [Apollo Server](https://www.apollographql.com/docs/apollo-server/): Apollo Server provides a way to simplify building the GraphQL server. It can be used with several popular libraries for Node.js like Express, Koa, Hapi. Here we have used it with Express.
 
 - [Express](https://expressjs.com/): Express is a minimal and flexible Node.js web application framework that makes building a Node.js server easier by providing a wide range of features.
 
@@ -77,7 +77,7 @@ Running `yarn generate` executes a script which relies on two things, [Graphback
 
 > NOTE: You have to run the above commands on each modification of your business model on the server-side. This ensures that the client is kept in sync with changes on the server-side.
 
-### Step 1: GraphQL Document Generation
+### Step 1: GraphQL Schema File Generation
 
 A GraphQL schema describes the functionality available to the client applications that connect to it. The [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) is used to run the `graphback generate` command which executes the generation process to create a graphql schema. This schema is stored in the `schema.graphql` file.
 
