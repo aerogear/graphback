@@ -28,7 +28,6 @@
     "node": ">=10.15.3"
   },
   "devDependencies": {
-    "@types/bson": "4.0.2",
     "@types/jest": "26.0.14",
     "@types/node": "12.12.62",
     "@types/pino": "6.3.0",
@@ -47,6 +46,7 @@
   "dependencies": {
     "@graphql-tools/merge": "6.2.3",
     "@graphql-tools/utils": "6.2.3",
+    "@types/bson": "4.0.2",
     "bson": "4.1.0",
     "dataloader": "2.0.0",
     "glob": "7.1.6",
