@@ -29,7 +29,7 @@ export const findOneQuery = (t: ModelDefinition) => {
               ...${t.graphqlType.name}ExpandedFields
             }
           }`
-  }
+}
 
 export const findQuery = (t: GraphQLObjectType) => {
   const fieldName = getFieldName(t.name, GraphbackOperationType.FIND)
