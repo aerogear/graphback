@@ -1,9 +1,6 @@
 ## Graphback MongoDB + Apollo Server Template
 
-A template which showcases Graphback Server capabilities as a runtime-only server solution.
-
-Serverless example can be build as docker image with configurable volume for models.
-These models will be processed in the application at startup giving a fully featured GraphQL Server following Graphback CRUD specification.
+A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript.
 
 ### Quickstart Guide
 
@@ -28,9 +25,9 @@ Or, if using yarn
 yarn develop
 ```
 
-For more on customising your Graphback application, check out [our docs](https://graphback.dev/docs/gettingstarted)
+For more on customizing your Graphback application, check out [our docs](https://graphback.dev/docs/gettingstarted)
 
-If your project contains the client application then please follow [`./client/README.md`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/README.md) for info regarding running the client side.
+If your project contains the client application then please follow [`./client/README.md`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/README.md) for info regarding running the client-side.
 
 ### Dependencies and Tools
 
@@ -51,21 +48,21 @@ The following tools and technologies have been used to create this template:
 The project contains the following set of source files.
 
 - The `model` folder, which contains a GraphQL schema file defining your [business models](https://graphback.dev/docs/model/datamodel). This file can be edited to suit your needs.
-- The `.graphlrc.yml` file defining the configuration like the path to business model declaration, how to peform code generation from the GraphQL types to Typescript types etc. The configuration file is defined using the GraphQL project using [`graphql-config`](https://graphql-config.com/introduction).
+- The `.graphlrc.yml` file defining the configuration like the path to business model declaration, how to perform code generation from the GraphQL types to Typescript types etc. The configuration file is defined using the GraphQL project using [`graphql-config`](https://graphql-config.com/introduction).
 - A `docker-compose.yml` file to spin up the database if you do not have a running instance.
 - A `.env` file that contains different environment variables.
 - A `src` folder which has:
   - A `resolvers` folder where you can declare your custom resolvers to suit your use cases. This folder contains an example `src/resolvers/noteResolvers.ts` resolver file which can be deleted or modified. See [Custom Resolvers guide](https://graphback.dev/docs/resolvers/custom-resolvers) for more information.
-  - A `schema` folder which contains generated schema file. It's advised to not edit this file manually. See [Generating types.](#re-generating-types-from-schema)
+  - A `schema` folder that contains generated schema file. It's advised to not edit this file manually. See [Generating types.](#re-generating-types-from-schema)
   - A `generated-types.ts` file, which is also generated as indicated by its name. See [Generating types.](#re-generating-types-from-schema)
-  - A `index.ts` file which configures and starts a [Graphback application.](https://graphback.dev/docs/getting-started/add-to-project).
+  - A `index.ts` file that configures and starts a [Graphback application.](https://graphback.dev/docs/getting-started/add-to-project).
   - A `db.ts` file which indicates how to start a database connection.
 
 > NOTE: All the files can be edited according to your needs except for those that are generated (no need to edit them as they'll be re-generated anyway).
 
 ### Updating the business model
 
-If you made made changes to your business model, it's advised to regenerate the `generated-types.ts` which contains Typescript file of your business entities.
+If you made changes to your business model, it's advised to regenerate the `generated-types.ts` which contains TypeScript file of your business entities.
 
 ```
 yarn generate
