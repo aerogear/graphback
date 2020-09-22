@@ -25,10 +25,10 @@ export const findOneQuery = (t: ModelDefinition) => {
   const fieldName = getFieldName(t.graphqlType.name, GraphbackOperationType.FIND_ONE)
 
   return `query ${fieldName}($id: ${t.primaryKey.type}!) {
-            ${fieldName}(id: $id) {
-              ...${t.graphqlType.name}ExpandedFields
-            }
-          }`
+    ${fieldName}(id: $id) {
+      ...${t.graphqlType.name}ExpandedFields
+    }
+         }`
 }
 
 export const findQuery = (t: GraphQLObjectType) => {
