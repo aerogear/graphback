@@ -27,7 +27,7 @@ yarn develop
 
 For more on customizing your Graphback application, check out [our docs](https://graphback.dev/docs/gettingstarted)
 
-If your project contains the client application then please follow [`./client/README.md`](https://github.com/aerogear/graphback/blob/master/templates/ts-apollo-mongodb-backend/README.md) for info regarding running the client-side.
+If your project contains the client application then please follow [`./client/README.md`](./client/README.md) for info regarding running the client-side.
 
 ### Dependencies and Tools
 
