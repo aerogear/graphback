@@ -9,8 +9,8 @@ Server-side conflict resolution is an additional feature which is meant to be us
 ## Setup
 
 Create a new Graphback Project with:
-```bash
-$ npx create-graphback datasync-project
+```shell
+npx create-graphback datasync-project
 ```
 
 When the CLI asks you to pick a template, you may either:

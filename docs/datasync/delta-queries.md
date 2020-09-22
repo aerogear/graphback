@@ -10,9 +10,9 @@ It is quite straightforward to setup Delta Queries with an existing Graphback te
 
 Create a new Graphback project using:
 ```bash
-$ npx create-graphback datasync-project
+npx create-graphback datasync-project
 ```
-When asked, choose the `apollo-mongo-server-ts` template and proceed to the next step when the CLI has finished bootstrapping the project.
+When asked, choose the `apollo-mongo-datasync-server-ts` template and proceed to the next step when the CLI has finished bootstrapping the project.
 
 ### Annotate the required models
 
