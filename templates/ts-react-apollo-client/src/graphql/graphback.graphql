@@ -43,13 +43,13 @@ query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput)
       limit
       count
     }
-  }
+ }
 
 query getNote($id: ID!) {
     getNote(id: $id) {
       ...NoteExpandedFields
     }
-  }
+ }
 
 query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
     findComments(filter: $filter, page: $page, orderBy: $orderBy) {
@@ -60,13 +60,13 @@ query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderBy
       limit
       count
     }
-  }
+ }
 
 query getComment($id: ID!) {
     getComment(id: $id) {
       ...CommentExpandedFields
     }
-  }
+ }
 
 mutation createNote($input: CreateNoteInput!) {
   createNote(input: $input) {
