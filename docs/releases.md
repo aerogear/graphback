@@ -25,6 +25,7 @@ Please follow individual releases for more information.
 * It was not possible to map a `WHERE X IS/IS NOT NULL` query in the Knex query mapper ([#2095](https://github.com/aerogear/graphback/pull/2095) fixed by [d10e918](https://github.com/aerogear/graphback/commit/d10e918714a85c8c6f6ebb4260e9aff0b6b99ffa))
 * Prevent creation of empty `Subscription`, `Query`, `Mutation` resolver objects ([#2073](https://github.com/aerogear/graphback/pull/2073), fixed by [97e826](https://github.com/aerogear/graphback/commit/97e82677257b54783916c3062ed6f0e74f25c038))
 * Configure relationship auth rule with field instead of database key ([#2101](https://github.com/aerogear/graphback/pull/2073), fixed by [525bc9a](https://github.com/aerogear/graphback/commit/525bc9a641fa7cb1818a0727a675564e6fa12dda))
+* Fix `Could not find a declaration file for module 'bson'` error ([#2104](https://github.com/aerogear/graphback/pull/2104), fixed by [4f9ce7c](https://github.com/aerogear/graphback/commit/4f9ce7c2d6c494b33f447e1b4d6a47fbd880f353))
 
 ### Breaking Changes
 
