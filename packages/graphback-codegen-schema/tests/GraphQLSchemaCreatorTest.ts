@@ -416,3 +416,40 @@ test('Transient field is excluded from input types', () => {
   const userSubscriptionInput = assertInputObjectType(schema.getType('UserFilter'))
   expect(Object.keys(userSubscriptionInput.getFields())).toEqual(['id', 'name', 'and', 'or', 'not'])
 })
+
+test('When all CRUD flags are disabled, resolvers and root schema types are not generated', () => {
+  const model = buildSchema(`
+  """@model"""
+  type Note {
+    id: ID!
+    title: String
+  }`)
+
+  const pluginEngine = new GraphbackPluginEngine({
+    schema: model,
+    plugins: [
+      new SchemaCRUDPlugin()
+    ],
+    config: {
+      crudMethods: {
+        find: false,
+        findOne: false,
+        create: false,
+        update: false,
+        delete: false,
+        subCreate: false,
+        subDelete: false,
+        subUpdate: false
+      }
+    }
+  });
+
+  const metadata = pluginEngine.createResources();
+  const schema = metadata.getSchema();
+  const resolvers = metadata.getResolvers();
+
+  expect(resolvers).toBeUndefined()
+  expect(schema.getQueryType().getFields()).toEqual({})
+  expect(schema.getMutationType()).toBeUndefined()
+  expect(schema.getSubscriptionType()).toBeUndefined()
+})
