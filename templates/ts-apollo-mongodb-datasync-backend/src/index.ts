@@ -32,7 +32,13 @@ async function start() {
 
   const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, {
     db,
-    conflictConfig: { models: { Comment: { enabled: true } } }
+    conflictConfig: {
+      models: {
+        Comment: {
+          enabled: true
+        }
+      }
+    }
   });
 
   const apolloServer = new ApolloServer({
