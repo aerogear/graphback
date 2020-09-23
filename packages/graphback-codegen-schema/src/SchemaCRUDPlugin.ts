@@ -161,7 +161,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     buildSubscriptionFilterType(schemaComposer, modelType);
 
     const subscriptionFields = {}
-    if (model.crudOptions.subCreate && model.crudOptions.create) {
+    if (model.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
 
       const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_CREATE)
@@ -176,7 +176,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
       };
     }
-    if (model.crudOptions.subUpdate && model.crudOptions.update) {
+    if (model.crudOptions.subUpdate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
 
       const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
@@ -191,7 +191,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         }
       };
     }
-    if (model.crudOptions.subDelete && model.crudOptions.delete) {
+    if (model.crudOptions.subDelete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
 
       const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_DELETE)

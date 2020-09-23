@@ -1,5 +1,86 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Create subscription fields when mutations are disabled 1`] = `
+"type Query {
+  getNote(id: ID!): Note
+  findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
+}
+
+\\"\\"\\"@model\\"\\"\\"
+type Note {
+  id: ID!
+  title: String
+}
+
+type NoteResultList {
+  items: [Note]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input NoteFilter {
+  id: IDInput
+  title: StringInput
+  and: [NoteFilter!]
+  or: [NoteFilter!]
+  not: NoteFilter
+}
+
+input IDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  in: [ID!]
+}
+
+input StringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  in: [String!]
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+input PageRequest {
+  limit: Int
+  offset: Int
+}
+
+input OrderByInput {
+  field: String!
+  order: SortDirectionEnum = ASC
+}
+
+enum SortDirectionEnum {
+  DESC
+  ASC
+}
+
+type Subscription {
+  newNote(filter: NoteSubscriptionFilter): Note!
+  updatedNote(filter: NoteSubscriptionFilter): Note!
+  deletedNote(filter: NoteSubscriptionFilter): Note!
+}
+
+input NoteSubscriptionFilter {
+  and: [NoteSubscriptionFilter!]
+  or: [NoteSubscriptionFilter!]
+  not: NoteSubscriptionFilter
+  id: IDInput
+  title: StringInput
+}
+"
+`;
+
 exports[`Creates CRUD resolvers for models 1`] = `
 Object {
   "Comment": Object {
