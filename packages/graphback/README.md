@@ -17,40 +17,35 @@ by generating backend and client side CRUD layer using your GraphQL data model.
 **Repository**: https://github.com/aerogear/graphback/
 
 
-## Graphback usage
+## Usage
 
-Graphback package provides programatic API for the Graphback ecosystem.
+`graphback` provides a programmatic API for the Graphback ecosystem.
 In most of the cases you can use graphback by utilizing graphback-cli package that will expose all useful commands and cover most of the use cases.
 
-Graphback package provides two ways to initialize entire ecosystem from the code
+Install with npm:
 
-- GraphbackRuntime
-- GraphbackGenerator
-
-## GraphbackGenerator
-
-Graphback generator can be used to initialize Graphback plugins that will transform schema and generate source code.
-Graphback Generator will utilize GraphQL-Config with underlying plugins
-
-```ts
-  const config = await loadConfig({
-    rootDir: process.cwd(),
-    extensions: [graphbackConfigExtension]
-  });
-  const project = config.getProject('default')
-  const graphbackConfig = project.extension('graphback');
-
-  const generator = new GraphbackGenerator(schemaDocument, graphbackConfig)
-  generator.generateSourceCode();
+```bash
+npm install graphback
 ```
 
-For full usage please check: 
-https://github.com/aerogear/graphback/blob/master/packages/graphback-cli/src/components/generate.ts#L42-L43
+Install with yarn:
 
-## Graphback Runtime
+```bash
+npm install graphback
+```
 
-Runtime class allows to initialize Graphback CRUD layer without code generation. 
-All resolvers and schema are created in-memory
+`buildGraphbackAPI` will process your schema and generate a CRUD API with schema, resolvers, services and data sources.
 
-For full usage and examples please check runtime example application
-https://github.com/aerogear/graphback/tree/master/templates/ts-apollo-runtime-backend
+```ts
+import { buildGraphbackAPI } from 'graphback';
+import { createKnexDbProvider } from '@graphback/runtime-knex';
+import Knex from 'knex';
+
+const db = Knex({...});
+
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(schema, {
+  dataProviderCreator: createKnexDbProvider(db)
+});
+```
+
+Up-to-date usage and configuration information is covered in depth over on our website [graphhback.dev](https://graphback.dev/docs/getting-started/add-to-project).
