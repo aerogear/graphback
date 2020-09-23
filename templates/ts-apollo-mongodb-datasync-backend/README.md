@@ -1,6 +1,6 @@
 ## Graphback MongoDB with Datasync + Apollo Server Template
 
-A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript.
+A template that provides you with an easy setup for your application's backend using MongoDB, with Data Synchronization, and Apollo server with TypeScript. Differs from the non-datasync MongoDB template by providing schema plugins and data sources for all supported data synchronization features.
 
 ### Quickstart Guide
 
