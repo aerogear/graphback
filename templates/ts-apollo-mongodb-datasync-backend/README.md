@@ -43,6 +43,10 @@ The following tools and technologies have been used to create this template:
 
 - [MongoDB](https://www.mongodb.com/): MongoDB is a popular open-source document NoSQL database written in C++.
 
+### How does this differ from the MongoDB template?
+
+This template relies on [`@graphback/datasync`](https://graphback.dev/docs/datasync/intro) instead of `@graphback/runtime-mongo` which the non-datasync MongoDB template uses. It aims to extend [Offix](https://offix.dev/) functionality with a GraphQLCRUD compliant API. [Offix](https://offix.dev/) basically allows you to execute GraphQL queries and mutations while the application is offline or the server is unreachable.
+
 ### Project structure
 
 The project contains the following set of source files.
