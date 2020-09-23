@@ -26,6 +26,7 @@ Please follow individual releases for more information.
 * Prevent creation of empty `Subscription`, `Query`, `Mutation` resolver objects ([#2073](https://github.com/aerogear/graphback/pull/2073), fixed by [97e826](https://github.com/aerogear/graphback/commit/97e82677257b54783916c3062ed6f0e74f25c038))
 * Configure relationship auth rule with field instead of database key ([#2101](https://github.com/aerogear/graphback/pull/2073), fixed by [525bc9a](https://github.com/aerogear/graphback/commit/525bc9a641fa7cb1818a0727a675564e6fa12dda))
 * Fix `Could not find a declaration file for module 'bson'` error ([#2104](https://github.com/aerogear/graphback/pull/2104), fixed by [4f9ce7c](https://github.com/aerogear/graphback/commit/4f9ce7c2d6c494b33f447e1b4d6a47fbd880f353))
+* Add missing interface ([#2019](https://github.com/aerogear/graphback/pull/2109), fixed by [f46e920](https://github.com/aerogear/graphback/commit/f46e9200def565b0b0e34ccc13f7efa50f346550))
 
 ### Breaking Changes
 
