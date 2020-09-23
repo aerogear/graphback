@@ -19,18 +19,13 @@ yarn install
 yarn start:client
 ```
 
-<<<<<<< HEAD
 > NOTE: The client application has been made for a sample model. When you make changes on the server side, the client side application will change itself automatically.
 
 ## Dependencies And Tools
-=======
-## Dependencies And Tools:
->>>>>>> b91349c86... second revision
 
 The following tools and technologies have been used to create this template:
 
 - [GraphQL](https://graphql.org/): GraphQL is an open-source data query and manipulation language for APIs which was publically released by Facebook in 2015.
-<<<<<<< HEAD
 
 - [Apollo Client](https://www.apollographql.com/docs/react/): Apollo Client provides a neat abstraction layer and an interface to interact with the GraphQL server. It allows easier building of UI components that fetch data via GraphQL.
 
@@ -39,12 +34,6 @@ The following tools and technologies have been used to create this template:
 - [Material UI](https://material-ui.com/): Material-UI is an open-source project that features React components that implement Google's Material Design. It has been used for styling this sample React template.
 
 - [GraphQL Code Generator](https://graphql-code-generator.com/): GraphQL Code Generator is a tool that generates code out of your GraphQL schema by analyzing it.
-=======
-
-- [Apollo Client](https://www.apollographql.com/docs/react/): Apollo Client provides a neat abstraction layer and an interface to interact with the GraphQL server. It allows easier building of UI components that fetch data via GraphQL.
-
-- [Material UI](https://material-ui.com/): Material-UI is an open-source project that features React components that implement Google's Material Design. It has been used for styling this sample React template.
->>>>>>> b91349c86... second revision
 
 ## Project structure
 
@@ -71,11 +60,7 @@ When changing the Graphback schema you will need to recompile all the changes.
 yarn generate
 ```
 
-<<<<<<< HEAD
 Running `yarn generate` executes a script which relies on two things, [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) and [Codegen](https://graphql-code-generator.com/). It is a two step process which is explained below.
-=======
-Running `yarn generate` executes a script which relies on two things, [Graphback CLI](https://graphback.dev/docs/cli/graphback-cli) and [Codegen](https://graphql-code-generator.com/). The Graphback CLI is used to run the `graphback generate` command which executes the generation process that generates the GraphQL server based on your data model. And codegen is used in the `graphql codegen` command which generates code from the GraphQL schema.
->>>>>>> b91349c86... second revision
 
 > NOTE: You have to run the above commands on each modification of your business model on the server-side. This ensures that the client is kept in sync with changes on the server-side.
 
