@@ -32,9 +32,61 @@ npm install @graphback/datasync
 
 ## Usage
 
-In order to use data synchronization features, there are two steps to be followed:
+Add annotations to your data models:
 
-- Add metadata to schema
-- Use `createDataSyncAPI` to create the API using Graphback
+```graphql
+"""
+@model
+// highlight-next-line
+@datasync
+"""
+type User {
+  id: _GraphbackObjectID
+  name: String
+}
+```
+
+The preferred and simpest way to add data sync functionality is to use the `createDataSyncAPI` function which wraps `buildGraphbackAPI`:
+
+```ts
+import { createDataSyncAPI } from '@graphback/datasync'
+
+const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db });
+```
+
+Alternatively, you can use the default [`buildGraphbackAPI`](../getting-started/adding-graphback-to-your-project.md#configure-graphback) and add the `DataSyncPlugin` plugin directly:
+
+```ts
+import { buildGraphbackAPI } from 'graphback';
+import { DataSyncPlugin } from '@graphback/datasync'
+
+const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(schema, {
+  ...,
+  plugins: [
+    new DataSyncPlugin({
+      enabled: true
+    })
+  ]
+});
+```
+
+Or if you are invoking the plugin with `graphback generate`:
+
+```yaml title=".graphqlrc"
+schema: './src/schema.graphql'
+documents: './client/src/graphql/**/*.graphql'
+extensions:
+  graphback:
+    # path to data mode file(s)
+    model: './model/datamodel.graphql'
+    plugins:
+      ...
+      graphback-datasync:
+        packageName: '@graphback/datasync' # required to dynamically load
+        conflictConfig: 
+          models:
+            Note:
+              enabled: true
+```
 
 For a more in-depth guide to setting up data synchronization features, check [this](delta-queries.md) page.

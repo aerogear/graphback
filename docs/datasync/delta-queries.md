@@ -97,7 +97,7 @@ In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-rel
 import { createDataSyncAPI } from '@graphback/datasync'
 
 
-const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db });;
+const { typeDefs, resolvers, contextCreator } = createDataSyncAPI(modelDefs, { db });
 ```
 The data sources provided by `createDataSyncAPI` ensure that:
 - The documents are always soft deleted
