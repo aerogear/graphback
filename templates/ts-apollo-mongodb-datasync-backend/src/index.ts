@@ -7,9 +7,9 @@ import { createDataSyncAPI } from '@graphback/datasync';
 import cors from 'cors';
 // eslint-disable-next-line @typescript-eslint/tslint/config
 import express from 'express';
+import { loadConfigSync } from 'graphql-config';
 import { connectDB } from './db';
 import { noteResolvers } from './resolvers/noteResolvers';
-import { loadConfigSync } from 'graphql-config';
 
 async function start() {
   const app = express();
