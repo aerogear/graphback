@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { readFileSync } from 'fs';
 import { buildSchema, printSchema, GraphQLObjectType, assertInputObjectType } from 'graphql';
-import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine, metadataMap } from '@graphback/core';
+import { GraphbackCoreMetadata, printSchemaWithDirectives, GraphbackPluginEngine, metadataMap, GraphbackCRUDGeneratorConfig } from '@graphback/core';
 
 import { SchemaCRUDPlugin } from '../src/SchemaCRUDPlugin';
 
@@ -71,6 +71,29 @@ test('Test snapshot config js', async () => {
   const schema = schemaGenerator.transformSchema(metadata)
   expect(printSchema(schema)).toMatchSnapshot();
 });
+
+test('Create subscription fields when mutations are disabled', () => {
+  const crudMethods: GraphbackCRUDGeneratorConfig = {
+    create: false,
+    update: false,
+    delete: false
+  };
+
+  const schemaGenerator = new SchemaCRUDPlugin()
+  const metadata = new GraphbackCoreMetadata({
+    crudMethods
+  }, buildSchema(`
+  """@model"""
+  type Note {
+    id: ID!
+    title: String
+  }
+  `))
+  const schema = schemaGenerator.transformSchema(metadata);
+  expect(Object.keys(schema.getSubscriptionType().getFields())).toEqual(['newNote', 'updatedNote', 'deletedNote']);
+  expect(schema.getMutationType()).toBeUndefined();
+  expect(printSchema(schema)).toMatchSnapshot();
+})
 
 test('Test one side relationship schema query type generation', async () => {
   const defautConfig = {
