@@ -1,4 +1,8 @@
 {
+  "exclude": [
+    "client",
+    "types"
+  ],
   "compilerOptions": {
     "outDir": "dist",
     "declarationDir": "types",
