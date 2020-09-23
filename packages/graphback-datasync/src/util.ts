@@ -72,7 +72,7 @@ export function getModelConfigFromGlobal(modelName: string, globalConfig: Global
 export class ConflictError extends Error {
   public conflictInfo: ConflictMetadata;
   public constructor(stateMap: ConflictMetadata) {
-    super();
+    super('A conflict has occurred');
     this.conflictInfo = stateMap;
   }
 }
