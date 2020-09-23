@@ -8,7 +8,25 @@ import { createDataSyncConflictProviderCreator } from '../providers';
 
 type DataSyncGraphbackAPIConfig = Omit<GraphbackAPIConfig, "dataProviderCreator">
 
-export function createDataSyncAPI(model: string | GraphQLSchema, createDataSyncConfig: { db: Db,  conflictConfig?: GlobalConflictConfig, graphbackAPIConfig?: DataSyncGraphbackAPIConfig }): GraphbackAPI {
+/**
+ * Config to create a Graphback DataSync API
+ */
+export interface DataSyncAPIConfig {
+  /**
+   * MongoDB driver
+   */
+  db: Db, 
+  /**
+   * Conflict configmap for the data models
+   */
+  conflictConfig?: GlobalConflictConfig
+  /**
+   * GraphbackAPI config
+   */
+  graphbackAPIConfig?: DataSyncGraphbackAPIConfig
+}
+
+export function createDataSyncAPI(model: string | GraphQLSchema, createDataSyncConfig: DataSyncAPIConfig): GraphbackAPI {
   const { db, conflictConfig, graphbackAPIConfig } = createDataSyncConfig;
 
   return buildGraphbackAPI(model, {
