@@ -76,18 +76,18 @@ export class DataSyncPlugin extends GraphbackPlugin {
    * @param {GraphbackCoreMetadata} metadata - Core metatata containing all model information
    */
   public createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
-    const resolvers: IResolvers = {
-      Query: {},
-      Mutation: {},
-      Subscription: {}
+    const models = metadata.getModelDefinitions()
+
+    if (models.length === 0) {
+      return undefined;
     }
 
-    const models = metadata.getModelDefinitions()
+    const resolvers: IResolvers = {}
 
     for (const model of models) {
       // If delta marker is encountered, add resolver for `delta` query
       if (isDataSyncModel(model)) {
-        this.addDeltaSyncResolver(model, resolvers.Query as IFieldResolver<any, any>)
+        this.addDeltaSyncResolver(model, resolvers)
       }
     }
 
@@ -105,11 +105,15 @@ export class DataSyncPlugin extends GraphbackPlugin {
     return DATASYNC_PLUGIN_NAME;
   }
 
-  protected addDeltaSyncResolver(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
+  protected addDeltaSyncResolver(model: ModelDefinition, resolvers: IResolvers) {
     const modelName = model.graphqlType.name;
     const deltaQuery = getDeltaQuery(modelName)
 
-    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+    if (!resolvers.Query) {
+      resolvers.Query = {} as IFieldResolver<any, any>
+    }
+
+    resolvers.Query[deltaQuery] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
