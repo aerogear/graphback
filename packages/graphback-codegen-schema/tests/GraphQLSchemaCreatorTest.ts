@@ -449,7 +449,7 @@ test('When all CRUD flags are disabled, resolvers and root schema types are not 
   const resolvers = metadata.getResolvers();
 
   expect(resolvers).toBeUndefined()
-  expect(schema.getQueryType().getFields()).toEqual({})
-  expect(schema.getMutationType()).toBeUndefined()
-  expect(schema.getSubscriptionType()).toBeUndefined()
+  expect(schema.getQueryType()).toBeUndefined();
+  expect(schema.getMutationType()).toBeUndefined();
+  expect(schema.getSubscriptionType()).toBeUndefined();
 })

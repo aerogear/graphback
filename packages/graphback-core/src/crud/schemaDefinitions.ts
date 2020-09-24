@@ -1,14 +1,14 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS, isTransientField } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
-import { copyWrappingType } from './copyWrappingType';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS, isTransientField } from '../../src';
+import { copyWrappingType } from '../utils/copyWrappingType';
 
 const PageRequestTypeName = 'PageRequest';
 const SortDirectionEnumName = 'SortDirectionEnum';
 const OrderByInputTypeName = 'OrderByInput';
 
-export const getInputName = (type: GraphQLNamedType) => {
+const getInputName = (type: GraphQLNamedType) => {
   if (isEnumType(type)) {
     return `StringInput`
   }
@@ -20,7 +20,7 @@ export const getInputName = (type: GraphQLNamedType) => {
   return `${type.name}Input`
 }
 
-export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
+const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
   const newInput = new GraphQLInputObjectType({
     name: getInputName(scalarType),
     fields: {
@@ -38,7 +38,7 @@ export const createInputTypeForScalar = (scalarType: GraphQLScalarType) => {
   return newInput;
 }
 
-export const StringScalarInputType = new GraphQLInputObjectType({
+const StringScalarInputType = new GraphQLInputObjectType({
   name: getInputName(GraphQLString),
   fields: {
     ne: { type: GraphQLString },
@@ -54,7 +54,7 @@ export const StringScalarInputType = new GraphQLInputObjectType({
   }
 })
 
-export const IDScalarInputType = new GraphQLInputObjectType({
+const IDScalarInputType = new GraphQLInputObjectType({
   name: getInputName(GraphQLID),
   fields: {
     ne: { type: GraphQLID },
@@ -65,9 +65,9 @@ export const IDScalarInputType = new GraphQLInputObjectType({
     gt: { type: GraphQLID },
     in: { type: GraphQLList(GraphQLNonNull(GraphQLID)) },
   }
-})
+});
 
-export const BooleanScalarInputType = new GraphQLInputObjectType({
+const BooleanScalarInputType = new GraphQLInputObjectType({
   name: getInputName(GraphQLBoolean),
   fields: {
     ne: { type: GraphQLBoolean },
@@ -75,7 +75,7 @@ export const BooleanScalarInputType = new GraphQLInputObjectType({
   }
 })
 
-export const PageRequest = new GraphQLInputObjectType({
+const PageRequest = new GraphQLInputObjectType({
   name: PageRequestTypeName,
   fields: {
     limit: {
@@ -87,7 +87,7 @@ export const PageRequest = new GraphQLInputObjectType({
   }
 })
 
-export const SortDirectionEnum = new GraphQLEnumType({
+const SortDirectionEnum = new GraphQLEnumType({
   name: SortDirectionEnumName,
   values: {
     DESC: { value: 'desc' },
@@ -95,7 +95,7 @@ export const SortDirectionEnum = new GraphQLEnumType({
   }
 })
 
-export const OrderByInputType = new GraphQLInputObjectType({
+const OrderByInputType = new GraphQLInputObjectType({
   name: OrderByInputTypeName,
   fields: {
     field: { type: GraphQLNonNull(GraphQLString) },
@@ -135,7 +135,7 @@ function getModelInputFields(schemaComposer: SchemaComposer<any>, modelType: Gra
   return inputFields;
 }
 
-export function buildFindOneFieldMap(modelType: ModelDefinition, schemaComposer: SchemaComposer<any>): GraphQLInputFieldMap {
+function buildFindOneFieldMap(modelType: ModelDefinition, schemaComposer: SchemaComposer<any>): GraphQLInputFieldMap {
   const { type } = modelType.primaryKey;
 
   return {
@@ -148,7 +148,7 @@ export function buildFindOneFieldMap(modelType: ModelDefinition, schemaComposer:
   }
 }
 
-export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
+const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const operationType = GraphbackOperationType.FIND
 
   const inputTypeName = getInputTypeName(modelType.name, operationType);
@@ -188,7 +188,7 @@ export const buildFilterInputType = (schemaComposer: SchemaComposer<any>, modelT
   schemaComposer.add(filterInput)
 }
 
-export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
+const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const operationType = GraphbackOperationType.CREATE
   const inputTypeName = getInputTypeName(modelType.name, operationType);
 
@@ -219,7 +219,7 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
   schemaComposer.add(mutationInputType)
 }
 
-export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
+const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const inputTypeName = getInputTypeName(modelType.name, GraphbackOperationType.SUBSCRIPTION_CREATE);
   const modelFields = Object.values(modelType.getFields());
   const subscriptionFilterFields = modelFields.filter((f: GraphQLField<any, any>) => {
@@ -255,7 +255,7 @@ export const buildSubscriptionFilterType = (schemaComposer: SchemaComposer<any>,
   })
 }
 
-export const buildMutationInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
+const buildMutationInputType = (schemaComposer: SchemaComposer<any>, modelType: GraphQLObjectType) => {
   const operationType = GraphbackOperationType.UPDATE
   const inputTypeName = getInputTypeName(modelType.name, operationType);
 
@@ -307,7 +307,7 @@ function mapObjectInputFields(schemaComposer: SchemaComposer<any>, fields: Graph
   })
 }
 
-export function addCreateObjectInputType(schemaComposer: SchemaComposer<any>, objectType: GraphQLObjectType) {
+function addCreateObjectInputType(schemaComposer: SchemaComposer<any>, objectType: GraphQLObjectType) {
   const objectFields = Object.values(objectType.getFields())
   const operationType = GraphbackOperationType.CREATE
 
@@ -324,7 +324,7 @@ export function addCreateObjectInputType(schemaComposer: SchemaComposer<any>, ob
   schemaComposer.add(inputType)
 }
 
-export function addUpdateObjectInputType(schemaComposer: SchemaComposer<any>, objectType: GraphQLObjectType) {
+function addUpdateObjectInputType(schemaComposer: SchemaComposer<any>, objectType: GraphQLObjectType) {
   const objectFields = Object.values(objectType.getFields())
   const operationType = GraphbackOperationType.UPDATE
 
@@ -341,7 +341,7 @@ export function addUpdateObjectInputType(schemaComposer: SchemaComposer<any>, ob
   schemaComposer.add(inputType)
 }
 
-export const createModelListResultType = (modelType: GraphQLObjectType) => {
+const createModelListResultType = (modelType: GraphQLObjectType) => {
   return new GraphQLObjectType({
     name: `${modelType.name}ResultList`,
     fields: {
@@ -355,7 +355,7 @@ export const createModelListResultType = (modelType: GraphQLObjectType) => {
   })
 }
 
-export function createVersionedInputFields(versionedInputType: GraphQLInputObjectType) {
+function createVersionedInputFields(versionedInputType: GraphQLInputObjectType) {
   return {
     [metadataMap.fieldNames.createdAt]: {
       type: versionedInputType
@@ -366,7 +366,7 @@ export function createVersionedInputFields(versionedInputType: GraphQLInputObjec
   };
 }
 
-export function createVersionedFields(type: GraphQLScalarType) {
+function createVersionedFields(type: GraphQLScalarType) {
   return {
     [metadataMap.fieldNames.createdAt]: {
       type,
@@ -379,3 +379,23 @@ export function createVersionedFields(type: GraphQLScalarType) {
   };
 }
 
+export const schemaDefinitions = Object.freeze({
+  StringScalarInputType,
+  IDScalarInputType,
+  BooleanScalarInputType,
+  PageRequest,
+  SortDirectionEnum,
+  OrderByInputType,
+  getInputName,
+  createInputTypeForScalar,
+  buildFindOneFieldMap,
+  buildFilterInputType,
+  buildCreateMutationInputType,
+  buildSubscriptionFilterType,
+  buildMutationInputType,
+  addCreateObjectInputType,
+  addUpdateObjectInputType,
+  createModelListResultType,
+  createVersionedInputFields,
+  createVersionedFields
+});

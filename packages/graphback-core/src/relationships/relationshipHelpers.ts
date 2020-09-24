@@ -10,7 +10,7 @@ import { RelationshipAnnotation } from './RelationshipMetadataBuilder';
  *
  * @param description field description
  */
-export function parseRelationshipAnnotation(description: string = ''): RelationshipAnnotation | undefined {
+export function parseRelationshipAnnotation(description: string | undefined | null): RelationshipAnnotation | undefined {
   const relationshipKinds = ['oneToMany', 'oneToOne', 'manyToOne'];
 
   for (const kind of relationshipKinds) {

@@ -1,7 +1,7 @@
 import { SchemaComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils';
 import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, GraphbackTimestamp } from '@graphback/core';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, GraphbackTimestamp, schemaDefinitions } from '@graphback/core';
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, GlobalConflictConfig, getModelConfigFromGlobal } from "./util";
 
@@ -76,18 +76,18 @@ export class DataSyncPlugin extends GraphbackPlugin {
    * @param {GraphbackCoreMetadata} metadata - Core metatata containing all model information
    */
   public createResolvers(metadata: GraphbackCoreMetadata): IResolvers {
-    const resolvers: IResolvers = {
-      Query: {},
-      Mutation: {},
-      Subscription: {}
+    const models = metadata.getModelDefinitions()
+
+    if (models.length === 0) {
+      return undefined;
     }
 
-    const models = metadata.getModelDefinitions()
+    const resolvers: IResolvers = {}
 
     for (const model of models) {
       // If delta marker is encountered, add resolver for `delta` query
       if (isDataSyncModel(model)) {
-        this.addDeltaSyncResolver(model, resolvers.Query as IFieldResolver<any, any>)
+        this.addDeltaSyncResolver(model, resolvers)
       }
     }
 
@@ -105,11 +105,15 @@ export class DataSyncPlugin extends GraphbackPlugin {
     return DATASYNC_PLUGIN_NAME;
   }
 
-  protected addDeltaSyncResolver(model: ModelDefinition, queryObj: IFieldResolver<any, any>) {
+  protected addDeltaSyncResolver(model: ModelDefinition, resolvers: IResolvers) {
     const modelName = model.graphqlType.name;
     const deltaQuery = getDeltaQuery(modelName)
 
-    queryObj[deltaQuery] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
+    if (!resolvers.Query) {
+      resolvers.Query = {} as IFieldResolver<any, any>
+    }
+
+    resolvers.Query[deltaQuery] = async (_: any, args: any, context: GraphbackContext, info: GraphQLResolveInfo) => {
       if (!context.graphback || !context.graphback[modelName]) {
         throw new Error(`Missing service for ${modelName}`);
       }
@@ -145,9 +149,13 @@ export class DataSyncPlugin extends GraphbackPlugin {
   }
 
   protected addDataSyncFieldsToInputTypes(schemaComposer: SchemaComposer<any>, model: ModelDefinition) {
+    const modelUpdateInputName = getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE);
 
+    if (!schemaComposer.has(modelUpdateInputName)) {
+      schemaDefinitions.buildMutationInputType(schemaComposer, model.graphqlType);
+    }
     // Add _version argument to UpdateInputType
-    const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
+    const updateInputType = schemaComposer.getITC(modelUpdateInputName);
     const modelUsesVersion = getModelConfigFromGlobal(model.graphqlType.name, this.config.conflictConfig).enabled;
     if (modelUsesVersion && updateInputType) {
       updateInputType.addFields({
@@ -192,6 +200,12 @@ export class DataSyncPlugin extends GraphbackPlugin {
     schemaComposer.Query.addFields({
       [deltaQuery]: GraphQLNonNull(DeltaListOTC.getType())
     });
+
+    const modelFilterName = getInputTypeName(modelName, GraphbackOperationType.FIND);
+
+    if (!schemaComposer.has(modelFilterName)) {
+      schemaDefinitions.buildFilterInputType(schemaComposer, model.graphqlType);
+    }
 
     const findFilterITC = schemaComposer.getITC(getInputTypeName(modelName, GraphbackOperationType.FIND));
     schemaComposer.Query.addFieldArgs(deltaQuery, {

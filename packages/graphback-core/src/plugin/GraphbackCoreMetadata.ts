@@ -1,7 +1,7 @@
 import { parseMetadata } from 'graphql-metadata';
 import { mergeResolvers } from '@graphql-tools/merge';
 import { GraphQLObjectType, GraphQLSchema, getNamedType } from 'graphql';
-import { getUserTypesFromSchema, IResolvers } from '@graphql-tools/utils';
+import { getUserTypesFromSchema, IResolvers, pruneSchema } from '@graphql-tools/utils';
 import { getPrimaryKey } from '../db';
 import { RelationshipMetadataBuilder, FieldRelationshipMetadata } from '../relationships/RelationshipMetadataBuilder';
 import { isTransientField } from '../utils/isTransientField';
@@ -40,7 +40,7 @@ export class GraphbackCoreMetadata {
   }
 
   public setSchema(newSchema: GraphQLSchema) {
-    this.schema = newSchema;
+    this.schema = pruneSchema(newSchema);
   }
 
   public addResolvers(resolvers: IResolvers) {

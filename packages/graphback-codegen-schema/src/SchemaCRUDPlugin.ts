@@ -5,10 +5,9 @@ import * as DataLoader from "dataloader";
 import { parseMetadata } from "graphql-metadata";
 import { SchemaComposer, NamedTypeComposer } from 'graphql-compose';
 import { IResolvers, IObjectTypeResolver } from '@graphql-tools/utils';
-import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLInputObjectType, GraphQLScalarType } from 'graphql';
-import { getFieldName, metadataMap, printSchemaWithDirectives, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, graphbackScalarsTypes,  GraphbackTimestamp, FILTER_SUPPORTED_SCALARS, FindByArgs } from '@graphback/core';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, isScalarType, isSpecifiedScalarType, GraphQLResolveInfo, isObjectType, GraphQLInputObjectType, GraphQLScalarType, buildSchema } from 'graphql';
+import { getFieldName, metadataMap, printSchemaWithDirectives, schemaDefinitions, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition, addRelationshipFields, extendRelationshipFields, extendOneToManyFieldArguments, getInputTypeName, FieldRelationshipMetadata, GraphbackContext, getSelectedFieldsFromResolverInfo, isModelType, getPrimaryKey, graphbackScalarsTypes, GraphbackTimestamp, FILTER_SUPPORTED_SCALARS, FindByArgs } from '@graphback/core';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from './writer/schemaFormatters';
-import { buildFilterInputType, createModelListResultType, StringScalarInputType, BooleanScalarInputType, SortDirectionEnum, buildCreateMutationInputType, buildFindOneFieldMap, buildMutationInputType, OrderByInputType, buildSubscriptionFilterType, IDScalarInputType, PageRequest, createInputTypeForScalar, createVersionedFields, createVersionedInputFields, addCreateObjectInputType, addUpdateObjectInputType, getInputName } from './definitions/schemaDefinitions';
 
 /**
  * Configuration for Schema generator CRUD plugin
@@ -64,7 +63,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     this.buildSchemaForModels(schemaComposer, models);
     this.addVersionedMetadataFields(schemaComposer, models);
 
-    return schemaComposer.buildSchema()
+    return schemaComposer.buildSchema();
   }
 
   /**
@@ -158,56 +157,57 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelTC = schemaComposer.getOTC(name)
     const modelType = modelTC.getType()
 
-    buildSubscriptionFilterType(schemaComposer, modelType);
+    if (model.crudOptions.subCreate || model.crudOptions.subUpdate || model.crudOptions.subDelete) {
+      schemaDefinitions.buildSubscriptionFilterType(schemaComposer, modelType);
 
-    const subscriptionFields = {}
-    if (model.crudOptions.subCreate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
+      const subscriptionFields = {}
+      if (model.crudOptions.subCreate) {
+        const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
 
-      const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_CREATE)
-      const subCreateFilterInputType = schemaComposer.getITC(filterInputName).getType()
+        const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_CREATE)
+        const subCreateFilterInputType = schemaComposer.getITC(filterInputName).getType()
 
-      subscriptionFields[operation] = {
-        type: GraphQLNonNull(modelType),
-        args: {
-          filter: {
-            type: subCreateFilterInputType,
-          },
-        }
-      };
+        subscriptionFields[operation] = {
+          type: GraphQLNonNull(modelType),
+          args: {
+            filter: {
+              type: subCreateFilterInputType,
+            },
+          }
+        };
+      }
+      if (model.crudOptions.subUpdate) {
+        const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
+
+        const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
+        const subUpdateFilterInputType = schemaComposer.getITC(filterInputName).getType()
+
+        subscriptionFields[operation] = {
+          type: GraphQLNonNull(modelType),
+          args: {
+            filter: {
+              type: subUpdateFilterInputType,
+            },
+          }
+        };
+      }
+      if (model.crudOptions.subDelete) {
+        const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
+
+        const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_DELETE)
+        const subDeleteFilterInputType = schemaComposer.getITC(filterInputName).getType()
+
+        subscriptionFields[operation] = {
+          type: GraphQLNonNull(modelType),
+          args: {
+            filter: {
+              type: subDeleteFilterInputType,
+            },
+          }
+        };
+      }
+      schemaComposer.Subscription.addFields(subscriptionFields)
     }
-    if (model.crudOptions.subUpdate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
-
-      const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
-      const subUpdateFilterInputType = schemaComposer.getITC(filterInputName).getType()
-
-      subscriptionFields[operation] = {
-        type: GraphQLNonNull(modelType),
-        args: {
-          filter: {
-            type: subUpdateFilterInputType,
-          },
-        }
-      };
-    }
-    if (model.crudOptions.subDelete) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
-
-      const filterInputName = getInputTypeName(name, GraphbackOperationType.SUBSCRIPTION_DELETE)
-      const subDeleteFilterInputType = schemaComposer.getITC(filterInputName).getType()
-
-      subscriptionFields[operation] = {
-        type: GraphQLNonNull(modelType),
-        args: {
-          filter: {
-            type: subDeleteFilterInputType,
-          },
-        }
-      };
-    }
-
-    schemaComposer.Subscription.addFields(subscriptionFields)
   }
 
   protected createSchema(queryTypes: any, mutationTypes: any, subscriptionTypes: any) {
@@ -244,13 +244,12 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelTC = schemaComposer.getOTC(name)
     const modelType = modelTC.getType()
 
-    buildMutationInputType(schemaComposer, modelType)
+    schemaDefinitions.buildMutationInputType(schemaComposer, modelType)
+    schemaDefinitions.buildCreateMutationInputType(schemaComposer, modelType)
 
     const mutationFields = {}
     if (model.crudOptions.create) {
       const operationType = GraphbackOperationType.CREATE
-
-      buildCreateMutationInputType(schemaComposer, modelType)
 
       const inputTypeName = getInputTypeName(name, operationType)
       const createMutationInputType = schemaComposer.getITC(inputTypeName).getType()
@@ -306,14 +305,15 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
     const modelTC = schemaComposer.getOTC(name)
     const modelType = modelTC.getType()
 
-    buildFilterInputType(schemaComposer, modelType);
+    schemaDefinitions.buildFilterInputType(schemaComposer, modelType);
+    const resultListType = schemaDefinitions.createModelListResultType(modelType)
 
     const queryFields = {}
     if (model.crudOptions.findOne) {
       const operation = getFieldName(name, GraphbackOperationType.FIND_ONE)
       queryFields[operation] = {
         type: model.graphqlType,
-        args: buildFindOneFieldMap(model, schemaComposer)
+        args: schemaDefinitions.buildFindOneFieldMap(model, schemaComposer)
       };
     }
     if (model.crudOptions.find) {
@@ -322,7 +322,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
 
       const inputTypeName = getInputTypeName(name, operationType)
       const filterInputType = schemaComposer.getITC(inputTypeName).getType()
-      const resultListType = createModelListResultType(modelType)
 
       queryFields[operation] = {
         type: GraphQLNonNull(resultListType),
@@ -331,10 +330,10 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             type: filterInputType
           },
           page: {
-            type: PageRequest
+            type: schemaDefinitions.PageRequest
           },
           orderBy: {
-            type: OrderByInputType
+            type: schemaDefinitions.OrderByInputType
           }
         }
       };
@@ -344,7 +343,7 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   protected addVersionedMetadataFields(schemaComposer: SchemaComposer<any>, models: ModelDefinition[]) {
-    const timeStampInputName = getInputName(GraphbackTimestamp);
+    const timeStampInputName = schemaDefinitions.getInputName(GraphbackTimestamp);
     let timestampInputType: GraphQLInputObjectType; let timestampType: GraphQLScalarType;
     for (const model of models) {
       const name = model.graphqlType.name;
@@ -369,21 +368,21 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
             timestampInputType = schemaComposer.getITC(timeStampInputName).getType();
           } else {
             schemaComposer.createScalarTC(GraphbackTimestamp);
-            timestampInputType = createInputTypeForScalar(GraphbackTimestamp);
+            timestampInputType = schemaDefinitions.createInputTypeForScalar(GraphbackTimestamp);
             schemaComposer.add(timestampInputType);
           }
 
           timestampType = schemaComposer.getSTC(GraphbackTimestamp.name).getType();
         }
 
-        const metadataFields = createVersionedFields(timestampType);
+        const metadataFields = schemaDefinitions.createVersionedFields(timestampType);
         // metadata fields needed for @versioned
 
         modelTC.addFields(metadataFields);
 
         const inputType = schemaComposer.getITC(getInputTypeName(name, GraphbackOperationType.FIND))
         if (inputType) {
-          const metadataInputFields = createVersionedInputFields(timestampInputType);
+          const metadataInputFields = schemaDefinitions.createVersionedInputFields(timestampInputType);
           inputType.addFields(metadataInputFields);
         }
       }
@@ -745,26 +744,26 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
   }
 
   private createSchemaCRUDTypes(schemaComposer: SchemaComposer<any>) {
-    schemaComposer.add(PageRequest);
-    schemaComposer.add(IDScalarInputType);
-    schemaComposer.add(SortDirectionEnum);
-    schemaComposer.add(StringScalarInputType);
-    schemaComposer.add(BooleanScalarInputType);
-    schemaComposer.add(createInputTypeForScalar(GraphQLInt));
-    schemaComposer.add(createInputTypeForScalar(GraphQLFloat));
+    schemaComposer.add(schemaDefinitions.PageRequest);
+    schemaComposer.add(schemaDefinitions.IDScalarInputType);
+    schemaComposer.add(schemaDefinitions.SortDirectionEnum);
+    schemaComposer.add(schemaDefinitions.StringScalarInputType);
+    schemaComposer.add(schemaDefinitions.BooleanScalarInputType);
+    schemaComposer.add(schemaDefinitions.createInputTypeForScalar(GraphQLInt));
+    schemaComposer.add(schemaDefinitions.createInputTypeForScalar(GraphQLFloat));
 
     schemaComposer.forEach((tc: NamedTypeComposer<any>) => {
       const namedType = tc.getType();
       if (isScalarType(namedType) && !isSpecifiedScalarType(namedType) && FILTER_SUPPORTED_SCALARS.includes(namedType.name)) {
-        schemaComposer.add(createInputTypeForScalar(namedType));
+        schemaComposer.add(schemaDefinitions.createInputTypeForScalar(namedType));
 
         return;
       }
 
       const isRootType = ['Query', 'Subscription', 'Mutation'].includes(namedType.name)
       if (isObjectType(namedType) && !isModelType(namedType) && !isRootType) {
-        addCreateObjectInputType(schemaComposer, namedType)
-        addUpdateObjectInputType(schemaComposer, namedType)
+        schemaDefinitions.addCreateObjectInputType(schemaComposer, namedType)
+        schemaDefinitions.addUpdateObjectInputType(schemaComposer, namedType)
       }
     });
   }
