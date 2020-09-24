@@ -22,5 +22,6 @@ export function handler(args: Params): void {
   const schemaSDL = printSchemaHandler(args);
 
   console.log("Generated schema:\n");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   console.log(chalk.cyan(schemaSDL));
 }
