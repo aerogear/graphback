@@ -27,28 +27,20 @@ module.exports = {
       },
       items: [
         {
-          to: 'docs/next/introduction',
+          to: 'docs/introduction',
           activeBasePath: 'docs',
           label: 'Docs',
           position: 'left',
           items: [
-            { label: '0.16.x', to: 'docs/introduction' },
+            { label: '1.0', to: 'docs/introduction' },
+            { label: '0.16.x', to: 'docs/0.16.x/introduction' },
             { label: '0.15.x', to: 'docs/0.15.x/introduction' },
             { label: '0.14.x', to: 'docs/0.14.x/introduction' },
-            { label: '0.12.x', to: 'docs/0.12.x/gettingstarted' },
-            { label: '0.11.x', to: 'docs/0.11.x/gettingstarted' },
-            { label: '0.10.x', to: 'docs/0.10.x/gettingstarted' },
-            { label: '0.9.x', to: 'docs/0.9.x/gettingstarted' },
             {
               label: 'Master/Unreleased',
               to: 'docs/next/introduction',
             },
           ],
-        },
-        {
-          to: 'versions',
-          label: `v0.16.x`,
-          position: 'right',
         },
         {
           to: 'blog',
