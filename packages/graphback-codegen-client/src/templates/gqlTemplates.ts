@@ -28,7 +28,8 @@ export const findOneQuery = (t: ModelDefinition) => {
     ${fieldName}(id: $id) {
       ...${t.graphqlType.name}ExpandedFields
     }
-  }`
+}
+`
 }
 
 export const findQuery = (t: GraphQLObjectType) => {
@@ -44,7 +45,8 @@ export const findQuery = (t: GraphQLObjectType) => {
       limit
       count
     }
-  }`
+}
+`
 }
 
 
@@ -90,7 +92,8 @@ export const subscription = (t: GraphQLObjectType, fieldName: string, inputTypeF
   ${fieldName}(filter: $filter) {
       ...${t.name}Fields
   }
-} `
+} 
+`
 }
 
 export const createFragments = (types: ModelDefinition[]) => {
