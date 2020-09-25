@@ -8,7 +8,7 @@ title: Release Notes
 This file contains changes and migration steps for the Graphback project. 
 Please follow individual releases for more information.
 
-# 1.0.0
+# 1.0.1
 
 ### Features
 
@@ -33,6 +33,10 @@ Please follow individual releases for more information.
 ### Breaking Changes
 
 * Refactored the Knex Query Mapper ([#2034](https://github.com/aerogear/graphback/pull/2034), fixed by [6d43f28](https://github.com/aerogear/graphback/commit/6d43f288865a2c8c0d441e486a156301ca6cc42a))
+
+## 1.0.0
+
+**INVALID RELEASE**
 
 # 0.16.2
 
