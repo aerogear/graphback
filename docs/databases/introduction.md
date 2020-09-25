@@ -1,7 +1,7 @@
 ---
 id: overview
 title: Overview
-sidebar_label: Overiew 
+sidebar_label: Overview 
 ---
 
 At the core of a CRUD API is the database that Graphback interacts with by providing a rich set of tools and APIs that help you get your database working with your GraphQL application in minutes.
