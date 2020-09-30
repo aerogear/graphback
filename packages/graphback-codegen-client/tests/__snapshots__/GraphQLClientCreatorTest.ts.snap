@@ -9,7 +9,7 @@ Object {
    title
    description
 
-} ",
+}",
       "name": "Note",
     },
     Object {
@@ -22,7 +22,7 @@ Object {
       title
       description
    }
-} ",
+}",
       "name": "NoteExpanded",
     },
     Object {
@@ -31,7 +31,7 @@ Object {
    title
    description
 
-} ",
+}",
       "name": "Comment",
     },
     Object {
@@ -44,7 +44,7 @@ Object {
       title
       description
    }
-} ",
+}",
       "name": "CommentExpanded",
     },
     Object {
@@ -52,7 +52,7 @@ Object {
    _id
    metadata
 
-} ",
+}",
       "name": "ModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -60,21 +60,21 @@ Object {
    _id
    metadata
 
-} ",
+}",
       "name": "ModelWithGraphbackObjectIDPrimaryKeyExpanded",
     },
     Object {
       "implementation": "fragment ModelWithAnnotatedPrimaryKeyFields on ModelWithAnnotatedPrimaryKey {
    email
 
-} ",
+}",
       "name": "ModelWithAnnotatedPrimaryKey",
     },
     Object {
       "implementation": "fragment ModelWithAnnotatedPrimaryKeyExpandedFields on ModelWithAnnotatedPrimaryKey {
    email
 
-} ",
+}",
       "name": "ModelWithAnnotatedPrimaryKeyExpanded",
     },
   ],
@@ -84,8 +84,7 @@ Object {
   createNote(input: $input) {
       ...NoteFields
   }
-}
-",
+}",
       "name": "createNote",
     },
     Object {
@@ -93,8 +92,7 @@ Object {
   updateNote(input: $input) {
       ...NoteFields
   }
-}
-",
+}",
       "name": "updateNote",
     },
     Object {
@@ -102,8 +100,7 @@ Object {
   deleteNote(input: $input) {
       ...NoteFields
   }
-}
-",
+}",
       "name": "deleteNote",
     },
     Object {
@@ -111,8 +108,7 @@ Object {
   createComment(input: $input) {
       ...CommentFields
   }
-}
-",
+}",
       "name": "createComment",
     },
     Object {
@@ -120,8 +116,7 @@ Object {
   updateComment(input: $input) {
       ...CommentFields
   }
-}
-",
+}",
       "name": "updateComment",
     },
     Object {
@@ -129,8 +124,7 @@ Object {
   deleteComment(input: $input) {
       ...CommentFields
   }
-}
-",
+}",
       "name": "deleteComment",
     },
     Object {
@@ -138,8 +132,7 @@ Object {
   createModelWithGraphbackObjectIDPrimaryKey(input: $input) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-}
-",
+}",
       "name": "createModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -147,8 +140,7 @@ Object {
   updateModelWithGraphbackObjectIDPrimaryKey(input: $input) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-}
-",
+}",
       "name": "updateModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -156,8 +148,7 @@ Object {
   deleteModelWithGraphbackObjectIDPrimaryKey(input: $input) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-}
-",
+}",
       "name": "deleteModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -165,8 +156,7 @@ Object {
   createModelWithAnnotatedPrimaryKey(input: $input) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-}
-",
+}",
       "name": "createModelWithAnnotatedPrimaryKey",
     },
     Object {
@@ -174,8 +164,7 @@ Object {
   updateModelWithAnnotatedPrimaryKey(input: $input) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-}
-",
+}",
       "name": "updateModelWithAnnotatedPrimaryKey",
     },
     Object {
@@ -183,8 +172,7 @@ Object {
   deleteModelWithAnnotatedPrimaryKey(input: $input) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-}
-",
+}",
       "name": "deleteModelWithAnnotatedPrimaryKey",
     },
   ],
@@ -199,7 +187,7 @@ Object {
       limit
       count
     }
-  }",
+}",
       "name": "findNotes",
     },
     Object {
@@ -207,7 +195,7 @@ Object {
     getNote(id: $id) {
       ...NoteExpandedFields
     }
-  }",
+}",
       "name": "getNote",
     },
     Object {
@@ -220,7 +208,7 @@ Object {
       limit
       count
     }
-  }",
+}",
       "name": "findComments",
     },
     Object {
@@ -228,7 +216,7 @@ Object {
     getComment(id: $id) {
       ...CommentExpandedFields
     }
-  }",
+}",
       "name": "getComment",
     },
     Object {
@@ -241,7 +229,7 @@ Object {
       limit
       count
     }
-  }",
+}",
       "name": "findModelWithGraphbackObjectIDPrimaryKeys",
     },
     Object {
@@ -249,7 +237,7 @@ Object {
     getModelWithGraphbackObjectIDPrimaryKey(id: $id) {
       ...ModelWithGraphbackObjectIDPrimaryKeyExpandedFields
     }
-  }",
+}",
       "name": "getModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -262,7 +250,7 @@ Object {
       limit
       count
     }
-  }",
+}",
       "name": "findModelWithAnnotatedPrimaryKeys",
     },
     Object {
@@ -270,7 +258,7 @@ Object {
     getModelWithAnnotatedPrimaryKey(id: $id) {
       ...ModelWithAnnotatedPrimaryKeyExpandedFields
     }
-  }",
+}",
       "name": "getModelWithAnnotatedPrimaryKey",
     },
   ],
@@ -280,7 +268,7 @@ Object {
   newNote(filter: $filter) {
       ...NoteFields
   }
-} ",
+}",
       "name": "newNote",
     },
     Object {
@@ -288,7 +276,7 @@ Object {
   updatedNote(filter: $filter) {
       ...NoteFields
   }
-} ",
+}",
       "name": "updatedNote",
     },
     Object {
@@ -296,7 +284,7 @@ Object {
   deletedNote(filter: $filter) {
       ...NoteFields
   }
-} ",
+}",
       "name": "deletedNote",
     },
     Object {
@@ -304,7 +292,7 @@ Object {
   newComment(filter: $filter) {
       ...CommentFields
   }
-} ",
+}",
       "name": "newComment",
     },
     Object {
@@ -312,7 +300,7 @@ Object {
   updatedComment(filter: $filter) {
       ...CommentFields
   }
-} ",
+}",
       "name": "updatedComment",
     },
     Object {
@@ -320,7 +308,7 @@ Object {
   deletedComment(filter: $filter) {
       ...CommentFields
   }
-} ",
+}",
       "name": "deletedComment",
     },
     Object {
@@ -328,7 +316,7 @@ Object {
   newModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-} ",
+}",
       "name": "newModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -336,7 +324,7 @@ Object {
   updatedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-} ",
+}",
       "name": "updatedModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -344,7 +332,7 @@ Object {
   deletedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-} ",
+}",
       "name": "deletedModelWithGraphbackObjectIDPrimaryKey",
     },
     Object {
@@ -352,7 +340,7 @@ Object {
   newModelWithAnnotatedPrimaryKey(filter: $filter) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-} ",
+}",
       "name": "newModelWithAnnotatedPrimaryKey",
     },
     Object {
@@ -360,7 +348,7 @@ Object {
   updatedModelWithAnnotatedPrimaryKey(filter: $filter) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-} ",
+}",
       "name": "updatedModelWithAnnotatedPrimaryKey",
     },
     Object {
@@ -368,7 +356,7 @@ Object {
   deletedModelWithAnnotatedPrimaryKey(filter: $filter) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-} ",
+}",
       "name": "deletedModelWithAnnotatedPrimaryKey",
     },
   ],
@@ -387,7 +375,7 @@ export const NoteFragment = gql\`
    title
    description
 
-} 
+}
 \`
 ",
       "name": "Note",
@@ -403,7 +391,7 @@ export const NoteFragment = gql\`
       title
       description
    }
-} 
+}
 \`
 ",
       "name": "NoteExpanded",
@@ -417,7 +405,7 @@ export const CommentFragment = gql\`
    title
    description
 
-} 
+}
 \`
 ",
       "name": "Comment",
@@ -433,7 +421,7 @@ export const CommentFragment = gql\`
       title
       description
    }
-} 
+}
 \`
 ",
       "name": "CommentExpanded",
@@ -446,7 +434,7 @@ export const ModelWithGraphbackObjectIDPrimaryKeyFragment = gql\`
    _id
    metadata
 
-} 
+}
 \`
 ",
       "name": "ModelWithGraphbackObjectIDPrimaryKey",
@@ -457,7 +445,7 @@ export const ModelWithGraphbackObjectIDPrimaryKeyFragment = gql\`
    _id
    metadata
 
-} 
+}
 \`
 ",
       "name": "ModelWithGraphbackObjectIDPrimaryKeyExpanded",
@@ -469,7 +457,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   fragment ModelWithAnnotatedPrimaryKeyFields on ModelWithAnnotatedPrimaryKey {
    email
 
-} 
+}
 \`
 ",
       "name": "ModelWithAnnotatedPrimaryKey",
@@ -479,7 +467,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   fragment ModelWithAnnotatedPrimaryKeyExpandedFields on ModelWithAnnotatedPrimaryKey {
    email
 
-} 
+}
 \`
 ",
       "name": "ModelWithAnnotatedPrimaryKeyExpanded",
@@ -494,7 +482,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   }
 }
 
-
   \${NoteFragment}
 \`
 ",
@@ -507,7 +494,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       ...NoteFields
   }
 }
-
 
   \${NoteFragment}
 \`
@@ -522,7 +508,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   }
 }
 
-
   \${NoteFragment}
 \`
 ",
@@ -535,7 +520,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       ...CommentFields
   }
 }
-
 
   \${CommentFragment}
 \`
@@ -550,7 +534,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   }
 }
 
-
   \${CommentFragment}
 \`
 ",
@@ -563,7 +546,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       ...CommentFields
   }
 }
-
 
   \${CommentFragment}
 \`
@@ -578,7 +560,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   }
 }
 
-
   \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
 \`
 ",
@@ -591,7 +572,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
 }
-
 
   \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
 \`
@@ -606,7 +586,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   }
 }
 
-
   \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
 \`
 ",
@@ -619,7 +598,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       ...ModelWithAnnotatedPrimaryKeyFields
   }
 }
-
 
   \${ModelWithAnnotatedPrimaryKeyFragment}
 \`
@@ -634,7 +612,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   }
 }
 
-
   \${ModelWithAnnotatedPrimaryKeyFragment}
 \`
 ",
@@ -647,7 +624,6 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       ...ModelWithAnnotatedPrimaryKeyFields
   }
 }
-
 
   \${ModelWithAnnotatedPrimaryKeyFragment}
 \`
@@ -667,7 +643,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       limit
       count
     }
-  }
+}
 
   \${NoteExpandedFragment}
 \`
@@ -680,7 +656,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
     getNote(id: $id) {
       ...NoteExpandedFields
     }
-  }
+}
 
   \${NoteExpandedFragment}
 \`
@@ -698,7 +674,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       limit
       count
     }
-  }
+}
 
   \${CommentExpandedFragment}
 \`
@@ -711,7 +687,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
     getComment(id: $id) {
       ...CommentExpandedFields
     }
-  }
+}
 
   \${CommentExpandedFragment}
 \`
@@ -729,7 +705,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       limit
       count
     }
-  }
+}
 
   \${ModelWithGraphbackObjectIDPrimaryKeyExpandedFragment}
 \`
@@ -742,7 +718,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
     getModelWithGraphbackObjectIDPrimaryKey(id: $id) {
       ...ModelWithGraphbackObjectIDPrimaryKeyExpandedFields
     }
-  }
+}
 
   \${ModelWithGraphbackObjectIDPrimaryKeyExpandedFragment}
 \`
@@ -760,7 +736,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
       limit
       count
     }
-  }
+}
 
   \${ModelWithAnnotatedPrimaryKeyExpandedFragment}
 \`
@@ -773,7 +749,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
     getModelWithAnnotatedPrimaryKey(id: $id) {
       ...ModelWithAnnotatedPrimaryKeyExpandedFields
     }
-  }
+}
 
   \${ModelWithAnnotatedPrimaryKeyExpandedFragment}
 \`
@@ -788,7 +764,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   newNote(filter: $filter) {
       ...NoteFields
   }
-} 
+}
 
   \${NoteFragment}
 \`
@@ -801,7 +777,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   updatedNote(filter: $filter) {
       ...NoteFields
   }
-} 
+}
 
   \${NoteFragment}
 \`
@@ -814,7 +790,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   deletedNote(filter: $filter) {
       ...NoteFields
   }
-} 
+}
 
   \${NoteFragment}
 \`
@@ -827,7 +803,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   newComment(filter: $filter) {
       ...CommentFields
   }
-} 
+}
 
   \${CommentFragment}
 \`
@@ -840,7 +816,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   updatedComment(filter: $filter) {
       ...CommentFields
   }
-} 
+}
 
   \${CommentFragment}
 \`
@@ -853,7 +829,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   deletedComment(filter: $filter) {
       ...CommentFields
   }
-} 
+}
 
   \${CommentFragment}
 \`
@@ -866,7 +842,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   newModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-} 
+}
 
   \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
 \`
@@ -879,7 +855,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   updatedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-} 
+}
 
   \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
 \`
@@ -892,7 +868,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   deletedModelWithGraphbackObjectIDPrimaryKey(filter: $filter) {
       ...ModelWithGraphbackObjectIDPrimaryKeyFields
   }
-} 
+}
 
   \${ModelWithGraphbackObjectIDPrimaryKeyFragment}
 \`
@@ -905,7 +881,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   newModelWithAnnotatedPrimaryKey(filter: $filter) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-} 
+}
 
   \${ModelWithAnnotatedPrimaryKeyFragment}
 \`
@@ -918,7 +894,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   updatedModelWithAnnotatedPrimaryKey(filter: $filter) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-} 
+}
 
   \${ModelWithAnnotatedPrimaryKeyFragment}
 \`
@@ -931,7 +907,7 @@ export const ModelWithAnnotatedPrimaryKeyFragment = gql\`
   deletedModelWithAnnotatedPrimaryKey(filter: $filter) {
       ...ModelWithAnnotatedPrimaryKeyFields
   }
-} 
+}
 
   \${ModelWithAnnotatedPrimaryKeyFragment}
 \`

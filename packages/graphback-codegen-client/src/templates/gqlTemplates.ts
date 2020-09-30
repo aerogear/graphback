@@ -9,7 +9,7 @@ export const fragment = (t: GraphQLObjectType) => {
 
   return `fragment ${t.name}Fields on ${t.name} {
 ${returnFieldsString}
-} `
+}`
 }
 
 export const expandedFragment = (t: GraphQLObjectType) => {
@@ -18,7 +18,7 @@ export const expandedFragment = (t: GraphQLObjectType) => {
 
   return `fragment ${t.name}ExpandedFields on ${t.name} {
 ${returnFieldsString}
-} `
+}`
 }
 
 export const findOneQuery = (t: ModelDefinition) => {
@@ -28,7 +28,7 @@ export const findOneQuery = (t: ModelDefinition) => {
     ${fieldName}(id: $id) {
       ...${t.graphqlType.name}ExpandedFields
     }
-  }`
+}`
 }
 
 export const findQuery = (t: GraphQLObjectType) => {
@@ -44,7 +44,7 @@ export const findQuery = (t: GraphQLObjectType) => {
       limit
       count
     }
-  }`
+}`
 }
 
 
@@ -56,8 +56,7 @@ export const createMutation = (t: GraphQLObjectType) => {
   ${ fieldName}(input: $input) {
       ...${ t.name}Fields
   }
-}
-`
+}`
 }
 
 export const updateMutation = (t: GraphQLObjectType) => {
@@ -68,8 +67,7 @@ export const updateMutation = (t: GraphQLObjectType) => {
   ${fieldName}(input: $input) {
       ...${ t.name}Fields
   }
-}
-`
+}`
 }
 
 export const deleteMutation = (t: GraphQLObjectType) => {
@@ -80,8 +78,7 @@ export const deleteMutation = (t: GraphQLObjectType) => {
   ${fieldName}(input: $input) {
       ...${t.name}Fields
   }
-}
-`
+}`
 }
 
 export const subscription = (t: GraphQLObjectType, fieldName: string, inputTypeField: string) => {
@@ -90,7 +87,7 @@ export const subscription = (t: GraphQLObjectType, fieldName: string, inputTypeF
   ${fieldName}(filter: $filter) {
       ...${t.name}Fields
   }
-} `
+}`
 }
 
 export const createFragments = (types: ModelDefinition[]) => {
