@@ -1,7 +1,7 @@
 ---
 title: Rising above GraphQL subscriptions with Graphback DataSync
 author: Shibani Shankar Dash
-author_title: GSoC '20 Student @ Aerogear
+author_title: Aerogear community contributor
 author_url: https://github.com/ssd71
 author_image_url: https://avatars1.githubusercontent.com/u/20183094?s=460&u=dc7003f2886fbefe348ab88db9db6087fd23cb29&v=4
 tags: [graphql, graphback, graphqlcrud, graphql-js, nodejs, datasync, graphql-subscriptions]
