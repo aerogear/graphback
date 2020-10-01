@@ -24,7 +24,8 @@ In an offline-first application, where a client may often switch between being o
 ![](../static/img/conflictdiagram.png)
 
 ### Solution?
-<!-- = Meme here - you telling me I can stop deleting my data? -->
+
+![](https://i.memeful.com/memes/R8nXE1b/Matrix-Morpheus.jpg)
 
 - Stop deleting data in the table to introduce soft deletes 
 - Have separate table for delete operations and merging results when sending data to clients
