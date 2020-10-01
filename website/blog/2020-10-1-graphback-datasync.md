@@ -8,7 +8,7 @@ tags: [graphql, graphback, graphqlcrud, graphql-js, nodejs, datasync, graphql-su
 image: https://graphback.dev/img/logo.png
 ---
 
-GraphQL subscriptions are a perfect fit for situations where users like to receive instant updates for some specific types of data. Subscriptions are very flexible and allow developers to connect directly to the stream of the changes generated on the server side.
+GraphQL Subscriptions are a perfect fit for situations where users like to receive instant updates for some specific types of data. Subscriptions are very flexible and allow developers to connect directly to the stream of the changes generated on the server side.
 Subscriptions deliver delta updates to the client only when clients are subscribed. To receive partial updates after an application is restarted developers can use the concept of delta queries.
 ## Delta queries
 Delta queries are a concept that allow users to perform a query that will return partial data based on a specific separator that is usually represented as a sequence or timestamp or any date series that will separate a sorted dataset into data we have seen and a delta that should be returned to clients.
@@ -21,7 +21,7 @@ Not every dataset can support delta queries. Every deletion of the data will rem
 ## Conflict resolution
 In an offline-first application, where a client may often switch between being online and offline, conflicts between client-side and server-side data are almost guaranteed to occur. It is of utmost importance these conflicts are detected and some mechanism is  in place to resolve these conflicts.
 
-![](../static/img/conflictdiagram.png)
+![](/img/syncdiagram.png)
 
 ### Solution?
 
@@ -82,7 +82,7 @@ query {
 }
 ```
 
-Notice that we not only get the required fields like id and text, but also `_lastUpdatedAt` as well as if the post was `_deleted` , all of which are automatically maintained by DataSync.
+Notice that we not only get the required fields like id and text, but also `_lastUpdatedAt` as well as if the post was `_deleted`, all of which are automatically maintained by DataSync.
 
 ## Server-side Conflict Resolution
 
@@ -142,7 +142,8 @@ Visit the [docs](https://graphback.dev/docs/next/datasync/intro) for a complete 
 
 Edit the data model as desired and move on.
 
-- `npx graphql-serve serve model.graphql --datasync -p 4000` 
+```shell
+npx graphql-serve serve model.graphql --datasync -p 4000
 
 Navigate to [http://localhost:4000/graphql](http://localhost:4000/graphql) and test out queries.
 Be sure to check out our docs for tons of other cool things that you can do with Graphback and DataSync!
