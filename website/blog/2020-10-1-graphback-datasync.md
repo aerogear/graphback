@@ -1,5 +1,5 @@
 ---
-title: Rising above GraphQL subscriptions with Graphback DataSync
+title: Rising above GraphQL Subscriptions with Graphback DataSync
 author: Shibani Shankar Dash
 author_title: Aerogear community contributor
 author_url: https://github.com/ssd71
