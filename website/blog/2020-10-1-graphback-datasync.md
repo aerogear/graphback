@@ -19,7 +19,7 @@ Delta queries are a concept that allow users to perform a query that will return
 Not every dataset can support delta queries. Every deletion of the data will remove it from the database which means that sorting and splitting the dataset to retrieve updates will destroy it.
 
 ## Conflict resolution
-In an offline-first application, where a client may often switch between being online and offline, conflicts between client-side and server-side data are almost guaranteed to occur. It is of utmost importance these conflicts are detected and some mechanism is  in place to resolve these conflicts.
+In an offline-first application, where a client may often switch between being online and offline, conflicts between client-side and server-side data are almost guaranteed to occur. It is of utmost importance these conflicts are detected and some mechanism is in place to resolve these conflicts.
 
 ![](/img/syncdiagram.png)
 
