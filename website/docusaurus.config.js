@@ -90,8 +90,8 @@ module.exports = {
           title: 'Community',
           items: [
             {
+              label: 'GitHub',
               href: 'https://github.com/aerogear/graphback',
-              className: 'header-github-link'
             },
             {
               label: 'Discord',
