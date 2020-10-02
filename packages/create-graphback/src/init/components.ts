@@ -39,10 +39,10 @@ You can either change the given filter or not pass the option to display the ful
 
   logInfo(`${chalk.cyan('create-graphback')} can create your app from following templates:
   ${displayedTemplates
-      .map((template: Template) => {
-        return `\n${chalk.green(template.name)}: \n${template.description}`;
-      })
-      .join('\n')}
+    .map((template: Template) => {
+      return `\n${chalk.green(template.name)}: \n${template.description}`;
+    })
+    .join('\n')}
   `);
   const { templateName } = await ask([
     {
