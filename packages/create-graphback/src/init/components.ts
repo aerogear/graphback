@@ -15,7 +15,7 @@ function checkDirectory(path: string, name: string): void {
   try {
     accessSync(path);
     logError(
-      `A folder with name ${name} exists. Remove it or try another name.`
+      `A folder with name ${name} exists. Remove it or try another name.`,
     );
     process.exit(0);
   } catch (error) {
@@ -29,7 +29,7 @@ function checkDirectory(path: string, name: string): void {
 async function chooseTemplate(filter: string = ''): Promise<Template> {
   const regex = new RegExp(`.*${filter}.*`, 'i');
   const displayedTemplates = allTemplates.filter((template: Template) =>
-    regex.test(`${chalk.green(template.name)} ${template.description}`)
+    regex.test(`${chalk.green(template.name)} ${template.description}`),
   );
   if (!displayedTemplates.length) {
     logInfo(`create-graphback could not find templates matching the given filter: "${filter}".
@@ -37,7 +37,9 @@ You can either change the given filter or not pass the option to display the ful
     process.exit(0);
   }
 
-  logInfo(`Graphback init can create your app from following templates:
+  logInfo(`${chalk.cyan(
+    'create-graphback',
+  )} can create your app from following templates:
   ${displayedTemplates
     .map((template: Template) => {
       return `\n${chalk.green(template.name)}: \n${template.description}`;
@@ -49,8 +51,8 @@ You can either change the given filter or not pass the option to display the ful
       type: 'list',
       name: 'templateName',
       message: 'Choose a template to bootstrap',
-      choices: displayedTemplates.map((t: Template) => t.name)
-    }
+      choices: displayedTemplates.map((t: Template) => t.name),
+    },
   ]);
 
   return displayedTemplates.find((t: Template) => t.name === templateName);
@@ -66,7 +68,7 @@ function checkTemplateName(templateName: string): void {
     return;
   }
   logError(
-    "Template with given name doesn't exist. Give one of available ones or simply choose by not providing a template name"
+    "Template with given name doesn't exist. Give one of available ones or simply choose by not providing a template name",
   );
   process.exit(0);
 }
@@ -77,7 +79,7 @@ function checkTemplateName(templateName: string): void {
  */
 async function assignTemplate(
   templateName: string,
-  filter: string
+  filter: string,
 ): Promise<Template> {
   let template;
   if (templateName) {
@@ -113,9 +115,9 @@ function buildTemplateFromGithub(templateUrl: string) {
       {
         uri: url[0],
         branch: url[1] || 'master',
-        path: '/'
-      }
-    ]
+        path: '/',
+      },
+    ],
   };
 }
 
@@ -129,10 +131,10 @@ export async function init(
   name: string,
   templateName?: string,
   templateUrl?: string,
-  filter?: string
+  filter?: string,
 ) {
   logInfo(
-    chalk.yellow(figlet.textSync('Graphback', { horizontalLayout: 'full' }))
+    chalk.yellow(figlet.textSync('Graphback', { horizontalLayout: 'full' })),
   );
   const path: string = `${process.cwd()}/${name}`;
   checkDirectory(path, name);
