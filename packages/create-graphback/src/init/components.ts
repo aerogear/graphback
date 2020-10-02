@@ -37,7 +37,7 @@ You can either change the given filter or not pass the option to display the ful
     process.exit(0);
   }
 
-  logInfo(`Graphback init can create your app from following templates:
+  logInfo(`${chalk.cyan('create-graphback')} can create your app from following templates:
   ${displayedTemplates
     .map((template: Template) => {
       return `\n${chalk.green(template.name)}: \n${template.description}`;
