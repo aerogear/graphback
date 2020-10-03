@@ -1,17 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
-import { ApolloServer } from 'apollo-server-express';
+import mercurius from 'mercurius';
 import { buildGraphbackAPI } from 'graphback';
 import { createMongoDbProvider } from '@graphback/runtime-mongo';
 import cors from 'cors';
-import express from 'express';
+import fastify from 'fastify';
 import http from 'http';
 import { loadConfigSync } from 'graphql-config';
 import { connectDB } from './db';
 import { noteResolvers } from './resolvers/noteResolvers';
 
 async function start() {
-  const app = express();
+  const app = fastify();
 
   app.use(cors());
 
@@ -35,16 +35,13 @@ async function start() {
     dataProviderCreator: createMongoDbProvider(db)
   });
 
-  const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers: [resolvers, noteResolvers],
-    context: contextCreator
-  });
-
-  apolloServer.applyMiddleware({ app });
+  app.register(mercurius, { 
+    schema: typeDefs, 
+    resolvers: [resolvers, noteResolvers], 
+    context: contextCreator 
+  }); 
 
   const httpServer = http.createServer(app);
-  apolloServer.installSubscriptionHandlers(httpServer);
 
   httpServer.listen({ port: 4000 }, () => {
     console.log(`🚀  Server ready at http://localhost:4000/graphql`);
