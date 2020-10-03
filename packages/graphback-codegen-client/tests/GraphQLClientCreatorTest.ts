@@ -20,7 +20,6 @@ test('Test plugin engine ts', async () => {
   expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
 
-
 test('Test plugin engine graphql', async () => {
   const crudMethods = {
     "create": true,
@@ -32,6 +31,40 @@ test('Test plugin engine graphql', async () => {
 
   const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
   const plugin = new ClientCRUDPlugin({ outputFile: './tmp/generated.graphql', fragmentOnly: false });
+  expect(plugin.getDocuments(metadata)).toMatchSnapshot();
+});
+
+test('Test subscription query ts', async () => {
+  const crudMethods = {
+    "create": false,
+    "update": false,
+    "findOne": true,
+    "find": true,
+    "delete": false,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true
+  }
+
+  const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
+  const plugin = new ClientCRUDPlugin({ outputFile: './tmp/generated-subs.ts', fragmentOnly: false });
+  expect(plugin.getDocuments(metadata)).toMatchSnapshot();
+});
+
+test('Test subscription query graphql', async () => {
+  const crudMethods = {
+    "create": false,
+    "update": false,
+    "findOne": true,
+    "find": true,
+    "delete": false,
+    "subCreate": true,
+    "subUpdate": true,
+    "subDelete": true
+  }
+
+  const metadata = new GraphbackCoreMetadata({ crudMethods }, buildSchema(schemaText))
+  const plugin = new ClientCRUDPlugin({ outputFile: './tmp/generated-subs.graphql', fragmentOnly: false });
   expect(plugin.getDocuments(metadata)).toMatchSnapshot();
 });
 
