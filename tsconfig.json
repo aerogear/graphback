@@ -9,6 +9,7 @@
     "alwaysStrict": false,
     "sourceMap": true,
     "declaration": true,
+    "declarationMap": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -25,5 +26,5 @@
     "node_modules",
     "dist",
     "types"
-  ]	  
+  ]
 }
