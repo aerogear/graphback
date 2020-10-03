@@ -159,7 +159,7 @@ export const createSubscriptionsTS = (types: ModelDefinition[]) => {
   types.forEach((model: ModelDefinition) => {
     const t = model.graphqlType;
     const name = model.graphqlType.name;
-    if (model.crudOptions.create && model.crudOptions.subCreate) {
+    if (model.crudOptions.subCreate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.CREATE);
       const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_CREATE)
       subscriptions.push({
@@ -168,7 +168,7 @@ export const createSubscriptionsTS = (types: ModelDefinition[]) => {
       })
     }
 
-    if (model.crudOptions.update && model.crudOptions.subUpdate) {
+    if (model.crudOptions.subUpdate) {
       const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE);
       const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_UPDATE)
       subscriptions.push({
@@ -177,7 +177,7 @@ export const createSubscriptionsTS = (types: ModelDefinition[]) => {
       })
     }
 
-    if (model.crudOptions.delete && model.crudOptions.subDelete) {
+    if (model.crudOptions.subDelete) {
       const operation = getSubscriptionName(name, GraphbackOperationType.DELETE);
       const inputTypeField = getInputTypeName(model.graphqlType.name, GraphbackOperationType.SUBSCRIPTION_DELETE)
       subscriptions.push({
