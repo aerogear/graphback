@@ -161,7 +161,7 @@ const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
 ```
 
 
-With the [GraphbackDataProviderCreator](https://graphback.dev/docs/api/graphback/modules/_buildgraphbackapi_#graphbackdataprovidercreator).
+With [`dataProviderCreator`](https://graphback.dev/docs/api/graphback/modules/_buildgraphbackapi_#graphbackdataprovidercreator) you can easily use multiple data sources in one application:
 
 ```ts
 import { KnexDBDataProvider } from '@graphback/runtime-knex';
