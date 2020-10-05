@@ -27,8 +27,8 @@ export const allTemplates: Template[] = [
       }]
   },
   {
-    name: 'apollo-fullstack-react-mongo-ts',
-    description: 'Apollo GraphQL Server connecting to Mongo database and React client using TypeScript',
+    name: 'fastify-fullstack-react-mongo-ts',
+    description: 'GraphQL Server based on Fastify connecting to MongoDB database and React client using TypeScript',
     repos: [
       {
         uri: 'https://github.com/aerogear/graphback',
@@ -38,16 +38,16 @@ export const allTemplates: Template[] = [
       },{
         uri: 'https://github.com/aerogear/graphback',
         branch: 'templates-1.0.0',
-        path: '/templates/ts-apollo-mongodb-backend',
+        path: '/templates/ts-fastify-mongodb-backend',
       }]
   },
   {
-    name: 'apollo-mongo-server-ts',
-    description: 'Apollo GraphQL Server connecting to Mongo database using TypeScript',
+    name: 'fastify-mongo-server-ts',
+    description: 'GraphQL Server based on Fastify connecting to MongoDB database using TypeScript',
     repos: [{
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-1.0.0',
-      path: '/templates/ts-apollo-mongodb-backend',
+      path: '/templates/ts-fastify-mongodb-backend',
     }]
   },
   {
