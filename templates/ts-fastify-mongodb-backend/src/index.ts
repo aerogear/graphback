@@ -35,13 +35,13 @@ async function start() {
     dataProviderCreator: createMongoDbProvider(db)
   });
 
-  app.register(mercurius, { 
+  app.register((mercurius as any), { 
     schema: typeDefs, 
     resolvers: [resolvers, noteResolvers], 
     context: contextCreator 
   }); 
 
-  const httpServer = http.createServer(app);
+  const httpServer = http.createServer((app as any));
 
   httpServer.listen({ port: 4000 }, () => {
     console.log(`🚀  Server ready at http://localhost:4000/graphql`);
