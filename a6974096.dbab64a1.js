@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[815],{870:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"graphback","name":"graphback","count":2,"permalink":"/blog/tags/graphback"}')}}]);
