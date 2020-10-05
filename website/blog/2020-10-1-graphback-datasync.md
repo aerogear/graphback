@@ -126,6 +126,7 @@ All of this can be easily setup with our DataSync enabled [graphql-serve](../../
 ### Setting Up a DataSync server
 
 - Define your data model using GraphQL
+
 ```graphql
 """ 
 @model
@@ -139,6 +140,7 @@ type Comment {
 
 scalar GraphbackObjectID
 ```
+
 This is going to be our data model. Notice that both types are annotated with [`@model`](../../docs/model/annotations.md#model) and [`@datasync`](../../docs/datasync/delta-queries.md/#annotate-the-required-models). The former is required for Graphback to recognise model types and the latter is required to enable DataSync for a specific model.
 
 Visit the [docs](../../docs/datasync/intro.md) for a complete reference to all Graphback supported annotations as well as a more involved introduction to DataSync.
@@ -147,6 +149,7 @@ Edit the data model as desired and move on.
 
 ```shell
 npx graphql-serve serve model.graphql --datasync -p 4000
+```
 
 Navigate to [http://localhost:4000/graphql](http://localhost:4000/graphql) and test out queries.
 Be sure to check out our docs for tons of other cool things that you can do with Graphback and DataSync!
