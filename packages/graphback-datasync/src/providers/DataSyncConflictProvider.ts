@@ -3,7 +3,7 @@ import { DataSyncModelConflictConfig, DataSyncFieldNames, ConflictMetadata, Conf
 import { MongoDeltaSource } from '../deltaSource';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
 
-export const MAX_RETRIES = 3;
+export const MAX_RETRIES = process.env.CONFLICT_RESOLUTION_MAX_RETRIES ? process.env.CONFLICT_RESOLUTION_MAX_RETRIES : 3;
 
 /**
  * Data Provider with update conflicts and optional conflict resolution
