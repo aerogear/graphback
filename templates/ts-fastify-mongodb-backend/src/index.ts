@@ -9,9 +9,11 @@ import http from 'http';
 import { loadConfigSync } from 'graphql-config';
 import { connectDB } from './db';
 import { noteResolvers } from './resolvers/noteResolvers';
+import middie from 'middie';
 
 async function start() {
   const app = fastify();
+  await app.register(middie);
 
   app.use(cors());
 
