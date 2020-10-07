@@ -1,6 +1,6 @@
 /*eslint-disable max-lines*/
 import { buildSchema } from 'graphql';
-import { generateAbstractDatabase } from '../../src'
+import { generateAbstractDatabase } from '../src'
 
 test('skip root types', async () => {
   const schema = buildSchema(`

@@ -1,9 +1,9 @@
 /*eslint-disable max-lines*/
-import { computeDiff } from '../../src';
-import { AbstractDatabase } from '../../src/abstract/AbstractDatabase'
-import { Table } from '../../src/abstract/Table'
-import { TableColumn } from '../../src/abstract/TableColumn'
-import { Operation } from '../../src/diff/Operation';
+import { computeDiff } from '../src';
+import { AbstractDatabase } from '../src/abstract/AbstractDatabase'
+import { Table } from '../src/abstract/Table'
+import { TableColumn } from '../src/abstract/TableColumn'
+import { Operation } from '../src/diff/Operation';
 
 function dbFactory(tables: Table[] = []): AbstractDatabase {
   return {
