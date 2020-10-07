@@ -33,17 +33,17 @@
     "lodash": "4.17.20",
     "lodash-es": "4.17.15",
     "node-emoji": "1.10.0",
-    "pino": "6.6.1",
-    "ts-jest": "26.4.0"
+    "pino": "6.7.0",
+    "ts-jest": "26.4.1"
   },
   "devDependencies": {
     "@types/jest": "26.0.14",
     "@types/lodash": "4.14.161",
-    "@types/node": "12.12.62",
+    "@types/node": "12.12.64",
     "graphql": "15.3.0",
     "graphql-tools": "6.2.3",
     "jest": "26.4.2",
-    "pg": "8.3.3",
+    "pg": "8.4.0",
     "rimraf": "3.0.2",
     "sqlite3": "5.0.0",
     "ts-node": "9.0.0",
