@@ -2,7 +2,7 @@
 import { NoDataError } from '@graphback/core';
 import { ConflictError, DataSyncFieldNames, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName, ThrowOnConflict } from '../src';
 import { Context, createTestingContext } from './__util__';
-
+import { MAX_RETRIES } from '../src/providers/DataSyncConflictProvider';
 
 describe('DataSyncConflictMongoDBDataProvider', () => {
   let context: Context;
@@ -22,6 +22,10 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
 
   scalar GraphbackObjectID
   `;
+
+  test('MAX_RETRIES always has a valid value', async () => {
+    expect(MAX_RETRIES).toBeTruthy();
+  })
 
   test('conflict does not occur when changes can be merged', async () => {
     const resolveUpdate = jest.fn((_: ConflictMetadata) => { return {} });
