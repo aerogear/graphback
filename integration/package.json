@@ -21,7 +21,7 @@
     "apollo-server-testing": "2.17.0",
     "graphql": "15.3.0",
     "jest": "26.4.2",
-    "knex": "0.21.5",
+    "knex": "0.21.6",
     "mongodb": "3.6.2",
     "node-fetch": "2.6.1",
     "rimraf": "3.0.2",
