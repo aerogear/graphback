@@ -1,5 +1,5 @@
-import { Operation } from '../../src/diff/Operation'
-import { sortOps } from '../../src/util/sortOps'
+import { Operation } from '../src/diff/Operation'
+import { sortOps } from '../src/util/sortOps'
 
 test('sort ops by type priority', () => {
   const ops: Operation[] = [
