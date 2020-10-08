@@ -1,7 +1,7 @@
 import { SchemaComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils';
 import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType,  GraphbackContext, GraphbackTimestamp } from '@graphback/core';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, GraphbackContext, GraphbackTimestamp } from '@graphback/core';
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, GlobalConflictConfig, getModelConfigFromGlobal } from "./util";
 
@@ -178,6 +178,17 @@ export class DataSyncPlugin extends GraphbackPlugin {
     for (const field of allFields) {
       DeltaOTC.addFields({ [field.name]: field.type.toString() })
     }
+
+    modelTC.addFields({
+      [DataSyncFieldNames.lastUpdatedAt]: {
+        type: TimestampSTC.getType(),
+        description: "@index(name: 'Datasync_lastUpdatedAt')"
+      }
+    });
+
+    DeltaOTC.addFields({
+      [DataSyncFieldNames.deleted]: GraphQLBoolean
+    })
 
     DeltaOTC.addFields({
       [DataSyncFieldNames.deleted]: GraphQLBoolean
