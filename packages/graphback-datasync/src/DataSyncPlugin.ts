@@ -1,7 +1,7 @@
 import { SchemaComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils';
-import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, GraphbackTimestamp, transformForeignKeyName } from '@graphback/core';
+import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList } from 'graphql';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType,  GraphbackContext, GraphbackTimestamp } from '@graphback/core';
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, GlobalConflictConfig, getModelConfigFromGlobal } from "./util";
 
@@ -205,55 +205,5 @@ export class DataSyncPlugin extends GraphbackPlugin {
       filter: findFilterITC.getType(),
       limit: GraphQLInt
     });
-  }
-
-  private getDeltaTypeFieldNames(modelTC: GraphQLObjectType): string[] {
-
-    const entries = Object.entries(modelTC.getFields()).map(([fieldName, field]: [string, GraphQLField<any, any>]) => {
-      const relationship = parseRelationshipAnnotation(field.description);
-      if (relationship) {
-        console.log("RELATIONSHIP", relationship)
-        if (relationship.kind === "oneToOne") {
-          return relationship.key || transformForeignKeyName(field.name);
-        }
-        if (relationship.kind === "manyToOne") {
-          return relationship.key || transformForeignKeyName(field.name);
-        }
-      }
-
-      return fieldName;
-    }).filter((entry: any) => {
-      // console.log("filter", entry)
-
-      return !!entry
-    });
-    // console.log(entries);
-
-    return entries;
-  }
-
-  private addDBKeyFields(modelTC: GraphQLObjectType): string[] {
-
-    const entries = Object.entries(modelTC.getFields()).map(([fieldName, field]: [string, GraphQLField<any, any>]) => {
-      const relationship = parseRelationshipAnnotation(field.description);
-      if (relationship) {
-        console.log("RELATIONSHIP", relationship)
-        if (relationship.kind === "oneToOne") {
-          return relationship.key || transformForeignKeyName(field.name);
-        }
-        if (relationship.kind === "manyToOne") {
-          return relationship.key || transformForeignKeyName(field.name);
-        }
-      }
-
-      return fieldName;
-    }).filter((entry: any) => {
-      // console.log("filter", entry)
-
-      return !!entry
-    });
-    // console.log(entries);
-
-    return entries;
   }
 }

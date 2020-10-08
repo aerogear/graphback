@@ -19,11 +19,9 @@ type Comment {
 
 type CommentDelta {
   id: ID!
-  title: String!
-  description: String!
-
-  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
-  _lastUpdatedAt: GraphbackTimestamp
+  title: String
+  description: String
+  noteId: ID
   _deleted: Boolean
 }
 
@@ -70,6 +68,7 @@ input CreateNoteInput {
   id: ID
   title: String!
   description: String!
+  mainCommentId: ID!
 }
 
 \\"\\"\\"
@@ -98,6 +97,7 @@ input MutateNoteInput {
   id: ID!
   title: String
   description: String
+  mainCommentId: ID
 }
 
 type Mutation {
@@ -119,6 +119,9 @@ type Note {
   title: String!
   description: String!
 
+  \\"\\"\\"@oneToOne(field: 'mainComment', key: 'mainCommentId')\\"\\"\\"
+  mainComment: Comment!
+
   \\"\\"\\"@oneToMany(field: 'noteComment', key: 'noteId')\\"\\"\\"
   comments(filter: CommentFilter): [Comment]!
 
@@ -128,11 +131,9 @@ type Note {
 
 type NoteDelta {
   id: ID!
-  title: String!
-  description: String!
-
-  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
-  _lastUpdatedAt: GraphbackTimestamp
+  title: String
+  description: String
+  mainCommentId: ID
   _deleted: Boolean
 }
 
@@ -146,6 +147,7 @@ input NoteFilter {
   id: IDInput
   title: StringInput
   description: StringInput
+  mainCommentId: IDInput
   and: [NoteFilter!]
   or: [NoteFilter!]
   not: NoteFilter
@@ -179,6 +181,7 @@ input PageRequest {
 
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
+  getLikedComments(id: ID!, names: [String]!): Comment!
   getNote(id: ID!): Note
   findNotes(filter: NoteFilter, page: PageRequest, orderBy: OrderByInput): NoteResultList!
   getComment(id: ID!): Comment
@@ -235,12 +238,9 @@ type Comment {
 
 type CommentDelta {
   id: ID!
-  title: String!
-  description: String!
-
-  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
-  _lastUpdatedAt: GraphbackTimestamp
-  _version: Int
+  title: String
+  description: String
+  _version: Int!
   _deleted: Boolean
 }
 
@@ -369,11 +369,8 @@ type Comment {
 
 type CommentDelta {
   id: ID!
-  title: String!
-  description: String!
-
-  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
-  _lastUpdatedAt: GraphbackTimestamp
+  title: String
+  description: String
   _deleted: Boolean
 }
 
