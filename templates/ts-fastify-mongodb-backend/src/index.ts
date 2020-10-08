@@ -40,7 +40,8 @@ async function start() {
   app.register((mercurius as any), { 
     schema: typeDefs, 
     resolvers: [resolvers, noteResolvers], 
-    context: contextCreator 
+    context: contextCreator,
+    subscription: true
   }); 
 
   const httpServer = http.createServer((app as any));
