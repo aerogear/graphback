@@ -179,16 +179,12 @@ export class DataSyncPlugin extends GraphbackPlugin {
       DeltaOTC.addFields({ [field.name]: field.type.toString() })
     }
 
-    modelTC.addFields({
+    DeltaOTC.addFields({
       [DataSyncFieldNames.lastUpdatedAt]: {
         type: TimestampSTC.getType(),
         description: "@index(name: 'Datasync_lastUpdatedAt')"
       }
     });
-
-    DeltaOTC.addFields({
-      [DataSyncFieldNames.deleted]: GraphQLBoolean
-    })
 
     DeltaOTC.addFields({
       [DataSyncFieldNames.deleted]: GraphQLBoolean

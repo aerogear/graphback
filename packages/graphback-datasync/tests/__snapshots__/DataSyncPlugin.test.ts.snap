@@ -22,6 +22,9 @@ type CommentDelta {
   title: String
   description: String
   noteId: ID
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
+  _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
 
@@ -134,6 +137,9 @@ type NoteDelta {
   title: String
   description: String
   mainCommentId: ID
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
+  _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
 
@@ -241,6 +247,9 @@ type CommentDelta {
   title: String
   description: String
   _version: Int!
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
+  _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
 
@@ -371,6 +380,9 @@ type CommentDelta {
   id: ID!
   title: String
   description: String
+
+  \\"\\"\\"@index(name: 'Datasync_lastUpdatedAt')\\"\\"\\"
+  _lastUpdatedAt: GraphbackTimestamp
   _deleted: Boolean
 }
 
