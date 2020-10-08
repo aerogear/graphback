@@ -1,0 +1,23 @@
+""" @model """
+type Note {
+  _id: GraphbackObjectID!
+  title: String!
+  description: String
+  """
+  @oneToMany(field: 'note')
+  """
+  comments: [Comment]!
+}
+
+""" @model """
+type Comment {
+  _id: GraphbackObjectID!
+  text: String
+  description: String
+}
+
+type Query {
+  getDraftNotes: [Note]
+}
+
+scalar GraphbackObjectID
