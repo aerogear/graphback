@@ -4,6 +4,31 @@ import { ConflictError, DataSyncFieldNames, ServerSideWins, ConflictResolutionSt
 import { Context, createTestingContext } from './__util__';
 import { MAX_RETRIES } from '../src/providers/DataSyncConflictProvider';
 
+test('MAX_RETRIES has a value of 3', async () => {
+  expect(MAX_RETRIES).toBe(3);
+})
+
+describe('check configuration of MAX_RETRIES via env vars', () => {
+  const OLD_ENV = process.env;
+
+  beforeEach(() => {
+    jest.resetModules() 
+    process.env = { ...OLD_ENV };
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV; 
+  });
+
+  test('will receive process.env variables', () => {
+  
+    process.env.CONFLICT_RESOLUTION_MAX_RETRIES = 3;
+
+    //const testedModule = require('../../config/env').default --> is this relevant to this case??
+    expect(process.env.CONFLICT_RESOLUTION_MAX_RETRIES).toBe(MAX_RETRIES);
+  });
+});
+
 describe('DataSyncConflictMongoDBDataProvider', () => {
   let context: Context;
   afterEach(async () => context.server.stop());
@@ -22,10 +47,6 @@ describe('DataSyncConflictMongoDBDataProvider', () => {
 
   scalar GraphbackObjectID
   `;
-
-  test('MAX_RETRIES always has a valid value', async () => {
-    expect(MAX_RETRIES).toBeTruthy();
-  })
 
   test('conflict does not occur when changes can be merged', async () => {
     const resolveUpdate = jest.fn((_: ConflictMetadata) => { return {} });
