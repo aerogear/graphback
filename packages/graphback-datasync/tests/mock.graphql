@@ -6,6 +6,12 @@ type Note {
   id: ID!
   title: String!
   description: String!
+
+  """
+  @oneToOne(field: 'mainComment', key: 'mainCommentId')
+  """
+  mainComment: Comment!
+
   """
   @oneToMany(field: 'noteComment', key: 'noteId')
   """
@@ -20,14 +26,13 @@ type Comment {
   id: ID!
   title: String!
   description: String!
-  """
-  @manyToOne(field: 'comments', key: 'noteId')
-  """
+  """@manyToOne(field: 'comments', key: 'noteId')"""
   noteComment: Note!
 }
 
 type Query {
   getLikedNotes(id: ID!, names: [String]!): Note!
+  getLikedComments(id: ID!, names: [String]!): Comment!
 }
 
 type Mutation {
