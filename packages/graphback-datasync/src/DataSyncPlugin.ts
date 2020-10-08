@@ -1,7 +1,7 @@
 import { SchemaComposer } from 'graphql-compose';
 import { IResolvers, IFieldResolver } from '@graphql-tools/utils';
 import { GraphQLNonNull, GraphQLSchema, buildSchema, GraphQLResolveInfo, GraphQLInt, GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLField } from 'graphql';
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, GraphbackTimestamp } from '@graphback/core';
+import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getInputTypeName, GraphbackOperationType, parseRelationshipAnnotation, GraphbackContext, GraphbackTimestamp, transformForeignKeyName } from '@graphback/core';
 import { getDeltaType, getDeltaListType, getDeltaQuery } from "./deltaMappingHelper";
 import { isDataSyncService, isDataSyncModel, DataSyncFieldNames, GlobalConflictConfig, getModelConfigFromGlobal } from "./util";
 
@@ -166,16 +166,18 @@ export class DataSyncPlugin extends GraphbackPlugin {
     // Create Delta Type
     const modelName = model.graphqlType.name;
     const modelTC = schemaComposer.getOTC(modelName);
+    const updateInputType = schemaComposer.getITC(getInputTypeName(model.graphqlType.name, GraphbackOperationType.UPDATE));
     const TimestampSTC = schemaComposer.getSTC(GraphbackTimestamp.name);
 
-    const DeltaTypeFieldNames = this.getDeltaTypeFieldNames(modelTC.getType());
-
     // Add Delta Type to schema
-    const DeltaOTC = modelTC.clone(getDeltaType(modelName));
+    const DeltaOTC = schemaComposer.createObjectTC({
+      name: getDeltaType(modelName),
+    });
+    const allFields = Object.values(updateInputType.getType().getFields());
 
-    DeltaOTC.removeOtherFields(DeltaTypeFieldNames);
-
-    DeltaOTC.setDescription(undefined);
+    for (const field of allFields) {
+      DeltaOTC.addFields({ [field.name]: field.type.toString() })
+    }
 
     DeltaOTC.addFields({
       [DataSyncFieldNames.deleted]: GraphQLBoolean
@@ -206,13 +208,52 @@ export class DataSyncPlugin extends GraphbackPlugin {
   }
 
   private getDeltaTypeFieldNames(modelTC: GraphQLObjectType): string[] {
-    const DeltaTypeFieldEntries = Object.entries(modelTC.getFields()).filter((e: [string, GraphQLField<any, any>]) => {
-      // Remove relationship fields from delta Type
-      return parseRelationshipAnnotation(e[1].description) === undefined;
-    });
 
-    return DeltaTypeFieldEntries.map(([fieldName, _]: [string, GraphQLField<any, any>]) => {
-      return fieldName
+    const entries = Object.entries(modelTC.getFields()).map(([fieldName, field]: [string, GraphQLField<any, any>]) => {
+      const relationship = parseRelationshipAnnotation(field.description);
+      if (relationship) {
+        console.log("RELATIONSHIP", relationship)
+        if (relationship.kind === "oneToOne") {
+          return relationship.key || transformForeignKeyName(field.name);
+        }
+        if (relationship.kind === "manyToOne") {
+          return relationship.key || transformForeignKeyName(field.name);
+        }
+      }
+
+      return fieldName;
+    }).filter((entry: any) => {
+      // console.log("filter", entry)
+
+      return !!entry
     });
+    // console.log(entries);
+
+    return entries;
+  }
+
+  private addDBKeyFields(modelTC: GraphQLObjectType): string[] {
+
+    const entries = Object.entries(modelTC.getFields()).map(([fieldName, field]: [string, GraphQLField<any, any>]) => {
+      const relationship = parseRelationshipAnnotation(field.description);
+      if (relationship) {
+        console.log("RELATIONSHIP", relationship)
+        if (relationship.kind === "oneToOne") {
+          return relationship.key || transformForeignKeyName(field.name);
+        }
+        if (relationship.kind === "manyToOne") {
+          return relationship.key || transformForeignKeyName(field.name);
+        }
+      }
+
+      return fieldName;
+    }).filter((entry: any) => {
+      // console.log("filter", entry)
+
+      return !!entry
+    });
+    // console.log(entries);
+
+    return entries;
   }
 }
