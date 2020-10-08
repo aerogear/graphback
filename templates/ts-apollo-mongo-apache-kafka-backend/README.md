@@ -1,23 +1,17 @@
 ## Graphback MongoDB + Apollo Server with Apache Kafka Template
 
-A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript, and Apache Kafka for GraphQL subscriptions.
+> NOTE: This is a preview template - we are continuing to enhance it - we welcome your feedback.
+
+A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript, and Apache Kafka for GraphQL Subscriptions.
 
 ### Quickstart Guide
 
 The project has been created using Graphback. Run the project using the following steps:
 
-- Start the database
+- Start the database, Apache Kafka and Zookeeper
 
 ```shell
-HOST_IP=your-host-ip-address && docker-compose up -d
-```
-
-> HOST_IP is the ipv4 address of your machine.
-
-You can use the helper script to set `HOST_IP`:
-
-```shell
-./set-host-ip.sh && docker-compose up -d
+docker-compose up -d
 ```
 
 - Inspect your schema in the `model/datamodel.graphql` file.
