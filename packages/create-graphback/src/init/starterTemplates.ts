@@ -101,6 +101,15 @@ export const allTemplates: Template[] = [
       branch: 'templates-1.0.0',
       path: '/templates/ts-apollo-postgres-backend',
     }]
+  },
+  {
+    name: 'apollo-mongo-apache-kafka-server-ts',
+    description: 'Apollo GraphQL server connecting to MongoDB database with Apache Kafka for subscriptions',
+    repos: [{
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-1.0.0',
+      path: '/templates/ts-apollo-mongo-apache-kafka-backend'
+    }]
   }
 ];
 

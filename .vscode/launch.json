@@ -64,7 +64,7 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
-      "name": "Template app Mongo",
+      "name": "Template app Kafka",
       "type": "node",
       "request": "launch",
       "env": {
@@ -80,9 +80,9 @@
         "ts-node/register"
       ],
       "args": [
-        "${workspaceRoot}/templates/ts-apollo-mongodb-backend/src/index.ts"
+        "${workspaceRoot}/templates/ts-apollo-kafka-mongo-backend/src/index.ts"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-mongodb-backend",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-kafka-mongo-backend",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
