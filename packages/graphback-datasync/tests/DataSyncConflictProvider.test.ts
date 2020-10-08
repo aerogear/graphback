@@ -21,10 +21,7 @@ describe('check configuration of MAX_RETRIES via env vars', () => {
   });
 
   test('will receive process.env variables', () => {
-  
-    process.env.CONFLICT_RESOLUTION_MAX_RETRIES = 3;
-
-    //const testedModule = require('../../config/env').default --> is this relevant to this case??
+    process.env.CONFLICT_RESOLUTION_MAX_RETRIES = 4;
     expect(process.env.CONFLICT_RESOLUTION_MAX_RETRIES).toBe(MAX_RETRIES);
   });
 });
