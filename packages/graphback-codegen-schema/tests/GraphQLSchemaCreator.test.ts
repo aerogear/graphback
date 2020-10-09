@@ -405,14 +405,58 @@ test('Transient field is excluded from input types', () => {
   const schema = schemaGenerator.transformSchema(metadata);
 
   const createUserInput = assertInputObjectType(schema.getType('CreateUserInput'))
-  expect(Object.keys(createUserInput.getFields())).toEqual(['id', 'name'])
+  expect(Object.keys(createUserInput.getFields()).includes('generatedFullName')).toEqual(false);
 
   const mutateUserInput = assertInputObjectType(schema.getType('MutateUserInput'))
   expect(Object.keys(mutateUserInput.getFields())).toEqual(['id', 'name'])
 
   const userFilterInput = assertInputObjectType(schema.getType('UserFilter'))
-  expect(Object.keys(userFilterInput.getFields())).toEqual(['id', 'name', 'and', 'or', 'not'])
+  expect(Object.keys(userFilterInput.getFields()).includes('generatedFullName')).toEqual(false);
 
   const userSubscriptionInput = assertInputObjectType(schema.getType('UserFilter'))
-  expect(Object.keys(userSubscriptionInput.getFields())).toEqual(['id', 'name', 'and', 'or', 'not'])
+  expect(Object.keys(userSubscriptionInput.getFields()).includes('generatedFullName')).toEqual(false);
+})
+
+test('Auto generated primary key fields are not included in the Create<T>Mutation', () => {
+  const modelAST = `
+    """
+    @model
+    """
+    type User {
+      id: ID!
+      name: String!
+    }
+
+    """
+    @model
+    """
+    type UserTwo {
+      _id: GraphbackObjectID!
+      name: String!
+    }
+
+    scalar GraphbackObjectID
+
+    """
+    @model
+    """
+    type UserThree {
+      """@id"""
+      id: String!
+      name: String!
+    }`;
+
+  const schemaGenerator = new SchemaCRUDPlugin();
+  const metadata = new GraphbackCoreMetadata({ crudMethods: {} }, buildSchema(modelAST));
+
+  const schema = schemaGenerator.transformSchema(metadata);
+
+  const createUserInput = assertInputObjectType(schema.getType('CreateUserInput'))
+  expect(Object.keys(createUserInput.getFields()).includes('id')).toEqual(false);
+
+  const createUserTwoInput = assertInputObjectType(schema.getType('CreateUserTwoInput'))
+  expect(Object.keys(createUserTwoInput.getFields()).includes('_id')).toEqual(false);
+
+  const createUserThreeInput = assertInputObjectType(schema.getType('CreateUserThreeInput'))
+  expect(Object.keys(createUserThreeInput.getFields()).includes('id')).toEqual(true);
 })

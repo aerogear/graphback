@@ -50,7 +50,6 @@ type Note {
 
 // highlight-start
 input CreateNoteInput {
-  id: ID
   title: String!
   description: String
   authorId: ID
@@ -59,6 +58,10 @@ input CreateNoteInput {
 ```
 
 The `CreateNoteInput` input type is created from the `Note` model.
+
+:::info
+Auto-incrementing primary key fields: `id: ID` and `_id: GraphbackObjectID` are excluded from the `Create<Type>Input` type.
+:::
 
 Example of a typical create mutation on `Note`:
 

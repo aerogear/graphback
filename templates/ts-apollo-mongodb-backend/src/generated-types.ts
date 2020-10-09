@@ -49,14 +49,12 @@ export type CommentSubscriptionFilter = {
 };
 
 export type CreateCommentInput = {
-  _id?: Maybe<Scalars['GraphbackObjectID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['GraphbackObjectID']>;
 };
 
 export type CreateNoteInput = {
-  _id?: Maybe<Scalars['GraphbackObjectID']>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
 };

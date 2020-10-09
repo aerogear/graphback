@@ -8,7 +8,6 @@ directive @specifiedBy(
 ) on SCALAR
 
 input CreateUserInput {
-  id: ID
   name: String
 }
 

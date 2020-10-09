@@ -328,7 +328,6 @@ input CommentSubscriptionFilter {
 }
 
 input CreateCommentInput {
-  id: ID
   createdAt: GraphbackDate
   title: String!
   description: String!
@@ -339,12 +338,9 @@ input CreateCustomTypeInput {
   issue1432: String
 }
 
-input CreateFixInput {
-  id: ID
-}
+input CreateFixInput
 
 input CreateIssueInput {
-  id: ID
   category: IssueCategory
   createdAt: DateTime
   custom: CreateCustomTypeInput
@@ -352,25 +348,21 @@ input CreateIssueInput {
 }
 
 input CreateModelWithTransientFieldInput {
-  id: ID
   name: String
 }
 
 input CreateNoteInput {
-  id: ID
   title: String!
   description: String!
   test_id: ID
 }
 
 input CreateTestInput {
-  id: ID
   name: String
   metadata: GraphbackJSON
 }
 
 input CreateVersionedInput {
-  id: ID
   name: String
 }
 
@@ -1013,7 +1005,6 @@ type Mutation {
 }
 
 input CreateNoteInput {
-  id: ID
   title: String!
   description: String!
   test_id: ID
@@ -1027,7 +1018,6 @@ input MutateNoteInput {
 }
 
 input CreateTestInput {
-  id: ID
   name: String
   metadata: GraphbackJSON
 }
@@ -1039,7 +1029,6 @@ input MutateTestInput {
 }
 
 input CreateCommentInput {
-  id: ID
   createdAt: GraphbackDate
   title: String!
   description: String!
@@ -1143,7 +1132,6 @@ input DateTimeInput {
 }
 
 input CreateIssueInput {
-  id: ID
   category: IssueCategory
   createdAt: DateTime
   custom: CreateCustomTypeInput
@@ -1154,12 +1142,9 @@ input CreateCustomTypeInput {
   issue1432: String
 }
 
-input CreateFixInput {
-  id: ID
-}
+input CreateFixInput
 
 input CreateVersionedInput {
-  id: ID
   name: String
 }
 
@@ -1169,7 +1154,6 @@ input MutateVersionedInput {
 }
 
 input CreateModelWithTransientFieldInput {
-  id: ID
   name: String
 }
 
@@ -1494,7 +1478,6 @@ type Mutation {
 }
 
 input CreateNoteInput {
-  id: ID
   title: String!
   description: String!
   test_id: ID
@@ -1508,7 +1491,6 @@ input MutateNoteInput {
 }
 
 input CreateTestInput {
-  id: ID
   name: String
   metadata: GraphbackJSON
 }
@@ -1520,7 +1502,6 @@ input MutateTestInput {
 }
 
 input CreateCommentInput {
-  id: ID
   createdAt: GraphbackDate
   title: String!
   description: String!
@@ -1624,7 +1605,6 @@ input DateTimeInput {
 }
 
 input CreateIssueInput {
-  id: ID
   category: IssueCategory
   createdAt: DateTime
   custom: CreateCustomTypeInput
@@ -1635,12 +1615,9 @@ input CreateCustomTypeInput {
   issue1432: String
 }
 
-input CreateFixInput {
-  id: ID
-}
+input CreateFixInput
 
 input CreateVersionedInput {
-  id: ID
   name: String
 }
 
@@ -1650,7 +1627,6 @@ input MutateVersionedInput {
 }
 
 input CreateModelWithTransientFieldInput {
-  id: ID
   name: String
 }
 
@@ -1762,14 +1738,12 @@ input CommentSubscriptionFilter {
 }
 
 input CreateCommentInput {
-  id: ID
   text: String
   description: String
   noteId: ID!
 }
 
 input CreateNoteInput {
-  id: ID
   title: String!
   description: String
   commentId: ID

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { GraphQLInputObjectType, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLString, GraphQLID, GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLField, getNamedType, isScalarType, GraphQLInputFieldMap, GraphQLScalarType, GraphQLNamedType, GraphQLInputField, isEnumType, isObjectType, isInputObjectType, GraphQLInputType, getNullableType } from "graphql";
-import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS, isTransientField } from '@graphback/core';
+import { GraphbackOperationType, getInputTypeName, getInputFieldName, getInputFieldTypeName, isOneToManyField, getPrimaryKey, metadataMap, ModelDefinition, FILTER_SUPPORTED_SCALARS, isTransientField, isAutoPrimaryKey } from '@graphback/core';
 import { SchemaComposer } from 'graphql-compose';
 import { copyWrappingType } from './copyWrappingType';
 
@@ -199,16 +199,20 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
     name: inputTypeName,
     fields: () => {
       const fields: any = {};
-      for (const { name, type } of allModelFields) {
-        let fieldType: GraphQLNamedType;
-        // Remove required from ID
-        if (name === idField.name) {
-          fieldType = getNamedType(type);
+      for (const field of allModelFields) {
+        if (isAutoPrimaryKey(field)) {
+          continue;
         }
 
-        fields[name] = {
-          name,
-          type: fieldType || type
+        let fieldType: GraphQLNamedType;
+        // Remove required from ID
+        if (field.name === idField.name) {
+          fieldType = getNamedType(field.type);
+        }
+
+        fields[field.name] = {
+          name: field.name,
+          type: fieldType || field.type
         };
       }
 

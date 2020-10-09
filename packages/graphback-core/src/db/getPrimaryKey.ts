@@ -1,4 +1,4 @@
-import { GraphQLField, GraphQLObjectType, getNamedType, isScalarType } from "graphql";
+import { GraphQLField, GraphQLObjectType, getNamedType, isScalarType, GraphQLInputField } from "graphql";
 import { parseMetadata } from 'graphql-metadata';
 
 /**
@@ -52,10 +52,10 @@ export function getPrimaryKey(graphqlType: GraphQLObjectType): GraphQLField<any,
  * - is named "_id" and has scalar type "GraphbackObectID", a BSON primary key for MongoDB
  * @param field
  */
-function isAutoPrimaryKey(field: GraphQLField<any, any>): boolean {
+export function isAutoPrimaryKey(field: GraphQLField<any, any> | GraphQLInputField): boolean {
   const { type, name: fieldName } = field;
   const baseType = getNamedType(type);
   const name = baseType.name;
 
-  return ((fieldName === 'id' && name === 'ID') || ( fieldName === "_id" && name === "GraphbackObjectID")) && isScalarType(baseType);
+  return ((fieldName === 'id' && name === 'ID') || (fieldName === "_id" && name === "GraphbackObjectID")) && isScalarType(baseType);
 }
