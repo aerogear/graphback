@@ -1,7 +1,7 @@
 {
-  "name": "graphback-templates-mongodb-runtime",
+  "name": "graphback-fastify-templates-mongodb-runtime",
   "version": "1.0.1",
-  "description": "Graphback runtime template with Apollo Server and MongoDb",
+  "description": "Graphback runtime template with Fastify and MongoDb",
   "private": true,
   "main": "dist/index.js",
   "scripts": {

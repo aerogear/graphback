@@ -1,10 +1,9 @@
 import { QueryFilter } from "graphback";
 import { GraphQLResolveInfo } from 'graphql';
-import { IResolvers } from 'apollo-server-express';
 import { NoteFilter } from '../generated-types';
 import { GraphQLContext } from '../customContext';
 
-export const noteResolvers: IResolvers = {
+export const noteResolvers = {
   Query: {
     getDraftNotes: async (parent: any, args: any, context: GraphQLContext, info: GraphQLResolveInfo) => {
       const filter: QueryFilter<NoteFilter> = {
