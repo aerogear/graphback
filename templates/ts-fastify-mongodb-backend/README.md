@@ -1,6 +1,6 @@
-## Graphback MongoDB + Apollo Server Template
+## Graphback MongoDB + Fastify Server Template
 
-A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript.
+A template that provides you with an easy setup for your application's backend using MongoDB and Fastify with TypeScript.
 
 ### Quickstart Guide
 
@@ -35,9 +35,9 @@ The following tools and technologies have been used to create this template:
 
 - [GraphQL](https://graphql.org/): GraphQL is an open-source data query and manipulation language for APIs which was publically released by Facebook in 2015.
 
-- [Apollo Server](https://www.apollographql.com/docs/apollo-server/): Apollo Server provides a way to simplify building the GraphQL server. It can be used with several popular libraries for Node.js like Express, Koa, Hapi. Here we have used it with Express.
+- [Fastify](https://www.fastify.io/): Fastify is a web framework with the least overhead and a powerful plugin architecture. It is inspired by Hapi and Express and is one of the fastest web frameworks.
 
-- [Express](https://expressjs.com/): Express is a minimal and flexible Node.js web application framework that makes building a Node.js server easier by providing a wide range of features.
+- [Mercurius](https://github.com/mercurius-js/mercurius): Mercurius is GraphQL adapter for Fastify. Its job is to simplify implementing GraphQL servers and gateways with Fastify.
 
 - [GraphQL Code Generator](https://graphql-code-generator.com/): GraphQL Code Generator is a tool that generates code out of your GraphQL schema by analyzing it.
 
