@@ -3,19 +3,17 @@ require('dotenv').config();
 import mercurius from 'mercurius';
 import { buildGraphbackAPI } from 'graphback';
 import { createMongoDbProvider } from '@graphback/runtime-mongo';
-import cors from 'cors';
 import fastify from 'fastify';
-import http from 'http';
+import fastifyCors  from 'fastify-cors';
 import { loadConfigSync } from 'graphql-config';
 import { connectDB } from './db';
 import { noteResolvers } from './resolvers/noteResolvers';
-import middie from 'middie';
+import { mergeResolvers } from '@graphql-tools/merge';
 
 async function start() {
   const app = fastify();
-  await app.register(middie);
 
-  app.use(cors());
+  app.register(fastifyCors, {});
 
   const graphbackExtension = 'graphback';
   const config = loadConfigSync({
@@ -37,17 +35,17 @@ async function start() {
     dataProviderCreator: createMongoDbProvider(db)
   });
 
-  app.register((mercurius as any), { 
-    schema: typeDefs, 
-    resolvers: [resolvers, noteResolvers], 
+  app.register((mercurius as any), {
+    schema: typeDefs,
+    graphiql: true,
+    resolvers: mergeResolvers([resolvers, noteResolvers]),
     context: contextCreator,
     subscription: true
-  }); 
+  });
 
-  const httpServer = http.createServer((app as any));
-
-  httpServer.listen({ port: 4000 }, () => {
+  app.listen(4000, () => {
     console.log(`🚀  Server ready at http://localhost:4000/graphql`);
+    console.log(`🚀  GraphQL IDE ready at http://localhost:4000/graphiql`);
   });
 }
 

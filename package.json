@@ -75,6 +75,7 @@
     "templates/ts-apollo-mongodb-datasync-backend",
     "templates/ts-apollo-postgres-backend",
     "templates/ts-react-apollo-client",
+    "templates/ts-fastify-mongodb-backend",
     "integration",
     "performance"
   ],
