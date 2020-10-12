@@ -1,19 +1,20 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 import mercurius from 'mercurius';
 import { buildGraphbackAPI } from 'graphback';
 import { createMongoDbProvider } from '@graphback/runtime-mongo';
 import fastify from 'fastify';
-import fastifyCors  from 'fastify-cors';
+import fastifyCors from 'fastify-cors';
 import { loadConfigSync } from 'graphql-config';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { connectDB } from './db';
 import { noteResolvers } from './resolvers/noteResolvers';
-import { mergeResolvers } from '@graphql-tools/merge';
 
 async function start() {
   const app = fastify();
 
-  app.register(fastifyCors, {});
+  app.register(fastifyCors as any);
 
   const graphbackExtension = 'graphback';
   const config = loadConfigSync({
@@ -35,10 +36,16 @@ async function start() {
     dataProviderCreator: createMongoDbProvider(db)
   });
 
+  const schema = makeExecutableSchema({
+    typeDefs, resolvers: [
+      resolvers,
+      noteResolvers
+    ]
+  })
+
   app.register((mercurius as any), {
-    schema: typeDefs,
+    schema,
     graphiql: true,
-    resolvers: mergeResolvers([resolvers, noteResolvers]),
     context: contextCreator,
     subscription: true
   });
