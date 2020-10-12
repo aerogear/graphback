@@ -55,6 +55,7 @@ The project contains the following set of source files.
 - The `.graphlrc.yml` file defining the configuration like the path to business model declaration, how to perform code generation from the GraphQL types to Typescript types etc. The configuration file is defined using the GraphQL project using [`graphql-config`](https://graphql-config.com/introduction).
 - A `docker-compose.yml` file to spin up the database if you do not have a running instance.
 - A `.env` file that contains different environment variables.
+  - `CONFLICT_RESOLUTION_MAX_RETRIES` - Configure the maximum number of retries wehn attempting conflict resolution. Defaults to `3`.
 - A `src` folder which has:
   - A `resolvers` folder where you can declare your custom resolvers to suit your use cases. This folder contains an example `src/resolvers/noteResolvers.ts` resolver file which can be deleted or modified. See [Custom Resolvers guide](https://graphback.dev/docs/resolvers/custom-resolvers) for more information.
   - A `schema` folder that contains generated schema file. It's advised to not edit this file manually. See [Generating types.](#re-generating-types-from-schema)

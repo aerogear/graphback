@@ -1,9 +1,8 @@
 import { ModelDefinition, NoDataError, GraphbackOperationType } from '@graphback/core';
 import { DataSyncModelConflictConfig, DataSyncFieldNames, ConflictMetadata, ConflictError, ClientSideWins } from '../util';
 import { MongoDeltaSource } from '../deltaSource';
+import { getMaxRetries } from '../helpers/getMaxRetries';
 import { DataSyncMongoDBDataProvider } from './DatasyncMongoDBDataProvider';
-
-export const MAX_RETRIES = 3;
 
 /**
  * Data Provider with update conflicts and optional conflict resolution
@@ -12,10 +11,12 @@ export const MAX_RETRIES = 3;
 export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMongoDBDataProvider<Type> {
   protected conflictConfig: DataSyncModelConflictConfig
   protected deltaSource: MongoDeltaSource
+  protected MAX_RETRIES: number;
 
   public constructor(model: ModelDefinition, client: any, dataSyncConflictConfig: DataSyncModelConflictConfig) {
     super(model, client);
     this.conflictConfig = dataSyncConflictConfig;
+    this.MAX_RETRIES = getMaxRetries();
 
     if (!this.conflictConfig.conflictResolution) {
       this.conflictConfig.conflictResolution = ClientSideWins;
@@ -41,7 +42,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
   public async update(updateDocument: any, selectedFields: string[]): Promise<Type> {
     const { _id } = updateDocument;
 
-    for(let i = 0; i < MAX_RETRIES; i++) {
+    for (let i = 0; i < this.MAX_RETRIES; i++) {
 
       const serverData = await this.db.collection(this.collectionName).findOne({ _id });
       if (!serverData) {
@@ -53,7 +54,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
       const updateFilter = { _id, [DataSyncFieldNames.version]: serverData[DataSyncFieldNames.version] }
 
-      if (serverData[DataSyncFieldNames.version] !== updateDocument[DataSyncFieldNames.version]){
+      if (serverData[DataSyncFieldNames.version] !== updateDocument[DataSyncFieldNames.version]) {
         const conflict = this.checkForConflict(updateDocument, base, serverData, GraphbackOperationType.UPDATE);
 
         if (conflict) {
@@ -86,7 +87,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
   public async delete(data: any, selectedFields: string[]): Promise<Type> {
     const { _id } = data;
 
-    for(let i = 0; i < MAX_RETRIES; i++) {
+    for (let i = 0; i < this.MAX_RETRIES; i++) {
 
       const serverData = await this.db.collection(this.collectionName).findOne({ _id });
       if (!serverData) {
@@ -98,7 +99,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
 
       const updateFilter = { _id, [DataSyncFieldNames.version]: serverData[DataSyncFieldNames.version] }
 
-      if (serverData[DataSyncFieldNames.version] !== data[DataSyncFieldNames.version]){
+      if (serverData[DataSyncFieldNames.version] !== data[DataSyncFieldNames.version]) {
         const conflict = this.checkForConflict(data, base, serverData, GraphbackOperationType.DELETE);
 
         if (conflict) {
@@ -131,7 +132,7 @@ export class DataSyncConflictMongoDBDataProvider<Type = any> extends DataSyncMon
     throw new Error(`Cannot update ${this.collectionName}`);
   }
 
-  protected checkForConflict(clientData: any, base: any, serverData: any, operation: GraphbackOperationType): ConflictMetadata|undefined {
+  protected checkForConflict(clientData: any, base: any, serverData: any, operation: GraphbackOperationType): ConflictMetadata | undefined {
     const ignoredKeys = ["_id", DataSyncFieldNames.lastUpdatedAt, DataSyncFieldNames.version];
 
     const clientDiff: any = {};

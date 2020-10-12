@@ -1,8 +1,35 @@
 /* eslint-disable max-lines */
 import { NoDataError } from '@graphback/core';
 import { ConflictError, DataSyncFieldNames, ServerSideWins, ConflictResolutionStrategy, ConflictMetadata, getDeltaTableName, ThrowOnConflict } from '../src';
+import { getMaxRetries } from '../src/helpers/getMaxRetries';
 import { Context, createTestingContext } from './__util__';
 
+describe('check configuration of MAX_RETRIES via env vars', () => {
+  const OLD_ENV = process.env;
+
+  beforeEach(() => {
+    jest.resetModules()
+    process.env = { ...OLD_ENV };
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  test('will use default value', () => {
+    expect(getMaxRetries()).toBe(3);
+  });
+
+  test('will use environment variable value', () => {
+    process.env.CONFLICT_RESOLUTION_MAX_RETRIES = '4';
+    expect(getMaxRetries()).toBe(4);
+  });
+
+  test('will use default value if invalid environment variable value is passed', () => {
+    process.env.CONFLICT_RESOLUTION_MAX_RETRIES = 'DefinitelyNotANumber';
+    expect(getMaxRetries()).toBe(3);
+  });
+});
 
 describe('DataSyncConflictMongoDBDataProvider', () => {
   let context: Context;
@@ -328,7 +355,7 @@ describe('Throw on Conflict Strategy', () => {
   scalar GraphbackObjectID
   `;
 
-  it ('throws when conflict occurs on update', async () => {
+  it('throws when conflict occurs on update', async () => {
     context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true, conflictResolution: ThrowOnConflict } } } });
 
     const { Post } = context.providers;
@@ -341,7 +368,7 @@ describe('Throw on Conflict Strategy', () => {
     await expect(Post.update({ _id, title: finalUpdateTitle, [DataSyncFieldNames.version]: version })).rejects.toThrowError(ConflictError);
   });
 
-  it ('throws if conflict occurs on deletes', async () => {
+  it('throws if conflict occurs on deletes', async () => {
     context = await createTestingContext(postSchema, { conflictConfig: { models: { Post: { enabled: true, conflictResolution: ThrowOnConflict } } } });
 
     const { Post } = context.providers;
@@ -349,7 +376,7 @@ describe('Throw on Conflict Strategy', () => {
     const { _id, [DataSyncFieldNames.version]: version } = await Post.create({ title: "Post 1", content: "Post 1 content" });
 
     const updatedTitle = "Post 1 v2";
-    await Post.update({ _id, title: updatedTitle,  [DataSyncFieldNames.version]: version });
+    await Post.update({ _id, title: updatedTitle, [DataSyncFieldNames.version]: version });
 
     await expect(Post.delete({ _id, [DataSyncFieldNames.version]: version })).rejects.toThrowError(ConflictError);
   });
