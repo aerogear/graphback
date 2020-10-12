@@ -35,10 +35,30 @@ export const allTemplates: Template[] = [
         branch: 'templates-1.0.0',
         path: '/templates/ts-react-apollo-client',
         mountpath: "client"
-      },{
+      }, {
         uri: 'https://github.com/aerogear/graphback',
         branch: 'templates-1.0.0',
         path: '/templates/ts-apollo-mongodb-backend',
+      }]
+  },
+  {
+    name: 'fastify-fullstack-react-mongo-ts',
+    description: 'GraphQL Server based on Fastify connecting to MongoDB database and React client using TypeScript',
+    /**
+     * Keeping this template disabled until the following issue is fixed or investigated further:
+     * https://github.com/aerogear/graphback/issues/2174
+     */
+    disabled: true,
+    repos: [
+      {
+        uri: 'https://github.com/aerogear/graphback',
+        branch: 'templates-1.0.0',
+        path: '/templates/ts-react-apollo-client',
+        mountpath: "client"
+      }, {
+        uri: 'https://github.com/aerogear/graphback',
+        branch: 'templates-1.0.0',
+        path: '/templates/ts-fastify-mongodb-backend',
       }]
   },
   {
@@ -48,6 +68,20 @@ export const allTemplates: Template[] = [
       uri: 'https://github.com/aerogear/graphback',
       branch: 'templates-1.0.0',
       path: '/templates/ts-apollo-mongodb-backend',
+    }]
+  },
+  {
+    name: 'fastify-mongo-server-ts',
+    description: 'GraphQL Server based on Fastify connecting to MongoDB database using TypeScript',
+    /**
+     * Keeping this template disabled until the following issue is fixed or investigated further:
+     * https://github.com/aerogear/graphback/issues/2174
+     */
+    disabled: true,
+    repos: [{
+      uri: 'https://github.com/aerogear/graphback',
+      branch: 'templates-1.0.0',
+      path: '/templates/ts-fastify-mongodb-backend',
     }]
   },
   {
@@ -160,7 +194,7 @@ export async function extractTemplate(template: Template, name: string) {
     const file = await downloadRepository(tarInfo);
     repo.mountpath = repo.mountpath || "";
     const output = `${process.cwd()}/${name}/${repo.mountpath}`;
-    if(!existsSync(output)){
+    if (!existsSync(output)) {
       mkdirSync(output);
     }
 

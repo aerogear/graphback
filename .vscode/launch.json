@@ -1,6 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "Current TS File",
       "type": "node",
@@ -63,7 +64,7 @@
       "internalConsoleOptions": "openOnSessionStart"
     },
     {
-      "name": "Template app Datasync Mongo",
+      "name": "Template app Mongo",
       "type": "node",
       "request": "launch",
       "env": {
@@ -79,9 +80,32 @@
         "ts-node/register"
       ],
       "args": [
-        "${workspaceRoot}/templates/ts-apollo-mongodb-datasync-backend/src/index.ts"
+        "${workspaceRoot}/templates/ts-apollo-mongodb-backend/src/index.ts"
       ],
-      "cwd": "${workspaceRoot}/templates/ts-apollo-mongodb-datasync-backend",
+      "cwd": "${workspaceRoot}/templates/ts-apollo-mongodb-backend",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "name": "Template app Fastify Mongo",
+      "type": "node",
+      "request": "launch",
+      "env": {
+        "DB_USER": "mongodb",
+        "DB_PASSWORD": "mongo",
+        "DB_HOST": "localhost",
+        "DB_PORT": "27018",
+        "DB_DATABASE": "users",
+        "DB_AUTHSOURCE": "admin"
+      },
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${workspaceRoot}/templates/ts-fastify-mongodb-backend/src/index.ts"
+      ],
+      "cwd": "${workspaceRoot}/templates/ts-fastify-mongodb-backend",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
     },
