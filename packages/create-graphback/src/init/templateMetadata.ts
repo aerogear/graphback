@@ -5,6 +5,8 @@ export interface Template {
   name: string
   description: string
   repos: TemplateRepository[]
+  // If disabled, this template will not be available to select in CLI
+  disabled?: boolean
 }
 
 /**
