@@ -1,3 +1,5 @@
+<!--The content below is a suggested layout for writing your pull request description. You may extend or remove parts you deem relevant or irrelevant to your changes.-->
+
 <!--Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request. If it fixes a bug or resolves a feature request, be sure to link to that issue.-->
 
 ## Types of changes
@@ -11,8 +13,6 @@ What types of changes does your code introduce to Graphback?
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Documentation Update (if none of the other choices apply)
 - [ ] Other (please specify)
-
-Link to the issue (if applicable):
 
 ## Checklist
 
@@ -30,5 +30,3 @@ Link to the issue (if applicable):
 ## Further comments
 
 <!--If this is a relatively large or complex change, kick off the discussion by explaining why you chose the solution you did and what alternatives you considered, etc...-->
-
-<!--Note: The template gives you full control over the content of your pull request. Feel free to remove the parts you feel are irrelevant to your particular pull request.-->
