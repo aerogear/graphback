@@ -1,8 +1,11 @@
-<!--Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request. If it fixes a bug or resolves a feature request, be sure to link to that issue.-->
+<!--The content below is a suggested layout for writing your pull request description. You may extend or remove parts you deem relevant or irrelevant to your changes.-->
+
+<!--Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request. If it fixes a bug or resolves a feature request, be sure to [link to that issue](https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue).-->
 
 ## Types of changes
 
 What types of changes does your code introduce to Graphback?
+
 <!--Put an `x` in the boxes that apply-->
 
 - [ ] Bugfix (non-breaking change which fixes an issue)
