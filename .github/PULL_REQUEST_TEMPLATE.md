@@ -3,6 +3,7 @@
 ## Types of changes
 
 What types of changes does your code introduce to Graphback?
+
 <!--Put an `x` in the boxes that apply-->
 
 - [ ] Bugfix (non-breaking change which fixes an issue)
@@ -27,3 +28,5 @@ What types of changes does your code introduce to Graphback?
 ## Further comments
 
 <!--If this is a relatively large or complex change, kick off the discussion by explaining why you chose the solution you did and what alternatives you considered, etc...-->
+
+<!--Note: The template gives you full control over the content of your pull request. Feel free to remove the parts you feel are irrelevant to your particular pull request.-->
