@@ -17,7 +17,7 @@ export async function createTestingContext(schemaStr: string, config?: { seedDat
   const schema = buildSchema(schemaStr);
 
   const server = new MongoMemoryServer();
-  const client = new MongoClient(await server.getConnectionString(), { useUnifiedTopology: true });
+  const client = new MongoClient(await server.getUri(), { useUnifiedTopology: true });
   await client.connect();
   const db = client.db('test');
 
