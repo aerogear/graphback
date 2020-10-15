@@ -88,7 +88,7 @@ type Note {
 `@oneToMany` is used to define a One To Many relationship.
 
 ```graphql
-"""model"""
+"""@model"""
 type User {
   id: ID!
   """@oneToMany(field: 'author')"""
@@ -144,7 +144,6 @@ This example generates an `character` field on the `Actor` type with a `Characte
 
 | Argument | Description | Example |
 |-|-|-|
-|`field`| Specifies the name of resolver field on the foreign object. **Required**. Accepts a string value | `@oneToOne(field: 'user'`)|
 |`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToOne(field: 'user', key: 'user_key')`|
 
 ### @index
