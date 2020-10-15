@@ -49,3 +49,6 @@ integration/output-mongo/
 
 # Generated docs
 docs/api/
+
+# SQLite files
+*.sqlite
