@@ -144,8 +144,7 @@ This example generates an `character` field on the `Actor` type with a `Characte
 
 | Argument | Description | Example |
 |-|-|-|
-|`field`| Specifies the name of resolver field on the foreign object. **Required**. Accepts a string value | `@oneToOne(field: 'user'`)|
-|`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToOne(field: 'user', key: 'user_key')`|
+|`key`| Optionally specifies the name of foreign key field on the foreign object. Accepts a string value. Defaults to `<typeName>Id` | `@oneToOne(key: 'user_key')`|
 
 ### @index
 
