@@ -57,7 +57,7 @@ With this configuration the following rules are in place.
 - All users can create and read `Task` types but only admins can update and delete them.
 - Admin users can create, update and delete `Report` types, and all users can read them.
 
-## Relationships Autorization
+## Relationships Authorization
 
 Developers can also add authorization rules on sepecific relationships for data fetching purposes.
 Relationship rules will be added on top of the existing rules that are defined for the individual objects.

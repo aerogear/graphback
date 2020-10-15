@@ -4,14 +4,14 @@ title: Authentication and authorization for Graphback
 sidebar_label: Introduction
 ---
  
-Graphback integration allows developers to use their own authentication and autorization solution.
+Graphback integration allows developers to use their own authentication and authorization solution.
 Graphback will work with any existing Node.js library like Express or Fastify thus any authentication library
 that works on top of those framework will be supported. 
 
 
 For authorization developers can write their own class that extends `GraphbackProxyService` abstraction.
 `GraphbackProxyService` allows developers to wrap any other services by giving ability to execute
-pre and post crud operation handlers. Pre and post operations can be used to provide autorization rules 
+pre and post crud operation handlers. Pre and post operations can be used to provide authorization rules 
 and prevent from unautorized access.
 
 ## Out of the box Authorization on top of the Graphback
