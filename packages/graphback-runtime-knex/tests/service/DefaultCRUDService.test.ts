@@ -4,6 +4,7 @@ import { unlinkSync, existsSync } from 'fs';
 import { buildSchema } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
 import * as Knex from 'knex';
+import { createKnexQueryMapper, CRUDKnexQueryMapper } from "../../src/knexQueryMapper";
 import { CRUDService, GraphbackCoreMetadata } from '@graphback/core';
 import { migrateDB, removeNonSafeOperationsFilter } from 'graphql-migrations';
 import { SQLiteKnexDBDataProvider } from '../../src/SQLiteKnexDBDataProvider';
@@ -30,11 +31,17 @@ type Todo {
 }`
   }
 
-  const dbConfig: Knex.Config = {
-    client: 'sqlite3',
-    connection: ':memory:',
-    useNullAsDefault: true
-  }
+  let queryBuilder: CRUDKnexQueryMapper;
+  let db: Knex;
+  beforeAll(() => {
+    db = Knex({
+      client: 'sqlite3',
+      connection: ':memory:',
+      useNullAsDefault: true
+    });
+
+    queryBuilder = createKnexQueryMapper(db);
+  });
 
   const schema = buildSchema(schemaSDL)
 
@@ -53,11 +60,10 @@ type Todo {
     crudMethods: defautCrudConfig
   }, schema);
 
-  await migrateDB(dbConfig, schema, {
+  await migrateDB(dbConfig /*what do i pass here?*/, schema, {
     operationFilter: removeNonSafeOperationsFilter
   })
 
-  const db = Knex(dbConfig)
   if (seedData) {
     for (const [tableName, data] of Object.entries(seedData)) {
       await db(tableName).insert(data)
