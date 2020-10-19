@@ -15,11 +15,13 @@ yarn install
 
 - Start React App
 
+In the `client` directory run:
+
 ```bash
-yarn start:client
+yarn start
 ```
 
-> NOTE: The client application has been made for a sample model. When you make changes on the server side, the client side application will change itself automatically.
+> NOTE: The client application has been made for a sample model. When you make changes on the server side, the client side application will NOT change itself automatically and will require manual changes to be made.
 
 ## Dependencies And Tools
 
