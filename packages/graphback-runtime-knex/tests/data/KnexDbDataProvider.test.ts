@@ -36,9 +36,7 @@ const setup = async (schemaStr: string, config: { seedData?: { [tableName: strin
 
   const dbConfig = {
     client: 'sqlite3',
-    connection: {
-      filename: dbPath,
-    },
+    connection: ':memory:',
     useNullAsDefault: true,
   }
 

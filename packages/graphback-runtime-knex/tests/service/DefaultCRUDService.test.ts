@@ -32,9 +32,7 @@ type Todo {
 
   const dbConfig: Knex.Config = {
     client: 'sqlite3',
-    connection: {
-      filename: dbPath,
-    },
+    connection: ':memory:',
     useNullAsDefault: true
   }
 
