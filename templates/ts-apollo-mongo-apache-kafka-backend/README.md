@@ -1,6 +1,6 @@
 ## Graphback MongoDB + Apollo Server with Apache Kafka Template
 
-A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript, and Apache Kafka for subscriptions.
+A template that provides you with an easy setup for your application's backend using MongoDB and Apollo server with TypeScript, and Apache Kafka for GraphQL subscriptions.
 
 ### Quickstart Guide
 
