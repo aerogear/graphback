@@ -102,7 +102,6 @@ type NoteMetadata {
 
 // highlight-start
 input CreateNoteInput {
-  id: ID
   title: String!
   description: String
   metadata: CreateNoteMetadataInput

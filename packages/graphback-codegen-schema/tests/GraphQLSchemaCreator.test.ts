@@ -419,6 +419,7 @@ test('Transient field is excluded from input types', () => {
 
 test('Auto generated primary key fields are not included in the Create<T>Mutation', () => {
   const modelAST = `
+
     """
     @model
     """
@@ -444,6 +445,19 @@ test('Auto generated primary key fields are not included in the Create<T>Mutatio
       """@id"""
       id: String!
       name: String!
+    }
+
+    """
+    @model
+    """
+    type UserFour {
+      """
+      @id
+      """
+      key: String!
+      name: String
+      _id: GraphbackObjectID
+      id: ID
     }`;
 
   const schemaGenerator = new SchemaCRUDPlugin();
@@ -459,4 +473,7 @@ test('Auto generated primary key fields are not included in the Create<T>Mutatio
 
   const createUserThreeInput = assertInputObjectType(schema.getType('CreateUserThreeInput'))
   expect(Object.keys(createUserThreeInput.getFields()).includes('id')).toEqual(true);
+
+  const createUserFourInput = assertInputObjectType(schema.getType('CreateUserFourInput'))
+  expect(Object.keys(createUserFourInput.getFields())).toEqual(['key', 'name', '_id', 'id']);
 })

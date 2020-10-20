@@ -200,19 +200,13 @@ export const buildCreateMutationInputType = (schemaComposer: SchemaComposer<any>
     fields: () => {
       const fields: any = {};
       for (const field of allModelFields) {
-        if (isAutoPrimaryKey(field)) {
+        if (field.name === idField.name && isAutoPrimaryKey(field)) {
           continue;
-        }
-
-        let fieldType: GraphQLNamedType;
-        // Remove required from ID
-        if (field.name === idField.name) {
-          fieldType = getNamedType(field.type);
         }
 
         fields[field.name] = {
           name: field.name,
-          type: fieldType || field.type
+          type: field.type
         };
       }
 
