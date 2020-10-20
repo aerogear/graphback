@@ -43,14 +43,12 @@ input CommentSubscriptionFilter {
 }
 
 input CreateCommentInput {
-  _id: GraphbackObjectID
   text: String
   description: String
   noteId: GraphbackObjectID
 }
 
 input CreateNoteInput {
-  _id: GraphbackObjectID
   title: String!
   description: String
 }
