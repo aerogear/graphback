@@ -142,3 +142,9 @@ type ModelWithTransientField {
 scalar DateTime
 scalar GraphbackDate
 scalar GraphbackJSON
+
+"""@model"""
+type ModelWithArrayScalar {
+  id: ID!
+  roles: [String!]!
+}

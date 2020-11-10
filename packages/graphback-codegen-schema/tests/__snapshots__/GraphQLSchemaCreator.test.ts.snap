@@ -99,15 +99,18 @@ Object {
     "createComment": [Function],
     "createFix": [Function],
     "createIssue": [Function],
+    "createModelWithArrayScalar": [Function],
     "createModelWithTransientField": [Function],
     "createNote": [Function],
     "createTest": [Function],
     "createVersioned": [Function],
     "deleteComment": [Function],
+    "deleteModelWithArrayScalar": [Function],
     "deleteModelWithTransientField": [Function],
     "deleteNote": [Function],
     "deleteTest": [Function],
     "updateComment": [Function],
+    "updateModelWithArrayScalar": [Function],
     "updateModelWithTransientField": [Function],
     "updateNote": [Function],
     "updateTest": [Function],
@@ -119,17 +122,22 @@ Object {
   },
   "Query": Object {
     "findComments": [Function],
+    "findModelWithArrayScalars": [Function],
     "findModelWithTransientFields": [Function],
     "findNotes": [Function],
     "findTests": [Function],
     "findVersioneds": [Function],
     "getComment": [Function],
+    "getModelWithArrayScalar": [Function],
     "getModelWithTransientField": [Function],
     "getNote": [Function],
     "getTest": [Function],
   },
   "Subscription": Object {
     "deletedComment": Object {
+      "subscribe": [Function],
+    },
+    "deletedModelWithArrayScalar": Object {
       "subscribe": [Function],
     },
     "deletedModelWithTransientField": Object {
@@ -144,6 +152,9 @@ Object {
     "newComment": Object {
       "subscribe": [Function],
     },
+    "newModelWithArrayScalar": Object {
+      "subscribe": [Function],
+    },
     "newModelWithTransientField": Object {
       "subscribe": [Function],
     },
@@ -154,6 +165,9 @@ Object {
       "subscribe": [Function],
     },
     "updatedComment": Object {
+      "subscribe": [Function],
+    },
+    "updatedModelWithArrayScalar": Object {
       "subscribe": [Function],
     },
     "updatedModelWithTransientField": Object {
@@ -347,6 +361,10 @@ input CreateIssueInput {
   bugFixId: ID
 }
 
+input CreateModelWithArrayScalarInput {
+  roles: [String!]!
+}
+
 input CreateModelWithTransientFieldInput {
   name: String
 }
@@ -496,6 +514,35 @@ input IssueFilter {
 }
 
 \\"\\"\\"@model\\"\\"\\"
+type ModelWithArrayScalar {
+  id: ID!
+  roles: [String!]!
+}
+
+input ModelWithArrayScalarFilter {
+  id: IDInput
+  roles: StringInput
+  and: [ModelWithArrayScalarFilter!]
+  or: [ModelWithArrayScalarFilter!]
+  not: ModelWithArrayScalarFilter
+}
+
+type ModelWithArrayScalarResultList {
+  items: [ModelWithArrayScalar]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input ModelWithArrayScalarSubscriptionFilter {
+  and: [ModelWithArrayScalarSubscriptionFilter!]
+  or: [ModelWithArrayScalarSubscriptionFilter!]
+  not: ModelWithArrayScalarSubscriptionFilter
+  id: IDInput
+  roles: StringInput
+}
+
+\\"\\"\\"@model\\"\\"\\"
 type ModelWithTransientField {
   id: ID!
   name: String
@@ -533,6 +580,11 @@ input MutateCommentInput {
   title: String
   description: String
   note_id: ID
+}
+
+input MutateModelWithArrayScalarInput {
+  id: ID!
+  roles: [String]
 }
 
 input MutateModelWithTransientFieldInput {
@@ -576,6 +628,9 @@ type Mutation {
   createModelWithTransientField(input: CreateModelWithTransientFieldInput!): ModelWithTransientField
   updateModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
   deleteModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
+  createModelWithArrayScalar(input: CreateModelWithArrayScalarInput!): ModelWithArrayScalar
+  updateModelWithArrayScalar(input: MutateModelWithArrayScalarInput!): ModelWithArrayScalar
+  deleteModelWithArrayScalar(input: MutateModelWithArrayScalarInput!): ModelWithArrayScalar
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -638,6 +693,8 @@ type Query {
   findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
   getModelWithTransientField(id: ID!): ModelWithTransientField
   findModelWithTransientFields(filter: ModelWithTransientFieldFilter, page: PageRequest, orderBy: OrderByInput): ModelWithTransientFieldResultList!
+  getModelWithArrayScalar(id: ID!): ModelWithArrayScalar
+  findModelWithArrayScalars(filter: ModelWithArrayScalarFilter, page: PageRequest, orderBy: OrderByInput): ModelWithArrayScalarResultList!
 }
 
 enum SortDirectionEnum {
@@ -671,6 +728,9 @@ type Subscription {
   newModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
   updatedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
   deletedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  newModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
+  updatedModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
+  deletedModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
 }
 
 \\"\\"\\"@model\\"\\"\\"
@@ -766,6 +826,8 @@ type Query {
   findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
   getModelWithTransientField(id: ID!): ModelWithTransientField
   findModelWithTransientFields(filter: ModelWithTransientFieldFilter, page: PageRequest, orderBy: OrderByInput): ModelWithTransientFieldResultList!
+  getModelWithArrayScalar(id: ID!): ModelWithArrayScalar
+  findModelWithArrayScalars(filter: ModelWithArrayScalarFilter, page: PageRequest, orderBy: OrderByInput): ModelWithArrayScalarResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -984,6 +1046,27 @@ input ModelWithTransientFieldFilter {
   not: ModelWithTransientFieldFilter
 }
 
+\\"\\"\\"@model\\"\\"\\"
+type ModelWithArrayScalar {
+  id: ID!
+  roles: [String!]!
+}
+
+type ModelWithArrayScalarResultList {
+  items: [ModelWithArrayScalar]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input ModelWithArrayScalarFilter {
+  id: IDInput
+  roles: StringInput
+  and: [ModelWithArrayScalarFilter!]
+  or: [ModelWithArrayScalarFilter!]
+  not: ModelWithArrayScalarFilter
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -1002,6 +1085,9 @@ type Mutation {
   createModelWithTransientField(input: CreateModelWithTransientFieldInput!): ModelWithTransientField
   updateModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
   deleteModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
+  createModelWithArrayScalar(input: CreateModelWithArrayScalarInput!): ModelWithArrayScalar
+  updateModelWithArrayScalar(input: MutateModelWithArrayScalarInput!): ModelWithArrayScalar
+  deleteModelWithArrayScalar(input: MutateModelWithArrayScalarInput!): ModelWithArrayScalar
 }
 
 input CreateNoteInput {
@@ -1162,6 +1248,15 @@ input MutateModelWithTransientFieldInput {
   name: String
 }
 
+input CreateModelWithArrayScalarInput {
+  roles: [String!]!
+}
+
+input MutateModelWithArrayScalarInput {
+  id: ID!
+  roles: [String]
+}
+
 type Subscription {
   newNote(filter: NoteSubscriptionFilter): Note!
   updatedNote(filter: NoteSubscriptionFilter): Note!
@@ -1175,6 +1270,9 @@ type Subscription {
   newModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
   updatedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
   deletedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  newModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
+  updatedModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
+  deletedModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
 }
 
 input NoteSubscriptionFilter {
@@ -1210,6 +1308,14 @@ input ModelWithTransientFieldSubscriptionFilter {
   not: ModelWithTransientFieldSubscriptionFilter
   id: IDInput
   name: StringInput
+}
+
+input ModelWithArrayScalarSubscriptionFilter {
+  and: [ModelWithArrayScalarSubscriptionFilter!]
+  or: [ModelWithArrayScalarSubscriptionFilter!]
+  not: ModelWithArrayScalarSubscriptionFilter
+  id: IDInput
+  roles: StringInput
 }
 
 enum AUTH_ROLE {
@@ -1239,6 +1345,8 @@ type Query {
   findVersioneds(filter: VersionedFilter, page: PageRequest, orderBy: OrderByInput): VersionedResultList!
   getModelWithTransientField(id: ID!): ModelWithTransientField
   findModelWithTransientFields(filter: ModelWithTransientFieldFilter, page: PageRequest, orderBy: OrderByInput): ModelWithTransientFieldResultList!
+  getModelWithArrayScalar(id: ID!): ModelWithArrayScalar
+  findModelWithArrayScalars(filter: ModelWithArrayScalarFilter, page: PageRequest, orderBy: OrderByInput): ModelWithArrayScalarResultList!
 }
 
 \\"\\"\\" @model \\"\\"\\"
@@ -1457,6 +1565,27 @@ input ModelWithTransientFieldFilter {
   not: ModelWithTransientFieldFilter
 }
 
+\\"\\"\\"@model\\"\\"\\"
+type ModelWithArrayScalar {
+  id: ID!
+  roles: [String!]!
+}
+
+type ModelWithArrayScalarResultList {
+  items: [ModelWithArrayScalar]!
+  offset: Int
+  limit: Int
+  count: Int
+}
+
+input ModelWithArrayScalarFilter {
+  id: IDInput
+  roles: StringInput
+  and: [ModelWithArrayScalarFilter!]
+  or: [ModelWithArrayScalarFilter!]
+  not: ModelWithArrayScalarFilter
+}
+
 type Mutation {
   likeNote(id: ID!): Note!
   createNote(input: CreateNoteInput!): Note
@@ -1475,6 +1604,9 @@ type Mutation {
   createModelWithTransientField(input: CreateModelWithTransientFieldInput!): ModelWithTransientField
   updateModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
   deleteModelWithTransientField(input: MutateModelWithTransientFieldInput!): ModelWithTransientField
+  createModelWithArrayScalar(input: CreateModelWithArrayScalarInput!): ModelWithArrayScalar
+  updateModelWithArrayScalar(input: MutateModelWithArrayScalarInput!): ModelWithArrayScalar
+  deleteModelWithArrayScalar(input: MutateModelWithArrayScalarInput!): ModelWithArrayScalar
 }
 
 input CreateNoteInput {
@@ -1635,6 +1767,15 @@ input MutateModelWithTransientFieldInput {
   name: String
 }
 
+input CreateModelWithArrayScalarInput {
+  roles: [String!]!
+}
+
+input MutateModelWithArrayScalarInput {
+  id: ID!
+  roles: [String]
+}
+
 type Subscription {
   newNote(filter: NoteSubscriptionFilter): Note!
   updatedNote(filter: NoteSubscriptionFilter): Note!
@@ -1648,6 +1789,9 @@ type Subscription {
   newModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
   updatedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
   deletedModelWithTransientField(filter: ModelWithTransientFieldSubscriptionFilter): ModelWithTransientField!
+  newModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
+  updatedModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
+  deletedModelWithArrayScalar(filter: ModelWithArrayScalarSubscriptionFilter): ModelWithArrayScalar!
 }
 
 input NoteSubscriptionFilter {
@@ -1683,6 +1827,14 @@ input ModelWithTransientFieldSubscriptionFilter {
   not: ModelWithTransientFieldSubscriptionFilter
   id: IDInput
   name: StringInput
+}
+
+input ModelWithArrayScalarSubscriptionFilter {
+  and: [ModelWithArrayScalarSubscriptionFilter!]
+  or: [ModelWithArrayScalarSubscriptionFilter!]
+  not: ModelWithArrayScalarSubscriptionFilter
+  id: IDInput
+  roles: StringInput
 }
 
 enum AUTH_ROLE {
