@@ -13,7 +13,7 @@
   },
   "license": "Apache 2.0",
   "dependencies": {
-    "@graphback/runtime-mongo": "1.1.0",
+    "@graphback/runtime-mongo": "1.1.0-alpha2",
     "@aerogear/graphql-kafka-subscriptions": "0.4.1",
     "apollo-server-express": "2.19.0",
     "cors": "2.8.5",
