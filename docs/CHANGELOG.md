@@ -3,15 +3,21 @@ id: releases
 title: Release Notes
 ---
 
-## Unreleased (2020-10-06)
+## 1.1.0 (2020-10-06)
 
 #### Bug Fixes
+* `graphback-codegen-schema`, `graphback-core`, `graphback-datasync`, `graphback-runtime-knex`, `graphql-serve`
+  * [#2171](https://github.com/aerogear/graphback/pull/2171) fix(codegen-schema): remove auto primary key from create input ([@craicoverflow](https://github.com/craicoverflow))
 * `graphback-codegen-client`
-  * [#2139](https://github.com/aerogear/graphback/pull/2139) fix: unable to generate subscription query unless mutation operation in model is set to `true` ([@RinkiyaKeDad](https://github.com/RinkiyaKeDad))
+  * [#2139](https://github.com/aerogear/graphback/pull/2139) fix: unable to generate subscription query unless mutation operation in model is set to `true` ([@RinkiyaKeDad](https://github.com/RinkiyaKeDad)
+* `codegen-schema`
+  * [#2205](https://github.com/aerogear/graphback/pull/2205) fix(codegen-schema): map String list to String list in input type ([@craicoverflow](https://github.com/craicoverflow))
 
 #### Committers: 2
 - Arsh Sharma ([@RinkiyaKeDad](https://github.com/RinkiyaKeDad))
-- [@ssd71](https://github.com/ssd71)
+- ssd71 [@ssd71](https://github.com/ssd71)
+- mudit Choudhary ([@Muditxofficial](https://github.com/Muditxofficial))
+- Enda Phelan ([@craicoverflow](https://github.com/craicoverflow)
 
 ## 1.0.1 (2020-09-25)
 
