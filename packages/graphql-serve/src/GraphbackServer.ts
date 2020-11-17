@@ -1,8 +1,8 @@
 import { ApolloServer, PubSub } from "apollo-server-express";
 import { Server } from "http";
-import * as getPort from "get-port";
-import * as cors from "cors";
-import * as express from "express";
+import getPort from "get-port";
+import cors from "cors";
+import express from "express";
 import * as http from "http";
 import { createRuntime, createMongoDBClient, DataSyncServeConfig } from './runtime';
 import { MongoClient } from 'mongodb';
