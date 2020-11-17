@@ -5,12 +5,13 @@ import * as github from 'parse-github-url';
 import * as request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
+import externalTemplates from '../../../../community-templates.json';
 import { Template, TemplateRepository } from './templateMetadata';
 
 /**
  * available templates
  */
-export const allTemplates: Template[] = [
+export let allTemplates: Template[] = [
   {
     name: 'apollo-fullstack-react-postgres-ts',
     description: 'Apollo GraphQL Server connecting to Postgres database and React client using TypeScript',
@@ -112,6 +113,9 @@ export const allTemplates: Template[] = [
     }]
   }
 ];
+
+const externalTemplatesArray: Template[] = externalTemplates;
+allTemplates = allTemplates.concat(externalTemplatesArray);
 
 /**
  * information about repository
