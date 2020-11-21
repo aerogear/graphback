@@ -28,9 +28,25 @@ function checkDirectory(path: string, name: string): void {
  */
 async function chooseTemplate(filter: string = ''): Promise<Template> {
   const regex = new RegExp(`.*${filter}.*`, 'i');
-  const displayedTemplates = allTemplates.filter((template: Template) =>
-    !template.disabled && regex.test(`${chalk.green(template.name)} ${template.description}`)
-  );
+  const typeOfTemplates = await ask([
+    {
+      type:'list',
+      name:'typeOfTemplates',
+      message:'Choose between community or officail Graphback templates',
+      choices:['community','official']
+    }
+  ]);
+  let displayedTemplates;
+  if(typeOfTemplates==='official') {
+    displayedTemplates = allTemplates.filter((template: Template) =>
+      !template.disabled && !template.external && regex.test(`${chalk.green(template.name)} ${template.description}`)
+    );
+  }
+  else {
+    displayedTemplates = allTemplates.filter((template: Template) =>
+      !template.disabled && template.external && regex.test(`${chalk.green(template.name)} ${template.description}`)
+    );
+  }
   if (!displayedTemplates.length) {
     logInfo(`create-graphback could not find templates matching the given filter: "${filter}".
 You can either change the given filter or not pass the option to display the full list.`);
