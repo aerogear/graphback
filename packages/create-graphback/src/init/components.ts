@@ -32,7 +32,7 @@ async function chooseTemplate(filter: string = ''): Promise<Template> {
     {
       type:'list',
       name:'typeOfTemplates',
-      message:'Choose between community or officail Graphback templates',
+      message:'Choose between community or official Graphback templates',
       choices:['community','official']
     }
   ]);

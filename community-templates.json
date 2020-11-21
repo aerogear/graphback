@@ -14,6 +14,7 @@
         "branch": "templates-1.0.0",
         "path": "/templates/ts-apollo-postgres-backend"
       }
-    ]
+    ],
+    "external": true
   }
 ]
