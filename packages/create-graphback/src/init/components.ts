@@ -93,8 +93,8 @@ async function assignTemplate(
 function postSetupMessage(name: string): string {
   return `
 GraphQL server successfully bootstrapped :rocket:
-Next Steps:
 
+Next Steps:
 1. Change directory into project folder - ${chalk.cyan(`cd ${name}`)}
 2. Follow template README.md to start server
 `;
