@@ -115,6 +115,9 @@ export let allTemplates: Template[] = [
 ];
 
 const externalTemplatesArray: Template[] = externalTemplates;
+externalTemplatesArray.forEach(
+  template => (template.name = 'Community: ' + template.name)
+);
 allTemplates = allTemplates.concat(externalTemplatesArray);
 
 /**
