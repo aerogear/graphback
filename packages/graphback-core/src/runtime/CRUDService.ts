@@ -1,4 +1,4 @@
-import * as DataLoader from "dataloader";
+import DataLoader from "dataloader";
 import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 import { GraphQLResolveInfo } from 'graphql';
 import { GraphbackCRUDGeneratorConfig, GraphbackOperationType, upperCaseFirstChar, getSubscriptionName } from '..';
