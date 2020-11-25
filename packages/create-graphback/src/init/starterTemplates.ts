@@ -1,8 +1,8 @@
 import { createWriteStream, mkdirSync, existsSync } from 'fs';
 import chalk from 'chalk';
 import ora from 'ora'
-import * as github from 'parse-github-url';
-import * as request from 'request';
+import github from 'parse-github-url';
+import request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
 import externalTemplates from '../../../../community-templates.json';
