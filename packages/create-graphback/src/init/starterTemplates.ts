@@ -1,11 +1,11 @@
 import { createWriteStream, mkdirSync, existsSync } from 'fs';
 import chalk from 'chalk';
 import ora from 'ora'
-import github from 'parse-github-url';
+import gh from 'parse-github-url';
 import request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
-import externalTemplates from '../../../../community-templates.json';
+import externalTemplates from '../../community-templates.json';
 import { Template, TemplateRepository } from './templateMetadata';
 
 /**
@@ -115,8 +115,7 @@ export let allTemplates: Template[] = [
 ];
 
 const externalTemplatesArray: Template[] = externalTemplates;
-externalTemplatesArray.forEach(
-  template => (template.name = 'Community: ' + template.name)
+externalTemplatesArray.forEach((template: Template) => (template.name = `Community: ${template.name}`)
 );
 allTemplates = allTemplates.concat(externalTemplatesArray);
 
@@ -135,7 +134,7 @@ interface TemplateRepositoryTarInformation {
 function getTemplateRepositoryTarInformation(
   repo: TemplateRepository,
 ): TemplateRepositoryTarInformation {
-  const meta = github(repo.uri)
+  const meta = gh(repo.uri)
   const uri = [
     `https://api.github.com/repos`,
     meta.repo,
@@ -216,5 +215,4 @@ export async function extractTemplate(template: Template, name: string) {
 
     await extractStarterFromRepository(file, tarInfo, output);
   }
-
 }
