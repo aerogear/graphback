@@ -14,7 +14,7 @@
   "license": "Apache 2.0",
   "dependencies": {
     "@graphback/runtime-mongo": "1.1.0",
-    "@graphql-tools/schema": "6.2.4",
+    "@graphql-tools/schema": "7.1.2",
     "dotenv": "8.2.0",
     "fastify": "3.6.0",
     "fastify-cors": "4.1.0",
