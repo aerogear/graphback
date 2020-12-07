@@ -5,7 +5,7 @@ import github from 'parse-github-url';
 import request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
-import externalTemplates from '../../../../community-templates.json';
+import externalTemplates from '../../../community-templates';
 import { Template, TemplateRepository } from './templateMetadata';
 
 /**

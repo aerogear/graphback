@@ -32,7 +32,7 @@ Note that you can specify as many repositories as you want (with the desired bra
 
 ## Step 2: Adding your template object
 
-In the root directory of Graphback you'll find the file `community-templates.ts`. This exports an array called `externalTemplates`. It is in this array that you should add your template object for it to be picked up by the CLI. So the final file would look something like this:
+In the packages directory of Graphback you'll find the file `community-templates.ts`. This exports an array called `externalTemplates`. It is in this array that you should add your template object for it to be picked up by the CLI. So the final file would look something like this:
 
 ```
 export default externalTemplates = [
