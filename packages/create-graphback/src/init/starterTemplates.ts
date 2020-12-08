@@ -114,10 +114,9 @@ export let allTemplates: Template[] = [
   }
 ];
 
-const externalTemplatesArray: Template[] = externalTemplates;
-externalTemplatesArray.forEach((template: Template) => (template.name = `Community: ${template.name}`)
+externalTemplates.forEach((template: Template) => (template.name = `Community: ${template.name}`)
 );
-allTemplates = allTemplates.concat(externalTemplatesArray);
+allTemplates = allTemplates.concat(externalTemplates);
 
 /**
  * information about repository
