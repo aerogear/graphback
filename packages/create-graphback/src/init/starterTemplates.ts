@@ -5,8 +5,8 @@ import gh from 'parse-github-url';
 import request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
-import { Template, TemplateRepository } from './templateMetadata';
 import externalTemplates from '../../../community-templates'
+import { Template, TemplateRepository } from './templateMetadata';
 
 /**
  * available templates
