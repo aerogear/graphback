@@ -1,16 +1,17 @@
 import { createWriteStream, mkdirSync, existsSync } from 'fs';
 import chalk from 'chalk';
 import ora from 'ora'
-import * as github from 'parse-github-url';
-import * as request from 'request';
+import gh from 'parse-github-url';
+import request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
 import { Template, TemplateRepository } from './templateMetadata';
+import externalTemplates from '../../../community-templates'
 
 /**
  * available templates
  */
-export const allTemplates: Template[] = [
+export let allTemplates: Template[] = [
   {
     name: 'apollo-fullstack-react-postgres-ts',
     description: 'Apollo GraphQL Server connecting to Postgres database and React client using TypeScript',
@@ -113,6 +114,11 @@ export const allTemplates: Template[] = [
   }
 ];
 
+const externalTemplatesArray: Template[] = externalTemplates;
+externalTemplatesArray.forEach((template: Template) => (template.name = `Community: ${template.name}`)
+);
+allTemplates = allTemplates.concat(externalTemplatesArray);
+
 /**
  * information about repository
  */
@@ -128,7 +134,7 @@ interface TemplateRepositoryTarInformation {
 function getTemplateRepositoryTarInformation(
   repo: TemplateRepository,
 ): TemplateRepositoryTarInformation {
-  const meta = github(repo.uri)
+  const meta = gh(repo.uri)
   const uri = [
     `https://api.github.com/repos`,
     meta.repo,
