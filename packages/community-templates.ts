@@ -1,1 +1,2 @@
-export default externalTemplates = [];
+const externalTemplates = [];
+export default externalTemplates;
