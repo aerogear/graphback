@@ -1,6 +1,6 @@
 # Using Graphback With Your Own Templates
 
-In case you want to use some other templates than the ones offered, Graphback also supports adding your templates. The process is fairly simple and is as follows:
+Graphback has the ability to include community templates. To add community templates please:
 
 ## Step 1: Creating an object for your template
 
