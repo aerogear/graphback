@@ -183,7 +183,7 @@ input MutateNoteInput {
 
 The `MutateNoteInput` input type is created from the `Note` model.
 
-Example of a typical create mutation on `Note`:
+Example of a typical update mutation on `Note`:
 
 ```graphql
 mutation {
