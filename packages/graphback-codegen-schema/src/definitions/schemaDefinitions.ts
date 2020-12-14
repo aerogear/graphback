@@ -126,7 +126,8 @@ function getModelInputFields(schemaComposer: SchemaComposer<any>, modelType: Gra
       name,
       type: wrappedType,
       description: undefined,
-      extensions: []
+      extensions: [],
+      deprecationReason: field.deprecationReason
     }
 
     inputFields.push(inputField);
@@ -143,7 +144,8 @@ export function buildFindOneFieldMap(modelType: ModelDefinition, schemaComposer:
       name: "id",
       type: GraphQLNonNull(schemaComposer.getAnyTC(type).getType()),
       description: undefined,
-      extensions: undefined
+      extensions: undefined,
+      deprecationReason: undefined
     }
   }
 }
@@ -304,7 +306,8 @@ function mapObjectInputFields(schemaComposer: SchemaComposer<any>, fields: Graph
     return {
       name: field.name,
       type: inputType || field.type,
-      extensions: []
+      extensions: [],
+      deprecationReason: field.deprecationReason
     }
   })
 }
