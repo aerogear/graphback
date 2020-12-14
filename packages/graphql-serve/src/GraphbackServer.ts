@@ -56,7 +56,7 @@ export class GraphbackServer {
     }
 
     // convert server close to a promise
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve: (value?) => void, reject) => {
       server.close(e => {
         if (e) {
           reject(e);
