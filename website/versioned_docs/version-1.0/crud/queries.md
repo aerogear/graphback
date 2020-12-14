@@ -142,7 +142,7 @@ This is a list of all available filter operators.
 | lt         	| Less than                    	| All        	| 
 | le         	| Less than or equal to        	| All        	| 
 | gt         	| Greater than                 	| All        	|  
-| gt         	| Greater than or equal to     	| All        	|  
+| ge         	| Greater than or equal to     	| All        	|  
 | between    	| Between a range (of numbers) 	| Int, Float 	|  
 | in         	| In a list of items           	| All        	|  
 | contains   	| String contains              	| String     	| 
