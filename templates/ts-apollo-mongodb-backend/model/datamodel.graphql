@@ -14,7 +14,6 @@ type Comment {
   _id: GraphbackObjectID!
   text: String
   description: String
-  roles: [String!]!
 }
 
 type Query {
