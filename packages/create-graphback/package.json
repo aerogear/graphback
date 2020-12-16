@@ -34,18 +34,18 @@
   "devDependencies": {
     "@types/chalk": "0.4.31",
     "@types/inquirer": "7.3.1",
-    "@types/jest": "26.0.14",
-    "@types/node": "12.12.64",
+    "@types/jest": "26.0.19",
+    "@types/node": "12.19.9",
     "@types/node-emoji": "1.8.1",
     "@types/parse-github-url": "1.0.0",
     "@types/request": "2.48.5",
-    "@types/tar": "4.0.3",
-    "@types/yargs": "15.0.7",
+    "@types/tar": "4.0.4",
+    "@types/yargs": "15.0.12",
     "jest": "26.6.3",
     "rimraf": "3.0.2",
-    "ts-jest": "26.4.1",
-    "ts-node": "9.0.0",
-    "typescript": "4.0.3",
+    "ts-jest": "26.4.4",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.3",
     "typescript-eslint-parser": "21.0.2"
   },
   "dependencies": {
@@ -58,7 +58,7 @@
     "request": "2.88.2",
     "tar": "6.0.5",
     "tmp": "0.2.1",
-    "yargs": "16.0.3"
+    "yargs": "16.2.0"
   },
   "jest": {
     "transform": {
