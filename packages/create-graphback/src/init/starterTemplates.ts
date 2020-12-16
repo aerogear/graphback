@@ -102,19 +102,10 @@ export let allTemplates: Template[] = [
       branch: 'templates-1.0.0',
       path: '/templates/ts-apollo-postgres-backend',
     }]
-  },
-  {
-    name: '[PREVIEW] apollo-mongo-apache-kafka-server-ts',
-    description: 'Apollo GraphQL server connecting to MongoDB database with Apache Kafka for subscriptions. This is a preview template - we are continuing to enhance it - we welcome your feedback.',
-    repos: [{
-      uri: 'https://github.com/aerogear/graphback',
-      branch: 'templates-1.0.0',
-      path: '/templates/ts-apollo-mongo-apache-kafka-backend'
-    }]
   }
 ];
 
-externalTemplates.forEach((template: Template) => (template.name = `Community: ${template.name}`)
+externalTemplates.forEach((template: Template) => (template.name = `[Community] ${template.name}`)
 );
 allTemplates = allTemplates.concat(externalTemplates);
 
