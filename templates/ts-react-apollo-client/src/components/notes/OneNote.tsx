@@ -22,7 +22,7 @@ const OneNote = ({ _id, title, description, comments }: Note) => {
                     <ul>
                         {comments && comments.length > 0 ? comments.map((com) => {
                             if (!com) {
-                                return;
+                                return null;
                             }
                             return (
                                 <OneComment _id={com._id} text={com.text} description={com.description} key={com._id}></OneComment>
