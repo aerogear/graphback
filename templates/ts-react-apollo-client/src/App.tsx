@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFindNotesQuery, useGetDraftNotesQuery } from './generated-types';
 import CreateNote from './components/notes/CreateNote';
 import OneNote from './components/notes/OneNote';
-import { Checkbox, Box, Container, List, ListItem } from '@material-ui/core';
+import { Checkbox, Box, Container } from '@material-ui/core';
 
 const App: React.FC = () => {
   const allNotes = useFindNotesQuery();
