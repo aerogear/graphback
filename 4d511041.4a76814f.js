@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[385],{452:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"datasync","name":"datasync","count":1,"permalink":"/blog/tags/datasync"}')}}]);
