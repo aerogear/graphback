@@ -45,7 +45,7 @@ async function start() {
 
   app.register((mercurius as any), {
     schema,
-    resolvers,
+    resolvers: [resolvers, noteResolvers],
     graphiql: true,
     context: contextCreator,
     subscription: true
