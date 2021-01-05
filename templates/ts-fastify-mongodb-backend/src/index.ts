@@ -10,6 +10,7 @@ import { loadConfigSync } from 'graphql-config';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { connectDB } from './db';
 import { noteResolvers } from './resolvers/noteResolvers';
+import { mergeResolvers } from '@graphql-tools/merge';
 
 async function start() {
   const app = fastify();
@@ -20,9 +21,9 @@ async function start() {
   const config = loadConfigSync({
     extensions: [
       () => ({
-        name: graphbackExtension
-      })
-    ]
+        name: graphbackExtension,
+      }),
+    ],
   });
 
   const projectConfig = config.getDefault();
@@ -33,22 +34,20 @@ async function start() {
   const db = await connectDB();
 
   const { typeDefs, resolvers, contextCreator } = buildGraphbackAPI(modelDefs, {
-    dataProviderCreator: createMongoDbProvider(db)
+    dataProviderCreator: createMongoDbProvider(db),
   });
 
   const schema = makeExecutableSchema({
-    typeDefs, resolvers: [
-      resolvers,
-      noteResolvers
-    ]
-  })
-
-  app.register((mercurius as any), {
-    schema,
+    typeDefs,
     resolvers: [resolvers, noteResolvers],
+  });
+
+  app.register(mercurius as any, {
+    schema,
+    resolvers: mergeResolvers([resolvers,noteResolvers]),
     graphiql: true,
     context: contextCreator,
-    subscription: true
+    subscription: true,
   });
 
   app.listen(4000, () => {
