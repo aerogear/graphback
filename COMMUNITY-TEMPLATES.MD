@@ -32,7 +32,7 @@ Note that you can specify as many repositories as you want (with the desired bra
 
 ## Step 2: Adding your template object
 
-Change your current working directory to: `packages/create-graphback/src/init/`, where you'll find a file named [communityTemplates.ts](https://github.com/aerogear/graphback/blob/master/packages/create-graphback/src/init/communityTemplates.ts). This file exports an array called `externalTemplates`. It is in this array that you should add your template object for it to be picked up by the CLI. So the final file would look something like this:
+Change your current working directory to: `packages/create-graphback/src/init/`, where you'll find a file named [communityTemplates.ts](./packages/create-graphback/src/init/communityTemplates.ts). This file exports an array called `externalTemplates`. It is in this array that you should add your template object for it to be picked up by the CLI. So the final file would look something like this:
 
 ```
 export default externalTemplates = [
