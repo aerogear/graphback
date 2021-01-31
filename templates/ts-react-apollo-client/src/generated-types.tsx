@@ -2,7 +2,9 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -16,7 +18,7 @@ export type Scalars = {
 export type Comment = {
   __typename?: 'Comment';
   /**  @id  */
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   /** @manyToOne(field: 'comments', key: 'noteId') */
@@ -24,7 +26,7 @@ export type Comment = {
 };
 
 export type CommentFilter = {
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   noteId?: Maybe<IdInput>;
@@ -45,20 +47,20 @@ export type CommentSubscriptionFilter = {
   and?: Maybe<Array<CommentSubscriptionFilter>>;
   or?: Maybe<Array<CommentSubscriptionFilter>>;
   not?: Maybe<CommentSubscriptionFilter>;
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
 
 export type CreateCommentInput = {
-  _id?: Maybe<Scalars['ID']>;
+  id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type CreateNoteInput = {
-  _id?: Maybe<Scalars['ID']>;
+  id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
 };
@@ -74,14 +76,14 @@ export type IdInput = {
 };
 
 export type MutateCommentInput = {
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type MutateNoteInput = {
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
@@ -96,31 +98,25 @@ export type Mutation = {
   deleteComment?: Maybe<Comment>;
 };
 
-
 export type MutationCreateNoteArgs = {
   input: CreateNoteInput;
 };
-
 
 export type MutationUpdateNoteArgs = {
   input: MutateNoteInput;
 };
 
-
 export type MutationDeleteNoteArgs = {
   input: MutateNoteInput;
 };
-
 
 export type MutationCreateCommentArgs = {
   input: CreateCommentInput;
 };
 
-
 export type MutationUpdateCommentArgs = {
   input: MutateCommentInput;
 };
-
 
 export type MutationDeleteCommentArgs = {
   input: MutateCommentInput;
@@ -130,7 +126,7 @@ export type MutationDeleteCommentArgs = {
 export type Note = {
   __typename?: 'Note';
   /**  @id  */
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   /**
@@ -140,14 +136,13 @@ export type Note = {
   comments: Array<Maybe<Comment>>;
 };
 
-
 /**  @model  */
 export type NoteCommentsArgs = {
   filter?: Maybe<CommentFilter>;
 };
 
 export type NoteFilter = {
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   and?: Maybe<Array<NoteFilter>>;
@@ -167,7 +162,7 @@ export type NoteSubscriptionFilter = {
   and?: Maybe<Array<NoteSubscriptionFilter>>;
   or?: Maybe<Array<NoteSubscriptionFilter>>;
   not?: Maybe<NoteSubscriptionFilter>;
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
@@ -191,11 +186,9 @@ export type Query = {
   findComments: CommentResultList;
 };
 
-
 export type QueryGetNoteArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryFindNotesArgs = {
   filter?: Maybe<NoteFilter>;
@@ -203,11 +196,9 @@ export type QueryFindNotesArgs = {
   orderBy?: Maybe<OrderByInput>;
 };
 
-
 export type QueryGetCommentArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryFindCommentsArgs = {
   filter?: Maybe<CommentFilter>;
@@ -217,7 +208,7 @@ export type QueryFindCommentsArgs = {
 
 export enum SortDirectionEnum {
   Desc = 'DESC',
-  Asc = 'ASC'
+  Asc = 'ASC',
 }
 
 export type StringInput = {
@@ -243,74 +234,70 @@ export type Subscription = {
   deletedComment: Comment;
 };
 
-
 export type SubscriptionNewNoteArgs = {
   filter?: Maybe<NoteSubscriptionFilter>;
 };
-
 
 export type SubscriptionUpdatedNoteArgs = {
   filter?: Maybe<NoteSubscriptionFilter>;
 };
 
-
 export type SubscriptionDeletedNoteArgs = {
   filter?: Maybe<NoteSubscriptionFilter>;
 };
-
 
 export type SubscriptionNewCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
 
-
 export type SubscriptionUpdatedCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
-
 
 export type SubscriptionDeletedCommentArgs = {
   filter?: Maybe<CommentSubscriptionFilter>;
 };
 
-export type GetDraftNotesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetDraftNotesQueryVariables = Exact<{ [key: string]: never }>;
 
+export type GetDraftNotesQuery = { __typename?: 'Query' } & {
+  getDraftNotes?: Maybe<
+    Array<Maybe<{ __typename?: 'Note' } & NoteExpandedFieldsFragment>>
+  >;
+};
 
-export type GetDraftNotesQuery = (
-  { __typename?: 'Query' }
-  & { getDraftNotes?: Maybe<Array<Maybe<(
-    { __typename?: 'Note' }
-    & NoteExpandedFieldsFragment
-  )>>> }
-);
+export type NoteFieldsFragment = { __typename?: 'Note' } & Pick<
+  Note,
+  'id' | 'title' | 'description'
+>;
 
-export type NoteFieldsFragment = (
-  { __typename?: 'Note' }
-  & Pick<Note, '_id' | 'title' | 'description'>
-);
+export type NoteExpandedFieldsFragment = { __typename?: 'Note' } & Pick<
+  Note,
+  'id' | 'title' | 'description'
+> & {
+    comments: Array<
+      Maybe<
+        { __typename?: 'Comment' } & Pick<
+          Comment,
+          'id' | 'text' | 'description'
+        >
+      >
+    >;
+  };
 
-export type NoteExpandedFieldsFragment = (
-  { __typename?: 'Note' }
-  & Pick<Note, '_id' | 'title' | 'description'>
-  & { comments: Array<Maybe<(
-    { __typename?: 'Comment' }
-    & Pick<Comment, '_id' | 'text' | 'description'>
-  )>> }
-);
+export type CommentFieldsFragment = { __typename?: 'Comment' } & Pick<
+  Comment,
+  'id' | 'text' | 'description'
+>;
 
-export type CommentFieldsFragment = (
-  { __typename?: 'Comment' }
-  & Pick<Comment, '_id' | 'text' | 'description'>
-);
-
-export type CommentExpandedFieldsFragment = (
-  { __typename?: 'Comment' }
-  & Pick<Comment, '_id' | 'text' | 'description'>
-  & { note?: Maybe<(
-    { __typename?: 'Note' }
-    & Pick<Note, '_id' | 'title' | 'description'>
-  )> }
-);
+export type CommentExpandedFieldsFragment = { __typename?: 'Comment' } & Pick<
+  Comment,
+  'id' | 'text' | 'description'
+> & {
+    note?: Maybe<
+      { __typename?: 'Note' } & Pick<Note, 'id' | 'title' | 'description'>
+    >;
+  };
 
 export type FindNotesQueryVariables = Exact<{
   filter?: Maybe<NoteFilter>;
@@ -318,31 +305,22 @@ export type FindNotesQueryVariables = Exact<{
   orderBy?: Maybe<OrderByInput>;
 }>;
 
-
-export type FindNotesQuery = (
-  { __typename?: 'Query' }
-  & { findNotes: (
-    { __typename?: 'NoteResultList' }
-    & Pick<NoteResultList, 'offset' | 'limit' | 'count'>
-    & { items: Array<Maybe<(
-      { __typename?: 'Note' }
-      & NoteExpandedFieldsFragment
-    )>> }
-  ) }
-);
+export type FindNotesQuery = { __typename?: 'Query' } & {
+  findNotes: { __typename?: 'NoteResultList' } & Pick<
+    NoteResultList,
+    'offset' | 'limit' | 'count'
+  > & {
+      items: Array<Maybe<{ __typename?: 'Note' } & NoteExpandedFieldsFragment>>;
+    };
+};
 
 export type GetNoteQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type GetNoteQuery = (
-  { __typename?: 'Query' }
-  & { getNote?: Maybe<(
-    { __typename?: 'Note' }
-    & NoteExpandedFieldsFragment
-  )> }
-);
+export type GetNoteQuery = { __typename?: 'Query' } & {
+  getNote?: Maybe<{ __typename?: 'Note' } & NoteExpandedFieldsFragment>;
+};
 
 export type FindCommentsQueryVariables = Exact<{
   filter?: Maybe<CommentFilter>;
@@ -350,233 +328,169 @@ export type FindCommentsQueryVariables = Exact<{
   orderBy?: Maybe<OrderByInput>;
 }>;
 
-
-export type FindCommentsQuery = (
-  { __typename?: 'Query' }
-  & { findComments: (
-    { __typename?: 'CommentResultList' }
-    & Pick<CommentResultList, 'offset' | 'limit' | 'count'>
-    & { items: Array<Maybe<(
-      { __typename?: 'Comment' }
-      & CommentExpandedFieldsFragment
-    )>> }
-  ) }
-);
+export type FindCommentsQuery = { __typename?: 'Query' } & {
+  findComments: { __typename?: 'CommentResultList' } & Pick<
+    CommentResultList,
+    'offset' | 'limit' | 'count'
+  > & {
+      items: Array<
+        Maybe<{ __typename?: 'Comment' } & CommentExpandedFieldsFragment>
+      >;
+    };
+};
 
 export type GetCommentQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type GetCommentQuery = (
-  { __typename?: 'Query' }
-  & { getComment?: Maybe<(
-    { __typename?: 'Comment' }
-    & CommentExpandedFieldsFragment
-  )> }
-);
+export type GetCommentQuery = { __typename?: 'Query' } & {
+  getComment?: Maybe<
+    { __typename?: 'Comment' } & CommentExpandedFieldsFragment
+  >;
+};
 
 export type CreateNoteMutationVariables = Exact<{
   input: CreateNoteInput;
 }>;
 
-
-export type CreateNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { createNote?: Maybe<(
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  )> }
-);
+export type CreateNoteMutation = { __typename?: 'Mutation' } & {
+  createNote?: Maybe<{ __typename?: 'Note' } & NoteFieldsFragment>;
+};
 
 export type UpdateNoteMutationVariables = Exact<{
   input: MutateNoteInput;
 }>;
 
-
-export type UpdateNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { updateNote?: Maybe<(
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  )> }
-);
+export type UpdateNoteMutation = { __typename?: 'Mutation' } & {
+  updateNote?: Maybe<{ __typename?: 'Note' } & NoteFieldsFragment>;
+};
 
 export type DeleteNoteMutationVariables = Exact<{
   input: MutateNoteInput;
 }>;
 
-
-export type DeleteNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteNote?: Maybe<(
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  )> }
-);
+export type DeleteNoteMutation = { __typename?: 'Mutation' } & {
+  deleteNote?: Maybe<{ __typename?: 'Note' } & NoteFieldsFragment>;
+};
 
 export type CreateCommentMutationVariables = Exact<{
   input: CreateCommentInput;
 }>;
 
-
-export type CreateCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { createComment?: Maybe<(
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  )> }
-);
+export type CreateCommentMutation = { __typename?: 'Mutation' } & {
+  createComment?: Maybe<{ __typename?: 'Comment' } & CommentFieldsFragment>;
+};
 
 export type UpdateCommentMutationVariables = Exact<{
   input: MutateCommentInput;
 }>;
 
-
-export type UpdateCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { updateComment?: Maybe<(
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  )> }
-);
+export type UpdateCommentMutation = { __typename?: 'Mutation' } & {
+  updateComment?: Maybe<{ __typename?: 'Comment' } & CommentFieldsFragment>;
+};
 
 export type DeleteCommentMutationVariables = Exact<{
   input: MutateCommentInput;
 }>;
 
-
-export type DeleteCommentMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteComment?: Maybe<(
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  )> }
-);
+export type DeleteCommentMutation = { __typename?: 'Mutation' } & {
+  deleteComment?: Maybe<{ __typename?: 'Comment' } & CommentFieldsFragment>;
+};
 
 export type NewNoteSubscriptionVariables = Exact<{
   filter?: Maybe<NoteSubscriptionFilter>;
 }>;
 
-
-export type NewNoteSubscription = (
-  { __typename?: 'Subscription' }
-  & { newNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
+export type NewNoteSubscription = { __typename?: 'Subscription' } & {
+  newNote: { __typename?: 'Note' } & NoteFieldsFragment;
+};
 
 export type UpdatedNoteSubscriptionVariables = Exact<{
   filter?: Maybe<NoteSubscriptionFilter>;
 }>;
 
-
-export type UpdatedNoteSubscription = (
-  { __typename?: 'Subscription' }
-  & { updatedNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
+export type UpdatedNoteSubscription = { __typename?: 'Subscription' } & {
+  updatedNote: { __typename?: 'Note' } & NoteFieldsFragment;
+};
 
 export type DeletedNoteSubscriptionVariables = Exact<{
   filter?: Maybe<NoteSubscriptionFilter>;
 }>;
 
-
-export type DeletedNoteSubscription = (
-  { __typename?: 'Subscription' }
-  & { deletedNote: (
-    { __typename?: 'Note' }
-    & NoteFieldsFragment
-  ) }
-);
+export type DeletedNoteSubscription = { __typename?: 'Subscription' } & {
+  deletedNote: { __typename?: 'Note' } & NoteFieldsFragment;
+};
 
 export type NewCommentSubscriptionVariables = Exact<{
   filter?: Maybe<CommentSubscriptionFilter>;
 }>;
 
-
-export type NewCommentSubscription = (
-  { __typename?: 'Subscription' }
-  & { newComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
-);
+export type NewCommentSubscription = { __typename?: 'Subscription' } & {
+  newComment: { __typename?: 'Comment' } & CommentFieldsFragment;
+};
 
 export type UpdatedCommentSubscriptionVariables = Exact<{
   filter?: Maybe<CommentSubscriptionFilter>;
 }>;
 
-
-export type UpdatedCommentSubscription = (
-  { __typename?: 'Subscription' }
-  & { updatedComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
-);
+export type UpdatedCommentSubscription = { __typename?: 'Subscription' } & {
+  updatedComment: { __typename?: 'Comment' } & CommentFieldsFragment;
+};
 
 export type DeletedCommentSubscriptionVariables = Exact<{
   filter?: Maybe<CommentSubscriptionFilter>;
 }>;
 
-
-export type DeletedCommentSubscription = (
-  { __typename?: 'Subscription' }
-  & { deletedComment: (
-    { __typename?: 'Comment' }
-    & CommentFieldsFragment
-  ) }
-);
+export type DeletedCommentSubscription = { __typename?: 'Subscription' } & {
+  deletedComment: { __typename?: 'Comment' } & CommentFieldsFragment;
+};
 
 export const NoteFieldsFragmentDoc = gql`
-    fragment NoteFields on Note {
-  _id
-  title
-  description
-}
-    `;
-export const NoteExpandedFieldsFragmentDoc = gql`
-    fragment NoteExpandedFields on Note {
-  _id
-  title
-  description
-  comments {
-    _id
-    text
-    description
-  }
-}
-    `;
-export const CommentFieldsFragmentDoc = gql`
-    fragment CommentFields on Comment {
-  _id
-  text
-  description
-}
-    `;
-export const CommentExpandedFieldsFragmentDoc = gql`
-    fragment CommentExpandedFields on Comment {
-  _id
-  text
-  description
-  note {
-    _id
+  fragment NoteFields on Note {
+    id
     title
     description
   }
-}
-    `;
-export const GetDraftNotesDocument = gql`
-    query getDraftNotes {
-  getDraftNotes {
-    ...NoteExpandedFields
+`;
+export const NoteExpandedFieldsFragmentDoc = gql`
+  fragment NoteExpandedFields on Note {
+    id
+    title
+    description
+    comments {
+      id
+      text
+      description
+    }
   }
-}
-    ${NoteExpandedFieldsFragmentDoc}`;
+`;
+export const CommentFieldsFragmentDoc = gql`
+  fragment CommentFields on Comment {
+    id
+    text
+    description
+  }
+`;
+export const CommentExpandedFieldsFragmentDoc = gql`
+  fragment CommentExpandedFields on Comment {
+    id
+    text
+    description
+    note {
+      id
+      title
+      description
+    }
+  }
+`;
+export const GetDraftNotesDocument = gql`
+  query getDraftNotes {
+    getDraftNotes {
+      ...NoteExpandedFields
+    }
+  }
+  ${NoteExpandedFieldsFragmentDoc}
+`;
 
 /**
  * __useGetDraftNotesQuery__
@@ -593,27 +507,55 @@ export const GetDraftNotesDocument = gql`
  *   },
  * });
  */
-export function useGetDraftNotesQuery(baseOptions?: Apollo.QueryHookOptions<GetDraftNotesQuery, GetDraftNotesQueryVariables>) {
-        return Apollo.useQuery<GetDraftNotesQuery, GetDraftNotesQueryVariables>(GetDraftNotesDocument, baseOptions);
-      }
-export function useGetDraftNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDraftNotesQuery, GetDraftNotesQueryVariables>) {
-          return Apollo.useLazyQuery<GetDraftNotesQuery, GetDraftNotesQueryVariables>(GetDraftNotesDocument, baseOptions);
-        }
-export type GetDraftNotesQueryHookResult = ReturnType<typeof useGetDraftNotesQuery>;
-export type GetDraftNotesLazyQueryHookResult = ReturnType<typeof useGetDraftNotesLazyQuery>;
-export type GetDraftNotesQueryResult = Apollo.QueryResult<GetDraftNotesQuery, GetDraftNotesQueryVariables>;
-export const FindNotesDocument = gql`
-    query findNotes($filter: NoteFilter, $page: PageRequest, $orderBy: OrderByInput) {
-  findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
-    items {
-      ...NoteExpandedFields
-    }
-    offset
-    limit
-    count
-  }
+export function useGetDraftNotesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetDraftNotesQuery,
+    GetDraftNotesQueryVariables
+  >,
+) {
+  return Apollo.useQuery<GetDraftNotesQuery, GetDraftNotesQueryVariables>(
+    GetDraftNotesDocument,
+    baseOptions,
+  );
 }
-    ${NoteExpandedFieldsFragmentDoc}`;
+export function useGetDraftNotesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDraftNotesQuery,
+    GetDraftNotesQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<GetDraftNotesQuery, GetDraftNotesQueryVariables>(
+    GetDraftNotesDocument,
+    baseOptions,
+  );
+}
+export type GetDraftNotesQueryHookResult = ReturnType<
+  typeof useGetDraftNotesQuery
+>;
+export type GetDraftNotesLazyQueryHookResult = ReturnType<
+  typeof useGetDraftNotesLazyQuery
+>;
+export type GetDraftNotesQueryResult = Apollo.QueryResult<
+  GetDraftNotesQuery,
+  GetDraftNotesQueryVariables
+>;
+export const FindNotesDocument = gql`
+  query findNotes(
+    $filter: NoteFilter
+    $page: PageRequest
+    $orderBy: OrderByInput
+  ) {
+    findNotes(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...NoteExpandedFields
+      }
+      offset
+      limit
+      count
+    }
+  }
+  ${NoteExpandedFieldsFragmentDoc}
+`;
 
 /**
  * __useFindNotesQuery__
@@ -633,22 +575,44 @@ export const FindNotesDocument = gql`
  *   },
  * });
  */
-export function useFindNotesQuery(baseOptions?: Apollo.QueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
-        return Apollo.useQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
-      }
-export function useFindNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindNotesQuery, FindNotesQueryVariables>) {
-          return Apollo.useLazyQuery<FindNotesQuery, FindNotesQueryVariables>(FindNotesDocument, baseOptions);
-        }
-export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
-export type FindNotesLazyQueryHookResult = ReturnType<typeof useFindNotesLazyQuery>;
-export type FindNotesQueryResult = Apollo.QueryResult<FindNotesQuery, FindNotesQueryVariables>;
-export const GetNoteDocument = gql`
-    query getNote($id: ID!) {
-  getNote(id: $id) {
-    ...NoteExpandedFields
-  }
+export function useFindNotesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    FindNotesQuery,
+    FindNotesQueryVariables
+  >,
+) {
+  return Apollo.useQuery<FindNotesQuery, FindNotesQueryVariables>(
+    FindNotesDocument,
+    baseOptions,
+  );
 }
-    ${NoteExpandedFieldsFragmentDoc}`;
+export function useFindNotesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    FindNotesQuery,
+    FindNotesQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<FindNotesQuery, FindNotesQueryVariables>(
+    FindNotesDocument,
+    baseOptions,
+  );
+}
+export type FindNotesQueryHookResult = ReturnType<typeof useFindNotesQuery>;
+export type FindNotesLazyQueryHookResult = ReturnType<
+  typeof useFindNotesLazyQuery
+>;
+export type FindNotesQueryResult = Apollo.QueryResult<
+  FindNotesQuery,
+  FindNotesQueryVariables
+>;
+export const GetNoteDocument = gql`
+  query getNote($id: ID!) {
+    getNote(id: $id) {
+      ...NoteExpandedFields
+    }
+  }
+  ${NoteExpandedFieldsFragmentDoc}
+`;
 
 /**
  * __useGetNoteQuery__
@@ -666,27 +630,48 @@ export const GetNoteDocument = gql`
  *   },
  * });
  */
-export function useGetNoteQuery(baseOptions?: Apollo.QueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
-        return Apollo.useQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
-      }
-export function useGetNoteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNoteQuery, GetNoteQueryVariables>) {
-          return Apollo.useLazyQuery<GetNoteQuery, GetNoteQueryVariables>(GetNoteDocument, baseOptions);
-        }
+export function useGetNoteQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetNoteQuery, GetNoteQueryVariables>,
+) {
+  return Apollo.useQuery<GetNoteQuery, GetNoteQueryVariables>(
+    GetNoteDocument,
+    baseOptions,
+  );
+}
+export function useGetNoteLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetNoteQuery,
+    GetNoteQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<GetNoteQuery, GetNoteQueryVariables>(
+    GetNoteDocument,
+    baseOptions,
+  );
+}
 export type GetNoteQueryHookResult = ReturnType<typeof useGetNoteQuery>;
 export type GetNoteLazyQueryHookResult = ReturnType<typeof useGetNoteLazyQuery>;
-export type GetNoteQueryResult = Apollo.QueryResult<GetNoteQuery, GetNoteQueryVariables>;
+export type GetNoteQueryResult = Apollo.QueryResult<
+  GetNoteQuery,
+  GetNoteQueryVariables
+>;
 export const FindCommentsDocument = gql`
-    query findComments($filter: CommentFilter, $page: PageRequest, $orderBy: OrderByInput) {
-  findComments(filter: $filter, page: $page, orderBy: $orderBy) {
-    items {
-      ...CommentExpandedFields
+  query findComments(
+    $filter: CommentFilter
+    $page: PageRequest
+    $orderBy: OrderByInput
+  ) {
+    findComments(filter: $filter, page: $page, orderBy: $orderBy) {
+      items {
+        ...CommentExpandedFields
+      }
+      offset
+      limit
+      count
     }
-    offset
-    limit
-    count
   }
-}
-    ${CommentExpandedFieldsFragmentDoc}`;
+  ${CommentExpandedFieldsFragmentDoc}
+`;
 
 /**
  * __useFindCommentsQuery__
@@ -706,22 +691,46 @@ export const FindCommentsDocument = gql`
  *   },
  * });
  */
-export function useFindCommentsQuery(baseOptions?: Apollo.QueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-        return Apollo.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
-      }
-export function useFindCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindCommentsQuery, FindCommentsQueryVariables>) {
-          return Apollo.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(FindCommentsDocument, baseOptions);
-        }
-export type FindCommentsQueryHookResult = ReturnType<typeof useFindCommentsQuery>;
-export type FindCommentsLazyQueryHookResult = ReturnType<typeof useFindCommentsLazyQuery>;
-export type FindCommentsQueryResult = Apollo.QueryResult<FindCommentsQuery, FindCommentsQueryVariables>;
-export const GetCommentDocument = gql`
-    query getComment($id: ID!) {
-  getComment(id: $id) {
-    ...CommentExpandedFields
-  }
+export function useFindCommentsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    FindCommentsQuery,
+    FindCommentsQueryVariables
+  >,
+) {
+  return Apollo.useQuery<FindCommentsQuery, FindCommentsQueryVariables>(
+    FindCommentsDocument,
+    baseOptions,
+  );
 }
-    ${CommentExpandedFieldsFragmentDoc}`;
+export function useFindCommentsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    FindCommentsQuery,
+    FindCommentsQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<FindCommentsQuery, FindCommentsQueryVariables>(
+    FindCommentsDocument,
+    baseOptions,
+  );
+}
+export type FindCommentsQueryHookResult = ReturnType<
+  typeof useFindCommentsQuery
+>;
+export type FindCommentsLazyQueryHookResult = ReturnType<
+  typeof useFindCommentsLazyQuery
+>;
+export type FindCommentsQueryResult = Apollo.QueryResult<
+  FindCommentsQuery,
+  FindCommentsQueryVariables
+>;
+export const GetCommentDocument = gql`
+  query getComment($id: ID!) {
+    getComment(id: $id) {
+      ...CommentExpandedFields
+    }
+  }
+  ${CommentExpandedFieldsFragmentDoc}
+`;
 
 /**
  * __useGetCommentQuery__
@@ -739,23 +748,48 @@ export const GetCommentDocument = gql`
  *   },
  * });
  */
-export function useGetCommentQuery(baseOptions?: Apollo.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
-        return Apollo.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
-      }
-export function useGetCommentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
-          return Apollo.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, baseOptions);
-        }
-export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
-export type GetCommentLazyQueryHookResult = ReturnType<typeof useGetCommentLazyQuery>;
-export type GetCommentQueryResult = Apollo.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
-export const CreateNoteDocument = gql`
-    mutation createNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    ...NoteFields
-  }
+export function useGetCommentQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCommentQuery,
+    GetCommentQueryVariables
+  >,
+) {
+  return Apollo.useQuery<GetCommentQuery, GetCommentQueryVariables>(
+    GetCommentDocument,
+    baseOptions,
+  );
 }
-    ${NoteFieldsFragmentDoc}`;
-export type CreateNoteMutationFn = Apollo.MutationFunction<CreateNoteMutation, CreateNoteMutationVariables>;
+export function useGetCommentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCommentQuery,
+    GetCommentQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(
+    GetCommentDocument,
+    baseOptions,
+  );
+}
+export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
+export type GetCommentLazyQueryHookResult = ReturnType<
+  typeof useGetCommentLazyQuery
+>;
+export type GetCommentQueryResult = Apollo.QueryResult<
+  GetCommentQuery,
+  GetCommentQueryVariables
+>;
+export const CreateNoteDocument = gql`
+  mutation createNote($input: CreateNoteInput!) {
+    createNote(input: $input) {
+      ...NoteFields
+    }
+  }
+  ${NoteFieldsFragmentDoc}
+`;
+export type CreateNoteMutationFn = Apollo.MutationFunction<
+  CreateNoteMutation,
+  CreateNoteMutationVariables
+>;
 
 /**
  * __useCreateNoteMutation__
@@ -774,20 +808,39 @@ export type CreateNoteMutationFn = Apollo.MutationFunction<CreateNoteMutation, C
  *   },
  * });
  */
-export function useCreateNoteMutation(baseOptions?: Apollo.MutationHookOptions<CreateNoteMutation, CreateNoteMutationVariables>) {
-        return Apollo.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(CreateNoteDocument, baseOptions);
-      }
-export type CreateNoteMutationHookResult = ReturnType<typeof useCreateNoteMutation>;
-export type CreateNoteMutationResult = Apollo.MutationResult<CreateNoteMutation>;
-export type CreateNoteMutationOptions = Apollo.BaseMutationOptions<CreateNoteMutation, CreateNoteMutationVariables>;
-export const UpdateNoteDocument = gql`
-    mutation updateNote($input: MutateNoteInput!) {
-  updateNote(input: $input) {
-    ...NoteFields
-  }
+export function useCreateNoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateNoteMutation,
+    CreateNoteMutationVariables
+  >,
+) {
+  return Apollo.useMutation<CreateNoteMutation, CreateNoteMutationVariables>(
+    CreateNoteDocument,
+    baseOptions,
+  );
 }
-    ${NoteFieldsFragmentDoc}`;
-export type UpdateNoteMutationFn = Apollo.MutationFunction<UpdateNoteMutation, UpdateNoteMutationVariables>;
+export type CreateNoteMutationHookResult = ReturnType<
+  typeof useCreateNoteMutation
+>;
+export type CreateNoteMutationResult = Apollo.MutationResult<
+  CreateNoteMutation
+>;
+export type CreateNoteMutationOptions = Apollo.BaseMutationOptions<
+  CreateNoteMutation,
+  CreateNoteMutationVariables
+>;
+export const UpdateNoteDocument = gql`
+  mutation updateNote($input: MutateNoteInput!) {
+    updateNote(input: $input) {
+      ...NoteFields
+    }
+  }
+  ${NoteFieldsFragmentDoc}
+`;
+export type UpdateNoteMutationFn = Apollo.MutationFunction<
+  UpdateNoteMutation,
+  UpdateNoteMutationVariables
+>;
 
 /**
  * __useUpdateNoteMutation__
@@ -806,20 +859,39 @@ export type UpdateNoteMutationFn = Apollo.MutationFunction<UpdateNoteMutation, U
  *   },
  * });
  */
-export function useUpdateNoteMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNoteMutation, UpdateNoteMutationVariables>) {
-        return Apollo.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(UpdateNoteDocument, baseOptions);
-      }
-export type UpdateNoteMutationHookResult = ReturnType<typeof useUpdateNoteMutation>;
-export type UpdateNoteMutationResult = Apollo.MutationResult<UpdateNoteMutation>;
-export type UpdateNoteMutationOptions = Apollo.BaseMutationOptions<UpdateNoteMutation, UpdateNoteMutationVariables>;
-export const DeleteNoteDocument = gql`
-    mutation deleteNote($input: MutateNoteInput!) {
-  deleteNote(input: $input) {
-    ...NoteFields
-  }
+export function useUpdateNoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateNoteMutation,
+    UpdateNoteMutationVariables
+  >,
+) {
+  return Apollo.useMutation<UpdateNoteMutation, UpdateNoteMutationVariables>(
+    UpdateNoteDocument,
+    baseOptions,
+  );
 }
-    ${NoteFieldsFragmentDoc}`;
-export type DeleteNoteMutationFn = Apollo.MutationFunction<DeleteNoteMutation, DeleteNoteMutationVariables>;
+export type UpdateNoteMutationHookResult = ReturnType<
+  typeof useUpdateNoteMutation
+>;
+export type UpdateNoteMutationResult = Apollo.MutationResult<
+  UpdateNoteMutation
+>;
+export type UpdateNoteMutationOptions = Apollo.BaseMutationOptions<
+  UpdateNoteMutation,
+  UpdateNoteMutationVariables
+>;
+export const DeleteNoteDocument = gql`
+  mutation deleteNote($input: MutateNoteInput!) {
+    deleteNote(input: $input) {
+      ...NoteFields
+    }
+  }
+  ${NoteFieldsFragmentDoc}
+`;
+export type DeleteNoteMutationFn = Apollo.MutationFunction<
+  DeleteNoteMutation,
+  DeleteNoteMutationVariables
+>;
 
 /**
  * __useDeleteNoteMutation__
@@ -838,20 +910,39 @@ export type DeleteNoteMutationFn = Apollo.MutationFunction<DeleteNoteMutation, D
  *   },
  * });
  */
-export function useDeleteNoteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNoteMutation, DeleteNoteMutationVariables>) {
-        return Apollo.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, baseOptions);
-      }
-export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
-export type DeleteNoteMutationResult = Apollo.MutationResult<DeleteNoteMutation>;
-export type DeleteNoteMutationOptions = Apollo.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
-export const CreateCommentDocument = gql`
-    mutation createComment($input: CreateCommentInput!) {
-  createComment(input: $input) {
-    ...CommentFields
-  }
+export function useDeleteNoteMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteNoteMutation,
+    DeleteNoteMutationVariables
+  >,
+) {
+  return Apollo.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(
+    DeleteNoteDocument,
+    baseOptions,
+  );
 }
-    ${CommentFieldsFragmentDoc}`;
-export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+export type DeleteNoteMutationHookResult = ReturnType<
+  typeof useDeleteNoteMutation
+>;
+export type DeleteNoteMutationResult = Apollo.MutationResult<
+  DeleteNoteMutation
+>;
+export type DeleteNoteMutationOptions = Apollo.BaseMutationOptions<
+  DeleteNoteMutation,
+  DeleteNoteMutationVariables
+>;
+export const CreateCommentDocument = gql`
+  mutation createComment($input: CreateCommentInput!) {
+    createComment(input: $input) {
+      ...CommentFields
+    }
+  }
+  ${CommentFieldsFragmentDoc}
+`;
+export type CreateCommentMutationFn = Apollo.MutationFunction<
+  CreateCommentMutation,
+  CreateCommentMutationVariables
+>;
 
 /**
  * __useCreateCommentMutation__
@@ -870,20 +961,39 @@ export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutat
  *   },
  * });
  */
-export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
-        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
-      }
-export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
-export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
-export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
-export const UpdateCommentDocument = gql`
-    mutation updateComment($input: MutateCommentInput!) {
-  updateComment(input: $input) {
-    ...CommentFields
-  }
+export function useCreateCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCommentMutation,
+    CreateCommentMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    CreateCommentMutation,
+    CreateCommentMutationVariables
+  >(CreateCommentDocument, baseOptions);
 }
-    ${CommentFieldsFragmentDoc}`;
-export type UpdateCommentMutationFn = Apollo.MutationFunction<UpdateCommentMutation, UpdateCommentMutationVariables>;
+export type CreateCommentMutationHookResult = ReturnType<
+  typeof useCreateCommentMutation
+>;
+export type CreateCommentMutationResult = Apollo.MutationResult<
+  CreateCommentMutation
+>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<
+  CreateCommentMutation,
+  CreateCommentMutationVariables
+>;
+export const UpdateCommentDocument = gql`
+  mutation updateComment($input: MutateCommentInput!) {
+    updateComment(input: $input) {
+      ...CommentFields
+    }
+  }
+  ${CommentFieldsFragmentDoc}
+`;
+export type UpdateCommentMutationFn = Apollo.MutationFunction<
+  UpdateCommentMutation,
+  UpdateCommentMutationVariables
+>;
 
 /**
  * __useUpdateCommentMutation__
@@ -902,20 +1012,39 @@ export type UpdateCommentMutationFn = Apollo.MutationFunction<UpdateCommentMutat
  *   },
  * });
  */
-export function useUpdateCommentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCommentMutation, UpdateCommentMutationVariables>) {
-        return Apollo.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument, baseOptions);
-      }
-export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateCommentMutation>;
-export type UpdateCommentMutationResult = Apollo.MutationResult<UpdateCommentMutation>;
-export type UpdateCommentMutationOptions = Apollo.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
-export const DeleteCommentDocument = gql`
-    mutation deleteComment($input: MutateCommentInput!) {
-  deleteComment(input: $input) {
-    ...CommentFields
-  }
+export function useUpdateCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCommentMutation,
+    UpdateCommentMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    UpdateCommentMutation,
+    UpdateCommentMutationVariables
+  >(UpdateCommentDocument, baseOptions);
 }
-    ${CommentFieldsFragmentDoc}`;
-export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+export type UpdateCommentMutationHookResult = ReturnType<
+  typeof useUpdateCommentMutation
+>;
+export type UpdateCommentMutationResult = Apollo.MutationResult<
+  UpdateCommentMutation
+>;
+export type UpdateCommentMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCommentMutation,
+  UpdateCommentMutationVariables
+>;
+export const DeleteCommentDocument = gql`
+  mutation deleteComment($input: MutateCommentInput!) {
+    deleteComment(input: $input) {
+      ...CommentFields
+    }
+  }
+  ${CommentFieldsFragmentDoc}
+`;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<
+  DeleteCommentMutation,
+  DeleteCommentMutationVariables
+>;
 
 /**
  * __useDeleteCommentMutation__
@@ -934,19 +1063,35 @@ export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutat
  *   },
  * });
  */
-export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
-        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
-      }
-export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
-export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
-export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
-export const NewNoteDocument = gql`
-    subscription newNote($filter: NoteSubscriptionFilter) {
-  newNote(filter: $filter) {
-    ...NoteFields
-  }
+export function useDeleteCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteCommentMutation,
+    DeleteCommentMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    DeleteCommentMutation,
+    DeleteCommentMutationVariables
+  >(DeleteCommentDocument, baseOptions);
 }
-    ${NoteFieldsFragmentDoc}`;
+export type DeleteCommentMutationHookResult = ReturnType<
+  typeof useDeleteCommentMutation
+>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<
+  DeleteCommentMutation
+>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCommentMutation,
+  DeleteCommentMutationVariables
+>;
+export const NewNoteDocument = gql`
+  subscription newNote($filter: NoteSubscriptionFilter) {
+    newNote(filter: $filter) {
+      ...NoteFields
+    }
+  }
+  ${NoteFieldsFragmentDoc}
+`;
 
 /**
  * __useNewNoteSubscription__
@@ -964,18 +1109,31 @@ export const NewNoteDocument = gql`
  *   },
  * });
  */
-export function useNewNoteSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewNoteSubscription, NewNoteSubscriptionVariables>) {
-        return Apollo.useSubscription<NewNoteSubscription, NewNoteSubscriptionVariables>(NewNoteDocument, baseOptions);
-      }
-export type NewNoteSubscriptionHookResult = ReturnType<typeof useNewNoteSubscription>;
-export type NewNoteSubscriptionResult = Apollo.SubscriptionResult<NewNoteSubscription>;
-export const UpdatedNoteDocument = gql`
-    subscription updatedNote($filter: NoteSubscriptionFilter) {
-  updatedNote(filter: $filter) {
-    ...NoteFields
-  }
+export function useNewNoteSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    NewNoteSubscription,
+    NewNoteSubscriptionVariables
+  >,
+) {
+  return Apollo.useSubscription<
+    NewNoteSubscription,
+    NewNoteSubscriptionVariables
+  >(NewNoteDocument, baseOptions);
 }
-    ${NoteFieldsFragmentDoc}`;
+export type NewNoteSubscriptionHookResult = ReturnType<
+  typeof useNewNoteSubscription
+>;
+export type NewNoteSubscriptionResult = Apollo.SubscriptionResult<
+  NewNoteSubscription
+>;
+export const UpdatedNoteDocument = gql`
+  subscription updatedNote($filter: NoteSubscriptionFilter) {
+    updatedNote(filter: $filter) {
+      ...NoteFields
+    }
+  }
+  ${NoteFieldsFragmentDoc}
+`;
 
 /**
  * __useUpdatedNoteSubscription__
@@ -993,18 +1151,31 @@ export const UpdatedNoteDocument = gql`
  *   },
  * });
  */
-export function useUpdatedNoteSubscription(baseOptions?: Apollo.SubscriptionHookOptions<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>) {
-        return Apollo.useSubscription<UpdatedNoteSubscription, UpdatedNoteSubscriptionVariables>(UpdatedNoteDocument, baseOptions);
-      }
-export type UpdatedNoteSubscriptionHookResult = ReturnType<typeof useUpdatedNoteSubscription>;
-export type UpdatedNoteSubscriptionResult = Apollo.SubscriptionResult<UpdatedNoteSubscription>;
-export const DeletedNoteDocument = gql`
-    subscription deletedNote($filter: NoteSubscriptionFilter) {
-  deletedNote(filter: $filter) {
-    ...NoteFields
-  }
+export function useUpdatedNoteSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    UpdatedNoteSubscription,
+    UpdatedNoteSubscriptionVariables
+  >,
+) {
+  return Apollo.useSubscription<
+    UpdatedNoteSubscription,
+    UpdatedNoteSubscriptionVariables
+  >(UpdatedNoteDocument, baseOptions);
 }
-    ${NoteFieldsFragmentDoc}`;
+export type UpdatedNoteSubscriptionHookResult = ReturnType<
+  typeof useUpdatedNoteSubscription
+>;
+export type UpdatedNoteSubscriptionResult = Apollo.SubscriptionResult<
+  UpdatedNoteSubscription
+>;
+export const DeletedNoteDocument = gql`
+  subscription deletedNote($filter: NoteSubscriptionFilter) {
+    deletedNote(filter: $filter) {
+      ...NoteFields
+    }
+  }
+  ${NoteFieldsFragmentDoc}
+`;
 
 /**
  * __useDeletedNoteSubscription__
@@ -1022,18 +1193,31 @@ export const DeletedNoteDocument = gql`
  *   },
  * });
  */
-export function useDeletedNoteSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DeletedNoteSubscription, DeletedNoteSubscriptionVariables>) {
-        return Apollo.useSubscription<DeletedNoteSubscription, DeletedNoteSubscriptionVariables>(DeletedNoteDocument, baseOptions);
-      }
-export type DeletedNoteSubscriptionHookResult = ReturnType<typeof useDeletedNoteSubscription>;
-export type DeletedNoteSubscriptionResult = Apollo.SubscriptionResult<DeletedNoteSubscription>;
-export const NewCommentDocument = gql`
-    subscription newComment($filter: CommentSubscriptionFilter) {
-  newComment(filter: $filter) {
-    ...CommentFields
-  }
+export function useDeletedNoteSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    DeletedNoteSubscription,
+    DeletedNoteSubscriptionVariables
+  >,
+) {
+  return Apollo.useSubscription<
+    DeletedNoteSubscription,
+    DeletedNoteSubscriptionVariables
+  >(DeletedNoteDocument, baseOptions);
 }
-    ${CommentFieldsFragmentDoc}`;
+export type DeletedNoteSubscriptionHookResult = ReturnType<
+  typeof useDeletedNoteSubscription
+>;
+export type DeletedNoteSubscriptionResult = Apollo.SubscriptionResult<
+  DeletedNoteSubscription
+>;
+export const NewCommentDocument = gql`
+  subscription newComment($filter: CommentSubscriptionFilter) {
+    newComment(filter: $filter) {
+      ...CommentFields
+    }
+  }
+  ${CommentFieldsFragmentDoc}
+`;
 
 /**
  * __useNewCommentSubscription__
@@ -1051,18 +1235,31 @@ export const NewCommentDocument = gql`
  *   },
  * });
  */
-export function useNewCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewCommentSubscription, NewCommentSubscriptionVariables>) {
-        return Apollo.useSubscription<NewCommentSubscription, NewCommentSubscriptionVariables>(NewCommentDocument, baseOptions);
-      }
-export type NewCommentSubscriptionHookResult = ReturnType<typeof useNewCommentSubscription>;
-export type NewCommentSubscriptionResult = Apollo.SubscriptionResult<NewCommentSubscription>;
-export const UpdatedCommentDocument = gql`
-    subscription updatedComment($filter: CommentSubscriptionFilter) {
-  updatedComment(filter: $filter) {
-    ...CommentFields
-  }
+export function useNewCommentSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    NewCommentSubscription,
+    NewCommentSubscriptionVariables
+  >,
+) {
+  return Apollo.useSubscription<
+    NewCommentSubscription,
+    NewCommentSubscriptionVariables
+  >(NewCommentDocument, baseOptions);
 }
-    ${CommentFieldsFragmentDoc}`;
+export type NewCommentSubscriptionHookResult = ReturnType<
+  typeof useNewCommentSubscription
+>;
+export type NewCommentSubscriptionResult = Apollo.SubscriptionResult<
+  NewCommentSubscription
+>;
+export const UpdatedCommentDocument = gql`
+  subscription updatedComment($filter: CommentSubscriptionFilter) {
+    updatedComment(filter: $filter) {
+      ...CommentFields
+    }
+  }
+  ${CommentFieldsFragmentDoc}
+`;
 
 /**
  * __useUpdatedCommentSubscription__
@@ -1080,18 +1277,31 @@ export const UpdatedCommentDocument = gql`
  *   },
  * });
  */
-export function useUpdatedCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<UpdatedCommentSubscription, UpdatedCommentSubscriptionVariables>) {
-        return Apollo.useSubscription<UpdatedCommentSubscription, UpdatedCommentSubscriptionVariables>(UpdatedCommentDocument, baseOptions);
-      }
-export type UpdatedCommentSubscriptionHookResult = ReturnType<typeof useUpdatedCommentSubscription>;
-export type UpdatedCommentSubscriptionResult = Apollo.SubscriptionResult<UpdatedCommentSubscription>;
-export const DeletedCommentDocument = gql`
-    subscription deletedComment($filter: CommentSubscriptionFilter) {
-  deletedComment(filter: $filter) {
-    ...CommentFields
-  }
+export function useUpdatedCommentSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    UpdatedCommentSubscription,
+    UpdatedCommentSubscriptionVariables
+  >,
+) {
+  return Apollo.useSubscription<
+    UpdatedCommentSubscription,
+    UpdatedCommentSubscriptionVariables
+  >(UpdatedCommentDocument, baseOptions);
 }
-    ${CommentFieldsFragmentDoc}`;
+export type UpdatedCommentSubscriptionHookResult = ReturnType<
+  typeof useUpdatedCommentSubscription
+>;
+export type UpdatedCommentSubscriptionResult = Apollo.SubscriptionResult<
+  UpdatedCommentSubscription
+>;
+export const DeletedCommentDocument = gql`
+  subscription deletedComment($filter: CommentSubscriptionFilter) {
+    deletedComment(filter: $filter) {
+      ...CommentFields
+    }
+  }
+  ${CommentFieldsFragmentDoc}
+`;
 
 /**
  * __useDeletedCommentSubscription__
@@ -1109,8 +1319,20 @@ export const DeletedCommentDocument = gql`
  *   },
  * });
  */
-export function useDeletedCommentSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>) {
-        return Apollo.useSubscription<DeletedCommentSubscription, DeletedCommentSubscriptionVariables>(DeletedCommentDocument, baseOptions);
-      }
-export type DeletedCommentSubscriptionHookResult = ReturnType<typeof useDeletedCommentSubscription>;
-export type DeletedCommentSubscriptionResult = Apollo.SubscriptionResult<DeletedCommentSubscription>;
+export function useDeletedCommentSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    DeletedCommentSubscription,
+    DeletedCommentSubscriptionVariables
+  >,
+) {
+  return Apollo.useSubscription<
+    DeletedCommentSubscription,
+    DeletedCommentSubscriptionVariables
+  >(DeletedCommentDocument, baseOptions);
+}
+export type DeletedCommentSubscriptionHookResult = ReturnType<
+  typeof useDeletedCommentSubscription
+>;
+export type DeletedCommentSubscriptionResult = Apollo.SubscriptionResult<
+  DeletedCommentSubscription
+>;

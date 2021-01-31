@@ -9,7 +9,7 @@ directive @specifiedBy(
 """ @model """
 type Comment {
   """ @id """
-  _id: ID!
+  id: ID!
   text: String
   description: String
 
@@ -18,7 +18,7 @@ type Comment {
 }
 
 input CommentFilter {
-  _id: IDInput
+  id: IDInput
   text: StringInput
   description: StringInput
   noteId: IDInput
@@ -38,20 +38,18 @@ input CommentSubscriptionFilter {
   and: [CommentSubscriptionFilter!]
   or: [CommentSubscriptionFilter!]
   not: CommentSubscriptionFilter
-  _id: IDInput
+  id: IDInput
   text: StringInput
   description: StringInput
 }
 
 input CreateCommentInput {
-  _id: ID
   text: String
   description: String
   noteId: ID
 }
 
 input CreateNoteInput {
-  _id: ID
   title: String!
   description: String
 }
@@ -67,14 +65,14 @@ input IDInput {
 }
 
 input MutateCommentInput {
-  _id: ID!
+  id: ID!
   text: String
   description: String
   noteId: ID
 }
 
 input MutateNoteInput {
-  _id: ID!
+  id: ID!
   title: String
   description: String
 }
@@ -91,7 +89,7 @@ type Mutation {
 """ @model """
 type Note {
   """ @id """
-  _id: ID!
+  id: ID!
   title: String!
   description: String
 
@@ -103,7 +101,7 @@ type Note {
 }
 
 input NoteFilter {
-  _id: IDInput
+  id: IDInput
   title: StringInput
   description: StringInput
   and: [NoteFilter!]
@@ -122,7 +120,7 @@ input NoteSubscriptionFilter {
   and: [NoteSubscriptionFilter!]
   or: [NoteSubscriptionFilter!]
   not: NoteSubscriptionFilter
-  _id: IDInput
+  id: IDInput
   title: StringInput
   description: StringInput
 }
