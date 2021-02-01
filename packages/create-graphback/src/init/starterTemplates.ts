@@ -1,7 +1,7 @@
 import { createWriteStream, mkdirSync, existsSync } from 'fs';
 import chalk from 'chalk';
 import ora from 'ora'
-import gh from 'parse-github-url';
+import * as gh from 'parse-github-url';
 import request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
