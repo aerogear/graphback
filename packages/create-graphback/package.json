@@ -1,6 +1,6 @@
 {
   "name": "create-graphback",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Create production-ready GraphQL servers using Graphback",
   "main": "dist/index.js",
   "bin": {
