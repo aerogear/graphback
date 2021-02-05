@@ -3,6 +3,12 @@ id: releases
 title: Release Notes
 ---
 
+## 1.1.1 (2021-02-06)
+
+#### Bug Fixes
+
+* [#2261](https://github.com/aerogear/graphback/pull/2261) fix: import format was throwing an error ([@craicoverflow](https://github.com/craicoverflow))
+
 ## 1.1.0 (2020-10-06)
 
 #### Bug Fixes
