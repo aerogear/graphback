@@ -2,7 +2,7 @@ import { createWriteStream, mkdirSync, existsSync } from 'fs';
 import chalk from 'chalk';
 import ora from 'ora'
 import * as gh from 'parse-github-url';
-import request from 'request';
+import * as request from 'request';
 import * as tar from 'tar';
 import * as tmp from 'tmp';
 import { externalTemplates } from './communityTemplates'
