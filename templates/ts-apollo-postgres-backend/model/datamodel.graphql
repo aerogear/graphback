@@ -1,7 +1,7 @@
 """ @model """
 type Note {
   """ @id """
-  _id: ID!
+  id: ID!
   title: String!
   description: String
   """
@@ -13,7 +13,7 @@ type Note {
 """ @model """
 type Comment {
   """ @id """
-  _id: ID!
+  id: ID!
   text: String
   description: String
 }
