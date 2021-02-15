@@ -14,16 +14,15 @@
   "license": "Apache 2.0",
   "dependencies": {
     "@graphback/runtime-mongo": "1.1.1",
-    "@graphql-tools/schema": "7.1.2",
+    "apollo-server-fastify": "2.21.0",
     "dotenv": "8.2.0",
-    "fastify": "3.9.2",
-    "fastify-cors": "4.1.0",
+    "fastify": "2.15.3",
+    "fastify-cors": "3.0.3",
     "graphback": "1.1.1",
     "graphql": "15.4.0",
     "graphql-config": "3.2.0",
     "graphql-subscriptions": "1.1.0",
     "graphql-tag": "2.11.0",
-    "mercurius": "6.5.0",
     "mongodb": "3.6.3"
   },
   "devDependencies": {
