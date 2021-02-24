@@ -18,11 +18,11 @@ A small amount of preparation needs to take place before this process kicks off.
 
 Ensure the Git repository is clean and there are no outstanding changes.
 
-Next, check to ensure that `templates-release` branch is up to date with `master`. In the following example `upstream` = `git@github.com:aerogear/graphback.git`.
+Next, check to ensure that `templates-1.0.0` branch is up to date with `master`. In the following example `upstream` = `git@github.com:aerogear/graphback.git`.
 
 [source, sh]
 --
-git checkout templates-release
+git checkout templates-1.0.0
 git reset --hard upstream/master
 git push -f
 --

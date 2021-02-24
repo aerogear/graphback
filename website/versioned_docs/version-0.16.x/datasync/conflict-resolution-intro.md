@@ -74,7 +74,7 @@ An example mutation can be found at the end of this page.
 
 ### Modify the template to use `createDataSyncAPI`
 
-In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-release/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
+In the [`src/index.ts`](https://github.com/aerogear/graphback/blob/templates-1.0.0/templates/ts-apollo-mongodb-backend/src/index.ts) file of the template, use  `createDataSyncAPI` instead of `buildGraphbackAPI`:
 
 ```typescript
 import { createDataSyncAPI } from '@graphback/datasync'
