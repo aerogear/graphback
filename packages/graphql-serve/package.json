@@ -45,7 +45,7 @@
     "typescript": "4.1.3"
   },
   "dependencies": {
-    "@graphback/codegen-client": "1.1.2",
+    "@graphback/codegen-client": "1.1.1",
     "@graphback/codegen-schema": "1.1.2",
     "@graphback/core": "1.1.2",
     "@graphback/datasync": "1.1.2",
