@@ -17,10 +17,10 @@ export function isObjectID(value: any) {
   try {
     switch (typeof value) {
       case 'string':
-      case 'number':
         const parsedObjectId = parseObjectID(value);
-        if (isBsonObjectId(parsedObjectId) || isBsonExtObjectID(parsedObjectId))
+        if (parsedObjectId.toHexString() == value) {
           return true;
+        }
         break;
     }
   } catch {}
@@ -37,6 +37,10 @@ export function parseObjectID(value: any) {
 }
 
 export function getObjectIDTimestamp(value: any) {
+  if (typeof value == 'string' && isObjectID(value)) {
+    const objectId = parseObjectID(value);
+    return objectId.getTimestamp();
+  }
   return value.getTimestamp();
 }
 /* eslint-enable */
