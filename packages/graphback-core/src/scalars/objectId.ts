@@ -13,7 +13,6 @@ export function isObjectID(value: any) {
     if (isBsonExtObjectID(value)) return true;
   } catch {}
 
-  // value can be number or string, try to parse
   try {
     switch (typeof value) {
       case 'string':

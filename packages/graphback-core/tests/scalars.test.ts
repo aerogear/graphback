@@ -26,7 +26,7 @@ describe('Graphback scalars', () => {
     const result = isObjectID(hex);
     expect(result).toBeTruthy();
   });
-  test('should not validate objectId as hex string', () => {
+  test('should return false for non valid objectId hex string', () => {
     const result = isObjectID('zzzzzzz');
     expect(result).toBeFalsy();
   });
