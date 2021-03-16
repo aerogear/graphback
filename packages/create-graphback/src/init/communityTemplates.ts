@@ -19,7 +19,7 @@ export const externalTemplates = [
     repos: [{
       uri: 'https://github.com/namit-chandwani/nestjs-apollo-mongodb-backend',
       branch: 'master',
-      path: '/'
+      path: '.'
     }]
   }
 ];
