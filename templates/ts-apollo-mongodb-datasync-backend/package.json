@@ -16,7 +16,7 @@
     "@graphback/datasync": "1.1.2",
     "apollo-server-express": "2.19.0",
     "cors": "2.8.5",
-    "dotenv": "8.2.0",
+    "dotenv": "9.0.0",
     "express": "4.17.1",
     "graphback": "1.1.2",
     "graphql": "15.4.0",
