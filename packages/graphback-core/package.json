@@ -50,7 +50,7 @@
     "bson": "4.2.2",
     "dataloader": "2.0.0",
     "glob": "7.1.6",
-    "graphql-compose": "7.23.0",
+    "graphql-compose": "8.0.1",
     "graphql-fields-list": "2.2.1",
     "graphql-metadata": "0.7.6",
     "graphql-scalars": "1.6.1",
