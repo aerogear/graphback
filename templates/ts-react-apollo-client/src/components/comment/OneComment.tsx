@@ -5,7 +5,7 @@ import './Comment.css';
 
 
 
-const OneComment = ({ _id, text, description }: Comment) => {
+const OneComment = ({ id, text, description }: Comment) => {
     const [deleteComment] = useDeleteCommentMutation();
 
     return (
@@ -13,7 +13,7 @@ const OneComment = ({ _id, text, description }: Comment) => {
             <li className="comment">
                 <strong >{text}</strong>:&nbsp;
               {description}
-                <Button variant="outlined" color="secondary" onClick={() => deleteComment({ variables: { input: { _id: _id } } })}>Delete Comment</Button>
+                <Button variant="outlined" color="secondary" onClick={() => deleteComment({ variables: { input: { id: id } } })}>Delete Comment</Button>
             </li>
         </div>
     );

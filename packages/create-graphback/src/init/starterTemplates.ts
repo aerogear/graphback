@@ -28,21 +28,6 @@ export let allTemplates: Template[] = [
       }]
   },
   {
-    name: 'apollo-fullstack-react-mongo-ts',
-    description: 'Apollo GraphQL Server connecting to Mongo database and React client using TypeScript',
-    repos: [
-      {
-        uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-1.0.0',
-        path: '/templates/ts-react-apollo-client',
-        mountpath: "client"
-      }, {
-        uri: 'https://github.com/aerogear/graphback',
-        branch: 'templates-1.0.0',
-        path: '/templates/ts-apollo-mongodb-backend',
-      }]
-  },
-  {
     name: 'fastify-fullstack-react-mongo-ts',
     description: 'GraphQL Server based on Fastify connecting to MongoDB database and React client using TypeScript',
     /**

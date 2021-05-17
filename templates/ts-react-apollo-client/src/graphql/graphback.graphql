@@ -1,34 +1,34 @@
 fragment NoteFields on Note {
-   _id
+   id
    title
    description
 
 } 
 
 fragment NoteExpandedFields on Note {
-   _id
+   id
    title
    description
    comments {
-      _id
+      id
       text
       description
    }
 } 
 
 fragment CommentFields on Comment {
-   _id
+   id
    text
    description
 
 } 
 
 fragment CommentExpandedFields on Comment {
-   _id
+   id
    text
    description
    note {
-      _id
+      id
       title
       description
    }

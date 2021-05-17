@@ -3,6 +3,15 @@ id: releases
 title: Release Notes
 ---
 
+## 1.1.2 (2021-02-06)
+
+#### Bug Fixes
+
+* [#2269](https://github.com/aerogear/graphback/pull/2269)  replaced _id with id in client and postgres template ([@RinkiyaKeDad](https://github.com/RinkiyaKeDad))
+
+* [#2261](https://github.com/aerogear/graphback/pull/2267) update import format [@namit-chandwani](https://github.com/namit-chandwani))
+ 
+
 ## 1.1.1 (2021-02-06)
 
 #### Bug Fixes

@@ -4,13 +4,13 @@ import { Button, TextField, Card } from '@material-ui/core';
 import './Note.css';
 
 type noteProps = {
-    _id: string
+    id: string
     title: string,
     description: string | undefined,
     editState: any
 }
 
-const EditNote = ({ _id, title, description, editState }: noteProps) => {
+const EditNote = ({ id, title, description, editState }: noteProps) => {
     const [updateNote] = useUpdateNoteMutation();
     const [NoteTitle, setNoteTitle] = useState(title);
     const [NoteDescription, setNoteDescription] = useState(description);
@@ -35,7 +35,7 @@ const EditNote = ({ _id, title, description, editState }: noteProps) => {
                     />
                     <Button variant="outlined" color="primary"
                         onClick={() => {
-                            updateNote({ variables: { input: { _id: _id, title: NoteTitle, description: NoteDescription } } });
+                            updateNote({ variables: { input: { id: id, title: NoteTitle, description: NoteDescription } } });
                             editState(false);
                         }}>Update Note</Button>
                 </form>

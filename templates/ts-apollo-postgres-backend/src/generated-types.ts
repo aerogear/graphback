@@ -1,6 +1,8 @@
 /* eslint-disable */
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -14,7 +16,7 @@ export type Scalars = {
 export type Comment = {
   __typename?: 'Comment';
   /**  @id  */
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   /** @manyToOne(field: 'comments', key: 'noteId') */
@@ -22,7 +24,7 @@ export type Comment = {
 };
 
 export type CommentFilter = {
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   noteId?: Maybe<IdInput>;
@@ -43,20 +45,18 @@ export type CommentSubscriptionFilter = {
   and?: Maybe<Array<CommentSubscriptionFilter>>;
   or?: Maybe<Array<CommentSubscriptionFilter>>;
   not?: Maybe<CommentSubscriptionFilter>;
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   text?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
 
 export type CreateCommentInput = {
-  _id?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type CreateNoteInput = {
-  _id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
 };
@@ -72,14 +72,14 @@ export type IdInput = {
 };
 
 export type MutateCommentInput = {
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   text?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   noteId?: Maybe<Scalars['ID']>;
 };
 
 export type MutateNoteInput = {
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
 };
@@ -128,7 +128,7 @@ export type MutationDeleteCommentArgs = {
 export type Note = {
   __typename?: 'Note';
   /**  @id  */
-  _id: Scalars['ID'];
+  id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   /**
@@ -145,7 +145,7 @@ export type NoteCommentsArgs = {
 };
 
 export type NoteFilter = {
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
   and?: Maybe<Array<NoteFilter>>;
@@ -165,7 +165,7 @@ export type NoteSubscriptionFilter = {
   and?: Maybe<Array<NoteSubscriptionFilter>>;
   or?: Maybe<Array<NoteSubscriptionFilter>>;
   not?: Maybe<NoteSubscriptionFilter>;
-  _id?: Maybe<IdInput>;
+  id?: Maybe<IdInput>;
   title?: Maybe<StringInput>;
   description?: Maybe<StringInput>;
 };
