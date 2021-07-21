@@ -146,7 +146,7 @@ const { items: allNotes } = await context.Notes.findBy(args, context, info);
 const noteIds = allNotes.map(({ id }) => id);
 
 // retrieves comments owned by notes selected above. Specifying the "comments" path so start selection
-const { items: comments } = await context.Comment.findBy({noteId: {in: noteIds}}, context, info, 'comments');
+const { items: comments } = await context.Comment.findBy({ filter: { noteId: { in: noteIds } } }, context, info, 'comments');
 
 // ... do the rest
 ```
