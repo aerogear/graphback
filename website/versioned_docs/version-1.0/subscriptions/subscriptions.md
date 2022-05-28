@@ -8,8 +8,7 @@ Graphback provides out of the box subscriptions support by providing one of the 
 from https://github.com/apollographql/graphql-subscriptions library. 
 Developers can connect to any publish subscribe mechanism that is officially supported by graphql-subscriptions
 or even write their own.
-Graphback templates by default using `InMemoryPubSubEngine` which is not designed to be used for production
-use cases.
+Graphback templates by default use `InMemoryPubSubEngine`, which is not designed for production use.
 
 We recomend following engines:
 
