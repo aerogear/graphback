@@ -121,7 +121,7 @@ export class CRUDService<Type = any> implements GraphbackCRUDService<Type>  {
     let requestedCount: boolean = false;
     if (info) {
       selectedFields = getSelectedFieldsFromResolverInfo(info, this.model, path);
-      requestedCount = path === 'items' && getResolverInfoFieldsList(info).some((field: string) => field === "count");
+      requestedCount = getResolverInfoFieldsList(info).some((field: string) => field === "count");
     }
 
     const items: Type[] = await this.db.findBy(args, selectedFields);
