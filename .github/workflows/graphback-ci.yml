@@ -46,7 +46,7 @@ jobs:
     timeout-minutes: 60
     services:
       mongodb:
-        image: mongo:4.2.9
+        image: mongo:6.0.5
         env:
           MONGO_INITDB_DATABASE: users
           MONGO_INITDB_ROOT_USERNAME: mongodb
@@ -54,7 +54,7 @@ jobs:
         ports:
           - 27017:27017
       postgres:
-        image: postgres:12
+        image: postgres:15
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgresql
@@ -65,9 +65,9 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - name: Checkout master
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: 12.x
     - name: Cache Dependencies
@@ -99,9 +99,9 @@ jobs:
     needs: build
     steps:
     - name: Checkout master
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: 12.x
     - name: Cache Dependencies
