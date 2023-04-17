@@ -46,7 +46,7 @@ jobs:
     timeout-minutes: 60
     services:
       mongodb:
-        image: mongo:4.2.9
+        image: mongo:4.4.20
         env:
           MONGO_INITDB_DATABASE: users
           MONGO_INITDB_ROOT_USERNAME: mongodb
